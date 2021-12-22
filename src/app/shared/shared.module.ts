@@ -32,10 +32,16 @@ import {MatRippleModule} from '@angular/material/core';
 import {MatGridListModule} from '@angular/material/grid-list';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import {MatBottomSheetModule, MAT_BOTTOM_SHEET_DEFAULT_OPTIONS} from '@angular/material/bottom-sheet';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatNativeDateModule} from '@angular/material/core';
 
+
+// Charts
+import { NgApexchartsModule } from "ng-apexcharts";
 
 // Environment
 import {environment} from "../../environments/environment";
+
 
 // reCAPTCHA
 import { RecaptchaModule, RECAPTCHA_LANGUAGE, RECAPTCHA_SETTINGS, RecaptchaSettings } from "ng-recaptcha";
@@ -53,16 +59,16 @@ import { SecondToFormatPipe } from './pipes/second-to-format/second-to-format.pi
 
 
 
-// Shared Components
-import { RecaptchaDialogComponent } from './components/recaptcha-dialog';
-import { ConfirmationDialogComponent } from './components/confirmation-dialog';
-
-
 
 // Bottom Sheets
 import { BottomSheetMenuComponent } from './components/bottom-sheet-menu';
+import { CandlestickChartComponent } from './components/candlestick-chart/candlestick-chart.component';
 
 
+// Shared Components
+import { RecaptchaDialogComponent } from './components/recaptcha-dialog';
+import { ConfirmationDialogComponent } from './components/confirmation-dialog';
+import { CandlestickChartConfigComponent } from './components/candlestick-chart/candlestick-chart-config/candlestick-chart-config.component';
 
 
 
@@ -78,13 +84,15 @@ import { BottomSheetMenuComponent } from './components/bottom-sheet-menu';
 		// Pipes
 		FilterPipe,
 		SecondToFormatPipe,
+
+        // Bottom Sheets
+		BottomSheetMenuComponent,
 		
 		// Shared Components
         RecaptchaDialogComponent,
         ConfirmationDialogComponent,
-        
-		// Bottom Sheets
-		BottomSheetMenuComponent,
+        CandlestickChartComponent,
+        CandlestickChartConfigComponent,
 	],
 	imports: [
 		CommonModule,
@@ -95,6 +103,9 @@ import { BottomSheetMenuComponent } from './components/bottom-sheet-menu';
 		
 		// Flex Layout
 		FlexLayoutModule,
+
+        // Charts
+        NgApexchartsModule,
 		
 		// reCAPTCHA
 		RecaptchaModule,
@@ -123,6 +134,8 @@ import { BottomSheetMenuComponent } from './components/bottom-sheet-menu';
 		MatGridListModule,
 		DragDropModule,
 		MatBottomSheetModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
 	],
 	providers: [
 		// Dialog Defaults
@@ -176,6 +189,8 @@ import { BottomSheetMenuComponent } from './components/bottom-sheet-menu';
 		MatGridListModule,
 		DragDropModule,
 		MatBottomSheetModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
 		
 		// Directives
 		DisableControlDirective,
@@ -185,7 +200,7 @@ import { BottomSheetMenuComponent } from './components/bottom-sheet-menu';
 		SecondToFormatPipe,
 		
 		// Shared Components
-		
+		CandlestickChartComponent,
 	]
 })
 export class SharedModule { }

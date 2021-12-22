@@ -21,4 +21,4 @@ export interface ICryptoCurrency {
     genesisCandlestick: number,
 }
 
-export type ICryptoCurrencySymbol = 'BTC'|'ETH'|'BNB'|'SOL'|'ADA';
+export type ICryptoCurrencySymbol = 'BTC'|'ETH';

@@ -1,17 +1,17 @@
 import { Component, OnInit } from '@angular/core';
+import { IPriceChartComponent } from './interfaces';
 import { CandlestickService, ICandlestick, UtilsService } from '../../../core';
 import { CandlestickChartService, ICandlestickChartConfig, NavService, SnackbarService } from '../../../services';
-import { IForecastComponent } from './interfaces';
-import * as moment from 'moment';
+
 
 
 
 @Component({
-  selector: 'app-forecast',
-  templateUrl: './forecast.component.html',
-  styleUrls: ['./forecast.component.scss']
+  selector: 'app-price-chart',
+  templateUrl: './price-chart.component.html',
+  styleUrls: ['./price-chart.component.scss']
 })
-export class ForecastComponent implements OnInit, IForecastComponent {
+export class PriceChartComponent implements OnInit, IPriceChartComponent {
 	// Config
 	public config: ICandlestickChartConfig = this._candlestickChart.getDefaultConfig();
 
@@ -23,22 +23,17 @@ export class ForecastComponent implements OnInit, IForecastComponent {
 
 
 
-
-	constructor(
+    constructor(
         public _nav: NavService,
         private _candlestick: CandlestickService,
         private _snackbar: SnackbarService,
         private _utils: UtilsService,
         private _candlestickChart: CandlestickChartService
-	) { }
+    ) { }
 
-	ngOnInit(): void {
-		this.performForecast();
-	}
-
-
-
-
+    ngOnInit(): void {
+        this.buildCandlesticks();
+    }
 
 
 
@@ -49,11 +44,11 @@ export class ForecastComponent implements OnInit, IForecastComponent {
 
 
 	/**
-	 * Based on the current configuration, it will retrieve the forecast and
+	 * Based on the current configuration, it will retrieve the candlesticks and
 	 * update the chart.
 	 * @returns Promise<void>
 	 */
-	public async performForecast(): Promise<void> {
+     private async buildCandlesticks(): Promise<void> {
 		try {
 			// Set loading state
 			this.loaded = false;
@@ -78,16 +73,12 @@ export class ForecastComponent implements OnInit, IForecastComponent {
 
 
 
-
-
-
-
     /**
      * Displays the config dialog and reloads the chart once the new configuration
      * has been set.
      * @returns void
      */
-     public updateConfig(): void {
+    public updateConfig(): void {
         this._candlestickChart.displayChartConfigDialog(this.config).afterClosed().subscribe(
             (response) => {
                 if (response) {
@@ -95,9 +86,11 @@ export class ForecastComponent implements OnInit, IForecastComponent {
                     this.config = response;
 
                     // Reload the chart
-                    this.performForecast();
+                    this.buildCandlesticks();
                 }
             }
         );
     }
+
+
 }

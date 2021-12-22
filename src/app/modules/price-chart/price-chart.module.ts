@@ -2,23 +2,23 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 // Routing
-import { ForecastRoutingModule } from './forecast-routing.module';
+import { PriceChartRoutingModule } from './price-chart-routing.module';
 
 // Shared Module
 import {SharedModule} from "../../shared";
 
 // Component
-import { ForecastComponent } from './forecast/forecast.component';
+import { PriceChartComponent } from './price-chart/price-chart.component';
 
 
 @NgModule({
   declarations: [
-    ForecastComponent
+    PriceChartComponent,
   ],
   imports: [
     CommonModule,
-    ForecastRoutingModule,
+    PriceChartRoutingModule,
     SharedModule
   ]
 })
-export class ForecastModule { }
+export class PriceChartModule { }

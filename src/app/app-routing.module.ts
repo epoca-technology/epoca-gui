@@ -22,7 +22,11 @@ const routes: Routes = [
 	},
 
 
-
+	// Price Chart
+	{
+		path: 'priceChart',
+		loadChildren: () => import('./modules/price-chart/price-chart.module').then(m => m.PriceChartModule),
+	},
 
 
 

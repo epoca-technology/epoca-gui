@@ -26,6 +26,13 @@
                     <mat-icon>auto_fix_high</mat-icon><span>Forecast</span>
                 </button>
             </mat-list-item>
+
+            <!-- Price Chart -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.priceChart()" [disabled]="state.module == 'priceChart'">
+                    <mat-icon>waterfall_chart</mat-icon><span>Price Chart</span>
+                </button>
+            </mat-list-item>
         </mat-list>
     </mat-sidenav>
 

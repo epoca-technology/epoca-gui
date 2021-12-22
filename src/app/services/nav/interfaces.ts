@@ -11,6 +11,7 @@ export interface INavService {
 	// App Navigation
 	dashboard(): Promise<boolean>,
 	forecast(): Promise<boolean>,
+	priceChart(): Promise<boolean>,
 	
 	// Dialogs
     displayConfirmationDialog(data?: IConfirmationDialogData): MatDialogRef<any>,

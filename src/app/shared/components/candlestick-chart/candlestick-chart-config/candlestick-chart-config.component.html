@@ -1,0 +1,62 @@
+<mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <button mat-icon-button class="show-on-mobile" (click)="cancel()"><mat-icon>arrow_back</mat-icon></button>
+        <span class="truncate">Chart Configuration</span>
+        <span fxFlex></span>
+        <button mat-icon-button class="show-on-desktop" (click)="cancel()"><mat-icon>close</mat-icon></button>
+    </div>
+</mat-toolbar>
+<div mat-dialog-content>
+    <!-- Container -->
+    <div class="fadeIn padding">
+
+        <!-- Form -->
+        <div *ngIf="form">
+            <form [formGroup]="form" (ngSubmit)="updateConfig()">
+                <div>
+                    <mat-form-field>
+                        <mat-label>Choose a cryptocurrency</mat-label>
+                        <mat-select formControlName="symbol">
+                          <mat-option *ngFor="let s of _c.symbols" [value]="s">{{_c.data[s].name}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div>
+                    <mat-form-field>
+                        <mat-label>Choose the start date</mat-label>
+                        <input matInput [matDatepicker]="startPicker" formControlName="start">
+                        <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+                        <mat-datepicker #startPicker></mat-datepicker>
+                    </mat-form-field>
+                </div>
+
+
+                <div>
+                    <mat-form-field>
+                        <mat-label>Choose the end date</mat-label>
+                        <input matInput [matDatepicker]="endPicker" formControlName="end">
+                        <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+                        <mat-datepicker #endPicker></mat-datepicker>
+                    </mat-form-field>
+                </div>
+
+                <div>
+                    <mat-form-field>
+                        <mat-label>Interval Minutes</mat-label>
+                        <input type="number"
+                               matInput
+                               formControlName="intervalMinutes"
+                               autocomplete="off"
+                               placeholder="e.g. 30">
+                    </mat-form-field>
+                </div>
+
+                <div class="actions">
+                    <button type="submit" mat-raised-button color="primary" [disabled]="form.invalid">UPDATE</button>
+                    <button class="margin-top" type="button" mat-button (click)="updateConfig(true)">RESTORE DEFAULTS</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

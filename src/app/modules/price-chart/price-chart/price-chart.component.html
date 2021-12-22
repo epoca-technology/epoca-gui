@@ -3,9 +3,8 @@
     <div fxLayout="row" fxLayoutAlign="center center">
         <button class="show-on-mobile" mat-icon-button (click)="_nav.dashboard()"><mat-icon>arrow_back</mat-icon></button>
         <img src="assets/img/coins/white/{{config.symbol}}.png" [alt]="config.symbol">
-        <span>Forecast</span>
+        <span>Price Chart</span>
         <span fxFlex></span>
-        <button mat-button *ngIf="loaded" class="left-icon-button"><mat-icon>auto_fix_high</mat-icon>NEUTRAL</button>
         <button mat-icon-button *ngIf="loaded" (click)="updateConfig()"><mat-icon>tune</mat-icon></button>
     </div>
 </mat-toolbar>
