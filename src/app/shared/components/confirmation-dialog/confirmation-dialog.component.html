@@ -1,0 +1,67 @@
+<mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <button mat-icon-button class="show-on-mobile" (click)="cancel()" [disabled]="submitting"><mat-icon>arrow_back</mat-icon></button>
+        <span class="truncate">{{title}}</span>
+        <span fxFlex></span>
+        <button mat-icon-button class="show-on-desktop" (click)="cancel()" [disabled]="submitting"><mat-icon>close</mat-icon></button>
+    </div>
+</mat-toolbar>
+<div mat-dialog-content>
+    <!-- Loader -->
+    <div *ngIf="!loaded">
+        <div class="loader show-on-desktop"><div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div></div>
+        <div class="section-loader show-on-mobile"><div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div></div>
+    </div>
+
+    <!-- Container -->
+    <div *ngIf="loaded" class="fadeIn padding">
+        <!-- Content -->
+        <div class="margin-top" [innerHTML]="content"></div>
+
+        <!-- Default Confirmation -->
+        <div *ngIf="!otpConfirmation" class="margin-top-x2">
+            <button mat-raised-button color="primary" class="full-width" type="button" (click)="confirm()">CONFIRM</button>
+        </div>
+
+
+        <!-- OTP Confirmation -->
+        <div *ngIf="otpConfirmation" class="margin-top-x2">
+            <form [formGroup]="otpForm" (ngSubmit)="confirmWithOTP()">
+                <div>
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Google Authenticator</mat-label>
+                                <mat-icon matPrefix svgIcon="logo_google"></mat-icon>
+                                <input type="text"
+                                       matInput
+                                       formControlName="otp"
+                                       [appDisableControl]="submitting"
+                                       autocomplete="off"
+                                       placeholder="e.g. 055691">
+                            </mat-form-field>
+                        </div>
+
+                        <!-- Paste -->
+                        <button type="button" mat-icon-button color="primary" tabindex="-1"
+                                *ngIf="_clipboard.canPaste"
+                                [disabled]="submitting"
+                                (click)="pasteOTP()">
+                            <mat-icon svgIcon="paste"></mat-icon>
+                        </button>
+                    </div>
+
+
+                    <div *ngIf="otp.touched" class="errors">
+                        <p *ngIf="otp.hasError('invalidCode')">The provided code is <strong>invalid</strong></p>
+                    </div>
+                </div>
+
+
+                <div class="actions">
+                    <button type="submit" mat-raised-button color="primary" [disabled]="otpForm.invalid || submitting">CONFIRM</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

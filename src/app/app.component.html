@@ -1,0 +1,68 @@
+<!-- App Container -->
+<mat-sidenav-container class="full-height">
+
+    <!-- Side Navigation -->
+    <mat-sidenav #rootSidenav [(opened)]="sidenavOpened" position="end" class="sidenav" autoFocus="false" *ngIf="layout == 'desktop'">
+
+        <!-- Menu Heading Toolbar -->
+        <mat-toolbar color="primary" fxLayout="row" fxLayoutAlign="start center">
+            <span>Menu</span>
+            <span fxFlex></span>
+            <button mat-icon-button (click)="sidenav?.toggle()"><mat-icon>arrow_forward</mat-icon></button>
+        </mat-toolbar>
+
+        <!-- Menu Content -->
+        <mat-list>
+            <!-- Home -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.dashboard()" [disabled]="state.module == 'dashboard'">
+                    <mat-icon svgIcon="home"></mat-icon><span>Dashboard</span>
+                </button>
+            </mat-list-item>
+
+            <!-- Forecast -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.forecast()" [disabled]="state.module == 'forecast'">
+                    <mat-icon>auto_fix_high</mat-icon><span>Forecast</span>
+                </button>
+            </mat-list-item>
+        </mat-list>
+    </mat-sidenav>
+
+
+    <!-- App Content -->
+    <mat-sidenav-content class="app-content">
+
+        <!-- Navigation progress bar -->
+        <mat-progress-bar *ngIf="state.navigating" class="navigation-progress-bar" mode="indeterminate" color="accent"></mat-progress-bar>
+
+
+
+        <!-- Desktop Heading Toolbar -->
+        <div class="primary-header" *ngIf="layout != 'mobile'">
+            <mat-toolbar fxLayout="row" fxLayoutAlign="center center">
+                <!-- Logo -->
+                <img src="assets/img/logo.png" alt="Logo" class="large-logo" (click)="_nav.dashboard()">
+                <img src="assets/img/slogo.png" alt="Logo" class="small-logo" (click)="_nav.dashboard()">
+
+
+                <span fxFlex></span>
+
+                <!-- Menu -->
+                <button mat-icon-button (click)="sidenav?.toggle()"><mat-icon>menu</mat-icon></button>
+            </mat-toolbar>
+        </div>
+
+
+        <!-- Main Router Outlet -->
+        <router-outlet></router-outlet>
+    </mat-sidenav-content>
+</mat-sidenav-container>
+
+
+
+
+
+<!-- Icons Preloader -->
+<!-- @TODO Review Relevance -->
+<div class="icons-preloader"><mat-icon *ngFor="let icon of customIcons" [svgIcon]="icon"></mat-icon></div>

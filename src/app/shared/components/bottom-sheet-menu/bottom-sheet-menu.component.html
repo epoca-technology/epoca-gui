@@ -1,0 +1,11 @@
+<div *ngFor="let item of items"
+     fxLayout="row" fxLayoutAlign="start center"
+     class="item fake-button" role="button"
+     (click)="clickAction(item.response)">
+    <mat-icon *ngIf="item.svg" class="icon" [svgIcon]="item.icon"></mat-icon>
+    <mat-icon *ngIf="!item.svg" class="icon">{{item.icon}}</mat-icon>
+    <div>
+        <p class="title truncate">{{item.title}}</p>
+        <p class="description truncate">{{item.description}}</p>
+    </div>
+</div>

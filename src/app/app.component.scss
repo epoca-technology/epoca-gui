@@ -1,0 +1,75 @@
+@use '@angular/material' as mat;
+
+
+// Icons Preloader
+.icons-preloader { display: none }
+
+
+
+
+
+
+
+// Navigation Progress Bar
+.navigation-progress-bar {
+	position: absolute;
+	top:0;
+	left:0;
+	z-index: 999;
+	width: 100%;
+}
+
+
+
+
+
+
+
+
+
+
+/* Push Notification */
+.fcm {
+	position: fixed;
+	bottom: 25px;
+	left: 50%;
+	width: 250px;
+	margin-left:-125px;
+	z-index:2;
+	background:white;
+	padding:10px;
+	min-height:45px;
+	@include mat.elevation(3);
+	border-top: 4px solid var(--primary-color);
+}
+.fcm p{ margin: 0 6px 0 0; }
+.fcm .mat-icon {color: var(--primary-color);}
+.fcm:hover { background: var(--light-background-color) }
+
+
+
+
+
+
+
+
+
+
+
+/* Responsiveness */
+
+
+/* mobile: sm & xs */
+@media only screen and (max-width: 959px) {
+
+}
+
+/* compactDesktop: md */
+@media only screen and (min-width: 960px) {
+	// Logo
+	.small-logo{display: none}
+
+
+	//FCM
+	.fcm:hover{cursor:pointer;}
+}
