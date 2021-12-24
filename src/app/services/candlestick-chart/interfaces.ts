@@ -1,4 +1,4 @@
-import { ICryptoCurrencySymbol, ICandlestick } from "../../core";
+import { ICandlestick } from "../../core";
 import {
 	ApexAxisChartSeries,
 	ApexChart,
@@ -27,7 +27,6 @@ export interface ICandlestickChartService {
 
 // Config
 export interface ICandlestickChartConfig {
-    symbol: ICryptoCurrencySymbol,
     start: number,
     end: number,
     intervalMinutes: number

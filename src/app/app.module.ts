@@ -30,7 +30,6 @@ import { environment } from '../environments/environment';
 import {
     ApiService,
     CandlestickService,
-    CryptocurrencyService,
     ExternalRequestService,
 	UtilsService,
 } from './core';
@@ -101,7 +100,6 @@ import { AppComponent } from './app.component';
 		// Core
         ApiService,
         CandlestickService,
-        CryptocurrencyService,
         ExternalRequestService,
 		UtilsService,
 

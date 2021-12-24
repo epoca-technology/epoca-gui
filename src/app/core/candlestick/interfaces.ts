@@ -1,10 +1,8 @@
-import { ICryptoCurrencySymbol } from "../cryptocurrency";
-
 
 
 
 export interface ICandlestickService {
-    getForPeriod(symbol: ICryptoCurrencySymbol, start: number, end: number, intervalMinutes: number): Promise<ICandlestick[]>
+    getForPeriod(start: number, end: number, intervalMinutes: number): Promise<ICandlestick[]>
 
 
 }
@@ -17,10 +15,10 @@ export interface ICandlestickService {
 export interface ICandlestick {
     ot: number,                 // Open Time
     ct: number,                 // Close Time
-    o: string,                  // Open Price
-    h: string,                  // High Price
-    l: string,                  // Low Price
-    c: string,                  // Close Price
-    v: string,                  // Volume (USDT)
-    tbv: string,                // Taker Buy Volume (USDT)
+    o: number,                  // Open Price
+    h: number,                  // High Price
+    l: number,                  // Low Price
+    c: number,                  // Close Price
+    v: number,                  // Volume (USDT)
+    tbv: number,                // Taker Buy Volume (USDT)
 }

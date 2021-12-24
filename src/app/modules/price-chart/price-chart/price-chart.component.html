@@ -2,7 +2,7 @@
 <mat-toolbar class="secondary-header">
     <div fxLayout="row" fxLayoutAlign="center center">
         <button class="show-on-mobile" mat-icon-button (click)="_nav.dashboard()"><mat-icon>arrow_back</mat-icon></button>
-        <img src="assets/img/coins/white/{{config.symbol}}.png" [alt]="config.symbol">
+        <img src="assets/img/coins/white/BTC.png" alt="BTC">
         <span>Price Chart</span>
         <span fxFlex></span>
         <button mat-icon-button *ngIf="loaded" (click)="updateConfig()"><mat-icon>tune</mat-icon></button>

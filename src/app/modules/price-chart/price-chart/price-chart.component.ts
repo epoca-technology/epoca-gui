@@ -55,7 +55,6 @@ export class PriceChartComponent implements OnInit, IPriceChartComponent {
 
 			// Retrieve the raw candlesticks
 			this.rawCandlesticks = await this._candlestick.getForPeriod(
-				this.config.symbol, 
 				this.config.start, 
 				this.config.end, 
 				this.config.intervalMinutes

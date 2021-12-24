@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { CandlestickService, ICandlestick, UtilsService } from '../../../core';
 import { CandlestickChartService, ICandlestickChartConfig, NavService, SnackbarService } from '../../../services';
 import { IForecastComponent } from './interfaces';
-import * as moment from 'moment';
 
 
 
@@ -60,7 +59,6 @@ export class ForecastComponent implements OnInit, IForecastComponent {
 
 			// Retrieve the raw candlesticks
 			this.rawCandlesticks = await this._candlestick.getForPeriod(
-				this.config.symbol, 
 				this.config.start, 
 				this.config.end, 
 				this.config.intervalMinutes

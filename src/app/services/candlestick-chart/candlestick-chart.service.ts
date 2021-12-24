@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import { AppService, ILayout } from '../app';
 import { IApexCandlestick, ICandlestickChartService, ICandlestickChartOptions, ICandlestickChartConfig } from './interfaces';
-import { CryptocurrencyService, ICandlestick } from '../../core';
+import { ICandlestick } from '../../core';
 import * as moment from 'moment';
 import { CandlestickChartConfigComponent } from '../../shared/components/candlestick-chart/candlestick-chart-config/candlestick-chart-config.component';
 
@@ -15,8 +15,7 @@ export class CandlestickChartService implements ICandlestickChartService {
 
     constructor(
         private _app: AppService,
-        private dialog: MatDialog,
-        private _cCurrency: CryptocurrencyService
+        private dialog: MatDialog
     ) { }
 
 
@@ -107,7 +106,7 @@ export class CandlestickChartService implements ICandlestickChartService {
 		candlesticks.forEach((c) => {
 			final.push({
 				x: c.ot,
-				y: [Number(c.o), Number(c.h), Number(c.l), Number(c.c)]
+				y: [c.o, c.h, c.l, c.c]
 			});
 		});
 
@@ -237,7 +236,6 @@ export class CandlestickChartService implements ICandlestickChartService {
      public getDefaultConfig(): ICandlestickChartConfig {
 		const currentTS: number = Date.now();
 		return {
-			symbol: this._cCurrency.mainSymbol,
 			start: moment(currentTS).subtract(7, 'days').valueOf(),
 			end: currentTS,
 			intervalMinutes: 30
