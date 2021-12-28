@@ -17,9 +17,10 @@ export class CandlestickChartService implements ICandlestickChartService {
 
 	// Annotation Colors
 	private readonly colors: string[] = [
-		"#567bda","#9c39e7","#ccad2d","#d80c32","#601574","#235b2b","#4ec1ef","#0c0f5f","#a289bc",
-		"#474747","#1045fa","#be55b6","#f4e80e","#c21e49","#7ffb2e","#6f18f2","#6a0b06","#000000",
-		"#459a89","#e38c7a","#97985e","#16f342",
+		"#B71C1C","#2E7D32","#212121","#3E2723","#BF360C","#E65100","#827717","#33691E","#1B5E20",
+		"#004D40","#006064","#01579B","#0D47A1","#1A237E","#311B92","#4A148C","#880E4F","#000000",
+		"#37474F","#424242","#4E342E","#D84315","#EF6C00","#9E9D24","#558B2F","#263238","#00695C",
+		"#00838F","#0277BD","#1565C0","#283593","#4527A0","#6A1B9A","#AD1457","#C62828","#455A64",
 	];
 
 
@@ -215,9 +216,7 @@ export class CandlestickChartService implements ICandlestickChartService {
 				borderColor: this.colors[i],
 				label: {
 					borderColor: this.colors[i],
-					style: { color: '#fff', background: this.colors[i]},
-					text: this.getKeyZoneLabelText(keyZones[i]),
-					position: 'right'
+					style: { color: '#fff', background: this.colors[i]}
 				}
 			});
 
@@ -228,7 +227,9 @@ export class CandlestickChartService implements ICandlestickChartService {
 				borderColor: this.colors[i],
 				label: {
 					borderColor: this.colors[i],
-					style: { color: '#fff', background: this.colors[i]}
+					style: { color: '#fff', background: this.colors[i]},
+					text: this.getKeyZoneLabelText(keyZones[i]),
+					position: 'right'
 				}
 			});
 		}
@@ -251,8 +252,9 @@ export class CandlestickChartService implements ICandlestickChartService {
 	 */
 	private getKeyZoneLabelText(zone: IKeyZone): string {
 		let label: string = '';
-		label += `${zone.reversalType.toUpperCase()} (${zone.reversalCount}) | `;
+		label += `${zone.mutated ? 'M': ''}${zone.reversalType[zone.reversalType.length - 1].toUpperCase()} | `;
 		label += `${moment(zone.id).format('DD-MM-YY HH:mm')} | `;
+		label += `Reversals ${zone.reversalCount} | `;
 		label += `Starts ${zone.start} Ends ${zone.end} `;
 		return label;
 	}
@@ -302,10 +304,10 @@ export class CandlestickChartService implements ICandlestickChartService {
      public getDefaultConfig(): ICandlestickChartConfig {
 		const currentTS: number = Date.now();
 		return {
-			start: moment(currentTS).subtract(20, 'days').valueOf(),
+			start: moment(currentTS).subtract(90, 'days').valueOf(),
 			end: currentTS,
-			intervalMinutes: 30,
-			zoneSize: 1,
+			intervalMinutes: 400,
+			zoneSize: 0.5,
 			reversalCountRequirement: 1
 		}
 	}

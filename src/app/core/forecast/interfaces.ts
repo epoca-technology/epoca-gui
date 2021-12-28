@@ -60,7 +60,8 @@ export interface IKeyZonePriceRange {
 export interface IKeyZone extends IKeyZonePriceRange {
     id: number,                     // Candlestick Open Timestamp
     reversalCount: number,          // Number of times the price has reversed from this point
-    reversalType: IReversalType,    // Type of reversal that took place at the zone
+    reversalType: IReversalType[],  // Type of reversal that took place at the zone, ordered by date ascending
+    mutated?: boolean               // Changed it's type from resistance to support or viceversa
 }
 
 /**
@@ -68,7 +69,7 @@ export interface IKeyZone extends IKeyZonePriceRange {
  * Support: Price touches a support zone and reverses.
  * Mutated: The type of reverse has changed its type. From support to resistance or vice versa
  */
-export type IReversalType = 'resistance'|'support'|'mutated';
+export type IReversalType = 'resistance'|'support';
 
 
 
