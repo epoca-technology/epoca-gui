@@ -2,7 +2,7 @@ import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { ICandlestick, UtilsService } from '../../../core';
 import { ICandlestickChartComponent } from './interfaces';
 import { SnackbarService, ICandlestickChartOptions, CandlestickChartService } from '../../../services';
-import {ChartComponent} from "ng-apexcharts";
+import {ApexAnnotations, ChartComponent} from "ng-apexcharts";
 
 
 
@@ -21,7 +21,7 @@ export class CandlestickChartComponent implements OnInit, ICandlestickChartCompo
     private rawCandlesticks!: ICandlestick[];
     private annotations?: any;
     @Input() 
-    set data(data: {candlesticks: ICandlestick[], annotations?: any}) {
+    set data(data: {candlesticks: ICandlestick[], annotations?: ApexAnnotations}) {
         // Store the raw candlesticks locally
         this.rawCandlesticks = data.candlesticks;
 

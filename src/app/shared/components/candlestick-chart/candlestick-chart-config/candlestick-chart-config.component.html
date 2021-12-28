@@ -43,6 +43,31 @@
                     </mat-form-field>
                 </div>
 
+
+                <div *ngIf="forecast">
+                    <mat-form-field>
+                        <mat-label>Zone Size Percentage</mat-label>
+                        <input type="number"
+                               matInput
+                               formControlName="zoneSize"
+                               autocomplete="off"
+                               placeholder="e.g. 1">
+                    </mat-form-field>
+                </div>
+
+
+                <div *ngIf="forecast">
+                    <mat-form-field>
+                        <mat-label>Reversal Count Requirement</mat-label>
+                        <input type="number"
+                               matInput
+                               formControlName="reversalCountRequirement"
+                               autocomplete="off"
+                               placeholder="e.g. 1">
+                    </mat-form-field>
+                </div>
+
+
                 <div class="actions">
                     <button type="submit" mat-raised-button color="primary" [disabled]="form.invalid">UPDATE</button>
                     <button class="margin-top" type="button" mat-button (click)="updateConfig(true)">RESTORE DEFAULTS</button>

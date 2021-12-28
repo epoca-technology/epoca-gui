@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { CandlestickService, ICandlestick, UtilsService } from '../../../core';
+import { ApexAnnotations } from 'ng-apexcharts';
+import { ForecastService, IForecastResult, UtilsService } from '../../../core';
 import { CandlestickChartService, ICandlestickChartConfig, NavService, SnackbarService } from '../../../services';
 import { IForecastComponent } from './interfaces';
 
@@ -14,8 +15,10 @@ export class ForecastComponent implements OnInit, IForecastComponent {
 	// Config
 	public config: ICandlestickChartConfig = this._candlestickChart.getDefaultConfig();
 
-	// Raw Candlesticks
-	public rawCandlesticks?: ICandlestick[];
+	// Forecast Result
+	public forecast?: IForecastResult;
+	public annotations: ApexAnnotations = {yaxis: []};
+    public forecastResultText: {[tendencyForecast: string]: string} = { '1': 'LONG','0': 'NEUTRAL','-1': 'SHORT' }
 
 	// Load State
 	public loaded: boolean = false;
@@ -25,7 +28,7 @@ export class ForecastComponent implements OnInit, IForecastComponent {
 
 	constructor(
         public _nav: NavService,
-        private _candlestick: CandlestickService,
+        private _forecast: ForecastService,
         private _snackbar: SnackbarService,
         private _utils: UtilsService,
         private _candlestickChart: CandlestickChartService
@@ -52,17 +55,22 @@ export class ForecastComponent implements OnInit, IForecastComponent {
 	 * update the chart.
 	 * @returns Promise<void>
 	 */
-	public async performForecast(): Promise<void> {
+	private async performForecast(): Promise<void> {
 		try {
 			// Set loading state
 			this.loaded = false;
 
-			// Retrieve the raw candlesticks
-			this.rawCandlesticks = await this._candlestick.getForPeriod(
+			// Retrieve the forecast
+			this.forecast = await this._forecast.forecast(
 				this.config.start, 
 				this.config.end, 
-				this.config.intervalMinutes
+				this.config.intervalMinutes,
+				this.config.zoneSize,
+				this.config.reversalCountRequirement,
 			);
+
+			// Build the annotations
+			this.annotations.yaxis = this._candlestickChart.buildKeyZonesAnnotations(this.forecast.keyZonesState.zones);
 		} catch (e) {
 			console.log(e);
 			this._snackbar.error(this._utils.getErrorMessage(e));
@@ -81,12 +89,33 @@ export class ForecastComponent implements OnInit, IForecastComponent {
 
 
     /**
+     * Refreshes the chart with the latest candlesticks.
+     * @returns void
+     */
+	 public refresh(): void {
+        // Set Default Config
+        this.config = this._candlestickChart.getDefaultConfig();
+
+        // Rebuild the candlesticks
+        this.performForecast();
+    }
+
+
+
+
+
+
+
+
+
+
+    /**
      * Displays the config dialog and reloads the chart once the new configuration
      * has been set.
      * @returns void
      */
      public updateConfig(): void {
-        this._candlestickChart.displayChartConfigDialog(this.config).afterClosed().subscribe(
+        this._candlestickChart.displayChartConfigDialog({forecast: true, ...this.config}).afterClosed().subscribe(
             (response) => {
                 if (response) {
                     // Set the new config

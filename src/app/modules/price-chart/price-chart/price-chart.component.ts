@@ -72,6 +72,23 @@ export class PriceChartComponent implements OnInit, IPriceChartComponent {
 
 
 
+
+    /**
+     * Refreshes the chart with the latest candlesticks.
+     * @returns void
+     */
+    public refresh(): void {
+        // Set Default Config
+        this.config = this._candlestickChart.getDefaultConfig();
+
+        // Rebuild the candlesticks
+        this.buildCandlesticks();
+    }
+
+
+
+
+
     /**
      * Displays the config dialog and reloads the chart once the new configuration
      * has been set.

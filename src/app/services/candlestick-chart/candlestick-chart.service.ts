@@ -2,9 +2,10 @@ import { Injectable } from '@angular/core';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import { AppService, ILayout } from '../app';
 import { IApexCandlestick, ICandlestickChartService, ICandlestickChartOptions, ICandlestickChartConfig } from './interfaces';
-import { ICandlestick } from '../../core';
+import { ICandlestick, IKeyZone } from '../../core';
 import * as moment from 'moment';
 import { CandlestickChartConfigComponent } from '../../shared/components/candlestick-chart/candlestick-chart-config/candlestick-chart-config.component';
+import { ApexAnnotations, XAxisAnnotations, YAxisAnnotations } from 'ng-apexcharts';
 
 
 
@@ -12,6 +13,17 @@ import { CandlestickChartConfigComponent } from '../../shared/components/candles
   providedIn: 'root'
 })
 export class CandlestickChartService implements ICandlestickChartService {
+
+
+	// Annotation Colors
+	private readonly colors: string[] = [
+		"#567bda","#9c39e7","#ccad2d","#d80c32","#601574","#235b2b","#4ec1ef","#0c0f5f","#a289bc",
+		"#474747","#1045fa","#be55b6","#f4e80e","#c21e49","#7ffb2e","#6f18f2","#6a0b06","#000000",
+		"#459a89","#e38c7a","#97985e","#16f342",
+	];
+
+
+
 
     constructor(
         private _app: AppService,
@@ -35,7 +47,7 @@ export class CandlestickChartService implements ICandlestickChartService {
      * @param annotations? 
      * @returns ICandlestickChartOptions
      */
-    public build(candlesticks: ICandlestick[], annotations?: any): ICandlestickChartOptions {
+    public build(candlesticks: ICandlestick[], annotations?: ApexAnnotations): ICandlestickChartOptions {
         // Make sure at least 5 candlesticks have been provided
         if (!candlesticks || candlesticks.length < 5) {
             throw new Error('A minimum of 5 candlesticks must be provided in order to render the chart.');
@@ -90,6 +102,7 @@ export class CandlestickChartService implements ICandlestickChartService {
 
 
 
+	/* General Helpers */
 
 
 
@@ -121,57 +134,6 @@ export class CandlestickChartService implements ICandlestickChartService {
 
 
 
-
-
-
-
-    /**
-     * Retrieves the annotations for the current chart.
-     * @returns any
-     */
-     private getAnnotations(data: any): any {
-        return {};
-        /*return {
-            xaxis: [
-                {
-                    x: this.rawCandlesticks[30].ot,
-                    strokeDashArray: 0,
-                    borderColor: '#00695C',
-                    label: {
-                        borderColor: '#00695C',
-                        style: {
-                            color: '#fff',
-                            background: '#00695C',
-                        },
-                        text: 'LONG POSITION',
-                    }
-                }
-            ],
-            yaxis: [
-                {
-                    y: 48845.12,
-                    strokeDashArray: 0,
-                    borderColor: '#00695C',
-                    label: {
-                        borderColor: '#00695C',
-                        style: {
-                            color: '#fff',
-                            background: '#00695C',
-                        },
-                        text: 'LEVEL 1',
-                    }
-                }
-            ]
-        }*/
-    }
-
-
-
-
-
-
-
-
 	/**
 	 * Retrieves the title to be placed in the chart.
 	 * @returns string
@@ -190,6 +152,110 @@ export class CandlestickChartService implements ICandlestickChartService {
 		return title;
 	}
 
+
+
+
+
+
+
+
+
+	/* Annotation Helpers */
+
+
+
+    /**
+     * Retrieves the annotations for the current chart.
+     * @returns any
+     */
+     private getAnnotations(data?: ApexAnnotations): any {
+        return {
+			xaxis: data?.xaxis || [],
+			yaxis: data?.yaxis || []
+		};
+        /*return {
+            xaxis: [
+                {
+                    x: this.rawCandlesticks[30].ot,
+                    strokeDashArray: 0,
+                    borderColor: '#00695C',
+                    label: {
+                        borderColor: '#00695C',
+                        style: {
+                            color: '#fff',
+                            background: '#00695C',
+                        },
+                        text: 'LONG POSITION',
+                    }
+                }
+            ]
+        }*/
+    }
+
+
+
+
+
+
+	/**
+	 * Given a list of key zones, it will build the annotations.
+	 * @param keyZones 
+	 * @returns YAxisAnnotations[]
+	 */
+	public buildKeyZonesAnnotations(keyZones: IKeyZone[]): YAxisAnnotations[] {
+		// Init values
+		let annotations: YAxisAnnotations[] = [];
+
+		// Build the annotations
+		for (let i = 0; i < keyZones.length; i++) {
+			// Add the start
+			annotations.push({
+				y: keyZones[i].start,
+				strokeDashArray: 0,
+				borderColor: this.colors[i],
+				label: {
+					borderColor: this.colors[i],
+					style: { color: '#fff', background: this.colors[i]},
+					text: this.getKeyZoneLabelText(keyZones[i]),
+					position: 'right'
+				}
+			});
+
+			// Add the end
+			annotations.push({
+				y: keyZones[i].end,
+				strokeDashArray: 0,
+				borderColor: this.colors[i],
+				label: {
+					borderColor: this.colors[i],
+					style: { color: '#fff', background: this.colors[i]}
+				}
+			});
+		}
+
+		// Return the annotations
+		return annotations;
+	}
+
+
+
+
+
+
+
+
+	/**
+	 * Returns a label for a given zone.
+	 * @param zone 
+	 * @returns string
+	 */
+	private getKeyZoneLabelText(zone: IKeyZone): string {
+		let label: string = '';
+		label += `${zone.reversalType.toUpperCase()} (${zone.reversalCount}) | `;
+		label += `${moment(zone.id).format('DD-MM-YY HH:mm')} | `;
+		label += `Starts ${zone.start} Ends ${zone.end} `;
+		return label;
+	}
 
 
 
@@ -236,9 +302,11 @@ export class CandlestickChartService implements ICandlestickChartService {
      public getDefaultConfig(): ICandlestickChartConfig {
 		const currentTS: number = Date.now();
 		return {
-			start: moment(currentTS).subtract(7, 'days').valueOf(),
+			start: moment(currentTS).subtract(20, 'days').valueOf(),
 			end: currentTS,
-			intervalMinutes: 30
+			intervalMinutes: 30,
+			zoneSize: 1,
+			reversalCountRequirement: 1
 		}
 	}
 }

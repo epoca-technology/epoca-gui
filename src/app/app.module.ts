@@ -31,6 +31,7 @@ import {
     ApiService,
     CandlestickService,
     ExternalRequestService,
+    ForecastService,
 	UtilsService,
 } from './core';
 
@@ -101,6 +102,7 @@ import { AppComponent } from './app.component';
         ApiService,
         CandlestickService,
         ExternalRequestService,
+		ForecastService,
 		UtilsService,
 
 

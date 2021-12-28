@@ -1,11 +1,11 @@
 <!-- Header -->
 <mat-toolbar class="secondary-header">
     <div fxLayout="row" fxLayoutAlign="center center">
-        <button class="show-on-mobile" mat-icon-button (click)="_nav.dashboard()"><mat-icon>arrow_back</mat-icon></button>
-        <img src="assets/img/coins/white/BTC.png" alt="BTC">
         <span>Forecast</span>
         <span fxFlex></span>
-        <button mat-button *ngIf="loaded" class="left-icon-button"><mat-icon>auto_fix_high</mat-icon>NEUTRAL</button>
+        <button mat-button *ngIf="loaded && forecast" class="left-icon-button show-on-desktop"><mat-icon>auto_fix_high</mat-icon>{{forecastResultText[forecast.result]}}</button>
+        <button mat-button *ngIf="loaded && forecast" class="show-on-mobile">{{forecastResultText[forecast.result]}}</button>
+        <button mat-icon-button *ngIf="loaded" (click)="refresh()"><mat-icon>refresh</mat-icon></button>
         <button mat-icon-button *ngIf="loaded" (click)="updateConfig()"><mat-icon>tune</mat-icon></button>
     </div>
 </mat-toolbar>
@@ -21,8 +21,8 @@
 <div class="fadeIn" *ngIf="loaded">
     <div fxLayout="row" fxLayoutAlign="center center">
         <div fxFlex>
-            <div class="padding" *ngIf="rawCandlesticks">
-                <app-candlestick-chart [data]="{candlesticks: rawCandlesticks}"></app-candlestick-chart>
+            <div class="padding" *ngIf="forecast">
+                <app-candlestick-chart [data]="{candlesticks: forecast.candlesticks!, annotations: annotations}"></app-candlestick-chart>
             </div>
         </div>
     </div>

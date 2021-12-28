@@ -1,11 +1,13 @@
-import { ICandlestick } from "../../core";
+import { ICandlestick, IKeyZone } from "../../core";
 import {
 	ApexAxisChartSeries,
 	ApexChart,
 	ApexYAxis,
 	ApexXAxis,
 	ApexTitleSubtitle,
-    ApexAnnotations
+    ApexAnnotations,
+    YAxisAnnotations,
+    XAxisAnnotations
 } from "ng-apexcharts";
 import { MatDialogRef } from "@angular/material/dialog";
 
@@ -14,7 +16,8 @@ import { MatDialogRef } from "@angular/material/dialog";
 // Service
 export interface ICandlestickChartService {
     // Chart Builder
-    build(candlesticks: ICandlestick[], annotations?: any): ICandlestickChartOptions,
+    build(candlesticks: ICandlestick[], annotations?: ApexAnnotations): ICandlestickChartOptions,
+    buildKeyZonesAnnotations(keyZones: IKeyZone[]): YAxisAnnotations[],
 
     // Misc Helpers
     displayChartConfigDialog(config: ICandlestickChartConfig): MatDialogRef<any>,
@@ -29,8 +32,15 @@ export interface ICandlestickChartService {
 export interface ICandlestickChartConfig {
     start: number,
     end: number,
-    intervalMinutes: number
+    intervalMinutes: number,
+
+    // Forecast Specific
+    forecast?: boolean,
+    zoneSize: number,
+    reversalCountRequirement: number,
 }
+
+
 
 
 
@@ -46,6 +56,8 @@ export type ICandlestickChartOptions = {
 
 
 
+
+// Chart Candlestick
 export interface IApexCandlestick {
     x: number,
     y: [number, number, number, number]

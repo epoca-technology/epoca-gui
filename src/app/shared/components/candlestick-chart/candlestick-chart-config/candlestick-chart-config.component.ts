@@ -13,11 +13,16 @@ import { ICandlestickChartConfigComponent } from './interfaces';
   styleUrls: ['./candlestick-chart-config.component.scss']
 })
 export class CandlestickChartConfigComponent implements OnInit, ICandlestickChartConfigComponent {
+    // Forecast Mode
+    public forecast?: boolean;
+
     // Form
 	public form = new FormGroup ({
         start: new FormControl('', [ Validators.required ]),
         end: new FormControl('', [ Validators.required ]),
         intervalMinutes: new FormControl('', [ Validators.required ]),
+        zoneSize: new FormControl('', [ Validators.required ]),
+        reversalCountRequirement: new FormControl('', [ Validators.required ]),
     });
 
     constructor(
@@ -34,14 +39,19 @@ export class CandlestickChartConfigComponent implements OnInit, ICandlestickChar
 	get start(): AbstractControl { return <AbstractControl>this.form.get('start') }
 	get end(): AbstractControl { return <AbstractControl>this.form.get('end') }
 	get intervalMinutes(): AbstractControl { return <AbstractControl>this.form.get('intervalMinutes') }
+	get zoneSize(): AbstractControl { return <AbstractControl>this.form.get('zoneSize') }
+	get reversalCountRequirement(): AbstractControl { return <AbstractControl>this.form.get('reversalCountRequirement') }
 
 
 
 
     ngOnInit(): void {
+        this.forecast = this.data.forecast == true;
         this.start.setValue(new Date(this.data.start));
         this.end.setValue(new Date(this.data.end));
         this.intervalMinutes.setValue(this.data.intervalMinutes);
+        this.zoneSize.setValue(this.data.zoneSize);
+        this.reversalCountRequirement.setValue(this.data.reversalCountRequirement);
     }
 
 
@@ -67,6 +77,8 @@ export class CandlestickChartConfigComponent implements OnInit, ICandlestickChar
                 start: this.start.value.getTime(),
                 end: this.end.value.getTime(),
                 intervalMinutes: this.intervalMinutes.value,
+                zoneSize: this.zoneSize.value,
+                reversalCountRequirement: this.reversalCountRequirement.value,
             }) 
         }
     }
