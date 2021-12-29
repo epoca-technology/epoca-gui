@@ -5,7 +5,14 @@ import { IForecastService, IForecastResult } from './interfaces';
 @Injectable({
   providedIn: 'root'
 })
-export class ForecastService implements IForecastService{
+export class ForecastService implements IForecastService {
+
+
+	// Forecast Text
+	public readonly forecastResultText: {[tendencyForecast: string]: string} = { '1': 'LONG','0': 'NEUTRAL','-1': 'SHORT' }
+
+
+
 
 	constructor(
 		private _api: ApiService

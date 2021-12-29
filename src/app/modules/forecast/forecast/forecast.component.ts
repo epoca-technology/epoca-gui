@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import {MatDialog} from '@angular/material/dialog';
 import { ApexAnnotations } from 'ng-apexcharts';
 import { ForecastService, IForecastResult, UtilsService } from '../../../core';
-import { CandlestickChartService, ICandlestickChartConfig, NavService, SnackbarService } from '../../../services';
+import { AppService, CandlestickChartService, ICandlestickChartConfig, NavService, SnackbarService } from '../../../services';
+import { ForecastDialogComponent } from './forecast-dialog';
 import { IForecastComponent } from './interfaces';
 
 
@@ -18,7 +20,6 @@ export class ForecastComponent implements OnInit, IForecastComponent {
 	// Forecast Result
 	public forecast?: IForecastResult;
 	public annotations: ApexAnnotations = {yaxis: []};
-    public forecastResultText: {[tendencyForecast: string]: string} = { '1': 'LONG','0': 'NEUTRAL','-1': 'SHORT' }
 
 	// Load State
 	public loaded: boolean = false;
@@ -28,10 +29,12 @@ export class ForecastComponent implements OnInit, IForecastComponent {
 
 	constructor(
         public _nav: NavService,
-        private _forecast: ForecastService,
+        public _forecast: ForecastService,
         private _snackbar: SnackbarService,
         private _utils: UtilsService,
-        private _candlestickChart: CandlestickChartService
+        private _candlestickChart: CandlestickChartService,
+		private dialog: MatDialog,
+		private _app: AppService
 	) { }
 
 	ngOnInit(): void {
@@ -83,6 +86,22 @@ export class ForecastComponent implements OnInit, IForecastComponent {
 
 
 
+
+
+
+	/**
+	 * Displays the forecast details dialog.
+	 * @returns void
+	 */
+	public displayForecastDetails(): void {
+		this.dialog.open(ForecastDialogComponent, {
+			disableClose: true,
+			hasBackdrop: this._app.layout.value != 'mobile', // Mobile optimization
+			panelClass: 'medium-dialog',
+            data: this.forecast
+		});
+	}
+	
 
 
 

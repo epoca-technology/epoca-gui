@@ -251,9 +251,10 @@ export class CandlestickChartService implements ICandlestickChartService {
 	 * @returns string
 	 */
 	private getKeyZoneLabelText(zone: IKeyZone): string {
+		if (this._app.layout.value == 'mobile') return ''; 
 		let label: string = '';
 		label += `${zone.mutated ? 'm': ''}${zone.reversals[zone.reversals.length - 1].type.toUpperCase()} `;
-		label += `${moment(zone.id).format('DD-MM-YY HH:mm')} | `;
+		label += `${moment(zone.id).format('DD-MM HH:mm')} | `;
 		label += `Reversals ${zone.reversals.length} | `;
 		label += `Starts ${zone.start} Ends ${zone.end} `;
 		return label;
@@ -304,7 +305,7 @@ export class CandlestickChartService implements ICandlestickChartService {
      public getDefaultConfig(): ICandlestickChartConfig {
 		const currentTS: number = Date.now();
 		return {
-			start: moment(currentTS).subtract(90, 'days').valueOf(),
+			start: moment(currentTS).subtract(30, 'days').valueOf(),
 			end: currentTS,
 			intervalMinutes: 300,
 			zoneSize: 0.5,
