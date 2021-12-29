@@ -20,15 +20,24 @@ export class ForecastService implements IForecastService{
 	* @param end 
 	* @param intervalMinutes 
 	* @param zoneSize 
+	* @param zoneMergeDistanceLimit 
 	* @param reversalCountRequirement 
 	* @returns Promise<IForecastResult>
 	*/
-	 public forecast(start: number, end: number, intervalMinutes: number, zoneSize: number, reversalCountRequirement: number): Promise<IForecastResult> {
+	 public forecast(
+		 start: number, 
+		 end: number, 
+		 intervalMinutes: number, 
+		 zoneSize: number, 
+		 zoneMergeDistanceLimit: number,
+		 reversalCountRequirement: number
+	): Promise<IForecastResult> {
 		return this._api.request('get','forecast/forecast', {
 			start: start,
 			end: end,
 			intervalMinutes: intervalMinutes,
 			zoneSize: zoneSize,
+			zoneMergeDistanceLimit: zoneMergeDistanceLimit,
 			reversalCountRequirement: reversalCountRequirement,
 		});
 	}

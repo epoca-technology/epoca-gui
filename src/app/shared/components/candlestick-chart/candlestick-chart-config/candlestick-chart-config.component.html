@@ -58,6 +58,18 @@
 
                 <div *ngIf="forecast">
                     <mat-form-field>
+                        <mat-label>Zone Merge Distance Limit</mat-label>
+                        <input type="number"
+                               matInput
+                               formControlName="zoneMergeDistanceLimit"
+                               autocomplete="off"
+                               placeholder="e.g. 1.5">
+                    </mat-form-field>
+                </div>
+
+
+                <div *ngIf="forecast">
+                    <mat-form-field>
                         <mat-label>Reversal Count Requirement</mat-label>
                         <input type="number"
                                matInput
@@ -66,7 +78,6 @@
                                placeholder="e.g. 1">
                     </mat-form-field>
                 </div>
-
 
                 <div class="actions">
                     <button type="submit" mat-raised-button color="primary" [disabled]="form.invalid">UPDATE</button>

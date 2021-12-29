@@ -37,6 +37,7 @@ export interface ICandlestickChartConfig {
     // Forecast Specific
     forecast?: boolean,
     zoneSize: number,
+    zoneMergeDistanceLimit: number,
     reversalCountRequirement: number,
 }
 
