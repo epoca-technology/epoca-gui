@@ -5,10 +5,10 @@ export interface IForecastService {
     forecast(
         start: number, 
         end: number, 
-        intervalMinutes: number, 
-        zoneSize: number, 
-        zoneMergeDistanceLimit: number,
-        reversalCountRequirement: number
+        intervalMinutes?: number, 
+        zoneSize?: number, 
+        zoneMergeDistanceLimit?: number,
+        reversalCountRequirement?: number
    ): Promise<IForecastResult>
 }
 
@@ -49,10 +49,12 @@ export interface IKeyZonesState {
     zonesBelow: IKeyZone[],
 
     // Resistance
+    resistanceDominance: number,
     touchedResistance: boolean,
     brokeResistance: boolean,
 
     // Support
+    supportDominance: number,
     touchedSupport: boolean,
     brokeSupport: boolean,
 }
@@ -101,9 +103,11 @@ export type IReversalType = 'resistance'|'support';
 
 // Forecast Result
 export interface IForecastResult {
+    start: number,                  // First Candlestick's Open Time
+    end: number,                    // Last Candlestick's Close Time
     result: ITendencyForecast,
     keyZonesState: IKeyZonesState,
-    candlesticks?: ICandlestick[] // Only exists if includeCandlesticksInResponse is set to true
+    candlesticks?: ICandlestick[]   // Only exists if includeCandlesticksInResponse is set to true
 }
 
 

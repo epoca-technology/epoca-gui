@@ -9,7 +9,7 @@ export class ForecastService implements IForecastService {
 
 
 	// Forecast Text
-	public readonly forecastResultText: {[tendencyForecast: string]: string} = { '1': 'LONG','0': 'NEUTRAL','-1': 'SHORT' }
+	public readonly forecastResultText: {[tendencyForecast: string]: string} = { '1': 'Long','0': 'Neutral','-1': 'Short' }
 
 
 
@@ -25,19 +25,19 @@ export class ForecastService implements IForecastService {
 	 * Retrieves the forecast for a given period based on provided params.
 	* @param start 
 	* @param end 
-	* @param intervalMinutes 
-	* @param zoneSize 
-	* @param zoneMergeDistanceLimit 
-	* @param reversalCountRequirement 
+	* @param intervalMinutes?
+	* @param zoneSize? 
+	* @param zoneMergeDistanceLimit? 
+	* @param reversalCountRequirement? 
 	* @returns Promise<IForecastResult>
 	*/
 	 public forecast(
 		 start: number, 
 		 end: number, 
-		 intervalMinutes: number, 
-		 zoneSize: number, 
-		 zoneMergeDistanceLimit: number,
-		 reversalCountRequirement: number
+		 intervalMinutes?: number, 
+		 zoneSize?: number, 
+		 zoneMergeDistanceLimit?: number,
+		 reversalCountRequirement?: number
 	): Promise<IForecastResult> {
 		return this._api.request('get','forecast/forecast', {
 			start: start,

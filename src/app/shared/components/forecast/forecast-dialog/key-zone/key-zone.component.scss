@@ -1,0 +1,10 @@
+
+.header {
+    padding:15px 10px 15px 10px;
+}
+.header p { margin:0;}
+//.content { padding:10px;}
+
+.in-zone { border-left:5px solid #000000; }
+.resistance { border-left:5px solid var(--success-color); .mat-badge-content { background:  var(--success-color)} }
+.support { border-left:5px solid var(--error-color); .mat-badge-content { background:  var(--error-color)}}

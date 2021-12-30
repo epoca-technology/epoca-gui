@@ -13,16 +13,14 @@ import { MatDialogRef } from "@angular/material/dialog";
 
 
 
-// Service
-export interface ICandlestickChartService {
-    // Chart Builder
+export interface IChartService {
+    // Candlesticks
     build(candlesticks: ICandlestick[], annotations?: ApexAnnotations): ICandlestickChartOptions,
     buildKeyZonesAnnotations(keyZones: IKeyZone[]): YAxisAnnotations[],
-
-    // Misc Helpers
     displayChartConfigDialog(config: ICandlestickChartConfig): MatDialogRef<any>,
     getDefaultConfig(): ICandlestickChartConfig,
 }
+
 
 
 

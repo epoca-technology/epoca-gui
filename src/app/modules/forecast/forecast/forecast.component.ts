@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {MatDialog} from '@angular/material/dialog';
 import { ApexAnnotations } from 'ng-apexcharts';
 import { ForecastService, IForecastResult, UtilsService } from '../../../core';
-import { AppService, CandlestickChartService, ICandlestickChartConfig, NavService, SnackbarService } from '../../../services';
-import { ForecastDialogComponent } from './forecast-dialog';
+import { ChartService, ICandlestickChartConfig, NavService, SnackbarService } from '../../../services';
 import { IForecastComponent } from './interfaces';
 
 
@@ -15,7 +13,7 @@ import { IForecastComponent } from './interfaces';
 })
 export class ForecastComponent implements OnInit, IForecastComponent {
 	// Config
-	public config: ICandlestickChartConfig = this._candlestickChart.getDefaultConfig();
+	public config: ICandlestickChartConfig = this._chart.getDefaultConfig();
 
 	// Forecast Result
 	public forecast?: IForecastResult;
@@ -32,9 +30,7 @@ export class ForecastComponent implements OnInit, IForecastComponent {
         public _forecast: ForecastService,
         private _snackbar: SnackbarService,
         private _utils: UtilsService,
-        private _candlestickChart: CandlestickChartService,
-		private dialog: MatDialog,
-		private _app: AppService
+        private _chart: ChartService,
 	) { }
 
 	ngOnInit(): void {
@@ -74,7 +70,7 @@ export class ForecastComponent implements OnInit, IForecastComponent {
 			);
 
 			// Build the annotations
-			this.annotations.yaxis = this._candlestickChart.buildKeyZonesAnnotations(this.forecast.keyZonesState.zones);
+			this.annotations.yaxis = this._chart.buildKeyZonesAnnotations(this.forecast.keyZonesState.zones);
 		} catch (e) {
 			console.log(e);
 			this._snackbar.error(this._utils.getErrorMessage(e));
@@ -94,12 +90,13 @@ export class ForecastComponent implements OnInit, IForecastComponent {
 	 * @returns void
 	 */
 	public displayForecastDetails(): void {
-		this.dialog.open(ForecastDialogComponent, {
+		this._nav.displayForecastDialog(<IForecastResult>this.forecast);
+		/*this.dialog.open(ForecastDialogComponent, {
 			disableClose: true,
 			hasBackdrop: this._app.layout.value != 'mobile', // Mobile optimization
 			panelClass: 'medium-dialog',
             data: this.forecast
-		});
+		});*/
 	}
 	
 
@@ -114,7 +111,7 @@ export class ForecastComponent implements OnInit, IForecastComponent {
      */
 	 public refresh(): void {
         // Set Default Config
-        this.config = this._candlestickChart.getDefaultConfig();
+        this.config = this._chart.getDefaultConfig();
 
         // Rebuild the candlesticks
         this.performForecast();
@@ -135,7 +132,7 @@ export class ForecastComponent implements OnInit, IForecastComponent {
      * @returns void
      */
      public updateConfig(): void {
-        this._candlestickChart.displayChartConfigDialog({forecast: true, ...this.config}).afterClosed().subscribe(
+        this._chart.displayChartConfigDialog({forecast: true, ...this.config}).afterClosed().subscribe(
             (response) => {
                 if (response) {
                     // Set the new config

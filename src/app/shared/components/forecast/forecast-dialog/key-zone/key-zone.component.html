@@ -1,0 +1,29 @@
+<div class="mat-elevation-z2">
+    <!-- Header -->
+    <div class="fake-button header" role="button" matRipple
+        (click)="expanded = !expanded"
+        [ngClass]="{'in-zone': inZone, 'resistance': resistance, 'support': support}">
+        <div fxLayout="row" fxLayoutAlign="start center">
+            <p [matBadge]="keyZone.reversals.length" matBadgePosition="after" matBadgeOverlap="false" matBadgeSize="small">
+                {{keyZone.start | currency}} <mat-icon>arrow_right_alt</mat-icon> {{keyZone.end | currency}}
+            </p>
+            <span fxFlex></span>
+            <mat-icon *ngIf="keyZone.mutated">swap_vertical_circle</mat-icon>
+            <mat-icon>{{expanded ? 'arrow_drop_up': 'arrow_drop_down'}}</mat-icon>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div *ngIf="expanded" class="content fadeIn">
+        <table class="bordered highlight">
+            <tbody>
+                <tr *ngFor="let r of keyZone.reversals">
+                    <td>{{r.id | date: 'medium'}}</td>
+                    <td class="align-right" [ngClass]="{'success-color': r.type == 'resistance', 'error-color': r.type == 'support'}">
+                        {{r.type | uppercase}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

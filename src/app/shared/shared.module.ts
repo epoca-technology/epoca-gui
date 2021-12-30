@@ -30,7 +30,6 @@ import {MatDividerModule} from '@angular/material/divider';
 import {MatListModule} from '@angular/material/list';
 import {MatRippleModule} from '@angular/material/core';
 import {MatGridListModule} from '@angular/material/grid-list';
-import {DragDropModule} from '@angular/cdk/drag-drop';
 import {MatBottomSheetModule, MAT_BOTTOM_SHEET_DEFAULT_OPTIONS} from '@angular/material/bottom-sheet';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatNativeDateModule} from '@angular/material/core';
@@ -62,14 +61,14 @@ import { SecondToFormatPipe } from './pipes/second-to-format/second-to-format.pi
 
 // Bottom Sheets
 import { BottomSheetMenuComponent } from './components/bottom-sheet-menu';
-import { CandlestickChartComponent } from './components/candlestick-chart/candlestick-chart.component';
+
 
 
 // Shared Components
 import { RecaptchaDialogComponent } from './components/recaptcha-dialog';
 import { ConfirmationDialogComponent } from './components/confirmation-dialog';
-import { CandlestickChartConfigComponent } from './components/candlestick-chart/candlestick-chart-config/candlestick-chart-config.component';
-
+import { CandlestickChartComponent, CandlestickChartConfigComponent } from './components/charts';
+import { ForecastDialogComponent, KeyZoneComponent, ForecastChartDialogComponent } from './components/forecast';
 
 
 
@@ -93,6 +92,9 @@ import { CandlestickChartConfigComponent } from './components/candlestick-chart/
         ConfirmationDialogComponent,
         CandlestickChartComponent,
         CandlestickChartConfigComponent,
+		ForecastDialogComponent,
+  		KeyZoneComponent,
+		ForecastChartDialogComponent,
 	],
 	imports: [
 		CommonModule,
@@ -132,7 +134,6 @@ import { CandlestickChartConfigComponent } from './components/candlestick-chart/
 		MatListModule,
 		MatRippleModule,
 		MatGridListModule,
-		DragDropModule,
 		MatBottomSheetModule,
         MatDatepickerModule,
         MatNativeDateModule,
@@ -187,7 +188,6 @@ import { CandlestickChartConfigComponent } from './components/candlestick-chart/
 		MatListModule,
 		MatRippleModule,
 		MatGridListModule,
-		DragDropModule,
 		MatBottomSheetModule,
         MatDatepickerModule,
         MatNativeDateModule,
@@ -201,6 +201,7 @@ import { CandlestickChartConfigComponent } from './components/candlestick-chart/
 		
 		// Shared Components
 		CandlestickChartComponent,
+		KeyZoneComponent,
 	]
 })
 export class SharedModule { }

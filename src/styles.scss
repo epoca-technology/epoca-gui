@@ -123,7 +123,7 @@ div {min-width: 0;}
 
 
 /* Text Colors */
-.primary-color { color: var(--success-color) };
+.success-color { color: var(--success-color) };
 .error-color { color: var(--error-color) };
 .light-text { color: var(--light-text-color) };
 
@@ -243,8 +243,8 @@ ul li ul, ol li ul { padding: 0 0 0 15px;}
 
 
 
-
-
+// Tab labels
+.mat-tab-label.mat-tab-label-active {opacity: 1!important;}
 
 
 

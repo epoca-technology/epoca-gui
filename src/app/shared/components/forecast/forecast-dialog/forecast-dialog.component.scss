@@ -1,0 +1,17 @@
+
+
+.content-row { margin: 30px 0 30px 0;}
+.content-row:first-child { margin: 0 0 30px 0;}
+.content-row:last-child { margin: 30px 0 0 0;}
+
+.content-row h5 { margin: 0;font-size:16px!important;}
+.content-row p { margin:0; }
+
+
+.resistances .mat-badge-content {
+    background:  var(--success-color)
+}
+
+.supports .mat-badge-content {
+    background:  var(--error-color)
+}

@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
-import { ICandlestick, UtilsService } from '../../../core';
+import { ICandlestick, UtilsService } from '../../../../core';
 import { ICandlestickChartComponent } from './interfaces';
-import { SnackbarService, ICandlestickChartOptions, CandlestickChartService } from '../../../services';
+import { SnackbarService, ICandlestickChartOptions, ChartService } from '../../../../services';
 import {ApexAnnotations, ChartComponent} from "ng-apexcharts";
 
 
@@ -39,7 +39,7 @@ export class CandlestickChartComponent implements OnInit, ICandlestickChartCompo
     constructor(
         private _snackbar: SnackbarService,
         private _utils: UtilsService,
-        private _candlestickChart: CandlestickChartService
+        private _chart: ChartService
     ) { }
 
     ngOnInit(): void {
@@ -62,7 +62,7 @@ export class CandlestickChartComponent implements OnInit, ICandlestickChartCompo
             }
 
             // Build the chart
-            this.chartOptions = this._candlestickChart.build(this.rawCandlesticks, this.annotations);
+            this.chartOptions = this._chart.build(this.rawCandlesticks, this.annotations);
 
             // Set init state
 			this.initialized = true;

@@ -39,7 +39,7 @@ import {
 // Services
 import {
 	AppService,
-	CandlestickChartService,
+	ChartService,
 	ClipboardService,
 	NavService,
 	SnackbarService,
@@ -92,7 +92,7 @@ import { AppComponent } from './app.component';
 	providers: [
 		// Services 
 		AppService,
-        CandlestickChartService,
+        ChartService,
 		ClipboardService,
 		NavService,
 		SnackbarService,

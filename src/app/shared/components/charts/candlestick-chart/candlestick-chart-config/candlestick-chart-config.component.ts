@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import {AbstractControl, FormControl, FormGroup, Validators} from '@angular/forms';
 import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
-import { CandlestickChartService, ICandlestickChartConfig } from '../../../../services';
+import { ChartService, ICandlestickChartConfig } from '../../../../../services';
 import { ICandlestickChartConfigComponent } from './interfaces';
 
 
@@ -29,7 +29,7 @@ export class CandlestickChartConfigComponent implements OnInit, ICandlestickChar
     constructor(
         private dialogRef: MatDialogRef<CandlestickChartConfigComponent>,
         @Inject(MAT_DIALOG_DATA) private data: ICandlestickChartConfig,
-        private _candlestickChart: CandlestickChartService
+        private _chart: ChartService
     ) { }
 
 
@@ -74,7 +74,7 @@ export class CandlestickChartConfigComponent implements OnInit, ICandlestickChar
 	* */
 	public updateConfig(restoreDefaults?: boolean): void { 
         if (restoreDefaults) {
-            this.dialogRef.close(this._candlestickChart.getDefaultConfig());
+            this.dialogRef.close(this._chart.getDefaultConfig());
         } else {
             this.dialogRef.close({
                 start: this.start.value.getTime(),

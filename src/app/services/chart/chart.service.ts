@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import { AppService, ILayout } from '../app';
-import { IApexCandlestick, ICandlestickChartService, ICandlestickChartOptions, ICandlestickChartConfig } from './interfaces';
+import { IApexCandlestick, IChartService, ICandlestickChartOptions, ICandlestickChartConfig } from './interfaces';
 import { ICandlestick, IKeyZone } from '../../core';
 import * as moment from 'moment';
-import { CandlestickChartConfigComponent } from '../../shared/components/candlestick-chart/candlestick-chart-config/candlestick-chart-config.component';
+import { CandlestickChartConfigComponent } from '../../shared/components/charts';
 import { ApexAnnotations, XAxisAnnotations, YAxisAnnotations } from 'ng-apexcharts';
 
 
@@ -12,7 +12,7 @@ import { ApexAnnotations, XAxisAnnotations, YAxisAnnotations } from 'ng-apexchar
 @Injectable({
   providedIn: 'root'
 })
-export class CandlestickChartService implements ICandlestickChartService {
+export class ChartService implements IChartService {
 
 
 	// Annotation Colors
@@ -24,18 +24,24 @@ export class CandlestickChartService implements ICandlestickChartService {
 	];
 
 
-
-
-    constructor(
-        private _app: AppService,
+  	constructor(
+		private _app: AppService,
         private dialog: MatDialog
-    ) { }
+	  ) { }
 
 
 
 
 
-    /* Chart Builder */
+
+
+
+
+
+
+
+
+    /* Candlesticks */
 
 
 
@@ -48,7 +54,7 @@ export class CandlestickChartService implements ICandlestickChartService {
      * @param annotations? 
      * @returns ICandlestickChartOptions
      */
-    public build(candlesticks: ICandlestick[], annotations?: ApexAnnotations): ICandlestickChartOptions {
+	 public build(candlesticks: ICandlestick[], annotations?: ApexAnnotations): ICandlestickChartOptions {
         // Make sure at least 5 candlesticks have been provided
         if (!candlesticks || candlesticks.length < 5) {
             throw new Error('A minimum of 5 candlesticks must be provided in order to render the chart.');
@@ -253,9 +259,9 @@ export class CandlestickChartService implements ICandlestickChartService {
 	private getKeyZoneLabelText(zone: IKeyZone): string {
 		if (this._app.layout.value == 'mobile') return ''; 
 		let label: string = '';
-		label += `${zone.mutated ? 'm': ''}${zone.reversals[zone.reversals.length - 1].type.toUpperCase()} `;
-		label += `${moment(zone.id).format('DD-MM HH:mm')} | `;
-		label += `Reversals ${zone.reversals.length} | `;
+		//label += `${zone.mutated ? 'm': ''}${zone.reversals[zone.reversals.length - 1].type.toUpperCase()} `;
+		label += `${moment(zone.id).format('DD-MM HH:mm')}  (${zone.reversals.length}) | `;
+		//label += `Reversals ${zone.reversals.length} | `;
 		label += `Starts ${zone.start} Ends ${zone.end} `;
 		return label;
 	}
@@ -307,7 +313,7 @@ export class CandlestickChartService implements ICandlestickChartService {
 		return {
 			start: moment(currentTS).subtract(30, 'days').valueOf(),
 			end: currentTS,
-			intervalMinutes: 300,
+			intervalMinutes: 240,
 			zoneSize: 0.5,
 			zoneMergeDistanceLimit: 1.5,
 			reversalCountRequirement: 1

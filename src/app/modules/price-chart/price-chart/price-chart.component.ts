@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { IPriceChartComponent } from './interfaces';
 import { CandlestickService, ICandlestick, UtilsService } from '../../../core';
-import { CandlestickChartService, ICandlestickChartConfig, NavService, SnackbarService } from '../../../services';
+import { ChartService, ICandlestickChartConfig, NavService, SnackbarService } from '../../../services';
 
 
 
@@ -13,7 +13,7 @@ import { CandlestickChartService, ICandlestickChartConfig, NavService, SnackbarS
 })
 export class PriceChartComponent implements OnInit, IPriceChartComponent {
 	// Config
-	public config: ICandlestickChartConfig = this._candlestickChart.getDefaultConfig();
+	public config: ICandlestickChartConfig = this._chart.getDefaultConfig();
 
 	// Raw Candlesticks
 	public rawCandlesticks?: ICandlestick[];
@@ -28,7 +28,7 @@ export class PriceChartComponent implements OnInit, IPriceChartComponent {
         private _candlestick: CandlestickService,
         private _snackbar: SnackbarService,
         private _utils: UtilsService,
-        private _candlestickChart: CandlestickChartService
+        private _chart: ChartService
     ) { }
 
     ngOnInit(): void {
@@ -79,7 +79,7 @@ export class PriceChartComponent implements OnInit, IPriceChartComponent {
      */
     public refresh(): void {
         // Set Default Config
-        this.config = this._candlestickChart.getDefaultConfig();
+        this.config = this._chart.getDefaultConfig();
 
         // Rebuild the candlesticks
         this.buildCandlesticks();
@@ -95,7 +95,7 @@ export class PriceChartComponent implements OnInit, IPriceChartComponent {
      * @returns void
      */
     public updateConfig(): void {
-        this._candlestickChart.displayChartConfigDialog(this.config).afterClosed().subscribe(
+        this._chart.displayChartConfigDialog(this.config).afterClosed().subscribe(
             (response) => {
                 if (response) {
                     // Set the new config

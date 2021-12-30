@@ -1,5 +1,5 @@
 export * from './app';
-export * from './candlestick-chart';
+export * from './chart';
 export * from './clipboard';
 export * from './nav';
 export * from './snackbar';
