@@ -23,7 +23,6 @@ export class CandlestickChartConfigComponent implements OnInit, ICandlestickChar
         intervalMinutes: new FormControl('', [ Validators.required ]),
         zoneSize: new FormControl('', [ Validators.required ]),
         zoneMergeDistanceLimit: new FormControl('', [ Validators.required ]),
-        reversalCountRequirement: new FormControl('', [ Validators.required ]),
     });
 
     constructor(
@@ -42,7 +41,6 @@ export class CandlestickChartConfigComponent implements OnInit, ICandlestickChar
 	get intervalMinutes(): AbstractControl { return <AbstractControl>this.form.get('intervalMinutes') }
 	get zoneSize(): AbstractControl { return <AbstractControl>this.form.get('zoneSize') }
 	get zoneMergeDistanceLimit(): AbstractControl { return <AbstractControl>this.form.get('zoneMergeDistanceLimit') }
-	get reversalCountRequirement(): AbstractControl { return <AbstractControl>this.form.get('reversalCountRequirement') }
 
 
 
@@ -54,7 +52,6 @@ export class CandlestickChartConfigComponent implements OnInit, ICandlestickChar
         this.intervalMinutes.setValue(this.data.intervalMinutes);
         this.zoneSize.setValue(this.data.zoneSize);
         this.zoneMergeDistanceLimit.setValue(this.data.zoneMergeDistanceLimit);
-        this.reversalCountRequirement.setValue(this.data.reversalCountRequirement);
     }
 
 
@@ -81,8 +78,7 @@ export class CandlestickChartConfigComponent implements OnInit, ICandlestickChar
                 end: this.end.value.getTime(),
                 intervalMinutes: this.intervalMinutes.value,
                 zoneSize: this.zoneSize.value,
-                zoneMergeDistanceLimit: this.zoneMergeDistanceLimit.value,
-                reversalCountRequirement: this.reversalCountRequirement.value,
+                zoneMergeDistanceLimit: this.zoneMergeDistanceLimit.value
             }) 
         }
     }

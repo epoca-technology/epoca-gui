@@ -1,29 +1,43 @@
-<div class="mat-elevation-z2">
+<div class="mat-elevation-z4" [ngClass]="{'in-zone': inZone, 'resistance': resistance, 'support': support}">
     <!-- Header -->
     <div class="fake-button header" role="button" matRipple
-        (click)="expanded = !expanded"
-        [ngClass]="{'in-zone': inZone, 'resistance': resistance, 'support': support}">
+        (click)="expanded = !expanded">
         <div fxLayout="row" fxLayoutAlign="start center">
-            <p [matBadge]="keyZone.reversals.length" matBadgePosition="after" matBadgeOverlap="false" matBadgeSize="small">
+            <p [matBadge]="keyZone.volumeScore" matBadgePosition="after" matBadgeOverlap="false">
                 {{keyZone.start | currency}} <mat-icon>arrow_right_alt</mat-icon> {{keyZone.end | currency}}
             </p>
             <span fxFlex></span>
-            <mat-icon *ngIf="keyZone.mutated">swap_vertical_circle</mat-icon>
             <mat-icon>{{expanded ? 'arrow_drop_up': 'arrow_drop_down'}}</mat-icon>
         </div>
     </div>
 
     <!-- Content -->
     <div *ngIf="expanded" class="content fadeIn">
-        <table class="bordered highlight">
-            <tbody>
-                <tr *ngFor="let r of keyZone.reversals">
-                    <td>{{r.id | date: 'medium'}}</td>
-                    <td class="align-right" [ngClass]="{'success-color': r.type == 'resistance', 'error-color': r.type == 'support'}">
-                        {{r.type | uppercase}}
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <div fxLayout="row" fxLayoutAlign="start center">
+            <h5>Volume</h5>
+            <span fxFlex></span>
+            <p class="m-right">{{keyZone.volume | currency}}</p>
+        </div>
+        <div class="divider"></div>
+        <div  [ngClass]="{'in-zone-badge': inZone, 'resistance-badge': resistance, 'support-badge': support}">
+            <div fxLayout="row" fxLayoutAlign="start center" class="square-badge">
+                <h5>Reversals</h5>&nbsp;
+                <p class="ts-s light-text" *ngIf="keyZone.mutated">(MUTATED)</p>
+                <span fxFlex></span>
+                <span [matBadge]="keyZone.reversals.length" matBadgePosition="before" matBadgeOverlap="false" class="m-right"> </span>
+            </div>
+
+            <table class="bordered">
+                <tbody>
+                    <tr *ngFor="let r of keyZone.reversals">
+                        <td>{{r.id | date: 'medium'}}</td>
+                        <td class="align-right" [ngClass]="{'success-color': r.type == 'resistance', 'error-color': r.type == 'support'}">
+                            {{r.type | uppercase}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
     </div>
 </div>

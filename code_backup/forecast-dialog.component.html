@@ -1,0 +1,126 @@
+<mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <button mat-icon-button class="show-on-mobile" (click)="close()"><mat-icon>arrow_back</mat-icon></button>
+        <span class="truncate">{{_forecast.forecastResultText[forecast.result]}} Forecast</span>
+        <span fxFlex></span>
+        <button mat-icon-button (click)="_nav.displayForecastChartDialog(forecast.start, forecast.end)"><mat-icon>waterfall_chart</mat-icon></button>
+        <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
+    </div>
+</mat-toolbar>
+<div mat-dialog-content>
+    <!-- Mobile Tabs -->
+    <mat-tab-group mat-stretch-tabs backgroundColor="primary">
+        <!-- General -->
+        <mat-tab>
+            <ng-template mat-tab-label>GENERAL</ng-template>
+
+            <div class="padding">
+                <!-- Price -->
+                <div class="content-row" fxLayout="row" fxLayoutAlign="start center">
+                    <h5>Price</h5>
+                    <span fxFlex></span>
+
+                    <!-- Trend -->
+                    <div style="margin-right:7px;">
+                        <mat-icon *ngIf="forecast.keyZonesState.resistanceDominance >= 75" class="error-color">south</mat-icon>
+                        <mat-icon *ngIf="forecast.keyZonesState.resistanceDominance >= 60 && forecast.keyZonesState.resistanceDominance < 75" class="error-color">south_east</mat-icon>
+                        <mat-icon *ngIf="forecast.keyZonesState.resistanceDominance < 60 && forecast.keyZonesState.supportDominance < 60" class="light-text">east</mat-icon>
+                        <mat-icon *ngIf="forecast.keyZonesState.supportDominance >= 60 && forecast.keyZonesState.supportDominance < 75" class="success-color">north_east</mat-icon>
+                        <mat-icon *ngIf="forecast.keyZonesState.supportDominance >= 75" class="success-color">north</mat-icon>
+                    </div>
+
+
+                    <!-- Price & Action -->
+                    <div class="align-right">
+                        <p [ngClass]="actionColorClass">{{forecast.keyZonesState.price | currency}}</p>
+                        <p *ngIf="!forecast.keyZonesState.brokeResistance && !forecast.keyZonesState.touchedResistance && !forecast.keyZonesState.touchedSupport && !forecast.keyZonesState.brokeSupport" class="ts-m light-text">
+                            Actionless
+                        </p>
+                        <p *ngIf="forecast.keyZonesState.brokeResistance" class="ts-m success-color">Broke Resistance</p>
+                        <p *ngIf="forecast.keyZonesState.touchedResistance" class="ts-m success-color">Touched Resistance</p>
+                        <p *ngIf="forecast.keyZonesState.touchedSupport" class="ts-m error-color">Touched Support</p>
+                        <p *ngIf="forecast.keyZonesState.brokeSupport" class="ts-m error-color">Broke Support</p>
+                    </div>
+                </div>
+
+                <!-- Resistances -->
+                <div class="content-row resistances">
+                    <!-- Header -->
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <h5 [matBadge]="forecast.keyZonesState.zonesAbove.length" 
+                            matBadgePosition="after" 
+                            matBadgeOverlap="false">Resistances</h5>
+                        <span fxFlex></span>
+                        <p *ngIf="!resistancesExpanded && forecast.keyZonesState.zonesAbove.length > 2" 
+                            class="ts-m success-color clickable"
+                            (click)="resistancesExpanded = true">View more</p>
+                        <p *ngIf="resistancesExpanded" 
+                            class="ts-m success-color clickable" 
+                            (click)="resistancesExpanded = false">View less</p>
+                    </div>
+
+                    <p *ngIf="!forecast.keyZonesState.zonesAbove.length" class="no-data-found">No resistances were found</p>
+                    <div *ngFor="let zone of forecast.keyZonesState.zonesAbove.slice().reverse(); let i = index" style="margin: 15px 0 15px 0;">
+                        <app-key-zone *ngIf="i > (forecast.keyZonesState.zonesAbove.length - 3) || resistancesExpanded" [keyZone]="zone" [price]="forecast.keyZonesState.price"></app-key-zone>
+                    </div>
+                </div>
+
+                <!-- Active Key Zone -->
+                <div class="content-row" *ngIf="activeZone">
+                    <!-- Header -->
+                    <h5 style="margin-bottom:15px;">Active Key Zone</h5>
+                    <app-key-zone [keyZone]="activeZone" [price]="forecast.keyZonesState.price"></app-key-zone>
+                </div>
+
+                <!-- Supports -->
+                <div class="content-row supports">
+                    <!-- Header -->
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <h5 [matBadge]="forecast.keyZonesState.zonesBelow.length" 
+                            matBadgePosition="after" 
+                            matBadgeOverlap="false">Supports</h5>
+                        <span fxFlex></span>
+                        <p *ngIf="!supportsExpanded && forecast.keyZonesState.zonesBelow.length > 2" 
+                            class="ts-m error-color clickable"
+                            (click)="supportsExpanded = true">View more</p>
+                        <p *ngIf="supportsExpanded" 
+                            class="ts-m error-color clickable" 
+                            (click)="supportsExpanded = false">View less</p>
+                    </div>
+
+                    <p *ngIf="!forecast.keyZonesState.zonesBelow.length" class="no-data-found">No supports were found</p>
+                    <div *ngFor="let zone of forecast.keyZonesState.zonesBelow; let i = index" style="margin: 15px 0 15px 0;">
+                        <app-key-zone *ngIf="i < 2 || supportsExpanded" [keyZone]="zone" [price]="forecast.keyZonesState.price"></app-key-zone>
+                    </div>
+                </div>
+
+
+                <!-- Period -->
+                <div class="content-row" fxLayout="row" fxLayoutAlign="start center">
+                    <h5>Period</h5>
+                    <span fxFlex></span>
+                    <div class="align-right">
+                        <p class="ts-m">{{forecast.start | date: 'medium'}}</p>
+                        <p class="ts-m">{{forecast.end | date: 'medium'}}</p>
+                    </div>
+                </div>
+            </div>
+        </mat-tab>
+
+
+
+        <!-- Key Zones -->
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <div [matBadge]="forecast.keyZonesState.zones.length" matBadgePosition="after" matBadgeOverlap="false">KEY ZONES</div>
+            </ng-template>
+
+            <p *ngIf="!forecast.keyZonesState.zones.length" class="no-data-found">No key zones were found</p>
+            <div class="padding">
+                <div *ngFor="let zone of forecast.keyZonesState.zones.slice().reverse()" style="margin: 15px 0 15px 0;">
+                    <app-key-zone [keyZone]="zone" [price]="forecast.keyZonesState.price"></app-key-zone>
+                </div>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+</div>

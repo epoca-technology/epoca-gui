@@ -2,9 +2,18 @@
 .header {
     padding:15px 10px 15px 10px;
 }
-.header p { margin:0;}
-//.content { padding:10px;}
+p { margin:0;}
+.content { margin:15px 0 15px 0;}
+.content .divider{ margin:20px 0 20px 0;}
+.content h5{ margin:0 0 0 5px;}
 
-.in-zone { border-left:5px solid #000000; }
-.resistance { border-left:5px solid var(--success-color); .mat-badge-content { background:  var(--success-color)} }
-.support { border-left:5px solid var(--error-color); .mat-badge-content { background:  var(--error-color)}}
+.in-zone { border-left:5px solid #757575; }
+.resistance { border-left:5px solid var(--success-color); }
+.support { border-left:5px solid var(--error-color);}
+
+.m-right { margin-right:5px;}
+
+.in-zone-badge { .mat-badge-content { background:  #757575} }
+.resistance-badge { .mat-badge-content { background:  var(--success-color)} }
+.support-badge { .mat-badge-content { background:  var(--error-color)}}
+

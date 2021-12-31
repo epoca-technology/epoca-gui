@@ -40,8 +40,6 @@ export class ForecastDialogComponent implements OnInit, IForecastDialogComponent
 		this.forecast.keyZonesState.zones.forEach((z) => { 
 			if (this.forecast.keyZonesState.price >= z.start && this.forecast.keyZonesState.price <= z.end) this.activeZone = z;
 		});
-
-		
 	}
 
 	

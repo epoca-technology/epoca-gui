@@ -315,8 +315,7 @@ export class ChartService implements IChartService {
 			end: currentTS,
 			intervalMinutes: 240,
 			zoneSize: 0.5,
-			zoneMergeDistanceLimit: 1.5,
-			reversalCountRequirement: 1
+			zoneMergeDistanceLimit: 1.5
 		}
 	}
 }
