@@ -46,11 +46,10 @@
 
 
         <!-- Desktop Heading Toolbar -->
-        <div class="primary-header" *ngIf="layout != 'mobile'">
+        <div class="primary-header heading-bar" *ngIf="layout != 'mobile'">
             <mat-toolbar fxLayout="row" fxLayoutAlign="center center">
                 <!-- Logo -->
-                <img src="assets/img/logo.png" alt="Logo" class="large-logo" (click)="_nav.dashboard()">
-                <img src="assets/img/slogo.png" alt="Logo" class="small-logo" (click)="_nav.dashboard()">
+                <img src="assets/img/logo.png" alt="Logo" (click)="_nav.dashboard()">
 
 
                 <span fxFlex></span>
