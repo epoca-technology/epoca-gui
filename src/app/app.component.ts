@@ -78,6 +78,26 @@ export class AppComponent implements IAppComponent {
 
 
 
+
+	/*
+	* Creates a new instance of Plutus.
+	* @returns void
+	* */
+	public createNewInstance(): void {
+		window.open(window.location.href, "_blank");
+		if (this.sidenavOpened) this.sidenav?.close();
+	}
+
+
+
+
+
+
+
+
+
+	
+
 	/* Custom Icons Registration */
 	
 	

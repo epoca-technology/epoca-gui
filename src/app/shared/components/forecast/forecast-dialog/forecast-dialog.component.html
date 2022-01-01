@@ -16,24 +16,24 @@
 
             <!-- Trend -->
             <div style="margin-right:7px;">
-                <mat-icon *ngIf="forecast.keyZonesState.resistanceDominance >= 75" class="error-color">south</mat-icon>
-                <mat-icon *ngIf="forecast.keyZonesState.resistanceDominance >= 60 && forecast.keyZonesState.resistanceDominance < 75" class="error-color">south_east</mat-icon>
-                <mat-icon *ngIf="forecast.keyZonesState.resistanceDominance < 60 && forecast.keyZonesState.supportDominance < 60" class="light-text">east</mat-icon>
-                <mat-icon *ngIf="forecast.keyZonesState.supportDominance >= 60 && forecast.keyZonesState.supportDominance < 75" class="success-color">north_east</mat-icon>
-                <mat-icon *ngIf="forecast.keyZonesState.supportDominance >= 75" class="success-color">north</mat-icon>
+                <mat-icon *ngIf="forecast.state.resistanceDominance >= 75" class="error-color">south</mat-icon>
+                <mat-icon *ngIf="forecast.state.resistanceDominance >= 60 && forecast.state.resistanceDominance < 75" class="error-color">south_east</mat-icon>
+                <mat-icon *ngIf="forecast.state.resistanceDominance < 60 && forecast.state.supportDominance < 60" class="light-text">east</mat-icon>
+                <mat-icon *ngIf="forecast.state.supportDominance >= 60 && forecast.state.supportDominance < 75" class="success-color">north_east</mat-icon>
+                <mat-icon *ngIf="forecast.state.supportDominance >= 75" class="success-color">north</mat-icon>
             </div>
 
 
             <!-- Price & Action -->
             <div class="align-right">
-                <p [ngClass]="actionColorClass">{{forecast.keyZonesState.price | currency}}</p>
-                <p *ngIf="!forecast.keyZonesState.brokeResistance && !forecast.keyZonesState.touchedResistance && !forecast.keyZonesState.touchedSupport && !forecast.keyZonesState.brokeSupport" class="ts-m light-text">
+                <p [ngClass]="actionColorClass">{{forecast.state.price | currency}}</p>
+                <p *ngIf="!forecast.state.brokeResistance && !forecast.state.touchedResistance && !forecast.state.touchedSupport && !forecast.state.brokeSupport" class="ts-m light-text">
                     Actionless
                 </p>
-                <p *ngIf="forecast.keyZonesState.brokeResistance" class="ts-m success-color">Broke Resistance</p>
-                <p *ngIf="forecast.keyZonesState.touchedResistance" class="ts-m success-color">Touched Resistance</p>
-                <p *ngIf="forecast.keyZonesState.touchedSupport" class="ts-m error-color">Touched Support</p>
-                <p *ngIf="forecast.keyZonesState.brokeSupport" class="ts-m error-color">Broke Support</p>
+                <p *ngIf="forecast.state.brokeResistance" class="ts-m success-color">Broke Resistance</p>
+                <p *ngIf="forecast.state.touchedResistance" class="ts-m success-color">Touched Resistance</p>
+                <p *ngIf="forecast.state.touchedSupport" class="ts-m error-color">Touched Support</p>
+                <p *ngIf="forecast.state.brokeSupport" class="ts-m error-color">Broke Support</p>
             </div>
         </div>
 
@@ -43,7 +43,7 @@
             <div fxLayout="row" fxLayoutAlign="start center" class="square-badge">
                 <h5>Resistance Zones</h5>
                 <span fxFlex></span>
-                <button *ngIf="forecast.keyZonesState.zonesAbove.length > 2" 
+                <button *ngIf="forecast.state.zonesAbove.length > 2" 
                         (click)="resistancesExpanded = !resistancesExpanded" 
                         mat-button
                         [ngClass]="{'success-color': !resistancesExpanded}"
@@ -51,12 +51,12 @@
                     {{resistancesExpanded ? 'View Less': 'View More'}}
                 </button>
                 
-                <span [matBadge]="forecast.keyZonesState.zonesAbove.length" matBadgePosition="before" matBadgeOverlap="false"> </span>
+                <span [matBadge]="forecast.state.zonesAbove.length" matBadgePosition="before" matBadgeOverlap="false"> </span>
             </div>
 
-            <p *ngIf="!forecast.keyZonesState.zonesAbove.length" class="no-data-found">No resistances were found</p>
-            <div *ngFor="let zone of forecast.keyZonesState.zonesAbove.slice().reverse(); let i = index" class="key-zone-element">
-                <app-key-zone *ngIf="i > (forecast.keyZonesState.zonesAbove.length - 3) || resistancesExpanded" [keyZone]="zone" [price]="forecast.keyZonesState.price"></app-key-zone>
+            <p *ngIf="!forecast.state.zonesAbove.length" class="no-data-found">No resistances were found</p>
+            <div *ngFor="let zone of forecast.state.zonesAbove.slice().reverse(); let i = index" class="key-zone-element">
+                <app-key-zone *ngIf="i > (forecast.state.zonesAbove.length - 3) || resistancesExpanded" [keyZone]="zone" [price]="forecast.state.price"></app-key-zone>
             </div>
         </div>
 
@@ -64,7 +64,7 @@
         <div class="content-row" *ngIf="activeZone">
             <h5>Active Zone</h5>
             <div  class="key-zone-element">
-                <app-key-zone [keyZone]="activeZone" [price]="forecast.keyZonesState.price"></app-key-zone>
+                <app-key-zone [keyZone]="activeZone" [price]="forecast.state.price"></app-key-zone>
             </div>
         </div>
 
@@ -74,7 +74,7 @@
             <div fxLayout="row" fxLayoutAlign="start center" class="square-badge">
                 <h5>Support Zones</h5>
                 <span fxFlex></span>
-                <button *ngIf="forecast.keyZonesState.zonesBelow.length > 2" 
+                <button *ngIf="forecast.state.zonesBelow.length > 2" 
                         (click)="supportsExpanded = !supportsExpanded" 
                         mat-button
                         [ngClass]="{'error-color': !supportsExpanded}"
@@ -82,12 +82,12 @@
                     {{supportsExpanded ? 'View Less': 'View More'}}
                 </button>
                 
-                <span [matBadge]="forecast.keyZonesState.zonesBelow.length" matBadgePosition="before" matBadgeOverlap="false"> </span>
+                <span [matBadge]="forecast.state.zonesBelow.length" matBadgePosition="before" matBadgeOverlap="false"> </span>
             </div>
 
-            <p *ngIf="!forecast.keyZonesState.zonesBelow.length" class="no-data-found">No supports were found</p>
-            <div *ngFor="let zone of forecast.keyZonesState.zonesBelow; let i = index" class="key-zone-element">
-                <app-key-zone *ngIf="i < 2 || supportsExpanded" [keyZone]="zone" [price]="forecast.keyZonesState.price"></app-key-zone>
+            <p *ngIf="!forecast.state.zonesBelow.length" class="no-data-found">No supports were found</p>
+            <div *ngFor="let zone of forecast.state.zonesBelow; let i = index" class="key-zone-element">
+                <app-key-zone *ngIf="i < 2 || supportsExpanded" [keyZone]="zone" [price]="forecast.state.price"></app-key-zone>
             </div>
         </div>
 

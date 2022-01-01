@@ -13,6 +13,22 @@
 
         <!-- Menu Content -->
         <mat-list>
+            <!-- New Instance -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="createNewInstance()">
+                    <mat-icon>open_in_new</mat-icon><span>Open New Instance</span>
+                </button>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+
+            <!-- Sign Out -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button error-color">
+                    <mat-icon>logout</mat-icon><span>Sign Out</span>
+                </button>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+
             <!-- Home -->
             <mat-list-item>
                 <button mat-button class="left-icon-button" (click)="_nav.dashboard()" [disabled]="state.module == 'dashboard'">

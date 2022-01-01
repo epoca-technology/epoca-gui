@@ -5,11 +5,11 @@
         <span fxFlex></span>
 
         <!-- Forecast Details-->
-        <button mat-button *ngIf="loaded && forecast" class="left-icon-button show-on-desktop" (click)="displayForecastDetails()">
-            <mat-icon>auto_fix_high</mat-icon>{{_forecast.forecastResultText[forecast.result]}}
+        <button mat-button *ngIf="loaded && forecast" class="show-on-desktop" (click)="displayForecastDetails()">
+            {{_forecast.forecastResultText[forecast.result] | uppercase}}
         </button>
         <button mat-button *ngIf="loaded && forecast" class="show-on-mobile" (click)="displayForecastDetails()">
-            {{_forecast.forecastResultText[forecast.result]}}
+            {{_forecast.forecastResultText[forecast.result] | uppercase}}
         </button>
 
         <!-- Refresh -->
