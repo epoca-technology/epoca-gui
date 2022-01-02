@@ -311,10 +311,10 @@ export class ChartService implements IChartService {
      public getDefaultConfig(): ICandlestickChartConfig {
 		const currentTS: number = Date.now();
 		return {
-			start: moment(currentTS).subtract(30, 'days').valueOf(),
+			start: moment(currentTS).subtract(90, 'days').valueOf(),
 			end: currentTS,
 			intervalMinutes: 240,
-			zoneSize: 0.5,
+			zoneSize: 0.6,
 			zoneMergeDistanceLimit: 1.5
 		}
 	}

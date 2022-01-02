@@ -43,12 +43,12 @@
             <div fxLayout="row" fxLayoutAlign="start center" class="square-badge">
                 <h5>Resistance Zones</h5>
                 <span fxFlex></span>
-                <button *ngIf="forecast.state.zonesAbove.length > 2" 
-                        (click)="resistancesExpanded = !resistancesExpanded" 
-                        mat-button
-                        [ngClass]="{'success-color': !resistancesExpanded}"
-                        style="margin-right:20px;">
-                    {{resistancesExpanded ? 'View Less': 'View More'}}
+                <button *ngIf="forecast.state.zonesAbove.length > 2 && !resistancesExpanded" 
+                        (click)="resistancesExpanded = true" 
+                        mat-raised-button
+                        class="success-color"
+                        style="margin-right:30px;">
+                        View All
                 </button>
                 
                 <span [matBadge]="forecast.state.zonesAbove.length" matBadgePosition="before" matBadgeOverlap="false"> </span>
@@ -74,12 +74,12 @@
             <div fxLayout="row" fxLayoutAlign="start center" class="square-badge">
                 <h5>Support Zones</h5>
                 <span fxFlex></span>
-                <button *ngIf="forecast.state.zonesBelow.length > 2" 
-                        (click)="supportsExpanded = !supportsExpanded" 
-                        mat-button
-                        [ngClass]="{'error-color': !supportsExpanded}"
-                        style="margin-right:20px;">
-                    {{supportsExpanded ? 'View Less': 'View More'}}
+                <button *ngIf="forecast.state.zonesBelow.length > 2 && !supportsExpanded" 
+                        (click)="supportsExpanded = true" 
+                        mat-raised-button
+                        class="error-color"
+                        style="margin-right:30px;">
+                        View All
                 </button>
                 
                 <span [matBadge]="forecast.state.zonesBelow.length" matBadgePosition="before" matBadgeOverlap="false"> </span>
