@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import { AppService, ILayout } from '../app';
-import { IApexCandlestick, IChartService, ICandlestickChartOptions, ICandlestickChartConfig } from './interfaces';
+import { IApexCandlestick, IChartService, ICandlestickChartOptions, ICandlestickChartConfig, IChartRange } from './interfaces';
 import { ICandlestick, IKeyZone } from '../../core';
 import * as moment from 'moment';
 import { CandlestickChartConfigComponent } from '../../shared/components/charts';
 import { ApexAnnotations, XAxisAnnotations, YAxisAnnotations } from 'ng-apexcharts';
+import {BigNumber} from "bignumber.js";
 
 
 
@@ -60,6 +61,9 @@ export class ChartService implements IChartService {
             throw new Error('A minimum of 5 candlesticks must be provided in order to render the chart.');
         }
 
+		// Retrieve the range
+		const range: IChartRange = this.getCandlestickChartRange(candlesticks);
+
         // Return the chart
         return {
             series: [
@@ -82,7 +86,7 @@ export class ChartService implements IChartService {
               },
               animations: {
                   enabled: false
-              }
+              },
             },
             annotations: this.getAnnotations(annotations),
             title: {
@@ -96,9 +100,12 @@ export class ChartService implements IChartService {
               },
             },
             yaxis: {
-              tooltip: {
-                enabled: true
-              },
+				tooltip: {
+					enabled: true
+				},
+				forceNiceScale: true,
+				min: range.min,
+				max: range.max,
             }
         }
     }
@@ -166,6 +173,40 @@ export class ChartService implements IChartService {
 
 
 
+	/**
+	 * Given a list of candlesticks, it will retrieve the highest and the lowest
+	 * values.
+	 * @param candlesticks 
+	 * @returns IChartRange
+	 */
+	private getCandlestickChartRange(candlesticks: ICandlestick[]): IChartRange {
+		// Init lists
+		let high: number[] = [];
+		let low: number[] = [];
+
+		// Iterate over each candlestick populating the lists
+		candlesticks.forEach((c) => {
+			high.push(c.h);
+			low.push(c.l);
+		});
+
+		// Return the range
+		return {
+			max: BigNumber.max.apply(null, high).toNumber(),
+			min: BigNumber.min.apply(null, low).toNumber()
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+
 
 	/* Annotation Helpers */
 
@@ -216,26 +257,30 @@ export class ChartService implements IChartService {
 		// Build the annotations
 		for (let i = 0; i < keyZones.length; i++) {
 			// Add the start
-			annotations.push({
+			/*annotations.push({
 				y: keyZones[i].start,
 				strokeDashArray: 0,
 				borderColor: this.colors[i],
 				label: {
 					borderColor: this.colors[i],
-					style: { color: '#fff', background: this.colors[i]}
-				}
-			});
+					style: { color: '#fff', background: this.colors[i]},
+					offsetX: 30
+				},
+			});*/
 
 			// Add the end
 			annotations.push({
-				y: keyZones[i].end,
+				y: keyZones[i].start,
+				y2: keyZones[i].end,
 				strokeDashArray: 0,
 				borderColor: this.colors[i],
+				fillColor: this.colors[i],
 				label: {
 					borderColor: this.colors[i],
-					style: { color: '#fff', background: this.colors[i]},
+					style: { color: '#fff', background: this.colors[i],},
 					text: this.getKeyZoneLabelText(keyZones[i]),
-					position: 'right'
+					position: 'left',
+					offsetX: 30
 				}
 			});
 		}
@@ -260,11 +305,15 @@ export class ChartService implements IChartService {
 		if (this._app.layout.value == 'mobile') return ''; 
 		let label: string = '';
 		//label += `${zone.mutated ? 'm': ''}${zone.reversals[zone.reversals.length - 1].type.toUpperCase()} `;
-		label += `${moment(zone.id).format('DD-MM HH:mm')}  (${zone.reversals.length}) | `;
+		//label += `${moment(zone.id).format('DD-MM HH:mm')}  (${zone.reversals.length}) | `;
 		//label += `Reversals ${zone.reversals.length} | `;
-		label += `Starts ${zone.start} Ends ${zone.end} `;
+		label += `${new BigNumber(zone.start).toFormat(2)} - ${new BigNumber(zone.end).toFormat(2)} `;
 		return label;
 	}
+
+
+
+
 
 
 
@@ -313,7 +362,7 @@ export class ChartService implements IChartService {
 		return {
 			start: moment(currentTS).subtract(90, 'days').valueOf(),
 			end: currentTS,
-			intervalMinutes: 240,
+			intervalMinutes: 400,
 			zoneSize: 0.6,
 			zoneMergeDistanceLimit: 1.5
 		}

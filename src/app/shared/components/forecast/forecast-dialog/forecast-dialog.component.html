@@ -43,12 +43,12 @@
             <div fxLayout="row" fxLayoutAlign="start center" class="square-badge">
                 <h5>Resistance Zones</h5>
                 <span fxFlex></span>
-                <button *ngIf="forecast.state.zonesAbove.length > 2 && !resistancesExpanded" 
-                        (click)="resistancesExpanded = true" 
+                <button *ngIf="forecast.state.zonesAbove.length > 1 && visibleResistances < forecast.state.zonesAbove.length" 
+                        (click)="visibleResistances = visibleResistances + 2" 
                         mat-raised-button
                         class="success-color"
                         style="margin-right:30px;">
-                        View All
+                        View More
                 </button>
                 
                 <span [matBadge]="forecast.state.zonesAbove.length" matBadgePosition="before" matBadgeOverlap="false"> </span>
@@ -56,7 +56,7 @@
 
             <p *ngIf="!forecast.state.zonesAbove.length" class="no-data-found">No resistances were found</p>
             <div *ngFor="let zone of forecast.state.zonesAbove.slice().reverse(); let i = index" class="key-zone-element">
-                <app-key-zone *ngIf="i > (forecast.state.zonesAbove.length - 3) || resistancesExpanded" [keyZone]="zone" [price]="forecast.state.price"></app-key-zone>
+                <app-key-zone *ngIf="i >= (forecast.state.zonesAbove.length - visibleResistances)" [keyZone]="zone" [price]="forecast.state.price"></app-key-zone>
             </div>
         </div>
 
@@ -74,12 +74,12 @@
             <div fxLayout="row" fxLayoutAlign="start center" class="square-badge">
                 <h5>Support Zones</h5>
                 <span fxFlex></span>
-                <button *ngIf="forecast.state.zonesBelow.length > 2 && !supportsExpanded" 
-                        (click)="supportsExpanded = true" 
+                <button *ngIf="forecast.state.zonesBelow.length > 1 && visibleSupports < forecast.state.zonesBelow.length" 
+                        (click)="visibleSupports = visibleSupports + 2" 
                         mat-raised-button
                         class="error-color"
                         style="margin-right:30px;">
-                        View All
+                        View More
                 </button>
                 
                 <span [matBadge]="forecast.state.zonesBelow.length" matBadgePosition="before" matBadgeOverlap="false"> </span>
@@ -87,7 +87,7 @@
 
             <p *ngIf="!forecast.state.zonesBelow.length" class="no-data-found">No supports were found</p>
             <div *ngFor="let zone of forecast.state.zonesBelow; let i = index" class="key-zone-element">
-                <app-key-zone *ngIf="i < 2 || supportsExpanded" [keyZone]="zone" [price]="forecast.state.price"></app-key-zone>
+                <app-key-zone *ngIf="i < visibleSupports" [keyZone]="zone" [price]="forecast.state.price"></app-key-zone>
             </div>
         </div>
 

@@ -17,8 +17,8 @@ export class ForecastDialogComponent implements OnInit, IForecastDialogComponent
 	public activeZone: IKeyZone|undefined;
 
 	// Resistances & Supports
-	public resistancesExpanded: boolean = false;
-	public supportsExpanded: boolean = false;
+	public visibleResistances: number = 1;
+	public visibleSupports: number = 1;
 
 	constructor(
 		private dialogRef: MatDialogRef<ForecastDialogComponent>,

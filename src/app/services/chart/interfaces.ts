@@ -60,3 +60,10 @@ export interface IApexCandlestick {
     x: number,
     y: [number, number, number, number]
 }
+
+
+
+export interface IChartRange {
+    min: number,
+    max: number
+}
