@@ -64,6 +64,10 @@ export class ChartService implements IChartService {
 		// Retrieve the range
 		const range: IChartRange = this.getCandlestickChartRange(candlesticks);
 
+		// Init the last candlestick
+		//const last: ICandlestick = candlesticks.at(-1);
+		const last: ICandlestick = candlesticks[candlesticks.length - 1];
+
         // Return the chart
         return {
             series: [
@@ -88,7 +92,7 @@ export class ChartService implements IChartService {
                   enabled: false
               },
             },
-            annotations: this.getAnnotations(annotations),
+            annotations: this.getAnnotations(annotations, last),
             title: {
               text: this.getTitle(candlesticks),
               align: "left"
@@ -214,12 +218,21 @@ export class ChartService implements IChartService {
 
     /**
      * Retrieves the annotations for the current chart.
+	 * @param data
+	 * @param last
      * @returns any
      */
-     private getAnnotations(data?: ApexAnnotations): any {
+     private getAnnotations(data?: ApexAnnotations, last?: ICandlestick): ApexAnnotations {
         return {
 			xaxis: data?.xaxis || [],
-			yaxis: data?.yaxis || []
+			yaxis: data?.yaxis || [],
+			points: last ? [
+				{
+				  x: last.ot,
+				  y: last.c,
+				  marker: { size: 1, fillColor: "#000000", strokeColor: "#000000"}
+				}
+			  ]: []
 		};
         /*return {
             xaxis: [
@@ -256,19 +269,6 @@ export class ChartService implements IChartService {
 
 		// Build the annotations
 		for (let i = 0; i < keyZones.length; i++) {
-			// Add the start
-			/*annotations.push({
-				y: keyZones[i].start,
-				strokeDashArray: 0,
-				borderColor: this.colors[i],
-				label: {
-					borderColor: this.colors[i],
-					style: { color: '#fff', background: this.colors[i]},
-					offsetX: 30
-				},
-			});*/
-
-			// Add the end
 			annotations.push({
 				y: keyZones[i].start,
 				y2: keyZones[i].end,
