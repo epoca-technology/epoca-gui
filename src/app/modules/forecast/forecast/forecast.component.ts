@@ -69,7 +69,7 @@ export class ForecastComponent implements OnInit, IForecastComponent {
 			);
 
 			// Build the annotations
-			this.annotations.yaxis = this._chart.buildKeyZonesAnnotations(this.forecast.state.zones);
+			this.annotations.yaxis = this._chart.buildKeyZonesAnnotations(this.forecast.state.zones, this.forecast.state.price);
 		} catch (e) {
 			console.log(e);
 			this._snackbar.error(this._utils.getErrorMessage(e));

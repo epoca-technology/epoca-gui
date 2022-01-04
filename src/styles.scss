@@ -249,7 +249,35 @@ ul li ul, ol li ul { padding: 0 0 0 15px;}
 
 
 // Badges
-.square-badge .mat-badge-content { border-radius: 5px;}
+/*.square-badge .mat-badge-content { 
+	border-radius: 5px;
+	min-width: 20px;
+	max-width: none!important;
+	width: auto;
+	padding:0 5px 0 5px;
+}*/
+.square-badge { 
+	padding:1px;
+	color:#FFFFFF;
+	border-radius: 5px;
+	min-width: 20px;
+	text-align: center;
+	background-color: #000000;
+	font-weight: 600;
+	font-size:12px!important;
+}
+
+.square-badge-success { 
+	@extend .square-badge;
+	background-color: var(--success-color)!important; 
+}
+.square-badge-error { 
+	@extend .square-badge;
+	background-color: var(--error-color)!important; 
+}
+
+
+
 
 
 /* Snackbars */

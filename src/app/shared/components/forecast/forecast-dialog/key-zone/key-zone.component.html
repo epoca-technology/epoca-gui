@@ -13,40 +13,42 @@
 
     <!-- Content -->
     <div *ngIf="expanded" class="content fadeIn">
+        <div fxLayout="row" fxLayoutAlign="start center">
+            <h5>ID</h5>
+            <span fxFlex></span>
+            <p class="ts-m">{{keyZone.id}}</p>
+        </div>
+        <div class="divider"></div>
 
-        <div  [ngClass]="{'in-zone-badge': inZone, 'resistance-badge': resistance, 'support-badge': support}">
-            <div fxLayout="row" fxLayoutAlign="start center" class="square-badge">
+        <div fxLayout="row" fxLayoutAlign="start center">
+            <h5>Volume</h5>
+            <span fxFlex></span>
+            <p style="margin-right:5px;" class="truncate">{{keyZone.volume | currency}}</p>
+            <div class="square-badge">{{keyZone.volumeScore}}</div>
+        </div>
+        <div class="divider"></div>
+
+        <div>
+            <div fxLayout="row" fxLayoutAlign="start center">
                 <h5>Reversals</h5>&nbsp;
                 <p class="ts-s light-text" *ngIf="keyZone.mutated">(MUTATED)</p>
                 <span fxFlex></span>
-                <span [matBadge]="keyZone.reversals.length" matBadgePosition="before" matBadgeOverlap="false"> </span>
+                <div class="square-badge">{{keyZone.reversals.length}}</div>
             </div>
 
             <table class="highlight">
                 <tbody>
                     <tr *ngFor="let r of keyZone.reversals">
-                        <td>{{r.id | date: 'medium'}}</td>
+                        <td>
+                            <p class="show-on-desktop">{{r.id | date: 'medium'}}</p>
+                            <p class="show-on-mobile">{{r.id | date: 'short'}}</p>
+                        </td>
                         <td class="align-right" [ngClass]="{'success-color': r.type == 'resistance', 'error-color': r.type == 'support'}">
                             {{r.type | uppercase}}
                         </td>
                     </tr>
                 </tbody>
             </table>
-        </div>
-        <div class="divider"></div>
-
-        <div fxLayout="row" fxLayoutAlign="start center" class="square-badge">
-            <h5>Volume</h5>
-            <span fxFlex></span>
-            <p style="margin-right:30px;" class="truncate">{{keyZone.volume | currency}}</p>
-            <span [matBadge]="keyZone.volumeScore" matBadgePosition="before" matBadgeOverlap="false"> </span>
-        </div>
-        <div class="divider"></div>
-
-        <div fxLayout="row" fxLayoutAlign="start center">
-            <h5>ID</h5>
-            <span fxFlex></span>
-            <p class="ts-m">{{keyZone.id}}</p>
         </div>
     </div>
 </div>

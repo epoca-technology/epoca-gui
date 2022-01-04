@@ -16,7 +16,7 @@ import { MatDialogRef } from "@angular/material/dialog";
 export interface IChartService {
     // Candlesticks
     build(candlesticks: ICandlestick[], annotations?: ApexAnnotations): ICandlestickChartOptions,
-    buildKeyZonesAnnotations(keyZones: IKeyZone[]): YAxisAnnotations[],
+    buildKeyZonesAnnotations(keyZones: IKeyZone[], currentPrice: number): YAxisAnnotations[],
     displayChartConfigDialog(config: ICandlestickChartConfig): MatDialogRef<any>,
     getDefaultConfig(): ICandlestickChartConfig,
 }

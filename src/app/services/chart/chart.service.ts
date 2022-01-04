@@ -64,10 +64,6 @@ export class ChartService implements IChartService {
 		// Retrieve the range
 		const range: IChartRange = this.getCandlestickChartRange(candlesticks);
 
-		// Init the last candlestick
-		//const last: ICandlestick = candlesticks.at(-1);
-		const last: ICandlestick = candlesticks[candlesticks.length - 1];
-
         // Return the chart
         return {
             series: [
@@ -92,7 +88,7 @@ export class ChartService implements IChartService {
                   enabled: false
               },
             },
-            annotations: this.getAnnotations(annotations, last),
+            annotations: this.getAnnotations(annotations),
             title: {
               text: this.getTitle(candlesticks),
               align: "left"
@@ -219,20 +215,12 @@ export class ChartService implements IChartService {
     /**
      * Retrieves the annotations for the current chart.
 	 * @param data
-	 * @param last
      * @returns any
      */
-     private getAnnotations(data?: ApexAnnotations, last?: ICandlestick): ApexAnnotations {
+     private getAnnotations(data?: ApexAnnotations): ApexAnnotations {
         return {
 			xaxis: data?.xaxis || [],
-			yaxis: data?.yaxis || [],
-			points: last ? [
-				{
-				  x: last.ot,
-				  y: last.c,
-				  marker: { size: 1, fillColor: "#000000", strokeColor: "#000000"}
-				}
-			  ]: []
+			yaxis: data?.yaxis || []
 		};
         /*return {
             xaxis: [
@@ -261,9 +249,10 @@ export class ChartService implements IChartService {
 	/**
 	 * Given a list of key zones, it will build the annotations.
 	 * @param keyZones 
+	 * @param currentPrice 
 	 * @returns YAxisAnnotations[]
 	 */
-	public buildKeyZonesAnnotations(keyZones: IKeyZone[]): YAxisAnnotations[] {
+	public buildKeyZonesAnnotations(keyZones: IKeyZone[], currentPrice: number): YAxisAnnotations[] {
 		// Init values
 		let annotations: YAxisAnnotations[] = [];
 
@@ -284,6 +273,22 @@ export class ChartService implements IChartService {
 				}
 			});
 		}
+
+		// Highlight the current price
+		const c: string = '#304FFE';
+		annotations.push({
+			y: currentPrice,
+			strokeDashArray: 0,
+			borderColor: c,
+			fillColor: c,
+			label: {
+				borderColor: c,
+				style: { color: '#fff', background: c},
+				text: `$${new BigNumber(currentPrice).toFormat(2)}`,
+				position: 'left',
+				offsetX: 100
+			}
+		});
 
 		// Return the annotations
 		return annotations;
@@ -362,7 +367,7 @@ export class ChartService implements IChartService {
 		return {
 			start: moment(currentTS).subtract(90, 'days').valueOf(),
 			end: currentTS,
-			intervalMinutes: 400,
+			intervalMinutes: 300,
 			zoneSize: 0.6,
 			zoneMergeDistanceLimit: 1.5
 		}

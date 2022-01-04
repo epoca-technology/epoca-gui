@@ -30,9 +30,6 @@ export interface IKeyZonesConfig {
 
 
 
-
-
-
 /* Key Zones State */
 export interface IKeyZonesState {
     // Close price of the last candlestick
@@ -56,6 +53,9 @@ export interface IKeyZonesState {
 
 
 
+
+
+
 /* Key Zones */
 export interface IKeyZonePriceRange {
     start: number,                  // Start Price (Highest High or Lowest Low)
@@ -67,8 +67,14 @@ export interface IKeyZone extends IKeyZonePriceRange {
     reversals: IReversal[],         // List of reversals that took place at the zone, ordered by date ascending
     volume: number,                 // The accumulated volume that has been processed within the zone
     volumeScore: number,            // Score from 0 to 10 based on the volume traded
-    mutated?: boolean               // Changed it's type from resistance to support or viceversa
+    mutated: boolean,               // Changed it's type from resistance to support or viceversa
 } 
+
+
+
+
+
+
 
 
 /**
@@ -77,12 +83,14 @@ export interface IKeyZone extends IKeyZonePriceRange {
  * Support: Price touches a support zone and reverses.
  */
 export interface IReversal {
-    id: number,
+    id: number,                     // Candlestick Open Timestamp
     type: IReversalType
 }
 
-
 export type IReversalType = 'resistance'|'support';
+
+
+
 
 
 
