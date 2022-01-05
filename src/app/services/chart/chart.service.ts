@@ -269,7 +269,7 @@ export class ChartService implements IChartService {
 					style: { color: '#fff', background: this.colors[i],},
 					text: this.getKeyZoneLabelText(keyZones[i]),
 					position: 'left',
-					offsetX: 30
+					offsetX: 50
 				}
 			});
 		}
@@ -286,7 +286,7 @@ export class ChartService implements IChartService {
 				style: { color: '#fff', background: c},
 				text: `$${new BigNumber(currentPrice).toFormat(2)}`,
 				position: 'left',
-				offsetX: 100
+				offsetX: 120
 			}
 		});
 
@@ -312,7 +312,7 @@ export class ChartService implements IChartService {
 		//label += `${zone.mutated ? 'm': ''}${zone.reversals[zone.reversals.length - 1].type.toUpperCase()} `;
 		//label += `${moment(zone.id).format('DD-MM HH:mm')}  (${zone.reversals.length}) | `;
 		//label += `Reversals ${zone.reversals.length} | `;
-		label += `${new BigNumber(zone.start).toFormat(2)} - ${new BigNumber(zone.end).toFormat(2)} `;
+		label += `$${new BigNumber(zone.start).toFormat(2)} - $${new BigNumber(zone.end).toFormat(2)} `;
 		return label;
 	}
 

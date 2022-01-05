@@ -13,9 +13,6 @@ export class ForecastDialogComponent implements OnInit, IForecastDialogComponent
 	// Color based on the action that took place
 	public actionColorClass!: string;
 
-	// Active Zone
-	public activeZone: IKeyZone|undefined;
-
 	// Resistances & Supports
 	public visibleResistances: number = 2;
 	public visibleSupports: number = 2;
@@ -33,13 +30,8 @@ export class ForecastDialogComponent implements OnInit, IForecastDialogComponent
 
 	ngOnInit(): void {
 		// Populate Action Color Class
-		if (this.forecast.state.touchedResistance || this.forecast.state.brokeResistance) { this.actionColorClass = 'success-color' }
-		else if (this.forecast.state.touchedSupport || this.forecast.state.brokeSupport) { this.actionColorClass = 'error-color' }
-
-		// Check if the price is currently in a zone
-		this.forecast.state.zones.forEach((z) => { 
-			if (this.forecast.state.price >= z.start && this.forecast.state.price <= z.end) this.activeZone = z;
-		});
+		if (this.forecast.state.touchedResistance) { this.actionColorClass = 'success-color' }
+		else if (this.forecast.state.touchedSupport) { this.actionColorClass = 'error-color' }
 	}
 
 	

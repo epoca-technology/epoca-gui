@@ -3,7 +3,7 @@
     <div class="fake-button header" role="button" matRipple
         (click)="expanded = !expanded">
         <div fxLayout="row" fxLayoutAlign="start center">
-            <p [matBadge]="keyZone.volumeScore" matBadgePosition="after" matBadgeOverlap="false">
+            <p [matBadge]="keyZone.reversals.length" matBadgePosition="after" matBadgeOverlap="false">
                 {{keyZone.start | currency}} <mat-icon>arrow_right_alt</mat-icon> {{keyZone.end | currency}}
             </p>
             <span fxFlex></span>
@@ -13,7 +13,7 @@
 
     <!-- Content -->
     <div *ngIf="expanded" class="content fadeIn">
-        <div fxLayout="row" fxLayoutAlign="start center">
+        <!--<div fxLayout="row" fxLayoutAlign="start center">
             <h5>ID</h5>
             <span fxFlex></span>
             <p class="ts-m">{{keyZone.id}}</p>
@@ -26,7 +26,7 @@
             <p style="margin-right:5px;" class="truncate">{{keyZone.volume | currency}}</p>
             <div class="square-badge">{{keyZone.volumeScore}}</div>
         </div>
-        <div class="divider"></div>
+        <div class="divider"></div>-->
 
         <div>
             <div fxLayout="row" fxLayoutAlign="start center">
@@ -36,7 +36,7 @@
                 <div class="square-badge">{{keyZone.reversals.length}}</div>
             </div>
 
-            <table class="highlight">
+            <table class="bordered">
                 <tbody>
                     <tr *ngFor="let r of keyZone.reversals">
                         <td>

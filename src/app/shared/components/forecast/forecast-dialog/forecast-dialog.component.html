@@ -27,13 +27,11 @@
             <!-- Price & Action -->
             <div class="align-right">
                 <p [ngClass]="actionColorClass">{{forecast.state.price | currency}}</p>
-                <p *ngIf="!forecast.state.brokeResistance && !forecast.state.touchedResistance && !forecast.state.touchedSupport && !forecast.state.brokeSupport" class="ts-m light-text">
+                <p *ngIf="!forecast.state.touchedResistance && !forecast.state.touchedSupport" class="ts-m light-text">
                     Actionless
                 </p>
-                <p *ngIf="forecast.state.brokeResistance" class="ts-m success-color">Broke Resistance</p>
                 <p *ngIf="forecast.state.touchedResistance" class="ts-m success-color">Touched Resistance</p>
                 <p *ngIf="forecast.state.touchedSupport" class="ts-m error-color">Touched Support</p>
-                <p *ngIf="forecast.state.brokeSupport" class="ts-m error-color">Broke Support</p>
             </div>
         </div>
 
@@ -56,10 +54,10 @@
         </div>
 
         <!-- Active Key Zone -->
-        <div class="content-row" *ngIf="activeZone">
+        <div class="content-row" *ngIf="forecast.state.activeZone">
             <h5>Active Zone</h5>
             <div  class="key-zone-element">
-                <app-key-zone [keyZone]="activeZone" [price]="forecast.state.price"></app-key-zone>
+                <app-key-zone [keyZone]="forecast.state.activeZone" [price]="forecast.state.price"></app-key-zone>
             </div>
         </div>
 
