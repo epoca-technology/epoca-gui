@@ -28,6 +28,7 @@ export class ForecastService implements IForecastService {
 	* @param intervalMinutes?
 	* @param zoneSize? 
 	* @param zoneMergeDistanceLimit? 
+	* @param priceActionCandlesticksRequirement? 
 	* @returns Promise<IForecastResult>
 	*/
 	 public forecast(
@@ -36,6 +37,7 @@ export class ForecastService implements IForecastService {
 		 intervalMinutes?: number, 
 		 zoneSize?: number, 
 		 zoneMergeDistanceLimit?: number,
+		 priceActionCandlesticksRequirement?: number,
 	): Promise<IForecastResult> {
 		return this._api.request('get','forecast/forecast', {
 			start: start,
@@ -43,6 +45,7 @@ export class ForecastService implements IForecastService {
 			intervalMinutes: intervalMinutes,
 			zoneSize: zoneSize,
 			zoneMergeDistanceLimit: zoneMergeDistanceLimit,
+			priceActionCandlesticksRequirement: priceActionCandlesticksRequirement,
 		});
 	}
 

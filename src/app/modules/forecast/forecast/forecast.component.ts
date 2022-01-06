@@ -66,6 +66,7 @@ export class ForecastComponent implements OnInit, IForecastComponent {
 				this.config.intervalMinutes,
 				this.config.zoneSize,
 				this.config.zoneMergeDistanceLimit,
+				this.config.priceActionCandlesticksRequirement,
 			);
 
 			// Build the annotations

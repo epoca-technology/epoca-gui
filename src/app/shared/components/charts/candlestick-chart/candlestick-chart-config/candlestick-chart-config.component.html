@@ -1,7 +1,7 @@
 <mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
     <div fxLayout="row" fxLayoutAlign="center center">
         <button mat-icon-button class="show-on-mobile" (click)="cancel()"><mat-icon>arrow_back</mat-icon></button>
-        <span class="truncate">Chart Configuration</span>
+        <span class="truncate">Configuration</span>
         <span fxFlex></span>
         <button mat-icon-button class="show-on-desktop" (click)="cancel()"><mat-icon>close</mat-icon></button>
     </div>
@@ -64,6 +64,18 @@
                                formControlName="zoneMergeDistanceLimit"
                                autocomplete="off"
                                placeholder="e.g. 1.5">
+                    </mat-form-field>
+                </div>
+
+
+                <div *ngIf="forecast">
+                    <mat-form-field>
+                        <mat-label>Price Action Candlesticks Requirement</mat-label>
+                        <input type="number"
+                               matInput
+                               formControlName="priceActionCandlesticksRequirement"
+                               autocomplete="off"
+                               placeholder="e.g. 15">
                     </mat-form-field>
                 </div>
 

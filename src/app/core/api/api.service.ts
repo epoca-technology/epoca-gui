@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { ExternalRequestService, IHeadersConfig, IHTTPMethod } from '../external-request';
-import { IApiService } from './interfaces';
+import { IApiService, IAPIResponse } from './interfaces';
 import { lastValueFrom } from 'rxjs';
 
 @Injectable({
@@ -32,10 +32,10 @@ export class ApiService implements IApiService {
 	
 	/*
 	* Sends a request to the API following requirements
+	* @param method - The method to be used, defaults to 'post'
 	* @param path - path of the url / if http params needed must be specified here
-	* @param method? - The method to be used, defaults to 'post'
 	* @param body? - params to send
-	* @return Promise<IBackEndResponse>
+	* @return Promise<any>
 	* */
 	public async request(
         method: IHTTPMethod,
@@ -57,6 +57,13 @@ export class ApiService implements IApiService {
 		};
 		
 		// Send Request to Server
-		return lastValueFrom(this._request.request(method, url, finalBody, httpOptions));
+		return lastValueFrom(this._request.request(method, url, finalBody, httpOptions))
+				.then((apiResponse: IAPIResponse) => {
+					if (apiResponse && apiResponse.success) {
+						return apiResponse.data;
+					} else {
+						throw new Error(apiResponse && apiResponse.error ? apiResponse.error: 'The request received an incomplete API Response object.');
+					}
+				});
 	}
 }

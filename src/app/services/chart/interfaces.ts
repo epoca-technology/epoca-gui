@@ -18,7 +18,7 @@ export interface IChartService {
     build(candlesticks: ICandlestick[], annotations?: ApexAnnotations): ICandlestickChartOptions,
     buildKeyZonesAnnotations(keyZones: IKeyZone[], currentPrice: number): YAxisAnnotations[],
     displayChartConfigDialog(config: ICandlestickChartConfig): MatDialogRef<any>,
-    getDefaultConfig(): ICandlestickChartConfig,
+    getDefaultConfig(config?: ICandlestickChartPartialConfig): ICandlestickChartConfig,
 }
 
 
@@ -36,8 +36,16 @@ export interface ICandlestickChartConfig {
     forecast?: boolean,
     zoneSize: number,
     zoneMergeDistanceLimit: number,
+    priceActionCandlesticksRequirement: number,
 }
-
+export interface ICandlestickChartPartialConfig {
+    start?: number,
+    end?: number,
+    intervalMinutes?: number,
+    zoneSize?: number,
+    zoneMergeDistanceLimit?: number,
+    priceActionCandlesticksRequirement?: number,
+}
 
 
 

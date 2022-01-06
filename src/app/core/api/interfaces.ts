@@ -18,3 +18,14 @@ export interface IApiURL {
     local: string,
     external: string
 }
+
+
+
+
+
+/* API Response */
+export interface IAPIResponse {
+    success: boolean,
+    data?: any,
+    error?: string 
+}

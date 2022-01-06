@@ -8,6 +8,7 @@ export interface IForecastService {
         intervalMinutes?: number, 
         zoneSize?: number, 
         zoneMergeDistanceLimit?: number,
+        priceActionCandlesticksRequirement?: number,
    ): Promise<IForecastResult>
 }
 
@@ -17,6 +18,7 @@ export interface IForecastService {
 /* Config */
 export interface IForecastConfig {
     intervalMinutes?: number,
+    priceActionCandlesticksRequirement?: number,
     includeCandlesticksInResponse?: boolean,
 }
 
@@ -72,8 +74,6 @@ export interface IKeyZone extends IKeyZonePriceRange {
     id: number,                     // Candlestick Open Timestamp
     reversals: IReversal[],         // List of reversals that took place at the zone, ordered by date ascending
     mutated: boolean,               // Changed it's type from resistance to support or viceversa
-    //volume: number,               // The accumulated volume that has been processed within the zone
-    //volumeScore: number,          // Score from 0 to 10 based on the volume traded
 } 
 
 

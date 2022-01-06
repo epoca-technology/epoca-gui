@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { IPriceChartComponent } from './interfaces';
 import { CandlestickService, ICandlestick, UtilsService } from '../../../core';
-import { ChartService, ICandlestickChartConfig, NavService, SnackbarService } from '../../../services';
-
+import { ChartService, ICandlestickChartConfig, ICandlestickChartPartialConfig, NavService, SnackbarService } from '../../../services';
+import * as moment from 'moment';
 
 
 
@@ -13,7 +13,8 @@ import { ChartService, ICandlestickChartConfig, NavService, SnackbarService } fr
 })
 export class PriceChartComponent implements OnInit, IPriceChartComponent {
 	// Config
-	public config: ICandlestickChartConfig = this._chart.getDefaultConfig();
+    private readonly defaultConfig: ICandlestickChartPartialConfig = {start: moment().subtract(90, 'days').valueOf()};
+	public config: ICandlestickChartConfig = this._chart.getDefaultConfig(this.defaultConfig);
 
 	// Raw Candlesticks
 	public rawCandlesticks?: ICandlestick[];
@@ -79,7 +80,7 @@ export class PriceChartComponent implements OnInit, IPriceChartComponent {
      */
     public refresh(): void {
         // Set Default Config
-        this.config = this._chart.getDefaultConfig();
+        this.config = this._chart.getDefaultConfig(this.defaultConfig);
 
         // Rebuild the candlesticks
         this.buildCandlesticks();

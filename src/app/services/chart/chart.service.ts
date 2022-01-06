@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import { AppService, ILayout } from '../app';
-import { IApexCandlestick, IChartService, ICandlestickChartOptions, ICandlestickChartConfig, IChartRange } from './interfaces';
+import { IApexCandlestick, IChartService, ICandlestickChartOptions, ICandlestickChartConfig, IChartRange, ICandlestickChartPartialConfig } from './interfaces';
 import { ICandlestick, IKeyZone } from '../../core';
 import * as moment from 'moment';
 import { CandlestickChartConfigComponent } from '../../shared/components/charts';
@@ -22,7 +22,12 @@ export class ChartService implements IChartService {
 		"#004D40","#006064","#01579B","#0D47A1","#1A237E","#311B92","#4A148C","#880E4F","#000000",
 		"#37474F","#424242","#4E342E","#D84315","#EF6C00","#9E9D24","#558B2F","#263238","#00695C",
 		"#00838F","#0277BD","#1565C0","#283593","#4527A0","#6A1B9A","#AD1457","#C62828","#455A64",
+		"#072227","#781C68","#876445","#676FA3","#146356","#EA5C2B","#370665","#FF1700","#406882",
+		"#191919","#3E8E7E","#C84B31","#F2789F","#9145B6","#516BEB","#344CB7","#7267CB","#0B4619",
 	];
+
+	// Price Level Color
+	private readonly priceLevelColor: string = '#304FFE';
 
 
   	constructor(
@@ -88,7 +93,7 @@ export class ChartService implements IChartService {
                   enabled: false
               },
             },
-            annotations: this.getAnnotations(annotations),
+            annotations: this.getAnnotations(annotations, candlesticks[candlesticks.length -1].c),
             title: {
               text: this.getTitle(candlesticks),
               align: "left"
@@ -214,14 +219,37 @@ export class ChartService implements IChartService {
 
     /**
      * Retrieves the annotations for the current chart.
-	 * @param data
+	 * @param data?
+	 * @param currentPrice?
      * @returns any
      */
-     private getAnnotations(data?: ApexAnnotations): ApexAnnotations {
-        return {
+     private getAnnotations(data?: ApexAnnotations, currentPrice?: number): ApexAnnotations {
+		 // Init the annotations
+		 let annotations: ApexAnnotations = {
 			xaxis: data?.xaxis || [],
 			yaxis: data?.yaxis || []
-		};
+		 }
+
+		 // Check if the current price was provided
+		 if (currentPrice) {
+			annotations.yaxis?.push({
+				y: currentPrice,
+				strokeDashArray: 0,
+				borderColor: this.priceLevelColor,
+				fillColor: this.priceLevelColor,
+				label: {
+					borderColor: this.priceLevelColor,
+					style: { color: '#fff', background: this.priceLevelColor},
+					text: `$${new BigNumber(currentPrice).toFormat(2)}`,
+					position: 'left',
+					offsetX: 120
+				}
+			});
+		 }
+
+		 // Return the final annotations
+		 return annotations;
+		 
         /*return {
             xaxis: [
                 {
@@ -273,22 +301,6 @@ export class ChartService implements IChartService {
 				}
 			});
 		}
-
-		// Highlight the current price
-		const c: string = '#304FFE';
-		annotations.push({
-			y: currentPrice,
-			strokeDashArray: 0,
-			borderColor: c,
-			fillColor: c,
-			label: {
-				borderColor: c,
-				style: { color: '#fff', background: c},
-				text: `$${new BigNumber(currentPrice).toFormat(2)}`,
-				position: 'left',
-				offsetX: 120
-			}
-		});
 
 		// Return the annotations
 		return annotations;
@@ -362,14 +374,15 @@ export class ChartService implements IChartService {
 	 * Retrieves the default configuration values.
 	 * @returns ICandlestickChartConfig
 	 */
-     public getDefaultConfig(): ICandlestickChartConfig {
+     public getDefaultConfig(config?: ICandlestickChartPartialConfig): ICandlestickChartConfig {
 		const currentTS: number = Date.now();
 		return {
-			start: moment(currentTS).subtract(90, 'days').valueOf(),
-			end: currentTS,
-			intervalMinutes: 300,
-			zoneSize: 0.6,
-			zoneMergeDistanceLimit: 1.5
+			start: config?.start || moment(currentTS).subtract(365, 'days').valueOf(),
+			end: config?.end || currentTS,
+			intervalMinutes: config?.intervalMinutes || 1440,
+			zoneSize: config?.zoneSize || 0.5,
+			zoneMergeDistanceLimit: config?.zoneMergeDistanceLimit || 1.5,
+			priceActionCandlesticksRequirement: config?.priceActionCandlesticksRequirement || 15,
 		}
 	}
 }
