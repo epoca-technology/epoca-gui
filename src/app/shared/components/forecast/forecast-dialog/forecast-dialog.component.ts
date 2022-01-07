@@ -17,6 +17,10 @@ export class ForecastDialogComponent implements OnInit, IForecastDialogComponent
 	public visibleResistances: number = 2;
 	public visibleSupports: number = 2;
 
+	// Zones From Price
+	public below: IKeyZone[] = [];
+	public above: IKeyZone[] = [];
+
 	constructor(
 		private dialogRef: MatDialogRef<ForecastDialogComponent>,
 		@Inject(MAT_DIALOG_DATA) public forecast: IForecastResult,
@@ -32,6 +36,10 @@ export class ForecastDialogComponent implements OnInit, IForecastDialogComponent
 		// Populate Action Color Class
 		if (this.forecast.state.touchedResistance) { this.actionColorClass = 'success-color' }
 		else if (this.forecast.state.touchedSupport) { this.actionColorClass = 'error-color' }
+
+		// Populate zones from price
+		this.below = this._forecast.getZonesFromPrice(this.forecast.state.price, this.forecast.state.zones, false);
+		this.above = this._forecast.getZonesFromPrice(this.forecast.state.price, this.forecast.state.zones, true);
 	}
 
 	

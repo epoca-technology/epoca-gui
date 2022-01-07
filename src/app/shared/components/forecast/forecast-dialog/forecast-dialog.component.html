@@ -14,15 +14,6 @@
             <h5>Price</h5>
             <span fxFlex></span>
 
-            <!-- Trend -->
-            <div style="margin-right:7px;">
-                <mat-icon *ngIf="forecast.state.resistanceDominance >= 75" class="error-color">south</mat-icon>
-                <mat-icon *ngIf="forecast.state.resistanceDominance >= 60 && forecast.state.resistanceDominance < 75" class="error-color">south_east</mat-icon>
-                <mat-icon *ngIf="forecast.state.resistanceDominance < 60 && forecast.state.supportDominance < 60" class="light-text">east</mat-icon>
-                <mat-icon *ngIf="forecast.state.supportDominance >= 60 && forecast.state.supportDominance < 75" class="success-color">north_east</mat-icon>
-                <mat-icon *ngIf="forecast.state.supportDominance >= 75" class="success-color">north</mat-icon>
-            </div>
-
 
             <!-- Price & Action -->
             <div class="align-right">
@@ -41,15 +32,15 @@
             <div fxLayout="row" fxLayoutAlign="start center">
                 <h5>Resistance Zones</h5>
                 <span fxFlex></span>
-                <div class="square-badge-success">{{forecast.state.zonesAbove.length}}</div>
+                <div class="square-badge-success">{{above.length}}</div>
             </div>
 
-            <p *ngIf="!forecast.state.zonesAbove.length" class="no-data-found">No resistances were found</p>
-            <div *ngIf="forecast.state.zonesAbove.length > 2 && visibleResistances < forecast.state.zonesAbove.length">
+            <p *ngIf="!above.length" class="no-data-found">No resistances were found</p>
+            <div *ngIf="above.length > 2 && visibleResistances < above.length">
                 <button mat-button class="success-color full-width" (click)="visibleResistances = visibleResistances + 2">View More</button>
             </div>
-            <div *ngFor="let zone of forecast.state.zonesAbove.slice().reverse(); let i = index" class="key-zone-element">
-                <app-key-zone *ngIf="i >= (forecast.state.zonesAbove.length - visibleResistances)" [keyZone]="zone" [price]="forecast.state.price"></app-key-zone>
+            <div *ngFor="let zone of above.slice().reverse(); let i = index" class="key-zone-element">
+                <app-key-zone *ngIf="i >= (above.length - visibleResistances)" [keyZone]="zone" [price]="forecast.state.price"></app-key-zone>
             </div>
         </div>
 
@@ -67,14 +58,14 @@
             <div fxLayout="row" fxLayoutAlign="start center">
                 <h5>Support Zones</h5>
                 <span fxFlex></span>
-                <div class="square-badge-error">{{forecast.state.zonesBelow.length}}</div>
+                <div class="square-badge-error">{{below.length}}</div>
             </div>
 
-            <p *ngIf="!forecast.state.zonesBelow.length" class="no-data-found">No supports were found</p>
-            <div *ngFor="let zone of forecast.state.zonesBelow; let i = index" class="key-zone-element">
+            <p *ngIf="!below.length" class="no-data-found">No supports were found</p>
+            <div *ngFor="let zone of below; let i = index" class="key-zone-element">
                 <app-key-zone *ngIf="i < visibleSupports" [keyZone]="zone" [price]="forecast.state.price"></app-key-zone>
             </div>
-            <div *ngIf="forecast.state.zonesBelow.length > 2 && visibleSupports < forecast.state.zonesBelow.length">
+            <div *ngIf="below.length > 2 && visibleSupports < below.length">
                 <button mat-button class="error-color full-width" (click)="visibleSupports = visibleSupports + 2">View More</button>
             </div>
         </div>

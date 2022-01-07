@@ -9,7 +9,8 @@ export interface IForecastService {
         zoneSize?: number, 
         zoneMergeDistanceLimit?: number,
         priceActionCandlesticksRequirement?: number,
-   ): Promise<IForecastResult>
+   ): Promise<IForecastResult>,
+   getZonesFromPrice(price: number, kz: IKeyZone[], above: boolean): IKeyZone[]
 }
 
 
@@ -44,15 +45,9 @@ export interface IKeyZonesState {
 
     // Key Zones
     zones: IKeyZone[],
-    zonesAbove: IKeyZone[],
-    zonesBelow: IKeyZone[],
 
     // Active & Previous Zone
     activeZone: IKeyZone|undefined,
-
-    // Dominance
-    resistanceDominance: number,
-    supportDominance: number,
 
     // Touch Action
     touchedResistance: boolean,

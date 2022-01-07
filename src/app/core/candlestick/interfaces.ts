@@ -20,5 +20,4 @@ export interface ICandlestick {
     l: number,                  // Low Price
     c: number,                  // Close Price
     v: number,                  // Volume (USDT)
-    tbv: number,                // Taker Buy Volume (USDT)
 }

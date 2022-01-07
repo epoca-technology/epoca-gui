@@ -148,7 +148,7 @@ export class NavService implements INavService {
 	public displayForecastChartDialog(start: number, end: number): MatDialogRef<any> {
 		return this.dialog.open(ForecastChartDialogComponent, {
 			disableClose: true,
-			hasBackdrop: this._app.layout.value != 'mobile', // Mobile optimization
+			hasBackdrop: false,
 			panelClass: 'full-screen-dialog',
 			data: {start: start, end: end}
 		});
