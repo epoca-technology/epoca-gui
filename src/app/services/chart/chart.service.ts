@@ -379,8 +379,8 @@ export class ChartService implements IChartService {
 		return {
 			start: config?.start || moment(currentTS).subtract(365, 'days').valueOf(),
 			end: config?.end || currentTS,
-			intervalMinutes: config?.intervalMinutes || 1440,
-			zoneSize: config?.zoneSize || 0.5,
+			intervalMinutes: config?.intervalMinutes || 720,
+			zoneSize: config?.zoneSize || 0.7,
 			zoneMergeDistanceLimit: config?.zoneMergeDistanceLimit || 1.5,
 			priceActionCandlesticksRequirement: config?.priceActionCandlesticksRequirement || 15,
 		}
