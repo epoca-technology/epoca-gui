@@ -45,7 +45,7 @@ export class ForecastChartDialogComponent implements OnInit, IForecastChartDialo
 			);
 
 			// Build the annotations
-			this.annotations.yaxis = this._chart.buildKeyZonesAnnotations(this.forecast.state.zones, this.forecast.state.price);
+			this.annotations.yaxis = this._chart.buildKeyZonesAnnotations(this.forecast.state.kz, this.forecast.state.p);
 		} catch (e) {
 			console.log(e);
 			this._snackbar.error(this._utils.getErrorMessage(e));

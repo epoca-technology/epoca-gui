@@ -3,9 +3,13 @@
     <div class="fake-button header" role="button" matRipple
         (click)="expanded = !expanded">
         <div fxLayout="row" fxLayoutAlign="start center">
-            <p [matBadge]="keyZone.reversals.length" matBadgePosition="after" matBadgeOverlap="false">
-                {{keyZone.start | currency}} <mat-icon>arrow_right_alt</mat-icon> {{keyZone.end | currency}}
-            </p>
+            <div>
+                <p [matBadge]="keyZone.r.length" matBadgePosition="after" matBadgeOverlap="false">
+                    {{keyZone.s | currency}} <mat-icon>arrow_right_alt</mat-icon> {{keyZone.e | currency}}
+                </p>
+                <p class="light-text ts-m">{{keyZone.v | currency}}</p>
+            </div>
+
             <span fxFlex></span>
             <mat-icon>{{expanded ? 'arrow_drop_up': 'arrow_drop_down'}}</mat-icon>
         </div>
@@ -16,13 +20,13 @@
         <div>
             <table class="bordered highlight">
                 <tbody>
-                    <tr *ngFor="let r of keyZone.reversals">
+                    <tr *ngFor="let r of keyZone.r">
                         <td>
                             <p class="show-on-desktop">{{r.id | date: 'medium'}}</p>
                             <p class="show-on-mobile">{{r.id | date: 'short'}}</p>
                         </td>
-                        <td class="align-right" [ngClass]="{'success-color': r.type == 'resistance', 'error-color': r.type == 'support'}">
-                            {{r.type | uppercase}}
+                        <td class="align-right" [ngClass]="{'success-color': r.t == 'r', 'error-color': r.t == 's'}">
+                            {{r.t == 'r' ? 'RESISTANCE': 'SUPPORT' | uppercase}}
                         </td>
                     </tr>
                 </tbody>

@@ -287,8 +287,8 @@ export class ChartService implements IChartService {
 		// Build the annotations
 		for (let i = 0; i < keyZones.length; i++) {
 			annotations.push({
-				y: keyZones[i].start,
-				y2: keyZones[i].end,
+				y: keyZones[i].s,
+				y2: keyZones[i].e,
 				strokeDashArray: 0,
 				borderColor: this.colors[i],
 				fillColor: this.colors[i],
@@ -324,7 +324,7 @@ export class ChartService implements IChartService {
 		//label += `${zone.mutated ? 'm': ''}${zone.reversals[zone.reversals.length - 1].type.toUpperCase()} `;
 		//label += `${moment(zone.id).format('DD-MM HH:mm')}  (${zone.reversals.length}) | `;
 		//label += `Reversals ${zone.reversals.length} | `;
-		label += `$${new BigNumber(zone.start).toFormat(2)} - $${new BigNumber(zone.end).toFormat(2)} `;
+		label += `$${new BigNumber(zone.s).toFormat(2)} - $${new BigNumber(zone.e).toFormat(2)} `;
 		return label;
 	}
 
@@ -382,7 +382,7 @@ export class ChartService implements IChartService {
 			intervalMinutes: config?.intervalMinutes || 720,
 			zoneSize: config?.zoneSize || 0.7,
 			zoneMergeDistanceLimit: config?.zoneMergeDistanceLimit || 1.5,
-			priceActionCandlesticksRequirement: config?.priceActionCandlesticksRequirement || 15,
+			priceActionCandlesticksRequirement: config?.priceActionCandlesticksRequirement || 30,
 		}
 	}
 }

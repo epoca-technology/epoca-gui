@@ -28,9 +28,9 @@ export class KeyZoneComponent implements OnInit, IKeyZoneComponent {
 
 
 	ngOnInit(): void {
-		this.inZone = this.price >= this.keyZone.start && this.price <= this.keyZone.end;
-		this.resistance = this.price < this.keyZone.start;
-		this.support = this.price > this.keyZone.end;
+		this.inZone = this.price >= this.keyZone.s && this.price <= this.keyZone.e;
+		this.resistance = this.price < this.keyZone.s;
+		this.support = this.price > this.keyZone.e;
 	}
 
 }

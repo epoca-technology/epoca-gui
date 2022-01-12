@@ -25,7 +25,6 @@ export class ForecastService implements IForecastService {
 	 * Retrieves the forecast for a given period based on provided params.
 	* @param start 
 	* @param end 
-	* @param intervalMinutes?
 	* @param zoneSize? 
 	* @param zoneMergeDistanceLimit? 
 	* @param priceActionCandlesticksRequirement? 
@@ -34,7 +33,6 @@ export class ForecastService implements IForecastService {
 	 public forecast(
 		 start: number, 
 		 end: number, 
-		 intervalMinutes?: number, 
 		 zoneSize?: number, 
 		 zoneMergeDistanceLimit?: number,
 		 priceActionCandlesticksRequirement?: number,
@@ -42,7 +40,6 @@ export class ForecastService implements IForecastService {
 		return this._api.request('get','forecast/forecast', {
 			start: start,
 			end: end,
-			intervalMinutes: intervalMinutes,
 			zoneSize: zoneSize,
 			zoneMergeDistanceLimit: zoneMergeDistanceLimit,
 			priceActionCandlesticksRequirement: priceActionCandlesticksRequirement,
@@ -73,10 +70,10 @@ export class ForecastService implements IForecastService {
         // Build the zones based on the type
         kz.forEach((z) => { 
             // Build zones that are above the price
-            if (above && z.start > price) { zones.push(z) } 
+            if (above && z.s > price) { zones.push(z) } 
             
             // Build zones that are below the price
-            else if (!above && z.end < price) { zones.push(z)}
+            else if (!above && z.e < price) { zones.push(z)}
         });
 
         /**
@@ -84,8 +81,8 @@ export class ForecastService implements IForecastService {
          * Zones Above: Order ascending by price
          * Zones Below: Order descending by price
          */
-        if (above) { zones.sort((a, b) => { return a.start - b.start}) } 
-        else { zones.sort((a, b) => { return b.start - a.start}) }
+        if (above) { zones.sort((a, b) => { return a.s - b.s}) } 
+        else { zones.sort((a, b) => { return b.s - a.s}) }
 
         // Return the zones
         return zones;

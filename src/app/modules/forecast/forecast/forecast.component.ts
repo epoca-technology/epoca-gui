@@ -63,14 +63,13 @@ export class ForecastComponent implements OnInit, IForecastComponent {
 			this.forecast = await this._forecast.forecast(
 				this.config.start, 
 				this.config.end, 
-				this.config.intervalMinutes,
 				this.config.zoneSize,
 				this.config.zoneMergeDistanceLimit,
 				this.config.priceActionCandlesticksRequirement,
 			);
 
 			// Build the annotations
-			this.annotations.yaxis = this._chart.buildKeyZonesAnnotations(this.forecast.state.zones, this.forecast.state.price);
+			this.annotations.yaxis = this._chart.buildKeyZonesAnnotations(this.forecast.state.kz, this.forecast.state.p);
 		} catch (e) {
 			console.log(e);
 			this._snackbar.error(this._utils.getErrorMessage(e));
@@ -91,12 +90,6 @@ export class ForecastComponent implements OnInit, IForecastComponent {
 	 */
 	public displayForecastDetails(): void {
 		this._nav.displayForecastDialog(<IForecastResult>this.forecast);
-		/*this.dialog.open(ForecastDialogComponent, {
-			disableClose: true,
-			hasBackdrop: this._app.layout.value != 'mobile', // Mobile optimization
-			panelClass: 'medium-dialog',
-            data: this.forecast
-		});*/
 	}
 	
 

@@ -34,12 +34,12 @@ export class ForecastDialogComponent implements OnInit, IForecastDialogComponent
 
 	ngOnInit(): void {
 		// Populate Action Color Class
-		if (this.forecast.state.touchedResistance) { this.actionColorClass = 'success-color' }
-		else if (this.forecast.state.touchedSupport) { this.actionColorClass = 'error-color' }
+		if (this.forecast.state.tr) { this.actionColorClass = 'success-color' }
+		else if (this.forecast.state.ts) { this.actionColorClass = 'error-color' }
 
 		// Populate zones from price
-		this.below = this._forecast.getZonesFromPrice(this.forecast.state.price, this.forecast.state.zones, false);
-		this.above = this._forecast.getZonesFromPrice(this.forecast.state.price, this.forecast.state.zones, true);
+		this.below = this._forecast.getZonesFromPrice(this.forecast.state.p, this.forecast.state.kz, false);
+		this.above = this._forecast.getZonesFromPrice(this.forecast.state.p, this.forecast.state.kz, true);
 	}
 
 	

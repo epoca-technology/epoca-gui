@@ -17,12 +17,12 @@
 
             <!-- Price & Action -->
             <div class="align-right">
-                <p [ngClass]="actionColorClass">{{forecast.state.price | currency}}</p>
-                <p *ngIf="!forecast.state.touchedResistance && !forecast.state.touchedSupport" class="ts-m light-text">
+                <p [ngClass]="actionColorClass">{{forecast.state.p | currency}}</p>
+                <p *ngIf="!forecast.state.tr && !forecast.state.ts" class="ts-m light-text">
                     Actionless
                 </p>
-                <p *ngIf="forecast.state.touchedResistance" class="ts-m success-color">Touched Resistance</p>
-                <p *ngIf="forecast.state.touchedSupport" class="ts-m error-color">Touched Support</p>
+                <p *ngIf="forecast.state.tr" class="ts-m success-color">Touched Resistance</p>
+                <p *ngIf="forecast.state.ts" class="ts-m error-color">Touched Support</p>
             </div>
         </div>
 
@@ -40,15 +40,15 @@
                 <button mat-button class="success-color full-width" (click)="visibleResistances = visibleResistances + 2">View More</button>
             </div>
             <div *ngFor="let zone of above.slice().reverse(); let i = index" class="key-zone-element">
-                <app-key-zone *ngIf="i >= (above.length - visibleResistances)" [keyZone]="zone" [price]="forecast.state.price"></app-key-zone>
+                <app-key-zone *ngIf="i >= (above.length - visibleResistances)" [keyZone]="zone" [price]="forecast.state.p"></app-key-zone>
             </div>
         </div>
 
         <!-- Active Key Zone -->
-        <div class="content-row" *ngIf="forecast.state.activeZone">
+        <div class="content-row" *ngIf="forecast.state.akz">
             <h5>Active Zone</h5>
             <div  class="key-zone-element">
-                <app-key-zone [keyZone]="forecast.state.activeZone" [price]="forecast.state.price"></app-key-zone>
+                <app-key-zone [keyZone]="forecast.state.akz" [price]="forecast.state.p"></app-key-zone>
             </div>
         </div>
 
@@ -63,7 +63,7 @@
 
             <p *ngIf="!below.length" class="no-data-found">No supports were found</p>
             <div *ngFor="let zone of below; let i = index" class="key-zone-element">
-                <app-key-zone *ngIf="i < visibleSupports" [keyZone]="zone" [price]="forecast.state.price"></app-key-zone>
+                <app-key-zone *ngIf="i < visibleSupports" [keyZone]="zone" [price]="forecast.state.p"></app-key-zone>
             </div>
             <div *ngIf="below.length > 2 && visibleSupports < below.length">
                 <button mat-button class="error-color full-width" (click)="visibleSupports = visibleSupports + 2">View More</button>
