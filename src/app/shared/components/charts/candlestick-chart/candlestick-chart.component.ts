@@ -20,17 +20,23 @@ export class CandlestickChartComponent implements OnInit, ICandlestickChartCompo
     // Data Input
     private rawCandlesticks!: ICandlestick[];
     private annotations?: any;
+    private highlightCurrentPrice!: boolean;
     @Input() 
-    set data(data: {candlesticks: ICandlestick[], annotations?: ApexAnnotations}) {
+    set data(data: {candlesticks: ICandlestick[], annotations?: ApexAnnotations, highlightCurrentPrice?: boolean}) {
         // Store the raw candlesticks locally
         this.rawCandlesticks = data.candlesticks;
 
         // Store annotations if any
         this.annotations = data.annotations;
 
+        // Current Price Highlight
+        this.highlightCurrentPrice = data.highlightCurrentPrice !== false;
+        
         // Initialize the chart
         this.init();
     }
+
+
 
 
     // Initialization
@@ -62,7 +68,7 @@ export class CandlestickChartComponent implements OnInit, ICandlestickChartCompo
             }
 
             // Build the chart
-            this.chartOptions = this._chart.build(this.rawCandlesticks, this.annotations);
+            this.chartOptions = this._chart.build(this.rawCandlesticks, this.annotations, this.highlightCurrentPrice);
 
             // Set init state
 			this.initialized = true;

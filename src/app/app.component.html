@@ -36,13 +36,6 @@
                 </button>
             </mat-list-item>
 
-            <!-- Forecast -->
-            <mat-list-item>
-                <button mat-button class="left-icon-button" (click)="_nav.forecast()" [disabled]="state.module == 'forecast'">
-                    <mat-icon>auto_fix_high</mat-icon><span>Forecast</span>
-                </button>
-            </mat-list-item>
-
             <!-- Price Chart -->
             <mat-list-item>
                 <button mat-button class="left-icon-button" (click)="_nav.priceChart()" [disabled]="state.module == 'priceChart'">
@@ -65,7 +58,8 @@
         <div class="primary-header heading-bar" *ngIf="layout != 'mobile'">
             <mat-toolbar fxLayout="row" fxLayoutAlign="center center">
                 <!-- Logo -->
-                <img src="assets/img/logo.png" alt="Logo" (click)="_nav.dashboard()">
+                <img src="assets/img/logo.png" alt="Logo" (click)="_nav.dashboard()" class="show-on-desktop">
+                <img src="assets/img/logo_small.png" alt="Logo" (click)="_nav.dashboard()" class="show-on-mobile">
 
 
                 <span fxFlex></span>

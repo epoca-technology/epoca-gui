@@ -10,8 +10,6 @@ import {AppService} from "../app";
 import {RecaptchaDialogComponent} from "../../shared/components/recaptcha-dialog";
 import {ConfirmationDialogComponent, IConfirmationDialogData} from "../../shared/components/confirmation-dialog";
 import {BottomSheetMenuComponent, IBottomSheetMenuItem} from "../../shared/components/bottom-sheet-menu";
-import { IForecastResult } from '../../core';
-import { ForecastChartDialogComponent, ForecastDialogComponent } from 'src/app/shared/components/forecast';
 
 
 
@@ -63,7 +61,6 @@ export class NavService implements INavService {
 
 	/* App Navigation */
 	public dashboard(): Promise<boolean> { return this.navigate('dashboard') }
-	public forecast(): Promise<boolean> { return this.navigate('forecast') }
 	public priceChart(): Promise<boolean> { return this.navigate('priceChart') }
 
 
@@ -119,40 +116,6 @@ export class NavService implements INavService {
 
 	
 	
-
-
-	/*
-	* Opens the forecast details dialog.
-	* @param data?
-	* @returns MatDialogRef<any>
-	* */
-	public displayForecastDialog(forecast: IForecastResult): MatDialogRef<any> {
-		return this.dialog.open(ForecastDialogComponent, {
-			disableClose: true,
-			hasBackdrop: this._app.layout.value != 'mobile', // Mobile optimization
-			panelClass: 'large-dialog',
-			data: forecast
-		});
-	}
-
-
-
-
-
-	/*
-	* Opens the forecast chart dialog.
-	* @param start
-	* @param end
-	* @returns MatDialogRef<any>
-	* */
-	public displayForecastChartDialog(start: number, end: number): MatDialogRef<any> {
-		return this.dialog.open(ForecastChartDialogComponent, {
-			disableClose: true,
-			hasBackdrop: false,
-			panelClass: 'full-screen-dialog',
-			data: {start: start, end: end}
-		});
-	}
 
 
 	

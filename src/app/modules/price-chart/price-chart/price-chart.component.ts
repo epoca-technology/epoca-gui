@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { IPriceChartComponent } from './interfaces';
+import { IPriceChartComponent, IPriceChartConfig } from './interfaces';
 import { CandlestickService, ICandlestick, UtilsService } from '../../../core';
-import { ChartService, ICandlestickChartConfig, ICandlestickChartPartialConfig, NavService, SnackbarService } from '../../../services';
+import { AppService, ChartService, NavService, SnackbarService } from '../../../services';
 import * as moment from 'moment';
+import {MatDialog} from '@angular/material/dialog';
+import { PriceChartConfigComponent } from './price-chart-config/price-chart-config.component';
 
 
 
@@ -13,8 +15,7 @@ import * as moment from 'moment';
 })
 export class PriceChartComponent implements OnInit, IPriceChartComponent {
 	// Config
-    private readonly defaultConfig: ICandlestickChartPartialConfig = {start: moment().subtract(90, 'days').valueOf()};
-	public config: ICandlestickChartConfig = this._chart.getDefaultConfig(this.defaultConfig);
+	public config: IPriceChartConfig = this.getDefaultConfig();
 
 	// Raw Candlesticks
 	public rawCandlesticks?: ICandlestick[];
@@ -29,7 +30,9 @@ export class PriceChartComponent implements OnInit, IPriceChartComponent {
         private _candlestick: CandlestickService,
         private _snackbar: SnackbarService,
         private _utils: UtilsService,
-        private _chart: ChartService
+        private _chart: ChartService,
+        private dialog: MatDialog,
+        private _app: AppService
     ) { }
 
     ngOnInit(): void {
@@ -74,17 +77,26 @@ export class PriceChartComponent implements OnInit, IPriceChartComponent {
 
 
 
+
+
+
+
     /**
      * Refreshes the chart with the latest candlesticks.
      * @returns void
      */
     public refresh(): void {
         // Set Default Config
-        this.config = this._chart.getDefaultConfig(this.defaultConfig);
+        this.config = this.getDefaultConfig();
 
         // Rebuild the candlesticks
         this.buildCandlesticks();
     }
+
+
+
+
+
 
 
 
@@ -96,7 +108,12 @@ export class PriceChartComponent implements OnInit, IPriceChartComponent {
      * @returns void
      */
     public updateConfig(): void {
-        this._chart.displayChartConfigDialog(this.config).afterClosed().subscribe(
+        this.dialog.open(PriceChartConfigComponent, {
+			disableClose: true,
+			hasBackdrop: this._app.layout.value != 'mobile', // Mobile optimization
+			panelClass: 'small-dialog',
+            data: this.config
+		}).afterClosed().subscribe(
             (response) => {
                 if (response) {
                     // Set the new config
@@ -110,4 +127,21 @@ export class PriceChartComponent implements OnInit, IPriceChartComponent {
     }
 
 
+
+
+
+
+
+    /**
+     * Retrieves the default chart configuration.
+     * @returns IPriceChartConfig
+     */
+    private getDefaultConfig(): IPriceChartConfig {
+        const currentTS: number = Date.now();
+		return {
+			start: moment(currentTS).subtract(15, 'days').valueOf(),
+			end: currentTS,
+			intervalMinutes: 60
+		}
+    }
 }

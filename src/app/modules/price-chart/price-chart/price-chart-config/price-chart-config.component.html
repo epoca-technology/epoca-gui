@@ -32,7 +32,7 @@
                     </mat-form-field>
                 </div>
 
-                <div *ngIf="!forecast">
+                <div>
                     <mat-form-field>
                         <mat-label>Interval Minutes</mat-label>
                         <input type="number"
@@ -43,45 +43,8 @@
                     </mat-form-field>
                 </div>
 
-
-                <div *ngIf="forecast">
-                    <mat-form-field>
-                        <mat-label>Zone Size Percentage</mat-label>
-                        <input type="number"
-                               matInput
-                               formControlName="zoneSize"
-                               autocomplete="off"
-                               placeholder="e.g. 1">
-                    </mat-form-field>
-                </div>
-
-
-                <div *ngIf="forecast">
-                    <mat-form-field>
-                        <mat-label>Zone Merge Distance Limit</mat-label>
-                        <input type="number"
-                               matInput
-                               formControlName="zoneMergeDistanceLimit"
-                               autocomplete="off"
-                               placeholder="e.g. 1.5">
-                    </mat-form-field>
-                </div>
-
-
-                <div *ngIf="forecast">
-                    <mat-form-field>
-                        <mat-label>Price Action Candlesticks Requirement</mat-label>
-                        <input type="number"
-                               matInput
-                               formControlName="priceActionCandlesticksRequirement"
-                               autocomplete="off"
-                               placeholder="e.g. 15">
-                    </mat-form-field>
-                </div>
-
                 <div class="actions">
                     <button type="submit" mat-raised-button color="primary" [disabled]="form.invalid">UPDATE</button>
-                    <button class="margin-top" type="button" mat-button (click)="updateConfig(true)">RESTORE DEFAULTS</button>
                 </div>
             </form>
         </div>

@@ -14,13 +14,6 @@ const routes: Routes = [
 
 
 	/* Lazy Loaded Modules */
-	
-	// Forecast
-	{
-		path: 'forecast',
-		loadChildren: () => import('./modules/forecast/forecast.module').then(m => m.ForecastModule),
-	},
-
 
 	// Price Chart
 	{

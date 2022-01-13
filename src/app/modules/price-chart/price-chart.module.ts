@@ -9,11 +9,13 @@ import {SharedModule} from "../../shared";
 
 // Component
 import { PriceChartComponent } from './price-chart/price-chart.component';
+import { PriceChartConfigComponent } from './price-chart/price-chart-config/price-chart-config.component';
 
 
 @NgModule({
   declarations: [
     PriceChartComponent,
+    PriceChartConfigComponent,
   ],
   imports: [
     CommonModule,

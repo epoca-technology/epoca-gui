@@ -5,3 +5,10 @@ export interface IPriceChartComponent {
 
 
 
+
+// Config
+export interface IPriceChartConfig {
+    start: number,
+    end: number,
+    intervalMinutes: number
+}
