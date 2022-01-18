@@ -9,12 +9,16 @@ import {
     YAxisAnnotations,
     XAxisAnnotations
 } from "ng-apexcharts";
+import { MatDialogRef } from "@angular/material/dialog";
 
 
 
 export interface IChartService {
     // Candlesticks
     build(candlesticks: ICandlestick[], annotations?: ApexAnnotations, highlightCurrentPrice?: boolean): ICandlestickChartOptions,
+
+	// Misc Helpers
+	displayCandlestickDialog(candlestick: ICandlestick): MatDialogRef<any>
 }
 
 

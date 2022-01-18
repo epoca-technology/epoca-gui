@@ -27,6 +27,34 @@ export class UtilsService implements IUtilService {
 
 
 
+
+    /**
+     * Given an API error, it will extract the error code. If none is found, will return 0
+     * @param apiError 
+     * @returns number
+     */
+     public getCodeFromApiError(error: string): number {
+        // Make sure it is a valid string
+        if (typeof error == "string" && error.length > 5) {
+            // Extract the code
+            const code: number = Number(error.substring(
+                error.indexOf("{(") + 2, 
+                error.lastIndexOf(")}")
+            ));
+
+            // If a code was found, return it
+            if (code) return Number(code);
+        }
+
+        // If a code is not found, return 0 for 'unknown'
+        return 0;
+    }
+
+
+
+
+
+
     /**
      * Given an error, it will attempt to extract the message.
      * @param e 

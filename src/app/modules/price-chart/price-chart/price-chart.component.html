@@ -19,8 +19,8 @@
 <div class="fadeIn" *ngIf="loaded">
     <div fxLayout="row" fxLayoutAlign="center center">
         <div fxFlex>
-            <div class="padding" *ngIf="rawCandlesticks">
-                <app-candlestick-chart [data]="{candlesticks: rawCandlesticks}"></app-candlestick-chart>
+            <div class="chart-container" *ngIf="rawCandlesticks">
+                <app-candlestick-chart [data]="{candlesticks: rawCandlesticks, highlightCurrentPrice: true}"></app-candlestick-chart>
             </div>
         </div>
     </div>

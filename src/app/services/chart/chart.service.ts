@@ -5,6 +5,9 @@ import { ICandlestick } from '../../core';
 import * as moment from 'moment';
 import { ApexAnnotations, XAxisAnnotations, YAxisAnnotations } from 'ng-apexcharts';
 import {BigNumber} from "bignumber.js";
+import {MatDialog, MatDialogRef} from '@angular/material/dialog';
+import { CandlestickDialogComponent } from '../../shared/components/charts';
+
 
 
 
@@ -27,6 +30,7 @@ export class ChartService implements IChartService {
 
   	constructor(
 		private _app: AppService,
+		private dialog: MatDialog,
 	  ) { }
 
 
@@ -64,6 +68,8 @@ export class ChartService implements IChartService {
 		// Retrieve the range
 		const range: IChartRange = this.getCandlestickChartRange(candlesticks);
 
+		let self = this;
+
         // Return the chart
         return {
             series: [
@@ -87,6 +93,11 @@ export class ChartService implements IChartService {
               animations: {
                   enabled: false
               },
+			  events: {
+				click: function(event, chartContext, config) {
+				  if (candlesticks[config.dataPointIndex]) self.displayCandlestickDialog(candlesticks[config.dataPointIndex]);
+				}
+			  }
             },
             annotations: this.getAnnotations(
 				annotations, 
@@ -109,6 +120,7 @@ export class ChartService implements IChartService {
 				forceNiceScale: true,
 				min: range.min,
 				max: range.max,
+				opposite: true
             }
         }
     }
@@ -233,13 +245,14 @@ export class ChartService implements IChartService {
 			annotations.yaxis?.push({
 				y: currentPrice,
 				strokeDashArray: 0,
-				borderColor: '#000000',
-				fillColor: '#000000',
+				borderColor: '',
+				fillColor: '',
 				label: {
 					borderColor: '#000000',
 					style: { color: '#fff', background: '#000000'},
 					text: `$${new BigNumber(currentPrice).toFormat(2)}`,
-					position: 'left'
+					position: 'left',
+					offsetX: 50
 				}
 			});
 		 }
@@ -347,5 +360,17 @@ export class ChartService implements IChartService {
 
 
 
-
+	/*
+	* Displays the candlestick dialog
+	* @param candlestick
+	* @returns MatDialogRef<any>
+	* */
+	public displayCandlestickDialog(candlestick: ICandlestick): MatDialogRef<any> {
+		return this.dialog.open(CandlestickDialogComponent, {
+			disableClose: false,
+			hasBackdrop: this._app.layout.value != 'mobile', // Mobile optimization
+			panelClass: 'small-dialog',
+			data: candlestick
+		});
+	}
 }

@@ -67,7 +67,7 @@ import { BottomSheetMenuComponent } from './components/bottom-sheet-menu';
 // Shared Components
 import { RecaptchaDialogComponent } from './components/recaptcha-dialog';
 import { ConfirmationDialogComponent } from './components/confirmation-dialog';
-import { CandlestickChartComponent } from './components/charts';
+import { CandlestickChartComponent, CandlestickDialogComponent } from './components/charts';
 
 
 
@@ -90,6 +90,7 @@ import { CandlestickChartComponent } from './components/charts';
         RecaptchaDialogComponent,
         ConfirmationDialogComponent,
         CandlestickChartComponent,
+        CandlestickDialogComponent,
 	],
 	imports: [
 		CommonModule,

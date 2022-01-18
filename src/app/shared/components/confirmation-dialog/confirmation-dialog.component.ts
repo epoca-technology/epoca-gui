@@ -7,7 +7,7 @@ import {
 	SnackbarService,
 	ValidationsService
 } from "../../../services";
-import { UtilsService } from 'src/app/core';
+import { UtilsService } from '../../../core';
 
 @Component({
 	selector: 'app-confirmation-dialog',
