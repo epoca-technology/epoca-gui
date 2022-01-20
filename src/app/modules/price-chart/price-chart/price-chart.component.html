@@ -3,7 +3,6 @@
     <div fxLayout="row" fxLayoutAlign="center center">
         <span>Price Chart</span>
         <span fxFlex></span>
-        <button mat-icon-button *ngIf="loaded" (click)="refresh()"><mat-icon>refresh</mat-icon></button>
         <button mat-icon-button *ngIf="loaded" (click)="updateConfig()"><mat-icon>settings</mat-icon></button>
     </div>
 </mat-toolbar>
@@ -25,3 +24,8 @@
         </div>
     </div>
 </div>
+
+<!-- Refresher -->
+<button mat-fab class="refresh-button" *ngIf="loaded" (click)="refresh()">
+    <mat-icon>refresh</mat-icon>
+</button>

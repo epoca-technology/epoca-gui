@@ -119,8 +119,7 @@ export class ChartService implements IChartService {
 				},
 				forceNiceScale: true,
 				min: range.min,
-				max: range.max,
-				opposite: true
+				max: range.max
             }
         }
     }
