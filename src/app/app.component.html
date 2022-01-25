@@ -8,31 +8,24 @@
         <mat-toolbar color="primary" fxLayout="row" fxLayoutAlign="start center">
             <span>Menu</span>
             <span fxFlex></span>
+            <button mat-icon-button (click)="signOut()"><mat-icon>logout</mat-icon></button>
+            <button mat-icon-button (click)="createNewInstance()"><mat-icon>open_in_new</mat-icon></button>
             <button mat-icon-button (click)="sidenav?.toggle()"><mat-icon>arrow_forward</mat-icon></button>
         </mat-toolbar>
 
         <!-- Menu Content -->
         <mat-list>
-            <!-- New Instance -->
-            <mat-list-item>
-                <button mat-button class="left-icon-button" (click)="createNewInstance()">
-                    <mat-icon>open_in_new</mat-icon><span>Open New Instance</span>
-                </button>
-            </mat-list-item>
-            <mat-divider></mat-divider>
-
-            <!-- Sign Out -->
-            <mat-list-item>
-                <button mat-button class="left-icon-button error-color">
-                    <mat-icon>logout</mat-icon><span>Sign Out</span>
-                </button>
-            </mat-list-item>
-            <mat-divider></mat-divider>
-
             <!-- Home -->
             <mat-list-item>
                 <button mat-button class="left-icon-button" (click)="_nav.dashboard()" [disabled]="state.module == 'dashboard'">
                     <mat-icon svgIcon="home"></mat-icon><span>Dashboard</span>
+                </button>
+            </mat-list-item>
+
+            <!-- Server -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.server()" [disabled]="state.module == 'server'">
+                    <mat-icon>storage</mat-icon><span>Server</span>
                 </button>
             </mat-list-item>
 

@@ -1,3 +1,4 @@
 export interface IAppComponent {
-    createNewInstance(): void
+    createNewInstance(): void,
+    signOut(): void
 }

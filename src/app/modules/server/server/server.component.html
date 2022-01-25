@@ -1,0 +1,77 @@
+<!-- Section Container -->
+<mat-drawer-container class="section-container">
+
+    <!-- Main Sidenav -->
+    <mat-drawer #serverSidenav [(opened)]="serverSidenavOpened" class="sidenav" position="start" mode="over" autoFocus="false">
+
+        <!-- Menu Heading Toolbar -->
+        <mat-toolbar color="primary">
+            <div fxLayout="row" fxLayoutAlign="start center">
+                <button mat-icon-button (click)="serverSidenav?.toggle()"><mat-icon>arrow_back</mat-icon></button>
+                <span>Server</span>
+                <span fxFlex></span>
+            </div>
+        </mat-toolbar>
+
+        <!-- Menu Content -->
+        <mat-list>
+            <!-- Home -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button">
+                    <mat-icon>storage</mat-icon><span>Server</span>
+                </button>
+            </mat-list-item>
+        </mat-list>
+    </mat-drawer>
+
+
+    <!-- Section Content -->
+    <mat-drawer-content>
+        <div>
+            <!-- Section Header -->
+            <mat-toolbar class="secondary-header">
+                <div fxLayout="row" fxLayoutAlign="center center">
+                    <button mat-icon-button (click)="serverSidenav?.toggle()" class="show-on-mobile"><mat-icon>menu</mat-icon></button>
+                    <span>Server</span>
+                    <span fxFlex></span>
+                    <button mat-icon-button><mat-icon>edit_notifications</mat-icon></button>
+                </div>
+            </mat-toolbar>
+
+            <!-- Loader -->
+            <div *ngIf="!loaded" class="section-loader">
+                <div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div>
+            </div>
+
+            <!-- Section Content -->
+            <div *ngIf="loaded" class="fadeIn" [ngClass]="{'section-content': layout == 'mobile'}">
+                <div fxLayout="row">
+                    <div *ngIf="layout == 'desktop'" class="desktop-sidenav">
+                        <mat-list>
+                            <!-- Dashboard -->
+                            <mat-list-item>
+                                <button mat-button class="left-icon-button">
+                                    <mat-icon>equalizer</mat-icon><span>Monitoring</span>
+                                </button>
+                            </mat-list-item>
+                            <mat-list-item>
+                                <button mat-button class="left-icon-button">
+                                    <mat-icon>table_chart</mat-icon><span>Database</span>
+                                </button>
+                            </mat-list-item>
+                        </mat-list>
+                    </div>
+                    <div fxFlex>
+                        <div>
+                            <span>@TODO</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Mobile Tabs -->
+
+        </div>
+    </mat-drawer-content>
+</mat-drawer-container>

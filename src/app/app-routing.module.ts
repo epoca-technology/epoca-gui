@@ -21,6 +21,12 @@ const routes: Routes = [
 		loadChildren: () => import('./modules/price-chart/price-chart.module').then(m => m.PriceChartModule),
 	},
 
+	// Server
+	{
+		path: 'server',
+		loadChildren: () => import('./modules/server/server.module').then(m => m.ServerModule),
+	},
+
 
 
 	/* Empty Path */

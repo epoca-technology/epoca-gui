@@ -68,6 +68,7 @@ import { BottomSheetMenuComponent } from './components/bottom-sheet-menu';
 import { RecaptchaDialogComponent } from './components/recaptcha-dialog';
 import { ConfirmationDialogComponent } from './components/confirmation-dialog';
 import { CandlestickChartComponent, CandlestickDialogComponent } from './components/charts';
+import { RefreshButtonComponent } from './components/refresh-button/refresh-button.component';
 
 
 
@@ -91,6 +92,7 @@ import { CandlestickChartComponent, CandlestickDialogComponent } from './compone
         ConfirmationDialogComponent,
         CandlestickChartComponent,
         CandlestickDialogComponent,
+        RefreshButtonComponent,
 	],
 	imports: [
 		CommonModule,
@@ -197,6 +199,7 @@ import { CandlestickChartComponent, CandlestickDialogComponent } from './compone
 		
 		// Shared Components
 		CandlestickChartComponent,
+        RefreshButtonComponent,
 	]
 })
 export class SharedModule { }

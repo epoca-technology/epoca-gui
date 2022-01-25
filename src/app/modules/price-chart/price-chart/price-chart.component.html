@@ -26,6 +26,4 @@
 </div>
 
 <!-- Refresher -->
-<button mat-fab class="refresh-button" *ngIf="loaded" (click)="refresh()">
-    <mat-icon>refresh</mat-icon>
-</button>
+<app-refresh-button *ngIf="loaded" (refresh)="refresh()"></app-refresh-button>

@@ -79,13 +79,32 @@ export class AppComponent implements IAppComponent {
 
 
 
+
+    
+
+
+    /* Misc Helpers */
+
+
+
+
+
 	/*
 	* Creates a new instance of Plutus.
 	* @returns void
 	* */
 	public createNewInstance(): void {
-		window.open(window.location.href, "_blank");
-		if (this.sidenavOpened) this.sidenav?.close();
+        this._nav.displayConfirmationDialog({
+            title: 'Create New Instance',
+            content: '<p class="align-center">If you confirm the action, a new tab will be created from this instance.</p>'
+        }).afterClosed().subscribe(
+            (confirmed: boolean) => {
+                if (confirmed) {
+                    window.open(window.location.href, "_blank");
+                    if (this.sidenavOpened) this.sidenav?.close();
+                }
+            }
+        );
 	}
 
 
@@ -95,8 +114,31 @@ export class AppComponent implements IAppComponent {
 
 
 
+	/*
+	* Signs the user out
+	* @returns void
+	* */
+	public signOut(): void {
+        this._nav.displayConfirmationDialog({
+            title: 'Sign Out',
+            content: '<p class="align-center">If you confirm the action, your session will be destroyed on all your active tabs.</p>'
+        }).afterClosed().subscribe(
+            (confirmed: boolean) => {
+                if (confirmed) {
+                    // @TODO
+                }
+            }
+        );
+	}
+
+
+
 
 	
+
+
+
+
 
 	/* Custom Icons Registration */
 	

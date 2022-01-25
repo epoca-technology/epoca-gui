@@ -5,6 +5,6 @@ export interface IUtilService {
 
 
     // Error Handling
-    getCodeFromApiError(error: string): number,
+    getCodeFromApiError(error: any): number,
     getErrorMessage(e: any): string,
 }
