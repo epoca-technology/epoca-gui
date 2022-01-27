@@ -93,7 +93,9 @@
                                         <div fxLayout="row">
                                             <h3>CPU Load</h3>
                                             <span fxFlex></span>
-                                            <div class="error-badge square-badge">{{serverData.resources.cpuLoad.currentLoad | number}}%</div>
+                                            <div [ngClass]="states.cpuLoad" class="square-badge">
+                                                {{serverData.resources.cpuLoad.currentLoad | number}}%
+                                            </div>
                                         </div>
                                         <mat-progress-bar mode="determinate" [value]="serverData.resources.cpuLoad.currentLoad"></mat-progress-bar>
                                     </div>
@@ -105,24 +107,32 @@
                                         <div fxLayout="row" class="row">
                                             <p>Max</p>
                                             <span fxFlex></span>
-                                            <div class="square-badge">{{serverData.resources.cpuTemperature.max}}°</div>
+                                            <div [ngClass]="states.cpuMaxTemp" class="square-badge">
+                                                {{serverData.resources.cpuTemperature.max}}°
+                                            </div>
                                         </div>
                                         <div fxLayout="row" class="row">
                                             <p>Main</p>
                                             <span fxFlex></span>
-                                            <div class="square-badge">{{serverData.resources.cpuTemperature.main}}°</div>
+                                            <div [ngClass]="states.cpuMainTemp" class="square-badge">
+                                                {{serverData.resources.cpuTemperature.main}}°
+                                            </div>
                                         </div>
                                         <div fxLayout="row" class="row">
                                             <p>Chipset</p>
                                             <span fxFlex></span>
-                                            <div class="square-badge">{{serverData.resources.cpuTemperature.chipset}}°</div>
+                                            <div [ngClass]="states.cpuChipsetTemp" class="square-badge">
+                                                {{serverData.resources.cpuTemperature.chipset}}°
+                                            </div>
                                         </div>
                                         <div *ngIf="serverData.resources.cpuTemperature.cores.length"
                                              fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" class="row">
                                             <p>Cores</p>
                                             <span fxFlex></span>
                                             <div class="space-badges">
-                                                <div class="square-badge" *ngFor="let c of serverData.resources.cpuTemperature.cores">
+                                                <div class="square-badge" 
+                                                    *ngFor="let c of serverData.resources.cpuTemperature.cores; let i = index;" 
+                                                    [ngClass]="states.cpuCoresTemp[i]">
                                                     {{c}}°
                                                 </div>
                                             </div>
@@ -132,7 +142,9 @@
                                             <p>Sockets</p>
                                             <span fxFlex></span>
                                             <div class="space-badges">
-                                                <div class="square-badge" *ngFor="let s of serverData.resources.cpuTemperature.socket">
+                                                <div class="square-badge" 
+                                                    *ngFor="let s of serverData.resources.cpuTemperature.socket; let i = index;"
+                                                    [ngClass]="states.cpuSocketsTemp[i]">
                                                     {{s}}°
                                                 </div>
                                             </div>
@@ -147,7 +159,9 @@
                                         <div fxLayout="row">
                                             <h3>Memory Usage</h3>
                                             <span fxFlex></span>
-                                            <div class="square-badge">{{serverData.resources.memory.usedPercent | number}}%</div>
+                                            <div [ngClass]="states.memoryUsage" class="square-badge">
+                                                {{serverData.resources.memory.usedPercent | number}}%
+                                            </div>
                                         </div>
                                         <mat-progress-bar mode="determinate" [value]="serverData.resources.memory.usedPercent"></mat-progress-bar>
                                     </div>
@@ -158,9 +172,15 @@
                                         <div fxLayout="row">
                                             <h3>GPU</h3>
                                             <span fxFlex></span>
-                                            <div class="square-badge">{{serverData.resources.gpu.utilizationGpu | number}}%</div>&nbsp;
-                                            <div class="square-badge">{{serverData.resources.gpu.temperatureGpu | number}}°</div>&nbsp;
-                                            <div class="square-badge">{{serverData.resources.gpu.temperatureMemory | number}}°</div>
+                                            <div [ngClass]="states.gpuLoad" class="square-badge">
+                                                {{serverData.resources.gpu.utilizationGpu | number}}%
+                                            </div>&nbsp;
+                                            <div [ngClass]="states.gpuTemp" class="square-badge">
+                                                {{serverData.resources.gpu.temperatureGpu | number}}°
+                                            </div>&nbsp;
+                                            <div [ngClass]="states.gpuMemoryTemp" class="square-badge">
+                                                {{serverData.resources.gpu.temperatureMemory | number}}°
+                                            </div>
                                         </div>
                                         <mat-progress-bar mode="determinate" [value]="serverData.resources.gpu.utilizationGpu"></mat-progress-bar>
                                     </div>
@@ -172,7 +192,7 @@
                                             <div fxLayout="row">
                                                 <h3>File System {{i+1}}</h3>
                                                 <span fxFlex></span>
-                                                <div class="square-badge">{{fs.usedPercent | number}}%</div>
+                                                <div [ngClass]="states.fsUsage[i]" class="square-badge">{{fs.usedPercent | number}}%</div>
                                             </div>
                                             <mat-progress-bar mode="determinate" [value]="fs.usedPercent"></mat-progress-bar>
                                         </div>
@@ -181,6 +201,9 @@
                                 </div>
                             </div>
 
+
+
+                            
                             <!-- Running Services -->
                             <div *ngIf="activeSection.id == 'running-services'" fxLayout="row" fxLayoutAlign="center center" class="padding">
                                 <div fxFlex fxFlex.md="70" fxFlex.lg="60" fxFlex.xl="50">

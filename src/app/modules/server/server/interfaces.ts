@@ -19,3 +19,21 @@ export interface ISection {
     icon?: string,
     svgIcon?: string
 }
+
+
+
+export interface IStates {
+    cpuLoad: IState,
+    cpuMaxTemp: IState,
+    cpuMainTemp: IState,
+    cpuChipsetTemp: IState,
+    cpuCoresTemp: IState[],
+    cpuSocketsTemp: IState[],
+    memoryUsage: IState,
+    gpuLoad: IState,
+    gpuTemp: IState,
+    gpuMemoryTemp: IState,
+    fsUsage: IState[]
+}
+
+export type IState = 'optimal'|'normal'|'average'|'warning'|'error';

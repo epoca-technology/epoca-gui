@@ -1,11 +1,13 @@
 @use '@angular/material' as mat;
 
 
-// State colors
-$optimal: var(--success-color);
-$normal: #00897B;
-$warning: #EF6C00;
-$error: var(--error-color);
+
+// Badge Colors
+.optimal { background: var(--success-color);}
+.normal { background: #00897B;}
+.average { background: #757575;}
+.warning { background: #EF6C00;}
+.error { background: var(--error-color);}
 
 
 
@@ -65,11 +67,7 @@ $error: var(--error-color);
 }
 
 
-// Badge Colors
-.optimal-badge { background: $optimal;}
-.normal-badge { background: $normal;}
-.warning-badge { background: $warning;}
-.error-badge { background: $error;}
+
 
 
 

@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 import { IAlarmsConfig, IServerData, ServerService, UtilsService } from '../../../core';
 import { AppService, AudioService, ILayout, NavService, SnackbarService } from '../../../services';
 import { AlarmsConfigDialogComponent } from './alarms-config-dialog/alarms-config-dialog.component';
-import { ISection, IServerComponent } from './interfaces';
+import { ISection, IServerComponent, IState, IStates } from './interfaces';
 
 @Component({
   selector: 'app-server',
@@ -43,6 +43,21 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
 
     // Refresh Error
     public refreshError: string|undefined = undefined;
+
+    // Badge States
+    public states: IStates = {
+        cpuLoad: 'optimal',
+        cpuMaxTemp: 'optimal',
+        cpuMainTemp: 'optimal',
+        cpuChipsetTemp: 'optimal',
+        cpuCoresTemp: [],
+        cpuSocketsTemp: [],
+        memoryUsage: 'optimal',
+        gpuLoad: 'optimal',
+        gpuTemp: 'optimal',
+        gpuMemoryTemp: 'optimal',
+        fsUsage: []
+    }
 
     // Submission
     public submitting: boolean = false;
@@ -153,11 +168,84 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
         if (this.serverData) {
             // Order the running processes by cpu usage
             this.serverData.resources.runningServices.sort((a, b) => a['cpu'] > b['cpu'] ? -1 : a['cpu'] === b['cpu'] ? 0 : 1);
+
+            // Populate states
+            this.populateStates();
         }
     }
 
 
 
+
+
+
+    /**
+     * Populates the state colors for each of the monitoring elements.
+     * @returns void
+     */
+    private populateStates(): void {
+        // CPU States
+        this.states.cpuLoad = this.getState(this.serverData!.resources.cpuLoad.currentLoad, this.serverData!.resources.alarms.max_cpu_load);
+        this.states.cpuMaxTemp = this.getState(this.serverData!.resources.cpuTemperature.max, this.serverData!.resources.alarms.max_cpu_temperature);
+        this.states.cpuMainTemp = this.getState(this.serverData!.resources.cpuTemperature.main, this.serverData!.resources.alarms.max_cpu_temperature);
+        this.states.cpuChipsetTemp = this.getState(this.serverData!.resources.cpuTemperature.chipset, this.serverData!.resources.alarms.max_cpu_temperature);
+        let cores: IState[] = [];
+        for (let c of this.serverData!.resources.cpuTemperature.cores) { cores.push(this.getState(c, this.serverData!.resources.alarms.max_cpu_temperature)) }
+        this.states.cpuCoresTemp = cores;
+        let sockets: IState[] = [];
+        for (let s of this.serverData!.resources.cpuTemperature.socket) { sockets.push(this.getState(s, this.serverData!.resources.alarms.max_cpu_temperature)) }
+        this.states.cpuSocketsTemp = sockets;
+
+        // Memory
+        this.states.memoryUsage = this.getState(this.serverData!.resources.memory.usedPercent, this.serverData!.resources.alarms.max_memory_usage);
+
+        // GPU
+        this.states.gpuLoad = this.getState(this.serverData!.resources.gpu.utilizationGpu, this.serverData!.resources.alarms.max_gpu_load);
+        this.states.gpuTemp = this.getState(this.serverData!.resources.gpu.temperatureGpu, this.serverData!.resources.alarms.max_gpu_temperature);
+        this.states.gpuMemoryTemp = this.getState(this.serverData!.resources.gpu.temperatureMemory, this.serverData!.resources.alarms.max_gpu_memory_temperature);
+    
+        // File Systems
+        let fs: IState[] = [];
+        for (let f of this.serverData!.resources.fileSystems) { fs.push(this.getState(f.usedPercent, this.serverData!.resources.alarms.max_file_system_usage)) }
+        this.states.fsUsage = fs;
+    }
+
+
+
+
+
+
+
+    /**
+     * Calculates the difference between the current and max values,
+     * returning the state class for the component
+     * @param current 
+     * @param max 
+     * @returns IState
+     */
+    private getState(current: number, max: number): IState {
+        // Calculate the difference
+        const difference: number = max - current;
+
+        // Handle each case accordingly
+        if (difference <= 10) { return 'error' }
+        else if (difference > 10 && difference <= 20) { return 'warning' }
+        else if (difference > 20 && difference <= 30) { return 'average' }
+        else if (difference > 30 && difference <= 40) { return 'normal' }
+        else { return 'optimal' }
+    }
+
+
+
+
+
+
+
+
+
+
+
+    /* Alarms Config */
 
 
 
