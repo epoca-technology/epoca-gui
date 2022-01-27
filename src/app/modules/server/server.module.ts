@@ -9,11 +9,13 @@ import {SharedModule} from "../../shared";
 
 // Component
 import { ServerComponent } from './server/server.component';
+import { AlarmsConfigDialogComponent } from './server/alarms-config-dialog/alarms-config-dialog.component';
 
 
 @NgModule({
   declarations: [
-    ServerComponent
+    ServerComponent,
+    AlarmsConfigDialogComponent
   ],
   imports: [
     CommonModule,

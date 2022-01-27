@@ -139,7 +139,7 @@ export class PriceChartComponent implements OnInit, IPriceChartComponent {
     private getDefaultConfig(): IPriceChartConfig {
         const currentTS: number = Date.now();
 		return {
-			start: moment(currentTS).subtract(7, 'days').valueOf(),
+			start: moment(currentTS).subtract(3, 'days').valueOf(),
 			end: currentTS,
 			intervalMinutes: 30
 		}

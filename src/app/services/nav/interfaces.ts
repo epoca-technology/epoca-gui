@@ -10,8 +10,9 @@ export interface INavService {
 	
 	// App Navigation
 	dashboard(): Promise<boolean>,
-    server(): Promise<boolean>,
 	priceChart(): Promise<boolean>,
+    server(): Promise<boolean>,
+    database(): Promise<boolean>,
 	
 	// Dialogs
     displayConfirmationDialog(data?: IConfirmationDialogData): MatDialogRef<any>,

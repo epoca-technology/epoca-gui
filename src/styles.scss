@@ -257,14 +257,16 @@ ul li ul, ol li ul { padding: 0 0 0 15px;}
 	padding:0 5px 0 5px;
 }*/
 .square-badge { 
-	padding:2px;
+	padding:4px 5px 4px 5px;
 	color:#FFFFFF;
-	border-radius: 5px;
+	border-radius: 7px;
 	min-width: 20px;
 	text-align: center;
 	background-color: #000000;
 	font-weight: 600;
 	font-size:12px!important;
+    max-height:20px;
+    width: auto;
 }
 
 .square-badge-success { 
@@ -554,7 +556,7 @@ form .mat-form-field .mat-form-field-prefix .mat-icon{max-width: 20px;margin:0 7
 form .mat-form-field .mat-form-field-prefix img{max-width: 20px;margin:0 7px 0 0;}
 
 form .errors {}
-form .errors p {margin: 15px 0 15px 0; color: var(--warn-color); font-size:14px;}
+form .errors p {margin: 15px 0 15px 0; color: var(--error-color); font-size:14px;}
 form .errors p:first-child {margin: 0 0 15px 0;}
 
 form .actions { margin-top:30px; text-align: center}

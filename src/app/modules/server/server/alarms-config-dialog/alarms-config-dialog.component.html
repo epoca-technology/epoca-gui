@@ -1,0 +1,129 @@
+<mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <button mat-icon-button class="show-on-mobile" (click)="cancel()"><mat-icon>arrow_back</mat-icon></button>
+        <span class="truncate">Alarms</span>
+        <span fxFlex></span>
+        <button mat-icon-button class="show-on-desktop" (click)="cancel()"><mat-icon>close</mat-icon></button>
+    </div>
+</mat-toolbar>
+<div mat-dialog-content>
+    <!-- Container -->
+    <div class="fadeIn padding">
+
+        <!-- Form -->
+        <div *ngIf="form">
+            <form [formGroup]="form" (ngSubmit)="updateConfig()">
+                <div>
+                    <mat-form-field>
+                        <mat-label>Max File System Usage</mat-label>
+                        <input type="number"
+                               matInput
+                               formControlName="max_file_system_usage"
+                               autocomplete="off"
+                               placeholder="e.g. 65">
+                    </mat-form-field>
+                    <div *ngIf="max_file_system_usage.touched && max_file_system_usage.invalid" class="errors">
+                        <p>The max file system usage must a number ranging 30 and 99</p>
+                    </div>
+                </div>
+
+                <div>
+                    <mat-form-field>
+                        <mat-label>Max Memory Usage</mat-label>
+                        <input type="number"
+                               matInput
+                               formControlName="max_memory_usage"
+                               autocomplete="off"
+                               placeholder="e.g. 75">
+                    </mat-form-field>
+                    <div *ngIf="max_memory_usage.touched && max_memory_usage.invalid" class="errors">
+                        <p>The max memory usage must a number ranging 30 and 99</p>
+                    </div>
+                </div>
+
+
+                <div>
+                    <mat-form-field>
+                        <mat-label>Max CPU Load</mat-label>
+                        <input type="number"
+                               matInput
+                               formControlName="max_cpu_load"
+                               autocomplete="off"
+                               placeholder="e.g. 71">
+                    </mat-form-field>
+                    <div *ngIf="max_cpu_load.touched && max_cpu_load.invalid" class="errors">
+                        <p>The max cpu load must a number ranging 30 and 99</p>
+                    </div>
+                </div>
+
+
+
+                <div>
+                    <mat-form-field>
+                        <mat-label>Max CPU Temperature</mat-label>
+                        <input type="number"
+                               matInput
+                               formControlName="max_cpu_temperature"
+                               autocomplete="off"
+                               placeholder="e.g. 59">
+                    </mat-form-field>
+                    <div *ngIf="max_cpu_temperature.touched && max_cpu_temperature.invalid" class="errors">
+                        <p>The max cpu temperature must a number ranging 50 and 90</p>
+                    </div>
+                </div>
+
+
+                <div>
+                    <mat-form-field>
+                        <mat-label>Max GPU Load</mat-label>
+                        <input type="number"
+                               matInput
+                               formControlName="max_gpu_load"
+                               autocomplete="off"
+                               placeholder="e.g. 71">
+                    </mat-form-field>
+                    <div *ngIf="max_gpu_load.touched && max_gpu_load.invalid" class="errors">
+                        <p>The max gpu load must a number ranging 30 and 99</p>
+                    </div>
+                </div>
+
+
+
+
+                <div>
+                    <mat-form-field>
+                        <mat-label>Max GPU Temperature</mat-label>
+                        <input type="number"
+                               matInput
+                               formControlName="max_gpu_temperature"
+                               autocomplete="off"
+                               placeholder="e.g. 92">
+                    </mat-form-field>
+                    <div *ngIf="max_gpu_temperature.touched && max_gpu_temperature.invalid" class="errors">
+                        <p>The max gpu temperature must a number ranging 50 and 120</p>
+                    </div>
+                </div>
+
+
+
+                <div>
+                    <mat-form-field>
+                        <mat-label>Max GPU Memory Temperature</mat-label>
+                        <input type="number"
+                               matInput
+                               formControlName="max_gpu_memory_temperature"
+                               autocomplete="off"
+                               placeholder="e.g. 69">
+                    </mat-form-field>
+                    <div *ngIf="max_gpu_memory_temperature.touched && max_gpu_memory_temperature.invalid" class="errors">
+                        <p>The max gpu memory temperature must a number ranging 50 and 90</p>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button type="submit" mat-raised-button color="primary" [disabled]="form.invalid">UPDATE</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

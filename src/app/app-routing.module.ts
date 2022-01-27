@@ -28,6 +28,12 @@ const routes: Routes = [
 	},
 
 
+	// Database
+	{
+		path: 'database',
+		loadChildren: () => import('./modules/database/database.module').then(m => m.DatabaseModule),
+	},
+
 
 	/* Empty Path */
 	{

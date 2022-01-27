@@ -3,7 +3,6 @@
 
     <!-- Main Sidenav -->
     <mat-drawer #serverSidenav [(opened)]="serverSidenavOpened" class="sidenav" position="start" mode="over" autoFocus="false">
-
         <!-- Menu Heading Toolbar -->
         <mat-toolbar color="primary">
             <div fxLayout="row" fxLayoutAlign="start center">
@@ -15,10 +14,12 @@
 
         <!-- Menu Content -->
         <mat-list>
-            <!-- Home -->
-            <mat-list-item>
-                <button mat-button class="left-icon-button">
-                    <mat-icon>storage</mat-icon><span>Server</span>
+            <mat-list-item *ngFor="let item of sections">
+                <button mat-button class="left-icon-button" 
+                        (click)="activateSection(item)" [disabled]="activeSection.id == item.id">
+                    <mat-icon *ngIf="item.svgIcon" [svgIcon]="item.svgIcon"></mat-icon>
+                    <mat-icon *ngIf="item.icon">{{item.icon}}</mat-icon>
+                    <span>{{item.name}}</span>
                 </button>
             </mat-list-item>
         </mat-list>
@@ -32,38 +33,537 @@
             <mat-toolbar class="secondary-header">
                 <div fxLayout="row" fxLayoutAlign="center center">
                     <button mat-icon-button (click)="serverSidenav?.toggle()" class="show-on-mobile"><mat-icon>menu</mat-icon></button>
-                    <span>Server</span>
+                    <span class="truncate">{{activeSection.name}}</span>
                     <span fxFlex></span>
-                    <button mat-icon-button><mat-icon>edit_notifications</mat-icon></button>
+                    <button mat-icon-button (click)="updateConfig()" [disabled]="submitting"><mat-icon>edit_notifications</mat-icon></button>
                 </div>
             </mat-toolbar>
 
-            <!-- Loader -->
-            <div *ngIf="!loaded" class="section-loader">
-                <div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div>
-            </div>
+
 
             <!-- Section Content -->
-            <div *ngIf="loaded" class="fadeIn" [ngClass]="{'section-content': layout == 'mobile'}">
+            <div [ngClass]="{'section-content': layout == 'mobile'}">
                 <div fxLayout="row">
                     <div *ngIf="layout == 'desktop'" class="desktop-sidenav">
                         <mat-list>
-                            <!-- Dashboard -->
-                            <mat-list-item>
-                                <button mat-button class="left-icon-button">
-                                    <mat-icon>equalizer</mat-icon><span>Monitoring</span>
-                                </button>
-                            </mat-list-item>
-                            <mat-list-item>
-                                <button mat-button class="left-icon-button">
-                                    <mat-icon>table_chart</mat-icon><span>Database</span>
+                            <div mat-subheader>Server</div>
+                            <mat-list-item *ngFor="let item of sections">
+                                <button mat-button class="left-icon-button" 
+                                        (click)="activateSection(item)" [disabled]="activeSection.id == item.id">
+                                    <mat-icon *ngIf="item.svgIcon" [svgIcon]="item.svgIcon"></mat-icon>
+                                    <mat-icon *ngIf="item.icon">{{item.icon}}</mat-icon>
+                                    <span>{{item.name}}</span>
                                 </button>
                             </mat-list-item>
                         </mat-list>
                     </div>
                     <div fxFlex>
-                        <div>
-                            <span>@TODO</span>
+                        <!-- Loader -->
+                        <div *ngIf="!loaded" class="loader">
+                            <div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div>
+                        </div>
+                        <div *ngIf="loaded && serverData" class="fadeIn">
+
+                            <!-- Monitoring -->
+                            <div *ngIf="activeSection.id == 'monitoring'" 
+                                fxLayout="row"  fxLayout.xs="column"  fxLayout.sm="column" 
+                                class="monitoring">
+                                <div fxFlex="45" fxFlex.xs="100" fxFlex.sm="100">
+                                    <!-- Server -->
+                                    <div class="desktop-card">
+                                        <div fxLayout="row">
+                                            <h3>Server</h3>
+                                            <span fxFlex></span>
+                                            <div [ngClass]="{'square-badge-success': !refreshError, 'square-badge-error': refreshError}">
+                                                {{serverData.resources.uptime}} hours
+                                            </div>
+                                        </div>
+                                        <div [ngClass]="{'error-color': refreshError}" 
+                                            fxLayout="row">
+                                            <p [ngClass]="{'light-text': !refreshError}" class="ts-m">Last Update</p>
+                                            <span fxFlex></span>
+                                            <p class="ts-m">{{serverData.resources.lastResourceScan | date: 'medium'}}</p>
+                                        </div>
+                                        <p *ngIf="refreshError" class="error-color align-center">{{refreshError}}</p>
+                                    </div>
+                                    <div class="divider"></div>
+
+                                    <!-- CPU Load -->
+                                    <div class="desktop-card">
+                                        <div fxLayout="row">
+                                            <h3>CPU Load</h3>
+                                            <span fxFlex></span>
+                                            <div class="error-badge square-badge">{{serverData.resources.cpuLoad.currentLoad | number}}%</div>
+                                        </div>
+                                        <mat-progress-bar mode="determinate" [value]="serverData.resources.cpuLoad.currentLoad"></mat-progress-bar>
+                                    </div>
+                                    <div class="divider"></div>
+
+                                    <!-- CPU Temperature -->
+                                    <div class="desktop-card">
+                                        <h3>CPU Temperature</h3>
+                                        <div fxLayout="row" class="row">
+                                            <p>Max</p>
+                                            <span fxFlex></span>
+                                            <div class="square-badge">{{serverData.resources.cpuTemperature.max}}°</div>
+                                        </div>
+                                        <div fxLayout="row" class="row">
+                                            <p>Main</p>
+                                            <span fxFlex></span>
+                                            <div class="square-badge">{{serverData.resources.cpuTemperature.main}}°</div>
+                                        </div>
+                                        <div fxLayout="row" class="row">
+                                            <p>Chipset</p>
+                                            <span fxFlex></span>
+                                            <div class="square-badge">{{serverData.resources.cpuTemperature.chipset}}°</div>
+                                        </div>
+                                        <div *ngIf="serverData.resources.cpuTemperature.cores.length"
+                                             fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" class="row">
+                                            <p>Cores</p>
+                                            <span fxFlex></span>
+                                            <div class="space-badges">
+                                                <div class="square-badge" *ngFor="let c of serverData.resources.cpuTemperature.cores">
+                                                    {{c}}°
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div *ngIf="serverData.resources.cpuTemperature.socket.length" 
+                                            fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" class="row">
+                                            <p>Sockets</p>
+                                            <span fxFlex></span>
+                                            <div class="space-badges">
+                                                <div class="square-badge" *ngFor="let s of serverData.resources.cpuTemperature.socket">
+                                                    {{s}}°
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="divider"></div>
+                                </div>
+                                <span fxFlex></span>
+                                <div fxFlex="45" fxFlex.xs="100" fxFlex.sm="100">
+                                    <!-- Memory Usage -->
+                                    <div class="desktop-card">
+                                        <div fxLayout="row">
+                                            <h3>Memory Usage</h3>
+                                            <span fxFlex></span>
+                                            <div class="square-badge">{{serverData.resources.memory.usedPercent | number}}%</div>
+                                        </div>
+                                        <mat-progress-bar mode="determinate" [value]="serverData.resources.memory.usedPercent"></mat-progress-bar>
+                                    </div>
+                                    <div class="divider"></div>
+
+                                    <!-- GPU -->
+                                    <div class="desktop-card">
+                                        <div fxLayout="row">
+                                            <h3>GPU</h3>
+                                            <span fxFlex></span>
+                                            <div class="square-badge">{{serverData.resources.gpu.utilizationGpu | number}}%</div>&nbsp;
+                                            <div class="square-badge">{{serverData.resources.gpu.temperatureGpu | number}}°</div>&nbsp;
+                                            <div class="square-badge">{{serverData.resources.gpu.temperatureMemory | number}}°</div>
+                                        </div>
+                                        <mat-progress-bar mode="determinate" [value]="serverData.resources.gpu.utilizationGpu"></mat-progress-bar>
+                                    </div>
+                                    <div class="divider"></div>
+
+                                    <!-- File Systems -->
+                                    <div *ngFor="let fs of serverData.resources.fileSystems;let last = last;let i = index">
+                                        <div class="desktop-card">
+                                            <div fxLayout="row">
+                                                <h3>File System {{i+1}}</h3>
+                                                <span fxFlex></span>
+                                                <div class="square-badge">{{fs.usedPercent | number}}%</div>
+                                            </div>
+                                            <mat-progress-bar mode="determinate" [value]="fs.usedPercent"></mat-progress-bar>
+                                        </div>
+                                        <div *ngIf="!last" class="divider"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Running Services -->
+                            <div *ngIf="activeSection.id == 'running-services'" fxLayout="row" fxLayoutAlign="center center" class="padding">
+                                <div fxFlex fxFlex.md="70" fxFlex.lg="60" fxFlex.xl="50">
+                                    <table class="bordered highlight running-services-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Service</th>
+                                                <th>CPU</th>
+                                                <th>MEM</th>
+                                                <th class="show-on-desktop">PIDS</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let s of serverData.resources.runningServices">
+                                                <td>{{s.name}}</td>
+                                                <td>{{s.cpu | number}}%</td>
+                                                <td>{{s.mem | number}}%</td>
+                                                <td class="show-on-desktop"><span class="ts-xs light-text">{{s.pids | json}}</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Information -->
+                            <div *ngIf="activeSection.id == 'file-systems' || 
+                                        activeSection.id == 'memory' || 
+                                        activeSection.id == 'cpu' || 
+                                        activeSection.id == 'gpu' || 
+                                        activeSection.id == 'os' || 
+                                        activeSection.id == 'system' || 
+                                        activeSection.id == 'baseboard'|| 
+                                        activeSection.id == 'bios'|| 
+                                        activeSection.id == 'network-interfaces'|| 
+                                        activeSection.id == 'software-versions'" 
+                                fxLayout="row" fxLayoutAlign="center center" class="section">
+                                <div fxFlex fxFlex.md="50" fxFlex.lg="40" fxFlex.xl="30" class="desktop-card">
+
+                                    <!-- File Systems -->
+                                    <div *ngIf="activeSection.id == 'file-systems'">
+                                        <div *ngFor="let fs of serverData.resources.fileSystems; let last = last">
+                                            <div fxLayout="row" class="row">
+                                                <p>FS</p>
+                                                <span fxFlex></span>
+                                                <p>{{fs.fs}}</p>
+                                            </div>
+                                            <div fxLayout="row" class="row">
+                                                <p>Mount</p>
+                                                <span fxFlex></span>
+                                                <p>{{fs.mount}}</p>
+                                            </div>
+                                            <div fxLayout="row" class="row">
+                                                <p>Type</p>
+                                                <span fxFlex></span>
+                                                <p>{{fs.type}}</p>
+                                            </div>
+                                            <div fxLayout="row" class="row">
+                                                <p>Size</p>
+                                                <span fxFlex></span>
+                                                <p>{{fs.size}} GB</p>
+                                            </div>
+                                            <div fxLayout="row" class="row">
+                                                <p>Used ({{fs.usedPercent}}%)</p>
+                                                <span fxFlex></span>
+                                                <p>{{fs.used}} GB</p>
+                                            </div>
+                                            <div fxLayout="row" class="row">
+                                                <p>Available</p>
+                                                <span fxFlex></span>
+                                                <p>{{fs.available}} GB</p>
+                                            </div>
+                                            <div *ngIf="!last" class="divider"></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Memory -->
+                                    <div *ngIf="activeSection.id == 'memory'">
+                                        <div fxLayout="row" class="row">
+                                            <p>Total</p>
+                                            <span fxFlex></span>
+                                            <p>{{serverData.resources.memory.total}} GB</p>
+                                        </div>
+
+                                        <div fxLayout="row" class="row">
+                                            <p>Free</p>
+                                            <span fxFlex></span>
+                                            <p>{{serverData.resources.memory.free}} GB</p>
+                                        </div>
+
+                                        <div fxLayout="row" class="row">
+                                            <p>Used ({{serverData.resources.memory.usedPercent}}%)</p>
+                                            <span fxFlex></span>
+                                            <p>{{serverData.resources.memory.used}} GB</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- CPU -->
+                                    <div *ngIf="activeSection.id == 'cpu'">
+                                        <!-- Info -->
+                                        <div fxLayout="row" class="row">
+                                            <p>Manufacturer</p>
+                                            <span fxFlex></span>
+                                            <p>{{serverData.info.cpu.manufacturer}}</p>
+                                        </div>
+                                        <div fxLayout="row" class="row">
+                                            <p>Brand</p>
+                                            <span fxFlex></span>
+                                            <p>{{serverData.info.cpu.brand}}</p>
+                                        </div>
+                                        <div fxLayout="row" class="row">
+                                            <p>Vendor</p>
+                                            <span fxFlex></span>
+                                            <p>{{serverData.info.cpu.vendor}}</p>
+                                        </div>
+                                        <div fxLayout="row" class="row">
+                                            <p>Family</p>
+                                            <span fxFlex></span>
+                                            <p>{{serverData.info.cpu.family}}</p>
+                                        </div>
+                                        <div fxLayout="row" class="row">
+                                            <p>Model</p>
+                                            <span fxFlex></span>
+                                            <p>{{serverData.info.cpu.model}}</p>
+                                        </div>
+                                        <div fxLayout="row" class="row">
+                                            <p>Speed</p>
+                                            <span fxFlex></span>
+                                            <p>{{serverData.info.cpu.speed}} GHz</p>
+                                        </div>
+
+                                        <div fxLayout="row" class="row">
+                                            <p>Cores</p>
+                                            <span fxFlex></span>
+                                            <p>{{serverData.info.cpu.cores}}</p>
+                                        </div>
+
+                                        <div fxLayout="row" class="row">
+                                            <p>Physical Cores</p>
+                                            <span fxFlex></span>
+                                            <p>{{serverData.info.cpu.physicalCores}}</p>
+                                        </div>
+                                        <div class="divider"></div>
+
+                                        <!-- Load -->
+                                        <div fxLayout="row" class="row">
+                                            <p>Current Load</p>
+                                            <span fxFlex></span>
+                                            <div class="square-badge">{{serverData.resources.cpuLoad.currentLoad | number}}%</div>
+                                        </div>
+                                        <div fxLayout="row" class="row">
+                                            <p>Average Load</p>
+                                            <span fxFlex></span>
+                                            <div class="square-badge">{{serverData.resources.cpuLoad.avgLoad | number}}%</div>
+                                        </div>
+                                        <div class="divider"></div>
+
+                                        <!-- Temperature -->
+                                        <div fxLayout="row" class="row">
+                                            <p>Max Temperature</p>
+                                            <span fxFlex></span>
+                                            <div class="square-badge">{{serverData.resources.cpuTemperature.max}}°</div>
+                                        </div>
+                                        <div fxLayout="row" class="row">
+                                            <p>Main Temperature</p>
+                                            <span fxFlex></span>
+                                            <div class="square-badge">{{serverData.resources.cpuTemperature.main}}°</div>
+                                        </div>
+                                        <div fxLayout="row" class="row">
+                                            <p>Chipset Temperature</p>
+                                            <span fxFlex></span>
+                                            <div class="square-badge">{{serverData.resources.cpuTemperature.chipset}}°</div>
+                                        </div>
+                                        <div *ngIf="serverData.resources.cpuTemperature.cores.length"
+                                             fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" class="row">
+                                            <p>Cores</p>
+                                            <span fxFlex></span>
+                                            <div class="space-badges">
+                                                <div class="square-badge" *ngFor="let c of serverData.resources.cpuTemperature.cores">
+                                                    {{c}}°
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div *ngIf="serverData.resources.cpuTemperature.socket.length" 
+                                            fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" class="row">
+                                            <p>Sockets</p>
+                                            <span fxFlex></span>
+                                            <div class="space-badges">
+                                                <div class="square-badge" *ngFor="let s of serverData.resources.cpuTemperature.socket">
+                                                    {{s}}°
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- GPU -->
+                                    <div *ngIf="activeSection.id == 'gpu'">
+                                        <div fxLayout="row" class="row">
+                                            <p>Vendor</p>
+                                            <span fxFlex></span>
+                                            <p>{{serverData.resources.gpu.vendor}}</p>
+                                        </div>
+                                        <div fxLayout="row" class="row">
+                                            <p>Model</p>
+                                            <span fxFlex></span>
+                                            <p>{{serverData.resources.gpu.model}}</p>
+                                        </div>
+                                        <div fxLayout="row" class="row">
+                                            <p>Bus</p>
+                                            <span fxFlex></span>
+                                            <p>{{serverData.resources.gpu.bus}}</p>
+                                        </div>
+                                        <div fxLayout="row" class="row">
+                                            <p>Load</p>
+                                            <span fxFlex></span>
+                                            <div class="square-badge">{{serverData.resources.gpu.utilizationGpu | number}}%</div>
+                                        </div>
+                                        <div fxLayout="row" class="row">
+                                            <p>Temperature</p>
+                                            <span fxFlex></span>
+                                            <div class="square-badge">{{serverData.resources.gpu.temperatureGpu}}°</div>
+                                        </div>
+                                        <div fxLayout="row" class="row">
+                                            <p>Memory Temperature</p>
+                                            <span fxFlex></span>
+                                            <div class="square-badge">{{serverData.resources.gpu.temperatureMemory}}°</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- OS -->
+                                    <div *ngIf="activeSection.id == 'os'">
+                                        <div fxLayout="row" class="row">
+                                            <p>Platform</p>
+                                            <span fxFlex></span>
+                                            <p>{{serverData.info.os.platform}}</p>
+                                        </div>
+                                        <div fxLayout="row" class="row">
+                                            <p>Distro</p>
+                                            <span fxFlex></span>
+                                            <p>{{serverData.info.os.distro}}</p>
+                                        </div>
+                                        <div fxLayout="row" class="row">
+                                            <p>Release</p>
+                                            <span fxFlex></span>
+                                            <p>{{serverData.info.os.release}}</p>
+                                        </div>
+                                        <div fxLayout="row" class="row">
+                                            <p>Code Name</p>
+                                            <span fxFlex></span>
+                                            <p>{{serverData.info.os.codename}}</p>
+                                        </div>
+                                        <div fxLayout="row" class="row">
+                                            <p>Kernel</p>
+                                            <span fxFlex></span>
+                                            <p>{{serverData.info.os.kernel}}</p>
+                                        </div>
+                                        <div fxLayout="row" class="row">
+                                            <p>Host Name</p>
+                                            <span fxFlex></span>
+                                            <p>{{serverData.info.os.hostname}}</p>
+                                        </div>
+                                        <div fxLayout="row" class="row">
+                                            <p>FQDN</p>
+                                            <span fxFlex></span>
+                                            <p>{{serverData.info.os.fqdn}}</p>
+                                        </div>
+                                        <div fxLayout="row" class="row">
+                                            <p>Arch</p>
+                                            <span fxFlex></span>
+                                            <p>{{serverData.info.os.arch}}</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Software Versions -->
+                                    <div *ngIf="activeSection.id == 'software-versions'">
+                                        <div *ngFor="let item of serverData.info.softwareVersions | keyvalue; let last = last">
+                                            <div fxLayout="row" class="row">
+                                                <p>{{item.key}}</p>
+                                                <span fxFlex></span>
+                                                <p>{{item.value}}</p>
+                                            </div>
+                                        </div>
+                                    </div>                           
+
+                                    <!-- System -->
+                                    <div *ngIf="activeSection.id == 'system'">
+                                        <div fxLayout="row" class="row">
+                                            <p>Manufacturer</p>
+                                            <span fxFlex></span>
+                                            <p>{{serverData.info.system.manufacturer}}</p>
+                                        </div>
+                                        <div fxLayout="row" class="row">
+                                            <p>Model</p>
+                                            <span fxFlex></span>
+                                            <p>{{serverData.info.system.model}}</p>
+                                        </div>
+                                        <div fxLayout="row" class="row">
+                                            <p>Version</p>
+                                            <span fxFlex></span>
+                                            <p>{{serverData.info.system.version}}</p>
+                                        </div>
+                                        <div fxLayout="row" class="row">
+                                            <p>SKU</p>
+                                            <span fxFlex></span>
+                                            <p>{{serverData.info.system.sku}}</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- BaseBoard -->
+                                    <div *ngIf="activeSection.id == 'baseboard'">
+                                        <div fxLayout="row" class="row">
+                                            <p>Manufacturer</p>
+                                            <span fxFlex></span>
+                                            <p>{{serverData.info.baseboard.manufacturer}}</p>
+                                        </div>
+                                        <div fxLayout="row" class="row">
+                                            <p>Model</p>
+                                            <span fxFlex></span>
+                                            <p>{{serverData.info.baseboard.model}}</p>
+                                        </div>
+                                        <div fxLayout="row" class="row">
+                                            <p>Version</p>
+                                            <span fxFlex></span>
+                                            <p>{{serverData.info.baseboard.version}}</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- BIOS -->
+                                    <div *ngIf="activeSection.id == 'bios'">
+                                        <div fxLayout="row" class="row">
+                                            <p>Vendor</p>
+                                            <span fxFlex></span>
+                                            <p>{{serverData.info.bios.vendor}}</p>
+                                        </div>
+                                        <div fxLayout="row" class="row">
+                                            <p>Version</p>
+                                            <span fxFlex></span>
+                                            <p>{{serverData.info.bios.version}}</p>
+                                        </div>
+                                        <div fxLayout="row" class="row">
+                                            <p>Release Date</p>
+                                            <span fxFlex></span>
+                                            <p>{{serverData.info.bios.releaseDate}}</p>
+                                        </div>
+                                        <div fxLayout="row" class="row">
+                                            <p>Revision</p>
+                                            <span fxFlex></span>
+                                            <p>{{serverData.info.bios.revision}}</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Network Interfaces -->
+                                    <div *ngIf="activeSection.id == 'network-interfaces'">
+                                        <div *ngFor="let n of serverData.info.networkInterfaces; let last = last">
+                                            <div fxLayout="row" class="row">
+                                                <p>Interface</p>
+                                                <span fxFlex></span>
+                                                <p>{{n.iface}} | {{n.ifaceName}}</p>
+                                            </div>
+                                            <div fxLayout="row" class="row">
+                                                <p>IP4</p>
+                                                <span fxFlex></span>
+                                                <p>{{n.ip4}}</p>
+                                            </div>
+                                            <div fxLayout="row" class="row">
+                                                <p>IP4 Subnet</p>
+                                                <span fxFlex></span>
+                                                <p>{{n.ip4subnet}}</p>
+                                            </div>
+                                            <div fxLayout="row" class="row">
+                                                <p>IP6</p>
+                                                <span fxFlex></span>
+                                                <p>{{n.ip6}}</p>
+                                            </div>
+                                            <div fxLayout="row" class="row">
+                                                <p>IP6 Subnet</p>
+                                                <span fxFlex></span>
+                                                <p>{{n.ip6subnet}}</p>
+                                            </div>
+                                            <div *ngIf="!last" class="divider"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -72,6 +572,12 @@
 
             <!-- Mobile Tabs -->
 
+
+
+
+            <!-- Refresher -->
+            <app-refresh-button *ngIf="loaded && activeSection.id == 'monitoring' || activeSection.id == 'running-services'" 
+                                [intervalSeconds]="120" (refresh)="refresh()"></app-refresh-button>
         </div>
     </mat-drawer-content>
 </mat-drawer-container>

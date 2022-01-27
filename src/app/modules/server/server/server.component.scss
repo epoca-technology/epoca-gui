@@ -1,7 +1,94 @@
+@use '@angular/material' as mat;
+
+
+// State colors
+$optimal: var(--success-color);
+$normal: #00897B;
+$warning: #EF6C00;
+$error: var(--error-color);
+
+
+
 .desktop-sidenav {
     width: 300px;
 }
 .desktop-sidenav button {
     text-align: left;
     width: 100%;
+}
+
+
+.loader { margin-top:200px;}
+
+
+
+.section {
+    padding:15px;
+}
+
+.section h1 {text-align: center;}
+
+.row {
+    margin:15px 0 15px 0;
+}
+.row:last-child {
+    margin:15px 0 0 0;
+}
+.row p:first-child { color:var(--light-text-color)}
+.row p:last-child { text-overflow: ellipsis;overflow: hidden;white-space: nowrap; }
+
+
+
+.running-services-table {
+    margin: 15px 0 0 0;
+    background:white;
+}
+
+
+
+.monitoring {
+    padding:15px;
+}
+
+
+.space-badges { text-align: center;}
+.space-badges .square-badge{
+    margin: 0 5px 0 5px;
+    max-width: 40px;
+    display: inline-block;
+}
+.space-badges .square-badge:first-child {
+    margin: 0 5px 0 0;
+}
+.space-badges .square-badge:last-child {
+    margin: 0 0 0 5px;
+}
+
+
+// Badge Colors
+.optimal-badge { background: $optimal;}
+.normal-badge { background: $normal;}
+.warning-badge { background: $warning;}
+.error-badge { background: $error;}
+
+
+
+
+/* Responsiveness */
+
+
+/* mobile: sm & xs */
+@media only screen and (max-width: 959px) {
+    .space-badges .square-badge {margin: 5px}
+}
+
+
+
+/* desktop: md */
+@media only screen and (min-width: 960px) {
+    .running-services-table {
+        @include mat.elevation(3);
+    }
+
+    .monitoring .divider{ border:0;margin:35px 0 35px 0;}
 }

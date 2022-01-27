@@ -90,4 +90,35 @@ export class UtilsService implements IUtilService {
             return unknownError;
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /* Async Delay */
+
+
+
+    /**
+     * It will create a promise that will resolve after provided seconds have passed.
+     * This functionality is used to prevent our requests being blocked by external sources.
+     * @param seconds 
+     */
+     public asyncDelay(seconds: number = 3): Promise<void> {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                resolve();
+            }, seconds * 1000);
+        });
+    }
 }

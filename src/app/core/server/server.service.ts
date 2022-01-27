@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from '../api';
-import { IServerService, IServerData, IServerResources } from './interfaces';
+import { IServerService, IServerData, IServerResources, IAlarmsConfig } from './interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -44,5 +44,19 @@ export class ServerService implements IServerService {
 	 */
      public getServerResources(): Promise<IServerResources> {
 		return this._api.request('get','server/getServerResources', {});
+	}
+
+
+
+
+
+
+
+	/**
+	 * Updates the alarms configuration.
+	 * @returns Promise<void>
+	 */
+     public setAlarmsConfiguration(alarms: IAlarmsConfig, otp: string): Promise<void> {
+		return this._api.request('post','server/setAlarmsConfiguration', {otp: otp, ...alarms});
 	}
 }

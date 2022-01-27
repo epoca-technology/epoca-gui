@@ -44,6 +44,7 @@ import {
 	NavService,
 	SnackbarService,
 	ValidationsService,
+    AudioService,
 } from './services';
 
 
@@ -97,6 +98,7 @@ import { AppComponent } from './app.component';
 		NavService,
 		SnackbarService,
 		ValidationsService,
+        AudioService,
 
 		// Core
         ApiService,

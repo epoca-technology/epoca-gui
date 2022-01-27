@@ -22,17 +22,25 @@
                 </button>
             </mat-list-item>
 
-            <!-- Server -->
-            <mat-list-item>
-                <button mat-button class="left-icon-button" (click)="_nav.server()" [disabled]="state.module == 'server'">
-                    <mat-icon>storage</mat-icon><span>Server</span>
-                </button>
-            </mat-list-item>
-
             <!-- Price Chart -->
             <mat-list-item>
                 <button mat-button class="left-icon-button" (click)="_nav.priceChart()" [disabled]="state.module == 'priceChart'">
                     <mat-icon>waterfall_chart</mat-icon><span>Price Chart</span>
+                </button>
+            </mat-list-item>
+
+            <!-- Server -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.server()" [disabled]="state.module == 'server'">
+                    <mat-icon svgIcon="server"></mat-icon><span>Server</span>
+                </button>
+            </mat-list-item>
+
+
+            <!-- Database -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.database()" [disabled]="state.module == 'database'">
+                    <mat-icon svgIcon="database"></mat-icon><span>Database</span>
                 </button>
             </mat-list-item>
         </mat-list>
