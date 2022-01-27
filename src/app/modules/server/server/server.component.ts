@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 import { IAlarmsConfig, IServerData, ServerService, UtilsService } from '../../../core';
 import { AppService, AudioService, ILayout, NavService, SnackbarService } from '../../../services';
 import { AlarmsConfigDialogComponent } from './alarms-config-dialog/alarms-config-dialog.component';
-import { ISection, IServerComponent, IState, IStates } from './interfaces';
+import { ISection, ISectionID, IServerComponent, IState, IStates } from './interfaces';
 
 @Component({
   selector: 'app-server',
@@ -95,6 +95,19 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
         if (this.layoutSub) this.layoutSub.unsubscribe();
     }
 
+
+
+
+
+
+    /**
+     * Activates a section by providing an ID.
+     * @param id 
+     * @returns void
+     */
+    public activateSectionByID(id: ISectionID): void {
+        for (let s of this.sections) { if (s.id == id) this.activateSection(s) }
+    }
 
 
 

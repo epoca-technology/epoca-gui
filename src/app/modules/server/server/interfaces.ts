@@ -1,4 +1,5 @@
 export interface IServerComponent {
+    activateSectionByID(id: ISectionID): void,
     activateSection(section: ISection): Promise<void>,
     refresh(): Promise<void>,
     updateConfig(): void
