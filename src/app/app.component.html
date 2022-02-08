@@ -8,8 +8,8 @@
         <mat-toolbar color="primary" fxLayout="row" fxLayoutAlign="start center">
             <span>Menu</span>
             <span fxFlex></span>
-            <button mat-icon-button (click)="signOut()"><mat-icon>logout</mat-icon></button>
-            <button mat-icon-button (click)="createNewInstance()"><mat-icon>open_in_new</mat-icon></button>
+            <button mat-icon-button (click)="signOut()" matTooltip="Sign Out"><mat-icon>logout</mat-icon></button>
+            <button mat-icon-button (click)="createNewInstance()" matTooltip="Create New Instance"><mat-icon>open_in_new</mat-icon></button>
             <button mat-icon-button (click)="sidenav?.toggle()"><mat-icon>arrow_forward</mat-icon></button>
         </mat-toolbar>
 

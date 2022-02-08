@@ -33,6 +33,7 @@ import {MatGridListModule} from '@angular/material/grid-list';
 import {MatBottomSheetModule, MAT_BOTTOM_SHEET_DEFAULT_OPTIONS} from '@angular/material/bottom-sheet';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatNativeDateModule} from '@angular/material/core';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 
 // Charts
@@ -135,6 +136,7 @@ import { RefreshButtonComponent } from './components/refresh-button/refresh-butt
 		MatBottomSheetModule,
         MatDatepickerModule,
         MatNativeDateModule,
+        MatTooltipModule,
 	],
 	providers: [
 		// Dialog Defaults
@@ -189,6 +191,7 @@ import { RefreshButtonComponent } from './components/refresh-button/refresh-butt
 		MatBottomSheetModule,
         MatDatepickerModule,
         MatNativeDateModule,
+        MatTooltipModule,
 		
 		// Directives
 		DisableControlDirective,

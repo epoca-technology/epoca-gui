@@ -18,10 +18,6 @@ export class ServerService implements IServerService {
 
     /* Retrievers */
 
-
-
-
-
 	/**
 	 * Retrieves the server data object that contains both, info &
      * resources
@@ -49,6 +45,10 @@ export class ServerService implements IServerService {
 
 
 
+
+
+
+    /* Alarms */
 
 
 

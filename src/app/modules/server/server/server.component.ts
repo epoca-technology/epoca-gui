@@ -6,6 +6,7 @@ import { IAlarmsConfig, IServerData, ServerService, UtilsService } from '../../.
 import { AppService, AudioService, ILayout, NavService, SnackbarService } from '../../../services';
 import { AlarmsConfigDialogComponent } from './alarms-config-dialog/alarms-config-dialog.component';
 import { ISection, ISectionID, IServerComponent, IState, IStates } from './interfaces';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-server',
@@ -41,7 +42,8 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
     ];
     public activeSection = this.sections[0];
 
-    // Refresh Error
+    // Potential Errors
+    public environmentError: boolean = false;
     public refreshError: string|undefined = undefined;
 
     // Badge States
@@ -184,6 +186,9 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
 
             // Populate states
             this.populateStates();
+
+            // Check if there is an environment error
+            this.environmentError = environment.production !== this.serverData.production;
         }
     }
 

@@ -35,7 +35,7 @@
                     <button mat-icon-button (click)="serverSidenav?.toggle()" class="show-on-mobile"><mat-icon>menu</mat-icon></button>
                     <span class="truncate">{{activeSection.name}}</span>
                     <span fxFlex></span>
-                    <button mat-icon-button (click)="updateConfig()" [disabled]="submitting"><mat-icon>edit_notifications</mat-icon></button>
+                    <button mat-icon-button (click)="updateConfig()" [disabled]="submitting" matTooltip="Alarms Configuration"><mat-icon>edit_notifications</mat-icon></button>
                 </div>
             </mat-toolbar>
 
@@ -74,13 +74,28 @@
                                         <div fxLayout="row">
                                             <h3>Server</h3>
                                             <span fxFlex></span>
-                                            <div [ngClass]="{'square-badge-success': !refreshError, 'square-badge-error': refreshError}">
+                                            <div [ngClass]="{'square-badge': !refreshError && !environmentError, 'square-badge-error': refreshError || environmentError}" matTooltip="Uptime">
                                                 {{serverData.resources.uptime}} hours
                                             </div>
                                         </div>
-                                        <div [ngClass]="{'error-color': refreshError}" 
+                                        <div [ngClass]="{'error-color': refreshError || environmentError}" 
                                             fxLayout="row">
-                                            <p [ngClass]="{'light-text': !refreshError}" class="ts-m">Last Update</p>
+                                            <p [ngClass]="{'light-text': !refreshError && !environmentError}" class="ts-m">Environment</p>
+                                            <span fxFlex></span>
+                                            <p class="ts-m">{{serverData.production ? 'Production': 'Development'}}</p>
+                                        </div>
+                                        <p *ngIf="environmentError" class="error-color align-center">
+                                            The environment.production property in the GUI is different to the one in the server
+                                        </p>
+                                        <div [ngClass]="{'error-color': refreshError || environmentError}" 
+                                            fxLayout="row">
+                                            <p [ngClass]="{'light-text': !refreshError && !environmentError}" class="ts-m">Version</p>
+                                            <span fxFlex></span>
+                                            <p class="ts-m">{{serverData.version}}</p>
+                                        </div>
+                                        <div [ngClass]="{'error-color': refreshError || environmentError}" 
+                                            fxLayout="row">
+                                            <p [ngClass]="{'light-text': !refreshError && !environmentError}" class="ts-m">Last Update</p>
                                             <span fxFlex></span>
                                             <p class="ts-m">{{serverData.resources.lastResourceScan | date: 'medium'}}</p>
                                         </div>
@@ -132,6 +147,7 @@
                                             <div class="space-badges">
                                                 <div class="square-badge" 
                                                     *ngFor="let c of serverData.resources.cpuTemperature.cores; let i = index;" 
+                                                    matTooltip="Core #{{i+1}}"
                                                     [ngClass]="states.cpuCoresTemp[i]">
                                                     {{c}}°
                                                 </div>
@@ -144,6 +160,7 @@
                                             <div class="space-badges">
                                                 <div class="square-badge" 
                                                     *ngFor="let s of serverData.resources.cpuTemperature.socket; let i = index;"
+                                                    matTooltip="Socket #{{i+1}}"
                                                     [ngClass]="states.cpuSocketsTemp[i]">
                                                     {{s}}°
                                                 </div>
@@ -172,13 +189,13 @@
                                         <div fxLayout="row">
                                             <h3>GPU</h3>
                                             <span fxFlex></span>
-                                            <div [ngClass]="states.gpuLoad" class="square-badge">
+                                            <div [ngClass]="states.gpuLoad" class="square-badge" matTooltip="Load">
                                                 {{serverData.resources.gpu.utilizationGpu | number}}%
                                             </div>&nbsp;
-                                            <div [ngClass]="states.gpuTemp" class="square-badge">
+                                            <div [ngClass]="states.gpuTemp" class="square-badge" matTooltip="Temperature">
                                                 {{serverData.resources.gpu.temperatureGpu | number}}°
                                             </div>&nbsp;
-                                            <div [ngClass]="states.gpuMemoryTemp" class="square-badge">
+                                            <div [ngClass]="states.gpuMemoryTemp" class="square-badge" matTooltip="Memory Temperature">
                                                 {{serverData.resources.gpu.temperatureMemory | number}}°
                                             </div>
                                         </div>
