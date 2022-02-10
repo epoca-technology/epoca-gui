@@ -18,7 +18,7 @@ export const environment: IEnvironment = {
 	},
     apiURL: {
         useLocal: true,
-        local: 'http://localhost:8075',
+        local: 'http://localhost:5075',
         external: ''
     },
     recaptchaKey: '6Lcd57sdAAAAAKe5F9X93Sw_Yagh4GZ3J5-T1PuT'
