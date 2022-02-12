@@ -10,7 +10,7 @@ export interface IServerComponent {
 
 
 export type ISectionID = 'monitoring'|'file-systems'|'memory'|'cpu'|'gpu'|'os'|
-'software-versions'|'running-services'|'system'|'baseboard'|'bios'|'network-interfaces';
+'software-versions'|'system'|'baseboard'|'bios'|'network-interfaces';
 
 
 

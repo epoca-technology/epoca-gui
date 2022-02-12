@@ -1,5 +1,5 @@
 {
-  "name": "gui-dev",
+  "name": "gui-development",
   "version": "0.0.2",
   "scripts": {
     "ng": "ng",
@@ -7,10 +7,10 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve": "clear && node ./node_modules/gulp/bin/gulp.js preBuildDev && node ./node_modules/@angular/cli/bin/ng serve --configuration development",
-    "serve-prod": "clear && node ./node_modules/gulp/bin/gulp.js preBuildProd && node ./node_modules/@angular/cli/bin/ng serve --configuration production",
-    "build-dev": "clear && node ./node_modules/gulp/bin/gulp.js preBuildDev && node ./node_modules/@angular/cli/bin/ng build --configuration development",
-    "build-prod": "clear && node ./node_modules/gulp/bin/gulp.js preBuildProd && node --max_old_space_size=4096 ./node_modules/@angular/cli/bin/ng build --configuration production"
+    "serve-development": "gulp preBuildDev && ng serve --configuration development",
+    "serve-production": "gulp preBuildProd && ng serve --configuration production",
+    "build-development": "gulp preBuildDev && ng build --configuration development",
+    "build-production": "gulp preBuildProd && node --max_old_space_size=4096 ./node_modules/@angular/cli/bin/ng build --configuration production"
   },
   "private": true,
   "dependencies": {
@@ -26,7 +26,7 @@
     "@angular/platform-browser-dynamic": "13.1.0",
     "@angular/router": "13.1.0",
     "@angular/service-worker": "13.1.1",
-    "apexcharts": "^3.32.0",
+    "apexcharts": "3.32.0",
     "bignumber.js": "9.0.2",
     "dexie": "3.2.0",
     "firebase": "9.6.1",

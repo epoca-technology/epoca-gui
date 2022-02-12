@@ -1,15 +1,15 @@
-# GuiDev
+# PLUTUS GUI
 
 ## Commands
 
 ### Run Local Server
 
-`npm run serve` | `npm run serve-prod`
+`npm run serve-development` | `npm run serve-production`
 
 
 ### PWA build
 
-`npm run build-dev` | `npm run build-prod`
+`npm run build-development` | `npm run build-production`
 
 
 # Angular Project

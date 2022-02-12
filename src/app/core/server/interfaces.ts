@@ -140,18 +140,6 @@ export interface IServerGPU {
 
 
 
-// Running Service
-export interface IServerRunningService {
-    name: string,
-    running: boolean,
-    pids: number[],
-    cpu: number,
-    mem: number
-}
-
-
-
-
 
 
 
@@ -171,7 +159,6 @@ export interface IServerAPIQueries {
     fsSize: string,
     mem: string,
     currentLoad: string,
-    services: string,
 }
 
 
@@ -227,7 +214,6 @@ export interface IServerResources {
     memory: IServerMemory,
     cpuTemperature: IServerCPUTemperature,
     gpu: IServerGPU,
-    runningServices: IServerRunningService[],
     cpuLoad: IServerCPULoad
 }
 

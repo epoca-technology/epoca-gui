@@ -1,0 +1,7 @@
+version: "3.9"
+services:
+  gui:
+    container_name: gui
+    build: 
+      context: .
+      dockerfile: ./Dockerfile

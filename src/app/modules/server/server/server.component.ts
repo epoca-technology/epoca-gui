@@ -34,7 +34,6 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
         {id: 'gpu', name: 'Graphics Processing Unit', svgIcon: 'hardware_chip'},
         {id: 'os', name: 'Operating System', svgIcon: 'ubuntu'},
         {id: 'software-versions', name: 'Software Versions', svgIcon: 'code_branch'},
-        {id: 'running-services', name: 'Running Services', icon: 'toggle_on'},
         {id: 'system', name: 'System', icon: 'personal_video'},
         {id: 'baseboard', name: 'Baseboard', icon: 'developer_board'},
         {id: 'bios', name: 'BIOS', icon: 'subtitles'},
@@ -181,9 +180,6 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
      */
     private onDataChanges(): void {
         if (this.serverData) {
-            // Order the running processes by cpu usage
-            this.serverData.resources.runningServices.sort((a, b) => a['cpu'] > b['cpu'] ? -1 : a['cpu'] === b['cpu'] ? 0 : 1);
-
             // Populate states
             this.populateStates();
 

@@ -5,12 +5,12 @@ importScripts('ngsw-worker.js');
 importScripts('https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js');
 importScripts('https://www.gstatic.com/firebasejs/8.10.0/firebase-messaging.js');
 firebase.initializeApp({
-    apiKey: "AIzaSyBKcvKZTGo7hsYXreWpcpHuwo6UZff6Nfg",
-    authDomain: "projectplutus-dev.firebaseapp.com",
-    projectId: "projectplutus-dev",
-    storageBucket: "projectplutus-dev.appspot.com",
-    messagingSenderId: "228969576009",
-    appId: "1:228969576009:web:7b516f6c4d248255177198"
+    apiKey: "AIzaSyAZd0yugAXBHLnC5MKu1oMhnFvvpZn94d0",
+    authDomain: "projectplutus-prod.firebaseapp.com",
+    projectId: "projectplutus-prod",
+    storageBucket: "projectplutus-prod.appspot.com",
+    messagingSenderId: "192265974678",
+    appId: "1:192265974678:web:6d5ebd1518f7e73176e3b7"
 });
 let messaging;
 try {
@@ -31,4 +31,3 @@ try {
 } catch (e) {
     console.log('[ServiceWorker]: Platform does not support FCM.');
 }
-
