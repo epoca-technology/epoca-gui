@@ -21,7 +21,9 @@ export const environment: IEnvironment = {
         local: 'http://localhost:5075',
         external: ''
     },
-    recaptchaKey: '6Lcd57sdAAAAAKe5F9X93Sw_Yagh4GZ3J5-T1PuT'
+    recaptchaKey: '6Lcd57sdAAAAAKe5F9X93Sw_Yagh4GZ3J5-T1PuT',
+    pgAdminURL: 'http://localhost:8080/',
+    dozzleURL: 'http://localhost:8085/'
 };
 
 /*

@@ -1,16 +1,16 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { IPriceChartConfigComponent } from './interfaces';
+import { ICandlesticksConfigDialogComponent } from './interfaces';
 import {AbstractControl, FormControl, FormGroup, Validators} from '@angular/forms';
 import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
-import { IPriceChartConfig } from '../interfaces';
-
+import { ICandlesticksConfig } from '../interfaces';
 
 @Component({
-  selector: 'app-price-chart-config',
-  templateUrl: './price-chart-config.component.html',
-  styleUrls: ['./price-chart-config.component.scss']
+  selector: 'app-candlesticks-config-dialog',
+  templateUrl: './candlesticks-config-dialog.component.html',
+  styleUrls: ['./candlesticks-config-dialog.component.scss']
 })
-export class PriceChartConfigComponent implements OnInit, IPriceChartConfigComponent {
+export class CandlesticksConfigDialogComponent implements OnInit, ICandlesticksConfigDialogComponent {
+
     // Form
 	public form = new FormGroup ({
         start: new FormControl('', [ Validators.required ]),
@@ -19,8 +19,8 @@ export class PriceChartConfigComponent implements OnInit, IPriceChartConfigCompo
     });
 
 	constructor(
-		private dialogRef: MatDialogRef<PriceChartConfigComponent>,
-		@Inject(MAT_DIALOG_DATA) private data: IPriceChartConfig,
+		private dialogRef: MatDialogRef<CandlesticksConfigDialogComponent>,
+		@Inject(MAT_DIALOG_DATA) private data: ICandlesticksConfig,
 	) { }
 
 
@@ -74,4 +74,5 @@ export class PriceChartConfigComponent implements OnInit, IPriceChartConfigCompo
 	* @returns void
 	* */
 	public cancel(): void { this.dialogRef.close(false) }
+
 }

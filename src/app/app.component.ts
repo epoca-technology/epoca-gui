@@ -9,6 +9,7 @@ import {
     ILayout,
     IRouteState
 } from './services';
+import { environment } from '../environments/environment';
 
 
 
@@ -28,7 +29,7 @@ export class AppComponent implements IAppComponent {
 	// Custom Icons
 	public readonly customIcons: string[] = ['home', 'wallet', 'format_list_numbered',
     'person','notifications','logo_google','paste','ubuntu','code_branch','hdd','microchip','server','database',
-    'hardware_chip'];
+    'hardware_chip', 'ssid_chart'];
 	
 	// Route State
 	public state: IRouteState = this._nav.routeState.value;
@@ -84,7 +85,7 @@ export class AppComponent implements IAppComponent {
     
 
 
-    /* Misc Helpers */
+    /* Action Confirmation */
 
 
 
@@ -101,7 +102,7 @@ export class AppComponent implements IAppComponent {
         }).afterClosed().subscribe(
             (confirmed: boolean) => {
                 if (confirmed) {
-                    window.open(window.location.href, "_blank");
+                    this._nav.openUrl(window.location.href);
                     if (this.sidenavOpened) this.sidenav?.close();
                 }
             }
@@ -132,6 +133,52 @@ export class AppComponent implements IAppComponent {
         );
 	}
 
+
+
+
+    
+
+
+	/*
+	* Opens the PGADMIN GUI on a new tab on confirmation
+	* @returns void
+	* */
+	public openPGAdmin(): void {
+        this._nav.displayConfirmationDialog({
+            title: 'PGAdmin',
+            content: '<p class="align-center">If you confirm the action, the PGAdmin GUI will be loaded on a new tab.</p>'
+        }).afterClosed().subscribe(
+            (confirmed: boolean) => {
+                if (confirmed) {
+                    this._nav.openUrl(environment.pgAdminURL);
+                    if (this.sidenavOpened) this.sidenav?.close();
+                }
+            }
+        );
+	}
+
+
+
+
+
+
+	/*
+	* Opens the Dozzle GUI on a new tab on confirmation
+	* @returns void
+	* */
+	public openDozzle(): void {
+        this._nav.displayConfirmationDialog({
+            title: 'Dozzle',
+            content: '<p class="align-center">If you confirm the action, the Dozzle GUI will be loaded on a new tab.</p>'
+        }).afterClosed().subscribe(
+            (confirmed: boolean) => {
+                if (confirmed) {
+                    this._nav.openUrl(environment.dozzleURL);
+                    if (this.sidenavOpened) this.sidenav?.close();
+                }
+            }
+        );
+	}
 
 
 

@@ -22,10 +22,31 @@
                 </button>
             </mat-list-item>
 
+            <!-- Trading Session -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.candlesticks()" [disabled]="state.module == 'candlesticks'">
+                    <mat-icon>auto_graph</mat-icon><span>Trading Session</span>
+                </button>
+            </mat-list-item>
+
+            <!-- Trading Simulations -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.candlesticks()" [disabled]="state.module == 'candlesticks'">
+                    <mat-icon svgIcon="ssid_chart"></mat-icon><span>Trading Simulations</span>
+                </button>
+            </mat-list-item>
+
             <!-- Price Chart -->
             <mat-list-item>
-                <button mat-button class="left-icon-button" (click)="_nav.priceChart()" [disabled]="state.module == 'priceChart'">
-                    <mat-icon>waterfall_chart</mat-icon><span>Price Chart</span>
+                <button mat-button class="left-icon-button" (click)="_nav.candlesticks()" [disabled]="state.module == 'candlesticks'">
+                    <mat-icon>waterfall_chart</mat-icon><span>Candlesticks</span>
+                </button>
+            </mat-list-item>
+
+            <!-- API Errors -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.server()" [disabled]="state.module == 'server'">
+                    <mat-icon>bug_report</mat-icon><span>API Errors</span>
                 </button>
             </mat-list-item>
 
@@ -41,6 +62,38 @@
             <mat-list-item>
                 <button mat-button class="left-icon-button" (click)="_nav.database()" [disabled]="state.module == 'database'">
                     <mat-icon svgIcon="database"></mat-icon><span>Database</span>
+                </button>
+            </mat-list-item>
+
+
+            <!-- PGAdmin -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="openPGAdmin()">
+                    <div fxLayout="row" fxLayoutAlign="center center">
+                        <mat-icon>construction</mat-icon><span>PGAdmin</span>
+                        <span fxFlex></span>
+                        <mat-icon class="light-text" style="font-size:20px;">open_in_new</mat-icon>
+                    </div>
+                </button>
+            </mat-list-item>
+
+
+            <!-- Dozzle -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="openDozzle()">
+                    <div fxLayout="row" fxLayoutAlign="center center">
+                        <mat-icon>construction</mat-icon><span>Dozzle</span>
+                        <span fxFlex></span>
+                        <mat-icon class="light-text" style="font-size:20px;">open_in_new</mat-icon>
+                    </div>
+                </button>
+            </mat-list-item>
+
+
+            <!-- Users -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.server()" [disabled]="state.module == 'server'">
+                    <mat-icon>people_alt</mat-icon><span>Users</span>
                 </button>
             </mat-list-item>
         </mat-list>

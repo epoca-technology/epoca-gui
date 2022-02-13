@@ -35,6 +35,8 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatNativeDateModule} from '@angular/material/core';
 import {MatTooltipModule} from '@angular/material/tooltip';
 
+// DateTime Picker
+import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
 
 // Charts
 import { NgApexchartsModule } from "ng-apexcharts";
@@ -137,6 +139,11 @@ import { RefreshButtonComponent } from './components/refresh-button/refresh-butt
         MatDatepickerModule,
         MatNativeDateModule,
         MatTooltipModule,
+
+        // DateTime Picker
+        NgxMatDatetimePickerModule,
+        NgxMatTimepickerModule,
+        NgxMatNativeDateModule,
 	],
 	providers: [
 		// Dialog Defaults
@@ -192,6 +199,11 @@ import { RefreshButtonComponent } from './components/refresh-button/refresh-butt
         MatDatepickerModule,
         MatNativeDateModule,
         MatTooltipModule,
+
+        // DateTime Picker
+        NgxMatDatetimePickerModule,
+        NgxMatTimepickerModule,
+        NgxMatNativeDateModule,
 		
 		// Directives
 		DisableControlDirective,

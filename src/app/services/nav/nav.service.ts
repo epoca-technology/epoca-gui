@@ -61,7 +61,7 @@ export class NavService implements INavService {
 
 	/* App Navigation */
 	public dashboard(): Promise<boolean> { return this.navigate('dashboard') }
-	public priceChart(): Promise<boolean> { return this.navigate('priceChart') }
+	public candlesticks(): Promise<boolean> { return this.navigate('candlesticks') }
 	public server(): Promise<boolean> { return this.navigate('server') }
 	public database(): Promise<boolean> { return this.navigate('database') }
 

@@ -10,7 +10,7 @@ export interface INavService {
 	
 	// App Navigation
 	dashboard(): Promise<boolean>,
-	priceChart(): Promise<boolean>,
+	candlesticks(): Promise<boolean>,
     server(): Promise<boolean>,
     database(): Promise<boolean>,
 	

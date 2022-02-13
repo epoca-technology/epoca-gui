@@ -1,21 +1,20 @@
 import { Component, OnInit } from '@angular/core';
-import { IPriceChartComponent, IPriceChartConfig } from './interfaces';
+import { ICandlesticksComponent, ICandlesticksConfig} from './interfaces';
 import { CandlestickService, ICandlestick, UtilsService } from '../../../core';
 import { AppService, ChartService, NavService, SnackbarService } from '../../../services';
 import * as moment from 'moment';
 import {MatDialog} from '@angular/material/dialog';
-import { PriceChartConfigComponent } from './price-chart-config/price-chart-config.component';
-
+import { CandlesticksConfigDialogComponent } from './candlesticks-config-dialog/candlesticks-config-dialog.component';
 
 
 @Component({
-  selector: 'app-price-chart',
-  templateUrl: './price-chart.component.html',
-  styleUrls: ['./price-chart.component.scss']
+  selector: 'app-candlesticks',
+  templateUrl: './candlesticks.component.html',
+  styleUrls: ['./candlesticks.component.scss']
 })
-export class PriceChartComponent implements OnInit, IPriceChartComponent {
+export class CandlesticksComponent implements OnInit, ICandlesticksComponent {
 	// Config
-	public config: IPriceChartConfig = this.getDefaultConfig();
+	public config: ICandlesticksConfig = this.getDefaultConfig();
 
 	// Raw Candlesticks
 	public rawCandlesticks?: ICandlestick[];
@@ -108,7 +107,7 @@ export class PriceChartComponent implements OnInit, IPriceChartComponent {
      * @returns void
      */
     public updateConfig(): void {
-        this.dialog.open(PriceChartConfigComponent, {
+        this.dialog.open(CandlesticksConfigDialogComponent, {
 			disableClose: true,
 			hasBackdrop: this._app.layout.value != 'mobile', // Mobile optimization
 			panelClass: 'small-dialog',
@@ -136,7 +135,7 @@ export class PriceChartComponent implements OnInit, IPriceChartComponent {
      * Retrieves the default chart configuration.
      * @returns IPriceChartConfig
      */
-    private getDefaultConfig(): IPriceChartConfig {
+    private getDefaultConfig(): ICandlesticksConfig {
         const currentTS: number = Date.now();
 		return {
 			start: moment(currentTS).subtract(3, 'days').valueOf(),
@@ -144,4 +143,5 @@ export class PriceChartComponent implements OnInit, IPriceChartComponent {
 			intervalMinutes: 30
 		}
     }
+
 }

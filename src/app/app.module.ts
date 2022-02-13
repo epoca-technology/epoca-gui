@@ -22,8 +22,8 @@ BigNumber.config({EXPONENTIAL_AT: 32});
 import { environment } from '../environments/environment';
 
 // Initialize Firebase
-//import {initializeApp} from 'firebase/app';
-//initializeApp(environment.firebaseConfig.credentials);
+import {initializeApp} from 'firebase/app';
+initializeApp(environment.firebaseConfig.credentials);
 
 
 // Core

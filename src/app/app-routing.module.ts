@@ -15,10 +15,10 @@ const routes: Routes = [
 
 	/* Lazy Loaded Modules */
 
-	// Price Chart
+	// Candlesticks
 	{
-		path: 'priceChart',
-		loadChildren: () => import('./modules/price-chart/price-chart.module').then(m => m.PriceChartModule),
+		path: 'candlesticks',
+		loadChildren: () => import('./modules/candlesticks/candlesticks.module').then(m => m.CandlesticksModule),
 	},
 
 	// Server

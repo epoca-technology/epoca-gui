@@ -1,4 +1,4 @@
-export interface IPriceChartComponent {
+export interface ICandlesticksComponent {
     refresh(): void,
     updateConfig(): void 
 }
@@ -7,7 +7,7 @@ export interface IPriceChartComponent {
 
 
 // Config
-export interface IPriceChartConfig {
+export interface ICandlesticksConfig {
     start: number,
     end: number,
     intervalMinutes: number

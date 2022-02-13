@@ -10,6 +10,8 @@ export interface IEnvironment {
     firebaseConfig: IFirebaseConfig,
     apiURL: IApiURL
     recaptchaKey: string,
+    pgAdminURL: string,
+    dozzleURL: string
 }
 
 

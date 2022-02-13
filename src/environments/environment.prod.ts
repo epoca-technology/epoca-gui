@@ -18,5 +18,7 @@ export const environment: IEnvironment = {
         local: 'http://localhost:8075',
         external: ''
     },
-    recaptchaKey: ''
+    recaptchaKey: '6LcKVT8eAAAAAA5GsQCepHT5nDnSo3ays2FXZ__N',
+    pgAdminURL: 'http://localhost:8080/',
+    dozzleURL: 'http://localhost:8085/'
 };
