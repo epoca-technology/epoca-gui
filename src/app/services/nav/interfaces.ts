@@ -10,9 +10,15 @@ export interface INavService {
 	
 	// App Navigation
 	dashboard(): Promise<boolean>,
+	tradingSession(): Promise<boolean>,
+	tradingSimulations(): Promise<boolean>,
+	mlModels(): Promise<boolean>,
 	candlesticks(): Promise<boolean>,
+    apiErrors(): Promise<boolean>,
     server(): Promise<boolean>,
+    users(): Promise<boolean>,
     database(): Promise<boolean>,
+    guiVersion(): Promise<boolean>,
 	
 	// Dialogs
     displayConfirmationDialog(data?: IConfirmationDialogData): MatDialogRef<any>,

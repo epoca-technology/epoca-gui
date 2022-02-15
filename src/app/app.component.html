@@ -24,19 +24,26 @@
 
             <!-- Trading Session -->
             <mat-list-item>
-                <button mat-button class="left-icon-button" (click)="_nav.candlesticks()" [disabled]="state.module == 'candlesticks'">
+                <button mat-button class="left-icon-button" (click)="_nav.tradingSession()" [disabled]="state.module == 'tradingSession'">
                     <mat-icon>auto_graph</mat-icon><span>Trading Session</span>
                 </button>
             </mat-list-item>
 
             <!-- Trading Simulations -->
             <mat-list-item>
-                <button mat-button class="left-icon-button" (click)="_nav.candlesticks()" [disabled]="state.module == 'candlesticks'">
+                <button mat-button class="left-icon-button" (click)="_nav.tradingSimulations()" [disabled]="state.module == 'tradingSimulations'">
                     <mat-icon svgIcon="ssid_chart"></mat-icon><span>Trading Simulations</span>
                 </button>
             </mat-list-item>
 
-            <!-- Price Chart -->
+            <!-- Candlesticks -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.mlModels()" [disabled]="state.module == 'mlModels'">
+                    <mat-icon svgIcon="brain"></mat-icon><span>ML Models</span>
+                </button>
+            </mat-list-item>
+
+            <!-- Candlesticks -->
             <mat-list-item>
                 <button mat-button class="left-icon-button" (click)="_nav.candlesticks()" [disabled]="state.module == 'candlesticks'">
                     <mat-icon>waterfall_chart</mat-icon><span>Candlesticks</span>
@@ -45,7 +52,7 @@
 
             <!-- API Errors -->
             <mat-list-item>
-                <button mat-button class="left-icon-button" (click)="_nav.server()" [disabled]="state.module == 'server'">
+                <button mat-button class="left-icon-button" (click)="_nav.apiErrors()" [disabled]="state.module == 'apiErrors'">
                     <mat-icon>bug_report</mat-icon><span>API Errors</span>
                 </button>
             </mat-list-item>
@@ -58,12 +65,29 @@
             </mat-list-item>
 
 
+            <!-- Users -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.users()" [disabled]="state.module == 'users'">
+                    <mat-icon>people_alt</mat-icon><span>Users</span>
+                </button>
+            </mat-list-item>
+
+
             <!-- Database -->
             <mat-list-item>
                 <button mat-button class="left-icon-button" (click)="_nav.database()" [disabled]="state.module == 'database'">
                     <mat-icon svgIcon="database"></mat-icon><span>Database</span>
                 </button>
             </mat-list-item>
+
+            
+            <!-- GUI Version -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.guiVersion()" [disabled]="state.module == 'guiVersion'">
+                    <mat-icon>update</mat-icon><span>GUI Version</span>
+                </button>
+            </mat-list-item>
+
 
 
             <!-- PGAdmin -->
@@ -86,14 +110,6 @@
                         <span fxFlex></span>
                         <mat-icon class="light-text" style="font-size:20px;">open_in_new</mat-icon>
                     </div>
-                </button>
-            </mat-list-item>
-
-
-            <!-- Users -->
-            <mat-list-item>
-                <button mat-button class="left-icon-button" (click)="_nav.server()" [disabled]="state.module == 'server'">
-                    <mat-icon>people_alt</mat-icon><span>Users</span>
                 </button>
             </mat-list-item>
         </mat-list>

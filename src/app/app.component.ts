@@ -29,7 +29,7 @@ export class AppComponent implements IAppComponent {
 	// Custom Icons
 	public readonly customIcons: string[] = ['home', 'wallet', 'format_list_numbered',
     'person','notifications','logo_google','paste','ubuntu','code_branch','hdd','microchip','server','database',
-    'hardware_chip', 'ssid_chart'];
+    'hardware_chip', 'ssid_chart', 'brain'];
 	
 	// Route State
 	public state: IRouteState = this._nav.routeState.value;
