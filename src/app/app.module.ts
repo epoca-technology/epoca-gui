@@ -33,6 +33,7 @@ import {
     ExternalRequestService,
 	ServerService,
 	UtilsService,
+	GuiVersionService,
 } from './core';
 
 
@@ -106,7 +107,7 @@ import { AppComponent } from './app.component';
         ExternalRequestService,
         ServerService,
 		UtilsService,
-
+        GuiVersionService
 
 	],
 	bootstrap: [AppComponent]

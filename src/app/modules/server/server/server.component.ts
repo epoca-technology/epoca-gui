@@ -294,7 +294,7 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
                                     this.submitting = true;
                                     try {
                                         // Set new config
-                                        await this._server.setAlarmsConfiguration(newConfig, '123456');
+                                        await this._server.setAlarmsConfiguration(newConfig, otp);
                 
                                         // Update local value
                                         this.serverData!.resources.alarms = newConfig;

@@ -123,6 +123,29 @@ export class ValidationsService implements IValidationsService{
 	
 	
 	
+
+
+
+    /* GUI Version */
 	
 	
+
+	/*
+	* Verifies if a GUI version is valid.
+	* @param control
+	* @returns {invalidVersion: boolean}|null
+	* */
+	public guiVersionValid(control: AbstractControl): {invalidVersion: boolean}|null {
+		if(
+            control && 
+            typeof control.value == "string" && 
+            control.value.length >= 5 &&
+            control.value.length <= 15 &&
+            control.value.split('.').length == 3
+        ) {
+            return null;
+		} else {
+			return {invalidVersion: true}
+		}
+	}
 }

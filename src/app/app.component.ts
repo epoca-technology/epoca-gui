@@ -96,17 +96,7 @@ export class AppComponent implements IAppComponent {
 	* @returns void
 	* */
 	public createNewInstance(): void {
-        this._nav.displayConfirmationDialog({
-            title: 'Create New Instance',
-            content: '<p class="align-center">If you confirm the action, a new tab will be created from this instance.</p>'
-        }).afterClosed().subscribe(
-            (confirmed: boolean) => {
-                if (confirmed) {
-                    this._nav.openUrl(window.location.href);
-                    if (this.sidenavOpened) this.sidenav?.close();
-                }
-            }
-        );
+        this._nav.openUrl(window.location.href);
 	}
 
 
@@ -139,47 +129,6 @@ export class AppComponent implements IAppComponent {
     
 
 
-	/*
-	* Opens the PGADMIN GUI on a new tab on confirmation
-	* @returns void
-	* */
-	public openPGAdmin(): void {
-        this._nav.displayConfirmationDialog({
-            title: 'PGAdmin',
-            content: '<p class="align-center">If you confirm the action, the PGAdmin GUI will be loaded on a new tab.</p>'
-        }).afterClosed().subscribe(
-            (confirmed: boolean) => {
-                if (confirmed) {
-                    this._nav.openUrl(environment.pgAdminURL);
-                    if (this.sidenavOpened) this.sidenav?.close();
-                }
-            }
-        );
-	}
-
-
-
-
-
-
-	/*
-	* Opens the Dozzle GUI on a new tab on confirmation
-	* @returns void
-	* */
-	public openDozzle(): void {
-        this._nav.displayConfirmationDialog({
-            title: 'Dozzle',
-            content: '<p class="align-center">If you confirm the action, the Dozzle GUI will be loaded on a new tab.</p>'
-        }).afterClosed().subscribe(
-            (confirmed: boolean) => {
-                if (confirmed) {
-                    this._nav.openUrl(environment.dozzleURL);
-                    if (this.sidenavOpened) this.sidenav?.close();
-                }
-            }
-        );
-	}
-
 
 
 	
@@ -202,7 +151,7 @@ export class AppComponent implements IAppComponent {
 		for (let icon of this.customIcons) {
 			this.matIconRegistry.addSvgIcon(
 				icon,
-				this.domSanitizer.bypassSecurityTrustResourceUrl('../assets/fonts/svg/' + icon + '.svg')
+				this.domSanitizer.bypassSecurityTrustResourceUrl('../assets/svg/' + icon + '.svg')
 			)
 		}
 	}

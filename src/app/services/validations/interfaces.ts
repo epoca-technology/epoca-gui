@@ -8,4 +8,7 @@ export interface IValidationsService {
 	
 	// OTP
 	otpValid(control: AbstractControl): {invalidOTP: boolean}|null,
+
+    // GUI Version
+    guiVersionValid(control: AbstractControl): {invalidVersion: boolean}|null
 }

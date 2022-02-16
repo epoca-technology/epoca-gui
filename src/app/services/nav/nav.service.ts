@@ -3,6 +3,7 @@ import {Router, NavigationStart, NavigationEnd} from '@angular/router';
 import {DOCUMENT} from "@angular/common";
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {MatBottomSheet, MatBottomSheetRef} from '@angular/material/bottom-sheet';
+import { environment } from '../../../environments/environment';
 import {INavService, IRouteState, IRouteStateData} from "./interfaces";
 import {BehaviorSubject, Observable} from "rxjs";
 import {filter} from 'rxjs/operators';
@@ -180,12 +181,25 @@ export class NavService implements INavService {
 	
 	
 	
+
+
+
+
+
+
+    /* URL Openers */
 	
 	
 	
+
+    // PG ADMIN
+    public openPGAdmin(): void { this.openUrl(environment.pgAdminURL) }
 	
 	
 	
+
+    // DOZZLE
+    public openDozzle(): void { this.openUrl(environment.dozzleURL) }
 	
 	
 	

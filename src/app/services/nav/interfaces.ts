@@ -26,6 +26,10 @@ export interface INavService {
 	
 	// Bottom Sheets
 	displayBottomSheetMenu(data: IBottomSheetMenuItem[]): MatBottomSheetRef<any>,
+
+    // URL Openers
+    openPGAdmin(): void,
+    openDozzle(): void
 	
 	// Main URL Opener
 	openUrl(url: string): void,

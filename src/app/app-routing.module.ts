@@ -34,6 +34,11 @@ const routes: Routes = [
 		loadChildren: () => import('./modules/database/database.module').then(m => m.DatabaseModule),
 	},
 
+	// GUI Version
+	{
+		path: 'guiVersion',
+		loadChildren: () => import('./modules/gui-version/gui-version.module').then(m => m.GuiVersionModule),
+	},
 
 	/* Empty Path */
 	{
