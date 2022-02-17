@@ -441,11 +441,12 @@ ul li ul, ol li ul { padding: 0 0 0 15px;}
 
 
 
+
 /* Toolbars */
 .mat-toolbar { height: var(--toolbar-desktop-height); color:#FFFFFF; @include mat.elevation(3);}
 .mat-toolbar img { max-height: 55px;width: auto; }
 .mat-toolbar div:first-child { width: 100%; }
-
+.mat-toolbar button:disabled {color:#616161!important;}
 
 
 
@@ -462,7 +463,6 @@ ul li ul, ol li ul { padding: 0 0 0 15px;}
 
 /* Secondary Header */
 .secondary-header { background-color: var(--primary-color); }
-.secondary-header img { max-width: 25px;margin-right:4px;}
 
 
 

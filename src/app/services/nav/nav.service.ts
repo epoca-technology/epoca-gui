@@ -4,7 +4,7 @@ import {DOCUMENT} from "@angular/common";
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {MatBottomSheet, MatBottomSheetRef} from '@angular/material/bottom-sheet';
 import { environment } from '../../../environments/environment';
-import {INavService, IRouteState, IRouteStateData} from "./interfaces";
+import {INavService, IRouteState, IRouteStateData, INavRequirements} from "./interfaces";
 import {BehaviorSubject, Observable} from "rxjs";
 import {filter} from 'rxjs/operators';
 import {AppService} from "../app";
@@ -28,7 +28,22 @@ export class NavService implements INavService {
 	// Route State
 	public routeState: BehaviorSubject<IRouteState>;
 	
-	
+	// Requirements
+    public readonly requirements: INavRequirements = {
+        dashboard: 1,
+        tradingSession: 1,
+        tradingSimulations: 2,
+        mlModels: 2,
+        candlesticks: 3,
+        apiErrors: 3,
+        server: 3,
+        users: 5,
+        database: 3,
+        guiVersion: 1,
+        PGAdmin: 3,
+        Dozzle: 3,
+        settings: 1,
+    }
 	
 	
 	constructor(
@@ -70,7 +85,14 @@ export class NavService implements INavService {
 	public server(): Promise<boolean> { return this.navigate('server') }
 	public users(): Promise<boolean> { return this.navigate('users') }
 	public database(): Promise<boolean> { return this.navigate('database') }
-	public guiVersion(): Promise<boolean> { return this.navigate('guiVersion') }
+	public guiVersion(version?: string): Promise<boolean> { 
+        if (typeof version == "string") {
+            return this.navigate(`guiVersion/${version}`);
+        } else {
+            return this.navigate('guiVersion');
+        }
+    }
+	public settings(): Promise<boolean> { return this.navigate('settings') }
 
 
 	
@@ -193,13 +215,25 @@ export class NavService implements INavService {
 	
 
     // PG ADMIN
-    public openPGAdmin(): void { this.openUrl(environment.pgAdminURL) }
+    public openPGAdmin(): void { 
+        if (environment.pgAdmin.useLocal) {
+            this.openUrl(environment.pgAdmin.local);
+        } else {
+            this.openUrl(environment.pgAdmin.external);
+        }
+    }
 	
 	
 	
 
     // DOZZLE
-    public openDozzle(): void { this.openUrl(environment.dozzleURL) }
+    public openDozzle(): void { 
+        if (environment.dozzle.useLocal) {
+            this.openUrl(environment.dozzle.local);
+        } else {
+            this.openUrl(environment.dozzle.external);
+        }
+    }
 	
 	
 	

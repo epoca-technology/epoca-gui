@@ -15,10 +15,34 @@ const routes: Routes = [
 
 	/* Lazy Loaded Modules */
 
+	// Trading Session
+	{
+		path: 'tradingSession',
+		loadChildren: () => import('./modules/trading-session/trading-session.module').then(m => m.TradingSessionModule),
+	},
+
+	// Trading Simulations
+	{
+		path: 'tradingSimulations',
+		loadChildren: () => import('./modules/trading-simulations/trading-simulations.module').then(m => m.TradingSimulationsModule),
+	},
+
+	// ML Models
+	{
+		path: 'mlModels',
+		loadChildren: () => import('./modules/ml-models/ml-models.module').then(m => m.MlModelsModule),
+	},
+
 	// Candlesticks
 	{
 		path: 'candlesticks',
 		loadChildren: () => import('./modules/candlesticks/candlesticks.module').then(m => m.CandlesticksModule),
+	},
+
+	// Api Errors
+	{
+		path: 'apiErrors',
+		loadChildren: () => import('./modules/api-errors/api-errors.module').then(m => m.ApiErrorsModule),
 	},
 
 	// Server
@@ -27,6 +51,11 @@ const routes: Routes = [
 		loadChildren: () => import('./modules/server/server.module').then(m => m.ServerModule),
 	},
 
+	// Users
+	{
+		path: 'users',
+		loadChildren: () => import('./modules/users/users.module').then(m => m.UsersModule),
+	},
 
 	// Database
 	{
@@ -39,6 +68,17 @@ const routes: Routes = [
 		path: 'guiVersion',
 		loadChildren: () => import('./modules/gui-version/gui-version.module').then(m => m.GuiVersionModule),
 	},
+
+
+	// Settings
+	{
+		path: 'settings',
+		loadChildren: () => import('./modules/settings/settings.module').then(m => m.SettingsModule),
+	},
+
+
+
+
 
 	/* Empty Path */
 	{

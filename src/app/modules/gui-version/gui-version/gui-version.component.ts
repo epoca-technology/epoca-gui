@@ -2,10 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import {SwUpdate} from "@angular/service-worker";
 import {ActivatedRoute} from "@angular/router";
 import {AbstractControl, FormControl, FormGroup} from '@angular/forms';
-import { environment } from '../../../../environments/environment';
 import { IGuiVersionComponent } from './interfaces';
 import { GuiVersionService } from '../../../core';
-import { NavService, SnackbarService, ValidationsService } from '../../../services';
+import { AppService, NavService, SnackbarService, ValidationsService } from '../../../services';
 
 @Component({
   selector: 'app-gui-version',
@@ -30,6 +29,7 @@ export class GuiVersionComponent implements OnInit, IGuiVersionComponent {
 	public updating: boolean = false;
     
     constructor(
+        private _app: AppService,
 		private route: ActivatedRoute,
 		private swUpdate: SwUpdate,
         private _version: GuiVersionService,
@@ -54,7 +54,7 @@ export class GuiVersionComponent implements OnInit, IGuiVersionComponent {
         }
 
         // Check if there is a missmatch
-        this.versionMissmatch = environment.guiVersion != this.currentVersion;
+        this.versionMissmatch = this._app.version != this.currentVersion;
         
         // Allow for a small delay before marking the component as loaded
         this.loaded = true
@@ -145,7 +145,7 @@ export class GuiVersionComponent implements OnInit, IGuiVersionComponent {
                         this._snackbar.success('The new version has been saved successfully.');
 
                         // Check if there is a missmatch
-                        this.versionMissmatch = environment.guiVersion != this.currentVersion;
+                        this.versionMissmatch = this._app.version != this.currentVersion;
 
                         // Disable edit mode
                         this.edit = false;

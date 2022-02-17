@@ -15,7 +15,7 @@
 
         <!-- Menu Content -->
         <mat-list>
-            <!-- Home -->
+            <!-- Dashboard -->
             <mat-list-item>
                 <button mat-button class="left-icon-button" (click)="_nav.dashboard()" [disabled]="state.module == 'dashboard'">
                     <mat-icon svgIcon="home"></mat-icon><span>Dashboard</span>
@@ -25,7 +25,7 @@
             <!-- Trading Session -->
             <mat-list-item>
                 <button mat-button class="left-icon-button" (click)="_nav.tradingSession()" [disabled]="state.module == 'tradingSession'">
-                    <mat-icon>auto_graph</mat-icon><span>Trading Session</span>
+                    <mat-icon svgIcon="auto_graph"></mat-icon><span>Trading Session</span>
                 </button>
             </mat-list-item>
 
@@ -53,7 +53,7 @@
             <!-- API Errors -->
             <mat-list-item>
                 <button mat-button class="left-icon-button" (click)="_nav.apiErrors()" [disabled]="state.module == 'apiErrors'">
-                    <mat-icon>bug_report</mat-icon><span>API Errors</span>
+                    <mat-icon svgIcon="bug_report"></mat-icon><span>API Errors</span>
                 </button>
             </mat-list-item>
 
@@ -93,11 +93,7 @@
             <!-- PGAdmin -->
             <mat-list-item>
                 <button mat-button class="left-icon-button" (click)="_nav.openPGAdmin()">
-                    <div fxLayout="row" fxLayoutAlign="center center">
-                        <mat-icon>construction</mat-icon><span>PGAdmin</span>
-                        <span fxFlex></span>
-                        <mat-icon class="light-text" style="font-size:20px;">open_in_new</mat-icon>
-                    </div>
+                    <mat-icon>open_in_new</mat-icon><span>PGAdmin</span>
                 </button>
             </mat-list-item>
 
@@ -105,11 +101,15 @@
             <!-- Dozzle -->
             <mat-list-item>
                 <button mat-button class="left-icon-button" (click)="_nav.openDozzle()">
-                    <div fxLayout="row" fxLayoutAlign="center center">
-                        <mat-icon>construction</mat-icon><span>Dozzle</span>
-                        <span fxFlex></span>
-                        <mat-icon class="light-text" style="font-size:20px;">open_in_new</mat-icon>
-                    </div>
+                    <mat-icon>open_in_new</mat-icon><span>Dozzle</span>
+                </button>
+            </mat-list-item>
+
+
+            <!-- Settings -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.settings()" [disabled]="state.module == 'settings'">
+                    <mat-icon>settings</mat-icon><span>Settings</span>
                 </button>
             </mat-list-item>
         </mat-list>
@@ -128,11 +128,37 @@
         <div class="primary-header heading-bar" *ngIf="layout != 'mobile'">
             <mat-toolbar fxLayout="row" fxLayoutAlign="center center">
                 <!-- Logo -->
-                <img src="assets/img/logo.png" alt="Logo" (click)="_nav.dashboard()" class="show-on-desktop">
-                <img src="assets/img/logo_small.png" alt="Logo" (click)="_nav.dashboard()" class="show-on-mobile">
+                <img src="assets/img/logo.png" alt="Logo">
 
 
                 <span fxFlex></span>
+
+                <!-- Dashboard -->
+                <mat-list-item>
+                    <button mat-button class="left-icon-button" (click)="_nav.dashboard()" [disabled]="state.module == 'dashboard'">
+                        <mat-icon svgIcon="home"></mat-icon><span>Dashboard</span>
+                    </button>
+                </mat-list-item>
+
+                <!-- Trading Session -->
+                <button mat-button class="left-icon-button" (click)="_nav.tradingSession()" [disabled]="state.module == 'tradingSession'" matBadge="1">
+                    <mat-icon svgIcon="auto_graph"></mat-icon><span>Trading Session</span>
+                </button>
+
+                <!-- Trading Simulations -->
+                <button mat-button class="left-icon-button" (click)="_nav.tradingSimulations()" [disabled]="state.module == 'tradingSimulations'" matBadge="3">
+                    <mat-icon svgIcon="ssid_chart"></mat-icon><span>Trading Simulations</span>
+                </button>
+
+                <!-- API Errors -->
+                <button mat-button class="left-icon-button" (click)="_nav.apiErrors()" [disabled]="state.module == 'apiErrors'">
+                    <mat-icon svgIcon="bug_report"></mat-icon><span>API Errors</span>
+                </button>
+
+                <!-- Server -->
+                <button mat-button class="left-icon-button" (click)="_nav.server()" [disabled]="state.module == 'server'">
+                    <mat-icon svgIcon="server"></mat-icon><span>Server</span>
+                </button>
 
                 <!-- Menu -->
                 <button mat-icon-button (click)="sidenav?.toggle()"><mat-icon>menu</mat-icon></button>

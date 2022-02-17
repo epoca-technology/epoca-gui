@@ -1,3 +1,7 @@
-<button mat-fab class="refresh-button" (click)="performRefresh()">
+<button mat-icon-button 
+        class="refresh-button" 
+        [matTooltip]="intervalSeconds ? 'Auto Refresh: every ' + intervalSeconds + ' seconds.': 'Auto Refresh: disabled.'"
+        [disabled]="disabled"
+        (click)="performRefresh()">
     <mat-icon>refresh</mat-icon>
 </button>

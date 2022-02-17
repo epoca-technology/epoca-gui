@@ -11,6 +11,9 @@ export class RefreshButtonComponent implements OnInit, OnDestroy {
     private interval: any;
     @Input() intervalSeconds?: number;
 
+    // Disabled State
+    @Input() disabled?: boolean;
+
     // Refresh Event Emitter
     @Output() refresh = new EventEmitter<void>();
 
@@ -19,7 +22,7 @@ export class RefreshButtonComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         if (typeof this.intervalSeconds == "number") {
-            this.interval = setInterval(() => { this.performRefresh() }, this.intervalSeconds * 1000);
+            this.interval = setInterval(() => { if (!this.disabled) this.performRefresh() }, this.intervalSeconds * 1000);
         }
     }
 

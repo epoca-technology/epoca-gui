@@ -6,12 +6,11 @@ import { IApiURL } from "../api";
 /* Environment */
 export interface IEnvironment {
     production: boolean,
-    guiVersion: string,
     firebaseConfig: IFirebaseConfig,
     apiURL: IApiURL
     recaptchaKey: string,
-    pgAdminURL: string,
-    dozzleURL: string
+    pgAdmin: IApiURL,
+    dozzle: IApiURL
 }
 
 

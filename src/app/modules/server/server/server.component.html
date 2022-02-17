@@ -35,6 +35,7 @@
                     <button mat-icon-button (click)="serverSidenav?.toggle()" class="show-on-mobile"><mat-icon>menu</mat-icon></button>
                     <span class="truncate">{{activeSection.name}}</span>
                     <span fxFlex></span>
+                    <app-refresh-button [disabled]="!loaded || activeSection.id != 'monitoring' || submitting" [intervalSeconds]="120" (refresh)="refresh()"></app-refresh-button>
                     <button mat-icon-button (click)="updateConfig()" [disabled]="submitting" matTooltip="Alarms Configuration"><mat-icon>edit_notifications</mat-icon></button>
                 </div>
             </mat-toolbar>
@@ -586,13 +587,7 @@
 
 
             <!-- Mobile Tabs -->
-
-
-
-
-            <!-- Refresher -->
-            <app-refresh-button *ngIf="loaded && activeSection.id == 'monitoring'" 
-                                [intervalSeconds]="120" (refresh)="refresh()"></app-refresh-button>
+            <app-mobile-tabs *ngIf="layout == 'mobile'"></app-mobile-tabs>
         </div>
     </mat-drawer-content>
 </mat-drawer-container>

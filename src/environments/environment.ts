@@ -4,7 +4,6 @@
 import { IEnvironment } from "../app/core";
 export const environment: IEnvironment = {
 	production: false,
-	guiVersion: '0.0.1',
 	firebaseConfig: {
 		credentials: {
 			apiKey: "AIzaSyBKcvKZTGo7hsYXreWpcpHuwo6UZff6Nfg",
@@ -22,8 +21,16 @@ export const environment: IEnvironment = {
         external: ''
     },
     recaptchaKey: '6Lcd57sdAAAAAKe5F9X93Sw_Yagh4GZ3J5-T1PuT',
-    pgAdminURL: 'http://localhost:8080/',
-    dozzleURL: 'http://localhost:8085/'
+    pgAdmin: {
+        useLocal: true,
+        local: 'http://localhost:8080/',
+        external: ''
+    },
+    dozzle: {
+        useLocal: true,
+        local: 'http://localhost:8085/',
+        external: ''
+    },
 };
 
 /*

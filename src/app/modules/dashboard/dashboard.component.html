@@ -1,1 +1,67 @@
-<p>dashboard works!</p>
+<!-- SideNav Container -->
+<mat-drawer-container class="section-container">
+
+    <!-- Sidenav -->
+    <mat-drawer #homeSidenav [(opened)]="sidenavOpened" class="sidenav" position="end" mode="over" autoFocus="false" *ngIf="layout == 'mobile'">
+
+        <!-- Menu Heading Toolbar -->
+        <mat-toolbar color="primary">
+            <div fxLayout="row" fxLayoutAlign="start center">
+                <span>Menu</span>
+                <span fxFlex></span>
+                <button mat-icon-button (click)="sidenav?.toggle()"><mat-icon>arrow_forward</mat-icon></button>
+            </div>
+        </mat-toolbar>
+
+        <!-- Menu Content -->
+        <mat-list>
+
+
+            <!-- Information -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button">
+                    <mat-icon>info</mat-icon><span>Información</span>
+                </button>
+            </mat-list-item>
+
+        </mat-list>
+    </mat-drawer>
+
+
+
+
+    <!-- Section Content -->
+    <mat-drawer-content>
+        <div>
+
+
+            <!-- Section Header -->
+            <mat-toolbar class="secondary-header">
+                <div fxLayout="row" fxLayoutAlign="center center">
+                    <!-- Logo -->
+                    <img src="assets/img/logo.png" alt="Logo">
+
+                    <span fxFlex></span>
+
+                    <!-- Menu -->
+                    <button mat-icon-button (click)="sidenav?.toggle()"><mat-icon>menu</mat-icon></button>
+                </div>
+            </mat-toolbar>
+
+
+            <!-- Section Content -->
+            <div class="section-content">
+
+
+
+            </div>
+
+
+            <!-- Mobile Tabs -->
+            <app-mobile-tabs *ngIf="layout == 'mobile'"></app-mobile-tabs>
+        </div>
+    </mat-drawer-content>
+</mat-drawer-container>
+
+
+

@@ -3,7 +3,10 @@ import {BehaviorSubject} from "rxjs";
 
 export interface IAppService {
 	// Layout
-	layout: BehaviorSubject<ILayout>
+	layout: BehaviorSubject<ILayout>,
+
+    // Version
+    version: string,
 }
 
 

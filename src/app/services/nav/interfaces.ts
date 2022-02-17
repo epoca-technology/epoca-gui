@@ -3,10 +3,14 @@ import {MatDialogRef} from "@angular/material/dialog";
 import {MatBottomSheetRef} from "@angular/material/bottom-sheet";
 import {IConfirmationDialogData} from "../../shared/components/confirmation-dialog";
 import {IBottomSheetMenuItem} from "../../shared/components/bottom-sheet-menu";
+import { IAuthority } from "../../core";
 
 export interface INavService {
 	// Route State
 	routeState: BehaviorSubject<IRouteState>,
+
+    // Nav Authority Requirements
+    requirements: INavRequirements,
 	
 	// App Navigation
 	dashboard(): Promise<boolean>,
@@ -18,7 +22,8 @@ export interface INavService {
     server(): Promise<boolean>,
     users(): Promise<boolean>,
     database(): Promise<boolean>,
-    guiVersion(): Promise<boolean>,
+    guiVersion(version?: string): Promise<boolean>,
+    settings(): Promise<boolean>,
 	
 	// Dialogs
     displayConfirmationDialog(data?: IConfirmationDialogData): MatDialogRef<any>,
@@ -57,7 +62,10 @@ export interface IRouteStateData {
 
 
 
-
+// Nav Authority Requirements
+export interface INavRequirements {
+    [moduleName: string]: IAuthority
+}
 
 
 

@@ -72,6 +72,7 @@ import { RecaptchaDialogComponent } from './components/recaptcha-dialog';
 import { ConfirmationDialogComponent } from './components/confirmation-dialog';
 import { CandlestickChartComponent, CandlestickDialogComponent } from './components/charts';
 import { RefreshButtonComponent } from './components/refresh-button/refresh-button.component';
+import { MobileTabsComponent } from './components/mobile-tabs/mobile-tabs.component';
 
 
 
@@ -96,6 +97,7 @@ import { RefreshButtonComponent } from './components/refresh-button/refresh-butt
         CandlestickChartComponent,
         CandlestickDialogComponent,
         RefreshButtonComponent,
+        MobileTabsComponent,
 	],
 	imports: [
 		CommonModule,
@@ -215,6 +217,7 @@ import { RefreshButtonComponent } from './components/refresh-button/refresh-butt
 		// Shared Components
 		CandlestickChartComponent,
         RefreshButtonComponent,
+        MobileTabsComponent,
 	]
 })
 export class SharedModule { }
