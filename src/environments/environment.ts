@@ -15,22 +15,20 @@ export const environment: IEnvironment = {
 		},
 		vapidKey: 'BItlFQ-1CPZi-SYVd4I8OIDQ2OCV6kWQIZVvbCt78DW-LRoTxu38X3XpqF8h_x0Xj7lEapd8GXe9HOF6265YfSA'
 	},
+    localServer: true,
     apiURL: {
-        useLocal: true,
         local: 'http://localhost:5075',
         external: ''
     },
-    recaptchaKey: '6Lcd57sdAAAAAKe5F9X93Sw_Yagh4GZ3J5-T1PuT',
     pgAdmin: {
-        useLocal: true,
         local: 'http://localhost:8080/',
         external: ''
     },
     dozzle: {
-        useLocal: true,
         local: 'http://localhost:8085/',
         external: ''
     },
+    recaptchaKey: '6Lcd57sdAAAAAKe5F9X93Sw_Yagh4GZ3J5-T1PuT',
 };
 
 /*

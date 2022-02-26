@@ -69,6 +69,11 @@ const routes: Routes = [
 		loadChildren: () => import('./modules/gui-version/gui-version.module').then(m => m.GuiVersionModule),
 	},
 
+	// IP Blacklist
+	{
+		path: 'ipBlacklist',
+		loadChildren: () => import('./modules/ip-blacklist/ip-blacklist.module').then(m => m.IpBlacklistModule),
+	},
 
 	// Settings
 	{

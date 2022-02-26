@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import {SwUpdate} from "@angular/service-worker";
 import {ActivatedRoute} from "@angular/router";
 import {AbstractControl, FormControl, FormGroup} from '@angular/forms';
@@ -12,6 +12,9 @@ import { AppService, NavService, SnackbarService, ValidationsService } from '../
   styleUrls: ['./gui-version.component.scss']
 })
 export class GuiVersionComponent implements OnInit, IGuiVersionComponent {
+    // Input
+    @ViewChild("versionControl") versionControl? : ElementRef;
+
 	// Version
 	public currentVersion: string|null|undefined;
 	public versionMissmatch: boolean = false;
@@ -109,8 +112,14 @@ export class GuiVersionComponent implements OnInit, IGuiVersionComponent {
      * @returns void
      */
     public enableEditMode(): void {
+        // Prepare the view
         this.version.setValue(this.currentVersion);
         this.edit = true;
+
+        // Focus input if applies
+        if (this._app.layout.value != "mobile") {
+            setTimeout(() => { if (this.versionControl) this.versionControl.nativeElement.focus() });
+        }
     }
 
 

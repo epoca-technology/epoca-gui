@@ -92,6 +92,7 @@ export class NavService implements INavService {
             return this.navigate('guiVersion');
         }
     }
+	public ipBlacklist(): Promise<boolean> { return this.navigate('ipBlacklist') }
 	public settings(): Promise<boolean> { return this.navigate('settings') }
 
 
@@ -216,7 +217,7 @@ export class NavService implements INavService {
 
     // PG ADMIN
     public openPGAdmin(): void { 
-        if (environment.pgAdmin.useLocal) {
+        if (environment.localServer) {
             this.openUrl(environment.pgAdmin.local);
         } else {
             this.openUrl(environment.pgAdmin.external);
@@ -228,7 +229,7 @@ export class NavService implements INavService {
 
     // DOZZLE
     public openDozzle(): void { 
-        if (environment.dozzle.useLocal) {
+        if (environment.localServer) {
             this.openUrl(environment.dozzle.local);
         } else {
             this.openUrl(environment.dozzle.external);

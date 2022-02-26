@@ -13,15 +13,6 @@ export interface IApiService {
 
 
 
-export interface IApiURL {
-    useLocal: boolean,
-    local: string,
-    external: string
-}
-
-
-
-
 
 /* API Response */
 export interface IAPIResponse {

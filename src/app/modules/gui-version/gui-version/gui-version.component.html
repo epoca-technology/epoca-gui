@@ -57,7 +57,8 @@
                                    matInput
                                    formControlName="version"
                                    autocomplete="off"
-                                   placeholder="e.g. 0.0.1">
+                                   placeholder="e.g. 0.0.1" 
+                                   #versionControl>
                         </mat-form-field>
                         <div *ngIf="version.touched && version.invalid" class="errors">
                             <p>The provided version is invalid.</p>

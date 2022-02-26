@@ -12,20 +12,18 @@ export const environment: IEnvironment = {
 		},
 		vapidKey: 'BMVi9vH_H_e3RTgfXXbS9SsCg5A-1YpmRaRmmW9xPmUsofcP4FPEdOqFfIWtQ-ZLfNJMc0YHeLof832xpgXGz2o'
 	},
+    localServer: true,
     apiURL: {
-        useLocal: false,
         local: 'http://localhost:8075',
         external: ''
     },
-    recaptchaKey: '6LcKVT8eAAAAAA5GsQCepHT5nDnSo3ays2FXZ__N',
     pgAdmin: {
-        useLocal: false,
         local: 'http://localhost:8080/',
         external: ''
     },
     dozzle: {
-        useLocal: false,
         local: 'http://localhost:8085/',
         external: ''
     },
+    recaptchaKey: '6LcKVT8eAAAAAA5GsQCepHT5nDnSo3ays2FXZ__N',
 };

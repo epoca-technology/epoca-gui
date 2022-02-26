@@ -10,7 +10,7 @@ import { lastValueFrom } from 'rxjs';
 })
 export class ApiService implements IApiService {
     // API URL
-    private readonly url: string = environment.apiURL.useLocal ? environment.apiURL.local: environment.apiURL.external;
+    private readonly url: string = environment.localServer ? environment.apiURL.local: environment.apiURL.external;
 
 
 

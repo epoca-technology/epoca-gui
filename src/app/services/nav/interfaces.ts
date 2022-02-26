@@ -23,6 +23,7 @@ export interface INavService {
     users(): Promise<boolean>,
     database(): Promise<boolean>,
     guiVersion(version?: string): Promise<boolean>,
+    ipBlacklist(): Promise<boolean>,
     settings(): Promise<boolean>,
 	
 	// Dialogs
