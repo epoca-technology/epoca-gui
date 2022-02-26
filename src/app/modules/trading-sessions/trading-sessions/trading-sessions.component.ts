@@ -1,14 +1,14 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ITradingSessionComponent } from './interfaces';
+import { ITradingSessionsComponent } from './interfaces';
 import { AppService, ILayout, NavService } from '../../../services';
 import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-trading-session',
-  templateUrl: './trading-session.component.html',
-  styleUrls: ['./trading-session.component.scss']
+  templateUrl: './trading-sessions.component.html',
+  styleUrls: ['./trading-sessions.component.scss']
 })
-export class TradingSessionComponent implements OnInit, OnDestroy, ITradingSessionComponent {
+export class TradingSessionsComponent implements OnInit, OnDestroy, ITradingSessionsComponent {
     // Layout
 	public layout: ILayout = this._app.layout.value;
 	private layoutSub?: Subscription;

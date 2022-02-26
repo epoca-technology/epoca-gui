@@ -15,10 +15,10 @@ const routes: Routes = [
 
 	/* Lazy Loaded Modules */
 
-	// Trading Session
+	// Trading Sessions
 	{
-		path: 'tradingSession',
-		loadChildren: () => import('./modules/trading-session/trading-session.module').then(m => m.TradingSessionModule),
+		path: 'tradingSessions',
+		loadChildren: () => import('./modules/trading-sessions/trading-sessions.module').then(m => m.TradingSessionsModule),
 	},
 
 	// Trading Simulations

@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from '../../services';
-import { TradingSessionComponent } from './trading-session/trading-session.component';
+import { TradingSessionsComponent } from './trading-sessions/trading-sessions.component';
 
 const routes: Routes = [
     {
 		path: '',
-		component: TradingSessionComponent,
+		component: TradingSessionsComponent,
 		canActivate: [AuthGuard]
 	},
 ];
@@ -15,4 +15,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class TradingSessionRoutingModule { }
+export class TradingSessionsRoutingModule { }

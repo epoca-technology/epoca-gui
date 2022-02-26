@@ -14,7 +14,7 @@ export interface INavService {
 	
 	// App Navigation
 	dashboard(): Promise<boolean>,
-	tradingSession(): Promise<boolean>,
+	tradingSessions(): Promise<boolean>,
 	tradingSimulations(): Promise<boolean>,
 	mlModels(): Promise<boolean>,
 	candlesticks(): Promise<boolean>,

@@ -45,7 +45,7 @@ export class MobileTabsComponent implements OnInit, OnDestroy, IMobileTabsCompon
 				this._nav.dashboard();
 				break;
 			case 1:
-				this._nav.tradingSession();
+				this._nav.tradingSessions();
 				break;
 			case 2:
 				this._nav.tradingSimulations();
@@ -83,7 +83,7 @@ export class MobileTabsComponent implements OnInit, OnDestroy, IMobileTabsCompon
 			case 'dashboard':
 				this.activeTab = 0;
 				break;
-			case 'tradingSession':
+			case 'tradingSessions':
 				this.activeTab = 1;
 				break;
 			case 'tradingSimulations':

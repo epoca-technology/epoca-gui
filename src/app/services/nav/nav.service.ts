@@ -77,7 +77,7 @@ export class NavService implements INavService {
 
 	/* App Navigation */
 	public dashboard(): Promise<boolean> { return this.navigate('dashboard') }
-	public tradingSession(): Promise<boolean> { return this.navigate('tradingSession') }
+	public tradingSessions(): Promise<boolean> { return this.navigate('tradingSessions') }
 	public tradingSimulations(): Promise<boolean> { return this.navigate('tradingSimulations') }
 	public mlModels(): Promise<boolean> { return this.navigate('mlModels') }
 	public candlesticks(): Promise<boolean> { return this.navigate('candlesticks') }

@@ -30,6 +30,9 @@ FROM nginx:1.21.6-alpine
 # Initialize the Argument
 ARG NODE_ENV
 
+# Copy package.json & package-lock.json
+COPY package*.json ./
+
 # Copying compiled code and nginx config to different folder
 # NOTE: This path may change according to your project's output folder 
 COPY --from=build /usr/src/app/dist/gui-${NODE_ENV} /usr/share/nginx/html

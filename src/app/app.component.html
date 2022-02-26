@@ -22,10 +22,10 @@
                 </button>
             </mat-list-item>
 
-            <!-- Trading Session -->
+            <!-- Trading Sessions -->
             <mat-list-item>
-                <button mat-button class="left-icon-button" (click)="_nav.tradingSession()" [disabled]="state.module == 'tradingSession'">
-                    <mat-icon svgIcon="auto_graph"></mat-icon><span>Trading Session</span>
+                <button mat-button class="left-icon-button" (click)="_nav.tradingSessions()" [disabled]="state.module == 'tradingSessions'">
+                    <mat-icon svgIcon="auto_graph"></mat-icon><span>Trading Sessions</span>
                 </button>
             </mat-list-item>
 
@@ -141,8 +141,8 @@
                 </mat-list-item>
 
                 <!-- Trading Session -->
-                <button mat-button class="left-icon-button" (click)="_nav.tradingSession()" [disabled]="state.module == 'tradingSession'" matBadge="1">
-                    <mat-icon svgIcon="auto_graph"></mat-icon><span>Trading Session</span>
+                <button mat-button class="left-icon-button" (click)="_nav.tradingSessions()" [disabled]="state.module == 'tradingSessions'" matBadge="1">
+                    <mat-icon svgIcon="auto_graph"></mat-icon><span>Trading Sessions</span>
                 </button>
 
                 <!-- Trading Simulations -->
