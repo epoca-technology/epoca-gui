@@ -3,11 +3,13 @@ import {MatSidenav} from "@angular/material/sidenav";
 import { MatIconRegistry } from "@angular/material/icon";
 import { DomSanitizer } from "@angular/platform-browser";
 import { IAppComponent } from './interfaces';
+import { AuthService, IAuthority } from './core';
 import { 
     AppService, 
     NavService,
     ILayout,
-    IRouteState
+    IRouteState,
+    SnackbarService
 } from './services';
 import { environment } from '../environments/environment';
 
@@ -23,6 +25,10 @@ export class AppComponent implements IAppComponent {
 	@ViewChild('rootSidenav') sidenav: MatSidenav|undefined;
 	public sidenavOpened: boolean = false;
 
+    // User
+    public uid: string|null|undefined;
+    public authority: IAuthority = 5;
+
 	// App Layout
 	public layout: ILayout = this._app.layout.value;
 
@@ -37,8 +43,10 @@ export class AppComponent implements IAppComponent {
     constructor(
         private _app: AppService,
         public _nav: NavService,
+        public _auth: AuthService,
+        private _snackbar: SnackbarService,
         private matIconRegistry: MatIconRegistry,
-		private domSanitizer: DomSanitizer
+		private domSanitizer: DomSanitizer,
     ) { this.init()}
 
 
@@ -66,6 +74,18 @@ export class AppComponent implements IAppComponent {
 
 		/* Custom Icons Registration */
 		this.registerCustomIcons();
+
+
+        /* Auth State */
+        this._auth.uid.subscribe((uid: string|null|undefined) => {
+            // Set the uid
+            this.uid = uid;
+
+            // Check if the user is signed in
+            if (typeof this.uid == "string") {
+                // @TODO
+            }
+        });
     }
 
 
@@ -115,9 +135,16 @@ export class AppComponent implements IAppComponent {
             title: 'Sign Out',
             content: '<p class="align-center">If you confirm the action, your session will be destroyed on all your active tabs.</p>'
         }).afterClosed().subscribe(
-            (confirmed: boolean) => {
+            async (confirmed: boolean) => {
                 if (confirmed) {
-                    // @TODO
+                    // Sign the user out
+                    try {
+                        // Close the sidenav if opened
+                        if (this.sidenavOpened) this.sidenav?.close(); 
+                        await this._auth.signOut();
+                        this._nav.signIn();
+                        this._snackbar.success('The session has been destroyed successfully.');
+                    } catch (e) { this._snackbar.error(e) }
                 }
             }
         );

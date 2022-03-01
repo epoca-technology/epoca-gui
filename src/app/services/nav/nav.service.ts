@@ -3,14 +3,14 @@ import {Router, NavigationStart, NavigationEnd} from '@angular/router';
 import {DOCUMENT} from "@angular/common";
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {MatBottomSheet, MatBottomSheetRef} from '@angular/material/bottom-sheet';
-import { environment } from '../../../environments/environment';
-import {INavService, IRouteState, IRouteStateData, INavRequirements} from "./interfaces";
 import {BehaviorSubject, Observable} from "rxjs";
 import {filter} from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 import {AppService} from "../app";
 import {RecaptchaDialogComponent} from "../../shared/components/recaptcha-dialog";
 import {ConfirmationDialogComponent, IConfirmationDialogData} from "../../shared/components/confirmation-dialog";
 import {BottomSheetMenuComponent, IBottomSheetMenuItem} from "../../shared/components/bottom-sheet-menu";
+import {INavService, IRouteState, IRouteStateData, INavRequirements} from "./interfaces";
 
 
 
@@ -31,14 +31,14 @@ export class NavService implements INavService {
 	// Requirements
     public readonly requirements: INavRequirements = {
         dashboard: 1,
-        tradingSession: 1,
+        tradingSessions: 3,
         tradingSimulations: 2,
-        mlModels: 2,
+        mlModels: 3,
         candlesticks: 3,
         apiErrors: 3,
         server: 3,
         users: 5,
-        database: 3,
+        database: 4,
         guiVersion: 1,
         PGAdmin: 3,
         Dozzle: 3,
@@ -76,6 +76,8 @@ export class NavService implements INavService {
 
 
 	/* App Navigation */
+	public signIn(): Promise<boolean> { return this.navigate('auth/signIn') }
+	public updatePassword(): Promise<boolean> { return this.navigate('auth/updatePassword') }
 	public dashboard(): Promise<boolean> { return this.navigate('dashboard') }
 	public tradingSessions(): Promise<boolean> { return this.navigate('tradingSessions') }
 	public tradingSimulations(): Promise<boolean> { return this.navigate('tradingSimulations') }

@@ -13,6 +13,8 @@ export interface INavService {
     requirements: INavRequirements,
 	
 	// App Navigation
+    signIn(): Promise<boolean>,
+    updatePassword(): Promise<boolean>,
 	dashboard(): Promise<boolean>,
 	tradingSessions(): Promise<boolean>,
 	tradingSimulations(): Promise<boolean>,

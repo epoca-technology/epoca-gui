@@ -2,7 +2,7 @@
 <mat-sidenav-container class="full-height">
 
     <!-- Side Navigation -->
-    <mat-sidenav #rootSidenav [(opened)]="sidenavOpened" position="end" class="sidenav" autoFocus="false" *ngIf="layout == 'desktop'">
+    <mat-sidenav #rootSidenav [(opened)]="sidenavOpened" position="end" class="sidenav" autoFocus="false" *ngIf="layout == 'desktop' && uid">
 
         <!-- Menu Heading Toolbar -->
         <mat-toolbar color="primary" fxLayout="row" fxLayoutAlign="start center">
@@ -18,49 +18,49 @@
         <mat-list>
             <!-- Dashboard -->
             <mat-list-item>
-                <button mat-button class="left-icon-button" (click)="_nav.dashboard()" [disabled]="state.module == 'dashboard'">
+                <button mat-button class="left-icon-button" (click)="_nav.dashboard()" [disabled]="state.module == 'dashboard' || authority < _nav.requirements['dashboard']">
                     <mat-icon svgIcon="home"></mat-icon><span>Dashboard</span>
                 </button>
             </mat-list-item>
 
             <!-- Trading Sessions -->
             <mat-list-item>
-                <button mat-button class="left-icon-button" (click)="_nav.tradingSessions()" [disabled]="state.module == 'tradingSessions'">
+                <button mat-button class="left-icon-button" (click)="_nav.tradingSessions()" [disabled]="state.module == 'tradingSessions' || authority < _nav.requirements['tradingSessions']">
                     <mat-icon svgIcon="auto_graph"></mat-icon><span>Trading Sessions</span>
                 </button>
             </mat-list-item>
 
             <!-- Trading Simulations -->
             <mat-list-item>
-                <button mat-button class="left-icon-button" (click)="_nav.tradingSimulations()" [disabled]="state.module == 'tradingSimulations'">
+                <button mat-button class="left-icon-button" (click)="_nav.tradingSimulations()" [disabled]="state.module == 'tradingSimulations' || authority < _nav.requirements['tradingSimulations']">
                     <mat-icon svgIcon="ssid_chart"></mat-icon><span>Trading Simulations</span>
                 </button>
             </mat-list-item>
 
             <!-- Candlesticks -->
             <mat-list-item>
-                <button mat-button class="left-icon-button" (click)="_nav.mlModels()" [disabled]="state.module == 'mlModels'">
+                <button mat-button class="left-icon-button" (click)="_nav.mlModels()" [disabled]="state.module == 'mlModels' || authority < _nav.requirements['mlModels']">
                     <mat-icon svgIcon="brain"></mat-icon><span>ML Models</span>
                 </button>
             </mat-list-item>
 
             <!-- Candlesticks -->
             <mat-list-item>
-                <button mat-button class="left-icon-button" (click)="_nav.candlesticks()" [disabled]="state.module == 'candlesticks'">
+                <button mat-button class="left-icon-button" (click)="_nav.candlesticks()" [disabled]="state.module == 'candlesticks' || authority < _nav.requirements['candlesticks']">
                     <mat-icon>waterfall_chart</mat-icon><span>Candlesticks</span>
                 </button>
             </mat-list-item>
 
             <!-- API Errors -->
             <mat-list-item>
-                <button mat-button class="left-icon-button" (click)="_nav.apiErrors()" [disabled]="state.module == 'apiErrors'">
+                <button mat-button class="left-icon-button" (click)="_nav.apiErrors()" [disabled]="state.module == 'apiErrors' || authority < _nav.requirements['apiErrors']">
                     <mat-icon svgIcon="bug_report"></mat-icon><span>API Errors</span>
                 </button>
             </mat-list-item>
 
             <!-- Server -->
             <mat-list-item>
-                <button mat-button class="left-icon-button" (click)="_nav.server()" [disabled]="state.module == 'server'">
+                <button mat-button class="left-icon-button" (click)="_nav.server()" [disabled]="state.module == 'server' || authority < _nav.requirements['server']">
                     <mat-icon svgIcon="server"></mat-icon><span>Server</span>
                 </button>
             </mat-list-item>
@@ -68,7 +68,7 @@
 
             <!-- Users -->
             <mat-list-item>
-                <button mat-button class="left-icon-button" (click)="_nav.users()" [disabled]="state.module == 'users'">
+                <button mat-button class="left-icon-button" (click)="_nav.users()" [disabled]="state.module == 'users' || authority < _nav.requirements['users']">
                     <mat-icon>people_alt</mat-icon><span>Users</span>
                 </button>
             </mat-list-item>
@@ -76,7 +76,7 @@
 
             <!-- Database -->
             <mat-list-item>
-                <button mat-button class="left-icon-button" (click)="_nav.database()" [disabled]="state.module == 'database'">
+                <button mat-button class="left-icon-button" (click)="_nav.database()" [disabled]="state.module == 'database' || authority < _nav.requirements['database']">
                     <mat-icon svgIcon="database"></mat-icon><span>Database</span>
                 </button>
             </mat-list-item>
@@ -84,21 +84,21 @@
             
             <!-- GUI Version -->
             <mat-list-item>
-                <button mat-button class="left-icon-button" (click)="_nav.guiVersion()" [disabled]="state.module == 'guiVersion'">
+                <button mat-button class="left-icon-button" (click)="_nav.guiVersion()" [disabled]="state.module == 'guiVersion' || authority < _nav.requirements['guiVersion']">
                     <mat-icon>update</mat-icon><span>GUI Version</span>
                 </button>
             </mat-list-item>
 
             <!-- IP Blacklist -->
             <mat-list-item>
-                <button mat-button class="left-icon-button" (click)="_nav.ipBlacklist()" [disabled]="state.module == 'ipBlacklist'">
+                <button mat-button class="left-icon-button" (click)="_nav.ipBlacklist()" [disabled]="state.module == 'ipBlacklist' || authority < _nav.requirements['ipBlacklist']">
                     <mat-icon>vpn_lock</mat-icon><span>IP Blacklist</span>
                 </button>
             </mat-list-item>
 
             <!-- PGAdmin -->
             <mat-list-item>
-                <button mat-button class="left-icon-button" (click)="_nav.openPGAdmin()">
+                <button mat-button class="left-icon-button" (click)="_nav.openPGAdmin()" [disabled]="authority < _nav.requirements['PGAdmin']">
                     <mat-icon>open_in_new</mat-icon><span>PGAdmin</span>
                 </button>
             </mat-list-item>
@@ -106,7 +106,7 @@
 
             <!-- Dozzle -->
             <mat-list-item>
-                <button mat-button class="left-icon-button" (click)="_nav.openDozzle()">
+                <button mat-button class="left-icon-button" (click)="_nav.openDozzle()" [disabled]="authority < _nav.requirements['Dozzle']">
                     <mat-icon>open_in_new</mat-icon><span>Dozzle</span>
                 </button>
             </mat-list-item>
@@ -132,34 +132,32 @@
                 <span fxFlex></span>
 
                 <!-- Dashboard -->
-                <mat-list-item>
-                    <button mat-button class="left-icon-button" (click)="_nav.dashboard()" [disabled]="state.module == 'dashboard'">
-                        <mat-icon svgIcon="home"></mat-icon><span>Dashboard</span>
-                    </button>
-                </mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.dashboard()" [disabled]="state.module == 'dashboard' || authority < _nav.requirements['dashboard']" *ngIf="uid">
+                    <mat-icon svgIcon="home"></mat-icon><span>Dashboard</span>
+                </button>
 
                 <!-- Trading Session -->
-                <button mat-button class="left-icon-button" (click)="_nav.tradingSessions()" [disabled]="state.module == 'tradingSessions'" matBadge="1">
+                <button mat-button class="left-icon-button" (click)="_nav.tradingSessions()" matBadge="1" [disabled]="state.module == 'tradingSessions' || authority < _nav.requirements['tradingSessions']" *ngIf="uid">
                     <mat-icon svgIcon="auto_graph"></mat-icon><span>Trading Sessions</span>
                 </button>
 
                 <!-- Trading Simulations -->
-                <button mat-button class="left-icon-button" (click)="_nav.tradingSimulations()" [disabled]="state.module == 'tradingSimulations'" matBadge="3">
+                <button mat-button class="left-icon-button" (click)="_nav.tradingSimulations()" matBadge="3" [disabled]="state.module == 'tradingSimulations' || authority < _nav.requirements['tradingSimulations']" *ngIf="uid">
                     <mat-icon svgIcon="ssid_chart"></mat-icon><span>Trading Simulations</span>
                 </button>
 
                 <!-- API Errors -->
-                <button mat-button class="left-icon-button" (click)="_nav.apiErrors()" [disabled]="state.module == 'apiErrors'">
+                <button mat-button class="left-icon-button" (click)="_nav.apiErrors()" *ngIf="uid" [disabled]="state.module == 'apiErrors' || authority < _nav.requirements['apiErrors']">
                     <mat-icon svgIcon="bug_report"></mat-icon><span>API Errors</span>
                 </button>
 
                 <!-- Server -->
-                <button mat-button class="left-icon-button" (click)="_nav.server()" [disabled]="state.module == 'server'">
+                <button mat-button class="left-icon-button" (click)="_nav.server()" *ngIf="uid" [disabled]="state.module == 'server' || authority < _nav.requirements['server']">
                     <mat-icon svgIcon="server"></mat-icon><span>Server</span>
                 </button>
 
                 <!-- Menu -->
-                <button mat-icon-button (click)="sidenav?.toggle()"><mat-icon>menu</mat-icon></button>
+                <button mat-icon-button (click)="sidenav?.toggle()" *ngIf="uid"><mat-icon>menu</mat-icon></button>
             </mat-toolbar>
         </div>
 

@@ -58,6 +58,7 @@
                                    formControlName="version"
                                    autocomplete="off"
                                    placeholder="e.g. 0.0.1" 
+                                   [appDisableControl]="updating"
                                    #versionControl>
                         </mat-form-field>
                         <div *ngIf="version.touched && version.invalid" class="errors">

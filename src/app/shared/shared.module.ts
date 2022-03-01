@@ -46,7 +46,7 @@ import {environment} from "../../environments/environment";
 
 
 // reCAPTCHA
-import { RecaptchaModule, RECAPTCHA_LANGUAGE, RECAPTCHA_SETTINGS, RecaptchaSettings } from "ng-recaptcha";
+import { RecaptchaModule, RecaptchaFormsModule, RECAPTCHA_LANGUAGE, RECAPTCHA_SETTINGS, RecaptchaSettings } from "ng-recaptcha";
 
 
 
@@ -114,6 +114,7 @@ import { MobileTabsComponent } from './components/mobile-tabs/mobile-tabs.compon
 		
 		// reCAPTCHA
 		RecaptchaModule,
+        RecaptchaFormsModule,
 		
 		// Material Design
 		MatCheckboxModule,
@@ -206,7 +207,11 @@ import { MobileTabsComponent } from './components/mobile-tabs/mobile-tabs.compon
         NgxMatDatetimePickerModule,
         NgxMatTimepickerModule,
         NgxMatNativeDateModule,
-		
+				
+		// reCAPTCHA
+		RecaptchaModule,
+        RecaptchaFormsModule,
+
 		// Directives
 		DisableControlDirective,
 		

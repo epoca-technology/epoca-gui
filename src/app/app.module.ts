@@ -30,7 +30,9 @@ initializeApp(environment.firebaseConfig.credentials);
 import {
     ApiService,
     AuthService,
+    UserService,
     CandlestickService,
+    DatabaseService,
     ExternalRequestService,
 	ServerService,
 	UtilsService,
@@ -105,7 +107,9 @@ import { AppComponent } from './app.component';
 		// Core
         ApiService,
         AuthService,
+        UserService,
         CandlestickService,
+        DatabaseService,
         ExternalRequestService,
         ServerService,
 		UtilsService,

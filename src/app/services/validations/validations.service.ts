@@ -52,36 +52,39 @@ export class ValidationsService implements IValidationsService{
 	 * @returns {invalidPassword: boolean}|null
 	 * */
 	public passwordValid(control: AbstractControl): {invalidPassword: boolean}|null {
-		if(control && typeof control.value == "string" && control.value.length) {
-			if (control.value.length > 7 && control.value.length < 36) {
-				const anUpperCase = /[A-Z]/;
-				const aLowerCase = /[a-z]/;
-				const aNumber = /[0-9]/;
-				
-				let numUpper = 0;
-				let numLower = 0;
-				let numNums = 0;
-				
-				for(let i = 0; i < control.value.length; i++){
-					if(anUpperCase.test(control.value[i]))
-						numUpper++;
-					else if(aLowerCase.test(control.value[i]))
-						numLower++;
-					else if(aNumber.test(control.value[i]))
-						numNums++;
-				}
-				
-				if(numUpper < 1 || numLower < 1 || numNums < 1){
-					return {invalidPassword: true}
-				} else {
-					return null;
-				}
-			}else {
-				return {invalidPassword: true}
-			}
-		} else {
-			return {invalidPassword: true}
-		}
+        // Perform basic validations
+        if (
+            control && 
+            typeof control.value == "string" && 
+            control.value.length >= 8 &&
+            control.value.length <= 200
+        ) {
+            // Init regular expressions
+            const anUpperCase: RegExp = /[A-Z]/;
+            const aLowerCase: RegExp = /[a-z]/;
+            const aNumber: RegExp = /[0-9]/;
+
+            // Init the counters
+            let numUpper: number = 0;
+            let numLower: number = 0;
+            let numNums: number = 0;
+
+            // Iterate over each password character
+            for (let i = 0; i < control.value.length; i++) {
+                if(anUpperCase.test(control.value[i])) { numUpper++ }
+                else if(aLowerCase.test(control.value[i])) { numLower++ }
+                else if(aNumber.test(control.value[i])) { numNums++ }
+            }
+
+            // Make sure that at least one of each was found
+            if (numUpper > 0 && numLower > 0 && numNums > 0) {
+                return null;
+            } else {
+                return {invalidPassword: true}; 
+            }
+        } else { 
+            return {invalidPassword: true}; 
+        }
 	}
 	
 	

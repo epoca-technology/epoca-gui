@@ -6,6 +6,9 @@ export interface IApiService {
         method: IHTTPMethod,
 		path: string,
 		body?: {[key: string]: any},
+        requiresAuth?: boolean,
+        otp?: string,
+        retried?: boolean
 	): Promise<any>
 }
 

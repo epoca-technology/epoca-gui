@@ -648,6 +648,12 @@ form .mat-checkbox-inner-container{
 
 
 
+/* reCAPTCHA */
+.recaptcha-container { width: 100%; min-height: 60px; }
+
+
+
+
 
 
 
@@ -725,7 +731,8 @@ form .mat-checkbox-inner-container{
 	.desktop-card { padding:0;margin:0; @include mat.elevation(0);}
 
 
-
+    // reCAPTCHA
+    .recaptcha-container { width: 100%; min-height: 145px; }
 }
 
 
