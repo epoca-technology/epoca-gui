@@ -10,7 +10,7 @@ import {AppService} from "../app";
 import {RecaptchaDialogComponent} from "../../shared/components/recaptcha-dialog";
 import {ConfirmationDialogComponent, IConfirmationDialogData} from "../../shared/components/confirmation-dialog";
 import {BottomSheetMenuComponent, IBottomSheetMenuItem} from "../../shared/components/bottom-sheet-menu";
-import {INavService, IRouteState, IRouteStateData, INavRequirements} from "./interfaces";
+import {INavService, IRouteState, IRouteStateData} from "./interfaces";
 
 
 
@@ -27,23 +27,6 @@ export class NavService implements INavService {
 	
 	// Route State
 	public routeState: BehaviorSubject<IRouteState>;
-	
-	// Requirements
-    public readonly requirements: INavRequirements = {
-        dashboard: 1,
-        tradingSessions: 3,
-        tradingSimulations: 2,
-        mlModels: 3,
-        candlesticks: 3,
-        apiErrors: 3,
-        server: 3,
-        users: 5,
-        database: 4,
-        guiVersion: 1,
-        PGAdmin: 3,
-        Dozzle: 3,
-        settings: 1,
-    }
 	
 	
 	constructor(

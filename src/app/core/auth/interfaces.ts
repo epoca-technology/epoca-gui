@@ -4,10 +4,9 @@ import { BehaviorSubject } from "rxjs";
 export interface IAuthService {
     // Properties
     uid: BehaviorSubject<string|null|undefined>,
-    authority: IAuthority,
     
     // Auth Management
-    signIn(signInToken: ISignInToken): Promise<void>,
+    signIn(signInToken: string): Promise<void>,
     signOut(): Promise<void>,
 
     // ID Token
@@ -38,7 +37,7 @@ export interface IUserService {
     deleteUser(uid: string, otp: string): Promise<IUser[]>,
     
     // Sign In
-    getSignInToken(email: string, password: string, otp: string, recaptcha: string): Promise<ISignInToken>,
+    getSignInToken(email: string, password: string, otp: string, recaptcha: string): Promise<string>,
 }
 
 
@@ -65,9 +64,3 @@ export type IAuthority = 1|2|3|4|5;
 
 
 
-
-// Sign In Token
-export interface ISignInToken {
-    token: string,
-    authority: IAuthority
-}

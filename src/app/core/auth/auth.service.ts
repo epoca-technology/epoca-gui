@@ -13,7 +13,7 @@ import { onValue, get, DataSnapshot, child } from "firebase/database";
 import { BehaviorSubject } from 'rxjs';
 import { UtilsService } from '../utils';
 import { DatabaseService } from '../database';
-import { IAuthService, ISignInToken, IAuthority } from './interfaces';
+import { IAuthService, IAuthority } from './interfaces';
 
 
 @Injectable({
@@ -26,9 +26,6 @@ export class AuthService implements IAuthService {
 	// Auth Status
 	public uid: BehaviorSubject<string|null|undefined>;
     private user?: User|null;
-
-    // Authority
-    public authority: IAuthority = 1;
 
     // ID Token
     private idToken?: string|undefined;
@@ -98,32 +95,29 @@ export class AuthService implements IAuthService {
      * @param signInToken 
      * @returns Promise<void>
      */
-    public async signIn(signInToken: ISignInToken): Promise<void> {
+    public async signIn(signInToken: string): Promise<void> {
         // Make sure the provided token is valid
-        if (!signInToken || typeof signInToken.token != "string" || typeof signInToken.authority != "number") {
+        if (typeof signInToken != "string") {
             console.log(signInToken);
             throw new Error('The provided sign in token is invalid. Please try again.');
         }
 
-        // Set the authority
-        this.authority = signInToken.authority;
-
         // Attempt to sign in persistently
-        try { await signInWithCustomToken(this.auth, signInToken.token) }
+        try { await signInWithCustomToken(this.auth, signInToken) }
         catch (e) {
             // Log the error and allow a small delay
             console.error(`Error when trying to sign in (1). Attempting again in a few seconds.`, e);
             await this._utils.asyncDelay(5);
 
             // Attempt again
-            try { await signInWithCustomToken(this.auth, signInToken.token) }
+            try { await signInWithCustomToken(this.auth, signInToken) }
             catch (e) {
                 // Log the error and allow a small delay
                 console.error(`Error when trying to sign in (2). Attempting again in a few seconds.`, e);
                 await this._utils.asyncDelay(5);
     
                 // Attempt one last time again
-                await signInWithCustomToken(this.auth, signInToken.token)
+                await signInWithCustomToken(this.auth, signInToken)
             }
         }
     }

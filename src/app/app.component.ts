@@ -3,7 +3,7 @@ import {MatSidenav} from "@angular/material/sidenav";
 import { MatIconRegistry } from "@angular/material/icon";
 import { DomSanitizer } from "@angular/platform-browser";
 import { IAppComponent } from './interfaces';
-import { AuthService, IAuthority, NotificationService } from './core';
+import { AuthService, NotificationService } from './core';
 import { 
     AppService, 
     NavService,
@@ -11,7 +11,6 @@ import {
     IRouteState,
     SnackbarService
 } from './services';
-import { environment } from '../environments/environment';
 
 
 
@@ -30,7 +29,6 @@ export class AppComponent implements IAppComponent {
 
     // User
     public uid: string|null|undefined;
-    public authority: IAuthority = 5;
 
 	// FCM Enabler
 	public fcmVisible: boolean = false;

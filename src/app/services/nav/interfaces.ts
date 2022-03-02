@@ -8,9 +8,6 @@ import { IAuthority } from "../../core";
 export interface INavService {
 	// Route State
 	routeState: BehaviorSubject<IRouteState>,
-
-    // Nav Authority Requirements
-    requirements: INavRequirements,
 	
 	// App Navigation
     signIn(): Promise<boolean>,
@@ -63,12 +60,6 @@ export interface IRouteStateData {
 }
 
 
-
-
-// Nav Authority Requirements
-export interface INavRequirements {
-    [moduleName: string]: IAuthority
-}
 
 
 

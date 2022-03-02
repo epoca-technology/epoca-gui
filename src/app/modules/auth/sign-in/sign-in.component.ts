@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/co
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { RecaptchaComponent } from 'ng-recaptcha';
 import { Subscription } from 'rxjs';
-import { AuthService, ISignInToken, UserService, UtilsService } from '../../../core';
+import { AuthService, UserService, UtilsService } from '../../../core';
 import { AppService, ILayout, NavService, SnackbarService, ValidationsService } from '../../../services';
 import { ISignInComponent } from './interfaces';
 
@@ -89,7 +89,7 @@ export class SignInComponent implements OnInit, OnDestroy, ISignInComponent {
                     this.submitting = true;
                     try {
                         // Retrieve the sign in token
-                        const token: ISignInToken = await this._user.getSignInToken(
+                        const token: string = await this._user.getSignInToken(
                             this.email.value,
                             this.password.value,
                             otp,

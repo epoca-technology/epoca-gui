@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from '../api';
-import { IUserService, IUser, IAuthority, ISignInToken } from './interfaces';
+import { IUserService, IUser, IAuthority } from './interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -164,9 +164,9 @@ export class UserService implements IUserService {
      * @param password 
      * @param otp 
      * @param recaptcha 
-     * @returns Promise<ISignInToken>
+     * @returns Promise<string>
      */
-    public getSignInToken(email: string, password: string, otp: string, recaptcha: string): Promise<ISignInToken> { 
+    public getSignInToken(email: string, password: string, otp: string, recaptcha: string): Promise<string> { 
         return this._api.request('post','auth/getSignInToken', {email: email, password: password, otp: otp, recaptcha: recaptcha});
     }
 }
