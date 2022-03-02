@@ -105,7 +105,7 @@
                                     <div class="divider"></div>
 
                                     <!-- CPU Load -->
-                                    <div class="desktop-card fake-button" role="button" matRipple (click)="activateSectionByID('cpu')">
+                                    <div class="desktop-card fake-button" role="button" (click)="activateSectionByID('cpu')">
                                         <div fxLayout="row">
                                             <h3>CPU Load</h3>
                                             <span fxFlex></span>
@@ -118,7 +118,7 @@
                                     <div class="divider"></div>
 
                                     <!-- CPU Temperature -->
-                                    <div class="desktop-card fake-button" role="button" matRipple (click)="activateSectionByID('cpu')">
+                                    <div class="desktop-card fake-button" role="button" (click)="activateSectionByID('cpu')">
                                         <h3>CPU Temperature</h3>
                                         <div fxLayout="row" class="row">
                                             <p>Max</p>
@@ -173,7 +173,7 @@
                                 <span fxFlex></span>
                                 <div fxFlex="45" fxFlex.xs="100" fxFlex.sm="100">
                                     <!-- Memory Usage -->
-                                    <div class="desktop-card fake-button" role="button" matRipple (click)="activateSectionByID('memory')">
+                                    <div class="desktop-card fake-button" role="button" (click)="activateSectionByID('memory')">
                                         <div fxLayout="row">
                                             <h3>Memory Usage</h3>
                                             <span fxFlex></span>
@@ -186,7 +186,7 @@
                                     <div class="divider"></div>
 
                                     <!-- GPU -->
-                                    <div class="desktop-card fake-button" role="button" matRipple (click)="activateSectionByID('gpu')">
+                                    <div class="desktop-card fake-button" role="button" (click)="activateSectionByID('gpu')">
                                         <div fxLayout="row">
                                             <h3>GPU</h3>
                                             <span fxFlex></span>
@@ -206,7 +206,7 @@
 
                                     <!-- File Systems -->
                                     <div *ngFor="let fs of serverData.resources.fileSystems;let last = last;let i = index">
-                                        <div class="desktop-card fake-button" role="button" matRipple (click)="activateSectionByID('file-systems')">
+                                        <div class="desktop-card fake-button" role="button" (click)="activateSectionByID('file-systems')">
                                             <div fxLayout="row">
                                                 <h3>File System {{i+1}}</h3>
                                                 <span fxFlex></span>
@@ -289,7 +289,7 @@
                                         <div fxLayout="row" class="row">
                                             <p>Used ({{serverData.resources.memory.usedPercent}}%)</p>
                                             <span fxFlex></span>
-                                            <p>{{serverData.resources.memory.used}} GB</p>
+                                            <p>{{serverData.resources.memory.active}} GB</p>
                                         </div>
                                     </div>
 

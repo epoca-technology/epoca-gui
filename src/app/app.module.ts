@@ -34,21 +34,22 @@ import {
     CandlestickService,
     DatabaseService,
     ExternalRequestService,
+	GuiVersionService,
+	NotificationService,
 	ServerService,
 	UtilsService,
-	GuiVersionService,
 } from './core';
 
 
 // Services
 import {
 	AppService,
+    AudioService,
 	ChartService,
 	ClipboardService,
 	NavService,
 	SnackbarService,
 	ValidationsService,
-    AudioService,
 } from './services';
 
 
@@ -97,12 +98,12 @@ import { AppComponent } from './app.component';
 	providers: [
 		// Services 
 		AppService,
+        AudioService,
         ChartService,
 		ClipboardService,
 		NavService,
 		SnackbarService,
 		ValidationsService,
-        AudioService,
 
 		// Core
         ApiService,
@@ -111,9 +112,10 @@ import { AppComponent } from './app.component';
         CandlestickService,
         DatabaseService,
         ExternalRequestService,
+        GuiVersionService,
+        NotificationService,
         ServerService,
 		UtilsService,
-        GuiVersionService
 
 	],
 	bootstrap: [AppComponent]

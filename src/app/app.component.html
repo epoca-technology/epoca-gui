@@ -164,6 +164,17 @@
 
         <!-- Main Router Outlet -->
         <router-outlet></router-outlet>
+
+
+        <!-- FCM Permission -->
+        <div *ngIf="fcmVisible" (click)="enableFCM()" 
+            cdkDrag (cdkDragMoved)="fcmDragged($event)"
+            role="button" class="fake-button fcm fadeIn" matRipple
+            fxLayout="row" fxLayoutAlign="start center">
+            <p>Enable FCM Notifications on this device.</p>
+            <span fxFlex></span>
+            <mat-icon>notifications</mat-icon>
+        </div>
     </mat-sidenav-content>
 </mat-sidenav-container>
 
@@ -172,5 +183,4 @@
 
 
 <!-- Icons Preloader -->
-<!-- @TODO Review Relevance -->
 <div class="icons-preloader"><mat-icon *ngFor="let icon of customIcons" [svgIcon]="icon"></mat-icon></div>

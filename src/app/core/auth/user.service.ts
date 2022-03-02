@@ -124,7 +124,7 @@ export class UserService implements IUserService {
      * @param newFCMToken 
      * @returns Promise<void>
      */
-    public updateFCMToken(newFCMToken: IAuthority): Promise<void> { 
+    public updateFCMToken(newFCMToken: string): Promise<void> { 
         return this._api.request('post','auth/updateFCMToken', {newFCMToken: newFCMToken}, true);
     }
 

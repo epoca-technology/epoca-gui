@@ -34,6 +34,8 @@ export interface IUserService {
     updatePassword(email: string, newPassword: string, otp: string, recaptcha: string): Promise<void>,
     updateOTPSecret(uid: string, otp: string): Promise<IUser[]>,
     updateAuthority(uid: string, newAuthority: IAuthority, otp: string): Promise<IUser[]>,
+    updateFCMToken(newFCMToken: string): Promise<void>,
+    deleteUser(uid: string, otp: string): Promise<IUser[]>,
     
     // Sign In
     getSignInToken(email: string, password: string, otp: string, recaptcha: string): Promise<ISignInToken>,
