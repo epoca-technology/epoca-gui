@@ -23,7 +23,6 @@ export interface INavService {
     database(): Promise<boolean>,
     guiVersion(version?: string): Promise<boolean>,
     ipBlacklist(): Promise<boolean>,
-    settings(): Promise<boolean>,
 	
 	// Dialogs
     displayConfirmationDialog(data?: IConfirmationDialogData): MatDialogRef<any>,

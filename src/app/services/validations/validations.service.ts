@@ -90,6 +90,30 @@ export class ValidationsService implements IValidationsService{
 	
 	
 
+
+
+
+	
+	/* Authority */
+	
+	
+	
+	
+	/*
+	* Verifies if an authority is valid
+	* @param control
+	* @returns {invalidAuthority: boolean}|null
+	* */
+	public authorityValid(control: AbstractControl): {invalidAuthority: boolean}|null {
+		if(control && typeof control.value == "number" && control.value >= 1 && control.value <= 4) {
+            return null;
+		} else {
+			return {invalidAuthority: true}
+		}
+	}
+
+
+
 	
 	
 	
@@ -126,6 +150,11 @@ export class ValidationsService implements IValidationsService{
 	
 	
 	
+
+
+
+
+
 
 
 

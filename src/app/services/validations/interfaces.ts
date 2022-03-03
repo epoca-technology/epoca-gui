@@ -6,6 +6,9 @@ export interface IValidationsService {
 	emailValid(control: AbstractControl): {invalidEmail: boolean}|null,
 	passwordValid(control: AbstractControl): {invalidPassword: boolean}|null,
 	
+    // Authority
+    authorityValid(control: AbstractControl): {invalidAuthority: boolean}|null,
+
 	// OTP
 	otpValid(control: AbstractControl): {invalidOTP: boolean}|null,
 

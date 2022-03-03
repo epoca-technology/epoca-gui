@@ -78,7 +78,6 @@ export class NavService implements INavService {
         }
     }
 	public ipBlacklist(): Promise<boolean> { return this.navigate('ipBlacklist') }
-	public settings(): Promise<boolean> { return this.navigate('settings') }
 
 
 	

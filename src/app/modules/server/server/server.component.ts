@@ -2,7 +2,7 @@ import { Component,  OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSidenav } from '@angular/material/sidenav';
 import { Subscription } from 'rxjs';
-import { IAlarmsConfig, IServerData, ServerService, UtilsService } from '../../../core';
+import { ApiService, IAlarmsConfig, IServerData, ServerService, UtilsService } from '../../../core';
 import { AppService, AudioService, ILayout, NavService, SnackbarService } from '../../../services';
 import { AlarmsConfigDialogComponent } from './alarms-config-dialog/alarms-config-dialog.component';
 import { ISection, ISectionID, IServerComponent, IState, IStates } from './interfaces';
@@ -73,6 +73,7 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
         private _snackbar: SnackbarService,
         private _nav: NavService,
         private _audio: AudioService,
+        public _api: ApiService,
         private dialog: MatDialog,
     ) { }
 

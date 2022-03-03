@@ -12,7 +12,7 @@ import { UtilsService } from '../utils';
 })
 export class ApiService implements IApiService {
     // API URL
-    private readonly url: string = environment.localServer ? environment.apiURL.local: environment.apiURL.external;
+    public readonly url: string = environment.localServer ? environment.apiURL.local: environment.apiURL.external;
 
 
 

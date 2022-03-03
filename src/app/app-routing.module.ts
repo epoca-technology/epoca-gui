@@ -81,12 +81,6 @@ const routes: Routes = [
 		loadChildren: () => import('./modules/ip-blacklist/ip-blacklist.module').then(m => m.IpBlacklistModule),
 	},
 
-	// Settings
-	{
-		path: 'settings',
-		loadChildren: () => import('./modules/settings/settings.module').then(m => m.SettingsModule),
-	},
-
 
 
 

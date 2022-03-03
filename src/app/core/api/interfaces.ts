@@ -2,6 +2,10 @@ import { IHTTPMethod } from "../external-request";
 
 
 export interface IApiService {
+    // Properties
+    url: string,
+
+    // Request
     request(
         method: IHTTPMethod,
 		path: string,

@@ -34,6 +34,7 @@ import {MatBottomSheetModule, MAT_BOTTOM_SHEET_DEFAULT_OPTIONS} from '@angular/m
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatNativeDateModule} from '@angular/material/core';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import {DragDropModule} from '@angular/cdk/drag-drop';
 
 // DateTime Picker
 import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
@@ -142,6 +143,7 @@ import { MobileTabsComponent } from './components/mobile-tabs/mobile-tabs.compon
         MatDatepickerModule,
         MatNativeDateModule,
         MatTooltipModule,
+        DragDropModule,
 
         // DateTime Picker
         NgxMatDatetimePickerModule,
@@ -202,6 +204,7 @@ import { MobileTabsComponent } from './components/mobile-tabs/mobile-tabs.compon
         MatDatepickerModule,
         MatNativeDateModule,
         MatTooltipModule,
+        DragDropModule,
 
         // DateTime Picker
         NgxMatDatetimePickerModule,

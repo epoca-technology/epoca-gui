@@ -100,7 +100,6 @@ export class SignInComponent implements OnInit, OnDestroy, ISignInComponent {
                         await this._auth.signIn(token);
 
                         // After a small delay, redirect the user to the Dashboard
-                        this._snackbar.success('The session has been initialized successfully.');
                         await this._utils.asyncDelay(0.5);
                         this._nav.dashboard();
                     } catch(e) { 

@@ -81,6 +81,12 @@
                                         </div>
                                         <div [ngClass]="{'error-color': refreshError || environmentError}" 
                                             fxLayout="row">
+                                            <p [ngClass]="{'light-text': !refreshError && !environmentError}" class="ts-m">URL</p>
+                                            <span fxFlex></span>
+                                            <p class="ts-m">{{_api.url}}</p>
+                                        </div>
+                                        <div [ngClass]="{'error-color': refreshError || environmentError}" 
+                                            fxLayout="row">
                                             <p [ngClass]="{'light-text': !refreshError && !environmentError}" class="ts-m">Environment</p>
                                             <span fxFlex></span>
                                             <p class="ts-m">{{serverData.production ? 'Production': 'Development'}}</p>

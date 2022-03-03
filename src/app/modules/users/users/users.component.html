@@ -1,9 +1,17 @@
 <!-- Secondary Header -->
 <mat-toolbar class="secondary-header">
     <div fxLayout="row" fxLayoutAlign="center center">
-        <button mat-icon-button class="show-on-mobile" (click)="_nav.dashboard()"><mat-icon>arrow_back</mat-icon></button>
-        <span>Users</span>
+        <button mat-icon-button class="show-on-mobile" (click)="_nav.dashboard()" *ngIf="view == 'intro'"><mat-icon>arrow_back</mat-icon></button>
+        <button mat-icon-button (click)="gotoIntro()" *ngIf="view != 'intro'"><mat-icon>arrow_back</mat-icon></button>
+        <span *ngIf="view == 'intro'">Users</span>
+        <span *ngIf="view == 'user'">User Details</span>
+        <span *ngIf="view == 'createUser'">Create User</span>
+        <span *ngIf="view == 'updateEmail'">Update Email</span>
+        <span *ngIf="view == 'updateAuthority'">Update Authority</span>
         <span fxFlex></span>
+        <button mat-icon-button *ngIf="view == 'intro'" [disabled]="!loaded || submitting || !users.length" (click)="gotoCreateUser()">
+            <mat-icon>person_add</mat-icon>
+        </button>
     </div>
 </mat-toolbar>
 
@@ -13,6 +21,257 @@
 </div>
 
 <!-- Content -->
-<div *ngIf="loaded">
+<div *ngIf="loaded && users.length" class="padding">
 
+
+    <!-- Intro -->
+    <div fxLayout="row" fxLayoutAlign="center center" *ngIf="view == 'intro'" class="intro-container fadeIn">
+        <div fxFlex fxFlex.md="70" fxFlex.lg="60" fxFlex.xl="50">
+            <div class="desktop-card">
+                <table class="bordered highlight">
+                    <thead>
+                        <tr>
+                            <th fxHide.xs fxHide.sm>Creation</th>
+                            <th fxHide.xs fxHide.sm>User ID</th>
+                            <th>Email</th>
+                            <th>Authority</th>
+                            <th fxHide.xs fxHide.sm>FCM</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let u of users" (click)="displayBottomSheet(u)" class="clickable">
+                            <td fxHide.xs fxHide.sm>{{u.creation | date:'medium'}}</td>
+                            <td fxHide.xs fxHide.sm>{{u.uid}}</td>
+                            <td>{{u.email}}</td>
+                            <td>{{u.authority}}</td>
+                            <td fxHide.xs fxHide.sm>
+                                <mat-icon *ngIf="u.fcm_token" class="success-color">done</mat-icon>
+                                <span class="light-text" *ngIf="!u.fcm_token">N/A</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <!-- User Details -->
+    <div fxLayout="row" fxLayoutAlign="center center" class=" sections-container fadeIn" *ngIf="view == 'user' && activeUser">
+        <div fxFlex fxFlex.md="45" fxFlex.lg="35" fxFlex.xl="30">
+            <div class="desktop-card" *ngIf="view == 'user' && activeUser">
+                <h1 class="show-on-desktop align-center">User Details</h1>
+
+                <div class="row">
+                    <p>Creation</p>
+                    <p class="light-text">{{activeUser.creation | date:'medium'}}</p>
+                </div>
+
+                <div class="row">
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <div>
+                            <p>User ID</p>
+                            <p class="light-text">{{activeUser.uid}}</p>
+                        </div>
+                        <span fxFlex></span>
+                        <button mat-icon-button (click)="_clipboard.copy(activeUser.uid)"><mat-icon>content_copy</mat-icon></button>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <div>
+                            <p>Email</p>
+                            <p class="light-text">{{activeUser.email}}</p>
+                        </div>
+                        <span fxFlex></span>
+                        <button mat-icon-button (click)="_clipboard.copy(activeUser.email)"><mat-icon>content_copy</mat-icon></button>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <p>Authority</p>
+                    <p class="light-text">{{activeUser.authority}}</p>
+                </div>
+
+
+                <div class="row">
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <div>
+                            <p>OTP Secret</p>
+                            <p class="light-text">{{activeUser.otp_secret}}</p>
+                        </div>
+                        <span fxFlex></span>
+                        <button mat-icon-button (click)="_clipboard.copy(activeUser.otp_secret)"><mat-icon>content_copy</mat-icon></button>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <p>FCM Token</p>
+                    <p class="light-text" *ngIf="activeUser.fcm_token">{{activeUser.fcm_token}}</p>
+                    <p class="light-text" *ngIf="!activeUser.fcm_token">N/A</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <!-- Create User -->
+    <div fxLayout="row" fxLayoutAlign="center center" class=" sections-container fadeIn" *ngIf="view == 'createUser'">
+        <div fxFlex fxFlex.md="35" fxFlex.lg="30" fxFlex.xl="25">
+            <div class="desktop-card">
+                <h2 class="show-on-desktop align-center">Create User</h2>
+                <p class="light-text align-center show-on-desktop">Fill up the form to create a new Plutus user</p>
+                <form [formGroup]="createForm" (ngSubmit)="submitCreateUser()">
+                    <div>
+                        <mat-form-field>
+                            <mat-label>Email Address</mat-label>
+                            <mat-icon matPrefix>email</mat-icon>
+                            <input type="email"
+                                   matInput
+                                   formControlName="email"
+                                   [appDisableControl]="submitting"
+                                   autocomplete="off"
+                                   placeholder="e.g. useremail@gmail.com" 
+                                   #emailControl>
+                        </mat-form-field>
+                        <div *ngIf="email.touched && email.invalid" class="errors">
+                            <p>The provided email address is invalid.</p>
+                        </div>
+                    </div>
+
+
+                    <div>
+                        <mat-form-field>
+                            <mat-label>Authority</mat-label>
+                            <mat-icon matPrefix>supervisor_account</mat-icon>
+                            <input type="number"
+                                   matInput
+                                   formControlName="authority"
+                                   autocomplete="off"
+                                   placeholder="e.g. 3" 
+                                   [appDisableControl]="submitting">
+                        </mat-form-field>
+                        <div *ngIf="authority.touched && authority.invalid" class="errors">
+                            <p>The provided authority is invalid.</p>
+                        </div>
+                    </div>
+    
+                    <div class="actions">
+                        <button type="submit" mat-raised-button color="primary" [disabled]="createForm.invalid || submitting">
+                            {{submitting ? 'CREATING USER...': 'CREATE USER'}}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Update Email -->
+    <div fxLayout="row" fxLayoutAlign="center center" class=" sections-container fadeIn" *ngIf="view == 'updateEmail' && activeUser">
+        <div fxFlex fxFlex.md="35" fxFlex.lg="30" fxFlex.xl="25">
+            <div class="desktop-card">
+                <h2 class="show-on-desktop align-center">Update Email</h2>
+                <p class="light-text align-center show-on-desktop">Fill up the form to update the user's email</p>
+
+                <div class="row">
+                    <p>User ID</p>
+                    <p class="light-text">{{activeUser.uid}}</p>
+                </div>
+
+                <div class="row">
+                    <p>Email</p>
+                    <p class="light-text">{{activeUser.email}}</p>
+                </div>
+
+                <div class="row">
+                    <p>Authority</p>
+                    <p class="light-text">{{activeUser.authority}}</p>
+                </div>
+
+                <form [formGroup]="updateEmailForm" (ngSubmit)="submitUpdateEmail()">
+                    <div>
+                        <mat-form-field>
+                            <mat-label>New Email Address</mat-label>
+                            <mat-icon matPrefix>email</mat-icon>
+                            <input type="email"
+                                   matInput
+                                   formControlName="newEmail"
+                                   [appDisableControl]="submitting"
+                                   autocomplete="off"
+                                   placeholder="e.g. newuseremail@gmail.com" 
+                                   #newEmailControl>
+                        </mat-form-field>
+                        <div *ngIf="newEmail.touched && newEmail.invalid" class="errors">
+                            <p>The provided email address is invalid.</p>
+                        </div>
+                    </div>
+    
+                    <div class="actions">
+                        <button type="submit" mat-raised-button color="primary" [disabled]="updateEmailForm.invalid || submitting">
+                            {{submitting ? 'UPDATING EMAIL...': 'UPDATE EMAIL'}}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <!-- Update Authority -->
+    <div fxLayout="row" fxLayoutAlign="center center" class=" sections-container fadeIn" *ngIf="view == 'updateAuthority' && activeUser">
+        <div fxFlex fxFlex.md="35" fxFlex.lg="30" fxFlex.xl="25">
+            <div class="desktop-card">
+                <h2 class="show-on-desktop align-center">Update Authority</h2>
+                <p class="light-text align-center show-on-desktop">Fill up the form to update the user's authority</p>
+
+                <div class="row">
+                    <p>User ID</p>
+                    <p class="light-text">{{activeUser.uid}}</p>
+                </div>
+
+                <div class="row">
+                    <p>Email</p>
+                    <p class="light-text">{{activeUser.email}}</p>
+                </div>
+
+                <div class="row">
+                    <p>Authority</p>
+                    <p class="light-text">{{activeUser.authority}}</p>
+                </div>
+
+                <form [formGroup]="updateAuthorityForm" (ngSubmit)="submitUpdateAuthority()">
+                    <div>
+                        <mat-form-field>
+                            <mat-label>Authority</mat-label>
+                            <mat-icon matPrefix>supervisor_account</mat-icon>
+                            <input type="number"
+                                   matInput
+                                   formControlName="newAuthority"
+                                   autocomplete="off"
+                                   placeholder="e.g. 2" 
+                                   [appDisableControl]="submitting" 
+                                   #newAuthorityControl>
+                        </mat-form-field>
+                        <div *ngIf="newAuthority.touched && newAuthority.invalid" class="errors">
+                            <p>The provided authority is invalid.</p>
+                        </div>
+                    </div>
+    
+                    <div class="actions">
+                        <button type="submit" mat-raised-button color="primary" [disabled]="updateAuthorityForm.invalid || submitting">
+                            {{submitting ? 'UPDATING AUTHORITY...': 'UPDATE AUTHORITY'}}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>

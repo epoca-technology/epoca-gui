@@ -1,0 +1,27 @@
+
+
+// Intro
+.intro-container .desktop-card{
+    padding:0;
+}
+
+
+
+
+
+// Sections
+.sections-container {
+
+}
+.sections-container .row p{
+    margin:0;
+}
+.sections-container .row {
+    margin: 30px 0 30px 0;
+}
+.sections-container .row:nth-of-type(1){
+    margin: 0 0 30px 0!important;
+}
+.sections-container .row:last-child{
+    margin: 30px 0 0 0!important;
+}

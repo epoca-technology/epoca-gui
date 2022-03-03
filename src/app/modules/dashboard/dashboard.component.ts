@@ -2,8 +2,8 @@ import {Component, OnInit, OnDestroy, ViewChild} from '@angular/core';
 import {MatSidenav} from "@angular/material/sidenav";
 import { IDashboardComponent } from './interfaces';
 import {Subscription} from "rxjs";
+import { AppService, ILayout, NavService, SnackbarService } from '../../services';
 import { environment } from '../../../environments/environment';
-import { AppService, ILayout, SnackbarService } from '../../services';
 
 @Component({
   selector: 'app-dashboard',
@@ -22,6 +22,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     constructor(
         private _app: AppService,
         private _snackbar: SnackbarService,
+        public _nav: NavService
     ) { }
 
     async ngOnInit(): Promise<void> {
