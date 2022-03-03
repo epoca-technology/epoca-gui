@@ -13,5 +13,9 @@ export interface IValidationsService {
 	otpValid(control: AbstractControl): {invalidOTP: boolean}|null,
 
     // GUI Version
-    guiVersionValid(control: AbstractControl): {invalidVersion: boolean}|null
+    guiVersionValid(control: AbstractControl): {invalidVersion: boolean}|null,
+
+    // IP
+    ipValid(control: AbstractControl): {invalidIP: boolean}|null,
+    ipNotesValid(control: AbstractControl): {invalidIPNote: boolean}|null,
 }

@@ -5,6 +5,7 @@ export * from './common';
 export * from './database';
 export * from './external-request';
 export * from './gui-version';
+export * from './ip-blacklist';
 export * from './notification';
 export * from './server';
 export * from './utils';

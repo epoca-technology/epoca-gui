@@ -180,4 +180,63 @@ export class ValidationsService implements IValidationsService{
 			return {invalidVersion: true}
 		}
 	}
+
+
+
+
+
+
+
+
+
+
+    /* IP */
+
+
+
+
+	/*
+	* Verifies if an IP is valid
+	* @param control
+	* @returns {invalidIP: boolean}|null
+	* */
+	public ipValid(control: AbstractControl): {invalidIP: boolean}|null {
+		if(
+            control && 
+            typeof control.value == "string" && 
+            control.value.length >= 5 &&
+            control.value.length <= 300
+        ) {
+            return null;
+		} else {
+			return {invalidIP: true}
+		}
+	}
+
+
+
+
+
+
+	/*
+	* Verifies if an IP Note is valid
+	* @param control
+	* @returns {invalidIPNote: boolean}|null
+	* */
+	public ipNotesValid(control: AbstractControl): {invalidIPNote: boolean}|null {
+        if (control && typeof control.value == "string") {
+            if (control.value.length == 0) {
+                return null;
+            } else if (
+                control.value.length >= 5 &&
+                control.value.length <= 3000
+            ) {
+                return null;
+            } else {
+                return {invalidIPNote: true};
+            }
+        } else {
+            return {invalidIPNote: true};
+        }
+	}
 }

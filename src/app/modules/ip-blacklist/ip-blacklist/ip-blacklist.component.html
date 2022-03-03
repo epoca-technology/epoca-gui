@@ -1,9 +1,14 @@
 <!-- Secondary Header -->
 <mat-toolbar class="secondary-header">
     <div fxLayout="row" fxLayoutAlign="center center">
-        <button mat-icon-button class="show-on-mobile" (click)="_nav.dashboard()"><mat-icon>arrow_back</mat-icon></button>
-        <span>IP Blacklist</span>
+        <button mat-icon-button class="show-on-mobile" (click)="_nav.dashboard()" *ngIf="view == 'intro'"><mat-icon>arrow_back</mat-icon></button>
+        <button mat-icon-button (click)="gotoIntro()" *ngIf="view != 'intro'"><mat-icon>arrow_back</mat-icon></button>
+        <span *ngIf="view == 'intro'">IP Blacklist</span>
+        <span *ngIf="view == 'form'">{{active ? 'Update': 'Create'}} Record</span>
         <span fxFlex></span>
+        <button mat-icon-button *ngIf="view == 'intro'" [disabled]="!loaded || submitting" (click)="gotoForm()">
+            <mat-icon>add</mat-icon>
+        </button>
     </div>
 </mat-toolbar>
 
@@ -13,6 +18,87 @@
 </div>
 
 <!-- Content -->
-<div *ngIf="loaded">
+<div *ngIf="loaded" class="padding">
+    <!-- Intro -->
+    <div *ngIf="view == 'intro'" class="fadeIn intro-container">
+        <p *ngIf="!list.length" class="no-data-found">No data was found</p>
+        <div *ngIf="list.length">
+            <div fxLayout="row" fxLayoutAlign="center center">
+                <div fxFlex fxFlex.md="60" fxFlex.lg="50" fxFlex.xl="40">
+                    <div class="desktop-card">
+                        <table class="bordered highlight">
+                            <thead>
+                                <tr>
+                                    <th>Creation</th>
+                                    <th>IP</th>
+                                    <th fxHide.xs fxHide.sm>Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let r of list" (click)="displayBottomSheet(r)" class="clickable">
+                                    <td>{{r.c | date:'medium'}}</td>
+                                    <td>{{r.ip}}</td>
+                                    <td fxHide.xs fxHide.sm class="light-text ts-m" style="max-width: 100px;">{{r.n ? r.n: 'N/A'}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
+
+    
+    <!-- Form -->
+    <div fxLayout="row" fxLayoutAlign="center center" class="sections-container fadeIn" *ngIf="view == 'form'">
+        <div fxFlex fxFlex.md="35" fxFlex.lg="30" fxFlex.xl="25">
+            <div class="desktop-card">
+                <h2 class="show-on-desktop align-center">{{active ? 'Update': 'Create'}} Record</h2>
+                <p class="light-text align-center show-on-desktop">Fill up the form to {{active ? 'update': 'create'}} an IP Blacklist record</p>
+                <form [formGroup]="form" (ngSubmit)="submit()">
+                    <div>
+                        <mat-form-field>
+                            <mat-label>IP</mat-label>
+                            <mat-icon matPrefix>public</mat-icon>
+                            <input type="text"
+                                matInput
+                                formControlName="ip"
+                                [appDisableControl]="submitting || active != undefined"
+                                autocomplete="off"
+                                placeholder="e.g. 192.168.0.1" 
+                                #ipControl>
+                        </mat-form-field>
+                        <div *ngIf="ip.touched && ip.invalid" class="errors">
+                            <p>The provided IP is invalid.</p>
+                        </div>
+                    </div>
+
+
+                    <div>
+                        <mat-form-field>
+                            <mat-label>Notes</mat-label>
+                            <mat-icon matPrefix>notes</mat-icon>
+                            <textarea matInput 
+                                    formControlName="notes"
+                                    autocomplete="off"
+                                    placeholder="Ex. It makes me feel..." 
+                                    [appDisableControl]="submitting" 
+                                    #notesControl></textarea>
+                        </mat-form-field>
+                        <div *ngIf="notes.touched && notes.invalid" class="errors">
+                            <p>The provided notes are invalid.</p>
+                        </div>
+                    </div>
+    
+                    <div class="actions">
+                        <button type="submit" mat-raised-button color="primary" [disabled]="form.invalid || submitting">
+                            <span *ngIf="!active">{{submitting ? 'BLACKLISTING IP...': 'BLACKLIST IP'}}</span>
+                            <span *ngIf="active">{{submitting ? 'UPDATING RECORD...': 'UPDATE RECORD'}}</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
