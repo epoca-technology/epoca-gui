@@ -107,12 +107,14 @@ export class ApiService implements IApiService {
                 // Check if the ID Token needs to be refreshed
                 if (
                     code == 8513 || // AuthValidations: The provided ID Token has an invalid format.
-                    code == 8303    // AuthModel: The uid couldnt be extracted when verifying the ID Token.
+                    code == 8303 || // AuthModel: The uid couldnt be extracted when verifying the ID Token.
+                    code == 8304    // AuthModel: The ID Token has expired. Please generate a new one and try again.
                 ) {
                     // Mark the secret as invalid
                     this._auth.idTokenInvalid();
 
                     // Retry the request
+                    console.log('Resending API request as the ID Token was invalid in the original request.');
                     return await this.request(method, path, body, requiresAuth, otp, true);
                 }
 
@@ -125,6 +127,7 @@ export class ApiService implements IApiService {
                     this._auth.apiSecretIsInvalid();
 
                     // Retry the request
+                    console.log('Resending API request as the API Secret was invalid in the original request.');
                     return await this.request(method, path, body, requiresAuth, otp, true);
                 }
             }

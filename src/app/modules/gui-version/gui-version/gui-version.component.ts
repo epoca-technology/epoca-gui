@@ -157,7 +157,8 @@ export class GuiVersionComponent implements OnInit, IGuiVersionComponent {
                         this.versionMissmatch = this._app.version != this.currentVersion;
 
                         // Disable edit mode
-                        this.edit = false;
+                        this.updating = false;
+                        setTimeout(() => { this.edit = false });
                     } catch(e) { this._snackbar.error(e) }
 
                     // Set Submission State
