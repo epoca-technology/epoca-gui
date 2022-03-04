@@ -17,7 +17,7 @@ export class IpBlacklistService implements IIPBlacklistService{
 
 
     /**
-     * Retrieves a list of all the existing users in the db.
+     * Retrieves a list of all the existing blacklisted ips in the db.
      * @returns Promise<IIPBlacklistRecord[]>
      */
      public getAll(): Promise<IIPBlacklistRecord[]> { return this._api.request('get','ipBlacklist/getAll', {}, true) }
@@ -46,7 +46,7 @@ export class IpBlacklistService implements IIPBlacklistService{
      * @param otp 
      * @returns Promise<IIPBlacklistRecord[]>
      */
-    public registerIP(ip: string, notes: string, otp: string): Promise<IIPBlacklistRecord[]> { 
+    public registerIP(ip: string, notes: string|undefined, otp: string): Promise<IIPBlacklistRecord[]> { 
         return this._api.request('post','ipBlacklist/registerIP', {ip: ip, notes: notes}, true, otp);
     }
 

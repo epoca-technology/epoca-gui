@@ -5,7 +5,7 @@ export interface IIPBlacklistService {
     getAll(): Promise<IIPBlacklistRecord[]>,
 
     // IP Management
-    registerIP(ip: string, notes: string, otp: string): Promise<IIPBlacklistRecord[]>,
+    registerIP(ip: string, notes: string|undefined, otp: string): Promise<IIPBlacklistRecord[]>,
     updateNotes(ip: string, newNotes: string, otp: string): Promise<IIPBlacklistRecord[]>,
     unregisterIP(ip: string, otp: string): Promise<IIPBlacklistRecord[]>,
 }

@@ -29,6 +29,7 @@ initializeApp(environment.firebaseConfig.credentials);
 // Core
 import {
     ApiService,
+    ApiErrorService,
     AuthService,
     UserService,
     CandlestickService,
@@ -97,17 +98,9 @@ import { AppComponent } from './app.component';
 		SharedModule,
 	],
 	providers: [
-		// Services 
-		AppService,
-        AudioService,
-        ChartService,
-		ClipboardService,
-		NavService,
-		SnackbarService,
-		ValidationsService,
-
-		// Core
+        // Core
         ApiService,
+        ApiErrorService,
         AuthService,
         UserService,
         CandlestickService,
@@ -117,8 +110,17 @@ import { AppComponent } from './app.component';
         IpBlacklistService,
         NotificationService,
         ServerService,
-		UtilsService,
+        UtilsService,
 
+
+		// Services 
+		AppService,
+        AudioService,
+        ChartService,
+		ClipboardService,
+		NavService,
+		SnackbarService,
+		ValidationsService,
 	],
 	bootstrap: [AppComponent]
 })

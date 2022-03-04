@@ -1,4 +1,5 @@
 export * from './api';
+export * from './api-error';
 export * from './auth';
 export * from './candlestick';
 export * from './common';
