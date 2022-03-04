@@ -17,7 +17,7 @@ export class GuiVersionService implements IGuiVersionService {
      * @returns Promise<string>
      */
 	public get(): Promise<string> {
-		return this._api.request('get','guiVersion/get', {});
+		return this._api.request('get','guiVersion/get', {}, true);
 	}
 
 
@@ -29,6 +29,6 @@ export class GuiVersionService implements IGuiVersionService {
      * @returns Promise<void>
      */
      public update(version: string, otp: string): Promise<void> {
-		return this._api.request('post','guiVersion/update', {version: version, otp: otp});
+		return this._api.request('post','guiVersion/update', {version: version}, true, otp);
 	}
 }

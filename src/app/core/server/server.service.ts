@@ -24,7 +24,7 @@ export class ServerService implements IServerService {
 	 * @returns Promise<IServerData>
 	 */
      public getServerData(): Promise<IServerData> {
-		return this._api.request('get','server/getServerData', {});
+		return this._api.request('get','server/getServerData', {}, true);
 	}
 
 
@@ -39,7 +39,7 @@ export class ServerService implements IServerService {
 	 * @returns Promise<IServerResources>
 	 */
      public getServerResources(): Promise<IServerResources> {
-		return this._api.request('get','server/getServerResources', {});
+		return this._api.request('get','server/getServerResources', {}, true);
 	}
 
 
@@ -57,6 +57,6 @@ export class ServerService implements IServerService {
 	 * @returns Promise<void>
 	 */
      public setAlarmsConfiguration(alarms: IAlarmsConfig, otp: string): Promise<void> {
-		return this._api.request('post','server/setAlarmsConfiguration', {otp: otp, ...alarms});
+		return this._api.request('post','server/setAlarmsConfiguration', alarms, true, otp);
 	}
 }

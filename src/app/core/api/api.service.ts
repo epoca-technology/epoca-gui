@@ -105,12 +105,21 @@ export class ApiService implements IApiService {
                 const code: number = this._utils.getCodeFromApiError(errorMessage);
 
                 // Check if the ID Token needs to be refreshed
-                // @TODO
+                if (
+                    code == 8513 || // AuthValidations: The provided ID Token has an invalid format.
+                    code == 8303    // AuthModel: The uid couldnt be extracted when verifying the ID Token.
+                ) {
+                    // Mark the secret as invalid
+                    this._auth.idTokenInvalid();
+
+                    // Retry the request
+                    return await this.request(method, path, body, requiresAuth, otp, true);
+                }
 
                 // Check if the API Secret needs to be refreshed
-                if (
-                    code == 9003 || // The uid (${uid}) provided an api secret with an invalid format: ${secret}.
-                    code == 9004    // The uid (${uid}) provided an api secret that didnt match the one stored locally: ${secret}.
+                else if (
+                    code == 9003 || // ApiSecretService: The uid (${uid}) provided an api secret with an invalid format: ${secret}.
+                    code == 9004    // ApiSecretService: The uid (${uid}) provided an api secret that didnt match the one stored locally: ${secret}.
                 ) {
                     // Mark the secret as invalid
                     this._auth.apiSecretIsInvalid();

@@ -27,11 +27,15 @@ export class CandlestickService implements ICandlestickService {
 	 * @returns Promise<ICandlestick[]>
 	 */
 	public getForPeriod(start: number, end: number, intervalMinutes: number): Promise<ICandlestick[]> {
-		return this._api.request('get','candlestick/getForPeriod', {
-			start: start,
-			end: end,
-			intervalMinutes: intervalMinutes
-		});
+		return this._api.request(
+            'get','candlestick/getForPeriod', 
+            {
+                start: start,
+                end: end,
+                intervalMinutes: intervalMinutes
+            }, 
+            true
+        );
 	}
 
 
