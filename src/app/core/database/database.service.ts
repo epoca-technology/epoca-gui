@@ -26,7 +26,6 @@ export class DatabaseService implements IDatabaseService {
 
 
 
-
     /* Firebase Refs & Paths */
 
 

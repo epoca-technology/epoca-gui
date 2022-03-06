@@ -228,7 +228,7 @@ export class ApiErrorsComponent implements OnInit, OnDestroy, IApiErrorsComponen
          if (this.active) {
             const theJSON: string = JSON.stringify(this.active);
             this.jsonLink.url = this._sanitizer.bypassSecurityTrustUrl("data:text/json;charset=UTF-8," + encodeURIComponent(theJSON));
-            this.jsonLink.name = `${this.active.o}_${this.active.c}`;
+            this.jsonLink.name = `${this.active.o}_${this.active.c}.json`;
             setTimeout(() => { this.document.getElementById('downloadLink')?.click(); });
          }
    }
