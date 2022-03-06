@@ -1,6 +1,7 @@
 {
     "name": "gui-development",
     "version": "1.0.0",
+    "description": "Plutus is an automated trading system based on machine learning, designed to operate on Bitcoin perpetual future contracts.",
     "scripts": {
       "ng": "ng",
       "start": "ng serve",
