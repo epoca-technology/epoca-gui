@@ -1,0 +1,58 @@
+<mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <button mat-icon-button class="show-on-mobile" (click)="close()"><mat-icon>arrow_back</mat-icon></button>
+        <span>Candlestick</span>
+        <span fxFlex></span>
+        <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
+    </div>
+</mat-toolbar>
+<div mat-dialog-content>
+    <!-- Container -->
+    <div class="fadeIn padding">
+        <div class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p>Open Time</p>
+            <span fxFlex></span>
+            <p>{{candlestick.ot | date: 'medium'}}</p>
+        </div>
+        <div class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p>Close Time</p>
+            <span fxFlex></span>
+            <p>{{candlestick.ct | date: 'medium'}}</p>
+        </div>
+        <div class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p>Open</p>
+            <span fxFlex></span>
+            <p>{{candlestick.o | currency}}</p>
+        </div>
+        <div class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p>High</p>
+            <span fxFlex></span>
+            <p>{{candlestick.h | currency}}</p>
+        </div>
+        <div class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p>Low</p>
+            <span fxFlex></span>
+            <p>{{candlestick.l | currency}}</p>
+        </div>
+        <div class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p>Close</p>
+            <span fxFlex></span>
+            <p>{{candlestick.c | currency}}</p>
+        </div>
+        <div class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p>Volume</p>
+            <span fxFlex></span>
+            <p>{{candlestick.v | currency}}</p>
+        </div>
+        <div class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p>Taker Buy Volume</p>
+            <span fxFlex></span>
+            <p>{{candlestick.tbv | currency}}</p>
+        </div>
+        <div class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p>Number of Trades</p>
+            <span fxFlex></span>
+            <p>{{candlestick.nt}}</p>
+        </div>
+    </div>
+</div>

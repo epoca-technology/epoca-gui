@@ -6,7 +6,7 @@
 
 
 
-
+.heading-bar img {max-height: 45px;width:auto;}
 
 
 
@@ -28,7 +28,7 @@
 
 
 
-/* Push Notification */
+/* FCM */
 .fcm {
 	position: fixed;
 	bottom: 25px;
@@ -44,7 +44,6 @@
 }
 .fcm p{ margin: 0 6px 0 0; }
 .fcm .mat-icon {color: var(--primary-color);}
-.fcm:hover { background: var(--light-background-color) }
 
 
 
@@ -70,6 +69,4 @@
 	.small-logo{display: none}
 
 
-	//FCM
-	.fcm:hover{cursor:pointer;}
 }

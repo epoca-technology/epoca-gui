@@ -1,1 +1,143 @@
-<p>dashboard works!</p>
+<!-- SideNav Container -->
+<mat-drawer-container class="section-container">
+
+    <!-- Sidenav -->
+    <mat-drawer #homeSidenav [(opened)]="sidenavOpened" class="sidenav" position="end" mode="over" autoFocus="false" *ngIf="layout == 'mobile'">
+
+        <!-- Menu Heading Toolbar -->
+        <mat-toolbar color="primary">
+            <div fxLayout="row" fxLayoutAlign="start center">
+                <span>Menu</span>
+                <span fxFlex></span>
+                <button mat-icon-button (click)="sidenav?.toggle()"><mat-icon>arrow_forward</mat-icon></button>
+            </div>
+        </mat-toolbar>
+
+        <!-- Menu Content -->
+        <mat-list>
+            <!-- Trading Sessions -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.tradingSessions()">
+                    <mat-icon svgIcon="auto_graph"></mat-icon><span>Trading Sessions</span>
+                </button>
+            </mat-list-item>
+
+            <!-- Trading Simulations -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.tradingSimulations()">
+                    <mat-icon svgIcon="ssid_chart"></mat-icon><span>Trading Simulations</span>
+                </button>
+            </mat-list-item>
+
+            <!-- Candlesticks -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.mlModels()">
+                    <mat-icon svgIcon="brain"></mat-icon><span>ML Models</span>
+                </button>
+            </mat-list-item>
+
+            <!-- Candlesticks -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.candlesticks()">
+                    <mat-icon>waterfall_chart</mat-icon><span>Candlesticks</span>
+                </button>
+            </mat-list-item>
+
+            <!-- API Errors -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.apiErrors()">
+                    <mat-icon svgIcon="bug_report"></mat-icon><span>API Errors</span>
+                </button>
+            </mat-list-item>
+
+            <!-- Server -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.server()">
+                    <mat-icon svgIcon="server"></mat-icon><span>Server</span>
+                </button>
+            </mat-list-item>
+
+
+            <!-- Users -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.users()">
+                    <mat-icon>people_alt</mat-icon><span>Users</span>
+                </button>
+            </mat-list-item>
+
+
+            <!-- Database -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.database()">
+                    <mat-icon svgIcon="database"></mat-icon><span>Database</span>
+                </button>
+            </mat-list-item>
+
+            
+            <!-- GUI Version -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.guiVersion()">
+                    <mat-icon>update</mat-icon><span>GUI Version</span>
+                </button>
+            </mat-list-item>
+
+            <!-- IP Blacklist -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.ipBlacklist()">
+                    <mat-icon>vpn_lock</mat-icon><span>IP Blacklist</span>
+                </button>
+            </mat-list-item>
+
+            <!-- PGAdmin -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.openPGAdmin()">
+                    <mat-icon>open_in_new</mat-icon><span>PGAdmin</span>
+                </button>
+            </mat-list-item>
+
+
+            <!-- Dozzle -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.openDozzle()">
+                    <mat-icon>open_in_new</mat-icon><span>Dozzle</span>
+                </button>
+            </mat-list-item>
+        </mat-list>
+    </mat-drawer>
+
+
+
+
+    <!-- Section Content -->
+    <mat-drawer-content>
+        <div>
+
+
+            <!-- Section Header -->
+            <mat-toolbar class="secondary-header">
+                <div fxLayout="row" fxLayoutAlign="center center">
+                    <!-- Logo -->
+                    <img src="assets/img/logo.png" alt="Logo">
+
+                    <span fxFlex></span>
+
+                    <!-- Menu -->
+                    <button mat-icon-button (click)="sidenav?.toggle()"><mat-icon>menu</mat-icon></button>
+                </div>
+            </mat-toolbar>
+
+
+            <!-- Section Content -->
+            <div class="section-content">
+                <h1>@TODO</h1>
+            </div>
+
+
+            <!-- Mobile Tabs -->
+            <app-mobile-tabs *ngIf="layout == 'mobile'"></app-mobile-tabs>
+        </div>
+    </mat-drawer-content>
+</mat-drawer-container>
+
+
+

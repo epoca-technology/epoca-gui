@@ -123,7 +123,7 @@ div {min-width: 0;}
 
 
 /* Text Colors */
-.primary-color { color: var(--success-color) };
+.success-color { color: var(--success-color) };
 .error-color { color: var(--error-color) };
 .light-text { color: var(--light-text-color) };
 
@@ -243,9 +243,40 @@ ul li ul, ol li ul { padding: 0 0 0 15px;}
 
 
 
+// Tab labels
+.mat-tab-label.mat-tab-label-active {opacity: 1!important;}
 
 
 
+// Badges
+/*.square-badge .mat-badge-content { 
+	border-radius: 5px;
+	min-width: 20px;
+	max-width: none!important;
+	width: auto;
+	padding:0 5px 0 5px;
+}*/
+.square-badge { 
+	padding:4px 5px 4px 5px;
+	color:#FFFFFF;
+	border-radius: 7px;
+	min-width: 20px;
+	text-align: center;
+	background-color: #000000;
+	font-weight: 600;
+	font-size:12px!important;
+    max-height:20px;
+    width: auto;
+}
+
+.square-badge-success { 
+	@extend .square-badge;
+	background-color: var(--success-color)!important; 
+}
+.square-badge-error { 
+	@extend .square-badge;
+	background-color: var(--error-color)!important; 
+}
 
 
 
@@ -410,11 +441,12 @@ ul li ul, ol li ul { padding: 0 0 0 15px;}
 
 
 
+
 /* Toolbars */
 .mat-toolbar { height: var(--toolbar-desktop-height); color:#FFFFFF; @include mat.elevation(3);}
 .mat-toolbar img { max-height: 55px;width: auto; }
 .mat-toolbar div:first-child { width: 100%; }
-
+.mat-toolbar button:disabled {color:#616161!important;}
 
 
 
@@ -431,7 +463,6 @@ ul li ul, ol li ul { padding: 0 0 0 15px;}
 
 /* Secondary Header */
 .secondary-header { background-color: var(--primary-color); }
-
 
 
 
@@ -525,7 +556,7 @@ form .mat-form-field .mat-form-field-prefix .mat-icon{max-width: 20px;margin:0 7
 form .mat-form-field .mat-form-field-prefix img{max-width: 20px;margin:0 7px 0 0;}
 
 form .errors {}
-form .errors p {margin: 15px 0 15px 0; color: var(--warn-color); font-size:14px;}
+form .errors p {margin: 15px 0 15px 0; color: var(--error-color); font-size:14px;}
 form .errors p:first-child {margin: 0 0 15px 0;}
 
 form .actions { margin-top:30px; text-align: center}
@@ -608,6 +639,21 @@ form .mat-checkbox-inner-container{
 
 
 
+/* Section Icon */
+.section-icon { width: 80px;height:80px;margin-bottom: 10px;}
+
+
+
+
+
+
+
+/* reCAPTCHA */
+.recaptcha-container { width: 100%; min-height: 60px; }
+
+
+
+
 
 
 
@@ -685,7 +731,8 @@ form .mat-checkbox-inner-container{
 	.desktop-card { padding:0;margin:0; @include mat.elevation(0);}
 
 
-
+    // reCAPTCHA
+    .recaptcha-container { width: 100%; min-height: 145px; }
 }
 
 

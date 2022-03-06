@@ -27,6 +27,37 @@ export class UtilsService implements IUtilService {
 
 
 
+
+    /**
+     * Given an API error, it will extract the error code. If none is found, will return 0
+     * @param error 
+     * @returns number
+     */
+     public getCodeFromApiError(error: any): number {
+        // Retrieve the message if the error is not a string
+        if (typeof error != "string") error = this.getErrorMessage(error);
+
+        // Make sure it is a valid string
+        if (typeof error == "string" && error.length > 5) {
+            // Extract the code
+            const code: number = Number(error.substring(
+                error.indexOf("{(") + 2, 
+                error.lastIndexOf(")}")
+            ));
+
+            // If a code was found, return it
+            if (code) return Number(code);
+        }
+
+        // If a code is not found, return 0 for 'unknown'
+        return 0;
+    }
+
+
+
+
+
+
     /**
      * Given an error, it will attempt to extract the message.
      * @param e 
@@ -58,5 +89,36 @@ export class UtilsService implements IUtilService {
             console.log(e);
             return unknownError;
         }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /* Async Delay */
+
+
+
+    /**
+     * It will create a promise that will resolve after provided seconds have passed.
+     * This functionality is used to prevent our requests being blocked by external sources.
+     * @param seconds 
+     */
+     public asyncDelay(seconds: number = 3): Promise<void> {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                resolve();
+            }, seconds * 1000);
+        });
     }
 }

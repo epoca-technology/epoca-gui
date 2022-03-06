@@ -1,0 +1,78 @@
+<!-- Secondary Header -->
+<mat-toolbar class="secondary-header">
+    <div fxLayout="row" fxLayoutAlign="center center" *ngIf="!edit">
+        <button mat-icon-button class="show-on-mobile" (click)="_nav.dashboard()"><mat-icon>arrow_back</mat-icon></button>
+        <span>GUI Version</span>
+        <span fxFlex></span>
+        <button mat-icon-button (click)="enableEditMode()" [disabled]="updating"><mat-icon>edit</mat-icon></button>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="center center" *ngIf="edit">
+        <button mat-icon-button class="show-on-mobile" (click)="edit = false"><mat-icon>arrow_back</mat-icon></button>
+        <span>Update Version</span>
+        <span fxFlex></span>
+        <button mat-icon-button (click)="edit = false" [disabled]="updating"><mat-icon>close</mat-icon></button>
+    </div>
+</mat-toolbar>
+
+<!-- Loader -->
+<div *ngIf="!loaded" class="section-loader">
+    <div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div>
+</div>
+
+<!-- Content -->
+<div *ngIf="loaded && currentVersion">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <div fxFlex fxFlex.md="35" fxFlex.lg="25" fxFlex.xl="20" class="padding align-center">
+            <!-- Intro -->
+            <div class="desktop-card fadeIn" *ngIf="!edit">
+                <img *ngIf="versionMissmatch" src="assets/img/update.png" alt="Update" class="section-icon">
+                <img *ngIf="!versionMissmatch" src="assets/img/uptodate.png" alt="UpToDate" class="section-icon">
+
+                <!-- App is up to date -->
+                <div *ngIf="!versionMissmatch">
+                    <h4>v{{currentVersion}}</h4>
+                    <p class="light-text ts-m no-margin">Up to date</p>
+                </div>
+
+                <!-- App is outdated -->
+                <div *ngIf="versionMissmatch">
+                    <p>The version <strong>{{currentVersion}}</strong> has been released and it brings 
+                        new functionalities as well as general upgrades.</p>
+                    <button mat-raised-button color="primary" (click)="reload()" [disabled]="updating" class="full-width">
+                        {{updating ? 'UPDATING APP...': 'UPDATE APP'}}
+                    </button>
+                </div>
+            </div>
+
+
+            <!-- Form -->
+            <div class="desktop-card fadeIn align-center" *ngIf="edit">
+                <h2 class="show-on-desktop">Update</h2>
+                <p class="light-text">Fill up the form with the new GUI Version</p>
+                <form [formGroup]="form" (ngSubmit)="save()">
+                    <div>
+                        <mat-form-field>
+                            <mat-label>New Version</mat-label>
+                            <input type="text"
+                                   matInput
+                                   formControlName="version"
+                                   autocomplete="off"
+                                   placeholder="e.g. 0.0.1" 
+                                   [appDisableControl]="updating"
+                                   #versionControl>
+                        </mat-form-field>
+                        <div *ngIf="version.touched && version.invalid" class="errors">
+                            <p>The provided version is invalid.</p>
+                        </div>
+                    </div>
+    
+                    <div class="actions">
+                        <button type="submit" mat-raised-button color="primary" [disabled]="form.invalid || updating">
+                            {{updating ? 'SAVING...': 'SAVE'}}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

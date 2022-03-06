@@ -1,0 +1,21 @@
+
+
+// Mobile Tabs
+.mobile-tabs-container {
+	position:fixed;
+	bottom:0;
+	left:0;
+	background: #FFFFFF;
+	z-index: 1;
+	width: 100%;
+	border-top: 1px solid #E0E0E0;
+	height:var(--tabs-height);
+    color: #535354;
+}
+.mobile-tabs-container .active { color: var(--primary-color) }
+
+.mobile-tabs-container .tabs { height:100%;}
+
+.mobile-tabs-container .tab {height:100%; text-align: center;}
+
+

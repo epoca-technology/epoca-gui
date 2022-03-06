@@ -1,14 +1,14 @@
-import { IApiURL } from "../api";
-
 
 
 
 /* Environment */
 export interface IEnvironment {
     production: boolean,
-    guiVersion: string,
     firebaseConfig: IFirebaseConfig,
-    apiURL: IApiURL
+    localServer: boolean,
+    apiURL: IURL
+    pgAdmin: IURL,
+    dozzle: IURL,
     recaptchaKey: string,
 }
 
@@ -29,4 +29,11 @@ export interface IFirebaseCredentials {
     storageBucket: string,
     messagingSenderId: string,
     appId: string
+}
+
+
+// URL
+export interface IURL {
+    local: string,
+    external: string
 }

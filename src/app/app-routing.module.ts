@@ -14,13 +14,72 @@ const routes: Routes = [
 
 
 	/* Lazy Loaded Modules */
-	
-	// Forecast
+
+	// Auth
 	{
-		path: 'forecast',
-		loadChildren: () => import('./modules/forecast/forecast.module').then(m => m.ForecastModule),
+		path: 'auth',
+		loadChildren: () => import('./modules/auth/auth.module').then(m => m.AuthModule),
 	},
 
+	// Trading Sessions
+	{
+		path: 'tradingSessions',
+		loadChildren: () => import('./modules/trading-sessions/trading-sessions.module').then(m => m.TradingSessionsModule),
+	},
+
+	// Trading Simulations
+	{
+		path: 'tradingSimulations',
+		loadChildren: () => import('./modules/trading-simulations/trading-simulations.module').then(m => m.TradingSimulationsModule),
+	},
+
+	// ML Models
+	{
+		path: 'mlModels',
+		loadChildren: () => import('./modules/ml-models/ml-models.module').then(m => m.MlModelsModule),
+	},
+
+	// Candlesticks
+	{
+		path: 'candlesticks',
+		loadChildren: () => import('./modules/candlesticks/candlesticks.module').then(m => m.CandlesticksModule),
+	},
+
+	// Api Errors
+	{
+		path: 'apiErrors',
+		loadChildren: () => import('./modules/api-errors/api-errors.module').then(m => m.ApiErrorsModule),
+	},
+
+	// Server
+	{
+		path: 'server',
+		loadChildren: () => import('./modules/server/server.module').then(m => m.ServerModule),
+	},
+
+	// Users
+	{
+		path: 'users',
+		loadChildren: () => import('./modules/users/users.module').then(m => m.UsersModule),
+	},
+
+	// Database
+	{
+		path: 'database',
+		loadChildren: () => import('./modules/database/database.module').then(m => m.DatabaseModule),
+	},
+
+	// GUI Version
+	{
+		path: 'guiVersion',
+		loadChildren: () => import('./modules/gui-version/gui-version.module').then(m => m.GuiVersionModule),
+	},
+
+	// IP Blacklist
+	{
+		path: 'ipBlacklist',
+		loadChildren: () => import('./modules/ip-blacklist/ip-blacklist.module').then(m => m.IpBlacklistModule),
+	},
 
 
 

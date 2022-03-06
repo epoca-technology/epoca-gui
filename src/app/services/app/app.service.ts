@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
 import { MediaChange, MediaObserver } from '@angular/flex-layout';
 import {IAppService, ILayout, ILayoutAlias} from "./interfaces";
-
 import {BehaviorSubject} from "rxjs";
+import packageJson from '../../../../package.json';
 
 @Injectable({
 	providedIn: 'root'
@@ -11,6 +11,8 @@ export class AppService implements IAppService{
 	// Layout
 	public layout: BehaviorSubject<ILayout>;
 	
+    // Version
+    public version: string;
 	
 	constructor(
 		private mediaObserver: MediaObserver
@@ -26,6 +28,8 @@ export class AppService implements IAppService{
 			}
 		);
 
+        // Set the gui's version
+        this.version = packageJson.version;
 
 
 	}

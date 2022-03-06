@@ -1,0 +1,46 @@
+<div class="mobile-tabs-container">
+    <div fxLayout="row" fxLayoutAlign="end end" class="tabs">
+        <!-- Dashboard -->
+        <div fxFlex fxLayout="row" fxLayoutAlign="center center"
+             class="tab" role="button" matRipple
+             [ngClass]="{'active': activeTab == 0}" (click)="navigate(0)">
+            <mat-icon svgIcon="home"></mat-icon>
+        </div>
+
+        <!-- Trading Sessions -->
+        <div fxFlex fxLayout="row" fxLayoutAlign="center center"
+             class="tab" role="button" matRipple
+             [ngClass]="{'active': activeTab == 1}" (click)="navigate(1)">
+            <mat-icon   svgIcon="auto_graph" 
+                        matBadge="1"
+                        matBadgePosition="after"
+                        matBadgeSize="small"
+                        matBadgeOverlap="false"></mat-icon>
+        </div>
+
+        <!-- Trading Simulations -->
+        <div fxFlex fxLayout="row" fxLayoutAlign="center center"
+             class="tab" role="button" matRipple
+             [ngClass]="{'active': activeTab == 2}" (click)="navigate(2)">
+            <mat-icon   svgIcon="ssid_chart" 
+                        matBadge="3"
+                        matBadgePosition="after"
+                        matBadgeSize="small"
+                        matBadgeOverlap="false"></mat-icon>
+        </div>
+
+        <!-- API Errors -->
+        <div fxFlex fxLayout="row" fxLayoutAlign="center center"
+             class="tab" role="button" matRipple
+             [ngClass]="{'active': activeTab == 3}" (click)="navigate(3)">
+            <mat-icon svgIcon="bug_report"></mat-icon>
+        </div>
+
+        <!-- Server -->
+        <div fxFlex fxLayout="row" fxLayoutAlign="center center"
+             role="button" class="tab" matRipple
+             [ngClass]="{'active': activeTab == 4}" (click)="navigate(4)">
+            <mat-icon svgIcon="server"></mat-icon>
+        </div>
+    </div>
+</div>

@@ -1,13 +1,14 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject, OnInit, ViewChild, ElementRef} from '@angular/core';
 import {AbstractControl, FormControl, FormGroup} from '@angular/forms';
 import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {IConfirmationDialogComponent, IConfirmationDialogData} from "./interfaces";
 import {
+    AppService,
 	ClipboardService,
 	SnackbarService,
 	ValidationsService
 } from "../../../services";
-import { UtilsService } from 'src/app/core';
+import { UtilsService } from '../../../core';
 
 @Component({
 	selector: 'app-confirmation-dialog',
@@ -15,6 +16,9 @@ import { UtilsService } from 'src/app/core';
 	styleUrls: ['./confirmation-dialog.component.scss']
 })
 export class ConfirmationDialogComponent implements OnInit, IConfirmationDialogComponent {
+    // Input
+    @ViewChild("otpControl") otpControl? : ElementRef;
+
 	// Dialog properties
 	public title: string = 'Confirm Action';
 	public content: string = '<p class="align-center">Are you sure that you wish to proceed?</p>';
@@ -32,6 +36,7 @@ export class ConfirmationDialogComponent implements OnInit, IConfirmationDialogC
 	public loaded: boolean = false;
 	
 	constructor(
+        private _app: AppService,
 		public dialogRef: MatDialogRef<ConfirmationDialogComponent>,
 		private _validations: ValidationsService,
 		private _snackbar: SnackbarService,
@@ -51,6 +56,11 @@ export class ConfirmationDialogComponent implements OnInit, IConfirmationDialogC
 			
 			// Check the type of confirmation required
             this.otpConfirmation = this.data.otpConfirmation == true;
+
+            // Focus input if applies
+            if (this._app.layout.value != "mobile" && this.otpConfirmation) {
+                setTimeout(() => { if (this.otpControl) this.otpControl.nativeElement.focus() });
+            }
 		}
 	}
 	

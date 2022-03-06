@@ -2,28 +2,111 @@
 <mat-sidenav-container class="full-height">
 
     <!-- Side Navigation -->
-    <mat-sidenav #rootSidenav [(opened)]="sidenavOpened" position="end" class="sidenav" autoFocus="false" *ngIf="layout == 'desktop'">
+    <mat-sidenav #rootSidenav [(opened)]="sidenavOpened" position="end" class="sidenav" autoFocus="false" *ngIf="layout == 'desktop' && uid">
 
         <!-- Menu Heading Toolbar -->
         <mat-toolbar color="primary" fxLayout="row" fxLayoutAlign="start center">
             <span>Menu</span>
             <span fxFlex></span>
+            <button mat-icon-button (click)="signOut()" matTooltip="Sign Out"><mat-icon>logout</mat-icon></button>
+            <button mat-icon-button (click)="createNewInstance()" matTooltip="Create New Instance"><mat-icon>open_in_new</mat-icon></button>
             <button mat-icon-button (click)="sidenav?.toggle()"><mat-icon>arrow_forward</mat-icon></button>
         </mat-toolbar>
 
         <!-- Menu Content -->
         <mat-list>
-            <!-- Home -->
+            <!-- Dashboard -->
             <mat-list-item>
                 <button mat-button class="left-icon-button" (click)="_nav.dashboard()" [disabled]="state.module == 'dashboard'">
                     <mat-icon svgIcon="home"></mat-icon><span>Dashboard</span>
                 </button>
             </mat-list-item>
 
-            <!-- Forecast -->
+            <!-- Trading Sessions -->
             <mat-list-item>
-                <button mat-button class="left-icon-button" (click)="_nav.forecast()" [disabled]="state.module == 'forecast'">
-                    <mat-icon>auto_fix_high</mat-icon><span>Forecast</span>
+                <button mat-button class="left-icon-button" (click)="_nav.tradingSessions()" [disabled]="state.module == 'tradingSessions'">
+                    <mat-icon svgIcon="auto_graph"></mat-icon><span>Trading Sessions</span>
+                </button>
+            </mat-list-item>
+
+            <!-- Trading Simulations -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.tradingSimulations()" [disabled]="state.module == 'tradingSimulations'">
+                    <mat-icon svgIcon="ssid_chart"></mat-icon><span>Trading Simulations</span>
+                </button>
+            </mat-list-item>
+
+            <!-- Candlesticks -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.mlModels()" [disabled]="state.module == 'mlModels'">
+                    <mat-icon svgIcon="brain"></mat-icon><span>ML Models</span>
+                </button>
+            </mat-list-item>
+
+            <!-- Candlesticks -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.candlesticks()" [disabled]="state.module == 'candlesticks'">
+                    <mat-icon>waterfall_chart</mat-icon><span>Candlesticks</span>
+                </button>
+            </mat-list-item>
+
+            <!-- API Errors -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.apiErrors()" [disabled]="state.module == 'apiErrors'">
+                    <mat-icon svgIcon="bug_report"></mat-icon><span>API Errors</span>
+                </button>
+            </mat-list-item>
+
+            <!-- Server -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.server()" [disabled]="state.module == 'server'">
+                    <mat-icon svgIcon="server"></mat-icon><span>Server</span>
+                </button>
+            </mat-list-item>
+
+
+            <!-- Users -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.users()" [disabled]="state.module == 'users'">
+                    <mat-icon>people_alt</mat-icon><span>Users</span>
+                </button>
+            </mat-list-item>
+
+
+            <!-- Database -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.database()" [disabled]="state.module == 'database'">
+                    <mat-icon svgIcon="database"></mat-icon><span>Database</span>
+                </button>
+            </mat-list-item>
+
+            
+            <!-- GUI Version -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.guiVersion()" [disabled]="state.module == 'guiVersion'">
+                    <mat-icon>update</mat-icon><span>GUI Version</span>
+                </button>
+            </mat-list-item>
+
+            <!-- IP Blacklist -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.ipBlacklist()" [disabled]="state.module == 'ipBlacklist'">
+                    <mat-icon>vpn_lock</mat-icon><span>IP Blacklist</span>
+                </button>
+            </mat-list-item>
+
+            <!-- PGAdmin -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.openPGAdmin()">
+                    <mat-icon>open_in_new</mat-icon><span>PGAdmin</span>
+                </button>
+            </mat-list-item>
+
+
+            <!-- Dozzle -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.openDozzle()">
+                    <mat-icon>open_in_new</mat-icon><span>Dozzle</span>
                 </button>
             </mat-list-item>
         </mat-list>
@@ -39,23 +122,58 @@
 
 
         <!-- Desktop Heading Toolbar -->
-        <div class="primary-header" *ngIf="layout != 'mobile'">
+        <div class="primary-header heading-bar" *ngIf="layout != 'mobile'">
             <mat-toolbar fxLayout="row" fxLayoutAlign="center center">
                 <!-- Logo -->
-                <img src="assets/img/logo.png" alt="Logo" class="large-logo" (click)="_nav.dashboard()">
-                <img src="assets/img/slogo.png" alt="Logo" class="small-logo" (click)="_nav.dashboard()">
+                <img src="assets/img/logo.png" alt="Logo">
 
 
                 <span fxFlex></span>
 
+                <!-- Dashboard -->
+                <button mat-button class="left-icon-button" (click)="_nav.dashboard()" [disabled]="state.module == 'dashboard'" *ngIf="uid">
+                    <mat-icon svgIcon="home"></mat-icon><span>Dashboard</span>
+                </button>
+
+                <!-- Trading Session -->
+                <button mat-button class="left-icon-button" (click)="_nav.tradingSessions()" matBadge="1" [disabled]="state.module == 'tradingSessions'" *ngIf="uid">
+                    <mat-icon svgIcon="auto_graph"></mat-icon><span>Trading Sessions</span>
+                </button>
+
+                <!-- Trading Simulations -->
+                <button mat-button class="left-icon-button" (click)="_nav.tradingSimulations()" matBadge="3" [disabled]="state.module == 'tradingSimulations'" *ngIf="uid">
+                    <mat-icon svgIcon="ssid_chart"></mat-icon><span>Trading Simulations</span>
+                </button>
+
+                <!-- API Errors -->
+                <button mat-button class="left-icon-button" (click)="_nav.apiErrors()" *ngIf="uid" [disabled]="state.module == 'apiErrors'">
+                    <mat-icon svgIcon="bug_report"></mat-icon><span>API Errors</span>
+                </button>
+
+                <!-- Server -->
+                <button mat-button class="left-icon-button" (click)="_nav.server()" *ngIf="uid" [disabled]="state.module == 'server'">
+                    <mat-icon svgIcon="server"></mat-icon><span>Server</span>
+                </button>
+
                 <!-- Menu -->
-                <button mat-icon-button (click)="sidenav?.toggle()"><mat-icon>menu</mat-icon></button>
+                <button mat-icon-button (click)="sidenav?.toggle()" *ngIf="uid"><mat-icon>menu</mat-icon></button>
             </mat-toolbar>
         </div>
 
 
         <!-- Main Router Outlet -->
         <router-outlet></router-outlet>
+
+
+        <!-- FCM Permission -->
+        <div *ngIf="fcmVisible" (click)="enableFCM()" 
+            cdkDrag (cdkDragMoved)="fcmDragged($event)"
+            role="button" class="fake-button fcm fadeIn" matRipple
+            fxLayout="row" fxLayoutAlign="start center">
+            <p>Enable FCM Notifications on this device.</p>
+            <span fxFlex></span>
+            <mat-icon>notifications</mat-icon>
+        </div>
     </mat-sidenav-content>
 </mat-sidenav-container>
 
@@ -64,5 +182,4 @@
 
 
 <!-- Icons Preloader -->
-<!-- @TODO Review Relevance -->
 <div class="icons-preloader"><mat-icon *ngFor="let icon of customIcons" [svgIcon]="icon"></mat-icon></div>

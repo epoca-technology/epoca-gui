@@ -1,0 +1,87 @@
+<!-- Secondary Header -->
+<mat-toolbar class="secondary-header">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <span>Sign In</span>
+        <span fxFlex></span>
+        <button mat-button (click)="_nav.updatePassword()" [disabled]="submitting">Update Password</button>
+    </div>
+</mat-toolbar>
+
+<!-- Content -->
+<div>
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <div fxFlex fxFlex.md="35" fxFlex.lg="30" fxFlex.xl="25" class="padding align-center">
+            <div class="desktop-card fadeIn align-center">
+                <h2 class="show-on-desktop">Sign In</h2>
+                <p class="light-text">Fill up the form with your credentials in order to sign in</p>
+                <form [formGroup]="form" (ngSubmit)="submit()" class="align-left">
+                    <div>
+                        <mat-form-field>
+                            <mat-label>Email Address</mat-label>
+                            <mat-icon matPrefix>email</mat-icon>
+                            <input type="email"
+                                   matInput
+                                   formControlName="email"
+                                   [appDisableControl]="submitting"
+                                   autocomplete="off"
+                                   placeholder="e.g. youremail@gmail.com" 
+                                   #emailControl>
+                        </mat-form-field>
+                        <div *ngIf="email.touched && email.invalid" class="errors">
+                            <p>The provided email address is invalid.</p>
+                        </div>
+                    </div>
+
+
+                    <div>
+                        <mat-form-field>
+                            <mat-label>Password</mat-label>
+                            <mat-icon matPrefix>lock</mat-icon>
+                            <input [type]="passwordVisible ? 'text': 'password'"
+                                   matInput
+                                   formControlName="password"
+                                   [appDisableControl]="submitting"
+                                   autocomplete="off"
+                                   placeholder="ej. MyPassword123456">
+                            <button type="button" mat-icon-button matSuffix tabindex="-1"
+                                    *ngIf="password.value.length"
+                                    (click)="passwordVisible = !passwordVisible"
+                                    [disabled]="submitting"
+                                    [attr.aria-label]="'Hide password'" [attr.aria-pressed]="passwordVisible">
+                                <mat-icon>{{passwordVisible ? 'visibility_off' : 'visibility'}}</mat-icon>
+                            </button>
+                        </mat-form-field>
+                        <div *ngIf="password.touched && password.invalid" class="errors">
+                            <p>The provided password is invalid.</p>
+                        </div>
+                    </div>
+
+                    <div class="margin-top">
+                        <div fxLayout="row" fxLayoutAlign="center center" class="recaptcha-container" *ngIf="layout == 'mobile'">
+                            <re-captcha
+                                #recaptchaEl
+                                formControlName="recaptcha"
+                                size="compact"
+                                (error)="onReCAPTCHAError($event)"
+                                errorMode="handled"></re-captcha>
+                        </div>
+                        <div fxLayout="row" fxLayoutAlign="center center" class="recaptcha-container" *ngIf="layout != 'mobile'">
+                            <re-captcha
+                                #recaptchaEl
+                                formControlName="recaptcha"
+                                size="normal"
+                                (error)="onReCAPTCHAError($event)"
+                                errorMode="handled"></re-captcha>
+                        </div>
+                    </div>
+    
+                    <div class="actions">
+                        <button type="submit" mat-raised-button color="primary" [disabled]="form.invalid || submitting">
+                            {{submitting ? 'SIGNING IN...': 'SIGN IN'}}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

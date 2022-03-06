@@ -3,13 +3,18 @@ import {Router, NavigationStart, NavigationEnd} from '@angular/router';
 import {DOCUMENT} from "@angular/common";
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {MatBottomSheet, MatBottomSheetRef} from '@angular/material/bottom-sheet';
-import {INavService, IRouteState, IRouteStateData} from "./interfaces";
 import {BehaviorSubject, Observable} from "rxjs";
 import {filter} from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 import {AppService} from "../app";
 import {RecaptchaDialogComponent} from "../../shared/components/recaptcha-dialog";
 import {ConfirmationDialogComponent, IConfirmationDialogData} from "../../shared/components/confirmation-dialog";
 import {BottomSheetMenuComponent, IBottomSheetMenuItem} from "../../shared/components/bottom-sheet-menu";
+import {INavService, IRouteState, IRouteStateData} from "./interfaces";
+
+
+
+
 
 
 @Injectable({
@@ -22,8 +27,6 @@ export class NavService implements INavService {
 	
 	// Route State
 	public routeState: BehaviorSubject<IRouteState>;
-	
-	
 	
 	
 	constructor(
@@ -56,8 +59,25 @@ export class NavService implements INavService {
 
 
 	/* App Navigation */
+	public signIn(): Promise<boolean> { return this.navigate('auth/signIn') }
+	public updatePassword(): Promise<boolean> { return this.navigate('auth/updatePassword') }
 	public dashboard(): Promise<boolean> { return this.navigate('dashboard') }
-	public forecast(): Promise<boolean> { return this.navigate('forecast') }
+	public tradingSessions(): Promise<boolean> { return this.navigate('tradingSessions') }
+	public tradingSimulations(): Promise<boolean> { return this.navigate('tradingSimulations') }
+	public mlModels(): Promise<boolean> { return this.navigate('mlModels') }
+	public candlesticks(): Promise<boolean> { return this.navigate('candlesticks') }
+	public apiErrors(): Promise<boolean> { return this.navigate('apiErrors') }
+	public server(): Promise<boolean> { return this.navigate('server') }
+	public users(): Promise<boolean> { return this.navigate('users') }
+	public database(): Promise<boolean> { return this.navigate('database') }
+	public guiVersion(version?: string): Promise<boolean> { 
+        if (typeof version == "string") {
+            return this.navigate(`guiVersion/${version}`);
+        } else {
+            return this.navigate('guiVersion');
+        }
+    }
+	public ipBlacklist(): Promise<boolean> { return this.navigate('ipBlacklist') }
 
 
 	
@@ -112,6 +132,8 @@ export class NavService implements INavService {
 
 	
 	
+
+
 	
 	
 	
@@ -166,12 +188,37 @@ export class NavService implements INavService {
 	
 	
 	
+
+
+
+
+
+
+    /* URL Openers */
 	
 	
 	
+
+    // PG ADMIN
+    public openPGAdmin(): void { 
+        if (environment.localServer) {
+            this.openUrl(environment.pgAdmin.local);
+        } else {
+            this.openUrl(environment.pgAdmin.external);
+        }
+    }
 	
 	
 	
+
+    // DOZZLE
+    public openDozzle(): void { 
+        if (environment.localServer) {
+            this.openUrl(environment.dozzle.local);
+        } else {
+            this.openUrl(environment.dozzle.external);
+        }
+    }
 	
 	
 	

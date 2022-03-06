@@ -22,16 +22,24 @@ BigNumber.config({EXPONENTIAL_AT: 32});
 import { environment } from '../environments/environment';
 
 // Initialize Firebase
-//import {initializeApp} from 'firebase/app';
-//initializeApp(environment.firebaseConfig.credentials);
+import {initializeApp} from 'firebase/app';
+initializeApp(environment.firebaseConfig.credentials);
 
 
 // Core
 import {
     ApiService,
+    ApiErrorService,
+    AuthService,
+    UserService,
     CandlestickService,
-    CryptocurrencyService,
+    DatabaseService,
+    DatabaseManagementService,
     ExternalRequestService,
+	GuiVersionService,
+	IpBlacklistService,
+	NotificationService,
+	ServerService,
 	UtilsService,
 } from './core';
 
@@ -39,6 +47,8 @@ import {
 // Services
 import {
 	AppService,
+    AudioService,
+	ChartService,
 	ClipboardService,
 	NavService,
 	SnackbarService,
@@ -89,21 +99,30 @@ import { AppComponent } from './app.component';
 		SharedModule,
 	],
 	providers: [
+        // Core
+        ApiService,
+        ApiErrorService,
+        AuthService,
+        UserService,
+        CandlestickService,
+        DatabaseService,
+        DatabaseManagementService,
+        ExternalRequestService,
+        GuiVersionService,
+        IpBlacklistService,
+        NotificationService,
+        ServerService,
+        UtilsService,
+
+
 		// Services 
 		AppService,
+        AudioService,
+        ChartService,
 		ClipboardService,
 		NavService,
 		SnackbarService,
 		ValidationsService,
-
-		// Core
-        ApiService,
-        CandlestickService,
-        CryptocurrencyService,
-        ExternalRequestService,
-		UtilsService,
-
-
 	],
 	bootstrap: [AppComponent]
 })

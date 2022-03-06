@@ -1,0 +1,28 @@
+<!-- Header -->
+<mat-toolbar class="secondary-header">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <button mat-icon-button class="show-on-mobile" (click)="_nav.dashboard()"><mat-icon>arrow_back</mat-icon></button>
+        <span>Candlesticks</span>
+        <span fxFlex></span>
+        <app-refresh-button *ngIf="loaded" (refresh)="refresh()"></app-refresh-button>
+        <button mat-icon-button *ngIf="loaded" (click)="updateConfig()"><mat-icon>settings</mat-icon></button>
+    </div>
+</mat-toolbar>
+
+
+<!-- Loader -->
+<div *ngIf="!loaded" class="section-loader">
+    <div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div>
+</div>
+
+
+<!-- Section Content -->
+<div class="fadeIn" *ngIf="loaded">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <div fxFlex>
+            <div class="chart-container" *ngIf="rawCandlesticks">
+                <app-candlestick-chart [data]="{candlesticks: rawCandlesticks, highlightCurrentPrice: true}"></app-candlestick-chart>
+            </div>
+        </div>
+    </div>
+</div>

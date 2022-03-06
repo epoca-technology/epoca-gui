@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {ISnackbarService} from "./interfaces";
 import {MatSnackBar, MatSnackBarRef, TextOnlySnackBar} from '@angular/material/snack-bar';
+import { UtilsService } from '../../core';
 
 
 @Injectable({
@@ -8,7 +9,10 @@ import {MatSnackBar, MatSnackBarRef, TextOnlySnackBar} from '@angular/material/s
 })
 export class SnackbarService implements ISnackbarService{
 	
-	constructor(private snackBar: MatSnackBar) { }
+	constructor(
+        private snackBar: MatSnackBar,
+        private _utils: UtilsService
+    ) { }
 	
 	
 	
@@ -32,8 +36,9 @@ export class SnackbarService implements ISnackbarService{
 	
 	
 	// Error
-	public error(message: string, action: boolean = true): MatSnackBarRef<TextOnlySnackBar> {
-		return this.getSnackbar(message, 'warn-snackbar', action);
+	public error(error: any, action: boolean = true): MatSnackBarRef<TextOnlySnackBar> {
+        const msg: string = typeof error == "string" ? error: this._utils.getErrorMessage(error);
+		return this.getSnackbar(msg, 'warn-snackbar', action);
 	}
 	
 	

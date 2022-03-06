@@ -42,7 +42,7 @@ export class ClipboardService implements IClipboardService{
 			// Check if it was successful
 			if (didCopy) {
 				// Check if the user should be notified
-				if (notify) this._snackbar.info('Portapapeles: ' + content, false);
+				if (notify) this._snackbar.info('Clipboard: ' + content, false);
 			} else {
 				this._snackbar.error('The copied content value is empty: CDK_RESPONSE_ERROR');
 			}

@@ -1,0 +1,24 @@
+.chart-container {
+    margin: 35px 35px 80px 35px;
+}
+
+
+
+
+/* Responsiveness */
+
+
+/* mobile: sm & xs */
+@media only screen and (max-width: 959px) {
+    .chart-container {
+        margin: 25px 15px 80px 15px;
+    }
+
+}
+
+
+
+/* desktop: md */
+@media only screen and (min-width: 960px) {
+
+}

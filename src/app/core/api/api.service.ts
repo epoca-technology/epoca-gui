@@ -1,22 +1,26 @@
 import { Injectable } from '@angular/core';
 import { HttpHeaders } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
-import { ExternalRequestService, IHeadersConfig, IHTTPMethod } from '../external-request';
-import { IApiService } from './interfaces';
 import { lastValueFrom } from 'rxjs';
+import { environment } from 'src/environments/environment';
+import { IApiService, IAPIResponse } from './interfaces';
+import { ExternalRequestService, IHeadersConfig, IHTTPMethod } from '../external-request';
+import { AuthService } from '../auth';
+import { UtilsService } from '../utils';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService implements IApiService {
     // API URL
-    private readonly url: string = environment.apiURL.useLocal ? environment.apiURL.local: environment.apiURL.external;
+    public readonly url: string = environment.localServer ? environment.apiURL.local: environment.apiURL.external;
 
 
 
 
     constructor(
-        private _request: ExternalRequestService
+        private _request: ExternalRequestService,
+        private _auth: AuthService,
+        private _utils: UtilsService
     ) { }
 
 
@@ -32,20 +36,45 @@ export class ApiService implements IApiService {
 	
 	/*
 	* Sends a request to the API following requirements
+	* @param method - The method to be used, defaults to 'post'
 	* @param path - path of the url / if http params needed must be specified here
-	* @param method? - The method to be used, defaults to 'post'
 	* @param body? - params to send
-	* @return Promise<IBackEndResponse>
+	* @param requiresAuth?
+	* @param otp?
+	* @param retried?
+	* @return Promise<any>
 	* */
 	public async request(
         method: IHTTPMethod,
 		path: string,
 		body?: {[key: string]: any},
+        requiresAuth?: boolean,
+        otp?: string,
+        retried?: boolean
 	): Promise<any> {
-		// Init main values
+		// Init values
 		const finalBody: any = body || {};
+        const finalOTP: string = otp || '';
+        let idToken: string = '';
+        let apiSecret: string = '';
+
+        // Check if the request requires auth
+        if (requiresAuth) {
+            // Retrieve the ID Token and the API Secret
+            const values: [string, string] = await Promise.all([
+                this._auth.getIDToken(),
+                this._auth.getAPISecret(),
+            ]);
+            idToken = values[0];
+            apiSecret = values[1];
+        }
+
+        // Build the Headers
 		const headersConfig: IHeadersConfig = {
-			'Content-Type': 'application/json'
+			'Content-Type': 'application/json',
+            'id-token': idToken,
+            'api-secret': apiSecret,
+            'otp': finalOTP,
 		};
 		
 		// Build URL
@@ -55,8 +84,56 @@ export class ApiService implements IApiService {
 		const httpOptions = {
 			headers: new HttpHeaders(headersConfig)
 		};
-		
-		// Send Request to Server
-		return lastValueFrom(this._request.request(method, url, finalBody, httpOptions));
+
+        // Send the request
+        const apiResponse: IAPIResponse = await lastValueFrom(this._request.request(method, url, finalBody, httpOptions));
+
+        // Check if the request was successful
+        if (apiResponse && apiResponse.success) {
+            // Return the response data if any
+            return apiResponse.data;
+        } 
+        
+        // If the request was unsuccessful, check if the error can be fixed and try again if so
+        else {
+            // Init error values
+            const errorMessage: string = apiResponse && apiResponse.error ? apiResponse.error: 'The request received an incomplete API Response object.';
+
+            // If it hasn't retried, check if the error can be fixed
+            if (requiresAuth && !retried) {
+                // Retrieve the error code
+                const code: number = this._utils.getCodeFromApiError(errorMessage);
+
+                // Check if the ID Token needs to be refreshed
+                if (
+                    code == 8513 || // AuthValidations: The provided ID Token has an invalid format.
+                    code == 8303 || // AuthModel: The uid couldnt be extracted when verifying the ID Token.
+                    code == 8304    // AuthModel: The ID Token has expired. Please generate a new one and try again.
+                ) {
+                    // Mark the secret as invalid
+                    this._auth.idTokenInvalid();
+
+                    // Retry the request
+                    console.log('Resending API request as the ID Token was invalid in the original request.');
+                    return await this.request(method, path, body, requiresAuth, otp, true);
+                }
+
+                // Check if the API Secret needs to be refreshed
+                else if (
+                    code == 9003 || // ApiSecretService: The uid (${uid}) provided an api secret with an invalid format: ${secret}.
+                    code == 9004    // ApiSecretService: The uid (${uid}) provided an api secret that didnt match the one stored locally: ${secret}.
+                ) {
+                    // Mark the secret as invalid
+                    this._auth.apiSecretIsInvalid();
+
+                    // Retry the request
+                    console.log('Resending API request as the API Secret was invalid in the original request.');
+                    return await this.request(method, path, body, requiresAuth, otp, true);
+                }
+            }
+
+            // Throw the API Error
+            throw new Error(errorMessage);
+        }
 	}
 }

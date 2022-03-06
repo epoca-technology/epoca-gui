@@ -1,18 +1,35 @@
-# GuiDev
+# PLUTUS GUI
 
+Plutus GUI is an application designed to interact with Plutus' Core API through HTTP Requests.
+
+
+## Requirements
+
+- NodeJS: v16.13.1
+
+- NPM: v8.1.2
+
+- Install dependencies with `npm install` 
+
+
+#
 ## Commands
 
-### Run Local Server
+### Local Server
 
-`npm run serve` | `npm run serve-prod`
-
-
-### PWA build
-
-`npm run build-dev` | `npm run build-prod`
+`npm run serve-development` | `npm run serve-production`
 
 
-# Angular Project
+### Build
+
+`npm run build-development` | `npm run build-production`
+
+
+
+
+
+#
+## Angular Project
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.1.2.
 
