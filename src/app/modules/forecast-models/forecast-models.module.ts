@@ -2,23 +2,23 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 // Routing
-import { MlModelsRoutingModule } from './ml-models-routing.module';
+import { ForecastModelsRoutingModule } from './forecast-models-routing.module';
 
 // Shared Module
 import {SharedModule} from "../../shared";
 
 // Component
-import { MlModelsComponent } from './ml-models/ml-models.component';
+import { ForecastModelsComponent } from './forecast-models/forecast-models.component';
 
 
 @NgModule({
   declarations: [
-    MlModelsComponent
+    ForecastModelsComponent
   ],
   imports: [
     CommonModule,
-    MlModelsRoutingModule,
+    ForecastModelsRoutingModule,
     SharedModule
   ]
 })
-export class MlModelsModule { }
+export class ForecastModelsModule { }

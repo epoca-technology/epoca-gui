@@ -33,10 +33,10 @@ const routes: Routes = [
 		loadChildren: () => import('./modules/trading-simulations/trading-simulations.module').then(m => m.TradingSimulationsModule),
 	},
 
-	// ML Models
+	// Forecast Models
 	{
-		path: 'mlModels',
-		loadChildren: () => import('./modules/ml-models/ml-models.module').then(m => m.MlModelsModule),
+		path: 'forecastModels',
+		loadChildren: () => import('./modules/forecast-models/forecast-models.module').then(m => m.ForecastModelsModule),
 	},
 
 	// Candlesticks

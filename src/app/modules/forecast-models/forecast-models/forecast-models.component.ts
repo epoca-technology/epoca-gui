@@ -1,14 +1,14 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { AppService, ILayout, NavService } from '../../../services';
-import { ITradingSimulationsComponent } from './interfaces';
+import { IForecastModelsComponent } from './interfaces';
 
 @Component({
-  selector: 'app-trading-simulations',
-  templateUrl: './trading-simulations.component.html',
-  styleUrls: ['./trading-simulations.component.scss']
+  selector: 'app-forecast-models',
+  templateUrl: './forecast-models.component.html',
+  styleUrls: ['./forecast-models.component.scss']
 })
-export class TradingSimulationsComponent implements OnInit, OnDestroy, ITradingSimulationsComponent {
+export class ForecastModelsComponent implements OnInit, OnDestroy, IForecastModelsComponent {
     // Layout
 	public layout: ILayout = this._app.layout.value;
 	private layoutSub?: Subscription;

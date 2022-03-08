@@ -23,7 +23,18 @@
              class="tab" role="button" matRipple
              [ngClass]="{'active': activeTab == 2}" (click)="navigate(2)">
             <mat-icon   svgIcon="ssid_chart" 
-                        matBadge="3"
+                        matBadge="7"
+                        matBadgePosition="after"
+                        matBadgeSize="small"
+                        matBadgeOverlap="false"></mat-icon>
+        </div>
+
+        <!-- Forecast Models -->
+        <div fxFlex fxLayout="row" fxLayoutAlign="center center"
+             class="tab" role="button" matRipple
+             [ngClass]="{'active': activeTab == 2}" (click)="navigate(3)">
+            <mat-icon   svgIcon="brain" 
+                        matBadge="4"
                         matBadgePosition="after"
                         matBadgeSize="small"
                         matBadgeOverlap="false"></mat-icon>
@@ -34,13 +45,6 @@
              class="tab" role="button" matRipple
              [ngClass]="{'active': activeTab == 3}" (click)="navigate(3)">
             <mat-icon svgIcon="bug_report"></mat-icon>
-        </div>
-
-        <!-- Server -->
-        <div fxFlex fxLayout="row" fxLayoutAlign="center center"
-             role="button" class="tab" matRipple
-             [ngClass]="{'active': activeTab == 4}" (click)="navigate(4)">
-            <mat-icon svgIcon="server"></mat-icon>
         </div>
     </div>
 </div>

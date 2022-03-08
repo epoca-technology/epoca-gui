@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from '../../services';
-import { MlModelsComponent } from './ml-models/ml-models.component';
+import { ForecastModelsComponent } from './forecast-models/forecast-models.component';
 
 const routes: Routes = [
     {
 		path: '',
-		component: MlModelsComponent,
+		component: ForecastModelsComponent,
 		canActivate: [AuthGuard]
 	},
 ];
@@ -15,4 +15,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class MlModelsRoutingModule { }
+export class ForecastModelsRoutingModule { }

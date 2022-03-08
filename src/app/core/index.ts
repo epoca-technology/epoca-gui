@@ -5,6 +5,7 @@ export * from './candlestick';
 export * from './common';
 export * from './database';
 export * from './external-request';
+export * from './file';
 export * from './gui-version';
 export * from './ip-blacklist';
 export * from './notification';

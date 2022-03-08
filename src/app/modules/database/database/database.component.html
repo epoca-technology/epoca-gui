@@ -13,6 +13,119 @@
 </div>
 
 <!-- Content -->
-<div *ngIf="loaded">
+<div *ngIf="loaded && summary" class="padding fadeIn">
+    <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" fxLayoutAlign="center start">
 
+        <!-- Summary -->
+        <div fxFlex fxFlex.md="30" fxFlex.lg="30" fxFlex.xl="30" class="card-container">
+            <div class="desktop-card summary-container">
+                <h2>Summary</h2>
+
+                <div fxLayout="row" fxLayoutAlign="start center">
+                    <p>URL</p>
+                    <span fxFlex></span>
+                    <p>{{_api.url}}</p>
+                </div>
+
+                <div fxLayout="row" fxLayoutAlign="start center">
+                    <p>Name</p>
+                    <span fxFlex></span>
+                    <p>{{summary.name}}</p>
+                </div>
+
+                <div fxLayout="row" fxLayoutAlign="start center">
+                    <p>Port</p>
+                    <span fxFlex></span>
+                    <p>{{summary.port}}</p>
+                </div>
+
+                <div fxLayout="row" fxLayoutAlign="start center">
+                    <p>Total Size</p>
+                    <span fxFlex></span>
+                    <p>{{summary.size}}</p>
+                </div>
+
+                <p class="align-center">{{summary.version}}</p>
+            </div>
+        </div>
+
+        <span fxFlex></span>
+
+        <!-- Tables -->
+        <div fxFlex fxFlex.md="30" fxFlex.lg="30" fxFlex.xl="30" class="card-container">
+            <div class="desktop-card">
+                <div fxLayout="row" fxLayoutAlign="start start">
+                    <h2>{{testTablesVisible ? 'Test Tables': 'Tables'}}</h2>
+                    <span fxFlex></span>
+                    <button mat-button [disabled]="submitting" (click)="testTablesVisible = !testTablesVisible">
+                        {{testTablesVisible ? 'Tables': 'Test Tables'}}
+                    </button>
+                </div>
+
+                <!-- Tables -->
+                <div *ngIf="!testTablesVisible" class="fadeIn tables-container">
+                    <table class="highlight">
+                        <tbody>
+                            <tr *ngFor="let t of tables">
+                                <td><p>{{t.name}}</p></td>
+                                <td class="align-right light-text"><p>{{t.size}}</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Test Tables -->
+                <div *ngIf="testTablesVisible" class="fadeIn tables-container">
+                    <table class="highlight">
+                        <tbody>
+                            <tr *ngFor="let t of testTables">
+                                <td><p>{{t.name}}</p></td>
+                                <td><p class="align-right light-text">{{t.size}}</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <span fxFlex></span>
+
+        <!-- Backups -->
+        <div fxFlex fxFlex.md="30" fxFlex.lg="30" fxFlex.xl="30" class="card-container">
+            <div class="desktop-card">
+                <div fxLayout="row" fxLayoutAlign="start start">
+                    <h2>Backups</h2>
+                    <span fxFlex></span>
+                    <app-refresh-button [disabled]="submitting" (refresh)="listBackupFiles()"></app-refresh-button>
+                </div>
+
+                <p *ngIf="!files.length" class="no-data-found">No data was found</p>
+                <div *ngIf="files.length" class="backups-container">
+                    <div *ngFor="let file of files; last as isLast">
+                        <div class="row" fxLayout="row" fxLayoutAlign="start center">
+                            <div>
+                                <p>{{file.name}}</p>
+                                <p>{{file.creation | date: 'medium'}}</p>
+                            </div>
+                            <span fxFlex></span>
+                            <button mat-icon-button [matMenuTriggerFor]="menu" [disabled]="submitting">
+                                <mat-icon>more_vert</mat-icon>
+                              </button>
+                              <mat-menu #menu="matMenu">
+                                <button mat-menu-item (click)="_clipboard.copy(file.name)">
+                                  <mat-icon>content_copy</mat-icon>
+                                  <span>Copy Backup Name</span>
+                                </button>
+                                <button mat-menu-item (click)="downloadBackup(file.name)">
+                                  <mat-icon>file_download</mat-icon>
+                                  <span>Download Backup</span>
+                                </button>
+                              </mat-menu>
+                        </div>
+                        <div class="divider" *ngIf="!isLast"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

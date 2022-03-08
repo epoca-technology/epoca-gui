@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MlModelsComponent } from './ml-models.component';
+import { ForecastModelsComponent } from './forecast-models.component';
 
-describe('MlModelsComponent', () => {
-  let component: MlModelsComponent;
-  let fixture: ComponentFixture<MlModelsComponent>;
+describe('ForecastModelsComponent', () => {
+  let component: ForecastModelsComponent;
+  let fixture: ComponentFixture<ForecastModelsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ MlModelsComponent ]
+      declarations: [ ForecastModelsComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MlModelsComponent);
+    fixture = TestBed.createComponent(ForecastModelsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

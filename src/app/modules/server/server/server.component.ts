@@ -71,7 +71,7 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
         private _server: ServerService,
         private _utils: UtilsService,
         private _snackbar: SnackbarService,
-        private _nav: NavService,
+        public _nav: NavService,
         private _audio: AudioService,
         public _api: ApiService,
         private dialog: MatDialog,

@@ -15,7 +15,7 @@ export interface INavService {
 	dashboard(): Promise<boolean>,
 	tradingSessions(): Promise<boolean>,
 	tradingSimulations(): Promise<boolean>,
-	mlModels(): Promise<boolean>,
+	forecastModels(): Promise<boolean>,
 	candlesticks(): Promise<boolean>,
     apiErrors(): Promise<boolean>,
     server(): Promise<boolean>,

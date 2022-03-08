@@ -1,8 +1,7 @@
 <!-- Secondary Header -->
 <mat-toolbar class="secondary-header">
     <div fxLayout="row" fxLayoutAlign="center center">
-        <button mat-icon-button class="show-on-mobile" (click)="_nav.dashboard()"><mat-icon>arrow_back</mat-icon></button>
-        <span>ML Models</span>
+        <span>Forecast Models</span>
         <span fxFlex></span>
     </div>
 </mat-toolbar>
@@ -13,6 +12,9 @@
 </div>
 
 <!-- Content -->
-<div *ngIf="loaded">
+<div *ngIf="loaded" [ngClass]="{'section-content': layout == 'mobile'}">
 
+
+    <!-- Mobile Tabs -->
+    <app-mobile-tabs *ngIf="layout == 'mobile'"></app-mobile-tabs>
 </div>

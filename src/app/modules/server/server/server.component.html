@@ -32,18 +32,19 @@
             <!-- Section Header -->
             <mat-toolbar class="secondary-header">
                 <div fxLayout="row" fxLayoutAlign="center center">
+                    <button mat-icon-button class="show-on-mobile" (click)="_nav.dashboard()"><mat-icon>arrow_back</mat-icon></button>
                     <button mat-icon-button (click)="serverSidenav?.toggle()" class="show-on-mobile"><mat-icon>menu</mat-icon></button>
                     <span class="truncate">{{activeSection.name}}</span>
                     <span fxFlex></span>
-                    <app-refresh-button [disabled]="!loaded || activeSection.id != 'monitoring' || submitting" [intervalSeconds]="120" (refresh)="refresh()"></app-refresh-button>
-                    <button mat-icon-button (click)="updateConfig()" [disabled]="submitting" matTooltip="Alarms Configuration"><mat-icon>edit_notifications</mat-icon></button>
+                    <app-refresh-button [disabled]="!loaded || submitting" *ngIf="activeSection.id == 'monitoring'" [intervalSeconds]="120" (refresh)="refresh()"></app-refresh-button>
+                    <button mat-icon-button (click)="updateConfig()" [disabled]="submitting"  *ngIf="activeSection.id == 'monitoring'" matTooltip="Alarms Configuration"><mat-icon>edit_notifications</mat-icon></button>
                 </div>
             </mat-toolbar>
 
 
 
             <!-- Section Content -->
-            <div [ngClass]="{'section-content': layout == 'mobile'}">
+            <div>
                 <div fxLayout="row">
                     <div *ngIf="layout == 'desktop'" class="desktop-sidenav">
                         <mat-list>
@@ -590,10 +591,6 @@
                     </div>
                 </div>
             </div>
-
-
-            <!-- Mobile Tabs -->
-            <app-mobile-tabs *ngIf="layout == 'mobile'"></app-mobile-tabs>
         </div>
     </mat-drawer-content>
 </mat-drawer-container>
