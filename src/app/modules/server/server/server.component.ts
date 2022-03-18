@@ -2,10 +2,11 @@ import { Component,  OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSidenav } from '@angular/material/sidenav';
 import { Subscription } from 'rxjs';
+import * as moment from 'moment';
 import { ApiService, IAlarmsConfig, IServerData, ServerService, UtilsService } from '../../../core';
-import { AppService, AudioService, ILayout, NavService, SnackbarService } from '../../../services';
+import { AppService, ILayout, NavService, SnackbarService } from '../../../services';
 import { AlarmsConfigDialogComponent } from './alarms-config-dialog/alarms-config-dialog.component';
-import { ISection, ISectionID, IServerComponent, IState, IStates } from './interfaces';
+import { ISection, ISectionID, IServerComponent, IState, IStates, IServerIssues } from './interfaces';
 import { environment } from '../../../../environments/environment';
 
 @Component({
@@ -41,9 +42,13 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
     ];
     public activeSection = this.sections[0];
 
-    // Potential Errors
-    public environmentError: boolean = false;
-    public refreshError: string|undefined = undefined;
+    // Server Issues
+    public serverIssues: IServerIssues = {
+        issues: false,
+        environmentError: false,
+        timeError: true,
+        serverCommunicationError: undefined
+    }
 
     // Badge States
     public states: IStates = {
@@ -72,7 +77,6 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
         private _utils: UtilsService,
         private _snackbar: SnackbarService,
         public _nav: NavService,
-        private _audio: AudioService,
         public _api: ApiService,
         private dialog: MatDialog,
     ) { }
@@ -153,12 +157,11 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
         if (this.serverData) {
             try {
                 this.serverData.resources = await this._server.getServerResources();
-                this.refreshError = undefined;
+                this.serverIssues.serverCommunicationError = undefined;
             } catch (e) { 
                 const err: string = this._utils.getErrorMessage(e);
                 this._snackbar.error(err);
-                this.refreshError = err;
-                this._audio.playOutage();
+                this.serverIssues.serverCommunicationError = err;
             }
 
             // Update meta data
@@ -185,7 +188,20 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
             this.populateStates();
 
             // Check if there is an environment error
-            this.environmentError = environment.production !== this.serverData.production;
+            this.serverIssues.environmentError = environment.production !== this.serverData.production;
+
+            // Check if there is a time issue
+            const past: number = moment().subtract(2, "minutes").valueOf();
+            const future: number = moment().add(2, "minutes").valueOf();
+            this.serverIssues.timeError = 
+                this.serverData.resources.serverTime < past || 
+                this.serverData.resources.serverTime > future;
+
+            // Check if there is an issue
+            this.serverIssues.issues = 
+                this.serverIssues.environmentError ||
+                this.serverIssues.timeError ||
+                typeof this.serverIssues.serverCommunicationError == "string";
         }
     }
 

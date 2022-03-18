@@ -72,48 +72,52 @@
                                 class="monitoring">
                                 <div fxFlex="45" fxFlex.xs="100" fxFlex.sm="100">
                                     <!-- Server -->
-                                    <div class="desktop-card">
-                                        <div fxLayout="row">
-                                            <h3>Server</h3>
-                                            <span fxFlex></span>
-                                            <div [ngClass]="{'square-badge': !refreshError && !environmentError, 'square-badge-error': refreshError || environmentError}" matTooltip="Uptime">
-                                                {{serverData.resources.uptime}} hours
+                                    <div class="desktop-card" [ngClass]="{'server-issue': serverIssues.issues}">
+                                        <div fxLayout="row" fxLayoutAlign="center start">
+                                            <div class="header">
+                                                <h3>Server</h3>
+                                                <p matTooltip="Server Time" class="light-text ts-s">{{serverData.resources.serverTime | date: 'medium'}}</p>
                                             </div>
+                                            <span fxFlex></span>
+                                            <div class="square-badge" matTooltip="Uptime">{{serverData.resources.uptime}} hours</div>
                                         </div>
-                                        <div [ngClass]="{'error-color': refreshError || environmentError}" 
-                                            fxLayout="row">
-                                            <p [ngClass]="{'light-text': !refreshError && !environmentError}" class="ts-m">URL</p>
+                                        <div class="margin-top" fxLayout="row">
+                                            <p class="light-text ts-m">URL</p>
                                             <span fxFlex></span>
                                             <p class="ts-m">{{_api.url}}</p>
                                         </div>
-                                        <div [ngClass]="{'error-color': refreshError || environmentError}" 
-                                            fxLayout="row">
-                                            <p [ngClass]="{'light-text': !refreshError && !environmentError}" class="ts-m">Environment</p>
+                                        <div fxLayout="row">
+                                            <p class="light-text ts-m">Environment</p>
                                             <span fxFlex></span>
                                             <p class="ts-m">{{serverData.production ? 'Production': 'Development'}}</p>
                                         </div>
-                                        <p *ngIf="environmentError" class="error-color align-center">
-                                            The environment.production property in the GUI is different to the one in the server
-                                        </p>
-                                        <div [ngClass]="{'error-color': refreshError || environmentError}" 
-                                            fxLayout="row">
-                                            <p [ngClass]="{'light-text': !refreshError && !environmentError}" class="ts-m">Version</p>
+                                        <div fxLayout="row">
+                                            <p class="light-text ts-m">Version</p>
                                             <span fxFlex></span>
                                             <p class="ts-m">{{serverData.version}}</p>
                                         </div>
-                                        <div [ngClass]="{'error-color': refreshError || environmentError}" 
-                                            fxLayout="row">
-                                            <p [ngClass]="{'light-text': !refreshError && !environmentError}" class="ts-m">Server Time</p>
+                                        <div fxLayout="row">
+                                            <p matTooltip="Last Resource Update" class="light-text ts-m">Last Update</p>
                                             <span fxFlex></span>
-                                            <p class="ts-m">{{serverData.resources.serverTime | date: 'medium'}}</p>
+                                            <p matTooltip="Last Resource Update" class="ts-m">{{serverData.resources.lastResourceScan | date: 'medium'}}</p>
                                         </div>
-                                        <div [ngClass]="{'error-color': refreshError || environmentError}" 
-                                            fxLayout="row">
-                                            <p matTooltip="Last Resource Update" [ngClass]="{'light-text': !refreshError && !environmentError}" class="ts-m">Last Update</p>
-                                            <span fxFlex></span>
-                                            <p class="ts-m">{{serverData.resources.lastResourceScan | date: 'medium'}}</p>
-                                        </div>
-                                        <p *ngIf="refreshError" class="error-color align-center">{{refreshError}}</p>
+
+                                        <!-- Environment Error -->
+                                        <p class="server-error" *ngIf="serverIssues.environmentError">
+                                            <mat-icon>bug_report</mat-icon> The environment.production property in the GUI is different to the one in the server
+                                        </p>
+                                        
+                                        <!-- Time Error-->
+                                        <p class="server-error" *ngIf="serverIssues.timeError">
+                                            <mat-icon>bug_report</mat-icon> The time difference between the client and the server is greater 
+                                            than 2 minutes. Make sure the issue is in the client and not the server as Plutus relies 
+                                            on time accuracy.
+                                        </p>
+
+                                        <!-- Server Communication Error -->
+                                        <p class="server-error" *ngIf="serverIssues.serverCommunicationError">
+                                            <mat-icon>bug_report</mat-icon> Server Communication Error: {{serverIssues.serverCommunicationError}}
+                                        </p>
                                     </div>
                                     <div class="divider"></div>
 

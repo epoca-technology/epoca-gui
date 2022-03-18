@@ -52,6 +52,18 @@
     padding:15px;
 }
 
+.monitoring .header {}
+.monitoring .header h3{margin:0}
+.monitoring .header p{margin:0}
+
+
+.monitoring .server-issue {
+    h3 { color: var(--error-color)}
+    p { color: var(--error-color)}
+    .square-badge { background: var(--error-color)}
+    .server-error { margin: 15px 0 15px 0;}
+}
+
 
 .space-badges { text-align: center;}
 .space-badges .square-badge{

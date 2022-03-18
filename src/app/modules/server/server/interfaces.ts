@@ -38,3 +38,12 @@ export interface IStates {
 }
 
 export type IState = 'optimal'|'normal'|'average'|'warning'|'error';
+
+
+
+export interface IServerIssues {
+    issues: boolean,
+    environmentError: boolean,
+    timeError: boolean,
+    serverCommunicationError: string|undefined
+}
