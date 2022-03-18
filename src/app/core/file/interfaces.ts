@@ -4,9 +4,8 @@
 
 export interface IFileService {
     // Database Backups
-    listDatabaseBackups(): Promise<string[]>,
-    getDatabaseBackupFileSize(name: string): Promise<number>,
-    downloadDatabaseBackup(backupName: string): Promise<string>,
+    listDatabaseBackups(): Promise<IDownloadedFile[]>,
+    getDatabaseBackupDownloadURL(backupName: string): Promise<string>,
 
     // Forecast Models
 }
@@ -16,4 +15,12 @@ export interface IFileService {
 export interface IPath {
     dbBackups: string,
     forecastModels: string
+}
+
+
+
+
+export interface IDownloadedFile {
+    name: string,
+    size: number
 }

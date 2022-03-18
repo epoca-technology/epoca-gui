@@ -96,33 +96,37 @@
                 <div fxLayout="row" fxLayoutAlign="start start">
                     <h2>Backups</h2>
                     <span fxFlex></span>
-                    <app-refresh-button [disabled]="submitting" (refresh)="listBackupFiles()"></app-refresh-button>
+                    <app-refresh-button [disabled]="submitting || !filesDownloaded" (refresh)="listBackupFiles()"></app-refresh-button>
                 </div>
-
-                <p *ngIf="!files.length" class="no-data-found">No data was found</p>
-                <div *ngIf="files.length" class="backups-container">
-                    <div *ngFor="let file of files; last as isLast">
-                        <div class="row" fxLayout="row" fxLayoutAlign="start center">
-                            <div>
-                                <p>{{file.name}}</p>
-                                <p>{{file.creation | date: 'medium'}}</p>
+                <div *ngIf="!filesDownloaded" class="loader">
+                    <div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div>
+                </div>
+                <div *ngIf="filesDownloaded" class="fadeIn">
+                    <p *ngIf="!files.length" class="no-data-found">No data was found</p>
+                    <div *ngIf="files.length" class="backups-container">
+                        <div *ngFor="let file of files; last as isLast">
+                            <div class="row" fxLayout="row" fxLayoutAlign="start center">
+                                <div>
+                                    <p>{{file.name}}</p>
+                                    <p>{{file.creation | date: 'medium'}}</p>
+                                </div>
+                                <span fxFlex></span>
+                                <button mat-raised-button color="primary" [matMenuTriggerFor]="menu" [disabled]="submitting">
+                                    {{file.size | filesize}}
+                                </button>
+                                <mat-menu #menu="matMenu">
+                                <button mat-menu-item (click)="_clipboard.copy(file.name)">
+                                    <mat-icon>content_copy</mat-icon>
+                                    <span>Copy Backup Name</span>
+                                </button>
+                                <button mat-menu-item (click)="downloadBackup(file.name)">
+                                    <mat-icon>file_download</mat-icon>
+                                    <span>Download Backup</span>
+                                </button>
+                                </mat-menu>
                             </div>
-                            <span fxFlex></span>
-                            <button mat-raised-button color="primary" [matMenuTriggerFor]="menu" [disabled]="submitting">
-                                {{file.size | filesize}}
-                            </button>
-                            <mat-menu #menu="matMenu">
-                            <button mat-menu-item (click)="_clipboard.copy(file.name)">
-                                <mat-icon>content_copy</mat-icon>
-                                <span>Copy Backup Name</span>
-                            </button>
-                            <button mat-menu-item (click)="downloadBackup(file.name)">
-                                <mat-icon>file_download</mat-icon>
-                                <span>Download Backup</span>
-                            </button>
-                            </mat-menu>
+                            <div class="divider" *ngIf="!isLast"></div>
                         </div>
-                        <div class="divider" *ngIf="!isLast"></div>
                     </div>
                 </div>
             </div>

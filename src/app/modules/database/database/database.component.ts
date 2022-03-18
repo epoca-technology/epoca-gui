@@ -1,7 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService, DatabaseManagementService, FileService, IDatabaseSummary, IDatabaseSummaryTable } from '../../../core';
+import { 
+    ApiService, 
+    DatabaseManagementService, 
+    FileService, 
+    IDatabaseSummary, 
+    IDatabaseSummaryTable,
+    IDownloadedFile,
+} from '../../../core';
 import { ClipboardService, NavService, SnackbarService } from '../../../services';
-import { IDatabaseComponent, IBackupFile } from './interfaces';
+import { IDatabaseComponent, IDownloadedBackupFile} from './interfaces';
 
 @Component({
   selector: 'app-database',
@@ -18,7 +25,8 @@ export class DatabaseComponent implements OnInit, IDatabaseComponent {
     public testTablesVisible: boolean = false;
 
     // Files
-    public files: IBackupFile[] = [];
+    public files: IDownloadedBackupFile[] = [];
+    public filesDownloaded: boolean = false;
 
     // Submission State
     public submitting = false;
@@ -77,30 +85,30 @@ export class DatabaseComponent implements OnInit, IDatabaseComponent {
      */
     public async listBackupFiles(): Promise<void> {
         // Set Submission State
-        this.submitting = true;
+        this.filesDownloaded = false;
 
         try {
-            // Retrieve all the files
-            let files: string[] = await this._file.listDatabaseBackups();
-
             // Reset the current files
             this.files = [];
 
-            // Build the Files Object
+            // Retrieve all the files
+            let finalFiles: IDownloadedBackupFile[] = []
+            let files: IDownloadedFile[] = await this._file.listDatabaseBackups();
+
+            // Build the Final Files Object
             for (let f of files) {
-                this.files.push({
-                    name: f,
-                    creation: Number(f.split('.')[0]),
-                    size: await this._file.getDatabaseBackupFileSize(f)
-                });
+                finalFiles.push({creation: Number(f.name.split('.')[0]), ...f});
             }
 
             // Sort them in descending order
-            this.files.sort((a, b) => (b.creation > a.creation) ? 1 : -1);
+            finalFiles.sort((a, b) => (b.creation > a.creation) ? 1 : -1);
+
+            // Populate the local list
+            this.files = finalFiles;
         } catch (e) { this._snackbar.error(e) }
 
         // Set Submission State
-        this.submitting = false;
+        this.filesDownloaded = true;
     }
 
 
@@ -131,7 +139,7 @@ export class DatabaseComponent implements OnInit, IDatabaseComponent {
                     this.submitting = true;
                     try {
                         // Retrieve the url and open it in a new tab
-                        const url: string = await this._file.downloadDatabaseBackup(name);
+                        const url: string = await this._file.getDatabaseBackupDownloadURL(name);
                         this._nav.openUrl(url);
                     } catch(e) { this._snackbar.error(e) }
 
