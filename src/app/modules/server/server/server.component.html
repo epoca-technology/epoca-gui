@@ -103,6 +103,12 @@
                                         </div>
                                         <div [ngClass]="{'error-color': refreshError || environmentError}" 
                                             fxLayout="row">
+                                            <p [ngClass]="{'light-text': !refreshError && !environmentError}" class="ts-m">Server Time</p>
+                                            <span fxFlex></span>
+                                            <p class="ts-m">{{serverData.resources.serverTime | date: 'medium'}}</p>
+                                        </div>
+                                        <div [ngClass]="{'error-color': refreshError || environmentError}" 
+                                            fxLayout="row">
                                             <p [ngClass]="{'light-text': !refreshError && !environmentError}" class="ts-m">Last Update</p>
                                             <span fxFlex></span>
                                             <p class="ts-m">{{serverData.resources.lastResourceScan | date: 'medium'}}</p>
@@ -263,17 +269,17 @@
                                             <div fxLayout="row" class="row">
                                                 <p>Size</p>
                                                 <span fxFlex></span>
-                                                <p>{{fs.size}} GB</p>
+                                                <p>{{fs.size | filesize}}</p>
                                             </div>
                                             <div fxLayout="row" class="row">
                                                 <p>Used ({{fs.usedPercent}}%)</p>
                                                 <span fxFlex></span>
-                                                <p>{{fs.used}} GB</p>
+                                                <p>{{fs.used | filesize}}</p>
                                             </div>
                                             <div fxLayout="row" class="row">
                                                 <p>Available</p>
                                                 <span fxFlex></span>
-                                                <p>{{fs.available}} GB</p>
+                                                <p>{{fs.available | filesize}}</p>
                                             </div>
                                             <div *ngIf="!last" class="divider"></div>
                                         </div>
@@ -284,19 +290,19 @@
                                         <div fxLayout="row" class="row">
                                             <p>Total</p>
                                             <span fxFlex></span>
-                                            <p>{{serverData.resources.memory.total}} GB</p>
+                                            <p>{{serverData.resources.memory.total | filesize}}</p>
                                         </div>
 
                                         <div fxLayout="row" class="row">
                                             <p>Free</p>
                                             <span fxFlex></span>
-                                            <p>{{serverData.resources.memory.free}} GB</p>
+                                            <p>{{serverData.resources.memory.free | filesize}}</p>
                                         </div>
 
                                         <div fxLayout="row" class="row">
                                             <p>Used ({{serverData.resources.memory.usedPercent}}%)</p>
                                             <span fxFlex></span>
-                                            <p>{{serverData.resources.memory.active}} GB</p>
+                                            <p>{{serverData.resources.memory.active | filesize}}</p>
                                         </div>
                                     </div>
 

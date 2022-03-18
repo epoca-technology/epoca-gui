@@ -14,7 +14,7 @@ RUN npm install
 # Bundle app source
 COPY . .
 
-# Initialize the Argument
+# Initialize the Environment Argument
 ARG NODE_ENV
 
 # Build the App

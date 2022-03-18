@@ -9,5 +9,6 @@ export interface IDatabaseComponent {
 
 export interface IBackupFile {
     creation: number,
-    name: string
+    name: string,
+    size: number
 }

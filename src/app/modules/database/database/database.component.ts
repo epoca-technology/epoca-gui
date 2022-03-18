@@ -87,12 +87,13 @@ export class DatabaseComponent implements OnInit, IDatabaseComponent {
             this.files = [];
 
             // Build the Files Object
-            files.forEach((f: string) => {
+            for (let f of files) {
                 this.files.push({
                     name: f,
-                    creation: Number(f.split('.')[0])
+                    creation: Number(f.split('.')[0]),
+                    size: await this._file.getDatabaseBackupFileSize(f)
                 });
-            });
+            }
 
             // Sort them in descending order
             this.files.sort((a, b) => (b.creation > a.creation) ? 1 : -1);

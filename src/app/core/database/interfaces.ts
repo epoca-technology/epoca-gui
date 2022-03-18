@@ -33,11 +33,11 @@ export interface IDatabaseManagementService {
 export interface IDatabaseSummary {
     name: string,
     version: string,
-    size: string,
+    size: number,
     port: number,
     tables: IDatabaseSummaryTable[]
 }
 export interface IDatabaseSummaryTable {
     name: string,
-    size: string
+    size: number
 }

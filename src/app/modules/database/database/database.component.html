@@ -42,7 +42,7 @@
                 <div fxLayout="row" fxLayoutAlign="start center">
                     <p>Total Size</p>
                     <span fxFlex></span>
-                    <p>{{summary.size}}</p>
+                    <p>{{summary.size | filesize}}</p>
                 </div>
 
                 <p class="align-center">{{summary.version}}</p>
@@ -68,7 +68,7 @@
                         <tbody>
                             <tr *ngFor="let t of tables">
                                 <td><p>{{t.name}}</p></td>
-                                <td class="align-right light-text"><p>{{t.size}}</p></td>
+                                <td><p class="align-right light-text ts-s">{{t.size | filesize}}</p></td>
                             </tr>
                         </tbody>
                     </table>
@@ -80,7 +80,7 @@
                         <tbody>
                             <tr *ngFor="let t of testTables">
                                 <td><p>{{t.name}}</p></td>
-                                <td><p class="align-right light-text">{{t.size}}</p></td>
+                                <td><p class="align-right light-text ts-s">{{t.size | filesize}}</p></td>
                             </tr>
                         </tbody>
                     </table>
@@ -108,19 +108,19 @@
                                 <p>{{file.creation | date: 'medium'}}</p>
                             </div>
                             <span fxFlex></span>
-                            <button mat-icon-button [matMenuTriggerFor]="menu" [disabled]="submitting">
-                                <mat-icon>more_vert</mat-icon>
-                              </button>
-                              <mat-menu #menu="matMenu">
-                                <button mat-menu-item (click)="_clipboard.copy(file.name)">
-                                  <mat-icon>content_copy</mat-icon>
-                                  <span>Copy Backup Name</span>
-                                </button>
-                                <button mat-menu-item (click)="downloadBackup(file.name)">
-                                  <mat-icon>file_download</mat-icon>
-                                  <span>Download Backup</span>
-                                </button>
-                              </mat-menu>
+                            <button mat-raised-button color="primary" [matMenuTriggerFor]="menu" [disabled]="submitting">
+                                {{file.size | filesize}}
+                            </button>
+                            <mat-menu #menu="matMenu">
+                            <button mat-menu-item (click)="_clipboard.copy(file.name)">
+                                <mat-icon>content_copy</mat-icon>
+                                <span>Copy Backup Name</span>
+                            </button>
+                            <button mat-menu-item (click)="downloadBackup(file.name)">
+                                <mat-icon>file_download</mat-icon>
+                                <span>Download Backup</span>
+                            </button>
+                            </mat-menu>
                         </div>
                         <div class="divider" *ngIf="!isLast"></div>
                     </div>

@@ -59,6 +59,7 @@ import { DisableControlDirective } from './directives/disable-control/disable-co
 // Pipes
 import { FilterPipe } from './pipes/filter/filter.pipe';
 import { SecondToFormatPipe } from './pipes/second-to-format/second-to-format.pipe';
+import { FilesizePipe } from './pipes/filesize/filesize.pipe';
 
 
 
@@ -88,6 +89,7 @@ import { MobileTabsComponent } from './components/mobile-tabs/mobile-tabs.compon
 		// Pipes
 		FilterPipe,
 		SecondToFormatPipe,
+        FilesizePipe,
 
         // Bottom Sheets
 		BottomSheetMenuComponent,
@@ -221,6 +223,7 @@ import { MobileTabsComponent } from './components/mobile-tabs/mobile-tabs.compon
 		// Pipes
 		FilterPipe,
 		SecondToFormatPipe,
+        FilesizePipe,
 		
 		// Shared Components
 		CandlestickChartComponent,
