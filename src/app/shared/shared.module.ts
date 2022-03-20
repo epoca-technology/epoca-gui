@@ -70,7 +70,6 @@ import { BottomSheetMenuComponent } from './components/bottom-sheet-menu';
 
 
 // Shared Components
-import { RecaptchaDialogComponent } from './components/recaptcha-dialog';
 import { ConfirmationDialogComponent } from './components/confirmation-dialog';
 import { CandlestickChartComponent, CandlestickDialogComponent } from './components/charts';
 import { RefreshButtonComponent } from './components/refresh-button/refresh-button.component';
@@ -95,7 +94,6 @@ import { MobileTabsComponent } from './components/mobile-tabs/mobile-tabs.compon
 		BottomSheetMenuComponent,
 		
 		// Shared Components
-        RecaptchaDialogComponent,
         ConfirmationDialogComponent,
         CandlestickChartComponent,
         CandlestickDialogComponent,

@@ -1,6 +1,7 @@
 export interface ICandlesticksComponent {
     refresh(): void,
-    updateConfig(): void 
+    updateConfig(): void,
+    displaySpreadsheets(): void
 }
 
 

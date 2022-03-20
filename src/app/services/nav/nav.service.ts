@@ -7,7 +7,6 @@ import {BehaviorSubject, Observable} from "rxjs";
 import {filter} from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import {AppService} from "../app";
-import {RecaptchaDialogComponent} from "../../shared/components/recaptcha-dialog";
 import {ConfirmationDialogComponent, IConfirmationDialogData} from "../../shared/components/confirmation-dialog";
 import {BottomSheetMenuComponent, IBottomSheetMenuItem} from "../../shared/components/bottom-sheet-menu";
 import {INavService, IRouteState, IRouteStateData} from "./interfaces";
@@ -136,20 +135,7 @@ export class NavService implements INavService {
 
 	
 	
-	
-	/*
-	* Opens the reCAPTCHA dialog.
-	* @returns MatDialogRef<any>
-	* */
-	public displayRecaptchaDialog(): MatDialogRef<any> {
-		return this.dialog.open(RecaptchaDialogComponent, {
-			disableClose: true,
-			hasBackdrop: this._app.layout.value != 'mobile', // Mobile optimization
-			panelClass: 'small-dialog'
-		});
-	}
-	
-	
+
 	
 	
 	

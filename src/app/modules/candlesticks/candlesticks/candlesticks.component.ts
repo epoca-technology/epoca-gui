@@ -5,6 +5,7 @@ import { AppService, ChartService, NavService, SnackbarService } from '../../../
 import * as moment from 'moment';
 import {MatDialog} from '@angular/material/dialog';
 import { CandlesticksConfigDialogComponent } from './candlesticks-config-dialog/candlesticks-config-dialog.component';
+import { CandlestickSpreadsheetsDialogComponent } from './candlestick-spreadsheets-dialog/candlestick-spreadsheets-dialog.component';
 
 
 @Component({
@@ -144,4 +145,27 @@ export class CandlesticksComponent implements OnInit, ICandlesticksComponent {
 		}
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+    /**
+     * Displays the candlestick spreadsheets dialog.
+     * @returns void
+     */
+    public displaySpreadsheets(): void {
+        this.dialog.open(CandlestickSpreadsheetsDialogComponent, {
+			disableClose: true,
+			hasBackdrop: this._app.layout.value != 'mobile', // Mobile optimization
+			panelClass: 'small-dialog'
+		})
+    }
 }

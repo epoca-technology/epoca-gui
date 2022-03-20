@@ -21,7 +21,8 @@ export class FileService implements IFileService{
     // Paths
     private readonly path: IPath = {
         dbBackups: 'db_backups',
-        forecastModels: ''
+        forecastModels: '',
+        candlestickSpreadsheets: 'candlestick_spreadsheets'
     }
 
     constructor() { }
@@ -37,32 +38,13 @@ export class FileService implements IFileService{
 
 
 
+
     /**
      * Retrieves a list of all the database backup files currently stored.
-     * @return Promise<IDownloadedFile[]>
+     * @returns Promise<IDownloadedFile[]>
      */
     public async listDatabaseBackups(): Promise<IDownloadedFile[]> {
-        // Init the list of items
-        let items: IDownloadedFile[] = [];
-
-        // Download all the files
-        const result: ListResult = await this.listAll(this.path.dbBackups);
-
-        // Populate the list if any files were found
-        if (result && result.items && result.items.length) {
-            // Iterate over each item and extract the name and the size
-            for (let item of result.items) {
-                items.push({
-                    name: item.name,
-                    size: await this.getFileSize(this.path.dbBackups, item.name)
-                });
-            }
-
-            // Return the final list
-            return items;
-        } else {
-            return []
-        }
+        return this.getDownloadedFiles(this.path.dbBackups);
     }
 
 
@@ -71,13 +53,10 @@ export class FileService implements IFileService{
     
 
 
-
-
-
     /**
      * Retrieves the download URL for a specific Database Backup.
      * @param backupName 
-     * @return Promise<string>
+     * @returns Promise<string>
      */
     public getDatabaseBackupDownloadURL(backupName: string): Promise<string> {
         return this.getDownloadURL(this.path.dbBackups, backupName);
@@ -86,13 +65,50 @@ export class FileService implements IFileService{
 
 
 
+
+
+    /* Forecast Models */
+    
+    // @TODO
+
+
+
+
+
+
+
+
+
+
+    /* Candlestick Spreadsheets */
+
+
+
+
+
+
+    /**
+     * Retrieves a list of all the spreadsheet files currently stored.
+     * @returns Promise<IDownloadedFile[]>
+     */
+    public async listCandlestickSpreadsheets(): Promise<IDownloadedFile[]> {
+        return this.getDownloadedFiles(this.path.candlestickSpreadsheets);
+    }
+
+
+
+
     
 
 
-
-
-
-
+    /**
+     * Retrieves the download URL for a specific Candlestick Spreadsheet.
+     * @param backupName 
+     * @returns Promise<string>
+     */
+    public getCandlestickSpreadsheetDownloadURL(fileName: string): Promise<string> {
+        return this.getDownloadURL(this.path.candlestickSpreadsheets, fileName);
+    }
 
 
 
@@ -125,6 +141,43 @@ export class FileService implements IFileService{
 
 
 
+
+
+
+
+
+
+    /**
+     * Retrieves a list of files stored in a path.
+     * @param path 
+     * @returns 
+     */
+    private async getDownloadedFiles(path: string): Promise<IDownloadedFile[]> {
+        // Init the list of items
+        let items: IDownloadedFile[] = [];
+
+        // Download all the files
+        const result: ListResult = await this.listAll(path);
+
+        // Populate the list if any files were found
+        if (result && result.items && result.items.length) {
+            // Iterate over each item and extract the name and the size
+            for (let item of result.items) {
+                items.push({
+                    name: item.name,
+                    size: await this.getFileSize(path, item.name),
+                    creation: Number(item.name.split('.')[0])
+                });
+            }
+
+            items.sort((a, b) => (b.creation > a.creation) ? 1 : -1);
+
+            // Return the final list
+            return items;
+        } else {
+            return []
+        }
+    }
 
 
 

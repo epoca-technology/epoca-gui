@@ -103,7 +103,7 @@
                 </div>
                 <div *ngIf="filesDownloaded" class="fadeIn">
                     <p *ngIf="!files.length" class="no-data-found">No data was found</p>
-                    <div *ngIf="files.length" class="backups-container">
+                    <div *ngIf="files.length" class="files-container">
                         <div *ngFor="let file of files; last as isLast">
                             <div class="row" fxLayout="row" fxLayoutAlign="start center">
                                 <div>
@@ -111,18 +111,18 @@
                                     <p>{{file.creation | date: 'medium'}}</p>
                                 </div>
                                 <span fxFlex></span>
-                                <button mat-raised-button color="primary" [matMenuTriggerFor]="menu" [disabled]="submitting">
+                                <button mat-raised-button color="primary" [matMenuTriggerFor]="menu" [disabled]="submitting" class="file-actions-button">
                                     {{file.size | filesize}}
                                 </button>
                                 <mat-menu #menu="matMenu">
-                                <button mat-menu-item (click)="_clipboard.copy(file.name)">
-                                    <mat-icon>content_copy</mat-icon>
-                                    <span>Copy Backup Name</span>
-                                </button>
-                                <button mat-menu-item (click)="downloadBackup(file.name)">
-                                    <mat-icon>file_download</mat-icon>
-                                    <span>Download Backup</span>
-                                </button>
+                                    <button mat-menu-item (click)="_clipboard.copy(file.name)">
+                                        <mat-icon>content_copy</mat-icon>
+                                        <span>Copy Backup Name</span>
+                                    </button>
+                                    <button mat-menu-item (click)="downloadBackup(file.name)">
+                                        <mat-icon>file_download</mat-icon>
+                                        <span>Download Backup</span>
+                                    </button>
                                 </mat-menu>
                             </div>
                             <div class="divider" *ngIf="!isLast"></div>

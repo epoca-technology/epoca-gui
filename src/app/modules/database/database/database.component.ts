@@ -8,7 +8,7 @@ import {
     IDownloadedFile,
 } from '../../../core';
 import { ClipboardService, NavService, SnackbarService } from '../../../services';
-import { IDatabaseComponent, IDownloadedBackupFile} from './interfaces';
+import { IDatabaseComponent} from './interfaces';
 
 @Component({
   selector: 'app-database',
@@ -25,7 +25,7 @@ export class DatabaseComponent implements OnInit, IDatabaseComponent {
     public testTablesVisible: boolean = false;
 
     // Files
-    public files: IDownloadedBackupFile[] = [];
+    public files: IDownloadedFile[] = [];
     public filesDownloaded: boolean = false;
 
     // Submission State
@@ -87,24 +87,9 @@ export class DatabaseComponent implements OnInit, IDatabaseComponent {
         // Set Submission State
         this.filesDownloaded = false;
 
+        // Download the files
         try {
-            // Reset the current files
-            this.files = [];
-
-            // Retrieve all the files
-            let finalFiles: IDownloadedBackupFile[] = []
-            let files: IDownloadedFile[] = await this._file.listDatabaseBackups();
-
-            // Build the Final Files Object
-            for (let f of files) {
-                finalFiles.push({creation: Number(f.name.split('.')[0]), ...f});
-            }
-
-            // Sort them in descending order
-            finalFiles.sort((a, b) => (b.creation > a.creation) ? 1 : -1);
-
-            // Populate the local list
-            this.files = finalFiles;
+            this.files = await this._file.listDatabaseBackups();
         } catch (e) { this._snackbar.error(e) }
 
         // Set Submission State

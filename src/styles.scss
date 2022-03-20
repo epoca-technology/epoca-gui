@@ -659,6 +659,19 @@ form .mat-checkbox-inner-container{
 
 
 
+/* Files Container */
+.files-container { 
+    margin-top:15px;
+	.row {
+		p {margin:0;}
+		p:last-child {font-size:14px; color: var(--light-text-color)}
+	}
+	.divider { margin: 15px 0 15px 0;}
+	button {padding: 2px 2px 2px 2px!important;font-size:13px!important;}
+}
+
+
+
 
 /* Responsiveness */
 
