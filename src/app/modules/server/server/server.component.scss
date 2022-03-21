@@ -26,20 +26,18 @@
 
 .section {
     padding:15px;
+    h1 {text-align: center;}
+
+    .row {
+        margin:15px 0 15px 0;
+
+        p:first-child { color:var(--light-text-color)}
+        p:last-child { text-overflow: ellipsis;overflow: hidden;white-space: nowrap; }
+    }
+    .row:last-child {
+        margin:15px 0 0 0;
+    }
 }
-
-.section h1 {text-align: center;}
-
-.row {
-    margin:15px 0 15px 0;
-}
-.row:last-child {
-    margin:15px 0 0 0;
-}
-.row p:first-child { color:var(--light-text-color)}
-.row p:last-child { text-overflow: ellipsis;overflow: hidden;white-space: nowrap; }
-
-
 
 .running-services-table {
     margin: 15px 0 0 0;
@@ -80,7 +78,68 @@
 
 
 
+.hidden-refresher { display: none;}
 
+
+
+
+
+
+// API Error Slider
+.api-error-slider {
+    margin: 25px 0 0 0;
+    text-align: center;
+    p { color: var(--error-color)}
+    p:hover { opacity:0.5}
+}
+
+
+
+
+// API Errors List
+.api-errors {
+    padding:15px;
+
+    p {
+        margin:0;
+    }
+    
+    .divider {
+        margin:20px 0 20px 0;
+    }
+}
+
+
+
+
+
+// Database
+.database {
+    padding:15px;
+
+    .card-container {
+        width: 100%;
+
+        .summary-container {
+            div {
+                margin:15px 0 15px 0;
+                p:first-child {font-size:14px;color: var(--light-text-color)}
+            }
+        }
+
+
+        .tables-container {
+            width: 100%;
+            overflow: auto;
+            p {margin:0}
+        }
+
+        .loader {margin-top:100px;}
+    }
+
+
+
+}
 
 
 
@@ -90,6 +149,10 @@
 /* mobile: sm & xs */
 @media only screen and (max-width: 959px) {
     .space-badges .square-badge {margin: 5px}
+
+    .card-container { margin: 20px 0 20px 0 }
+    .card-container:first-child { margin: 0 0 20px 0 }
+    .card-container:last-child { margin: 20px 0 0 0 }
 }
 
 

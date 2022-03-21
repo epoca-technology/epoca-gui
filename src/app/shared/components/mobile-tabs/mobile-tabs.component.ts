@@ -54,7 +54,7 @@ export class MobileTabsComponent implements OnInit, OnDestroy, IMobileTabsCompon
 				this._nav.forecastModels();
 				break;
 			case 4:
-				this._nav.apiErrors();
+				this._nav.server();
 				break;
 		}
 	}
@@ -92,7 +92,7 @@ export class MobileTabsComponent implements OnInit, OnDestroy, IMobileTabsCompon
 			case 'forecastModels':
 				this.activeTab = 3;
 				break;
-            case 'apiErrors':
+            case 'server':
                 this.activeTab = 4;
                 break;
 			default:

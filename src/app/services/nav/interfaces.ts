@@ -17,10 +17,8 @@ export interface INavService {
 	tradingSimulations(): Promise<boolean>,
 	forecastModels(): Promise<boolean>,
 	candlesticks(): Promise<boolean>,
-    apiErrors(): Promise<boolean>,
     server(): Promise<boolean>,
     users(): Promise<boolean>,
-    database(): Promise<boolean>,
     guiVersion(version?: string): Promise<boolean>,
     ipBlacklist(): Promise<boolean>,
 	

@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DatabaseComponent } from './database.component';
+import { CandlestickBodyComponent } from './candlestick-body.component';
 
-describe('DatabaseComponent', () => {
-  let component: DatabaseComponent;
-  let fixture: ComponentFixture<DatabaseComponent>;
+describe('CandlestickBodyComponent', () => {
+  let component: CandlestickBodyComponent;
+  let fixture: ComponentFixture<CandlestickBodyComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ DatabaseComponent ]
+      declarations: [ CandlestickBodyComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DatabaseComponent);
+    fixture = TestBed.createComponent(CandlestickBodyComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -16,10 +16,15 @@
         <mat-list>
             <mat-list-item *ngFor="let item of sections">
                 <button mat-button class="left-icon-button" 
-                        (click)="activateSection(item)" [disabled]="activeSection.id == item.id">
+                        [ngClass]="{'error-color': serverIssues.issues && item.id == 'monitoring'}"
+                        (click)="activateSection(item)" 
+                        [disabled]="activeSection.id == item.id">
                     <mat-icon *ngIf="item.svgIcon" [svgIcon]="item.svgIcon"></mat-icon>
                     <mat-icon *ngIf="item.icon">{{item.icon}}</mat-icon>
-                    <span>{{item.name}}</span>
+                    <span   [matBadge]="apiErrors.length"
+                            matBadgeColor="warn"
+                            matBadgeOverlap="false"
+                            [matBadgeHidden]="item.id != 'api-errors' || !apiErrors.length">{{item.name}}</span>
                 </button>
             </mat-list-item>
         </mat-list>
@@ -28,16 +33,38 @@
 
     <!-- Section Content -->
     <mat-drawer-content>
-        <div>
+        <div [ngClass]="{'section-content': layout == 'mobile'}">
             <!-- Section Header -->
             <mat-toolbar class="secondary-header">
                 <div fxLayout="row" fxLayoutAlign="center center">
-                    <button mat-icon-button class="show-on-mobile" (click)="_nav.dashboard()"><mat-icon>arrow_back</mat-icon></button>
                     <button mat-icon-button (click)="serverSidenav?.toggle()" class="show-on-mobile"><mat-icon>menu</mat-icon></button>
                     <span class="truncate">{{activeSection.name}}</span>
                     <span fxFlex></span>
-                    <app-refresh-button [disabled]="!loaded || submitting" *ngIf="activeSection.id == 'monitoring'" [intervalSeconds]="120" (refresh)="refresh()"></app-refresh-button>
-                    <button mat-icon-button (click)="updateConfig()" [disabled]="submitting"  *ngIf="activeSection.id == 'monitoring'" matTooltip="Alarms Configuration"><mat-icon>edit_notifications</mat-icon></button>
+
+                    <!-- Refreshers-->
+                    <app-refresh-button [ngClass]="{'hidden-refresher': activeSection.id != 'api-errors'}"
+                                        [disabled]="!loaded || submitting" 
+                                        [intervalSeconds]="20" 
+                                        (refresh)="refreshAPIErrors()"></app-refresh-button>
+                    <app-refresh-button [ngClass]="{'hidden-refresher': activeSection.id != 'monitoring'}" 
+                                        [disabled]="!loaded || submitting" 
+                                        [intervalSeconds]="120" 
+                                        (refresh)="refreshServerResources()"></app-refresh-button>
+                    
+                    <!-- Server Actions -->
+                    <button mat-icon-button 
+                            (click)="updateConfig()" 
+                            [disabled]="submitting"  
+                            matTooltip="Server Alarms Configuration"
+                            *ngIf="activeSection.id == 'monitoring'"><mat-icon>edit_notifications</mat-icon></button>
+
+
+                    <!-- API Errors Actions -->
+                    <button mat-icon-button 
+                            (click)="deleteAll()" 
+                            [disabled]="submitting"  
+                            matTooltip="Delete API Errors"
+                            *ngIf="activeSection.id == 'api-errors'"><mat-icon>delete</mat-icon></button>
                 </div>
             </mat-toolbar>
 
@@ -50,11 +77,16 @@
                         <mat-list>
                             <div mat-subheader>Server</div>
                             <mat-list-item *ngFor="let item of sections">
-                                <button mat-button class="left-icon-button" 
+                                <button mat-button 
+                                        [ngClass]="{'error-color': serverIssues.issues && item.id == 'monitoring'}"
+                                        class="left-icon-button" 
                                         (click)="activateSection(item)" [disabled]="activeSection.id == item.id">
                                     <mat-icon *ngIf="item.svgIcon" [svgIcon]="item.svgIcon"></mat-icon>
                                     <mat-icon *ngIf="item.icon">{{item.icon}}</mat-icon>
-                                    <span>{{item.name}}</span>
+                                    <span   [matBadge]="apiErrors.length"
+                                            matBadgeColor="warn"
+                                            matBadgeOverlap="false"
+                                            [matBadgeHidden]="item.id != 'api-errors' || !apiErrors.length">{{item.name}}</span>
                                 </button>
                             </mat-list-item>
                         </mat-list>
@@ -65,6 +97,12 @@
                             <div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div>
                         </div>
                         <div *ngIf="loaded && serverData" class="fadeIn">
+                            <!-- API Error Slider -->
+                            <div    *ngIf="activeSection.id == 'monitoring' && apiErrors.length" 
+                                    class="api-error-slider clickable" 
+                                    (click)="activateSectionByID('api-errors')">
+                                <p class="fadeIn"><strong>{{apiErrors[activeErrorIndex].o}}:</strong> {{apiErrors[activeErrorIndex].e}}</p>
+                            </div>
 
                             <!-- Monitoring -->
                             <div *ngIf="activeSection.id == 'monitoring'" 
@@ -74,14 +112,11 @@
                                     <!-- Server -->
                                     <div class="desktop-card" [ngClass]="{'server-issue': serverIssues.issues}">
                                         <div fxLayout="row" fxLayoutAlign="center start">
-                                            <div class="header">
-                                                <h3>Server</h3>
-                                                <p matTooltip="Server Time" class="light-text ts-s">{{serverData.resources.serverTime | date: 'medium'}}</p>
-                                            </div>
+                                            <h3>Server</h3>
                                             <span fxFlex></span>
                                             <div class="square-badge" matTooltip="Uptime">{{serverData.resources.uptime}} hours</div>
                                         </div>
-                                        <div class="margin-top" fxLayout="row">
+                                        <div fxLayout="row">
                                             <p class="light-text ts-m">URL</p>
                                             <span fxFlex></span>
                                             <p class="ts-m">{{_api.url}}</p>
@@ -97,6 +132,11 @@
                                             <p class="ts-m">{{serverData.version}}</p>
                                         </div>
                                         <div fxLayout="row">
+                                            <p class="light-text ts-m">Server Time</p>
+                                            <span fxFlex></span>
+                                            <p class="ts-m">{{serverData.resources.serverTime | date: 'medium'}}</p>
+                                        </div>
+                                        <div fxLayout="row">
                                             <p matTooltip="Last Resource Update" class="light-text ts-m">Last Update</p>
                                             <span fxFlex></span>
                                             <p matTooltip="Last Resource Update" class="ts-m">{{serverData.resources.lastResourceScan | date: 'medium'}}</p>
@@ -104,19 +144,31 @@
 
                                         <!-- Environment Error -->
                                         <p class="server-error" *ngIf="serverIssues.environmentError">
-                                            <mat-icon>bug_report</mat-icon> The environment.production property in the GUI is different to the one in the server
+                                            <mat-icon>error</mat-icon> The environment.production property in the GUI is different to the one in the server
                                         </p>
                                         
                                         <!-- Time Error-->
                                         <p class="server-error" *ngIf="serverIssues.timeError">
-                                            <mat-icon>bug_report</mat-icon> The time difference between the client and the server is greater 
-                                            than 2 minutes. Make sure the issue is in the client and not the server as Plutus relies 
+                                            <mat-icon>error</mat-icon> The time difference between the client and the server is greater 
+                                            than 3 minutes. Make sure the issue is in the client and not the server as Plutus relies 
                                             on time accuracy.
+                                        </p>
+                                        
+                                        <!-- Resource Update Error-->
+                                        <p class="server-error" *ngIf="serverIssues.resourceUpdateError">
+                                            <mat-icon>error</mat-icon> The last server resource update was performed over 10 minutes ago 
+                                            eventhough the interval is set to happen every 3 minutes on the Core API.
+                                        </p>
+                                        
+                                        <!-- Hardware Error-->
+                                        <p class="server-error" *ngIf="serverIssues.hardwareError">
+                                            <mat-icon>error</mat-icon> One or more hardware modules are going through critial loads or 
+                                            high temperatures.
                                         </p>
 
                                         <!-- Server Communication Error -->
                                         <p class="server-error" *ngIf="serverIssues.serverCommunicationError">
-                                            <mat-icon>bug_report</mat-icon> Server Communication Error: {{serverIssues.serverCommunicationError}}
+                                            <mat-icon>error</mat-icon> Server Communication Error: {{serverIssues.serverCommunicationError}}
                                         </p>
                                     </div>
                                     <div class="divider"></div>
@@ -238,7 +290,167 @@
 
 
 
-                            <!-- Information -->
+
+
+                            <!-- API Errors-->
+                            <div *ngIf="activeSection.id == 'api-errors'" class="api-errors">
+                                <div fxLayout="row" fxLayoutAlign="center center">
+                                    <div fxFlex fxFlex.md="80" fxFlex.lg="70" fxFlex.xl="60">
+                                        <p *ngIf="!apiErrors.length" class="no-data-found">No data was found</p>
+                                        <div *ngFor="let r of apiErrors; last as isLast">
+                                            <div class="desktop-card fake-button" role="button" (click)="displayAPIErrorDialog(r)">
+                                                <!-- Heading -->
+                                                <div fxLayout="row" fxLayoutAlign="start center">
+                                                    <p><strong>{{r.o}}</strong></p>
+                                                    <p *ngIf="r.uid || r.ip" class="light-text ts-m show-on-desktop">&nbsp;{{r.uid || r.ip}}</p>
+                                                    <span fxFlex></span>
+                                                    <p class="show-on-desktop ts-s">{{r.c | date: 'medium'}}</p>
+                                                </div>
+                                    
+                                                <!-- Error -->
+                                                <p class="ts-m">{{r.e}}</p>
+                        
+                                                <!-- Mobile Date -->
+                                                <p class="show-on-mobile ts-s light-text">{{r.c | date: 'medium'}}</p>
+                                            </div>
+                                            <div *ngIf="!isLast && layout == 'mobile'" class="divider"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+
+                            <!-- Database -->
+                            <div *ngIf="activeSection.id == 'database' && summary" class="database">
+                                <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" fxLayoutAlign="center start">
+
+                                    <!-- Summary -->
+                                    <div fxFlex fxFlex.md="32" fxFlex.lg="32" fxFlex.xl="32" class="card-container">
+                                        <div class="desktop-card summary-container">
+                                            <h2>Summary</h2>
+                            
+                                            <div fxLayout="row" fxLayoutAlign="start center">
+                                                <p>URL</p>
+                                                <span fxFlex></span>
+                                                <p>{{_api.url}}</p>
+                                            </div>
+                            
+                                            <div fxLayout="row" fxLayoutAlign="start center">
+                                                <p>Name</p>
+                                                <span fxFlex></span>
+                                                <p>{{summary.name}}</p>
+                                            </div>
+                            
+                                            <div fxLayout="row" fxLayoutAlign="start center">
+                                                <p>Port</p>
+                                                <span fxFlex></span>
+                                                <p>{{summary.port}}</p>
+                                            </div>
+                            
+                                            <div fxLayout="row" fxLayoutAlign="start center">
+                                                <p>Total Size</p>
+                                                <span fxFlex></span>
+                                                <p>{{summary.size | filesize}}</p>
+                                            </div>
+                            
+                                            <p class="align-center">{{summary.version}}</p>
+                                        </div>
+                                    </div>
+                            
+                                    <span fxFlex></span>
+                            
+                                    <!-- Tables -->
+                                    <div fxFlex fxFlex.md="32" fxFlex.lg="32" fxFlex.xl="32" class="card-container">
+                                        <div class="desktop-card">
+                                            <div fxLayout="row" fxLayoutAlign="start start">
+                                                <h2>{{testTablesVisible ? 'Test Tables': 'Tables'}}</h2>
+                                                <span fxFlex></span>
+                                                <button mat-button [disabled]="submitting" (click)="testTablesVisible = !testTablesVisible">
+                                                    {{testTablesVisible ? 'Tables': 'Test Tables'}}
+                                                </button>
+                                            </div>
+                            
+                                            <!-- Tables -->
+                                            <div *ngIf="!testTablesVisible" class="fadeIn tables-container">
+                                                <table class="highlight">
+                                                    <tbody>
+                                                        <tr *ngFor="let t of tables">
+                                                            <td><p>{{t.name}}</p></td>
+                                                            <td><p class="align-right light-text ts-s">{{t.size | filesize}}</p></td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                            
+                                            <!-- Test Tables -->
+                                            <div *ngIf="testTablesVisible" class="fadeIn tables-container">
+                                                <table class="highlight">
+                                                    <tbody>
+                                                        <tr *ngFor="let t of testTables">
+                                                            <td><p>{{t.name}}</p></td>
+                                                            <td><p class="align-right light-text ts-s">{{t.size | filesize}}</p></td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                            
+                                    <span fxFlex></span>
+                            
+                                    <!-- Backups -->
+                                    <div fxFlex fxFlex.md="32" fxFlex.lg="32" fxFlex.xl="32" class="card-container">
+                                        <div class="desktop-card">
+                                            <div fxLayout="row" fxLayoutAlign="start start">
+                                                <h2>Backups</h2>
+                                                <span fxFlex></span>
+                                                <app-refresh-button [disabled]="submitting || !filesDownloaded" (refresh)="listBackupFiles()"></app-refresh-button>
+                                            </div>
+                                            <div *ngIf="!filesDownloaded" class="loader">
+                                                <div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div>
+                                            </div>
+                                            <div *ngIf="filesDownloaded" class="fadeIn">
+                                                <p *ngIf="!files.length" class="no-data-found">No data was found</p>
+                                                <div *ngIf="files.length" class="files-container">
+                                                    <div *ngFor="let file of files; last as isLast">
+                                                        <div class="row" fxLayout="row" fxLayoutAlign="start center">
+                                                            <div>
+                                                                <p>{{file.name}}</p>
+                                                                <p>{{file.creation | date: 'medium'}}</p>
+                                                            </div>
+                                                            <span fxFlex></span>
+                                                            <button mat-raised-button color="primary" [matMenuTriggerFor]="menu" [disabled]="submitting" class="file-actions-button">
+                                                                {{file.size | filesize}}
+                                                            </button>
+                                                            <mat-menu #menu="matMenu">
+                                                                <button mat-menu-item (click)="_clipboard.copy(file.name)">
+                                                                    <mat-icon>content_copy</mat-icon>
+                                                                    <span>Copy Backup Name</span>
+                                                                </button>
+                                                                <button mat-menu-item (click)="downloadBackup(file.name)">
+                                                                    <mat-icon>file_download</mat-icon>
+                                                                    <span>Download Backup</span>
+                                                                </button>
+                                                            </mat-menu>
+                                                        </div>
+                                                        <div class="divider" *ngIf="!isLast"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+
+
+                            <!-- Server Information Sections -->
                             <div *ngIf="activeSection.id == 'file-systems' || 
                                         activeSection.id == 'memory' || 
                                         activeSection.id == 'cpu' || 
@@ -601,6 +813,10 @@
                     </div>
                 </div>
             </div>
+
+
+            <!-- Mobile Tabs -->
+            <app-mobile-tabs *ngIf="layout == 'mobile'"></app-mobile-tabs>
         </div>
     </mat-drawer-content>
 </mat-drawer-container>

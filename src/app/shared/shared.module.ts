@@ -71,7 +71,11 @@ import { BottomSheetMenuComponent } from './components/bottom-sheet-menu';
 
 // Shared Components
 import { ConfirmationDialogComponent } from './components/confirmation-dialog';
-import { CandlestickChartComponent, CandlestickDialogComponent } from './components/charts';
+import { 
+	CandlestickChartComponent, 
+	CandlestickDialogComponent,
+	CandlestickBodyComponent
+} from './components/charts';
 import { RefreshButtonComponent } from './components/refresh-button/refresh-button.component';
 import { MobileTabsComponent } from './components/mobile-tabs/mobile-tabs.component';
 
@@ -97,6 +101,7 @@ import { MobileTabsComponent } from './components/mobile-tabs/mobile-tabs.compon
         ConfirmationDialogComponent,
         CandlestickChartComponent,
         CandlestickDialogComponent,
+        CandlestickBodyComponent,
         RefreshButtonComponent,
         MobileTabsComponent,
 	],
@@ -225,6 +230,7 @@ import { MobileTabsComponent } from './components/mobile-tabs/mobile-tabs.compon
 		
 		// Shared Components
 		CandlestickChartComponent,
+        CandlestickBodyComponent,
         RefreshButtonComponent,
         MobileTabsComponent,
 	]

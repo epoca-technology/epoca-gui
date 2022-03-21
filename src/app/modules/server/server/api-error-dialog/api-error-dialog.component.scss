@@ -1,0 +1,12 @@
+.record-container {
+    p { margin: 0;}
+
+    .row { margin: 15px 0 15px 0;}
+    .row:first-child { margin: 0 0 15px 0;}
+    .row:last-child { margin: 15px 0 0 0;}
+
+    .params-container { 
+        max-width: 100%;
+        overflow-x: auto;
+    }
+}

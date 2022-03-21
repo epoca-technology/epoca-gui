@@ -65,10 +65,8 @@ export class NavService implements INavService {
 	public tradingSimulations(): Promise<boolean> { return this.navigate('tradingSimulations') }
 	public forecastModels(): Promise<boolean> { return this.navigate('forecastModels') }
 	public candlesticks(): Promise<boolean> { return this.navigate('candlesticks') }
-	public apiErrors(): Promise<boolean> { return this.navigate('apiErrors') }
 	public server(): Promise<boolean> { return this.navigate('server') }
 	public users(): Promise<boolean> { return this.navigate('users') }
-	public database(): Promise<boolean> { return this.navigate('database') }
 	public guiVersion(version?: string): Promise<boolean> { 
         if (typeof version == "string") {
             return this.navigate(`guiVersion/${version}`);

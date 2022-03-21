@@ -45,12 +45,6 @@ const routes: Routes = [
 		loadChildren: () => import('./modules/candlesticks/candlesticks.module').then(m => m.CandlesticksModule),
 	},
 
-	// Api Errors
-	{
-		path: 'apiErrors',
-		loadChildren: () => import('./modules/api-errors/api-errors.module').then(m => m.ApiErrorsModule),
-	},
-
 	// Server
 	{
 		path: 'server',
@@ -61,12 +55,6 @@ const routes: Routes = [
 	{
 		path: 'users',
 		loadChildren: () => import('./modules/users/users.module').then(m => m.UsersModule),
-	},
-
-	// Database
-	{
-		path: 'database',
-		loadChildren: () => import('./modules/database/database.module').then(m => m.DatabaseModule),
 	},
 
 	// GUI Version

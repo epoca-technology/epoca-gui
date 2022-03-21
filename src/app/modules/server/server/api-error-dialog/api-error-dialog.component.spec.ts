@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ApiErrorsComponent } from './api-errors.component';
+import { ApiErrorDialogComponent } from './api-error-dialog.component';
 
-describe('ApiErrorsComponent', () => {
-  let component: ApiErrorsComponent;
-  let fixture: ComponentFixture<ApiErrorsComponent>;
+describe('ApiErrorDialogComponent', () => {
+  let component: ApiErrorDialogComponent;
+  let fixture: ComponentFixture<ApiErrorDialogComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ApiErrorsComponent ]
+      declarations: [ ApiErrorDialogComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ApiErrorsComponent);
+    fixture = TestBed.createComponent(ApiErrorDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

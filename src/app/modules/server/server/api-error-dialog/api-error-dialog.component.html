@@ -1,0 +1,57 @@
+<mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <button mat-icon-button [disabled]="submitting" class="show-on-mobile" (click)="close()"><mat-icon>arrow_back</mat-icon></button>
+        <span>API Error</span>
+        <span fxFlex></span>
+        <button *ngIf="error.ip" mat-icon-button [disabled]="submitting" (click)="blacklistIP(error.ip)"><mat-icon>vpn_lock</mat-icon></button>
+        <button mat-icon-button [disabled]="submitting" (click)="downloadError()"><mat-icon>file_download</mat-icon></button>
+        <button mat-icon-button [disabled]="submitting" class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
+    </div>
+</mat-toolbar>
+<div mat-dialog-content>
+    <!-- Container -->
+    <div class="fadeIn padding record-container">
+        <div class="row">
+            <p class="light-text ts-m">Creation</p>
+            <p>{{error.c | date: 'medium'}}</p>
+        </div>
+
+        <div class="row">
+            <p class="light-text ts-m">Origin</p>
+            <p>{{error.o}}</p>
+        </div>
+
+        <div class="row">
+            <p class="light-text ts-m">Error</p>
+            <p>{{error.e}}</p>
+        </div>
+
+        <div fxLayout="row" fxLayoutAlign="start center" *ngIf="error.uid" class="row">
+            <div>
+                <p class="light-text ts-m">User ID</p>
+                <p>{{error.uid}}</p>
+            </div>
+            <span fxFlex></span>
+            <button mat-icon-button (click)="_clipboard.copy(error.uid)"><mat-icon>content_copy</mat-icon></button>
+        </div>
+
+        <div fxLayout="row" fxLayoutAlign="start center" *ngIf="error.ip" class="row">
+            <div>
+                <p class="light-text ts-m">IP</p>
+                <p>{{error.ip}}</p>
+            </div>
+            <span fxFlex></span>
+            <button mat-icon-button (click)="_clipboard.copy(error.ip)"><mat-icon>content_copy</mat-icon></button>
+        </div>
+
+        <div class="row" *ngIf="error.p">
+            <p class="light-text ts-m">Params</p>
+            <div class="params-container">
+                <pre>{{error.p | json}}</pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- Download Link -->
+    <a style="visibility: hidden" [href]="jsonLink.url" [download]="jsonLink.name" id="downloadLink"></a>
+</div>

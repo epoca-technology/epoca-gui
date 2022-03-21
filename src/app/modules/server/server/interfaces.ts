@@ -1,15 +1,29 @@
+import { IApiError } from "../../../core";
+
 export interface IServerComponent {
+    // Navigation
     activateSectionByID(id: ISectionID): void,
     activateSection(section: ISection): Promise<void>,
-    refresh(): Promise<void>,
-    updateConfig(): void
+
+    // Server
+    refreshServerResources(): Promise<void>,
+    updateConfig(): void,
+
+    // API Errors
+    refreshAPIErrors(): Promise<void>,
+    deleteAll(): void,
+    displayAPIErrorDialog(error: IApiError): void,
+
+    // Database
+    listBackupFiles(): Promise<void>,
+    downloadBackup(name: string): void,
 }
 
 
 
 
 
-export type ISectionID = 'monitoring'|'file-systems'|'memory'|'cpu'|'gpu'|'os'|
+export type ISectionID = 'monitoring'|'api-errors'|'database'|'file-systems'|'memory'|'cpu'|'gpu'|'os'|
 'software-versions'|'system'|'baseboard'|'bios'|'network-interfaces';
 
 
@@ -45,5 +59,7 @@ export interface IServerIssues {
     issues: boolean,
     environmentError: boolean,
     timeError: boolean,
+    resourceUpdateError: boolean,
+    hardwareError: boolean,
     serverCommunicationError: string|undefined
 }
