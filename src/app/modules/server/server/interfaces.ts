@@ -61,5 +61,6 @@ export interface IServerIssues {
     timeError: boolean,
     resourceUpdateError: boolean,
     hardwareError: boolean,
-    serverCommunicationError: string|undefined
+    resourcesCommunicationError: string|undefined,
+    errorsCommunicationError: string|undefined,
 }

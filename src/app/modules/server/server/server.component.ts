@@ -65,7 +65,8 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
         timeError: true,
         resourceUpdateError: true,
         hardwareError: true,
-        serverCommunicationError: undefined
+        resourcesCommunicationError: undefined,
+        errorsCommunicationError: undefined
     }
 
     // Badge States
@@ -242,11 +243,11 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
         if (this.serverData) {
             try {
                 this.serverData.resources = await this._server.getServerResources();
-                this.serverIssues.serverCommunicationError = undefined;
+                this.serverIssues.resourcesCommunicationError = undefined;
             } catch (e) { 
                 const err: string = this._utils.getErrorMessage(e);
                 this._snackbar.error(err);
-                this.serverIssues.serverCommunicationError = err;
+                this.serverIssues.resourcesCommunicationError = err;
             }
         } else {
             try { this.serverData = await this._server.getServerData() } catch (e) { this._snackbar.error(e)}
@@ -297,7 +298,8 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
                 this.serverIssues.timeError ||
                 this.serverIssues.resourceUpdateError ||
                 this.serverIssues.hardwareError ||
-                typeof this.serverIssues.serverCommunicationError == "string";
+                typeof this.serverIssues.resourcesCommunicationError == "string" ||
+                typeof this.serverIssues.errorsCommunicationError == "string";
 
             // Play the outage if there has been an issue
             if (this.serverIssues.issues) this.playOutageAudio();
@@ -489,11 +491,11 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
      public async refreshAPIErrors(): Promise<void> {
         try {
             this.apiErrors = await this._apiError.getAll();
-            this.serverIssues.serverCommunicationError = undefined;
+            this.serverIssues.errorsCommunicationError = undefined;
         } catch (e) { 
             const err: string = this._utils.getErrorMessage(e);
             this._snackbar.error(err);
-            this.serverIssues.serverCommunicationError = err;
+            this.serverIssues.errorsCommunicationError = err;
         }
 
         // Trigger the server check and handle errors if any

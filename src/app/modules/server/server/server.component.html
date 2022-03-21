@@ -166,9 +166,14 @@
                                             high temperatures.
                                         </p>
 
-                                        <!-- Server Communication Error -->
-                                        <p class="server-error" *ngIf="serverIssues.serverCommunicationError">
-                                            <mat-icon>error</mat-icon> Server Communication Error: {{serverIssues.serverCommunicationError}}
+                                        <!-- Resources Communication Error -->
+                                        <p class="server-error" *ngIf="serverIssues.resourcesCommunicationError">
+                                            <mat-icon>error</mat-icon> Resources Communication: {{serverIssues.resourcesCommunicationError}}
+                                        </p>
+
+                                        <!-- API Errors Communication Error -->
+                                        <p class="server-error" *ngIf="serverIssues.errorsCommunicationError">
+                                            <mat-icon>error</mat-icon> API Errors Communication: {{serverIssues.errorsCommunicationError}}
                                         </p>
                                     </div>
                                     <div class="divider"></div>
