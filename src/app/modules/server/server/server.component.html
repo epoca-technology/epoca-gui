@@ -132,6 +132,14 @@
                                             <p class="ts-m">{{serverData.version}}</p>
                                         </div>
                                         <div fxLayout="row">
+                                            <p class="light-text ts-m">Candlesticks</p>
+                                            <span fxFlex></span>
+                                            <p class="ts-m" 
+                                                [ngClass]="{'success-color': serverData.resources.candlesticksSynced}">
+                                                {{serverData.resources.candlesticksSynced ? 'Synced': 'Out of sync'}}
+                                            </p>
+                                        </div>
+                                        <div fxLayout="row">
                                             <p class="light-text ts-m">Server Time</p>
                                             <span fxFlex></span>
                                             <p class="ts-m">{{serverData.resources.serverTime | date: 'medium'}}</p>
@@ -145,6 +153,11 @@
                                         <!-- Environment Error -->
                                         <p class="server-error" *ngIf="serverIssues.environmentError">
                                             <mat-icon>error</mat-icon> The environment.production property in the GUI is different to the one in the server
+                                        </p>
+
+                                        <!-- Candlestick Sync Error -->
+                                        <p class="server-error" *ngIf="serverIssues.candlesticksSyncError">
+                                            <mat-icon>error</mat-icon> The candlesticks are currently out of sync.
                                         </p>
                                         
                                         <!-- Time Error-->

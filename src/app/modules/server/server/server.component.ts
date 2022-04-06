@@ -62,6 +62,7 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
     public serverIssues: IServerIssues = {
         issues: false,
         environmentError: false,
+        candlesticksSyncError: true,
         timeError: true,
         resourceUpdateError: true,
         hardwareError: true,
@@ -278,6 +279,9 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
             // Check if there is an environment error
             this.serverIssues.environmentError = environment.production !== this.serverData.production;
 
+            // Check if there is a candlestick sync error
+            this.serverIssues.candlesticksSyncError = !this.serverData.resources.candlesticksSynced;
+
             // Check if there is a time error
             const past: number = moment().subtract(3, "minutes").valueOf();
             const future: number = moment().add(3, "minutes").valueOf();
@@ -295,6 +299,7 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
             // Check if there is an issue
             this.serverIssues.issues = 
                 this.serverIssues.environmentError ||
+                this.serverIssues.candlesticksSyncError ||
                 this.serverIssues.timeError ||
                 this.serverIssues.resourceUpdateError ||
                 this.serverIssues.hardwareError ||

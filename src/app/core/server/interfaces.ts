@@ -208,6 +208,7 @@ export interface IServerInfo {
 // Resources
 export interface IServerResources {
     uptime: number,
+    candlesticksSynced: boolean,
     serverTime: number,
     lastResourceScan: number,
     alarms: IAlarmsConfig,

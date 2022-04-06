@@ -58,6 +58,7 @@ export type IState = 'optimal'|'normal'|'average'|'warning'|'error';
 export interface IServerIssues {
     issues: boolean,
     environmentError: boolean,
+    candlesticksSyncError: boolean,
     timeError: boolean,
     resourceUpdateError: boolean,
     hardwareError: boolean,
