@@ -1,0 +1,149 @@
+<!-- Secondary Header -->
+<mat-toolbar class="secondary-header">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <button mat-icon-button class="show-on-mobile" (click)="_nav.dashboard()"><mat-icon>arrow_back</mat-icon></button>
+        <span>Prediction Backtesting</span>
+        <span fxFlex></span>
+    </div>
+</mat-toolbar>
+
+
+<!-- Content -->
+<div class="padding">
+
+
+    <!-- Prediction -->
+    <div class="divider"></div>
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <div fxFlex="60" fxFlex.xs="100" fxflex.sm="100">
+            <div class="desktop-card">
+                <h3>Prediction</h3>
+                <div class="chart">
+                    <apx-chart
+                        [series]="prediction.series"
+                        [chart]="prediction.chart"
+                        [xaxis]="prediction.xaxis"
+                        [dataLabels]="prediction.dataLabels"
+                        [grid]="prediction.grid"
+                        [stroke]="prediction.stroke"
+                        [title]="prediction.title"
+                    ></apx-chart>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Points Distribution -->
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <div fxFlex="60" fxFlex.xs="100" fxflex.sm="100">
+            <div class="desktop-card">
+                <h3>Point Distribution</h3>
+                <div class="chart">
+                    <apx-chart
+                        [series]="pointDist.series"
+                        [chart]="pointDist.chart"
+                        [plotOptions]="pointDist.plotOptions"
+                        [xaxis]="pointDist.xaxis"
+                        [dataLabels]="pointDist.dataLabels"
+                        [title]="pointDist.title"
+                        [colors]="pointDist.colors"
+                        [grid]="pointDist.grid"
+                    ></apx-chart>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Point Lines -->
+    <div class="divider"></div>
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <div fxFlex="60" fxFlex.xs="100" fxflex.sm="100">
+            <div class="desktop-card">
+                <h3>Point Lines</h3>
+                <div class="chart">
+                    <apx-chart
+                        [series]="points.series"
+                        [chart]="points.chart"
+                        [xaxis]="points.xaxis"
+                        [dataLabels]="points.dataLabels"
+                        [grid]="points.grid"
+                        [stroke]="points.stroke"
+                        [title]="points.title"
+                    ></apx-chart>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Positions Accuracy -->
+    <div class="divider"></div>
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <div fxFlex="60" fxFlex.xs="100" fxflex.sm="100">
+            <div class="desktop-card">
+                <h3>Accuracy</h3>
+                <div class="chart">
+                    <apx-chart
+                        [series]="accuracy.series"
+                        [chart]="accuracy.chart"
+                        [plotOptions]="accuracy.plotOptions"
+                        [xaxis]="accuracy.xaxis"
+                        [dataLabels]="accuracy.dataLabels"
+                        [title]="accuracy.title"
+                        [colors]="accuracy.colors"
+                        [grid]="accuracy.grid"
+                    ></apx-chart>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Positions count -->
+    <div class="divider"></div>
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <div fxFlex="60" fxFlex.xs="100" fxflex.sm="100">
+            <div class="desktop-card">
+                <h3>Positions</h3>
+                <div class="chart">
+                    <apx-chart
+                        [series]="positions.series"
+                        [chart]="positions.chart"
+                        [plotOptions]="positions.plotOptions"
+                        [xaxis]="positions.xaxis"
+                        [dataLabels]="positions.dataLabels"
+                        [title]="positions.title"
+                        [colors]="positions.colors"
+                        [grid]="positions.grid"
+                    ></apx-chart>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Duration -->
+    <div class="divider"></div>
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <div fxFlex="60" fxFlex.xs="100" fxflex.sm="100">
+            <div class="desktop-card">
+                <h3>Test Durations</h3>
+                <div class="chart">
+                    <apx-chart
+                        [series]="duration.series"
+                        [chart]="duration.chart"
+                        [plotOptions]="duration.plotOptions"
+                        [xaxis]="duration.xaxis"
+                        [dataLabels]="duration.dataLabels"
+                        [title]="duration.title"
+                        [colors]="duration.colors"
+                        [grid]="duration.grid"
+                    ></apx-chart>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

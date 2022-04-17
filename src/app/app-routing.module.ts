@@ -39,6 +39,12 @@ const routes: Routes = [
 		loadChildren: () => import('./modules/forecast-models/forecast-models.module').then(m => m.ForecastModelsModule),
 	},
 
+	// Prediction Backtesting
+	{
+		path: 'predictionBacktesting',
+		loadChildren: () => import('./modules/prediction-backtesting/prediction-backtesting.module').then(m => m.PredictionBacktestingModule),
+	},
+
 	// Candlesticks
 	{
 		path: 'candlesticks',

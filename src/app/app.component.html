@@ -43,6 +43,13 @@
                 </button>
             </mat-list-item>
 
+            <!-- Prediction Backtesting -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.predictionBacktesting()" [disabled]="state.module == 'predictionBacktesting'">
+                    <mat-icon>science</mat-icon><span>Prediction Backtesting</span>
+                </button>
+            </mat-list-item>
+
             <!-- Candlesticks -->
             <mat-list-item>
                 <button mat-button class="left-icon-button" (click)="_nav.candlesticks()" [disabled]="state.module == 'candlesticks'">

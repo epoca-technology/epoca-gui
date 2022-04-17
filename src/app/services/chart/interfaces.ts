@@ -7,7 +7,8 @@ import {
 	ApexTitleSubtitle,
     ApexAnnotations,
     YAxisAnnotations,
-    XAxisAnnotations
+    XAxisAnnotations,
+	ApexPlotOptions
 } from "ng-apexcharts";
 import { MatDialogRef } from "@angular/material/dialog";
 
@@ -34,6 +35,7 @@ export interface IChartService {
 export type ICandlestickChartOptions = {
 	series: ApexAxisChartSeries;
 	chart: ApexChart;
+	plotOptions: ApexPlotOptions;
 	xaxis: ApexXAxis;
 	yaxis: ApexYAxis;
 	title: ApexTitleSubtitle;
