@@ -1,15 +1,51 @@
 
 
 
-.chart {
-    max-width: 100%;
-    max-height:100%;
+/* Uninitialized */
+.init-container {
+    // 
+    height:650px;
+
+
 }
 
 
-.desktop-card{
-    h3{ margin:0}
+
+
+
+/* Initialized */
+
+
+.desktop-sidenav {
+    width: 300px;
+    button {
+        text-align: left;
+        width: 100%;
+    }
 }
+
+
+
+
+.badge { 
+	padding:6px 7px 6px 7px;
+	border-radius: 3px;
+    width: auto;
+	background-color: #000000;
+    max-height:13px;
+    text-align: right!important;
+    
+    span {
+        color:#FFFFFF;
+        font-weight: 600;
+        font-size:11px!important;
+        display:table-cell!important;
+        line-height: 13px!important; 
+        vertical-align: middle!important;
+    }
+}
+
+
 
 
 /* Responsiveness */
@@ -17,7 +53,7 @@
 
 /* mobile: sm & xs */
 @media only screen and (max-width: 959px) {
-
+    .init-container{ height:300px;}
 
 }
 

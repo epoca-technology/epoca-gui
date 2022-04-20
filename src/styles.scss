@@ -179,7 +179,7 @@ strong { font-weight: 500 }
 
 
 // Truncate Text
-.truncate {text-overflow: ellipsis;overflow: hidden;white-space: nowrap;}
+.truncate {text-overflow: ellipsis!important;overflow: hidden!important;white-space: nowrap!important;}
 
 
 
@@ -334,8 +334,7 @@ ul li ul, ol li ul { padding: 0 0 0 15px;}
 // Content
 .small-dialog .mat-dialog-container .mat-dialog-content,
 .medium-dialog .mat-dialog-container .mat-dialog-content,
-.large-dialog .mat-dialog-container .mat-dialog-content,
-.profile-dialog .mat-dialog-container .mat-dialog-content{padding:0;margin:0;}
+.large-dialog .mat-dialog-container .mat-dialog-content {padding:0;margin:0;}
 
 // Content Large Dialog
 .large-dialog .mat-dialog-container .mat-dialog-content {
@@ -547,6 +546,25 @@ th { font-weight: 500}
 
 
 
+/* Files */
+// Hide the Actual File Input
+input[type="file"] { display: none;}
+
+// Decorate the label
+.file-label {
+	max-width: 200px;
+	padding:15px;
+	margin:15px;
+	background: #000000;
+	color: #FFFFFF;
+	@include mat.elevation(5);
+
+	p {margin:0}
+
+	:hover {background:#1c1c1c}
+}
+
+
 
 
 /* Forms */
@@ -567,8 +585,7 @@ form .actions .secondary-actions { margin-top:30px;}
 form .actions .secondary-actions p { color: var(--light-text-color)}
 
 
-form input[type="file"] { display: none;}
-form .file-button {padding-top:7px;margin-right:3px;}
+
 
 form .large-label {}
 form .large-label h5 { margin:0;padding:0;font-size:17px!important;}
@@ -576,10 +593,7 @@ form .large-label .mat-icon { }
 form .large-label p { color:var(--light-text-color);font-size:13px;margin-bottom: 0; }
 
 
-form .large-file-button {padding:10px 0 10px 0;margin:15px 0 15px 0;}
-form .large-file-button .mat-icon {margin-right:5px;}
-form .large-file-button .title {margin:0;}
-form .large-file-button .description {color:var(--light-text-color);font-size:13px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;margin:0;}
+
 
 form .important-hint { font-size:14px;margin-top:10px;}
 form .fiat-input-button {padding: 0px!important;min-width: 40px;}
@@ -704,7 +718,7 @@ form .mat-checkbox-inner-container{
 	/* Dialogs */
 
 	// Sizes
-	.small-dialog, .medium-dialog, .large-dialog, .full-screen-dialog, .profile-dialog  {
+	.small-dialog, .medium-dialog, .large-dialog, .full-screen-dialog  {
 		width:100%!important;
 		height:100%!important;
 		max-width: 100%!important;
@@ -719,11 +733,6 @@ form .mat-checkbox-inner-container{
 	{
 		height:calc(100% - var(--toolbar-mobile-height))!important;
 		max-height:calc(100% - var(--toolbar-mobile-height))!important;
-	}
-
-	.profile-dialog .mat-dialog-container .mat-dialog-content {
-		height:calc(100% - 50px)!important;
-		max-height:calc(100% - 50px)!important;
 	}
 
 
@@ -765,6 +774,9 @@ form .mat-checkbox-inner-container{
 
 	/* Tables */
 	table.highlight > tbody > tr:hover {background-color: var(--light-background-color);}
+
+	/* Files */
+	.file-label:hover { cursor: pointer; background:#1c1c1c}
 
 	/* Form */
 	form .actions .secondary-actions p:hover { cursor: pointer}

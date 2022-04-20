@@ -2,7 +2,7 @@
 <mat-toolbar class="secondary-header">
     <div fxLayout="row" fxLayoutAlign="center center">
         <button mat-icon-button class="show-on-mobile" (click)="_nav.dashboard()"><mat-icon>arrow_back</mat-icon></button>
-        <span class="truncate">Candlesticks ({{config.intervalMinutes}} mins)</span>
+        <span class="truncate">Candlesticks ({{config.intervalMinutes}}m)</span>
         <span fxFlex></span>
         <app-refresh-button class="show-on-desktop" [disabled]="!loaded" (refresh)="refresh()"></app-refresh-button>
         <button class="show-on-desktop" mat-icon-button [disabled]="!loaded" (click)="displaySpreadsheets()"><mat-icon svgIcon="file_csv"></mat-icon></button>
@@ -36,8 +36,16 @@
 <div class="fadeIn" *ngIf="loaded">
     <div fxLayout="row" fxLayoutAlign="center center">
         <div fxFlex>
-            <div class="chart-container" *ngIf="rawCandlesticks">
-                <app-candlestick-chart [data]="{candlesticks: rawCandlesticks, highlightCurrentPrice: true}"></app-candlestick-chart>
+            <div class="chart-container" *ngIf="rawCandlesticks && chartOptions">
+                <apx-chart
+                    [series]="chartOptions.series!"
+                    [chart]="chartOptions.chart!"
+                    [plotOptions]="chartOptions.plotOptions!"
+                    [xaxis]="chartOptions.xaxis!"
+                    [yaxis]="chartOptions.yaxis!"
+                    [title]="chartOptions.title!"
+                    [annotations]="chartOptions!.annotations!"
+                ></apx-chart>
             </div>
         </div>
     </div>

@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { ICandlesticksComponent, ICandlesticksConfig} from './interfaces';
-import { CandlestickService, ICandlestick, UtilsService } from '../../../core';
-import { AppService, ChartService, NavService, SnackbarService } from '../../../services';
 import * as moment from 'moment';
 import {MatDialog} from '@angular/material/dialog';
+import { CandlestickService, ICandlestick, UtilsService } from '../../../core';
+import { AppService, ChartService, ICandlestickChartOptions, NavService, SnackbarService } from '../../../services';
 import { CandlesticksConfigDialogComponent } from './candlesticks-config-dialog/candlesticks-config-dialog.component';
 import { CandlestickSpreadsheetsDialogComponent } from './candlestick-spreadsheets-dialog/candlestick-spreadsheets-dialog.component';
+import { ICandlesticksComponent, ICandlesticksConfig} from './interfaces';
 
 
 @Component({
@@ -19,6 +19,7 @@ export class CandlesticksComponent implements OnInit, ICandlesticksComponent {
 
 	// Raw Candlesticks
 	public rawCandlesticks?: ICandlestick[];
+    public chartOptions?: Partial<ICandlestickChartOptions>;
 
 	// Load State
 	public loaded: boolean = false;
@@ -63,6 +64,9 @@ export class CandlesticksComponent implements OnInit, ICandlesticksComponent {
 				this.config.end, 
 				this.config.intervalMinutes
 			);
+
+            // Retrieve the chart options
+            this.chartOptions = this._chart.getCandlestickChartOptions(this.rawCandlesticks, undefined, true);
 		} catch (e) {
 			console.log(e);
 			this._snackbar.error(this._utils.getErrorMessage(e));

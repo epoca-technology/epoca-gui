@@ -40,6 +40,8 @@ import {
 	GuiVersionService,
 	IpBlacklistService,
 	NotificationService,
+	PredictionService,
+	PredictionBacktestingService,
 	ServerService,
 	UtilsService,
 } from './core';
@@ -113,6 +115,8 @@ import { AppComponent } from './app.component';
         GuiVersionService,
         IpBlacklistService,
         NotificationService,
+		PredictionService,
+		PredictionBacktestingService,
         ServerService,
         UtilsService,
 

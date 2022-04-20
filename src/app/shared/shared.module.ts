@@ -39,9 +39,6 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
 // DateTime Picker
 import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
 
-// Charts
-import { NgApexchartsModule } from "ng-apexcharts";
-
 // Environment
 import {environment} from "../../environments/environment";
 
@@ -71,11 +68,7 @@ import { BottomSheetMenuComponent } from './components/bottom-sheet-menu';
 
 // Shared Components
 import { ConfirmationDialogComponent } from './components/confirmation-dialog';
-import { 
-	CandlestickChartComponent, 
-	CandlestickDialogComponent,
-	CandlestickBodyComponent
-} from './components/charts';
+import { CandlestickDialogComponent, CandlestickBodyComponent} from './components/candlestick';
 import { RefreshButtonComponent } from './components/refresh-button/refresh-button.component';
 import { MobileTabsComponent } from './components/mobile-tabs/mobile-tabs.component';
 
@@ -99,7 +92,6 @@ import { MobileTabsComponent } from './components/mobile-tabs/mobile-tabs.compon
 		
 		// Shared Components
         ConfirmationDialogComponent,
-        CandlestickChartComponent,
         CandlestickDialogComponent,
         CandlestickBodyComponent,
         RefreshButtonComponent,
@@ -114,9 +106,6 @@ import { MobileTabsComponent } from './components/mobile-tabs/mobile-tabs.compon
 		
 		// Flex Layout
 		FlexLayoutModule,
-
-        // Charts
-        NgApexchartsModule,
 		
 		// reCAPTCHA
 		RecaptchaModule,
@@ -229,7 +218,6 @@ import { MobileTabsComponent } from './components/mobile-tabs/mobile-tabs.compon
         FilesizePipe,
 		
 		// Shared Components
-		CandlestickChartComponent,
         CandlestickBodyComponent,
         RefreshButtonComponent,
         MobileTabsComponent,

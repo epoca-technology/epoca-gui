@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSidenav } from '@angular/material/sidenav';
 import { Subscription } from 'rxjs';
 import * as moment from 'moment';
+import { environment } from '../../../../environments/environment';
 import { 
     ApiService, 
     IAlarmsConfig, 
@@ -21,7 +22,6 @@ import { AppService, AudioService, ClipboardService, ILayout, NavService, Snackb
 import { AlarmsConfigDialogComponent } from './alarms-config-dialog/alarms-config-dialog.component';
 import { ApiErrorDialogComponent } from './api-error-dialog/api-error-dialog.component';
 import { ISection, ISectionID, IServerComponent, IState, IStates, IServerIssues } from './interfaces';
-import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-server',

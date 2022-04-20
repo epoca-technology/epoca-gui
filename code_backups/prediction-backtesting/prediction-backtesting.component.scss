@@ -1,0 +1,29 @@
+
+
+
+.chart {
+    max-width: 100%;
+    max-height:100%;
+}
+
+
+.desktop-card{
+    h3{ margin:0}
+}
+
+
+/* Responsiveness */
+
+
+/* mobile: sm & xs */
+@media only screen and (max-width: 959px) {
+
+
+}
+
+
+
+/* desktop: md */
+@media only screen and (min-width: 960px) {
+    .divider {display:none}
+}

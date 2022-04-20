@@ -1,7 +1,9 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatSidenav } from '@angular/material/sidenav';
 import { Subscription } from 'rxjs';
-import { AppService, ChartService, ILayout, NavService } from '../../../services';
-import { IPredictionBacktestingComponent } from './interfaces';
+import { PredictionBacktestingService, UtilsService } from '../../../core';
+import { AppService, ChartService, IBarChartOptions, ILayout, NavService, SnackbarService } from '../../../services';
+import { IPredictionBacktestingComponent, ISection, ISectionID } from './interfaces';
 
 @Component({
   selector: 'app-prediction-backtesting',
@@ -9,119 +11,98 @@ import { IPredictionBacktestingComponent } from './interfaces';
   styleUrls: ['./prediction-backtesting.component.scss']
 })
 export class PredictionBacktestingComponent implements OnInit, OnDestroy, IPredictionBacktestingComponent {
+    // Sidenav Element
+	@ViewChild('predBacktestingSidenav') predBacktestingSidenav: MatSidenav|undefined;
+	public predBacktestingSidenavOpened: boolean = false;
+
 	// Layout
 	public layout: ILayout = this._app.layout.value;
 	private layoutSub?: Subscription;
-  
-	// Loading State
+
+	// Backtest Initialization
+	public initialized: boolean = false;
+	public initializing: boolean = false;
+
+	// Sections
+	public readonly generalSections: ISection[] = [
+		{id: 'points', name: 'Points', icon: 'leaderboard'},
+		{id: 'accuracy', name: 'Accuracy', icon: 'ads_click'},
+		{id: 'positions', name: 'Positions', icon: 'format_list_numbered'},
+		{id: 'duration', name: 'Backtest Duration', icon: 'timer' },
+	]
+	public modelID?: string = undefined;
+	public section: ISection = this.generalSections[0];
 	public loaded: boolean = false;
 
-	// Submission State
-	public submitting: boolean = false;
-
-
 	// Charts
-	public pointDist = this.getPointDist();
-	public points = this.getPointsConfig();
-	public accuracy = this.getAccuracy();
-	public positions = this.getPositions();
-	public duration = this.getDurationConfig();
-	public prediction = this.getPrediction();
+	public pointsDistChart?: IBarChartOptions;
+	public pointsLineChart?: any;
+	public accuracyChart?: IBarChartOptions;
+	public positionsChart?: IBarChartOptions;
+	public durationChart?: IBarChartOptions;
+
+
+
 
 	constructor(
 		public _nav: NavService,
+		private _snackbar: SnackbarService,
 		private _app: AppService,
-		private _chart: ChartService
+		private _chart: ChartService,
+		private _utils: UtilsService,
+		public _backtesting: PredictionBacktestingService
 	) { }
+
+
+
 
 	ngOnInit(): void {
 		// Initialize layout
 		this.layoutSub = this._app.layout.subscribe((nl: ILayout) => this.layout = nl);
-
-		// Set the loading state
-		this.loaded = true;
 	}
 
 	ngOnDestroy(): void {
 		if (this.layoutSub) this.layoutSub.unsubscribe();
+		this._backtesting.resetBacktestResults();
 	}
 
 
 
 
 
-	/* Points Distribution */
-
-
-	private getPointDist(): any {
-		return {
-			series: [{
-				name: 'Points',
-				data: [254, -28, 121, 50, 16.5, 34.5, -43, 125, -46.5, -75.8]
-			}],
-			chart: {height: 600, type: 'bar',animations: { enabled: false}, toolbar: {show: false}},
-			colors: this._chart.colors.slice(0, 10),
-			plotOptions: {bar: {borderRadius: 4, horizontal: true, distributed: true}},
-			dataLabels: {enabled: false},
-			grid: {show: false},
-			xaxis: {
-				categories: ['ARIMA101', 'ARIMA102', 'ARIMA103', 'ARIMA104', 'ARIMA105', 'ARIMA106', 'ARIMA107', 'ARIMA108', 'ARIMA109', 'ARIMA110'],
-			}
-		};
-	}
+	/* Initialization */
 
 
 
 
+	/**
+	 * Whenever there is a file change, it will attempt to initialize the Backtest.
+	 * @param event 
+	 * @returns Promise<void>
+	 */
+	public async fileChanged(event: any): Promise<void> {
+		// Set the state
+		this.initializing = true;
 
+		// Allow a small delay before moving on
+		await this._utils.asyncDelay(0.5);
 
-	/* Point Lines */
+		// Attempt to initiaze the backtests
+		try {
+			// Pass the files to the service
+			await this._backtesting.init(event);
 
+			// Activate default section
+			await this.activateSection(this.generalSections[0]);
 
-
-	private getPointsConfig(): any {
-		return {
-			series: [
-				{name: "ARIMA101",data: this.buildPointsLine(156), color: this._chart.colors[0]},
-				{name: "ARIMA102",data: this.buildPointsLine(217), color: this._chart.colors[1]},
-				{name: "ARIMA103",data: this.buildPointsLine(155), color: this._chart.colors[2]},
-				{name: "ARIMA104",data: this.buildPointsLine(391), color: this._chart.colors[3]},
-				{name: "ARIMA105",data: this.buildPointsLine(187), color: this._chart.colors[4]},
-				{name: "ARIMA106",data: this.buildPointsLine(121), color: this._chart.colors[5]},
-				{name: "ARIMA107",data: this.buildPointsLine(155), color: this._chart.colors[6]},
-				{name: "ARIMA108",data: this.buildPointsLine(136), color: this._chart.colors[7]},
-				{name: "ARIMA109",data: this.buildPointsLine(110), color: this._chart.colors[8]},
-				{name: "ARIMA110",data: this.buildPointsLine(333), color: this._chart.colors[9]},
-			],
-			chart: {
-				height: 600,
-				type: "line",
-				toolbar: {
-					show: false,
-					//tools: {selection: false,zoom: false,zoomin: false,zoomout: false,pan: false,reset: false,download: true},
-					//export: {png: {filename: "Points"}}
-				},
-				animations: { enabled: false},
-			},
-			dataLabels: { enabled: false },
-			stroke: {curve: "straight"},
-			//title: {text: "Point Lines", align: "left" },
-			grid: {row: { opacity: 0.5 }},
-			xaxis: {labels: { show: false } }
-		};
-	}
-
-
-
-
-	private buildPointsLine(qty: number): number[] {
-		let points = 0;
-		let final: number[] = [points]
-		for (let i = 0; i < qty; i++) {
-			points = Math.random() > 0.4 ? points+=1: points-=1.2
-			final.push(Math.round((points + Number.EPSILON) * 100) / 100)
+			// Mark the backtest as initialized
+			this.initialized = true;
+		} catch (e) {
+			this._snackbar.error(e)
 		}
-		return final;
+
+		// Update initializing state
+		this.initializing = false;
 	}
 
 
@@ -129,79 +110,43 @@ export class PredictionBacktestingComponent implements OnInit, OnDestroy, IPredi
 
 
 
-	/* Accuracy */
-
-
-	private getAccuracy(): any {
-		return {
-			series: [
-				{
-					name: 'Long Accuracy',
-					data: [65, 51, 72, 45, 55, 35.95, 53.65, 68.75, 65.15, 28.9],
-					
-				},
-				{
-					name: 'Short Accuracy',
-					data: [45.85, 51.65, 75.25, 61.54, 58.89, 39.45, 49.45, 35.45, 61.12, 58.45],
-					
-				},
-				{
-					name: 'General Accuracy',
-					data: [58.85, 65.75, 79.41, 64.35, 50.12, 48.75, 62.55, 71.15, 54.6, 60.55],
-					
-				},
-			],
-			chart: {height: 600, type: 'bar',animations: { enabled: false}, toolbar: {show: false}},
-			colors: [this._chart.upwardColor, this._chart.downwardColor, '#000000'],
-			plotOptions: {bar: {borderRadius: 0, horizontal: true}},
-			dataLabels: {enabled: false},
-			//title: {text: "Accuracy", align: "left" },
-			grid: {show: false},
-			xaxis: {
-				categories: ['ARIMA101', 'ARIMA102', 'ARIMA103', 'ARIMA104', 'ARIMA105', 'ARIMA106', 'ARIMA107', 'ARIMA108', 'ARIMA109', 'ARIMA110'],
-			}
-
-		};
+	/**
+	 * Resets the results and navigates to the file input section.
+	 * @returns void
+	 */
+	 public resetResults(): void {
+        this._nav.displayConfirmationDialog({
+            title: 'Reset Results',
+            content: `<p class="align-center">Are you sure that you wish to reset the Backtesting Results?</p>`,
+        }).afterClosed().subscribe(
+            async (confirmed: boolean|undefined) => {
+                if (confirmed) {
+					this.resetComponent();
+					this._backtesting.resetBacktestResults();
+                }
+            }
+        );
 	}
 
 
 
 
 
-
-
-	/* Positions count */
-
-	private getPositions(): any {
-		return {
-			series: [
-				{
-					name: 'Longs',
-					data: [101, 35, 45, 81, 66, 218, 165, 55, 144, 28],
-					
-				},
-				{
-					name: 'Shorts',
-					data: [42, 75, 32, 125, 51, 154, 225, 79, 172, 32],
-					
-				},
-				{
-					name: 'Total',
-					data: [143, 110, 77, 206, 117, 372, 390, 134, 316, 40],
-					
-				},
-			],
-			chart: {height: 600, type: 'bar',animations: { enabled: false}, toolbar: {show: false}},
-			colors: [this._chart.upwardColor, this._chart.downwardColor, '#000000'],
-			plotOptions: {bar: {borderRadius: 0, horizontal: true}},
-			dataLabels: {enabled: false},
-			//title: {text: "Positions", align: "left" },
-			grid: {show: false},
-			xaxis: {
-				categories: ['ARIMA101', 'ARIMA102', 'ARIMA103', 'ARIMA104', 'ARIMA105', 'ARIMA106', 'ARIMA107', 'ARIMA108', 'ARIMA109', 'ARIMA110'],
-			}
-
-		};
+	/**
+	 * Resets all the properties within the component.
+	 * @returns void
+	 */
+	private resetComponent(): void {
+		this.initialized = false;
+		this.initializing = false;
+		this.modelID = undefined;
+		this.section = this.generalSections[0];
+		this.loaded = false;
+		this.pointsDistChart = undefined;
+		this.pointsLineChart = undefined;
+		this.accuracyChart = undefined;
+		this.positionsChart = undefined;
+		this.durationChart = undefined;
 	}
 
 
@@ -211,29 +156,67 @@ export class PredictionBacktestingComponent implements OnInit, OnDestroy, IPredi
 
 
 
+	/* Navigation */
 
 
 
 
-	/* Duration */
+    /**
+     * Activates a given section and prepares all the data needed.
+	 * @param section
+	 * @param modelID?
+     * @returns Promise<void>
+     */
+	 public async activateSection(section: ISection, modelID?: string): Promise<void> {
+        // Hide the sidenavs if any
+		if (this.predBacktestingSidenav && this.predBacktestingSidenavOpened) this.predBacktestingSidenav.close();
+
+		// Set loading state
+		this.loaded = false;
+
+		// Set the section values
+		this.section = section;
+		this.modelID = modelID;
+
+		// Allow a small delay
+		await this._utils.asyncDelay(0.5);
+
+		// Initialize the data needed for the active section in case it hasn't been
+		this.initDataForActiveSection();
+
+		// Set loading state
+		this.loaded = true;
+    }
 
 
-	private getDurationConfig(): any {
-		return {
-			series: [{
-				name: 'Minutes',
-				data: [33, 45, 66, 125, 44, 245, 1050, 655, 501, 451]
-			}],
-			chart: {height: 600, type: 'bar',animations: { enabled: false}, toolbar: {show: false}},
-			colors: this._chart.colors.slice(0, 10),
-			plotOptions: {bar: {borderRadius: 4, horizontal: true, distributed: true}},
-			dataLabels: {enabled: false},
-			//title: {text: "Test Duration", align: "left" },
-			grid: {show: false},
-			xaxis: {
-				categories: ['ARIMA101', 'ARIMA102', 'ARIMA103', 'ARIMA104', 'ARIMA105', 'ARIMA106', 'ARIMA107', 'ARIMA108', 'ARIMA109', 'ARIMA110'],
-			}
-		};
+
+
+
+
+
+
+
+	/* Section Initialization */
+
+
+
+	/**
+	 * Initializes the data for a given section in case
+	 * it hasn't been. Does nothing otherwise.
+	 * @returns void
+	 */
+	private initDataForActiveSection(): void {
+		// Points
+		if (this.section.id == 'points' && (!this.pointsDistChart || !this.pointsLineChart)) { this.initPointsSection() }
+
+		// Accuracy
+		else if (this.section.id == 'accuracy' && !this.accuracyChart) { this.initAccuracySection() }
+
+		// Positions
+		else if (this.section.id == 'positions' && !this.positionsChart) { this.initPositionsSection() }
+
+		// Duration
+		else if (this.section.id == 'duration' && !this.durationChart) { this.initDurationSection() }
 	}
 
 
@@ -241,41 +224,27 @@ export class PredictionBacktestingComponent implements OnInit, OnDestroy, IPredi
 
 
 
+	private initPointsSection(): void {
 
-	/* Prediction */
+	}
 
 
-	private getPrediction(): any {
-		return {
-			series: [
-				{
-					name: "Prediction",
-					data: [100,101.5,101.9,102.1,103.75, 102.85, 103.24, 105.62, 104.11, 104.49, 105.25, 104.99, 105.59, 106.81, 106.45,], 
-					color: this._chart.upwardColor,
-					
-				},
-				{
-					name: "Real",
-					data: [100,101.5,101.9,102.1,103.75], 
-					color: '#000000'
-				},
-			],
-			chart: {
-				height: 600,
-				type: "line",
-				toolbar: {
-					show: false,
-					//tools: {selection: false,zoom: false,zoomin: false,zoomout: false,pan: false,reset: false,download: true},
-					//export: {png: {filename: "Points"}}
-				},
-				animations: { enabled: false},
-			},
-			
-			dataLabels: { enabled: false },
-			stroke: {curve: "straight", dashArray: [10, 0]},
-			//title: {text: "Point Lines", align: "left" },
-			grid: {row: { opacity: 0.5 }},
-			xaxis: {labels: { show: false } }
-		};
+
+
+	private initAccuracySection(): void {
+
+	}
+
+
+
+
+	private initPositionsSection(): void {
+
+	}
+
+
+
+	private initDurationSection(): void {
+
 	}
 }

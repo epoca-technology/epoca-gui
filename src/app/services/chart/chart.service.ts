@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { AppService, ILayout } from '../app';
-import { IApexCandlestick, IChartService, ICandlestickChartOptions, IChartRange } from './interfaces';
-import { ICandlestick } from '../../core';
-import * as moment from 'moment';
-import { ApexAnnotations, XAxisAnnotations, YAxisAnnotations } from 'ng-apexcharts';
 import {BigNumber} from "bignumber.js";
+import * as moment from 'moment';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
-import { CandlestickDialogComponent } from '../../shared/components/charts';
+import { ApexAnnotations, ApexAxisChartSeries, ApexChart, ApexDataLabels, ApexGrid, ApexPlotOptions, XAxisAnnotations, YAxisAnnotations } from 'ng-apexcharts';
+import { ICandlestick } from '../../core';
+import { AppService, ILayout } from '../app';
+import { CandlestickDialogComponent } from '../../shared/components/candlestick';
+import { IApexCandlestick, IChartService, ICandlestickChartOptions, IChartRange, IBarChartOptions } from './interfaces';
 
 
 
@@ -15,8 +15,6 @@ import { CandlestickDialogComponent } from '../../shared/components/charts';
   providedIn: 'root'
 })
 export class ChartService implements IChartService {
-
-
 	// Colors
 	public readonly colors: string[] = this.getColors();
 
@@ -48,6 +46,9 @@ export class ChartService implements IChartService {
 
 
 
+
+
+
     /**
      * Given a list of candlesticks and annotation data, will retrieve the chart object
      * to be rendered.
@@ -56,14 +57,14 @@ export class ChartService implements IChartService {
      * @param highlightCurrentPrice?
      * @returns ICandlestickChartOptions
      */
-	 public build(candlesticks: ICandlestick[], annotations?: ApexAnnotations, highlightCurrentPrice?: boolean): ICandlestickChartOptions {
+	 public getCandlestickChartOptions(candlesticks: ICandlestick[], annotations?: ApexAnnotations, highlightCurrentPrice?: boolean): ICandlestickChartOptions {
         // Make sure at least 5 candlesticks have been provided
         if (!candlesticks || candlesticks.length < 5) {
             throw new Error('A minimum of 5 candlesticks must be provided in order to render the chart.');
         }
 
 		// Retrieve the range
-		const range: IChartRange = this.getCandlestickChartRange(candlesticks);
+		const range: IChartRange = this.getCandlesticksChartRange(candlesticks);
 
 		let self = this;
 
@@ -81,11 +82,11 @@ export class ChartService implements IChartService {
 				},
             },
 			plotOptions: {candlestick: {colors: {upward: this.upwardColor,downward: this.downwardColor}}},
-            annotations: this.getAnnotations(
+            annotations: this.getCandlesticksAnnotations(
 				annotations, 
 				highlightCurrentPrice === false ? undefined: candlesticks[candlesticks.length -1].c
 			),
-            title: {text: this.getTitle(candlesticks),align: "left"},
+            title: {text: this.getCandlesticksTitle(candlesticks),align: "left"},
             xaxis: {type: "datetime",tooltip: {enabled: true}}, 
             yaxis: { tooltip: { enabled: true }, forceNiceScale: false, min: range.min, max: range.max}
         }
@@ -95,12 +96,6 @@ export class ChartService implements IChartService {
 
 
 
-
-
-
-
-
-	/* General Helpers */
 
 
 
@@ -130,7 +125,7 @@ export class ChartService implements IChartService {
 	 * Retrieves the title to be placed in the chart.
 	 * @returns string
 	 */
-     private getTitle(candlesticks: ICandlestick[]): string {
+     private getCandlesticksTitle(candlesticks: ICandlestick[]): string {
 		// Init values
         const l: ILayout = this._app.layout.value;
 		let title: string = '';
@@ -157,7 +152,7 @@ export class ChartService implements IChartService {
 	 * @param candlesticks 
 	 * @returns IChartRange
 	 */
-	private getCandlestickChartRange(candlesticks: ICandlestick[]): IChartRange {
+	private getCandlesticksChartRange(candlesticks: ICandlestick[]): IChartRange {
 		// Init lists
 		let high: number[] = [];
 		let low: number[] = [];
@@ -183,20 +178,13 @@ export class ChartService implements IChartService {
 
 
 
-
-
-
-	/* Annotation Helpers */
-
-
-
     /**
      * Retrieves the annotations for the current chart.
 	 * @param data?
 	 * @param currentPrice?
      * @returns any
      */
-     private getAnnotations(data?: ApexAnnotations, currentPrice?: number): ApexAnnotations {
+     private getCandlesticksAnnotations(data?: ApexAnnotations, currentPrice?: number): ApexAnnotations {
 		 // Init the annotations
 		 let annotations: ApexAnnotations = {
 			xaxis: data?.xaxis || [],
@@ -222,101 +210,7 @@ export class ChartService implements IChartService {
 
 		 // Return the final annotations
 		 return annotations;
-		 
-        /*return {
-            xaxis: [
-                {
-                    x: this.rawCandlesticks[30].ot,
-                    strokeDashArray: 0,
-                    borderColor: '#00695C',
-                    label: {
-                        borderColor: '#00695C',
-                        style: {
-                            color: '#fff',
-                            background: '#00695C',
-                        },
-                        text: 'LONG POSITION',
-                    }
-                }
-            ]
-        }*/
     }
-
-
-
-
-
-
-	/**
-	 * Given a list of key zones, it will build the annotations.
-	 * @param keyZones 
-	 * @param currentPrice 
-	 * @returns YAxisAnnotations[]
-	 */
-	/*public buildKeyZonesAnnotations(keyZones: IKeyZone[], currentPrice: number): YAxisAnnotations[] {
-		// Init values
-		let annotations: YAxisAnnotations[] = [];
-
-		// Build the annotations
-		for (let i = 0; i < keyZones.length; i++) {
-			annotations.push({
-				y: keyZones[i].s,
-				y2: keyZones[i].e,
-				strokeDashArray: 0,
-				borderColor: this.colors[i],
-				fillColor: this.colors[i],
-				label: {
-					borderColor: this.colors[i],
-					style: { color: '#fff', background: this.colors[i],},
-					text: this.getKeyZoneLabelText(keyZones[i]),
-					position: 'left',
-					offsetX: 50
-				}
-			});
-		}
-
-		// Return the annotations
-		return annotations;
-	}*/
-
-
-
-
-
-
-
-
-	/**
-	 * Returns a label for a given zone.
-	 * @param zone 
-	 * @returns string
-	 */
-	/*private getKeyZoneLabelText(zone: IKeyZone): string {
-		if (this._app.layout.value == 'mobile') return ''; 
-		let label: string = '';
-		//label += `${zone.mutated ? 'm': ''}${zone.reversals[zone.reversals.length - 1].type.toUpperCase()} `;
-		//label += `${moment(zone.id).format('DD-MM HH:mm')}  (${zone.reversals.length}) | `;
-		//label += `Reversals ${zone.reversals.length} | `;
-		label += `$${new BigNumber(zone.s).toFormat(2)} - $${new BigNumber(zone.e).toFormat(2)} `;
-		return label;
-	}*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /* Misc Helpers */
 
 
 
@@ -342,6 +236,81 @@ export class ChartService implements IChartService {
 
 
 
+
+
+
+
+
+
+	
+
+
+	/* Bar Chart */
+
+
+
+
+
+
+	/**
+	 * Builds the configuration for a bar chart.
+	 * @param config 
+	 * @param categories 
+	 * @param height?
+	 * @param plotOptionsDistributed?
+	 * @returns IBarChartOptions
+	 */
+	public getBarChartOptions(
+		config: Partial<IBarChartOptions>, 
+		categories: string[], 
+		height?: number,
+		plotOptionsDistributed?: boolean,
+	): IBarChartOptions {
+		// Init the default chart
+		let defaultChart: ApexChart = {height: 600, type: 'bar',animations: { enabled: false}, toolbar: {show: false}};
+		if (typeof height == "number") defaultChart.height = height;
+
+		// Init the default plot options
+		let defaultPlotOptions: ApexPlotOptions = {bar: {borderRadius: 4, horizontal: true, distributed: false}};
+		if (plotOptionsDistributed) defaultPlotOptions.bar!.distributed = true;
+
+		// Return the Options Object
+		return {
+			series: config.series!,
+			chart: config.chart ? config.chart: defaultChart,
+			colors: config.colors ? config.colors: this.colors.slice(0, categories.length),
+			plotOptions: config.plotOptions ? config.plotOptions: defaultPlotOptions,
+			dataLabels: config.dataLabels ? config.dataLabels: {enabled: false},
+			grid: config.grid ? config.grid: {show: false},
+			xaxis: {categories: categories}
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+    /* Misc Helpers */
+
+
+
+
+
+
+
+
+
+	/**
+	 * Returns a large list of colors ordered randomly.
+	 * @returns string[]
+	 */
 	private getColors(): string[] {
 		return [
 			"#227bb3","#b3228f","#b3228f","#b34b22","#6a22b3","#db56c5","#db566e","#5d784e","#784e4e","#4db2d1",
@@ -356,6 +325,7 @@ export class ChartService implements IChartService {
 			"#708c7e","#3ee692","#80222a","#524a4b","#f54838","#4e396e","#02304d","#61e000","#61e000","#0a164d",
 			"#542227","#223854","#544122","#225450","#432254","#57ed40","#ed7440","#08a3a1","#15ab6c","#ad7911",
 			"#2e0707","#2e2607","#1c2e07","#072e20","#071b2e","#0c072e","#1e072e","#2e0720","#2e0713","#ff000d",
+			"#D69F69","#CDDC7A","#000000","#8DA5B9","#9690A8","#907B80","#004C9A","#057501","#3DCBD0","#63904C"
 		].map(value => ({ value, sort: Math.random() }))
 		.sort((a, b) => a.sort - b.sort)
 		.map(({ value }) => value)

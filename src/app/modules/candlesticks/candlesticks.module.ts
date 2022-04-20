@@ -4,6 +4,9 @@ import { CommonModule } from '@angular/common';
 // Routing
 import { CandlesticksRoutingModule } from './candlesticks-routing.module';
 
+// Charts
+import { NgApexchartsModule } from "ng-apexcharts";
+
 // Shared Module
 import {SharedModule} from "../../shared";
 
@@ -15,14 +18,15 @@ import { CandlestickSpreadsheetsDialogComponent } from './candlesticks/candlesti
 
 @NgModule({
   declarations: [
-    CandlesticksComponent,
-    CandlesticksConfigDialogComponent,
-    CandlestickSpreadsheetsDialogComponent
+      CandlesticksComponent,
+      CandlesticksConfigDialogComponent,
+      CandlestickSpreadsheetsDialogComponent
   ],
   imports: [
-    CommonModule,
-    CandlesticksRoutingModule,
-    SharedModule
+      CommonModule,
+      CandlesticksRoutingModule,
+      SharedModule,
+      NgApexchartsModule
   ]
 })
 export class CandlesticksModule { }

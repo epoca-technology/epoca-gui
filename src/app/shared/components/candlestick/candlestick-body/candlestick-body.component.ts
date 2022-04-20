@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ICandlestick } from '../../../../../core';
-import { SnackbarService } from '../../../../../services';
+import { ICandlestick } from '../../../../core';
+import { SnackbarService } from '../../../../services';
 
 @Component({
   selector: 'app-candlestick-body',

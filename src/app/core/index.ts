@@ -9,5 +9,7 @@ export * from './file';
 export * from './gui-version';
 export * from './ip-blacklist';
 export * from './notification';
+export * from './prediction';
+export * from './prediction-backtesting';
 export * from './server';
 export * from './utils';
