@@ -9,6 +9,7 @@ import {SharedModule} from "../../shared";
 
 // Components
 import { PredictionBacktestingComponent } from './prediction-backtesting/prediction-backtesting.component';
+import { BacktestPositionDialogComponent } from './prediction-backtesting/backtest-position-dialog/backtest-position-dialog.component';
 
 // Charts
 import { NgApexchartsModule } from "ng-apexcharts";
@@ -16,7 +17,8 @@ import { NgApexchartsModule } from "ng-apexcharts";
 
 @NgModule({
   declarations: [
-    PredictionBacktestingComponent
+    PredictionBacktestingComponent,
+    BacktestPositionDialogComponent
   ],
   imports: [
     CommonModule,

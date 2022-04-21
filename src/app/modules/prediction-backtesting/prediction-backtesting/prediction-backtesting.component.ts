@@ -3,7 +3,8 @@ import { MatSidenav } from '@angular/material/sidenav';
 import { ApexAxisChartSeries } from 'ng-apexcharts';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
-import { IModel, PredictionBacktestingService, UtilsService } from '../../../core';
+import {MatDialog} from '@angular/material/dialog';
+import { IBacktestPosition, IModel, PredictionBacktestingService, UtilsService } from '../../../core';
 import { 
 	AppService, 
 	ChartService, 
@@ -14,6 +15,7 @@ import {
 	NavService, 
 	SnackbarService,
 } from '../../../services';
+import { BacktestPositionDialogComponent } from './backtest-position-dialog';
 import { IModelCharts, IPredictionBacktestingComponent, ISection } from './interfaces';
 
 @Component({
@@ -36,7 +38,7 @@ export class PredictionBacktestingComponent implements OnInit, OnDestroy, IPredi
 
 	// Sections
 	public readonly generalSections: ISection[] = [
-		{id: 'points', name: 'Points', icon: 'leaderboard'},
+		{id: 'points', name: 'Points', icon: 'query_stats'},
 		{id: 'accuracy', name: 'Accuracy', icon: 'ads_click'},
 		{id: 'positions', name: 'Positions', icon: 'format_list_numbered'},
 		{id: 'duration', name: 'Backtest Duration', icon: 'timer' },
@@ -56,6 +58,9 @@ export class PredictionBacktestingComponent implements OnInit, OnDestroy, IPredi
 	// Model Charts
 	public modelCharts: {[modelID: string]: IModelCharts} = {};
 
+	// Positions
+	public visiblePositions: number = 15;
+
 
 	constructor(
 		public _nav: NavService,
@@ -64,7 +69,8 @@ export class PredictionBacktestingComponent implements OnInit, OnDestroy, IPredi
 		private _app: AppService,
 		private _chart: ChartService,
 		private _utils: UtilsService,
-		public _backtesting: PredictionBacktestingService
+		public _backtesting: PredictionBacktestingService,
+		private dialog: MatDialog,
 	) { }
 
 
@@ -154,6 +160,7 @@ export class PredictionBacktestingComponent implements OnInit, OnDestroy, IPredi
 		this.positionsChart = undefined;
 		this.durationChart = undefined;
 		this.modelCharts = {};
+		this.visiblePositions = 15;
 	}
 
 
@@ -187,6 +194,9 @@ export class PredictionBacktestingComponent implements OnInit, OnDestroy, IPredi
 
 		// Initialize the data needed for the active section in case it hasn't been
 		this.initDataForActiveSection();
+
+		// If the view is a model, reset the visible positions
+		if (this.section.id == 'model') this.visiblePositions = 15;
 
 		// Allow a small delay
 		await this._utils.asyncDelay(0.5);
@@ -404,6 +414,31 @@ export class PredictionBacktestingComponent implements OnInit, OnDestroy, IPredi
 
 
 
+
+	/**
+	 * Opens the backtest position dialog.
+	 * @param position 
+	 * @returns void
+	 */
+	public displayPosition(position: IBacktestPosition): void {
+		this.dialog.open(BacktestPositionDialogComponent, {
+			hasBackdrop: this._app.layout.value != 'mobile', // Mobile optimization
+			panelClass: 'small-dialog',
+            data: {
+				model: this._backtesting.models[this.modelID!],
+				position: position
+			}
+		})
+	}
+
+
+
+
+
+
+
+	
+
 	/* Backtest Summary Text */
 
 
@@ -430,8 +465,8 @@ export class PredictionBacktestingComponent implements OnInit, OnDestroy, IPredi
 
 		// DATE RANGE
 		sum += `DATE RANGE:\n`;
-		sum += `Start: ${moment(this._backtesting.backtests[model.id].start).format('DD MMMM YYYY HH:mm')}\n`;
-		sum += `End: ${moment(this._backtesting.backtests[model.id].start).format('DD MMMM YYYY HH:mm')}\n\n`;
+		sum += `${moment(this._backtesting.backtests[model.id].start).format('DD MMMM YYYY HH:mm')}\n`;
+		sum += `${moment(this._backtesting.backtests[model.id].end).format('DD MMMM YYYY HH:mm')}\n\n`;
 
 		// POSITION EXITS
 		sum += `POSITION EXITS:\n`;
@@ -459,10 +494,10 @@ export class PredictionBacktestingComponent implements OnInit, OnDestroy, IPredi
 				sum += `(${sm.arima.P}, ${sm.arima.D}, ${sm.arima.Q}, ${sm.arima.m})`;
 				sum += ` -> [${sm.arima.predictions}]\n`;
 				sum += `Interpreter:\n`;
-				sum += `- Long: ${sm.interpreter.long}\n`;
-				sum += `- Short: ${sm.interpreter.short}\n`;
+				sum += `- Long: ${sm.interpreter.long}%\n`;
+				sum += `- Short: ${sm.interpreter.short}%\n`;
 				if (sm.interpreter.rsi.active)sum += `- RSI: (${sm.interpreter.rsi.overbought}, ${sm.interpreter.rsi.oversold})\n`;
-				if (sm.interpreter.ema.active)sum += `- EMA: (${sm.interpreter.ema.distance})\n`;
+				if (sm.interpreter.ema.active)sum += `- EMA: (${sm.interpreter.ema.distance}%)\n`;
 			}
 		}
 		

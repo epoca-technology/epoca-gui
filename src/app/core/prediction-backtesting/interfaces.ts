@@ -41,7 +41,7 @@ export type IPositionType = 1|-1;
  * When a position is closed, it is saved in a list that can be reviewed in the GUI when
  * the backtest completes.
  */
-export interface IPosition {
+export interface IBacktestPosition {
     // Type of position: 1 = long, -1 = short
     t: IPositionType,
 
@@ -81,13 +81,13 @@ export interface IPosition {
  * Once a model has finished the testing process it builds a performance dict 
  * containing all the details.
  */
-export interface IPerformance {
+export interface IBacktestPerformance {
     // Points
     points: number,         // Total Points Accumulated
     points_hist: number[],  // Historical fluctuation of points
 
     // Positions List
-    positions: IPosition[],
+    positions: IBacktestPosition[],
 
     // Counts
     long_num: number,
@@ -180,7 +180,7 @@ export interface IBacktest {
 export interface IBacktestResult {
     backtest: IBacktest,
     model: IModel,
-    performance: IPerformance
+    performance: IBacktestPerformance
 }
 
 
@@ -204,5 +204,5 @@ export interface IBacktests {
 
 // Performances
 export interface IPerformances {
-    [modelID: string]: IPerformance
+    [modelID: string]: IBacktestPerformance
 }

@@ -1,3 +1,4 @@
+import { IBacktestPosition } from "../../../core";
 import { ILineChartOptions, IBarChartOptions } from "../../../services";
 
 
@@ -12,6 +13,7 @@ export interface IPredictionBacktestingComponent {
 
     // Dialogs
     displayModel(id: string|number): void,
+    displayPosition(position: IBacktestPosition): void,
 
     // Backtest Summary Text
     copyBacktestSummary(): void,

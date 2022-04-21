@@ -1,0 +1,60 @@
+<mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <button mat-icon-button class="show-on-mobile" (click)="close()"><mat-icon>arrow_back</mat-icon></button>
+        <span class="truncate show-on-desktop">{{position.o ? 'Successful': 'Unsuccessful'}}&nbsp;</span>
+        <span class="truncate">{{position.t == 1 ? 'Long': 'Short'}}</span>
+        <span fxFlex></span>
+        <button mat-icon-button matTooltip="Display Model" (click)="_nav.displayModelDialog(model)"><mat-icon svgIcon="brain"></mat-icon></button>
+        <button mat-icon-button matTooltip="Display Prediction"><mat-icon svgIcon="wand_magic_sparkles"></mat-icon></button>
+        <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
+    </div>
+</mat-toolbar>
+<div mat-dialog-content>
+    <!-- Container -->
+    <div class="fadeIn padding">
+        <!-- Points-->
+        <div class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p class="truncate">Points State</p>
+            <span fxFlex></span>
+            <p matTooltip="The number of points the model had after this position was closed." 
+                [ngClass]="{'success-color': position.o, 'error-color': !position.o}"><strong>{{position.pts}}</strong></p>
+        </div>
+
+        <!-- Date Range -->
+        <div class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p class="truncate">Open Time</p>
+            <span fxFlex></span>
+            <p>{{position.ot | date: 'medium'}}</p>
+        </div>
+        <div class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p class="truncate">Close Time</p>
+            <span fxFlex></span>
+            <p>{{position.ct | date: 'medium'}}</p>
+        </div>
+
+        <!-- Prices -->
+        <div class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p class="truncate">Open</p>
+            <span fxFlex></span>
+            <p>{{position.op | currency}}</p>
+        </div>
+        <div class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p class="truncate">Take Profit</p>
+            <span fxFlex></span>
+            <p class="success-color">{{position.tpp | currency}}</p>
+        </div>
+        <div class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p class="truncate">Stop Loss</p>
+            <span fxFlex></span>
+            <p class="error-color">{{position.slp | currency}}</p>
+        </div>
+        <div class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p class="truncate">Close</p>
+            <span fxFlex></span>
+            <p matTooltip="The price in which the position was closed." 
+            [ngClass]="{'success-color': position.o, 'error-color': !position.o}">
+                <strong>{{position.cp | currency}}</strong>
+            </p>
+        </div>
+    </div>
+</div>

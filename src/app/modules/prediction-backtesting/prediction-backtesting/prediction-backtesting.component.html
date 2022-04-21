@@ -234,7 +234,7 @@
                                             <div class="desktop-card">
                                                 <!-- Heading -->
                                                 <div fxLayout="row" fxLayoutAlign="start center">
-                                                    <h4>Backtest Summary</h4>
+                                                    <h4>Backtest</h4>
                                                     <span fxFlex></span>
                                                     <button mat-icon-button 
                                                             matTooltip="Copy Backtest Summary" 
@@ -388,7 +388,54 @@
 
                                 <!-- Positions Section-->
                                 <div *ngIf="activeIndex == 1" class="fadeIn">
-                                    <p>Positions</p>
+                                    <div fxLayout="row" fxLayoutAlign="center center">
+                                        <div fxFlex="60" fxFlex.xs="100" fxFlex.sm="100">
+                                            <!-- Positions Table -->
+                                            <div class="desktop-card positions">
+                                                <table class="bordered highlight">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>#</th>
+                                                            <th>Open</th>
+                                                            <th *ngIf="layout == 'desktop'">Close</th>
+                                                            <th>Type</th>
+                                                            <th>Points</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr *ngFor="let p of _backtesting.performances[modelID].positions; let i = index" 
+                                                            (click)="displayPosition(p)" class="clickable" role="button">
+                                                            <td *ngIf="(i+1) <= visiblePositions">
+                                                                <p class="light-text">{{i+1}}</p>
+                                                            </td>
+                                                            <td *ngIf="(i+1) <= visiblePositions">
+                                                                <p class="show-on-mobile">{{p.ot | date:'short'}}</p>
+                                                                <p class="show-on-desktop">{{p.ot | date:'medium'}}</p>
+                                                            </td>
+                                                            <td *ngIf="(i+1) <= visiblePositions && layout == 'desktop'">
+                                                                <p>{{p.ct | date:'medium'}}</p>
+                                                            </td>
+                                                            <td *ngIf="(i+1) <= visiblePositions">
+                                                                <p [ngClass]="{'success-color': p.t == 1, 'error-color': p.t == -1}">
+                                                                    {{p.t == 1 ? 'Long': 'Short'}}
+                                                                </p>
+                                                            </td>
+                                                            <td *ngIf="(i+1) <= visiblePositions" class="align-right">
+                                                                <p [ngClass]="{'success-color': p.o, 'error-color': !p.o}">
+                                                                    <strong>{{p.pts}}</strong>
+                                                                </p>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                            <!-- Paginator -->
+                                            <div *ngIf="visiblePositions <= _backtesting.performances[modelID].positions.length" class="paginator">
+                                                <button mat-button (click)="visiblePositions=visiblePositions+15">View More</button>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
