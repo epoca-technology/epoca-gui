@@ -71,6 +71,8 @@ import { ConfirmationDialogComponent } from './components/confirmation-dialog';
 import { CandlestickDialogComponent, CandlestickBodyComponent} from './components/candlestick';
 import { RefreshButtonComponent } from './components/refresh-button/refresh-button.component';
 import { MobileTabsComponent } from './components/mobile-tabs/mobile-tabs.component';
+import { ModelDialogComponent } from './components/prediction/model-dialog/model-dialog.component';
+import { ModelContentComponent } from './components/prediction/model-content/model-content.component';
 
 
 
@@ -96,6 +98,8 @@ import { MobileTabsComponent } from './components/mobile-tabs/mobile-tabs.compon
         CandlestickBodyComponent,
         RefreshButtonComponent,
         MobileTabsComponent,
+        ModelDialogComponent,
+        ModelContentComponent,
 	],
 	imports: [
 		CommonModule,
@@ -221,6 +225,7 @@ import { MobileTabsComponent } from './components/mobile-tabs/mobile-tabs.compon
         CandlestickBodyComponent,
         RefreshButtonComponent,
         MobileTabsComponent,
+		ModelContentComponent,
 	]
 })
 export class SharedModule { }

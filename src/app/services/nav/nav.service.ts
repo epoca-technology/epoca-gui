@@ -6,8 +6,10 @@ import {MatBottomSheet, MatBottomSheetRef} from '@angular/material/bottom-sheet'
 import {BehaviorSubject, Observable} from "rxjs";
 import {filter} from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
+import { IModel } from '../../core';
 import {AppService} from "../app";
 import {ConfirmationDialogComponent, IConfirmationDialogData} from "../../shared/components/confirmation-dialog";
+import {ModelDialogComponent} from "../../shared/components/prediction";
 import {BottomSheetMenuComponent, IBottomSheetMenuItem} from "../../shared/components/bottom-sheet-menu";
 import {INavService, IRouteState, IRouteStateData} from "./interfaces";
 
@@ -134,6 +136,22 @@ export class NavService implements INavService {
 
 	
 	
+
+
+	
+	
+	/*
+	* Opens the dialog that contains all information about a model.
+	* @param model
+	* @returns MatDialogRef<any>
+	* */
+	public displayModelDialog(model: IModel): MatDialogRef<any> {
+		return this.dialog.open(ModelDialogComponent, {
+			hasBackdrop: this._app.layout.value != 'mobile', // Mobile optimization
+			panelClass: 'medium-dialog',
+			data: model
+		});
+	}
 
 	
 	

@@ -10,7 +10,8 @@ import {
     XAxisAnnotations,
 	ApexDataLabels,
 	ApexGrid,
-	ApexPlotOptions
+	ApexPlotOptions,
+	ApexStroke
 } from "ng-apexcharts";
 import { MatDialogRef } from "@angular/material/dialog";
 
@@ -24,7 +25,6 @@ export interface IChartService {
 	
     // Candlesticks
     getCandlestickChartOptions(candlesticks: ICandlestick[], annotations?: ApexAnnotations, highlightCurrentPrice?: boolean): ICandlestickChartOptions,
-	displayCandlestickDialog(candlestick: ICandlestick): MatDialogRef<any>,
 
 	// Bar Charts
 	getBarChartOptions(
@@ -34,6 +34,8 @@ export interface IChartService {
 		plotOptionsDistributed?: boolean,
 	): IBarChartOptions,
 
+	// Line Chart
+	getLineChartOptions(config: Partial<ILineChartOptions>, height?: number): ILineChartOptions,
 }
 
 
@@ -85,6 +87,21 @@ export type IBarChartOptions = {
 	colors: string[];
 	plotOptions: ApexPlotOptions;
 	dataLabels: ApexDataLabels;
+	grid: ApexGrid;
+	xaxis: ApexXAxis;
+	yaxis: ApexYAxis;
+};
+
+
+
+
+
+/* Line Chart Options */
+export type ILineChartOptions = {
+	series: ApexAxisChartSeries;
+	chart: ApexChart;
+	dataLabels: ApexDataLabels;
+	stroke: ApexStroke;
 	grid: ApexGrid;
 	xaxis: ApexXAxis;
 };

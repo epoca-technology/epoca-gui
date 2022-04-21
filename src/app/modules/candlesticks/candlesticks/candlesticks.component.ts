@@ -5,6 +5,7 @@ import { CandlestickService, ICandlestick, UtilsService } from '../../../core';
 import { AppService, ChartService, ICandlestickChartOptions, NavService, SnackbarService } from '../../../services';
 import { CandlesticksConfigDialogComponent } from './candlesticks-config-dialog/candlesticks-config-dialog.component';
 import { CandlestickSpreadsheetsDialogComponent } from './candlestick-spreadsheets-dialog/candlestick-spreadsheets-dialog.component';
+import { CandlestickDialogComponent } from '../../../shared/components/candlestick';
 import { ICandlesticksComponent, ICandlesticksConfig} from './interfaces';
 
 
@@ -66,7 +67,13 @@ export class CandlesticksComponent implements OnInit, ICandlesticksComponent {
 			);
 
             // Retrieve the chart options
+            const self = this;
             this.chartOptions = this._chart.getCandlestickChartOptions(this.rawCandlesticks, undefined, true);
+            this.chartOptions.chart!.events = {
+                click: function(event, chartContext, config) {
+                    if (self.rawCandlesticks![config.dataPointIndex]) self.displayCandlestickDialog(self.rawCandlesticks![config.dataPointIndex]);
+                }
+            }
 		} catch (e) {
 			console.log(e);
 			this._snackbar.error(this._utils.getErrorMessage(e));
@@ -158,9 +165,6 @@ export class CandlesticksComponent implements OnInit, ICandlesticksComponent {
 
 
 
-
-
-
     /**
      * Displays the candlestick spreadsheets dialog.
      * @returns void
@@ -172,4 +176,27 @@ export class CandlesticksComponent implements OnInit, ICandlesticksComponent {
 			panelClass: 'small-dialog'
 		})
     }
+
+
+
+
+
+
+
+
+    
+
+	/*
+	* Displays the candlestick dialog
+	* @param candlestick
+	* @returns void
+	* */
+	private displayCandlestickDialog(candlestick: ICandlestick): void {
+		this.dialog.open(CandlestickDialogComponent, {
+			disableClose: false,
+			hasBackdrop: this._app.layout.value != 'mobile', // Mobile optimization
+			panelClass: 'small-dialog',
+			data: candlestick
+		});
+	}
 }

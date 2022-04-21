@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core';
 import {BigNumber} from "bignumber.js";
 import * as moment from 'moment';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
-import { ApexAnnotations, ApexAxisChartSeries, ApexChart, ApexDataLabels, ApexGrid, ApexPlotOptions, XAxisAnnotations, YAxisAnnotations } from 'ng-apexcharts';
+import { ApexAnnotations, ApexChart, ApexPlotOptions } from 'ng-apexcharts';
 import { ICandlestick } from '../../core';
 import { AppService, ILayout } from '../app';
 import { CandlestickDialogComponent } from '../../shared/components/candlestick';
-import { IApexCandlestick, IChartService, ICandlestickChartOptions, IChartRange, IBarChartOptions } from './interfaces';
+import { IApexCandlestick, IChartService, ICandlestickChartOptions, IChartRange, IBarChartOptions, ILineChartOptions } from './interfaces';
 
 
 
@@ -57,7 +57,11 @@ export class ChartService implements IChartService {
      * @param highlightCurrentPrice?
      * @returns ICandlestickChartOptions
      */
-	 public getCandlestickChartOptions(candlesticks: ICandlestick[], annotations?: ApexAnnotations, highlightCurrentPrice?: boolean): ICandlestickChartOptions {
+	public getCandlestickChartOptions(
+		 candlesticks: ICandlestick[], 
+		 annotations?: ApexAnnotations, 
+		 highlightCurrentPrice?: boolean
+	): ICandlestickChartOptions {
         // Make sure at least 5 candlesticks have been provided
         if (!candlesticks || candlesticks.length < 5) {
             throw new Error('A minimum of 5 candlesticks must be provided in order to render the chart.');
@@ -75,11 +79,6 @@ export class ChartService implements IChartService {
 				type: "candlestick",
 				toolbar: {show: true,tools: {selection: true,zoom: true,zoomin: true,zoomout: true,download: false}},
 				animations: {enabled: false},
-				events: {
-					click: function(event, chartContext, config) {
-						if (candlesticks[config.dataPointIndex]) self.displayCandlestickDialog(candlesticks[config.dataPointIndex]);
-					}
-				},
             },
 			plotOptions: {candlestick: {colors: {upward: this.upwardColor,downward: this.downwardColor}}},
             annotations: this.getCandlesticksAnnotations(
@@ -217,25 +216,6 @@ export class ChartService implements IChartService {
 
 
 
-	/*
-	* Displays the candlestick dialog
-	* @param candlestick
-	* @returns MatDialogRef<any>
-	* */
-	public displayCandlestickDialog(candlestick: ICandlestick): MatDialogRef<any> {
-		return this.dialog.open(CandlestickDialogComponent, {
-			disableClose: false,
-			hasBackdrop: this._app.layout.value != 'mobile', // Mobile optimization
-			panelClass: 'small-dialog',
-			data: candlestick
-		});
-	}
-
-
-
-
-
-
 
 
 
@@ -271,7 +251,7 @@ export class ChartService implements IChartService {
 		if (typeof height == "number") defaultChart.height = height;
 
 		// Init the default plot options
-		let defaultPlotOptions: ApexPlotOptions = {bar: {borderRadius: 4, horizontal: true, distributed: false}};
+		let defaultPlotOptions: ApexPlotOptions = {bar: {borderRadius: 4, horizontal: true, distributed: false,}};
 		if (plotOptionsDistributed) defaultPlotOptions.bar!.distributed = true;
 
 		// Return the Options Object
@@ -282,11 +262,49 @@ export class ChartService implements IChartService {
 			plotOptions: config.plotOptions ? config.plotOptions: defaultPlotOptions,
 			dataLabels: config.dataLabels ? config.dataLabels: {enabled: false},
 			grid: config.grid ? config.grid: {show: false},
-			xaxis: {categories: categories}
+			xaxis: {categories: categories},
+			yaxis: config.yaxis ? config.yaxis: {}
 		}
 	}
 
 
+
+
+
+
+
+
+
+
+
+	/* Line Chart */
+
+
+
+
+
+
+	/**
+	 * Builds the configuration for a line chart.
+	 * @param config 
+	 * @param height?
+	 * @returns ILineChartOptions
+	 */
+	 public getLineChartOptions(config: Partial<ILineChartOptions>, height?: number): ILineChartOptions {
+		// Init the default chart
+		let defaultChart: ApexChart = {height: 600, type: 'line',animations: { enabled: false}, toolbar: {show: false}};
+		if (typeof height == "number") defaultChart.height = height;
+
+		// Return the Options Object
+		return {
+			series: config.series!,
+			chart: config.chart ? config.chart: defaultChart,
+			dataLabels: config.dataLabels ? config.dataLabels: {enabled: false},
+			stroke: config.stroke ? config.stroke: {curve: "straight"},
+			grid: config.grid ? config.grid: {row: { opacity: 0.5 }},
+			xaxis: {labels: { show: false } }
+		}
+	}
 
 
 

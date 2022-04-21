@@ -1,6 +1,7 @@
+import { ILineChartOptions, IBarChartOptions } from "../../../services";
 
 
-
+// Service
 export interface IPredictionBacktestingComponent {
     // Initialization
     fileChanged(event: any): Promise<void>,
@@ -8,6 +9,12 @@ export interface IPredictionBacktestingComponent {
 
     // Navigation
     activateSection(section: ISection, modelID?: string): void,
+
+    // Dialogs
+    displayModel(id: string|number): void,
+
+    // Backtest Summary Text
+    copyBacktestSummary(): void,
 }
 
 
@@ -20,4 +27,13 @@ export interface ISection {
     id: ISectionID,
     name: string,
     icon?: string
+}
+
+
+
+// Model Charts
+export interface IModelCharts {
+    points: ILineChartOptions,
+    accuracy: IBarChartOptions,
+    positions: IBarChartOptions,
 }

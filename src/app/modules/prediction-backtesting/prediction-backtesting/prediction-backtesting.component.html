@@ -8,7 +8,7 @@
         <mat-toolbar color="primary">
             <div fxLayout="row" fxLayoutAlign="start center">
                 <button mat-icon-button (click)="predBacktestingSidenav?.toggle()"><mat-icon>arrow_back</mat-icon></button>
-                <span>Server</span>
+                <span>Prediction Backtesting</span>
                 <span fxFlex></span>
             </div>
         </mat-toolbar>
@@ -42,13 +42,17 @@
         <!-- Content Header -->
         <mat-toolbar class="secondary-header">
             <div fxLayout="row" fxLayoutAlign="center center">
-                <button mat-icon-button (click)="_nav.dashboard()" class="show-on-mobile"><mat-icon>arrow_back</mat-icon></button>
+                <button mat-icon-button (click)="_nav.dashboard()" class="show-on-mobile" *ngIf="!initialized"><mat-icon>arrow_back</mat-icon></button>
+                <button mat-icon-button (click)="resetResults()" class="show-on-mobile" *ngIf="initialized"><mat-icon>arrow_back</mat-icon></button>
                 <button mat-icon-button (click)="predBacktestingSidenav?.toggle()" *ngIf="initialized" class="show-on-mobile"><mat-icon>menu</mat-icon></button>
-                <span class="truncate">Prediction Backtesting</span>
+                <span class="truncate show-on-mobile" *ngIf="!initialized">Prediction Backtesting</span>
+                <span class="truncate show-on-mobile" *ngIf="initialized">{{section.id == 'model' ? modelID: section.name}}</span>
+                <span class="truncate show-on-desktop">Prediction Backtesting</span>
                 <span fxFlex></span>
                 <button mat-icon-button 
                         matTooltip="Clear Backtest Results"
                         (click)="resetResults()"
+                        class="show-on-desktop"
                         *ngIf="initialized"><mat-icon>close</mat-icon></button>
             </div>
         </mat-toolbar>
@@ -108,8 +112,287 @@
                     </div>
 
                     <!-- Sections -->
-                    <div *ngIf="loaded">
-                        <p>Wtf?</p>
+                    <div *ngIf="loaded" class="fadeIn">
+
+                        <!-- General Sections -->
+                        <div *ngIf="section.id != 'model'" fxLayout="row" fxLayoutAlign="center center" class="padding">
+                            <div fxFlex="90" fxFlex.xs="100" fxflex.sm="100">
+
+                                <!-- Points Section -->
+                                <div *ngIf="section.id == 'points' && pointsDistChart && pointsLineChart">
+                                    <!-- Distribution -->
+                                    <div class="desktop-card">
+                                        <div>
+                                            <apx-chart
+                                                [series]="pointsDistChart.series"
+                                                [chart]="pointsDistChart.chart"
+                                                [plotOptions]="pointsDistChart.plotOptions"
+                                                [xaxis]="pointsDistChart.xaxis"
+                                                [dataLabels]="pointsDistChart.dataLabels"
+                                                [colors]="pointsDistChart.colors"
+                                                [grid]="pointsDistChart.grid"
+                                                [legend]="{show: false}"
+                                            ></apx-chart>
+                                        </div>
+                                    </div>
+
+                                    <!-- Lines -->
+                                    <div class="desktop-card">
+                                        <div>
+                                            <apx-chart
+                                                [series]="pointsLineChart.series"
+                                                [chart]="pointsLineChart.chart"
+                                                [xaxis]="pointsLineChart.xaxis"
+                                                [dataLabels]="pointsLineChart.dataLabels"
+                                                [grid]="pointsLineChart.grid"
+                                                [stroke]="pointsLineChart.stroke"
+                                            ></apx-chart>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Accuracy Section -->
+                                <div *ngIf="section.id == 'accuracy' && accuracyChart">
+                                    <div class="desktop-card">
+                                        <div>
+                                            <apx-chart
+                                                [series]="accuracyChart.series"
+                                                [chart]="accuracyChart.chart"
+                                                [plotOptions]="accuracyChart.plotOptions"
+                                                [xaxis]="accuracyChart.xaxis"
+                                                [dataLabels]="accuracyChart.dataLabels"
+                                                [colors]="accuracyChart.colors"
+                                                [grid]="accuracyChart.grid"
+                                            ></apx-chart>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <!-- Positions Section -->
+                                <div *ngIf="section.id == 'positions' && positionsChart">
+                                    <div class="desktop-card">
+                                        <div>
+                                            <apx-chart
+                                                [series]="positionsChart.series"
+                                                [chart]="positionsChart.chart"
+                                                [plotOptions]="positionsChart.plotOptions"
+                                                [xaxis]="positionsChart.xaxis"
+                                                [dataLabels]="positionsChart.dataLabels"
+                                                [colors]="positionsChart.colors"
+                                                [grid]="positionsChart.grid"
+                                            ></apx-chart>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <!-- Duration Section -->
+                                <div *ngIf="section.id == 'duration' && durationChart">
+                                    <div class="desktop-card">
+                                        <div>
+                                            <apx-chart
+                                                [series]="durationChart.series"
+                                                [chart]="durationChart.chart"
+                                                [plotOptions]="durationChart.plotOptions"
+                                                [xaxis]="durationChart.xaxis"
+                                                [dataLabels]="durationChart.dataLabels"
+                                                [colors]="durationChart.colors"
+                                                [grid]="durationChart.grid"
+                                                [legend]="{show: false}"
+                                            ></apx-chart>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Model Sections -->
+                        <div *ngIf="section.id == 'model' && modelID">
+                            <!-- Tabs Navigation-->
+                            <mat-tab-group *ngIf="layout == 'mobile'" 
+                                        [selectedIndex]="activeIndex" (selectedIndexChange)="activeIndex = $event"
+                                        class="mat-elevation-z3" mat-stretch-tabs mat-align-tabs="center" backgroundColor="primary">
+                                <mat-tab label="Summary"></mat-tab>
+                                <mat-tab label="Positions"></mat-tab>
+                            </mat-tab-group>
+                            <mat-tab-group *ngIf="layout == 'desktop'"  
+                                            [selectedIndex]="activeIndex" (selectedIndexChange)="activeIndex = $event" 
+                                            mat-align-tabs="center">
+                                <mat-tab label="Summary"></mat-tab>
+                                <mat-tab label="Positions"></mat-tab>
+                            </mat-tab-group>
+
+                            <!-- Content -->
+                            <div class="padding">
+                                <!-- Summary Section -->
+                                <div *ngIf="activeIndex == 0" class="fadeIn summary-section">
+                                    <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column">
+                                        <!-- Summary Cards-->
+                                        <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                                            <!-- Backtest -->
+                                            <div class="desktop-card">
+                                                <!-- Heading -->
+                                                <div fxLayout="row" fxLayoutAlign="start center">
+                                                    <h4>Backtest Summary</h4>
+                                                    <span fxFlex></span>
+                                                    <button mat-icon-button 
+                                                            matTooltip="Copy Backtest Summary" 
+                                                            (click)="copyBacktestSummary()"><mat-icon>receipt_long</mat-icon></button>
+                                                </div>
+
+                                                <!-- Description -->
+                                                <p class="light-text">{{_backtesting.backtests[modelID].description}}</p>
+
+                                                <!-- Backtest ID -->
+                                                <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+                                                    <p class="light-text truncate">Backtest ID</p>
+                                                    <span fxFlex></span>
+                                                    <p>{{_backtesting.backtests[modelID].id}}</p>
+                                                </div>
+
+                                                <!-- Start Date -->
+                                                <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+                                                    <p class="light-text truncate">Start</p>
+                                                    <span fxFlex></span>
+                                                    <p matTooltip="The Open Time of the first candlestick used for the test.">
+                                                        {{_backtesting.backtests[modelID].start | date:'medium'}}
+                                                    </p>
+                                                </div>
+
+                                                <!-- End Date -->
+                                                <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+                                                    <p class="light-text truncate">End</p>
+                                                    <span fxFlex></span>
+                                                    <p matTooltip="The Close Time of the last candlestick used for the test.">
+                                                        {{_backtesting.backtests[modelID].end | date:'medium'}}
+                                                    </p>
+                                                </div>
+
+                                               <!-- Position Exit Percentages -->
+                                               <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+                                                    <p class="light-text truncate">Position Exit</p>
+                                                    <span fxFlex></span>
+                                                    <p class="success-color" matTooltip="Take Profit">{{_backtesting.backtests[modelID].take_profit}}%</p>
+                                                    <p>&nbsp;/&nbsp;</p>
+                                                    <p class="error-color" matTooltip="Stop Loss">{{_backtesting.backtests[modelID].stop_loss}}%</p>
+                                                </div>
+
+                                                <!-- Idle Minutes -->
+                                                <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+                                                     <p class="light-text truncate">Idle Minutes</p>
+                                                     <span fxFlex></span>
+                                                     <p matTooltip="The number of minutes the modle remained idle every time it closed a position.">
+                                                         {{_backtesting.backtests[modelID].idle_minutes_on_position_close}} mins
+                                                    </p>
+                                                </div>
+
+                                                <!-- Model's Backtest Duration -->
+                                                <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+                                                    <p class="light-text truncate">Model Backtest Duration</p>
+                                                    <span fxFlex></span>
+                                                    <p matTooltip="The number of minutes it took the model to complete the backtest.">
+                                                        {{_backtesting.backtests[modelID].model_duration}} mins
+                                                    </p>
+                                               </div>
+                                            </div>
+
+                                            <div class="divider"></div>
+
+                                            <!-- Model -->
+                                            <div class="desktop-card">
+                                                <!-- Heading -->
+                                                <div fxLayout="row" fxLayoutAlign="start center">
+                                                    <h4 *ngIf="_backtesting.models[modelID].single_models.length == 0">Decision Model</h4>
+                                                    <h4 *ngIf="_backtesting.models[modelID].single_models.length == 1">Single Model</h4>
+                                                    <h4 *ngIf="_backtesting.models[modelID].single_models.length > 1">Multi Model</h4>
+                                                    <span fxFlex></span>
+                                                    <div class="square-badge">{{_backtesting.models[modelID].single_models.length}}</div>
+                                                </div>
+
+                                                <!-- Content -->
+                                                <div class="margin-top">
+                                                    <app-model-content [model]="_backtesting.models[modelID]"></app-model-content>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <span fxFlex></span>
+
+                                        <!-- Chart Cards-->
+                                        <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                                            <!-- Divider for mobile-->
+                                            <div class="divider"></div>
+
+                                            <!-- Points -->
+                                            <div class="desktop-card">
+                                                <div fxLayout="row" fxLayoutAlign="start center">
+                                                    <h4>Points</h4>
+                                                    <span fxFlex></span>
+                                                    <div class="square-badge">{{_backtesting.performances[modelID].points}}</div>
+                                                </div>
+                                                <apx-chart
+                                                    [series]="modelCharts[modelID].points.series"
+                                                    [chart]="modelCharts[modelID].points.chart"
+                                                    [xaxis]="modelCharts[modelID].points.xaxis"
+                                                    [dataLabels]="modelCharts[modelID].points.dataLabels"
+                                                    [grid]="modelCharts[modelID].points.grid"
+                                                    [stroke]="modelCharts[modelID].points.stroke"
+                                                ></apx-chart>
+                                            </div>
+                                            <div class="divider"></div>
+
+                                            <!-- Accuracy -->
+                                            <div class="desktop-card">
+                                                <div fxLayout="row" fxLayoutAlign="start center">
+                                                    <h4>Accuracy</h4>
+                                                    <span fxFlex></span>
+                                                    <div class="square-badge">{{_backtesting.performances[modelID].general_acc}}%</div>
+                                                </div>
+                                                <apx-chart
+                                                    [series]="modelCharts[modelID].accuracy.series"
+                                                    [chart]="modelCharts[modelID].accuracy.chart"
+                                                    [plotOptions]="modelCharts[modelID].accuracy.plotOptions"
+                                                    [xaxis]="modelCharts[modelID].accuracy.xaxis"
+                                                    [yaxis]="modelCharts[modelID].accuracy.yaxis"
+                                                    [dataLabels]="modelCharts[modelID].accuracy.dataLabels"
+                                                    [colors]="modelCharts[modelID].accuracy.colors"
+                                                    [grid]="modelCharts[modelID].accuracy.grid"
+                                                ></apx-chart>
+                                            </div>
+                                            <div class="divider"></div>
+
+                                            <!-- Positions -->
+                                            <div class="desktop-card">
+                                                <div fxLayout="row" fxLayoutAlign="start center">
+                                                    <h4>Positions</h4>
+                                                    <span fxFlex></span>
+                                                    <div class="square-badge">{{_backtesting.performances[modelID].positions.length}}</div>
+                                                </div>
+                                                <apx-chart
+                                                    [series]="modelCharts[modelID].positions.series"
+                                                    [chart]="modelCharts[modelID].positions.chart"
+                                                    [plotOptions]="modelCharts[modelID].positions.plotOptions"
+                                                    [xaxis]="modelCharts[modelID].positions.xaxis"
+                                                    [yaxis]="modelCharts[modelID].positions.yaxis"
+                                                    [dataLabels]="modelCharts[modelID].positions.dataLabels"
+                                                    [colors]="modelCharts[modelID].positions.colors"
+                                                    [grid]="modelCharts[modelID].positions.grid"
+                                                ></apx-chart>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                                <!-- Positions Section-->
+                                <div *ngIf="activeIndex == 1" class="fadeIn">
+                                    <p>Positions</p>
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
                 </div>
             </div>

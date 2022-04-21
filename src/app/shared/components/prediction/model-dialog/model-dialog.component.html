@@ -1,0 +1,15 @@
+<mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <button mat-icon-button class="show-on-mobile" (click)="close()"><mat-icon>arrow_back</mat-icon></button>
+        <span class="truncate" *ngIf="model.single_models.length == 0">Decision Model</span>
+        <span class="truncate" *ngIf="model.single_models.length == 1">Single Model</span>
+        <span class="truncate" *ngIf="model.single_models.length > 1">Multi Model</span>
+        <span fxFlex></span>
+        <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
+    </div>
+</mat-toolbar>
+<div mat-dialog-content class="fadeIn">
+    <div class="padding">
+        <app-model-content [model]="model"></app-model-content>
+    </div>
+</div>

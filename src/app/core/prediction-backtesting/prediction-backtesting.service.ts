@@ -11,14 +11,7 @@ export class PredictionBacktestingService implements IPredictionBacktestingServi
 	public backtests: IBacktests = {};
 	public performances: IPerformances = {};
 
-	// Metadata
-	//public points: {[modelID: string]: number} = {}
-
-
-
 	constructor() { }
-
-
 
 
 
@@ -70,14 +63,6 @@ export class PredictionBacktestingService implements IPredictionBacktestingServi
 		this.models[finalID] = res.model;
 		this.backtests[finalID] = res.backtest;
 		this.performances[finalID] = res.performance;
-
-		// Iterate over each model and populate the data
-		/*for (let id of this.modelIDs) {
-			// Populate the points
-			this.points[id] = this.performances[id].points;
-
-			
-		}*/
 	}
 
 
@@ -95,7 +80,6 @@ export class PredictionBacktestingService implements IPredictionBacktestingServi
 		this.models = {};
 		this.backtests = {};
 		this.performances = {};
-		//this.points = {};
 	}
 
 

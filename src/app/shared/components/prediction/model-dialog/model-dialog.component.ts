@@ -1,0 +1,39 @@
+import {Component, Inject, OnInit} from '@angular/core';
+import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
+import { IModel } from '../../../../core';
+import { SnackbarService } from '../../../../services';
+import { IModelDialogComponent } from './interfaces';
+
+@Component({
+  selector: 'app-model-dialog',
+  templateUrl: './model-dialog.component.html',
+  styleUrls: ['./model-dialog.component.scss']
+})
+export class ModelDialogComponent implements OnInit, IModelDialogComponent {
+
+    constructor(
+		public dialogRef: MatDialogRef<ModelDialogComponent>,
+		private _snackbar: SnackbarService,
+		@Inject(MAT_DIALOG_DATA) public model: IModel,
+	) { }
+
+
+    ngOnInit(): void {
+		// Make sure the model was provided
+		if (!this.model) {
+			console.error(this.model)
+			this._snackbar.error('A valid model must be provided in order to visualize it.');
+			setTimeout(() => { this.close() }, 700)
+		}
+    }
+
+
+
+
+
+
+
+
+	// Close Dialog
+	public close(): void { this.dialogRef.close() }
+}

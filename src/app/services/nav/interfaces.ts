@@ -1,9 +1,9 @@
 import {BehaviorSubject} from "rxjs";
 import {MatDialogRef} from "@angular/material/dialog";
 import {MatBottomSheetRef} from "@angular/material/bottom-sheet";
+import { IModel } from "../../core";
 import {IConfirmationDialogData} from "../../shared/components/confirmation-dialog";
 import {IBottomSheetMenuItem} from "../../shared/components/bottom-sheet-menu";
-import { IAuthority } from "../../core";
 
 export interface INavService {
 	// Route State
@@ -25,6 +25,7 @@ export interface INavService {
 	
 	// Dialogs
     displayConfirmationDialog(data?: IConfirmationDialogData): MatDialogRef<any>,
+	displayModelDialog(model: IModel): MatDialogRef<any>,
 	
 	// Bottom Sheets
 	displayBottomSheetMenu(data: IBottomSheetMenuItem[]): MatBottomSheetRef<any>,

@@ -1,14 +1,14 @@
 import {Component, Inject, OnInit, ViewChild, ElementRef} from '@angular/core';
 import {AbstractControl, FormControl, FormGroup} from '@angular/forms';
 import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
-import {IConfirmationDialogComponent, IConfirmationDialogData} from "./interfaces";
+import { UtilsService } from '../../../core';
 import {
     AppService,
 	ClipboardService,
 	SnackbarService,
 	ValidationsService
 } from "../../../services";
-import { UtilsService } from '../../../core';
+import {IConfirmationDialogComponent, IConfirmationDialogData} from "./interfaces";
 
 @Component({
 	selector: 'app-confirmation-dialog',
