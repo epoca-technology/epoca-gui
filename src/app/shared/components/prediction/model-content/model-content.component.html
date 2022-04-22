@@ -21,20 +21,15 @@
         <!-- Title (If it is a MultiModel)-->
         <h5 *ngIf="model.single_models.length > 1">Single Model {{i+1}}</h5>
 
-        <!-- Lookback -->
-        <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
-            <p class="light-text">Lookback</p>
-            <span fxFlex></span>
-            <p matTooltip="The number of prediction candlesticks that will be used from the past in order to make a prediction.">
-                {{m.lookback}}
-            </p>
-        </div>
-
         <!-- Arima -->
         <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
             <p class="light-text truncate">Arima</p>
             <span fxFlex></span>
-            <p class="formula" matTooltip="(p, d, q)">({{m.arima.p}}, {{m.arima.d}}, {{m.arima.q}})</p>
+            <p class="formula" 
+                matTooltip="Lookback: The number of candlesticks that will be used from the past in order to make a prediction.">
+                [{{m.lookback}}] ->
+            </p>
+            <p class="formula" matTooltip="(p, d, q)">&nbsp;({{m.arima.p}}, {{m.arima.d}}, {{m.arima.q}})</p>
             <p class="formula" matTooltip="(P, D, Q, m)" 
                 *ngIf="m.arima.P != 0 || m.arima.D != 0 || m.arima.Q != 0 || m.arima.m != 0">
                 &nbsp;({{m.arima.P}}, {{m.arima.D}}, {{m.arima.Q}}, {{m.arima.m}})
