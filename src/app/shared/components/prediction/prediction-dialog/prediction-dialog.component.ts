@@ -20,7 +20,8 @@ import {
 	IRSIMetadata,
 	IEMAMetadata,
 	IChangeMetadataResult,
-	IChangeMetadataChartSeries
+	IChangeMetadataChartSeries,
+	ISeparatedCandlesticks
 } from './interfaces';
 
 @Component({
@@ -215,7 +216,6 @@ export class PredictionDialogComponent implements OnInit, IPredictionDialogCompo
 					name: "Prediction",
 					data: series.predictions, 
 					color: this.getPredictionLineColor(result),
-					
 				},
 				{
 					name: "Real",
@@ -224,7 +224,7 @@ export class PredictionDialogComponent implements OnInit, IPredictionDialogCompo
 				},
 			],
 			stroke: {curve: "straight", dashArray: [8, 0]},
-			xaxis: {categories: series.categories}
+			xaxis: {categories: series.categories, type: "datetime", labels: {datetimeUTC: false},tooltip: {enabled: false} },
 		}, 300);
 	}
 
@@ -244,16 +244,63 @@ export class PredictionDialogComponent implements OnInit, IPredictionDialogCompo
 		let real: number[] = [];
 		let categories: number[] = [];
 
-		// Iterate over each candlestick
-		// @TODO
+		// Retrieve the separated candlesticks
+		const sc: ISeparatedCandlesticks = this.getCandlestickHeadAndTail(candlesticks, preds.length);
+
+		// Process the head
+		for (let headC of sc.head) {
+			predictions.push(headC.c);
+			real.push(headC.c);
+			categories.push(headC.ct);
+		}
+
+		// Process the tail
+		for (let tailC of sc.tail) {
+			real.push(tailC.c);
+			categories.push(tailC.ct);
+		}
 
 		// Finally, return the series data
 		return {
-			predictions: predictions,
+			predictions: predictions.concat(preds),
 			real: real,
 			categories: categories
 		}
 	}
+
+
+
+
+	/**
+	 * Retrieves the candlesticks head and tail in order to build the series.
+	 * @param candlesticks 
+	 * @param predictionCount 
+	 * @returns ISeparatedCandlesticks
+	 */
+	private getCandlestickHeadAndTail(candlesticks: ICandlestick[], predictionCount: number): ISeparatedCandlesticks {
+		// Init the lists
+		let head: ICandlestick[] = [];
+		let tail: ICandlestick[] = [];
+
+		// Iterate over each candlestick and separate the values
+		for (let c of candlesticks) {
+			// Append items to the head
+			if (c.ct <= this.prediction.t) { head.push(c) }
+			// Append items to the tail
+			else { tail.push(c) }
+		}
+
+		// Set the time on the last item in the head as the prediction's time
+		head[head.length - 1].ct = this.prediction.t;
+
+		// Return the final values
+		return {
+			head: head,
+			tail: tail.slice(0, predictionCount)
+		}
+	}
+
+
 
 
 

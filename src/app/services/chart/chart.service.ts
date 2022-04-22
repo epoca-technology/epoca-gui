@@ -90,7 +90,7 @@ export class ChartService implements IChartService {
 				highlightCurrentPrice === false ? undefined: candlesticks[candlesticks.length -1].c
 			),
             title: {text: this.getCandlesticksTitle(candlesticks),align: "left"},
-            xaxis: {type: "datetime",tooltip: {enabled: true}}, 
+            xaxis: {type: "datetime",tooltip: {enabled: true}, labels: {datetimeUTC: false}}, 
             yaxis: { tooltip: { enabled: true }, forceNiceScale: false, min: range.min, max: range.max}
         }
     }
@@ -296,7 +296,7 @@ export class ChartService implements IChartService {
 	 */
 	 public getLineChartOptions(config: Partial<ILineChartOptions>, height?: number): ILineChartOptions {
 		// Init the default chart
-		let defaultChart: ApexChart = {height: 600, type: 'line',animations: { enabled: false}, toolbar: {show: false}};
+		let defaultChart: ApexChart = {height: 600, type: 'line',animations: { enabled: false}, toolbar: {show: false}, zoom: {enabled: false}};
 		if (typeof height == "number") defaultChart.height = height;
 
 		// Return the Options Object
@@ -306,7 +306,7 @@ export class ChartService implements IChartService {
 			dataLabels: config.dataLabels ? config.dataLabels: {enabled: false},
 			stroke: config.stroke ? config.stroke: {curve: "straight"},
 			grid: config.grid ? config.grid: {row: { opacity: 0.5 }},
-			xaxis: {labels: { show: false } }
+			xaxis: config.xaxis ? config.xaxis: {labels: { show: false } }
 		}
 	}
 

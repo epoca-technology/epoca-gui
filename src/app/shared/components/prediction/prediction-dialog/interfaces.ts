@@ -1,4 +1,4 @@
-import { IModel, IPrediction } from "../../../../core";
+import { ICandlestick, IModel, IPrediction } from "../../../../core";
 import { ILineChartOptions } from "../../../../services";
 
 
@@ -71,4 +71,13 @@ export interface IEMAMetadata {
     distanceValue: number,
     result: 'upwards'|'downwards'|'sideways',
     badge: IMetadataResultBadge,
+}
+
+
+
+
+// Separated Candlesticks
+export interface ISeparatedCandlesticks {
+    head: ICandlestick[],
+    tail: ICandlestick[],
 }
