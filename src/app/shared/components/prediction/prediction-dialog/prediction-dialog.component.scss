@@ -10,9 +10,18 @@
 
 
 
-    .square-badge{ margin-left:5px;}
-    .square-badge-success{ margin-left:5px;}
-    .square-badge-error{ margin-left:5px;}
+    .square-badge{ 
+        margin-left:5px;   
+        .mat-icon{ margin-top:-2px;}
+    }
+    .square-badge-success{ 
+        margin-left:5px;
+        .mat-icon{ margin-top:-2px;}
+    }
+    .square-badge-error{ 
+        margin-left:5px;
+        .mat-icon{ margin-top:-2px;}
+    }
 
 
 }

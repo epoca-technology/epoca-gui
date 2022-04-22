@@ -266,7 +266,7 @@ ul li ul, ol li ul { padding: 0 0 0 15px;}
 	padding:0 5px 0 5px;
 }*/
 .square-badge { 
-	padding:4px 5px 4px 5px;
+	padding:5px 5px 5px 5px;
 	color:#FFFFFF;
 	border-radius: 7px;
 	min-width: 20px;
@@ -276,6 +276,8 @@ ul li ul, ol li ul { padding: 0 0 0 15px;}
 	font-size:12px!important;
     max-height:20px;
     width: auto;
+
+	.mat-icon { vertical-align: middle!important; }
 }
 
 .square-badge-success { 
