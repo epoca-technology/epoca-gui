@@ -1,12 +1,16 @@
 import { Injectable } from '@angular/core';
-import {BigNumber} from "bignumber.js";
 import * as moment from 'moment';
-import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import { ApexAnnotations, ApexChart, ApexPlotOptions } from 'ng-apexcharts';
-import { ICandlestick } from '../../core';
+import { ICandlestick, UtilsService } from '../../core';
 import { AppService, ILayout } from '../app';
-import { CandlestickDialogComponent } from '../../shared/components/candlestick';
-import { IApexCandlestick, IChartService, ICandlestickChartOptions, IChartRange, IBarChartOptions, ILineChartOptions } from './interfaces';
+import { 
+	IApexCandlestick, 
+	IChartService, 
+	ICandlestickChartOptions, 
+	IChartRange, 
+	IBarChartOptions, 
+	ILineChartOptions 
+} from './interfaces';
 
 
 
@@ -25,7 +29,7 @@ export class ChartService implements IChartService {
 
   	constructor(
 		private _app: AppService,
-		private dialog: MatDialog,
+		private _utils: UtilsService,
 	  ) { }
 
 
@@ -164,8 +168,8 @@ export class ChartService implements IChartService {
 
 		// Return the range
 		return {
-			max: BigNumber.max.apply(null, high).toNumber(),
-			min: BigNumber.min.apply(null, low).toNumber()
+			max: this._utils.getMax(high),
+			min: this._utils.getMin(low)
 		}
 	}
 
@@ -200,7 +204,7 @@ export class ChartService implements IChartService {
 				label: {
 					borderColor: '#000000',
 					style: { color: '#fff', background: '#000000'},
-					text: `$${new BigNumber(currentPrice).toFormat(2)}`,
+					text: `$${this._utils.formatNumber(currentPrice, 2)}`,
 					position: 'left',
 					offsetX: 50
 				}

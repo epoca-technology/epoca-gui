@@ -2,7 +2,14 @@
 
 // Prediction Service
 export interface IPredictionService {
+    // Properties
+    resultNames: {[result: string]: IPredictionResultName},
     
+
+
+
+    // Models
+    getModelTypeName(singleModelCount: number): IModelTypeName,
 }
 
 
@@ -94,6 +101,8 @@ export interface IInterpreterConfig {
  * 1 (long) or 0 (neutral) or -1 (short)
  */
 export type IPredictionResult = 1|0|-1;
+export type IPredictionResultName = 'Long'|'Short'|'Neutral';
+
 
 
 
@@ -224,3 +233,16 @@ export interface IModel {
     // List of SingleModels
     single_models: ISingleModel[]
 }
+
+
+
+
+/**
+ * Model Type Name
+ * Each model has a name that can be used to quickly identify how to functions.
+ * - Single Model: The most basic model that exists.
+ * - Multi Model: Contains multiple Single Models and the prediction result is based
+ * on the consensus.
+ * - Decision Model: ?
+ */
+export type IModelTypeName = 'Single Model'|'Multi Model'|'Decision Model';

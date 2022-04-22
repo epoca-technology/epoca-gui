@@ -6,10 +6,10 @@ import {MatBottomSheet, MatBottomSheetRef} from '@angular/material/bottom-sheet'
 import {BehaviorSubject, Observable} from "rxjs";
 import {filter} from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { IModel } from '../../core';
+import { IModel, IPrediction } from '../../core';
 import {AppService} from "../app";
 import {ConfirmationDialogComponent, IConfirmationDialogData} from "../../shared/components/confirmation-dialog";
-import {ModelDialogComponent} from "../../shared/components/prediction";
+import {ModelDialogComponent, PredictionDialogComponent} from "../../shared/components/prediction";
 import {BottomSheetMenuComponent, IBottomSheetMenuItem} from "../../shared/components/bottom-sheet-menu";
 import {INavService, IRouteState, IRouteStateData} from "./interfaces";
 
@@ -156,6 +156,28 @@ export class NavService implements INavService {
 	
 	
 	
+
+	
+
+
+	
+	
+	/*
+	* Opens the dialog that contains all information about a prediction.
+	* @param data
+	* @returns MatDialogRef<any>
+	* */
+	public displayPredictionDialog(model: IModel, prediction: IPrediction): MatDialogRef<any> {
+		return this.dialog.open(PredictionDialogComponent, {
+			hasBackdrop: this._app.layout.value != 'mobile', // Mobile optimization
+			panelClass: 'medium-dialog',
+			data: {
+				model: model,
+				prediction: prediction
+			}
+		});
+	}
+
 	
 	
 

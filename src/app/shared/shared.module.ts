@@ -39,6 +39,9 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
 // DateTime Picker
 import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
 
+// Charts
+import { NgApexchartsModule } from "ng-apexcharts";
+
 // Environment
 import {environment} from "../../environments/environment";
 
@@ -73,6 +76,7 @@ import { RefreshButtonComponent } from './components/refresh-button/refresh-butt
 import { MobileTabsComponent } from './components/mobile-tabs/mobile-tabs.component';
 import { ModelDialogComponent } from './components/prediction/model-dialog/model-dialog.component';
 import { ModelContentComponent } from './components/prediction/model-content/model-content.component';
+import { PredictionDialogComponent } from './components/prediction/prediction-dialog/prediction-dialog.component';
 
 
 
@@ -100,6 +104,7 @@ import { ModelContentComponent } from './components/prediction/model-content/mod
         MobileTabsComponent,
         ModelDialogComponent,
         ModelContentComponent,
+        PredictionDialogComponent,
 	],
 	imports: [
 		CommonModule,
@@ -147,6 +152,9 @@ import { ModelContentComponent } from './components/prediction/model-content/mod
         NgxMatDatetimePickerModule,
         NgxMatTimepickerModule,
         NgxMatNativeDateModule,
+
+		// Charts
+		NgApexchartsModule,
 	],
 	providers: [
 		// Dialog Defaults
@@ -208,6 +216,9 @@ import { ModelContentComponent } from './components/prediction/model-content/mod
         NgxMatDatetimePickerModule,
         NgxMatTimepickerModule,
         NgxMatNativeDateModule,
+
+		// Charts
+		NgApexchartsModule,
 				
 		// reCAPTCHA
 		RecaptchaModule,

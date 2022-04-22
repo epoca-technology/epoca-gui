@@ -29,11 +29,6 @@ export class ConfirmationDialogComponent implements OnInit, IConfirmationDialogC
 	// OTP Form
 	public otpForm = new FormGroup ({otp: new FormControl('',[ this._validations.otpValid ])});
 	
-	// Submission
-	public submitting: boolean = false;
-	
-	// Component loader
-	public loaded: boolean = false;
 	
 	constructor(
         private _app: AppService,

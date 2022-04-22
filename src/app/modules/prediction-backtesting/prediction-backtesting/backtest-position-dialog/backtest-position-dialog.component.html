@@ -4,8 +4,14 @@
         <span class="truncate show-on-desktop">{{position.o ? 'Successful': 'Unsuccessful'}}&nbsp;</span>
         <span class="truncate">{{position.t == 1 ? 'Long': 'Short'}}</span>
         <span fxFlex></span>
-        <button mat-icon-button matTooltip="Display Model" (click)="_nav.displayModelDialog(model)"><mat-icon svgIcon="brain"></mat-icon></button>
-        <button mat-icon-button matTooltip="Display Prediction"><mat-icon svgIcon="wand_magic_sparkles"></mat-icon></button>
+        <button mat-icon-button matTooltip="Display Model" 
+            (click)="_nav.displayModelDialog(model)">
+            <mat-icon svgIcon="brain"></mat-icon>
+        </button>
+        <button mat-icon-button matTooltip="Display Prediction" 
+            (click)="_nav.displayPredictionDialog(model, position.p)">
+            <mat-icon svgIcon="wand_magic_sparkles"></mat-icon>
+        </button>
         <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
     </div>
 </mat-toolbar>

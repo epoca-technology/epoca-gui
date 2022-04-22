@@ -16,7 +16,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 
 // Big Number
 import {BigNumber} from 'bignumber.js';
-BigNumber.config({EXPONENTIAL_AT: 32});
+BigNumber.config({ ROUNDING_MODE: BigNumber.ROUND_DOWN, EXPONENTIAL_AT: 32 });
 
 // Environment
 import { environment } from '../environments/environment';

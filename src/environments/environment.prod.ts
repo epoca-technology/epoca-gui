@@ -12,7 +12,7 @@ export const environment: IEnvironment = {
 		},
 		vapidKey: 'BMVi9vH_H_e3RTgfXXbS9SsCg5A-1YpmRaRmmW9xPmUsofcP4FPEdOqFfIWtQ-ZLfNJMc0YHeLof832xpgXGz2o'
 	},
-    localServer: true,
+    localServer: false,
     apiURL: {
         local: 'http://localhost:8075',
         external: ''

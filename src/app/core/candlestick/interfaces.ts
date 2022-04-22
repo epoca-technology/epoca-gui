@@ -2,7 +2,11 @@
 
 
 export interface ICandlestickService {
-    getForPeriod(start: number, end: number, intervalMinutes: number): Promise<ICandlestick[]>
+    // Properties
+    predictionCandlestickInterval: number,
+
+    // Retriever
+    getForPeriod(start: number, end: number, intervalMinutes?: number): Promise<ICandlestick[]>
 
 
 }
