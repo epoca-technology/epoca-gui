@@ -49,6 +49,7 @@ export class PredictionBacktestingComponent implements OnInit, OnDestroy, IPredi
 	public loaded: boolean = false;
 
 	// General Charts
+	public generalChartHeight: number = 600;
 	public pointsDistChart?: IBarChartOptions;
 	public pointsLineChart?: ILineChartOptions;
 	public accuracyChart?: IBarChartOptions;
@@ -112,6 +113,9 @@ export class PredictionBacktestingComponent implements OnInit, OnDestroy, IPredi
 		try {
 			// Pass the files to the service
 			await this._backtesting.init(event);
+
+			// Calculate the height of the general charts
+			this.generalChartHeight = this.getGeneralChartsHeight()
 
 			// Activate default section
 			await this.activateSection(this.generalSections[0]);
@@ -271,11 +275,11 @@ export class PredictionBacktestingComponent implements OnInit, OnDestroy, IPredi
 		const self = this;
 
 		// Build the dist chart options
-		this.pointsDistChart = this._chart.getBarChartOptions({series: dist}, this._backtesting.modelIDs, undefined, true);
+		this.pointsDistChart = this._chart.getBarChartOptions({series: dist}, this._backtesting.modelIDs, this.generalChartHeight, true);
 		this.pointsDistChart.chart.events = {click: function(e, cc, c) {self.displayModel(c.dataPointIndex)}}
 
 		// Populate the line chart values
-		this.pointsLineChart = this._chart.getLineChartOptions({series: lines});
+		this.pointsLineChart = this._chart.getLineChartOptions({series: lines}, this.generalChartHeight, true);
 		this.pointsLineChart.chart.events = {click: function(e: any, cc: any, c: any) {self.displayModel(c.seriesIndex)}}
 	}
 
@@ -299,7 +303,7 @@ export class PredictionBacktestingComponent implements OnInit, OnDestroy, IPredi
 		const self = this;
 		this.accuracyChart = this._chart.getBarChartOptions(
 			{series: series, colors: [this._chart.upwardColor, this._chart.downwardColor, '#000000']}, 
-			this._backtesting.modelIDs
+			this._backtesting.modelIDs, this.generalChartHeight
 		);
 		this.accuracyChart.chart.events = {click: function(e, cc, c) {self.displayModel(c.dataPointIndex)}}
 	}
@@ -323,7 +327,7 @@ export class PredictionBacktestingComponent implements OnInit, OnDestroy, IPredi
 		const self = this;
 		this.positionsChart = this._chart.getBarChartOptions(
 			{series: series, colors: [this._chart.upwardColor, this._chart.downwardColor, '#000000']}, 
-			this._backtesting.modelIDs
+			this._backtesting.modelIDs, this.generalChartHeight
 		);
 		this.positionsChart.chart.events = {click: function(e, cc, c) {self.displayModel(c.dataPointIndex)}}
 	}
@@ -340,7 +344,7 @@ export class PredictionBacktestingComponent implements OnInit, OnDestroy, IPredi
 
 		// Build the chart options
 		const self = this;
-		this.durationChart = this._chart.getBarChartOptions({series: series}, this._backtesting.modelIDs, undefined, true);
+		this.durationChart = this._chart.getBarChartOptions({series: series}, this._backtesting.modelIDs, this.generalChartHeight, true);
 		this.durationChart.chart.events = {click: function(e, cc, c) {self.displayModel(c.dataPointIndex)}}
 	}
 
@@ -356,7 +360,7 @@ export class PredictionBacktestingComponent implements OnInit, OnDestroy, IPredi
 					data: this._backtesting.performances[this.modelID!].points_hist, 
 					color: '#000000'
 				}]
-			}, 250),
+			}, 250, true),
 			accuracy: this._chart.getBarChartOptions({
 				series: [
 					{name:'Long Accuracy',data:[this._backtesting.performances[this.modelID!].long_acc]},
@@ -512,5 +516,45 @@ export class PredictionBacktestingComponent implements OnInit, OnDestroy, IPredi
 
 		// Notify the user
 		this._snackbar.info('The Backtest Summary has been copied to your clipboard.');
+	}
+
+
+
+
+
+
+
+
+
+	/* Misc Helpers */
+
+
+
+
+
+
+	/**
+	 * Based on the total number of models, it determines the best height
+	 * for the general charts.
+	 * @returns number
+	 */
+	private getGeneralChartsHeight(): number {
+		if (this._backtesting.modelIDs.length <= 2) 		{ return 300 }
+		if (this._backtesting.modelIDs.length <= 3) 		{ return 350 }
+		if (this._backtesting.modelIDs.length <= 4) 		{ return 370 }
+		else if (this._backtesting.modelIDs.length <= 5) 	{ return 390 }
+		else if (this._backtesting.modelIDs.length <= 6) 	{ return 410 }
+		else if (this._backtesting.modelIDs.length <= 7) 	{ return 430 }
+		else if (this._backtesting.modelIDs.length <= 8) 	{ return 450 }
+		else if (this._backtesting.modelIDs.length <= 10) 	{ return 600 }
+		else if (this._backtesting.modelIDs.length <= 12) 	{ return 630 }
+		else if (this._backtesting.modelIDs.length <= 15) 	{ return 660 }
+		else if (this._backtesting.modelIDs.length <= 17) 	{ return 700 }
+		else if (this._backtesting.modelIDs.length <= 20) 	{ return 730 }
+		else if (this._backtesting.modelIDs.length <= 25) 	{ return 770 }
+		else if (this._backtesting.modelIDs.length <= 30) 	{ return 800 }
+		else if (this._backtesting.modelIDs.length <= 35) 	{ return 850 }
+		else if (this._backtesting.modelIDs.length <= 40) 	{ return 900 }
+		else { return 1000}
 	}
 }

@@ -1,7 +1,6 @@
 <mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
     <div fxLayout="row" fxLayoutAlign="center center">
         <button mat-icon-button class="show-on-mobile" (click)="close()"><mat-icon>arrow_back</mat-icon></button>
-        <span class="truncate show-on-desktop">{{position.o ? 'Successful': 'Unsuccessful'}}&nbsp;</span>
         <span class="truncate">{{position.t == 1 ? 'Long': 'Short'}}</span>
         <span fxFlex></span>
         <button mat-icon-button matTooltip="Display Model" 
@@ -18,6 +17,15 @@
 <div mat-dialog-content>
     <!-- Container -->
     <div class="fadeIn padding">
+        <!-- Outcome -->
+        <div class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p class="truncate">Outcome</p>
+            <span fxFlex></span>
+            <p [ngClass]="{'success-color': position.o, 'error-color': !position.o}">
+                <strong>{{position.o ? 'Successful': 'Unsuccessful'}}</strong>
+            </p>
+        </div>
+
         <!-- Points-->
         <div class="row" fxLayout="row" fxLayoutAlign="start center">
             <p class="truncate">Points State</p>

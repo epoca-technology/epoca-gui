@@ -35,7 +35,7 @@ export interface IChartService {
 	): IBarChartOptions,
 
 	// Line Chart
-	getLineChartOptions(config: Partial<ILineChartOptions>, height?: number): ILineChartOptions,
+	getLineChartOptions(config: Partial<ILineChartOptions>, height?: number, disableNiceScale?: boolean): ILineChartOptions,
 }
 
 
@@ -104,4 +104,5 @@ export type ILineChartOptions = {
 	stroke: ApexStroke;
 	grid: ApexGrid;
 	xaxis: ApexXAxis;
+	yaxis: ApexYAxis;
 };

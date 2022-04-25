@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as moment from 'moment';
-import { ApexAnnotations, ApexChart, ApexPlotOptions } from 'ng-apexcharts';
+import { ApexAnnotations, ApexChart, ApexPlotOptions, ApexYAxis } from 'ng-apexcharts';
 import { ICandlestick, UtilsService } from '../../core';
 import { AppService, ILayout } from '../app';
 import { 
@@ -294,10 +294,28 @@ export class ChartService implements IChartService {
 	 * @param height?
 	 * @returns ILineChartOptions
 	 */
-	 public getLineChartOptions(config: Partial<ILineChartOptions>, height?: number): ILineChartOptions {
+	 public getLineChartOptions(config: Partial<ILineChartOptions>, height?: number, disableNiceScale?: boolean): ILineChartOptions {
 		// Init the default chart
 		let defaultChart: ApexChart = {height: 600, type: 'line',animations: { enabled: false}, toolbar: {show: false}, zoom: {enabled: false}};
 		if (typeof height == "number") defaultChart.height = height;
+
+		// Init the yaxis
+		let yaxis: ApexYAxis|undefined = config.yaxis;
+
+		// Check if the nice scale should be disabled
+		if (disableNiceScale) {
+			// Build a list with the numeric data
+			const seriesNumbers: number[] = <number[]>config.series!.map((seriesItem) => { return seriesItem.data }).flat();
+
+			// Init min and max values
+			let min: number = this._utils.getMin(seriesNumbers);
+			let max: number = this._utils.getMax(seriesNumbers);
+
+			// Check if a yaxis was needs to be initialized or updated
+			if (yaxis) { yaxis = {...yaxis, forceNiceScale: false, min: min, max: max}} 
+			else { yaxis = {forceNiceScale: false, min: min, max: max} }
+		}
+
 
 		// Return the Options Object
 		return {
@@ -306,7 +324,8 @@ export class ChartService implements IChartService {
 			dataLabels: config.dataLabels ? config.dataLabels: {enabled: false},
 			stroke: config.stroke ? config.stroke: {curve: "straight"},
 			grid: config.grid ? config.grid: {row: { opacity: 0.5 }},
-			xaxis: config.xaxis ? config.xaxis: {labels: { show: false } }
+			xaxis: config.xaxis ? config.xaxis: {labels: { show: false } },
+			yaxis: yaxis || {}
 		}
 	}
 
