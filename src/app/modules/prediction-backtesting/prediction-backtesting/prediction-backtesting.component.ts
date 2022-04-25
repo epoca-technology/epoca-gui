@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
+import { MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { ApexAxisChartSeries } from 'ng-apexcharts';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
@@ -106,28 +107,40 @@ export class PredictionBacktestingComponent implements OnInit, OnDestroy, IPredi
 		// Set the state
 		this.initializing = true;
 
-		// Allow a small delay before moving on
-		await this._utils.asyncDelay(0.5);
+		// Abort the bottom sheet if there are no files
+		if (!event || !event.target || !event.target.files || !event.target.files.length) return;
 
-		// Attempt to initiaze the backtests
-		try {
-			// Pass the files to the service
-			await this._backtesting.init(event);
+        // Display the bottom sheet and handle the action
+		const bs: MatBottomSheetRef = this._nav.displayBottomSheetMenu([
+			{icon: 'format_list_numbered', title: 'All', description: 'View all the models', response: 10000},
+			{icon: 'leaderboard', title: 'First 5', description: 'View the top 5 models', response: 5},
+			{icon: 'leaderboard', title: 'First 10', description: 'View the top 10 models', response: 10},
+			{icon: 'leaderboard', title: 'First 15', description: 'View the top 15 models', response: 15},
+			{icon: 'leaderboard', title: 'First 20', description: 'View the top 20 models', response: 20},
+		]);
+		bs.afterDismissed().subscribe(async (response: number|undefined) => {
+			if (typeof response == "number") {
+				// Attempt to initiaze the backtests
+				try {
+					// Pass the files to the service
+					await this._backtesting.init(event, response);
 
-			// Calculate the height of the general charts
-			this.generalChartHeight = this.getGeneralChartsHeight()
+					// Calculate the height of the general charts
+					this.generalChartHeight = this.getGeneralChartsHeight()
 
-			// Activate default section
-			await this.activateSection(this.generalSections[0]);
+					// Activate default section
+					await this.activateSection(this.generalSections[0]);
 
-			// Mark the backtest as initialized
-			this.initialized = true;
-		} catch (e) {
-			this._snackbar.error(e)
-		}
+					// Mark the backtest as initialized
+					this.initialized = true;
+				} catch (e) {
+					this._snackbar.error(e)
+				}
+			}
 
-		// Update initializing state
-		this.initializing = false;
+			// Update initializing state
+			this.initializing = false;
+		});
 	}
 
 

@@ -25,15 +25,19 @@ export class PredictionBacktestingService implements IPredictionBacktestingServi
 	/**
 	 * Given a list of backtest files, it will retrieve the JSON data and initialize
 	 * the service.
-	 * @param event 
+	 * @param event
+	 * @param limit?
 	 * @returns Promise<void>
 	 */
-	public async init(event: any): Promise<void> {
+	public async init(event: any, limit?: number): Promise<void> {
 		// Reset the data if any
 		this.resetBacktestResults();
 
 		// Retrieve the Backtest Results List
-		const results: IBacktestResult[] = await this.getResultsFromFiles(event);
+		let results: IBacktestResult[] = await this.getResultsFromFiles(event);
+
+		// Check if it should limit the number of items
+		if (typeof limit == "number") results = results.slice(0, limit);
 		
 		// Iterate over each result and initialize the data
 		results.forEach(r => this.initBacktestResult(r))

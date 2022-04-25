@@ -7,6 +7,6 @@ export interface IBottomSheetMenuItem {
 	icon: string,
 	title: string,
 	description: string,
-	response: string,
+	response: any,
 	svg?: boolean
 }
