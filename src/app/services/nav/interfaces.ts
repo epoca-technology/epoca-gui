@@ -42,7 +42,7 @@ export interface INavService {
 	reloadApp(): void,
 	
 	// Scroll Helpers
-	scrollTop(top: number, container: string): void,
+	scrollTop(container?: string): void,
 }
 
 

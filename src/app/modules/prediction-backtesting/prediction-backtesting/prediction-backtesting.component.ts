@@ -203,6 +203,9 @@ export class PredictionBacktestingComponent implements OnInit, OnDestroy, IPredi
         // Hide the sidenavs if any
 		if (this.predBacktestingSidenav && this.predBacktestingSidenavOpened) this.predBacktestingSidenav.close();
 
+		// Scroll top
+		this._nav.scrollTop('#content-header')
+
 		// Set loading state
 		this.loaded = false;
 

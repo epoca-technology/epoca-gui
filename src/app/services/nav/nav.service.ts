@@ -407,10 +407,10 @@ export class NavService implements INavService {
 	* @param container
 	* @returns void
 	* */
-	public scrollTop(top: number = 0, container: string = '.mat-drawer-content'): void {
+	public scrollTop(container?: string): void {
 		try {
 			// Retrieve the element
-			let el: HTMLElement|null = this.document.querySelector(container);
+			const el: HTMLElement|null = this.document.querySelector(container || '.mat-drawer-content');
 			
 			// If the element was found - scroll
 			if (el) {
