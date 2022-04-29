@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as moment from 'moment';
-import { ApexAnnotations, ApexChart, ApexPlotOptions, ApexYAxis } from 'ng-apexcharts';
+import { ApexAnnotations, ApexChart, ApexPlotOptions, ApexYAxis, ApexAxisChartSeries, ApexXAxis } from 'ng-apexcharts';
 import { ICandlestick, UtilsService } from '../../core';
 import { AppService, ILayout } from '../app';
 import { 
@@ -239,14 +239,14 @@ export class ChartService implements IChartService {
 	/**
 	 * Builds the configuration for a bar chart.
 	 * @param config 
-	 * @param categories 
+	 * @param categories? 
 	 * @param height?
 	 * @param plotOptionsDistributed?
 	 * @returns IBarChartOptions
 	 */
 	public getBarChartOptions(
 		config: Partial<IBarChartOptions>, 
-		categories: string[], 
+		categories?: string[], 
 		height?: number,
 		plotOptionsDistributed?: boolean,
 	): IBarChartOptions {
@@ -258,15 +258,27 @@ export class ChartService implements IChartService {
 		let defaultPlotOptions: ApexPlotOptions = {bar: {borderRadius: 4, horizontal: true, distributed: false,}};
 		if (plotOptionsDistributed) defaultPlotOptions.bar!.distributed = true;
 
+		// Init the colors
+		let colors: string[] = config.colors || [];
+		if (!colors.length && categories && categories.length) {
+			colors = this.colors.slice(0, categories.length)
+		}
+
+		// Init the xaxis if none provided and the categories have been
+		let xaxis: ApexXAxis = config.xaxis || {};
+		if (!config.xaxis && categories) {
+			xaxis = {categories: categories}
+		}
+
 		// Return the Options Object
 		return {
 			series: config.series!,
 			chart: config.chart ? config.chart: defaultChart,
-			colors: config.colors ? config.colors: this.colors.slice(0, categories.length),
+			colors: colors,
 			plotOptions: config.plotOptions ? config.plotOptions: defaultPlotOptions,
 			dataLabels: config.dataLabels ? config.dataLabels: {enabled: false},
 			grid: config.grid ? config.grid: {show: false},
-			xaxis: {categories: categories},
+			xaxis: xaxis,
 			yaxis: config.yaxis ? config.yaxis: {}
 		}
 	}
@@ -292,9 +304,18 @@ export class ChartService implements IChartService {
 	 * Builds the configuration for a line chart.
 	 * @param config 
 	 * @param height?
+	 * @param disableNiceScale?
+	 * @param range?
+	 * @param colors?
 	 * @returns ILineChartOptions
 	 */
-	 public getLineChartOptions(config: Partial<ILineChartOptions>, height?: number, disableNiceScale?: boolean): ILineChartOptions {
+	 public getLineChartOptions(
+		 config: Partial<ILineChartOptions>, 
+		 height?: number, 
+		 disableNiceScale?: boolean, 
+		 range?: IChartRange,
+		 colors?: string[]
+	): ILineChartOptions {
 		// Init the default chart
 		let defaultChart: ApexChart = {height: 600, type: 'line',animations: { enabled: false}, toolbar: {show: false}, zoom: {enabled: false}};
 		if (typeof height == "number") defaultChart.height = height;
@@ -304,16 +325,12 @@ export class ChartService implements IChartService {
 
 		// Check if the nice scale should be disabled
 		if (disableNiceScale) {
-			// Build a list with the numeric data
-			const seriesNumbers: number[] = <number[]>config.series!.map((seriesItem) => { return seriesItem.data }).flat();
-
-			// Init min and max values
-			let min: number = this._utils.getMin(seriesNumbers);
-			let max: number = this._utils.getMax(seriesNumbers);
+			// Check if the range was provided, otherwise, calculate it
+			if (!range) range = this.getLineChartRange(config.series!);
 
 			// Check if a yaxis was needs to be initialized or updated
-			if (yaxis) { yaxis = {...yaxis, forceNiceScale: false, min: min, max: max}} 
-			else { yaxis = {forceNiceScale: false, min: min, max: max} }
+			if (yaxis) { yaxis = {...yaxis, forceNiceScale: false, min: range.min, max: range.max}} 
+			else { yaxis = {forceNiceScale: false, min: range.min, max: range.max} }
 		}
 
 
@@ -325,11 +342,34 @@ export class ChartService implements IChartService {
 			stroke: config.stroke ? config.stroke: {curve: "straight"},
 			grid: config.grid ? config.grid: {row: { opacity: 0.5 }},
 			xaxis: config.xaxis ? config.xaxis: {labels: { show: false } },
-			yaxis: yaxis || {}
+			yaxis: yaxis || {},
+			annotations: config.annotations ? config.annotations: {},
+			colors: colors ? colors: []
 		}
 	}
 
 
+
+
+
+
+
+	/**
+	 * Given a line chart series, it will check all the values and retrieve the min and the 
+	 * max.
+	 * @param series 
+	 * @returns IChartRange
+	 */
+	public getLineChartRange(series: ApexAxisChartSeries): IChartRange {
+			// Build a list with the numeric data
+			const seriesNumbers: number[] = <number[]>series.map((seriesItem) => { return seriesItem.data }).flat();
+
+			// Return the min and the max value
+			return {
+				min: this._utils.getMin(seriesNumbers),
+				max: this._utils.getMax(seriesNumbers)
+			}
+	}
 
 
 

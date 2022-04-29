@@ -35,7 +35,7 @@ export interface ISection {
 
 // Model Charts
 export interface IModelCharts {
-    points: ILineChartOptions,
+    points: IBarChartOptions,
     accuracy: IBarChartOptions,
     positions: IBarChartOptions,
 }

@@ -115,13 +115,27 @@
                     <div *ngIf="loaded" class="fadeIn">
 
                         <!-- General Sections -->
-                        <div *ngIf="section.id != 'model'" fxLayout="row" fxLayoutAlign="center center" class="padding">
+                        <div *ngIf="section.id != 'model'" fxLayout="row" fxLayoutAlign="center center" class="general-sections">
                             <div fxFlex="90" fxFlex.xs="100" fxflex.sm="100">
 
                                 <!-- Points Section -->
                                 <div *ngIf="section.id == 'points' && pointsDistChart && pointsLineChart">
                                     <!-- Distribution -->
                                     <div class="desktop-card">
+                                        <div fxLayout="row" fxLayoutAlign="center center">
+                                            <h3 class="show-on-desktop">Points Accumulated</h3>
+                                            <span class="show-on-desktop" fxFlex></span>
+                                            <div class="square-badge-success clickable" role="button"
+                                                (click)="displayModel(_backtesting.pointsMD.max.id)" 
+                                                matTooltip="{{_backtesting.pointsMD.max.id}}">
+                                                Best: {{_backtesting.pointsMD.max.value}}
+                                            </div>
+                                            <div class="square-badge-error clickable low" role="button" 
+                                                (click)="displayModel(_backtesting.pointsMD.min.id)" 
+                                                matTooltip="{{_backtesting.pointsMD.min.id}}">
+                                                Worst: {{_backtesting.pointsMD.min.value}}
+                                            </div>
+                                        </div>
                                         <div>
                                             <apx-chart
                                                 [series]="pointsDistChart.series"
@@ -138,6 +152,20 @@
 
                                     <!-- Lines -->
                                     <div class="desktop-card">
+                                        <div fxLayout="row" fxLayoutAlign="center center">
+                                            <h3 class="show-on-desktop">Points Accumulation History</h3>
+                                            <span class="show-on-desktop" fxFlex></span>
+                                            <div class="square-badge-success clickable" role="button"
+                                                (click)="displayModel(_backtesting.pointsHistoryMD.max.id)" 
+                                                matTooltip="{{_backtesting.pointsHistoryMD.max.id}}">
+                                                High: {{_backtesting.pointsHistoryMD.max.value}}
+                                            </div>
+                                            <div class="square-badge-error clickable low" role="button"
+                                                (click)="displayModel(_backtesting.pointsHistoryMD.min.id)" 
+                                                matTooltip="{{_backtesting.pointsHistoryMD.min.id}}">
+                                                Low: {{_backtesting.pointsHistoryMD.min.value}}
+                                            </div>
+                                        </div>
                                         <div>
                                             <apx-chart
                                                 [series]="pointsLineChart.series"
@@ -155,6 +183,56 @@
                                 <!-- Accuracy Section -->
                                 <div *ngIf="section.id == 'accuracy' && accuracyChart">
                                     <div class="desktop-card">
+                                        <div fxLayout="row" fxLayoutAlign="center center">
+                                            <h3 class="show-on-desktop">Accuracy</h3>
+                                            <span class="show-on-desktop" fxFlex></span>
+                                            <button mat-icon-button 
+                                                    [disabled]="accuracyView == 0" 
+                                                    (click)="accuracyView = accuracyView - 1">
+                                                    <mat-icon>arrow_left</mat-icon>
+                                            </button>
+                                            <div *ngIf="accuracyView == 0" class="fadeIn" fxLayout="row">
+                                                <div class="square-badge-success clickable" role="button" 
+                                                    matTooltip="Best Long Accuracy: {{_backtesting.accuracyMD.long.max.id}}"
+                                                    (click)="displayModel(_backtesting.accuracyMD.long.max.id)">
+                                                    Best: {{_backtesting.accuracyMD.long.max.value}}%
+                                                </div>
+                                                <div class="square-badge-success clickable low" role="button" 
+                                                    matTooltip="Worst Long Accuracy: {{_backtesting.accuracyMD.long.min.id}}"
+                                                    (click)="displayModel(_backtesting.accuracyMD.long.min.id)">
+                                                    Worst: {{_backtesting.accuracyMD.long.min.value}}%
+                                                </div>
+                                            </div>
+                                            <div *ngIf="accuracyView == 1" class="fadeIn" fxLayout="row">
+                                                <div class="square-badge-error clickable" role="button" 
+                                                    matTooltip="Best Short Accuracy: {{_backtesting.accuracyMD.short.max.id}}"
+                                                    (click)="displayModel(_backtesting.accuracyMD.short.max.id)">
+                                                    Best: {{_backtesting.accuracyMD.short.max.value}}%
+                                                </div>
+                                                <div class="square-badge-error clickable low" role="button" 
+                                                    matTooltip="Worst Short Accuracy: {{_backtesting.accuracyMD.short.min.id}}"
+                                                    (click)="displayModel(_backtesting.accuracyMD.short.min.id)">
+                                                    Worst: {{_backtesting.accuracyMD.short.min.value}}%
+                                                </div>
+                                            </div>
+                                            <div *ngIf="accuracyView == 2" class="fadeIn" fxLayout="row">
+                                                <div class="square-badge clickable" role="button" 
+                                                    matTooltip="Best General Accuracy: {{_backtesting.accuracyMD.general.max.id}}"
+                                                    (click)="displayModel(_backtesting.accuracyMD.general.max.id)">
+                                                    Best: {{_backtesting.accuracyMD.general.max.value}}%
+                                                </div>
+                                                <div class="square-badge clickable low" role="button" 
+                                                    matTooltip="Worst General Accuracy: {{_backtesting.accuracyMD.general.min.id}}"
+                                                    (click)="displayModel(_backtesting.accuracyMD.general.min.id)">
+                                                    Worst: {{_backtesting.accuracyMD.general.min.value}}%
+                                                </div>
+                                            </div>
+                                            <button mat-icon-button 
+                                                    [disabled]="accuracyView == 2" 
+                                                    (click)="accuracyView = accuracyView + 1">
+                                                    <mat-icon>arrow_right</mat-icon>
+                                            </button>
+                                        </div>
                                         <div>
                                             <apx-chart
                                                 [series]="accuracyChart.series"
@@ -173,6 +251,56 @@
                                 <!-- Positions Section -->
                                 <div *ngIf="section.id == 'positions' && positionsChart">
                                     <div class="desktop-card">
+                                        <div fxLayout="row" fxLayoutAlign="center center">
+                                            <h3 class="show-on-desktop">Positions</h3>
+                                            <span class="show-on-desktop" fxFlex></span>
+                                            <button mat-icon-button 
+                                                    [disabled]="positionsView == 0" 
+                                                    (click)="positionsView = positionsView - 1">
+                                                    <mat-icon>arrow_left</mat-icon>
+                                            </button>
+                                            <div *ngIf="positionsView == 0" class="fadeIn" fxLayout="row">
+                                                <div class="square-badge-success clickable" role="button" 
+                                                    matTooltip="Highest # of Longs: {{_backtesting.positionsMD.long.max.id}}"
+                                                    (click)="displayModel(_backtesting.positionsMD.long.max.id)">
+                                                    High: {{_backtesting.positionsMD.long.max.value}}
+                                                </div>
+                                                <div class="square-badge-success clickable low" role="button" 
+                                                    matTooltip="Lowest # of Longs: {{_backtesting.positionsMD.long.min.id}}"
+                                                    (click)="displayModel(_backtesting.positionsMD.long.min.id)">
+                                                    Low: {{_backtesting.positionsMD.long.min.value}}
+                                                </div>
+                                            </div>
+                                            <div *ngIf="positionsView == 1" class="fadeIn" fxLayout="row">
+                                                <div class="square-badge-error clickable" role="button" 
+                                                    matTooltip="Highest # of Shorts: {{_backtesting.positionsMD.short.max.id}}"
+                                                    (click)="displayModel(_backtesting.positionsMD.short.max.id)">
+                                                    High: {{_backtesting.positionsMD.short.max.value}}
+                                                </div>
+                                                <div class="square-badge-error clickable low" role="button" 
+                                                    matTooltip="Lowest # of Shorts: {{_backtesting.positionsMD.short.min.id}}"
+                                                    (click)="displayModel(_backtesting.positionsMD.short.min.id)">
+                                                    Low: {{_backtesting.positionsMD.short.min.value}}
+                                                </div>
+                                            </div>
+                                            <div *ngIf="positionsView == 2" class="fadeIn" fxLayout="row">
+                                                <div class="square-badge clickable" role="button" 
+                                                    matTooltip="Highest # of Positions: {{_backtesting.positionsMD.general.max.id}}"
+                                                    (click)="displayModel(_backtesting.positionsMD.general.max.id)">
+                                                    High: {{_backtesting.positionsMD.general.max.value}}
+                                                </div>
+                                                <div class="square-badge clickable low" role="button" 
+                                                    matTooltip="Lowest # of Positions: {{_backtesting.positionsMD.general.min.id}}"
+                                                    (click)="displayModel(_backtesting.positionsMD.general.min.id)">
+                                                    Low: {{_backtesting.positionsMD.general.min.value}}
+                                                </div>
+                                            </div>
+                                            <button mat-icon-button 
+                                                    [disabled]="positionsView == 2" 
+                                                    (click)="positionsView = positionsView + 1">
+                                                    <mat-icon>arrow_right</mat-icon>
+                                            </button>
+                                        </div>
                                         <div>
                                             <apx-chart
                                                 [series]="positionsChart.series"
@@ -191,6 +319,20 @@
                                 <!-- Duration Section -->
                                 <div *ngIf="section.id == 'duration' && durationChart">
                                     <div class="desktop-card">
+                                        <div fxLayout="row" fxLayoutAlign="center center">
+                                            <h3 class="show-on-desktop">Backtest Duration</h3>
+                                            <span class="show-on-desktop" fxFlex></span>
+                                            <div class="square-badge clickable" role="button"
+                                                (click)="displayModel(_backtesting.durationMD.min.id)" 
+                                                matTooltip="{{_backtesting.durationMD.min.id}}">
+                                                Fastest: {{_backtesting.durationMD.min.value}} mins
+                                            </div>
+                                            <div class="square-badge clickable" role="button" style="margin-left:5px;"
+                                                (click)="displayModel(_backtesting.durationMD.max.id)" 
+                                                matTooltip="{{_backtesting.durationMD.max.id}}">
+                                                Slowest: {{_backtesting.durationMD.max.value}}
+                                            </div>
+                                        </div>
                                         <div>
                                             <apx-chart
                                                 [series]="durationChart.series"
@@ -230,7 +372,7 @@
                                 <div *ngIf="activeIndex == 0" class="fadeIn summary-section">
                                     <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column">
                                         <!-- Summary Cards-->
-                                        <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                                        <div fxFlex="49" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
                                             <!-- Backtest -->
                                             <div class="desktop-card">
                                                 <!-- Heading -->
@@ -283,7 +425,7 @@
                                                 <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
                                                      <p class="light-text truncate">Idle Minutes</p>
                                                      <span fxFlex></span>
-                                                     <p matTooltip="The number of minutes the modle remained idle every time it closed a position.">
+                                                     <p matTooltip="The number of minutes the model remained idle every time it closed a position.">
                                                          {{_backtesting.backtests[modelID].idle_minutes_on_position_close}} mins
                                                     </p>
                                                 </div>
@@ -321,7 +463,7 @@
                                         <span fxFlex></span>
 
                                         <!-- Chart Cards-->
-                                        <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                                        <div fxFlex="49" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
                                             <!-- Divider for mobile-->
                                             <div class="divider"></div>
 
@@ -330,15 +472,19 @@
                                                 <div fxLayout="row" fxLayoutAlign="start center">
                                                     <h4>Points</h4>
                                                     <span fxFlex></span>
-                                                    <div class="square-badge">{{_backtesting.performances[modelID].points}}</div>
+                                                    <div class="square-badge low show-on-desktop">High: {{modelPointsRange.max}}</div>
+                                                    <div class="square-badge low show-on-desktop">Low: {{modelPointsRange.min}}</div>
+                                                    <div class="square-badge">Final: {{_backtesting.performances[modelID].points}}</div>
                                                 </div>
                                                 <apx-chart
                                                     [series]="modelCharts[modelID].points.series"
                                                     [chart]="modelCharts[modelID].points.chart"
+                                                    [plotOptions]="modelCharts[modelID].points.plotOptions"
                                                     [xaxis]="modelCharts[modelID].points.xaxis"
                                                     [dataLabels]="modelCharts[modelID].points.dataLabels"
+                                                    [colors]="modelCharts[modelID].points.colors"
                                                     [grid]="modelCharts[modelID].points.grid"
-                                                    [stroke]="modelCharts[modelID].points.stroke"
+                                                    [legend]="{show: false}"
                                                     [yaxis]="modelCharts[modelID].points.yaxis"
                                                 ></apx-chart>
                                             </div>
@@ -347,8 +493,11 @@
                                             <!-- Accuracy -->
                                             <div class="desktop-card">
                                                 <div fxLayout="row" fxLayoutAlign="start center">
-                                                    <h4>Accuracy</h4>
+                                                    <h4 class="show-on-desktop">Accuracy</h4>
+                                                    <h4 class="show-on-mobile">Acc.</h4>
                                                     <span fxFlex></span>
+                                                    <div class="square-badge-success low">{{_backtesting.performances[modelID].long_acc}}%</div>
+                                                    <div class="square-badge-error low">{{_backtesting.performances[modelID].short_acc}}%</div>
                                                     <div class="square-badge">{{_backtesting.performances[modelID].general_acc}}%</div>
                                                 </div>
                                                 <apx-chart
@@ -367,8 +516,11 @@
                                             <!-- Positions -->
                                             <div class="desktop-card">
                                                 <div fxLayout="row" fxLayoutAlign="start center">
-                                                    <h4>Positions</h4>
+                                                    <h4 class="show-on-desktop">Positions</h4>
+                                                    <h4 class="show-on-mobile">Pos.</h4>
                                                     <span fxFlex></span>
+                                                    <div class="square-badge-success low">{{_backtesting.performances[modelID].long_num}}</div>
+                                                    <div class="square-badge-error low">{{_backtesting.performances[modelID].short_num}}</div>
                                                     <div class="square-badge">{{_backtesting.performances[modelID].positions.length}}</div>
                                                 </div>
                                                 <apx-chart

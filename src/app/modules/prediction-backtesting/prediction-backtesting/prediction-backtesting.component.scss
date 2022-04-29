@@ -1,6 +1,15 @@
 
 
 
+
+.square-badge { margin-left:5px!important;}
+.square-badge-success { margin-left:5px!important;}
+.square-badge-error { margin-left:5px!important;}
+
+
+.low { opacity:0.75}
+
+
 /* Uninitialized */
 .init-container {
     // 
@@ -26,9 +35,6 @@
 
 
 
-.general-sections {
-    h3 {margin:0;padding:0}
-}
 
 
 
@@ -53,12 +59,24 @@
 
 
 
+/* General Sections */
+
+.general-sections {
+    padding:15px;
+
+    
+    h3 {margin:0;padding:0}
+
+
+}
+
+
 
 /* Models */
 
 .summary-section {
 
-    h4{ margin:0}
+    h4{ margin:0; padding:0}
     p {margin:0}
 
     .margin-top {margin-top:20px;}

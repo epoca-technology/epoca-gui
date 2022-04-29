@@ -4,16 +4,22 @@ import { IModel, IPrediction, } from "../prediction/interfaces";
 
 // Prediction Backtesting Service
 export interface IPredictionBacktestingService {
-    // Properties
+    // Main Properties
     modelIDs: string[],
     models: IModels,
     backtests: IBacktests,
     performances: IPerformances,
 
+    // General Section Metadata Properties
+    pointsMD: IPointsMetadata,
+    pointsHistoryMD: IPointsHistoryMetadata,
+    accuracyMD: IAccuracyMetadata,
+    positionsMD: IPositionsMetadata,
+    durationMD: IDurationMetadata,
+
     // Initialization
     init(event: any): Promise<void>,
     resetBacktestResults(): void,
-    
 }
 
 
@@ -133,7 +139,7 @@ export interface IBacktestConfig {
     idle_minutes_on_position_close: number,
 
     // The list of Model Instances that will be put through the backtesting process
-    models: any // This instances live in python only
+    models: IModel[]
 }
 
 
@@ -190,6 +196,8 @@ export interface IBacktestResult {
 
 /* Service Specific Types */
 
+/* Main Properties */
+
 // Models
 export interface IModels {
     [modelID: string]: IModel
@@ -206,3 +214,45 @@ export interface IBacktests {
 export interface IPerformances {
     [modelID: string]: IBacktestPerformance
 }
+
+
+
+/* General Sections Metadata Data */
+
+export interface IGeneralSectionMetadataValue { id: string, value: number }
+
+
+
+export interface IBacktestMetadata {
+    min: IGeneralSectionMetadataValue,
+    max: IGeneralSectionMetadataValue
+}
+
+
+/* Points */
+
+export interface IPointsMetadata extends IBacktestMetadata { }
+
+
+export interface IPointsHistoryMetadata extends IBacktestMetadata { }
+
+
+
+/* Accuracy */
+
+export interface IAccuracyMetadata {
+    long: IBacktestMetadata,
+    short: IBacktestMetadata,
+    general: IBacktestMetadata,
+}
+
+
+/* Positions */
+
+export interface IPositionsMetadata extends IAccuracyMetadata { }
+
+
+
+/* Duration */
+
+export interface IDurationMetadata extends IBacktestMetadata { }

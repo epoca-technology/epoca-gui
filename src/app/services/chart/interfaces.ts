@@ -11,7 +11,9 @@ import {
 	ApexDataLabels,
 	ApexGrid,
 	ApexPlotOptions,
-	ApexStroke
+	ApexStroke,
+	ApexFill,
+	ApexMarkers
 } from "ng-apexcharts";
 import { MatDialogRef } from "@angular/material/dialog";
 
@@ -29,13 +31,19 @@ export interface IChartService {
 	// Bar Charts
 	getBarChartOptions(
 		config: Partial<IBarChartOptions>, 
-		categories: string[], 
+		categories?: string[], 
 		height?: number,
 		plotOptionsDistributed?: boolean,
 	): IBarChartOptions,
 
 	// Line Chart
-	getLineChartOptions(config: Partial<ILineChartOptions>, height?: number, disableNiceScale?: boolean): ILineChartOptions,
+	getLineChartOptions(
+		config: Partial<ILineChartOptions>, 
+		height?: number, 
+		disableNiceScale?: boolean, 
+		range?: IChartRange
+   ): ILineChartOptions,
+	getLineChartRange(series: ApexAxisChartSeries): IChartRange,
 }
 
 
@@ -105,4 +113,6 @@ export type ILineChartOptions = {
 	grid: ApexGrid;
 	xaxis: ApexXAxis;
 	yaxis: ApexYAxis;
+	annotations: ApexAnnotations;
+	colors: string[];
 };

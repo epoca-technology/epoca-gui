@@ -1,17 +1,40 @@
 import { Injectable } from '@angular/core';
-import { IPredictionBacktestingService, IBacktestResult, IModels, IBacktests, IPerformances } from './interfaces';
+import { UtilsService } from '../utils';
+import { 
+	IPredictionBacktestingService, 
+	IBacktestResult, 
+	IModels, 
+	IBacktests, 
+	IPerformances,
+	IGeneralSectionMetadataValue,
+	IPointsMetadata,
+	IPointsHistoryMetadata,
+	IAccuracyMetadata,
+	IPositionsMetadata,
+	IDurationMetadata,
+} from './interfaces';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PredictionBacktestingService implements IPredictionBacktestingService {
-	// Properties
+	// Main Properties
 	public modelIDs: string[] = [];
 	public models: IModels = {};
 	public backtests: IBacktests = {};
 	public performances: IPerformances = {};
 
-	constructor() { }
+	// General Section Metadata
+	public pointsMD: IPointsMetadata = this.getDefaultPointsMetadata();
+	public pointsHistoryMD: IPointsHistoryMetadata = this.getDefaultPointsHistoryMetadata();
+	public accuracyMD: IAccuracyMetadata = this.getDefaultAccuracyMetadata();
+	public positionsMD: IPositionsMetadata = this.getDefaultPositionsMetadata();
+	public durationMD: IDurationMetadata = this.getDefaultDurationMetadata();
+
+
+	constructor(
+		private _utils: UtilsService
+	) { }
 
 
 
@@ -41,6 +64,9 @@ export class PredictionBacktestingService implements IPredictionBacktestingServi
 		
 		// Iterate over each result and initialize the data
 		results.forEach(r => this.initBacktestResult(r))
+
+		// Once everything has been loaded, populate the general sections' metadata
+		this.initGeneralSectionsMetadata();
 	}
 
 
@@ -62,7 +88,7 @@ export class PredictionBacktestingService implements IPredictionBacktestingServi
 			res.model.id = finalID;
 		}
 
-		// Populate the data
+		// Populate the main properties
 		this.modelIDs.push(finalID);
 		this.models[finalID] = res.model;
 		this.backtests[finalID] = res.backtest;
@@ -70,6 +96,99 @@ export class PredictionBacktestingService implements IPredictionBacktestingServi
 	}
 
 
+
+
+
+
+
+	private initGeneralSectionsMetadata(): void {
+		// Init the points accumulated metadata
+		this.pointsMD = {
+			min: {id:this.modelIDs[this.modelIDs.length - 1],value: this.performances[this.modelIDs[this.modelIDs.length - 1]].points},
+			max: {id: this.modelIDs[0],value: this.performances[this.modelIDs[0]].points}
+		};
+
+		/* Initialize Data */
+
+		// Points Hist
+		let pointsHistMax: IGeneralSectionMetadataValue = {id: this.modelIDs[0], value: this._utils.getMax(this.performances[this.modelIDs[0]].points_hist)};
+		let pointsHistMin: IGeneralSectionMetadataValue = {id: this.modelIDs[0], value: this._utils.getMin(this.performances[this.modelIDs[0]].points_hist)};
+
+		// Acurracy
+		let longAccMax: IGeneralSectionMetadataValue = {id: this.modelIDs[0], value: this.performances[this.modelIDs[0]].long_acc};
+		let longAccMin: IGeneralSectionMetadataValue = {id: this.modelIDs[0], value: this.performances[this.modelIDs[0]].long_acc};
+		let shortAccMax: IGeneralSectionMetadataValue = {id: this.modelIDs[0], value: this.performances[this.modelIDs[0]].short_acc};
+		let shortAccMin: IGeneralSectionMetadataValue = {id: this.modelIDs[0], value: this.performances[this.modelIDs[0]].short_acc};
+		let accMax: IGeneralSectionMetadataValue = {id: this.modelIDs[0], value: this.performances[this.modelIDs[0]].general_acc};
+		let accMin: IGeneralSectionMetadataValue = {id: this.modelIDs[0], value: this.performances[this.modelIDs[0]].general_acc};
+
+		// Positions
+		let longMax: IGeneralSectionMetadataValue = {id: this.modelIDs[0], value: this.performances[this.modelIDs[0]].long_num};
+		let longMin: IGeneralSectionMetadataValue = {id: this.modelIDs[0], value: this.performances[this.modelIDs[0]].long_num};
+		let shortMax: IGeneralSectionMetadataValue = {id: this.modelIDs[0], value: this.performances[this.modelIDs[0]].short_num};
+		let shortMin: IGeneralSectionMetadataValue = {id: this.modelIDs[0], value: this.performances[this.modelIDs[0]].short_num};
+		let genMax: IGeneralSectionMetadataValue = {id: this.modelIDs[0], value: this.performances[this.modelIDs[0]].positions.length};
+		let genMin: IGeneralSectionMetadataValue = {id: this.modelIDs[0], value: this.performances[this.modelIDs[0]].positions.length};
+
+		// Duration
+		let durationMax: IGeneralSectionMetadataValue = {id: this.modelIDs[0], value: this.backtests[this.modelIDs[0]].model_duration};
+		let durationMin: IGeneralSectionMetadataValue = {id: this.modelIDs[0], value: this.backtests[this.modelIDs[0]].model_duration};
+
+		// Iterate over each model and build all the metadata
+		for (let i = 1; i < this.modelIDs.length; i++) {
+			/* Build the Metadata */
+
+			// Points Hist Data
+			const phMax: number = this._utils.getMax(this.performances[this.modelIDs[i]].points_hist);
+			const phMin: number = this._utils.getMin(this.performances[this.modelIDs[i]].points_hist);
+			if (phMax > pointsHistMax.value) { pointsHistMax = { id: this.modelIDs[i], value: phMax } }
+			if (phMin < pointsHistMin.value) { pointsHistMin = { id: this.modelIDs[i], value: phMin } }
+
+			// Accuracy
+			if (this.performances[this.modelIDs[i]].long_acc > longAccMax.value) { longAccMax = { id: this.modelIDs[i], value: this.performances[this.modelIDs[i]].long_acc }}
+			if (this.performances[this.modelIDs[i]].long_acc < longAccMin.value) { longAccMin = { id: this.modelIDs[i], value: this.performances[this.modelIDs[i]].long_acc }}
+			if (this.performances[this.modelIDs[i]].short_acc > shortAccMax.value) { shortAccMax = { id: this.modelIDs[i], value: this.performances[this.modelIDs[i]].short_acc }}
+			if (this.performances[this.modelIDs[i]].short_acc < shortAccMin.value) { shortAccMin = { id: this.modelIDs[i], value: this.performances[this.modelIDs[i]].short_acc }}
+			if (this.performances[this.modelIDs[i]].general_acc > accMax.value) { accMax = { id: this.modelIDs[i], value: this.performances[this.modelIDs[i]].general_acc }}
+			if (this.performances[this.modelIDs[i]].general_acc < accMin.value) { accMin = { id: this.modelIDs[i], value: this.performances[this.modelIDs[i]].general_acc }}
+
+			// Positions
+			if (this.performances[this.modelIDs[i]].long_num > longMax.value) { longMax = { id: this.modelIDs[i], value: this.performances[this.modelIDs[i]].long_num }}
+			if (this.performances[this.modelIDs[i]].long_num < longMin.value) { longMin = { id: this.modelIDs[i], value: this.performances[this.modelIDs[i]].long_num }}
+			if (this.performances[this.modelIDs[i]].short_num > shortMax.value) { shortMax = { id: this.modelIDs[i], value: this.performances[this.modelIDs[i]].short_num }}
+			if (this.performances[this.modelIDs[i]].short_num < shortMin.value) { shortMin = { id: this.modelIDs[i], value: this.performances[this.modelIDs[i]].short_num }}
+			if (this.performances[this.modelIDs[i]].positions.length > genMax.value) { genMax = { id: this.modelIDs[i], value: this.performances[this.modelIDs[i]].positions.length }}
+			if (this.performances[this.modelIDs[i]].positions.length < genMin.value) { genMin = { id: this.modelIDs[i], value: this.performances[this.modelIDs[i]].positions.length }}
+
+			// Durations
+			if (this.backtests[this.modelIDs[i]].model_duration > durationMax.value) { durationMax = { id: this.modelIDs[i], value: this.backtests[this.modelIDs[i]].model_duration } }
+			if (this.backtests[this.modelIDs[i]].model_duration < durationMin.value) { durationMin = { id: this.modelIDs[i], value: this.backtests[this.modelIDs[i]].model_duration } }
+		}
+
+		// Points Hist Results
+		this.pointsHistoryMD = { max: pointsHistMax, min: pointsHistMin};
+		
+		// Accuracy Results
+		this.accuracyMD = {long:{max:longAccMax,min:longAccMin},short:{max:shortAccMax,min:shortAccMin},general:{max:accMax,min:accMin}}
+
+		// Positions Results
+		this.positionsMD = {long:{max:longMax,min:longMin},short:{max:shortMax,min:shortMin},general:{max:genMax,min:genMin}}
+
+		// Duration Results
+		this.durationMD = { max: durationMax, min: durationMin};
+	}
+
+
+
+
+
+
+
+
+
+
+
+	/* Resetter */
 
 
 
@@ -84,8 +203,24 @@ export class PredictionBacktestingService implements IPredictionBacktestingServi
 		this.models = {};
 		this.backtests = {};
 		this.performances = {};
+		this.pointsMD = this.getDefaultPointsMetadata();
+		this.pointsHistoryMD = this.getDefaultPointsHistoryMetadata();
+		this.accuracyMD = this.getDefaultAccuracyMetadata();
+		this.positionsMD = this.getDefaultPositionsMetadata();
+		this.durationMD = this.getDefaultDurationMetadata();
 	}
 
+
+
+
+
+
+
+
+
+
+
+	/* Init Helpers */
 
 
 
@@ -179,5 +314,52 @@ export class PredictionBacktestingService implements IPredictionBacktestingServi
 
 		// Return the modified id
 	   	return id + "_" + result;
+	}
+
+
+
+
+
+
+
+
+
+	/* Misc Helpers */
+
+
+
+
+
+
+
+
+
+
+	/* Metadata Defaults Helpers */
+
+
+	private getDefaultMDValue(): IGeneralSectionMetadataValue {return {id: '', value: 0} }
+	private getDefaultPointsMetadata(): IPointsMetadata { 
+		return { min: this.getDefaultMDValue(), max: this.getDefaultMDValue()}
+	}
+	private getDefaultPointsHistoryMetadata(): IPointsHistoryMetadata { 
+		return { min: this.getDefaultMDValue(), max: this.getDefaultMDValue()}
+	}
+	private getDefaultAccuracyMetadata(): IAccuracyMetadata { 
+		return { 
+			long: {min: this.getDefaultMDValue(), max: this.getDefaultMDValue()}, 
+			short: {min: this.getDefaultMDValue(), max: this.getDefaultMDValue()}, 
+			general: {min: this.getDefaultMDValue(), max: this.getDefaultMDValue()}
+		}
+	}
+	private getDefaultPositionsMetadata(): IPositionsMetadata { 
+		return { 
+			long: {min: this.getDefaultMDValue(), max: this.getDefaultMDValue()}, 
+			short: {min: this.getDefaultMDValue(), max: this.getDefaultMDValue()}, 
+			general: {min: this.getDefaultMDValue(), max: this.getDefaultMDValue()}
+		}
+	}
+	private getDefaultDurationMetadata(): IDurationMetadata { 
+		return { min: this.getDefaultMDValue(), max: this.getDefaultMDValue()}
 	}
 }

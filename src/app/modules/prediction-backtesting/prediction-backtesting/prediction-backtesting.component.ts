@@ -1,16 +1,17 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
 import { MatBottomSheetRef } from '@angular/material/bottom-sheet';
-import { ApexAxisChartSeries } from 'ng-apexcharts';
+import { ApexAnnotations, ApexAxisChartSeries, XAxisAnnotations } from 'ng-apexcharts';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
 import {MatDialog} from '@angular/material/dialog';
-import { IBacktestPosition, IModel, PredictionBacktestingService, PredictionService, UtilsService } from '../../../core';
+import { IBacktestPosition, IModel, IPositionType, PredictionBacktestingService, PredictionService, UtilsService } from '../../../core';
 import { 
 	AppService, 
 	ChartService, 
 	ClipboardService, 
 	IBarChartOptions, 
+	IChartRange, 
 	ILayout, 
 	ILineChartOptions, 
 	NavService, 
@@ -49,16 +50,29 @@ export class PredictionBacktestingComponent implements OnInit, OnDestroy, IPredi
 	public activeIndex: number = 0;
 	public loaded: boolean = false;
 
-	// General Charts
+	/* General Charts */
+
+	// Height
 	public generalChartHeight: number = 600;
+
+	// Points
 	public pointsDistChart?: IBarChartOptions;
 	public pointsLineChart?: ILineChartOptions;
+
+	// Accuracy
 	public accuracyChart?: IBarChartOptions;
+	public accuracyView: number = 0;
+
+	// Positions
 	public positionsChart?: IBarChartOptions;
+	public positionsView: number = 0;
+
+	// Duration
 	public durationChart?: IBarChartOptions;
 
 	// Model Charts
 	public modelCharts: {[modelID: string]: IModelCharts} = {};
+	public modelPointsRange: IChartRange = {max: 0, min: 0};
 
 	// Positions
 	public visiblePositions: number = 15;
@@ -117,6 +131,7 @@ export class PredictionBacktestingComponent implements OnInit, OnDestroy, IPredi
 			{icon: 'leaderboard', title: 'First 10', description: 'View the top 10 models', response: 10},
 			{icon: 'leaderboard', title: 'First 15', description: 'View the top 15 models', response: 15},
 			{icon: 'leaderboard', title: 'First 20', description: 'View the top 20 models', response: 20},
+			{icon: 'leaderboard', title: 'First 30', description: 'View the top 30 models', response: 30},
 		]);
 		bs.afterDismissed().subscribe(async (response: number|undefined) => {
 			if (typeof response == "number") {
@@ -175,9 +190,12 @@ export class PredictionBacktestingComponent implements OnInit, OnDestroy, IPredi
 		this.pointsDistChart = undefined;
 		this.pointsLineChart = undefined;
 		this.accuracyChart = undefined;
+		this.accuracyView = 0;
 		this.positionsChart = undefined;
+		this.positionsView = 0;
 		this.durationChart = undefined;
 		this.modelCharts = {};
+		this.modelPointsRange = {min:0,max:0};
 		this.visiblePositions = 15;
 	}
 
@@ -295,7 +313,10 @@ export class PredictionBacktestingComponent implements OnInit, OnDestroy, IPredi
 		this.pointsDistChart.chart.events = {click: function(e, cc, c) {self.displayModel(c.dataPointIndex)}}
 
 		// Populate the line chart values
-		this.pointsLineChart = this._chart.getLineChartOptions({series: lines}, this.generalChartHeight, true);
+		this.pointsLineChart = this._chart.getLineChartOptions({series: lines}, this.generalChartHeight, true, {
+			max: this._backtesting.pointsHistoryMD.max.value,
+			min: this._backtesting.pointsHistoryMD.min.value,
+		});
 		this.pointsLineChart.chart.events = {click: function(e: any, cc: any, c: any) {self.displayModel(c.seriesIndex)}}
 	}
 
@@ -369,14 +390,25 @@ export class PredictionBacktestingComponent implements OnInit, OnDestroy, IPredi
 
 	// Initializes the charts for a model
 	private initModelCharts(): void {
+		// Build the meta data
+		this.modelPointsRange = { 
+			max: this._utils.getMax(this._backtesting.performances[this.modelID!].points_hist),
+			min: this._utils.getMin(this._backtesting.performances[this.modelID!].points_hist)
+		}
+
+		// Retrieve the points charts data
+		const {colors, values} = this.getModelPointsValues(this.modelID!)
+
+		// Build the chart
 		this.modelCharts[this.modelID!] = {
-			points: this._chart.getLineChartOptions({
-				series: [{
-					name: this.modelID, 
-					data: this._backtesting.performances[this.modelID!].points_hist, 
-					color: '#000000'
-				}]
-			}, 250, true),
+			points: this._chart.getBarChartOptions({
+				series: [{name: this.modelID,data: values}],
+				plotOptions: {bar: {borderRadius: 0, horizontal: false, distributed: true,}},
+				colors: colors,
+				yaxis: {forceNiceScale: false, min: this.modelPointsRange.min, max: this.modelPointsRange.max},
+				grid: {show: true},
+				xaxis: {labels: { show: false } }
+			}, [], 350, true),
 			accuracy: this._chart.getBarChartOptions({
 				series: [
 					{name:'Long Accuracy',data:[this._backtesting.performances[this.modelID!].long_acc]},
@@ -401,6 +433,25 @@ export class PredictionBacktestingComponent implements OnInit, OnDestroy, IPredi
 
 
 
+
+	/**
+	 * Builds the points bar chart's data.
+	 * @param id 
+	 * @returns {colors: string[], values: number[]}
+	 */
+	private getModelPointsValues(id: string): {colors: string[], values: number[]}{
+		let colors: string[] = ['#000000'];
+		let values: number[] = [0];
+		for (let i = 0; i < this._backtesting.performances[id].positions.length; i++) {
+			if (this._backtesting.performances[id].positions[i].t == 1) { 
+				colors.push(this._chart.upwardColor);
+			}else { 
+				colors.push(this._chart.downwardColor);
+			}
+			values.push(this._backtesting.performances[id].points_hist[i+1])
+		}
+		return {colors: colors, values: values};
+	}
 
 
 
@@ -555,9 +606,8 @@ export class PredictionBacktestingComponent implements OnInit, OnDestroy, IPredi
 	 * @returns number
 	 */
 	private getGeneralChartsHeight(): number {
-		if (this._backtesting.modelIDs.length <= 2) 		{ return 300 }
 		if (this._backtesting.modelIDs.length <= 3) 		{ return 350 }
-		if (this._backtesting.modelIDs.length <= 4) 		{ return 370 }
+		else if (this._backtesting.modelIDs.length <= 4) 	{ return 370 }
 		else if (this._backtesting.modelIDs.length <= 5) 	{ return 390 }
 		else if (this._backtesting.modelIDs.length <= 6) 	{ return 410 }
 		else if (this._backtesting.modelIDs.length <= 7) 	{ return 430 }
