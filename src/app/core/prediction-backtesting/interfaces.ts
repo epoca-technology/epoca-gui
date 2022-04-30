@@ -2,8 +2,12 @@ import { IModel, IPrediction, } from "../prediction/interfaces";
 
 
 
-// Prediction Backtesting Service
-export interface IPredictionBacktestingService {
+
+/* Backtest Related */
+
+
+// Backtest Service
+export interface IBacktestService {
     // Main Properties
     modelIDs: string[],
     models: IModels,
@@ -256,3 +260,14 @@ export interface IPositionsMetadata extends IAccuracyMetadata { }
 /* Duration */
 
 export interface IDurationMetadata extends IBacktestMetadata { }
+
+
+
+
+
+
+
+
+
+
+/* Training Data Related */

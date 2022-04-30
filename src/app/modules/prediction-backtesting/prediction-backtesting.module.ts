@@ -8,14 +8,17 @@ import { PredictionBacktestingRoutingModule } from './prediction-backtesting-rou
 import {SharedModule} from "../../shared";
 
 // Components
-import { PredictionBacktestingComponent } from './prediction-backtesting/prediction-backtesting.component';
-import { BacktestPositionDialogComponent } from './prediction-backtesting/backtest-position-dialog/backtest-position-dialog.component';
-
+import { BacktestsComponent } from './backtests/backtests.component';
+import { BacktestPositionDialogComponent } from './backtests/backtest-position-dialog/backtest-position-dialog.component';
+import { TrainingDataComponent } from './training-data/training-data.component';
+import { ModelsTrainingComponent } from './models-training/models-training.component';
 
 @NgModule({
   declarations: [
-    PredictionBacktestingComponent,
-    BacktestPositionDialogComponent
+    BacktestsComponent,
+    BacktestPositionDialogComponent,
+    TrainingDataComponent,
+    ModelsTrainingComponent
   ],
   imports: [
     CommonModule,

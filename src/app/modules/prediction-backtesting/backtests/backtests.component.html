@@ -8,7 +8,7 @@
         <mat-toolbar color="primary">
             <div fxLayout="row" fxLayoutAlign="start center">
                 <button mat-icon-button (click)="predBacktestingSidenav?.toggle()"><mat-icon>arrow_back</mat-icon></button>
-                <span>Prediction Backtesting</span>
+                <span>Backtests</span>
                 <span fxFlex></span>
             </div>
         </mat-toolbar>
@@ -22,14 +22,14 @@
                 </button>
             </mat-list-item>
             <div mat-subheader>Models</div>
-            <mat-list-item *ngFor="let id of _backtesting.modelIDs">
+            <mat-list-item *ngFor="let id of _backtest.modelIDs">
                 <button mat-button class="left-icon-button truncate" 
                         [disabled]="section.id == 'model' && modelID == id" 
                         (click)="activateSection({id: 'model', name: id}, id)">
                         <div fxLayout="row" fxLayoutAlign="start center">
                             <span class="truncate">{{id}}</span>
                             <span fxFlex></span>
-                            <div class="badge"><span>{{_backtesting.performances[id].points}}</span></div>
+                            <div class="badge"><span>{{_backtest.performances[id].points}}</span></div>
                         </div>
                 </button>
             </mat-list-item>
@@ -45,9 +45,9 @@
                 <button mat-icon-button (click)="_nav.dashboard()" class="show-on-mobile" *ngIf="!initialized"><mat-icon>arrow_back</mat-icon></button>
                 <button mat-icon-button (click)="resetResults()" class="show-on-mobile" *ngIf="initialized"><mat-icon>arrow_back</mat-icon></button>
                 <button mat-icon-button (click)="predBacktestingSidenav?.toggle()" *ngIf="initialized" class="show-on-mobile"><mat-icon>menu</mat-icon></button>
-                <span class="truncate show-on-mobile" *ngIf="!initialized">Prediction Backtesting</span>
+                <span class="truncate show-on-mobile" *ngIf="!initialized">Backtests</span>
                 <span class="truncate show-on-mobile" *ngIf="initialized">{{section.id == 'model' ? modelID: section.name}}</span>
-                <span class="truncate show-on-desktop">Prediction Backtesting</span>
+                <span class="truncate show-on-desktop">Backtests</span>
                 <span fxFlex></span>
                 <button mat-icon-button 
                         matTooltip="Clear Backtest Results"
@@ -92,14 +92,14 @@
                             </button>
                         </mat-list-item>
                         <div mat-subheader>Models</div>
-                        <mat-list-item *ngFor="let id of _backtesting.modelIDs">
+                        <mat-list-item *ngFor="let id of _backtest.modelIDs">
                             <button mat-button class="left-icon-button truncate" 
                                     [disabled]="section.id == 'model' && modelID == id" 
                                     (click)="activateSection({id: 'model', name: id}, id)">
                                     <div fxLayout="row" fxLayoutAlign="start center">
                                         <span class="truncate">{{id}}</span>
                                         <span fxFlex></span>
-                                        <div class="badge"><span>{{_backtesting.performances[id].points}}</span></div>
+                                        <div class="badge"><span>{{_backtest.performances[id].points}}</span></div>
                                     </div>
                             </button>
                         </mat-list-item>
@@ -126,14 +126,14 @@
                                             <h3 class="show-on-desktop">Points Accumulated</h3>
                                             <span class="show-on-desktop" fxFlex></span>
                                             <div class="square-badge-success clickable" role="button"
-                                                (click)="displayModel(_backtesting.pointsMD.max.id)" 
-                                                matTooltip="{{_backtesting.pointsMD.max.id}}">
-                                                Best: {{_backtesting.pointsMD.max.value}}
+                                                (click)="displayModel(_backtest.pointsMD.max.id)" 
+                                                matTooltip="{{_backtest.pointsMD.max.id}}">
+                                                Best: {{_backtest.pointsMD.max.value}}
                                             </div>
-                                            <div class="square-badge-error clickable low" role="button" 
-                                                (click)="displayModel(_backtesting.pointsMD.min.id)" 
-                                                matTooltip="{{_backtesting.pointsMD.min.id}}">
-                                                Worst: {{_backtesting.pointsMD.min.value}}
+                                            <div class="square-badge-error clickable" role="button" 
+                                                (click)="displayModel(_backtest.pointsMD.min.id)" 
+                                                matTooltip="{{_backtest.pointsMD.min.id}}">
+                                                Worst: {{_backtest.pointsMD.min.value}}
                                             </div>
                                         </div>
                                         <div>
@@ -156,14 +156,14 @@
                                             <h3 class="show-on-desktop">Points Accumulation History</h3>
                                             <span class="show-on-desktop" fxFlex></span>
                                             <div class="square-badge-success clickable" role="button"
-                                                (click)="displayModel(_backtesting.pointsHistoryMD.max.id)" 
-                                                matTooltip="{{_backtesting.pointsHistoryMD.max.id}}">
-                                                High: {{_backtesting.pointsHistoryMD.max.value}}
+                                                (click)="displayModel(_backtest.pointsHistoryMD.max.id)" 
+                                                matTooltip="{{_backtest.pointsHistoryMD.max.id}}">
+                                                High: {{_backtest.pointsHistoryMD.max.value}}
                                             </div>
-                                            <div class="square-badge-error clickable low" role="button"
-                                                (click)="displayModel(_backtesting.pointsHistoryMD.min.id)" 
-                                                matTooltip="{{_backtesting.pointsHistoryMD.min.id}}">
-                                                Low: {{_backtesting.pointsHistoryMD.min.value}}
+                                            <div class="square-badge-error clickable" role="button"
+                                                (click)="displayModel(_backtest.pointsHistoryMD.min.id)" 
+                                                matTooltip="{{_backtest.pointsHistoryMD.min.id}}">
+                                                Low: {{_backtest.pointsHistoryMD.min.value}}
                                             </div>
                                         </div>
                                         <div>
@@ -187,49 +187,47 @@
                                             <h3 class="show-on-desktop">Accuracy</h3>
                                             <span class="show-on-desktop" fxFlex></span>
                                             <button mat-icon-button 
-                                                    [disabled]="accuracyView == 0" 
-                                                    (click)="accuracyView = accuracyView - 1">
+                                                    [disabled]="viewBest" 
+                                                    (click)="viewBest = true">
                                                     <mat-icon>arrow_left</mat-icon>
                                             </button>
-                                            <div *ngIf="accuracyView == 0" class="fadeIn" fxLayout="row">
+                                            <div *ngIf="viewBest" class="fadeIn" fxLayout="row" fxLayoutAlign="center center">
                                                 <div class="square-badge-success clickable" role="button" 
-                                                    matTooltip="Best Long Accuracy: {{_backtesting.accuracyMD.long.max.id}}"
-                                                    (click)="displayModel(_backtesting.accuracyMD.long.max.id)">
-                                                    Best: {{_backtesting.accuracyMD.long.max.value}}%
+                                                    matTooltip="Best Long Accuracy: {{_backtest.accuracyMD.long.max.id}}"
+                                                    (click)="displayModel(_backtest.accuracyMD.long.max.id)">
+                                                    {{_backtest.accuracyMD.long.max.value}}%
                                                 </div>
-                                                <div class="square-badge-success clickable low" role="button" 
-                                                    matTooltip="Worst Long Accuracy: {{_backtesting.accuracyMD.long.min.id}}"
-                                                    (click)="displayModel(_backtesting.accuracyMD.long.min.id)">
-                                                    Worst: {{_backtesting.accuracyMD.long.min.value}}%
-                                                </div>
-                                            </div>
-                                            <div *ngIf="accuracyView == 1" class="fadeIn" fxLayout="row">
                                                 <div class="square-badge-error clickable" role="button" 
-                                                    matTooltip="Best Short Accuracy: {{_backtesting.accuracyMD.short.max.id}}"
-                                                    (click)="displayModel(_backtesting.accuracyMD.short.max.id)">
-                                                    Best: {{_backtesting.accuracyMD.short.max.value}}%
+                                                    matTooltip="Best Short Accuracy: {{_backtest.accuracyMD.short.max.id}}"
+                                                    (click)="displayModel(_backtest.accuracyMD.short.max.id)">
+                                                    {{_backtest.accuracyMD.short.max.value}}%
                                                 </div>
-                                                <div class="square-badge-error clickable low" role="button" 
-                                                    matTooltip="Worst Short Accuracy: {{_backtesting.accuracyMD.short.min.id}}"
-                                                    (click)="displayModel(_backtesting.accuracyMD.short.min.id)">
-                                                    Worst: {{_backtesting.accuracyMD.short.min.value}}%
+                                                <div class="square-badge clickable" role="button" 
+                                                    matTooltip="Best General Accuracy: {{_backtest.accuracyMD.general.max.id}}"
+                                                    (click)="displayModel(_backtest.accuracyMD.general.max.id)">
+                                                    {{_backtest.accuracyMD.general.max.value}}%
                                                 </div>
                                             </div>
-                                            <div *ngIf="accuracyView == 2" class="fadeIn" fxLayout="row">
-                                                <div class="square-badge clickable" role="button" 
-                                                    matTooltip="Best General Accuracy: {{_backtesting.accuracyMD.general.max.id}}"
-                                                    (click)="displayModel(_backtesting.accuracyMD.general.max.id)">
-                                                    Best: {{_backtesting.accuracyMD.general.max.value}}%
+                                            <div *ngIf="!viewBest" class="fadeIn" fxLayout="row" fxLayoutAlign="center center">
+                                                <div class="square-badge-success clickable" role="button" 
+                                                    matTooltip="Worst Long Accuracy: {{_backtest.accuracyMD.long.min.id}}"
+                                                    (click)="displayModel(_backtest.accuracyMD.long.min.id)">
+                                                    {{_backtest.accuracyMD.long.min.value}}%
                                                 </div>
-                                                <div class="square-badge clickable low" role="button" 
-                                                    matTooltip="Worst General Accuracy: {{_backtesting.accuracyMD.general.min.id}}"
-                                                    (click)="displayModel(_backtesting.accuracyMD.general.min.id)">
-                                                    Worst: {{_backtesting.accuracyMD.general.min.value}}%
+                                                <div class="square-badge-error clickable" role="button" 
+                                                    matTooltip="Worst Short Accuracy: {{_backtest.accuracyMD.short.min.id}}"
+                                                    (click)="displayModel(_backtest.accuracyMD.short.min.id)">
+                                                    {{_backtest.accuracyMD.short.min.value}}%
+                                                </div>
+                                                <div class="square-badge clickable" role="button" 
+                                                    matTooltip="Worst General Accuracy: {{_backtest.accuracyMD.general.min.id}}"
+                                                    (click)="displayModel(_backtest.accuracyMD.general.min.id)">
+                                                    {{_backtest.accuracyMD.general.min.value}}%
                                                 </div>
                                             </div>
                                             <button mat-icon-button 
-                                                    [disabled]="accuracyView == 2" 
-                                                    (click)="accuracyView = accuracyView + 1">
+                                                    [disabled]="!viewBest" 
+                                                    (click)="viewBest = false">
                                                     <mat-icon>arrow_right</mat-icon>
                                             </button>
                                         </div>
@@ -255,49 +253,47 @@
                                             <h3 class="show-on-desktop">Positions</h3>
                                             <span class="show-on-desktop" fxFlex></span>
                                             <button mat-icon-button 
-                                                    [disabled]="positionsView == 0" 
-                                                    (click)="positionsView = positionsView - 1">
+                                                    [disabled]="viewBest" 
+                                                    (click)="viewBest = true">
                                                     <mat-icon>arrow_left</mat-icon>
                                             </button>
-                                            <div *ngIf="positionsView == 0" class="fadeIn" fxLayout="row">
+                                            <div *ngIf="viewBest" class="fadeIn" fxLayout="row" fxLayoutAlign="center center">
                                                 <div class="square-badge-success clickable" role="button" 
-                                                    matTooltip="Highest # of Longs: {{_backtesting.positionsMD.long.max.id}}"
-                                                    (click)="displayModel(_backtesting.positionsMD.long.max.id)">
-                                                    High: {{_backtesting.positionsMD.long.max.value}}
+                                                    matTooltip="Highest # of Longs: {{_backtest.positionsMD.long.max.id}}"
+                                                    (click)="displayModel(_backtest.positionsMD.long.max.id)">
+                                                    {{_backtest.positionsMD.long.max.value}}
                                                 </div>
-                                                <div class="square-badge-success clickable low" role="button" 
-                                                    matTooltip="Lowest # of Longs: {{_backtesting.positionsMD.long.min.id}}"
-                                                    (click)="displayModel(_backtesting.positionsMD.long.min.id)">
-                                                    Low: {{_backtesting.positionsMD.long.min.value}}
-                                                </div>
-                                            </div>
-                                            <div *ngIf="positionsView == 1" class="fadeIn" fxLayout="row">
                                                 <div class="square-badge-error clickable" role="button" 
-                                                    matTooltip="Highest # of Shorts: {{_backtesting.positionsMD.short.max.id}}"
-                                                    (click)="displayModel(_backtesting.positionsMD.short.max.id)">
-                                                    High: {{_backtesting.positionsMD.short.max.value}}
+                                                    matTooltip="Highest # of Shorts: {{_backtest.positionsMD.short.max.id}}"
+                                                    (click)="displayModel(_backtest.positionsMD.short.max.id)">
+                                                    {{_backtest.positionsMD.short.max.value}}
                                                 </div>
-                                                <div class="square-badge-error clickable low" role="button" 
-                                                    matTooltip="Lowest # of Shorts: {{_backtesting.positionsMD.short.min.id}}"
-                                                    (click)="displayModel(_backtesting.positionsMD.short.min.id)">
-                                                    Low: {{_backtesting.positionsMD.short.min.value}}
+                                                <div class="square-badge clickable" role="button" 
+                                                    matTooltip="Highest # of Positions: {{_backtest.positionsMD.general.max.id}}"
+                                                    (click)="displayModel(_backtest.positionsMD.general.max.id)">
+                                                    {{_backtest.positionsMD.general.max.value}}
                                                 </div>
                                             </div>
-                                            <div *ngIf="positionsView == 2" class="fadeIn" fxLayout="row">
-                                                <div class="square-badge clickable" role="button" 
-                                                    matTooltip="Highest # of Positions: {{_backtesting.positionsMD.general.max.id}}"
-                                                    (click)="displayModel(_backtesting.positionsMD.general.max.id)">
-                                                    High: {{_backtesting.positionsMD.general.max.value}}
+                                            <div *ngIf="!viewBest" class="fadeIn" fxLayout="row" fxLayoutAlign="center center">
+                                                <div class="square-badge-success clickable" role="button" 
+                                                    matTooltip="Lowest # of Longs: {{_backtest.positionsMD.long.min.id}}"
+                                                    (click)="displayModel(_backtest.positionsMD.long.min.id)">
+                                                    {{_backtest.positionsMD.long.min.value}}
                                                 </div>
-                                                <div class="square-badge clickable low" role="button" 
-                                                    matTooltip="Lowest # of Positions: {{_backtesting.positionsMD.general.min.id}}"
-                                                    (click)="displayModel(_backtesting.positionsMD.general.min.id)">
-                                                    Low: {{_backtesting.positionsMD.general.min.value}}
+                                                <div class="square-badge-error clickable" role="button" 
+                                                    matTooltip="Lowest # of Shorts: {{_backtest.positionsMD.short.min.id}}"
+                                                    (click)="displayModel(_backtest.positionsMD.short.min.id)">
+                                                    {{_backtest.positionsMD.short.min.value}}
+                                                </div>
+                                                <div class="square-badge clickable" role="button" 
+                                                    matTooltip="Lowest # of Positions: {{_backtest.positionsMD.general.min.id}}"
+                                                    (click)="displayModel(_backtest.positionsMD.general.min.id)">
+                                                    {{_backtest.positionsMD.general.min.value}}
                                                 </div>
                                             </div>
                                             <button mat-icon-button 
-                                                    [disabled]="positionsView == 2" 
-                                                    (click)="positionsView = positionsView + 1">
+                                                    [disabled]="!viewBest" 
+                                                    (click)="viewBest = false">
                                                     <mat-icon>arrow_right</mat-icon>
                                             </button>
                                         </div>
@@ -323,14 +319,14 @@
                                             <h3 class="show-on-desktop">Backtest Duration</h3>
                                             <span class="show-on-desktop" fxFlex></span>
                                             <div class="square-badge clickable" role="button"
-                                                (click)="displayModel(_backtesting.durationMD.min.id)" 
-                                                matTooltip="{{_backtesting.durationMD.min.id}}">
-                                                Fastest: {{_backtesting.durationMD.min.value}} mins
+                                                (click)="displayModel(_backtest.durationMD.min.id)" 
+                                                matTooltip="{{_backtest.durationMD.min.id}}">
+                                                Fastest: {{_backtest.durationMD.min.value}} mins
                                             </div>
                                             <div class="square-badge clickable" role="button" style="margin-left:5px;"
-                                                (click)="displayModel(_backtesting.durationMD.max.id)" 
-                                                matTooltip="{{_backtesting.durationMD.max.id}}">
-                                                Slowest: {{_backtesting.durationMD.max.value}}
+                                                (click)="displayModel(_backtest.durationMD.max.id)" 
+                                                matTooltip="{{_backtest.durationMD.max.id}}">
+                                                Slowest: {{_backtest.durationMD.max.value}}
                                             </div>
                                         </div>
                                         <div>
@@ -385,13 +381,13 @@
                                                 </div>
 
                                                 <!-- Description -->
-                                                <p class="light-text">{{_backtesting.backtests[modelID].description}}</p>
+                                                <p class="light-text">{{_backtest.backtests[modelID].description}}</p>
 
                                                 <!-- Backtest ID -->
                                                 <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
                                                     <p class="light-text truncate">Backtest ID</p>
                                                     <span fxFlex></span>
-                                                    <p>{{_backtesting.backtests[modelID].id}}</p>
+                                                    <p>{{_backtest.backtests[modelID].id}}</p>
                                                 </div>
 
                                                 <!-- Start Date -->
@@ -399,7 +395,7 @@
                                                     <p class="light-text truncate">Start</p>
                                                     <span fxFlex></span>
                                                     <p matTooltip="The Open Time of the first candlestick used for the test.">
-                                                        {{_backtesting.backtests[modelID].start | date:'medium'}}
+                                                        {{_backtest.backtests[modelID].start | date:'medium'}}
                                                     </p>
                                                 </div>
 
@@ -408,7 +404,7 @@
                                                     <p class="light-text truncate">End</p>
                                                     <span fxFlex></span>
                                                     <p matTooltip="The Close Time of the last candlestick used for the test.">
-                                                        {{_backtesting.backtests[modelID].end | date:'medium'}}
+                                                        {{_backtest.backtests[modelID].end | date:'medium'}}
                                                     </p>
                                                 </div>
 
@@ -416,9 +412,9 @@
                                                <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
                                                     <p class="light-text truncate">Position Exit</p>
                                                     <span fxFlex></span>
-                                                    <p class="success-color" matTooltip="Take Profit">{{_backtesting.backtests[modelID].take_profit}}%</p>
+                                                    <p class="success-color" matTooltip="Take Profit">{{_backtest.backtests[modelID].take_profit}}%</p>
                                                     <p>&nbsp;/&nbsp;</p>
-                                                    <p class="error-color" matTooltip="Stop Loss">{{_backtesting.backtests[modelID].stop_loss}}%</p>
+                                                    <p class="error-color" matTooltip="Stop Loss">{{_backtest.backtests[modelID].stop_loss}}%</p>
                                                 </div>
 
                                                 <!-- Idle Minutes -->
@@ -426,7 +422,7 @@
                                                      <p class="light-text truncate">Idle Minutes</p>
                                                      <span fxFlex></span>
                                                      <p matTooltip="The number of minutes the model remained idle every time it closed a position.">
-                                                         {{_backtesting.backtests[modelID].idle_minutes_on_position_close}} mins
+                                                         {{_backtest.backtests[modelID].idle_minutes_on_position_close}} mins
                                                     </p>
                                                 </div>
 
@@ -435,7 +431,7 @@
                                                     <p class="light-text truncate">Model Backtest Duration</p>
                                                     <span fxFlex></span>
                                                     <p matTooltip="The number of minutes it took the model to complete the backtest.">
-                                                        {{_backtesting.backtests[modelID].model_duration}} mins
+                                                        {{_backtest.backtests[modelID].model_duration}} mins
                                                     </p>
                                                </div>
                                             </div>
@@ -446,16 +442,16 @@
                                             <div class="desktop-card">
                                                 <!-- Heading -->
                                                 <div fxLayout="row" fxLayoutAlign="start center">
-                                                    <h4 *ngIf="_backtesting.models[modelID].single_models.length == 0">Decision Model</h4>
-                                                    <h4 *ngIf="_backtesting.models[modelID].single_models.length == 1">Single Model</h4>
-                                                    <h4 *ngIf="_backtesting.models[modelID].single_models.length > 1">Multi Model</h4>
+                                                    <h4 *ngIf="_backtest.models[modelID].single_models.length == 0">Decision Model</h4>
+                                                    <h4 *ngIf="_backtest.models[modelID].single_models.length == 1">Single Model</h4>
+                                                    <h4 *ngIf="_backtest.models[modelID].single_models.length > 1">Multi Model</h4>
                                                     <span fxFlex></span>
-                                                    <div class="square-badge">{{_backtesting.models[modelID].single_models.length}}</div>
+                                                    <div class="square-badge">{{_backtest.models[modelID].single_models.length}}</div>
                                                 </div>
 
                                                 <!-- Content -->
                                                 <div class="margin-top">
-                                                    <app-model-content [model]="_backtesting.models[modelID]"></app-model-content>
+                                                    <app-model-content [model]="_backtest.models[modelID]"></app-model-content>
                                                 </div>
                                             </div>
                                         </div>
@@ -472,9 +468,9 @@
                                                 <div fxLayout="row" fxLayoutAlign="start center">
                                                     <h4>Points</h4>
                                                     <span fxFlex></span>
-                                                    <div class="square-badge low show-on-desktop">High: {{modelPointsRange.max}}</div>
-                                                    <div class="square-badge low show-on-desktop">Low: {{modelPointsRange.min}}</div>
-                                                    <div class="square-badge">Final: {{_backtesting.performances[modelID].points}}</div>
+                                                    <div class="square-badge show-on-desktop">High: {{modelPointsRange.max}}</div>
+                                                    <div class="square-badge show-on-desktop">Low: {{modelPointsRange.min}}</div>
+                                                    <div class="square-badge">Final: {{_backtest.performances[modelID].points}}</div>
                                                 </div>
                                                 <apx-chart
                                                     [series]="modelCharts[modelID].points.series"
@@ -496,9 +492,9 @@
                                                     <h4 class="show-on-desktop">Accuracy</h4>
                                                     <h4 class="show-on-mobile">Acc.</h4>
                                                     <span fxFlex></span>
-                                                    <div class="square-badge-success low">{{_backtesting.performances[modelID].long_acc}}%</div>
-                                                    <div class="square-badge-error low">{{_backtesting.performances[modelID].short_acc}}%</div>
-                                                    <div class="square-badge">{{_backtesting.performances[modelID].general_acc}}%</div>
+                                                    <div class="square-badge-success">{{_backtest.performances[modelID].long_acc}}%</div>
+                                                    <div class="square-badge-error">{{_backtest.performances[modelID].short_acc}}%</div>
+                                                    <div class="square-badge">{{_backtest.performances[modelID].general_acc}}%</div>
                                                 </div>
                                                 <apx-chart
                                                     [series]="modelCharts[modelID].accuracy.series"
@@ -519,9 +515,9 @@
                                                     <h4 class="show-on-desktop">Positions</h4>
                                                     <h4 class="show-on-mobile">Pos.</h4>
                                                     <span fxFlex></span>
-                                                    <div class="square-badge-success low">{{_backtesting.performances[modelID].long_num}}</div>
-                                                    <div class="square-badge-error low">{{_backtesting.performances[modelID].short_num}}</div>
-                                                    <div class="square-badge">{{_backtesting.performances[modelID].positions.length}}</div>
+                                                    <div class="square-badge-success">{{_backtest.performances[modelID].long_num}}</div>
+                                                    <div class="square-badge-error">{{_backtest.performances[modelID].short_num}}</div>
+                                                    <div class="square-badge">{{_backtest.performances[modelID].positions.length}}</div>
                                                 </div>
                                                 <apx-chart
                                                     [series]="modelCharts[modelID].positions.series"
@@ -557,7 +553,7 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr *ngFor="let p of _backtesting.performances[modelID].positions; let i = index" 
+                                                        <tr *ngFor="let p of _backtest.performances[modelID].positions; let i = index" 
                                                             (click)="displayPosition(p)" class="clickable" role="button">
                                                             <td *ngIf="(i+1) <= visiblePositions">
                                                                 <p class="light-text">{{i+1}}</p>
@@ -585,7 +581,7 @@
                                             </div>
 
                                             <!-- Paginator -->
-                                            <div *ngIf="visiblePositions <= _backtesting.performances[modelID].positions.length" class="paginator">
+                                            <div *ngIf="visiblePositions <= _backtest.performances[modelID].positions.length" class="paginator">
                                                 <button mat-button (click)="visiblePositions=visiblePositions+15">View More</button>
                                             </div>
                                         </div>

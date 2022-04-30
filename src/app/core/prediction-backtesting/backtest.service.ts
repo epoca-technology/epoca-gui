@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { UtilsService } from '../utils';
 import { 
-	IPredictionBacktestingService, 
+	IBacktestService, 
 	IBacktestResult, 
 	IModels, 
 	IBacktests, 
@@ -17,7 +17,7 @@ import {
 @Injectable({
   providedIn: 'root'
 })
-export class PredictionBacktestingService implements IPredictionBacktestingService {
+export class BacktestService implements IBacktestService {
 	// Main Properties
 	public modelIDs: string[] = [];
 	public models: IModels = {};

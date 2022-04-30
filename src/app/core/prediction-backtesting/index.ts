@@ -1,2 +1,2 @@
 export * from './interfaces'
-export * from './prediction-backtesting.service'
+export * from './backtest.service'

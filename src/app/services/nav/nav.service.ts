@@ -66,7 +66,9 @@ export class NavService implements INavService {
 	public tradingSessions(): Promise<boolean> { return this.navigate('tradingSessions') }
 	public tradingSimulations(): Promise<boolean> { return this.navigate('tradingSimulations') }
 	public forecastModels(): Promise<boolean> { return this.navigate('forecastModels') }
-	public predictionBacktesting(): Promise<boolean> { return this.navigate('predictionBacktesting') }
+	public backtests(): Promise<boolean> { return this.navigate('predictionBacktesting/backtests') }
+	public trainingData(): Promise<boolean> { return this.navigate('predictionBacktesting/trainingData') }
+	public modelsTraining(): Promise<boolean> { return this.navigate('predictionBacktesting/modelsTraining') }
 	public candlesticks(): Promise<boolean> { return this.navigate('candlesticks') }
 	public server(): Promise<boolean> { return this.navigate('server') }
 	public users(): Promise<boolean> { return this.navigate('users') }
@@ -302,8 +304,9 @@ export class NavService implements INavService {
 		// Build the data if it isnt navigating
 		if (!navigating) {
 			// Retrieve the data
-			const data: IRouteStateData = this.getRouteStateData();
-			state.module = data.module;
+			const {module, subModule} = this.getRouteStateData();
+			state.module = module;
+			state.subModule = subModule;
 		}
 		
 		// Return the final object
@@ -335,7 +338,7 @@ export class NavService implements INavService {
 			
 			// Handle the case based on the chunks
 			if (urlChunks.length > 0) {
-				return {module: urlChunks[0]};
+				return {module: urlChunks[0], subModule: urlChunks[1]};
 			} else {
 				return {module: null}
 			}

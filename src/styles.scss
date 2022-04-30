@@ -452,6 +452,7 @@ ul li ul, ol li ul { padding: 0 0 0 15px;}
 
 
 
+
 /* Toolbars */
 .mat-toolbar { height: var(--toolbar-desktop-height); color:#FFFFFF; @include mat.elevation(3);}
 .mat-toolbar img { max-height: 55px;width: auto; }
@@ -694,6 +695,15 @@ form .mat-checkbox-inner-container{
 	.divider { margin: 15px 0 15px 0;}
 	button {padding: 2px 2px 2px 2px!important;font-size:13px!important;}
 }
+
+
+
+
+
+/* Icons */
+.flask-icon{max-width: 20px;margin-left:3px;}
+
+
 
 
 

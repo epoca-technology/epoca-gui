@@ -7,7 +7,12 @@
 .square-badge-error { margin-left:5px!important;}
 
 
-.low { opacity:0.75}
+.badges-title {
+    margin: 0 0 0 5px;
+    font-size:13px;
+    color: var(--light-text-color);
+    text-align: center;
+}
 
 
 /* Uninitialized */

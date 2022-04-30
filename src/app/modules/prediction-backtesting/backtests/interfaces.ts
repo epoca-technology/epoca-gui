@@ -1,9 +1,9 @@
 import { IBacktestPosition } from "../../../core";
-import { ILineChartOptions, IBarChartOptions } from "../../../services";
+import { IBarChartOptions } from "../../../services";
 
 
 // Service
-export interface IPredictionBacktestingComponent {
+export interface IBacktestsComponent {
     // Initialization
     fileChanged(event: any): Promise<void>,
     resetResults(): void,

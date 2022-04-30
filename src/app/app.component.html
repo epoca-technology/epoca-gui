@@ -39,16 +39,49 @@
             <!-- Forecast Models -->
             <mat-list-item>
                 <button mat-button class="left-icon-button" (click)="_nav.forecastModels()" [disabled]="state.module == 'forecastModels'">
-                    <mat-icon svgIcon="brain"></mat-icon><span>Forecast Models</span>
+                    <mat-icon svgIcon="brain"></mat-icon><span>Prediction Models</span>
                 </button>
             </mat-list-item>
 
-            <!-- Prediction Backtesting -->
-            <mat-list-item>
-                <button mat-button class="left-icon-button" (click)="_nav.predictionBacktesting()" [disabled]="state.module == 'predictionBacktesting'">
-                    <mat-icon>science</mat-icon><span>Prediction Backtesting</span>
+            <!-- Prediction Backtesting Sub Menu -->
+            <mat-list-item [ngClass]="{'active-sub-menu': backtestingExpanded}">
+                <button mat-button class="left-icon-button" (click)="backtestingExpanded = !backtestingExpanded">
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <mat-icon svgIcon="flask" class="flask-icon"></mat-icon>
+                        <span>Prediction Backtesting</span>
+                        <span fxFlex></span>
+                        <mat-icon>{{backtestingExpanded ? 'arrow_drop_up': 'arrow_drop_down'}}</mat-icon>
+                    </div>
                 </button>
             </mat-list-item>
+
+            <!-- Backtests -->
+            <mat-list-item *ngIf="backtestingExpanded" class="active-sub-menu">
+                <button mat-button (click)="_nav.backtests()" [disabled]="state.subModule == 'backtests'">
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <span>Backtests</span><span fxFlex></span><mat-icon svgIcon="flask_vial"></mat-icon>
+                    </div>
+                </button>
+            </mat-list-item>
+
+            <!-- Training Data -->
+            <mat-list-item *ngIf="backtestingExpanded" class="active-sub-menu">
+                <button mat-button (click)="_nav.trainingData()" [disabled]="state.subModule == 'trainingData'">
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <span>Training Data</span><span fxFlex></span><mat-icon svgIcon="book"></mat-icon>
+                    </div>
+                </button>
+            </mat-list-item>
+
+            <!-- Models Training -->
+            <mat-list-item *ngIf="backtestingExpanded" class="active-sub-menu">
+                <button mat-button (click)="_nav.modelsTraining()" [disabled]="state.subModule == 'modelsTraining'">
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <span>Models Training</span><span fxFlex></span><mat-icon svgIcon="dumbbell"></mat-icon>
+                    </div>
+                </button>
+            </mat-list-item>
+
 
             <!-- Candlesticks -->
             <mat-list-item>

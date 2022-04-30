@@ -41,7 +41,7 @@ import {
 	IpBlacklistService,
 	NotificationService,
 	PredictionService,
-	PredictionBacktestingService,
+	BacktestService,
 	ServerService,
 	UtilsService,
 } from './core';
@@ -116,7 +116,7 @@ import { AppComponent } from './app.component';
         IpBlacklistService,
         NotificationService,
 		PredictionService,
-		PredictionBacktestingService,
+		BacktestService,
         ServerService,
         UtilsService,
 
