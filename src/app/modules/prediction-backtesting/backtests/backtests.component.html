@@ -464,7 +464,7 @@
                                             <div class="divider"></div>
 
                                             <!-- Points -->
-                                            <div class="desktop-card">
+                                            <div class="desktop-card points-card">
                                                 <div fxLayout="row" fxLayoutAlign="start center">
                                                     <h4>Points</h4>
                                                     <span fxFlex></span>
@@ -472,17 +472,19 @@
                                                     <div class="square-badge show-on-desktop">Low: {{modelPointsRange.min}}</div>
                                                     <div class="square-badge">Final: {{_backtest.performances[modelID].points}}</div>
                                                 </div>
-                                                <apx-chart
-                                                    [series]="modelCharts[modelID].points.series"
-                                                    [chart]="modelCharts[modelID].points.chart"
-                                                    [plotOptions]="modelCharts[modelID].points.plotOptions"
-                                                    [xaxis]="modelCharts[modelID].points.xaxis"
-                                                    [dataLabels]="modelCharts[modelID].points.dataLabels"
-                                                    [colors]="modelCharts[modelID].points.colors"
-                                                    [grid]="modelCharts[modelID].points.grid"
-                                                    [legend]="{show: false}"
-                                                    [yaxis]="modelCharts[modelID].points.yaxis"
-                                                ></apx-chart>
+                                                <div class="points-chart">
+                                                    <apx-chart
+                                                        [series]="modelCharts[modelID].points.series"
+                                                        [chart]="modelCharts[modelID].points.chart"
+                                                        [plotOptions]="modelCharts[modelID].points.plotOptions"
+                                                        [xaxis]="modelCharts[modelID].points.xaxis"
+                                                        [dataLabels]="modelCharts[modelID].points.dataLabels"
+                                                        [colors]="modelCharts[modelID].points.colors"
+                                                        [grid]="modelCharts[modelID].points.grid"
+                                                        [legend]="{show: false}"
+                                                        [yaxis]="modelCharts[modelID].points.yaxis"
+                                                    ></apx-chart>
+                                                </div>
                                             </div>
                                             <div class="divider"></div>
 

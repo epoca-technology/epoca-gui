@@ -404,13 +404,14 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 	// Build the chart
 	this.modelCharts[this.modelID!] = {
 		points: this._chart.getBarChartOptions({
-		series: [{name: this.modelID,data: values}],
-		plotOptions: {bar: {borderRadius: 0, horizontal: false, distributed: true,}},
-		colors: colors,
-		yaxis: {forceNiceScale: false, min: this.modelPointsRange.min, max: this.modelPointsRange.max},
-		grid: {show: true},
-		xaxis: {labels: { show: false } }
-		}, [], 350, true),
+			series: [{name: this.modelID,data: values}],
+			chart: {height: 350, type: 'bar',animations: { enabled: false}, toolbar: {show: true,tools: {download: false}}},
+			plotOptions: {bar: {borderRadius: 0, horizontal: false, distributed: true,}},
+			colors: colors,
+			yaxis: {forceNiceScale: false, min: this.modelPointsRange.min, max: this.modelPointsRange.max},
+			grid: {show: true},
+			xaxis: {labels: { show: false } }
+		}, [], undefined, true),
 		accuracy: this._chart.getBarChartOptions({
 		series: [
 			{name:'Long Accuracy',data:[this._backtest.performances[this.modelID!].long_acc]},
