@@ -7,7 +7,7 @@ import {
 	IModel, 
 	IPrediction,
 	IPredictionMetaData,
-	ISingleModel,
+	IArimaModel,
 	PredictionService, 
 	UtilsService, 
 } from '../../../../core';
@@ -17,8 +17,6 @@ import {
 	IPredictionDialogComponentData, 
 	IMetadata,
 	IChangeMetadata,
-	IRSIMetadata,
-	IEMAMetadata,
 	IChangeMetadataResult,
 	IChangeMetadataChartSeries,
 	ISeparatedCandlesticks
@@ -85,7 +83,7 @@ export class PredictionDialogComponent implements OnInit, IPredictionDialogCompo
 		this.model = this.data.model;
 		this.prediction = this.data.prediction;
 		this.resultName = this._prediction.resultNames[this.prediction.r];
-		this.modelTypeName = this._prediction.getModelTypeName(this.model.single_models.length);
+		this.modelTypeName = this._prediction.getModelTypeName(this.model);
 
 		// Initialize the Metadata
 		try {
@@ -128,11 +126,7 @@ export class PredictionDialogComponent implements OnInit, IPredictionDialogCompo
 			for (let i = 0; i < this.prediction.md.length; i++) {
 				this.metadata.push({
 					description: this.prediction.md[i].d,
-					priceChange: {
-						change: this.getChangeMetadata(this.model.single_models[i], this.prediction.md[i], candlesticks),
-						rsi: this.getRSIMetadata(this.model.single_models[i], this.prediction.md[i]),
-						ema: this.getEMAMetadata(this.model.single_models[i], this.prediction.md[i]),
-					}
+					priceChange: this.getChangeMetadata(this.model.arima_models[i], this.prediction.md[i], candlesticks)
 				});
 			}
 		} 
@@ -159,7 +153,7 @@ export class PredictionDialogComponent implements OnInit, IPredictionDialogCompo
 	 * @param candlesticks 
 	 * @returns IChangeMetadata
 	 */
-	private getChangeMetadata(sm: ISingleModel, md: IPredictionMetaData, candlesticks: ICandlestick[]): IChangeMetadata {
+	private getChangeMetadata(sm: IArimaModel, md: IPredictionMetaData, candlesticks: ICandlestick[]): IChangeMetadata {
 		// Calculate the % change from first to last price predictions
 		const change: number = <number>this._utils.calculatePercentageChange(md.pl![0], md.pl![md.pl!.length - 1], {ru: true});
 
@@ -329,95 +323,6 @@ export class PredictionDialogComponent implements OnInit, IPredictionDialogCompo
 
 
 
-
-
-	/**
-	 * If the RSI is active it will return its metadata, otherwise returns undefined.
-	 * @param sm 
-	 * @param md 
-	 * @returns IRSIMetadata|undefined
-	 */
-	private getRSIMetadata(sm: ISingleModel, md: IPredictionMetaData): IRSIMetadata|undefined {
-		// Make sure the RSI is enabled
-		if (
-			sm.interpreter.rsi.active && 
-			sm.interpreter.rsi.overbought &&
-			sm.interpreter.rsi.oversold &&
-			md.rsi
-		) {
-			// Check if the RSI is overbought
-			if (md.rsi >= sm.interpreter.rsi.overbought) {
-				return { value: md.rsi, result: 'overbought', badge: 'square-badge-success' }
-			}
-
-			// Check if the RSI is oversold
-			else if (md.rsi <= sm.interpreter.rsi.oversold) {
-				return { value: md.rsi, result: 'oversold', badge: 'square-badge-error' }
-			}
-
-			// Otherwise, it is neutral
-			else {
-				return { value: md.rsi, result: 'neutral', badge: 'square-badge' }
-			}
-		} else { return undefined }
-	}
-
-
-
-
-
-	/**
-	 * If the EMA is active it will return its metadata, otherwise returns undefined.
-	 * @param sm 
-	 * @param md 
-	 * @returns IEMAMetadata|undefined
-	 */
-	 private getEMAMetadata(sm: ISingleModel, md: IPredictionMetaData): IEMAMetadata|undefined {
-		 // Make sure the EMA is enabled
-		 if (
-			sm.interpreter.ema.active && 
-			sm.interpreter.ema.distance && 
-			md.sema &&
-			md.lema
-		 ) {
-			// If short is above long means it could be an uptrend
-			if (md.sema > md.lema) {
-				// Calculate the distance from long to short
-				const distance: number = <number>this._utils.calculatePercentageChange(md.lema, md.sema, {ru: true});
-
-				// If the distance is equals or greater, it is an uptrend
-				if (distance >= sm.interpreter.ema.distance) {
-					return {shortValue: md.sema, longValue: md.lema, distanceValue: distance, result: 'upwards', badge: 'square-badge-success'}
-				}
-
-				// Otherwise, it is neutral
-				else {
-					return {shortValue: md.sema, longValue: md.lema, distanceValue: distance, result: 'sideways', badge: 'square-badge'}
-				}
-			}
-
-			// If the long is above the short means it could be a downtrend
-			else if (md.sema < md.lema) {
-				// Calculate the distance from short to long
-				const distance: number = <number>this._utils.calculatePercentageChange(md.sema, md.lema, {ru: true});
-
-				// If the distance is equals or greater, it is an downtrend
-				if (distance >= sm.interpreter.ema.distance) {
-					return {shortValue: md.sema, longValue: md.lema, distanceValue: distance, result: 'downwards', badge: 'square-badge-error'}
-				}
-
-				// Otherwise, it is neutral
-				else {
-					return {shortValue: md.sema, longValue: md.lema, distanceValue: distance, result: 'sideways', badge: 'square-badge'}
-				}
-			}
-
-			// Otherwise, the trend is unknown
-			else {
-				return {shortValue: md.sema, longValue: md.lema, distanceValue: 0, result: 'sideways', badge: 'square-badge'}
-			}
-		 } else { return undefined }
-	}
 
 
 

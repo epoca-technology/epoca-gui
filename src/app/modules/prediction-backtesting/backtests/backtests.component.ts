@@ -287,39 +287,39 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 
 	// Initializes the points section.
 	private initPointsSection(): void {
-	// Init the chart data
-	let dist: ApexAxisChartSeries = [{
-		name: 'Points Accumulated',
-		data: []
-	}];
-	let lines: ApexAxisChartSeries = [];
+		// Init the chart data
+		let dist: ApexAxisChartSeries = [{
+			name: 'Points Accumulated',
+			data: []
+		}];
+		let lines: ApexAxisChartSeries = [];
 
-	// Iterate over each model building the data
-	for (let i = 0; i < this._backtest.modelIDs.length; i++) {
-		// Add the distribution
-		dist[0].data.push(<any>this._backtest.performances[this._backtest.modelIDs[i]].points);
+		// Iterate over each model building the data
+		for (let i = 0; i < this._backtest.modelIDs.length; i++) {
+			// Add the distribution
+			dist[0].data.push(<any>this._backtest.performances[this._backtest.modelIDs[i]].points);
 
-		// Add the lines
-		lines.push({
-		name: this._backtest.modelIDs[i], 
-		data: this._backtest.performances[this._backtest.modelIDs[i]].points_hist, 
-		color: this._chart.colors[i]
-		})
-	}
+			// Add the lines
+			lines.push({
+				name: this._backtest.modelIDs[i], 
+				data: this._backtest.performances[this._backtest.modelIDs[i]].points_hist, 
+				color: this._chart.colors[i]
+			})
+		}
 
-	// Create a copy of the instance to handle chart click events
-	const self = this;
+		// Create a copy of the instance to handle chart click events
+		const self = this;
 
-	// Build the dist chart options
-	this.pointsDistChart = this._chart.getBarChartOptions({series: dist}, this._backtest.modelIDs, this.generalChartHeight, true);
-	this.pointsDistChart.chart.events = {click: function(e, cc, c) {self.displayModel(c.dataPointIndex)}}
+		// Build the dist chart options
+		this.pointsDistChart = this._chart.getBarChartOptions({series: dist}, this._backtest.modelIDs, this.generalChartHeight, true);
+		this.pointsDistChart.chart.events = {click: function(e, cc, c) {self.displayModel(c.dataPointIndex)}}
 
-	// Populate the line chart values
-	this.pointsLineChart = this._chart.getLineChartOptions({series: lines}, this.generalChartHeight, true, {
-		max: this._backtest.pointsHistoryMD.max.value,
-		min: this._backtest.pointsHistoryMD.min.value,
-	});
-	this.pointsLineChart.chart.events = {click: function(e: any, cc: any, c: any) {self.displayModel(c.seriesIndex)}}
+		// Populate the line chart values
+		this.pointsLineChart = this._chart.getLineChartOptions({series: lines}, this.generalChartHeight, true, {
+			max: this._backtest.pointsHistoryMD.max.value,
+			min: this._backtest.pointsHistoryMD.min.value,
+		});
+		this.pointsLineChart.chart.events = {click: function(e: any, cc: any, c: any) {self.displayModel(c.seriesIndex)}}
 	}
 
 
@@ -327,64 +327,64 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 
 	// Initializes the general accuracy section.
 	private initAccuracySection(): void {
-	// Init the chart data
-	let series: ApexAxisChartSeries = [{name:'Long Accuracy',data:[]},{name:'Short Accuracy',data:[]},{name:'General Accuracy',data:[]}];
+		// Init the chart data
+		let series: ApexAxisChartSeries = [{name:'Long Accuracy',data:[]},{name:'Short Accuracy',data:[]},{name:'General Accuracy',data:[]}];
 
-	// Iterate over each model building the data
-	for (let id of this._backtest.modelIDs) {
-		// Add the distribution
-		series[0].data.push(<any>this._backtest.performances[id].long_acc);
-		series[1].data.push(<any>this._backtest.performances[id].short_acc);
-		series[2].data.push(<any>this._backtest.performances[id].general_acc);
-	}
+		// Iterate over each model building the data
+		for (let id of this._backtest.modelIDs) {
+			// Add the distribution
+			series[0].data.push(<any>this._backtest.performances[id].long_acc);
+			series[1].data.push(<any>this._backtest.performances[id].short_acc);
+			series[2].data.push(<any>this._backtest.performances[id].general_acc);
+		}
 
-	// Build the chart options
-	const self = this;
-	this.accuracyChart = this._chart.getBarChartOptions(
-		{series: series, colors: [this._chart.upwardColor, this._chart.downwardColor, '#000000']}, 
-		this._backtest.modelIDs, this.generalChartHeight
-	);
-	this.accuracyChart.chart.events = {click: function(e, cc, c) {self.displayModel(c.dataPointIndex)}}
+		// Build the chart options
+		const self = this;
+		this.accuracyChart = this._chart.getBarChartOptions(
+			{series: series, colors: [this._chart.upwardColor, this._chart.downwardColor, '#000000']}, 
+			this._backtest.modelIDs, this.generalChartHeight
+		);
+		this.accuracyChart.chart.events = {click: function(e, cc, c) {self.displayModel(c.dataPointIndex)}}
 	}
 
 
 
 	// Initializes the general positions section
 	private initPositionsSection(): void {
-	// Init the chart data
-	let series: ApexAxisChartSeries = [{name:'Longs',data:[]},{name:'Shorts',data:[]},{name:'Total',data:[]}];
+		// Init the chart data
+		let series: ApexAxisChartSeries = [{name:'Longs',data:[]},{name:'Shorts',data:[]},{name:'Total',data:[]}];
 
-	// Iterate over each model building the data
-	for (let id of this._backtest.modelIDs) {
-		// Add the distribution
-		series[0].data.push(<any>this._backtest.performances[id].long_num);
-		series[1].data.push(<any>this._backtest.performances[id].short_num);
-		series[2].data.push(<any>this._backtest.performances[id].positions.length);
-	}
+		// Iterate over each model building the data
+		for (let id of this._backtest.modelIDs) {
+			// Add the distribution
+			series[0].data.push(<any>this._backtest.performances[id].long_num);
+			series[1].data.push(<any>this._backtest.performances[id].short_num);
+			series[2].data.push(<any>this._backtest.performances[id].positions.length);
+		}
 
-	// Build the chart options
-	const self = this;
-	this.positionsChart = this._chart.getBarChartOptions(
-		{series: series, colors: [this._chart.upwardColor, this._chart.downwardColor, '#000000']}, 
-		this._backtest.modelIDs, this.generalChartHeight
-	);
-	this.positionsChart.chart.events = {click: function(e, cc, c) {self.displayModel(c.dataPointIndex)}}
+		// Build the chart options
+		const self = this;
+		this.positionsChart = this._chart.getBarChartOptions(
+			{series: series, colors: [this._chart.upwardColor, this._chart.downwardColor, '#000000']}, 
+			this._backtest.modelIDs, this.generalChartHeight
+		);
+		this.positionsChart.chart.events = {click: function(e, cc, c) {self.displayModel(c.dataPointIndex)}}
 	}
 
 
 
 	// Initializes the general durations section
 	private initDurationSection(): void {
-	// Init the chart data
-	let series: ApexAxisChartSeries = [{name: 'Minutes', data: []}];
+		// Init the chart data
+		let series: ApexAxisChartSeries = [{name: 'Minutes', data: []}];
 
-	// Iterate over each model building the data
-	for (let id of this._backtest.modelIDs) {series[0].data.push(<any>this._backtest.backtests[id].model_duration)}
+		// Iterate over each model building the data
+		for (let id of this._backtest.modelIDs) {series[0].data.push(<any>this._backtest.backtests[id].model_duration)}
 
-	// Build the chart options
-	const self = this;
-	this.durationChart = this._chart.getBarChartOptions({series: series}, this._backtest.modelIDs, this.generalChartHeight, true);
-	this.durationChart.chart.events = {click: function(e, cc, c) {self.displayModel(c.dataPointIndex)}}
+		// Build the chart options
+		const self = this;
+		this.durationChart = this._chart.getBarChartOptions({series: series}, this._backtest.modelIDs, this.generalChartHeight, true);
+		this.durationChart.chart.events = {click: function(e, cc, c) {self.displayModel(c.dataPointIndex)}}
 	}
 
 
@@ -392,45 +392,45 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 
 	// Initializes the charts for a model
 	private initModelCharts(): void {
-	// Build the meta data
-	this.modelPointsRange = { 
-		max: this._utils.getMax(this._backtest.performances[this.modelID!].points_hist),
-		min: this._utils.getMin(this._backtest.performances[this.modelID!].points_hist)
-	}
+		// Build the meta data
+		this.modelPointsRange = { 
+			max: this._utils.getMax(this._backtest.performances[this.modelID!].points_hist),
+			min: this._utils.getMin(this._backtest.performances[this.modelID!].points_hist)
+		}
 
-	// Retrieve the points charts data
-	const {colors, values} = this.getModelPointsValues(this.modelID!)
+		// Retrieve the points charts data
+		const {colors, values} = this.getModelPointsValues(this.modelID!)
 
-	// Build the chart
-	this.modelCharts[this.modelID!] = {
-		points: this._chart.getBarChartOptions({
-			series: [{name: this.modelID,data: values}],
-			chart: {height: 350, type: 'bar',animations: { enabled: false}, toolbar: {show: true,tools: {download: false}}},
-			plotOptions: {bar: {borderRadius: 0, horizontal: false, distributed: true,}},
-			colors: colors,
-			yaxis: {forceNiceScale: false, min: this.modelPointsRange.min, max: this.modelPointsRange.max},
-			grid: {show: true},
-			xaxis: {labels: { show: false } }
-		}, [], undefined, true),
-		accuracy: this._chart.getBarChartOptions({
-		series: [
-			{name:'Long Accuracy',data:[this._backtest.performances[this.modelID!].long_acc]},
-			{name:'Short Accuracy',data:[this._backtest.performances[this.modelID!].short_acc]},
-			{name:'General Accuracy',data:[this._backtest.performances[this.modelID!].general_acc]}
-		],
-		colors: [this._chart.upwardColor, this._chart.downwardColor, '#000000'],
-		yaxis: {labels: {show: false}}
-		}, [this.modelID!], 130),
-		positions: this._chart.getBarChartOptions({
-		series: [
-			{name:'Longs',data:[this._backtest.performances[this.modelID!].long_num]},
-			{name:'Shorts',data:[this._backtest.performances[this.modelID!].short_num]},
-			{name:'Total',data:[this._backtest.performances[this.modelID!].positions.length]}
-		],
-		colors: [this._chart.upwardColor, this._chart.downwardColor, '#000000'],
-		yaxis: {labels: {show: false}}
-		}, [this.modelID!], 130)
-	}
+		// Build the chart
+		this.modelCharts[this.modelID!] = {
+			points: this._chart.getBarChartOptions({
+				series: [{name: this.modelID,data: values}],
+				chart: {height: 350, type: 'bar',animations: { enabled: false}, toolbar: {show: true,tools: {download: false}}},
+				plotOptions: {bar: {borderRadius: 0, horizontal: false, distributed: true,}},
+				colors: colors,
+				yaxis: {forceNiceScale: false, min: this.modelPointsRange.min, max: this.modelPointsRange.max},
+				grid: {show: true},
+				xaxis: {labels: { show: false } }
+			}, [], undefined, true),
+			accuracy: this._chart.getBarChartOptions({
+			series: [
+				{name:'Long Accuracy',data:[this._backtest.performances[this.modelID!].long_acc]},
+				{name:'Short Accuracy',data:[this._backtest.performances[this.modelID!].short_acc]},
+				{name:'General Accuracy',data:[this._backtest.performances[this.modelID!].general_acc]}
+			],
+			colors: [this._chart.upwardColor, this._chart.downwardColor, '#000000'],
+			yaxis: {labels: {show: false}}
+			}, [this.modelID!], 130),
+			positions: this._chart.getBarChartOptions({
+			series: [
+				{name:'Longs',data:[this._backtest.performances[this.modelID!].long_num]},
+				{name:'Shorts',data:[this._backtest.performances[this.modelID!].short_num]},
+				{name:'Total',data:[this._backtest.performances[this.modelID!].positions.length]}
+			],
+			colors: [this._chart.upwardColor, this._chart.downwardColor, '#000000'],
+			yaxis: {labels: {show: false}}
+			}, [this.modelID!], 130)
+		}
 	}
 
 
@@ -534,7 +534,7 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 	// Add the basic information
 	sum += `MODEL:\n`;
 	sum += `ID: ${model.id}\n`;
-	sum += `Type: ${this._prediction.getModelTypeName(model.single_models.length)}\n`;
+	sum += `Type: ${this._prediction.getModelTypeName(model)}\n`;
 	if (model.consensus) sum += `Consensus: ${model.consensus}\n`;
 	sum += '\n'
 
@@ -560,19 +560,17 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 	sum += `- Long: ${this._backtest.performances[model.id].long_num}\n`;
 	sum += `- Short: ${this._backtest.performances[model.id].short_num}\n`;
 
-	// SINGLE MODELS
-	if (model.single_models.length) {
-		sum += `\nSINGLE MODELS (${model.single_models.length}):`;
-		for (let sm of model.single_models) {
+	// ARIMA MODELS
+	if (model.arima_models.length) {
+		sum += `\nARIMA MODELS (${model.arima_models.length}):`;
+		for (let sm of model.arima_models) {
 		sum += `\n\nLookback: ${sm.lookback}\n`;
 		sum += `Arima: (${sm.arima.p}, ${sm.arima.d}, ${sm.arima.q})`;
 		sum += `(${sm.arima.P}, ${sm.arima.D}, ${sm.arima.Q}, ${sm.arima.m})`;
-		sum += ` -> [${sm.arima.predictions}]\n`;
+		sum += ` -> [${sm.predictions}]\n`;
 		sum += `Interpreter:\n`;
 		sum += `- Long: ${sm.interpreter.long}%\n`;
 		sum += `- Short: ${sm.interpreter.short}%\n`;
-		if (sm.interpreter.rsi.active)sum += `- RSI: (${sm.interpreter.rsi.overbought}, ${sm.interpreter.rsi.oversold})\n`;
-		if (sm.interpreter.ema.active)sum += `- EMA: (${sm.interpreter.ema.distance}%)\n`;
 		}
 	}
 	

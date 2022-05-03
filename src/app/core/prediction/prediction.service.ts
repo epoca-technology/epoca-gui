@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IPredictionResultName, IPredictionService, IModelTypeName } from './interfaces';
+import { IPredictionResultName, IPredictionService, IModelTypeName, IModel } from './interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -33,15 +33,39 @@ export class PredictionService implements IPredictionService {
 
 
 	/**
-	 * Given the number of single models contained, it will return the Model's type 
-	 * name.
-	 * @param singleModelCount 
+	 * Given the a model, it will return the type name based on its configuration.
+	 * @param model 
 	 * @returns IModelTypeName
 	 */
-	public getModelTypeName(singleModelCount: number): IModelTypeName {
-		if (singleModelCount == 0) { return 'Decision Model'}
-		else if (singleModelCount == 1) { return 'Single Model'}
-		else { return 'Multi Model'}
+	public getModelTypeName(model: IModel): IModelTypeName {
+		// Check if it is an ArimaModel
+		if (model.arima_models.length == 1) {
+			return 'ArimaModel';
+		}
+
+		// Check if it is a DecisionModel
+		else if (
+			model.arima_models.length >= 5 && 
+			model.decision_models && 
+			model.decision_models.length == 1
+		) {
+			return 'DecisionModel';
+		}
+
+		// Check if it is a MultiDecisionModel
+		else if (
+			model.arima_models.length >= 5 && 
+			model.decision_models && 
+			model.decision_models.length > 1
+		) {
+			return 'MultiDecisionModel';
+		}
+
+		// Otherwise, crash the program
+		else {
+			console.log(model);
+			throw new Error("Could not find the model type name for the provided model.");
+		}
 	}
 
 

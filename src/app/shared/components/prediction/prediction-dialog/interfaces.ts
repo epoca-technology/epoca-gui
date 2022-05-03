@@ -24,11 +24,8 @@ export interface IPredictionDialogComponentData {
 // Final Metadata Object
 export interface IMetadata {
     description: string,
-    priceChange?: {
-        change: IChangeMetadata,
-        rsi?: IRSIMetadata,
-        ema?: IEMAMetadata
-    },
+    priceChange?: IChangeMetadata,
+
     // Decision Models will have other properties 
 }
 
@@ -53,24 +50,6 @@ export interface IChangeMetadataChartSeries {
     predictions: number[],
     real: number[],
     categories: number[]
-}
-
-
-
-// RSI Metadata
-export interface IRSIMetadata {
-    value: number,
-    result: 'overbought'|'oversold'|'neutral',
-    badge: IMetadataResultBadge,
-}
-
-// EMA Metadata
-export interface IEMAMetadata { 
-    shortValue: number,
-    longValue: number,
-    distanceValue: number,
-    result: 'upwards'|'downwards'|'sideways',
-    badge: IMetadataResultBadge,
 }
 
 

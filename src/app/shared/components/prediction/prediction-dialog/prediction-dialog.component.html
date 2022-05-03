@@ -53,37 +53,22 @@
 
                     <span fxFlex></span>
 
-                    <!-- RSI Badge -->
-                    <div *ngIf="md.priceChange.rsi" [ngClass]="md.priceChange.rsi.badge" matTooltip="RSI: {{md.priceChange.rsi.value}}">
-                        <mat-icon *ngIf="md.priceChange.rsi.result == 'overbought'">align_vertical_top</mat-icon>
-                        <mat-icon *ngIf="md.priceChange.rsi.result == 'oversold'">align_vertical_bottom</mat-icon>
-                        <mat-icon *ngIf="md.priceChange.rsi.result == 'neutral'">vertical_align_center</mat-icon>
-                    </div>
-
-                    <!-- EMA Badge -->
-                    <div *ngIf="md.priceChange.ema" [ngClass]="md.priceChange.ema.badge" 
-                        matTooltip="Short EMA: {{md.priceChange.ema.shortValue}} | Long EMA: {{md.priceChange.ema.longValue}} | Distance: {{md.priceChange.ema.distanceValue}}%">
-                        <mat-icon *ngIf="md.priceChange.ema.result == 'upwards'">trending_up</mat-icon>
-                        <mat-icon *ngIf="md.priceChange.ema.result == 'downwards'">trending_down</mat-icon>
-                        <mat-icon *ngIf="md.priceChange.ema.result == 'sideways'">trending_flat</mat-icon>
-                    </div>
-
                     <!-- Prediction Price Change Badge -->
-                    <div [ngClass]="md.priceChange.change.badge" 
+                    <div [ngClass]="md.priceChange.badge" 
                         matTooltip="Price change between the first prediction and the last">
-                        <span>{{md.priceChange.change.value}}%</span>
+                        <span>{{md.priceChange.value}}%</span>
                     </div>
                 </div>
 
                 <!-- Price Prediction Chart -->
                 <div>
                     <apx-chart
-                        [series]="md.priceChange.change.chart.series"
-                        [chart]="md.priceChange.change.chart.chart"
-                        [xaxis]="md.priceChange.change.chart.xaxis"
-                        [dataLabels]="md.priceChange.change.chart.dataLabels"
-                        [grid]="md.priceChange.change.chart.grid"
-                        [stroke]="md.priceChange.change.chart.stroke"
+                        [series]="md.priceChange.chart.series"
+                        [chart]="md.priceChange.chart.chart"
+                        [xaxis]="md.priceChange.chart.xaxis"
+                        [dataLabels]="md.priceChange.chart.dataLabels"
+                        [grid]="md.priceChange.chart.grid"
+                        [stroke]="md.priceChange.chart.stroke"
                         [tooltip]="{enabled: false}"
                     ></apx-chart>
                 </div>

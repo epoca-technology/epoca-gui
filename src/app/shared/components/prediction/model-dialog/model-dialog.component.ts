@@ -31,7 +31,7 @@ export class ModelDialogComponent implements OnInit, IModelDialogComponent {
 		}
 
 		// Retrieve the Type
-		this.modelTypeName = this._prediction.getModelTypeName(this.model.single_models.length);
+		this.modelTypeName = this._prediction.getModelTypeName(this.model);
     }
 
 

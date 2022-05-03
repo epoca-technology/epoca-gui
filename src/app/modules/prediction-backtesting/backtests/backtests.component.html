@@ -442,11 +442,11 @@
                                             <div class="desktop-card">
                                                 <!-- Heading -->
                                                 <div fxLayout="row" fxLayoutAlign="start center">
-                                                    <h4 *ngIf="_backtest.models[modelID].single_models.length == 0">Decision Model</h4>
-                                                    <h4 *ngIf="_backtest.models[modelID].single_models.length == 1">Single Model</h4>
-                                                    <h4 *ngIf="_backtest.models[modelID].single_models.length > 1">Multi Model</h4>
+                                                    <h4 *ngIf="_backtest.models[modelID].arima_models.length == 0">DecisionModel</h4>
+                                                    <h4 *ngIf="_backtest.models[modelID].arima_models.length == 1">ArimaModel</h4>
+                                                    <h4 *ngIf="_backtest.models[modelID].arima_models.length > 1">MultiDecisionModel</h4>
                                                     <span fxFlex></span>
-                                                    <div class="square-badge">{{_backtest.models[modelID].single_models.length}}</div>
+                                                    <div class="square-badge">{{_backtest.models[modelID].arima_models.length}}</div>
                                                 </div>
 
                                                 <!-- Content -->
