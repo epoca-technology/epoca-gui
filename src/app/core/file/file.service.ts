@@ -9,6 +9,7 @@ import {
     getMetadata, 
     FullMetadata
 } from "firebase/storage";
+import * as moment from 'moment';
 import { IFileService, IPath, IDownloadedFile } from './interfaces';
 
 @Injectable({
@@ -21,7 +22,6 @@ export class FileService implements IFileService{
     // Paths
     private readonly path: IPath = {
         dbBackups: 'db_backups',
-        forecastModels: '',
         candlestickSpreadsheets: 'candlestick_spreadsheets'
     }
 
@@ -67,14 +67,6 @@ export class FileService implements IFileService{
 
 
 
-    /* Forecast Models */
-    
-    // @TODO
-
-
-
-
-
 
 
 
@@ -109,6 +101,13 @@ export class FileService implements IFileService{
     public getCandlestickSpreadsheetDownloadURL(fileName: string): Promise<string> {
         return this.getDownloadURL(this.path.candlestickSpreadsheets, fileName);
     }
+
+
+
+
+
+
+
 
 
 
@@ -163,13 +162,18 @@ export class FileService implements IFileService{
         if (result && result.items && result.items.length) {
             // Iterate over each item and extract the name and the size
             for (let item of result.items) {
+                // Retrieve the file metadata
+                const md: FullMetadata = await this.getFileMetadata(path, item.name);
+
+                // Append the item
                 items.push({
                     name: item.name,
-                    size: await this.getFileSize(path, item.name),
-                    creation: Number(item.name.split('.')[0])
+                    size: md.size,
+                    creation: moment(md.timeCreated).valueOf()
                 });
             }
 
+            // Sort the items by creation date descending
             items.sort((a, b) => (b.creation > a.creation) ? 1 : -1);
 
             // Return the final list
@@ -191,24 +195,10 @@ export class FileService implements IFileService{
      * will log it and return 0.
      * @param path 
      * @param name 
-     * @returns Promise<number>
+     * @returns Promise<FullMetadata>
      */
-    private async getFileSize(path: string, name: string): Promise<number> {
-        try {
-            // Download the data
-            const data: FullMetadata = await getMetadata(ref(this.storage, `${path}/${name}`));
-
-            // Return the size if found
-            if (data && typeof data.size == "number") {
-                return data.size;
-            } else {
-                console.error(`The downloaded metadata did not include the size for ${name}`, data);
-                return 0;
-            }
-        } catch (e) {
-            console.log(`Error when retrieving ${path}/${name}'s size:`, e);
-            return 0;
-        }
+    private async getFileMetadata(path: string, name: string): Promise<FullMetadata> {
+        return await getMetadata(ref(this.storage, `${path}/${name}`));
     }
 
 
@@ -226,5 +216,69 @@ export class FileService implements IFileService{
      */
     private getDownloadURL(path: string, name: string): Promise<string> {
         return getDownloadURL(ref(this.storage, `${path}/${name}`));
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /* File Input Reader */
+
+
+
+
+
+
+
+
+    /**
+     * Given a file change event, it will extract all the information from a 
+     * single or multiple JSON Files.
+     * @param event
+     * @returns Promise<any[]>
+     */
+    public async readJSONFiles(event: any): Promise<any[]> {
+		// Make sure 1 or more files have been provided
+		if (!event || !event.target || !event.target.files || !event.target.files.length) {
+            console.log(event);
+			throw new Error('The FileChange Event does not contain any files.');
+		}
+
+		// Convert the FileList into an array and iterate
+		const files: Promise<any>[] = Array.from(event.target.files).map(file => {
+			// Define a new file reader
+			let reader = new FileReader();
+
+			// Create a new promise
+			return new Promise((resolve, reject) => {
+				// Resolve the promise after reading file
+				reader.onload = () => {
+					// Make sure the result is a string
+					if (!reader || typeof reader.result != "string") {
+						console.error(reader.result);
+						reject('The file reader result is not a valid string that can be parsed.');
+					}
+
+					// Resolve the parsed file
+					resolve(JSON.parse(<string>reader.result))
+				};
+
+				// Read the file as a text
+				reader.readAsText(<Blob>file);
+			});
+		});
+
+        // Return the parsed data
+        return await Promise.all(files);
     }
 }

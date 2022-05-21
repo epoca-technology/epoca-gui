@@ -86,15 +86,15 @@
                         <td class="show-on-desktop">{{l.input_shape}}</td>
                         <td>{{l.output_shape}}</td>
                         <td [ngClass]="{'success-color': l.trainable && l.params > 0, 'light-text': !l.trainable || l.params  == 0}">
-                            {{l.params}}
+                            {{l.params | number}}
                         </td>
                     </tr>
                 </tbody>
             </table>
             <div class="params_result">
-                <p><strong>Total Params:</strong> {{sum.total_params}}</p>
-                <p><strong>Trainable Params:</strong> {{sum.trainable_params}}</p>
-                <p><strong>Non-Trainable Params:</strong> {{sum.non_trainable_params}}</p>
+                <p><strong>Total Params:</strong> {{sum.total_params | number}}</p>
+                <p><strong>Trainable Params:</strong> {{sum.trainable_params | number}}</p>
+                <p><strong>Non-Trainable Params:</strong> {{sum.non_trainable_params | number}}</p>
             </div>
         </div>
     </div>

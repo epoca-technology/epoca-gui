@@ -4,6 +4,10 @@ import {MatBottomSheetRef} from "@angular/material/bottom-sheet";
 import { IKerasModelSummary, IModel, IPrediction } from "../../core";
 import {IConfirmationDialogData} from "../../shared/components/confirmation-dialog";
 import {IBottomSheetMenuItem} from "../../shared/components/bottom-sheet-menu";
+import { IDialogMenuItem } from "../../shared/components/dialog-menu";
+
+
+
 
 export interface INavService {
 	// Route State
@@ -30,6 +34,7 @@ export interface INavService {
 	// Dialogs
     displayConfirmationDialog(data?: IConfirmationDialogData): MatDialogRef<any>,
 	displayDataDialog(name: string, value: any): MatDialogRef<any>,
+	displayDialogMenu(title: string, items: IDialogMenuItem[]): MatDialogRef<any>,
 	displayModelDialog(model: IModel): MatDialogRef<any>,
 	displayKerasModelDialog(id: string, description: string, kerasModel: IKerasModelSummary): MatDialogRef<any>,
 	displayPredictionDialog(model: IModel, prediction: IPrediction): MatDialogRef<any>,

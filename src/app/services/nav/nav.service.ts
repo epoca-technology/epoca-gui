@@ -9,7 +9,8 @@ import { environment } from '../../../environments/environment';
 import { IKerasModelSummary, IModel, IPrediction } from '../../core';
 import {AppService} from "../app";
 import {ConfirmationDialogComponent, IConfirmationDialogData} from "../../shared/components/confirmation-dialog";
-import {DataDialogComponent, IDataDialogComponent, IDataDialogData} from "../../shared/components/data-dialog";
+import {DataDialogComponent, IDataDialogData} from "../../shared/components/data-dialog";
+import {DialogMenuComponent, IDialogMenuData, IDialogMenuItem} from "../../shared/components/dialog-menu";
 import {IKerasModelDialogData, KerasModelDialogComponent, ModelDialogComponent, PredictionDialogComponent} from "../../shared/components/prediction";
 import {BottomSheetMenuComponent, IBottomSheetMenuItem} from "../../shared/components/bottom-sheet-menu";
 import {INavService, IRouteState, IRouteStateData} from "./interfaces";
@@ -155,6 +156,31 @@ export class NavService implements INavService {
 			}
 		});
 	}
+
+
+
+
+
+
+	/*
+	* Opens the dialog menu.
+	* @param title
+	* @param items
+	* @returns MatDialogRef<any>
+	* */
+	public displayDialogMenu(title: string, items: IDialogMenuItem[]): MatDialogRef<any> {
+		return this.dialog.open(DialogMenuComponent, {
+			disableClose: false,
+			hasBackdrop: this._app.layout.value != 'mobile', // Mobile optimization
+			panelClass: 'small-dialog',
+			data: <IDialogMenuData> {
+				title: title,
+				items: items
+			}
+		});
+	}
+
+
 
 
 	

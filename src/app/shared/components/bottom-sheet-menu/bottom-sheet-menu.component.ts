@@ -26,7 +26,7 @@ export class BottomSheetMenuComponent implements OnInit, IBottomSheetMenuCompone
 	* @param response
 	* @returns void
 	* */
-	public clickAction(response: string): void {
+	public clickAction(response: any): void {
 		this.bottomSheetRef.dismiss(response);
 	}
 }

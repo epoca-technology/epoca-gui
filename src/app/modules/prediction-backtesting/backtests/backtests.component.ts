@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { MatSidenav } from '@angular/material/sidenav';
-import { MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { ApexAxisChartSeries } from 'ng-apexcharts';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
@@ -33,6 +33,11 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 	// Layout
 	public layout: ILayout = this._app.layout.value;
 	private layoutSub?: Subscription;
+
+	// File Input Form
+    public fileInputForm: FormGroup = new FormGroup({
+        fileInput: new FormControl('', [ ]),
+    });
 
 	// Backtest Initialization
 	public initialized: boolean = false;
@@ -106,6 +111,12 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 
 
 
+    /* Form Getters */
+	get fileInput(): AbstractControl { return <AbstractControl>this.fileInputForm.get('fileInput') }
+
+
+
+
 
 
 	/* Initialization */
@@ -125,21 +136,18 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 		// Abort the bottom sheet if there are no files
 		if (!event || !event.target || !event.target.files || !event.target.files.length) return;
 
-			// Display the bottom sheet and handle the action
-		const bs: MatBottomSheetRef = this._nav.displayBottomSheetMenu([
-			{icon: 'format_list_numbered', title: 'All', description: 'View all the models', response: 10000},
-			{icon: 'leaderboard', title: 'First 5', description: 'View the top 5 models', response: 5},
-			{icon: 'leaderboard', title: 'First 10', description: 'View the top 10 models', response: 10},
-			{icon: 'leaderboard', title: 'First 15', description: 'View the top 15 models', response: 15},
-			{icon: 'leaderboard', title: 'First 20', description: 'View the top 20 models', response: 20},
-			{icon: 'leaderboard', title: 'First 30', description: 'View the top 30 models', response: 30},
-			{icon: 'leaderboard', title: 'First 40', description: 'View the top 40 models', response: 40},
-			{icon: 'leaderboard', title: 'First 50', description: 'View the top 50 models', response: 50},
-			{icon: 'leaderboard', title: 'First 100', description: 'View the top 100 models', response: 100},
-			{icon: 'leaderboard', title: 'First 150', description: 'View the top 150 models', response: 150},
-			{icon: 'leaderboard', title: 'First 200', description: 'View the top 200 models', response: 200},
-		]);
-		bs.afterDismissed().subscribe(async (response: number|undefined) => {
+		// Display the bottom sheet and handle the action
+		this._nav.displayDialogMenu('Backtested Models', [
+			{icon: 'format_list_numbered', title: 'View all', response: 10000},
+			{icon: 'leaderboard', title: 'View top 5', response: 5},
+			{icon: 'leaderboard', title: 'View top 10', response: 10},
+			{icon: 'leaderboard', title: 'View top 20', response: 20},
+			{icon: 'leaderboard', title: 'View top 40', response: 40},
+			{icon: 'leaderboard', title: 'View top 60', response: 60},
+			{icon: 'leaderboard', title: 'View top 100', response: 100},
+			{icon: 'leaderboard', title: 'View top 150', response: 150},
+			{icon: 'leaderboard', title: 'View top 200', response: 200},
+		]).afterClosed().subscribe(async (response: any) => {
 			if (typeof response == "number") {
 				// Attempt to initiaze the backtests
 				try {
@@ -157,10 +165,13 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 				} catch (e) {
 					this._snackbar.error(e)
 				}
+			} else {
+				console.log(response)
 			}
 
 			// Update initializing state
 			this.initializing = false;
+			this.fileInput.setValue(null);
 		});
 	}
 

@@ -1,0 +1,26 @@
+<mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <button mat-icon-button class="show-on-mobile" (click)="clickAction(undefined)"><mat-icon>arrow_back</mat-icon></button>
+        <span class="truncate">{{title}}</span>
+        <span fxFlex></span>
+        <button mat-icon-button class="show-on-desktop" (click)="clickAction(undefined)"><mat-icon>close</mat-icon></button>
+    </div>
+</mat-toolbar>
+<div mat-dialog-content>
+    <div>
+        <div *ngFor="let item of items"
+            fxLayout="row" fxLayoutAlign="start center"
+            class="item fake-button" role="button"
+            (click)="clickAction(item.response)">
+            <mat-icon *ngIf="item.svg" class="icon" [svgIcon]="item.icon"></mat-icon>
+            <mat-icon *ngIf="!item.svg" class="icon">{{item.icon}}</mat-icon>
+            <p *ngIf="!item.description" class="title truncate">{{item.title}}</p>
+            <div *ngIf="item.description">
+                <p class="title truncate">{{item.title}}</p>
+                <p class="description truncate">{{item.description}}</p>
+            </div>
+            <span fxFlex></span>
+            <mat-icon>chevron_right</mat-icon>
+        </div>
+    </div>
+</div>

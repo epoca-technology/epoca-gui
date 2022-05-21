@@ -71,7 +71,10 @@
                 </label>
 
                 <!-- Input -->
-                <input id="backtestFile" type="file" accept="application/json" (change)="fileChanged($event)" multiple/>
+                <form [formGroup]="fileInputForm">
+                    <input id="backtestFile" type="file" accept="application/json" 
+                            formControlName="fileInput" (change)="fileChanged($event)" multiple/>
+                </form>
 
                 <!-- Initializing Loader-->
                 <h3 *ngIf="initializing" class="fadeIn">Initializing...</h3>

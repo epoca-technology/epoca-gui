@@ -70,6 +70,7 @@ import { BottomSheetMenuComponent } from './components/bottom-sheet-menu';
 import { CandlestickDialogComponent, CandlestickBodyComponent} from './components/candlestick';
 import { ConfirmationDialogComponent } from './components/confirmation-dialog';
 import { DataDialogComponent } from './components/data-dialog/data-dialog.component';
+import { DialogMenuComponent } from './components/dialog-menu/dialog-menu.component';
 import { MobileTabsComponent } from './components/mobile-tabs/mobile-tabs.component';
 import { ModelDialogComponent } from './components/prediction/model-dialog/model-dialog.component';
 import { ModelContentComponent } from './components/prediction/model-content/model-content.component';
@@ -104,6 +105,7 @@ import { RefreshButtonComponent } from './components/refresh-button/refresh-butt
         PredictionDialogComponent,
         KerasModelDialogComponent,
         DataDialogComponent,
+        DialogMenuComponent,
 	],
 	imports: [
 		CommonModule,

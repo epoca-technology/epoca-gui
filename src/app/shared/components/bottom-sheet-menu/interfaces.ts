@@ -1,5 +1,5 @@
 export interface IBottomSheetMenuComponent {
-	clickAction(response: string): void
+	clickAction(response: any): void
 }
 
 

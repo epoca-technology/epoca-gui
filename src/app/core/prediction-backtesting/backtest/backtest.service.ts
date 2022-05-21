@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { PredictionService } from '../../prediction/prediction.service';
+import { PredictionService } from '../../prediction';
+import { FileService } from '../../file';
 import { UtilsService } from '../../utils';
 import { 
 	IBacktestService, 
@@ -37,6 +38,7 @@ export class BacktestService implements IBacktestService {
 
 	constructor(
 		private _utils: UtilsService,
+		private _file: FileService,
 		private _prediction: PredictionService
 	) { }
 
@@ -238,37 +240,8 @@ export class BacktestService implements IBacktestService {
 	 * @returns Promise<IBacktestResult[]>
 	 */
 	private async getResultsFromFiles(event: any): Promise<IBacktestResult[]> {
-		// Make sure 1 or more files have been provided
-		if (!event || !event.target || !event.target.files || !event.target.files.length) {
-			throw new Error('A minimum of 1 backtest file must be provided.');
-		}
-
-		// Convert the FileList into an array and iterate
-		const files: Promise<IBacktestResult[]>[] = Array.from(event.target.files).map(file => {
-			// Define a new file reader
-			let reader = new FileReader();
-
-			// Create a new promise
-			return new Promise((resolve, reject) => {
-				// Resolve the promise after reading file
-				reader.onload = () => {
-					// Make sure the result is a string
-					if (!reader || typeof reader.result != "string") {
-						console.error(reader.result);
-						reject('The file reader result is not a valid string that can be parsed.');
-					}
-
-					// Resolve the parsed file
-					resolve(JSON.parse(<string>reader.result))
-				};
-
-				// Read the file as a text
-				reader.readAsText(<Blob>file);
-			});
-		});
-
-		// Extract the parsed files
-		const parsed: Array<IBacktestResult[]> = await Promise.all(files);
+		// Read the parsed JSON Files
+		const parsed: Array<IBacktestResult[]> = await this._file.readJSONFiles(event);
 
 		// Flatten the results
 		const results: IBacktestResult[] = parsed.flat();
