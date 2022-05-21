@@ -39,26 +39,22 @@ export class PredictionService implements IPredictionService {
 	 */
 	public getModelTypeName(model: IModel): IModelTypeName {
 		// Check if it is an ArimaModel
-		if (model.arima_models.length == 1) {
+		if (model.arima_models && model.arima_models.length == 1) {
 			return 'ArimaModel';
 		}
 
-		// Check if it is a DecisionModel
+		// Check if it is a RegressionModel
 		else if (
-			model.arima_models.length >= 5 && 
-			model.decision_models && 
-			model.decision_models.length == 1
+			!model.arima_models && 
+			model.regression_models && 
+			model.regression_models.length == 1
 		) {
-			return 'DecisionModel';
+			return 'RegressionModel';
 		}
 
-		// Check if it is a MultiDecisionModel
-		else if (
-			model.arima_models.length >= 5 && 
-			model.decision_models && 
-			model.decision_models.length > 1
-		) {
-			return 'MultiDecisionModel';
+		// Check if it is a ClassificationModel
+		else if (model.classification_models && model.classification_models.length == 1) {
+			return 'ClassificationModel';
 		}
 
 		// Otherwise, crash the program

@@ -40,10 +40,10 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 
 	// Sections
 	public readonly generalSections: ISection[] = [
-	{id: 'points', name: 'Points', icon: 'query_stats'},
-	{id: 'accuracy', name: 'Accuracy', icon: 'ads_click'},
-	{id: 'positions', name: 'Positions', icon: 'format_list_numbered'},
-	{id: 'duration', name: 'Backtest Duration', icon: 'timer' },
+		{id: 'points', name: 'Points', icon: 'query_stats'},
+		{id: 'accuracy', name: 'Accuracy', icon: 'ads_click'},
+		{id: 'positions', name: 'Positions', icon: 'format_list_numbered'},
+		{id: 'duration', name: 'Backtest Duration', icon: 'timer' },
 	]
 	public modelID?: string = undefined;
 	public section: ISection = this.generalSections[0];
@@ -73,35 +73,35 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 
 	// Model Charts
 	public modelCharts: {[modelID: string]: IModelCharts} = {};
-	public modelPointsRange: IChartRange = {max: 0, min: 0};
+	public modelPointsRange: {[modelID: string]: IChartRange} = {};
 
 	// Positions
 	public visiblePositions: number = 15;
 
 
 	constructor(
-	public _nav: NavService,
-	private _snackbar: SnackbarService,
-	private _clipboard: ClipboardService,
-	private _app: AppService,
-	private _chart: ChartService,
-	private _utils: UtilsService,
-	public _backtest: BacktestService,
-	private _prediction: PredictionService,
-	private dialog: MatDialog,
+		public _nav: NavService,
+		private _snackbar: SnackbarService,
+		private _clipboard: ClipboardService,
+		private _app: AppService,
+		private _chart: ChartService,
+		private _utils: UtilsService,
+		public _backtest: BacktestService,
+		private _prediction: PredictionService,
+		private dialog: MatDialog,
 	) { }
 
 
 
 
 	ngOnInit(): void {
-	// Initialize layout
-	this.layoutSub = this._app.layout.subscribe((nl: ILayout) => this.layout = nl);
+		// Initialize layout
+		this.layoutSub = this._app.layout.subscribe((nl: ILayout) => this.layout = nl);
 	}
 
 	ngOnDestroy(): void {
-	if (this.layoutSub) this.layoutSub.unsubscribe();
-	this._backtest.resetBacktestResults();
+		if (this.layoutSub) this.layoutSub.unsubscribe();
+		this._backtest.resetBacktestResults();
 	}
 
 
@@ -119,46 +119,49 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 	 * @returns Promise<void>
 	 */
 	public async fileChanged(event: any): Promise<void> {
-	// Set the state
-	this.initializing = true;
+		// Set the state
+		this.initializing = true;
 
-	// Abort the bottom sheet if there are no files
-	if (!event || !event.target || !event.target.files || !event.target.files.length) return;
+		// Abort the bottom sheet if there are no files
+		if (!event || !event.target || !event.target.files || !event.target.files.length) return;
 
-		// Display the bottom sheet and handle the action
-	const bs: MatBottomSheetRef = this._nav.displayBottomSheetMenu([
-		{icon: 'format_list_numbered', title: 'All', description: 'View all the models', response: 10000},
-		{icon: 'leaderboard', title: 'First 5', description: 'View the top 5 models', response: 5},
-		{icon: 'leaderboard', title: 'First 10', description: 'View the top 10 models', response: 10},
-		{icon: 'leaderboard', title: 'First 15', description: 'View the top 15 models', response: 15},
-		{icon: 'leaderboard', title: 'First 20', description: 'View the top 20 models', response: 20},
-		{icon: 'leaderboard', title: 'First 30', description: 'View the top 30 models', response: 30},
-		{icon: 'leaderboard', title: 'First 40', description: 'View the top 40 models', response: 40},
-		{icon: 'leaderboard', title: 'First 50', description: 'View the top 50 models', response: 50},
-	]);
-	bs.afterDismissed().subscribe(async (response: number|undefined) => {
-		if (typeof response == "number") {
-		// Attempt to initiaze the backtests
-		try {
-			// Pass the files to the service
-			await this._backtest.init(event, response);
+			// Display the bottom sheet and handle the action
+		const bs: MatBottomSheetRef = this._nav.displayBottomSheetMenu([
+			{icon: 'format_list_numbered', title: 'All', description: 'View all the models', response: 10000},
+			{icon: 'leaderboard', title: 'First 5', description: 'View the top 5 models', response: 5},
+			{icon: 'leaderboard', title: 'First 10', description: 'View the top 10 models', response: 10},
+			{icon: 'leaderboard', title: 'First 15', description: 'View the top 15 models', response: 15},
+			{icon: 'leaderboard', title: 'First 20', description: 'View the top 20 models', response: 20},
+			{icon: 'leaderboard', title: 'First 30', description: 'View the top 30 models', response: 30},
+			{icon: 'leaderboard', title: 'First 40', description: 'View the top 40 models', response: 40},
+			{icon: 'leaderboard', title: 'First 50', description: 'View the top 50 models', response: 50},
+			{icon: 'leaderboard', title: 'First 100', description: 'View the top 100 models', response: 100},
+			{icon: 'leaderboard', title: 'First 150', description: 'View the top 150 models', response: 150},
+			{icon: 'leaderboard', title: 'First 200', description: 'View the top 200 models', response: 200},
+		]);
+		bs.afterDismissed().subscribe(async (response: number|undefined) => {
+			if (typeof response == "number") {
+				// Attempt to initiaze the backtests
+				try {
+					// Pass the files to the service
+					await this._backtest.init(event, response);
 
-			// Calculate the height of the general charts
-			this.generalChartHeight = this.getGeneralChartsHeight()
+					// Calculate the height of the general charts
+					this.generalChartHeight = this.getGeneralChartsHeight()
 
-			// Activate default section
-			await this.activateSection(this.generalSections[0]);
+					// Activate default section
+					await this.activateSection(this.generalSections[0]);
 
-			// Mark the backtest as initialized
-			this.initialized = true;
-		} catch (e) {
-			this._snackbar.error(e)
-		}
-		}
+					// Mark the backtest as initialized
+					this.initialized = true;
+				} catch (e) {
+					this._snackbar.error(e)
+				}
+			}
 
-		// Update initializing state
-		this.initializing = false;
-	});
+			// Update initializing state
+			this.initializing = false;
+		});
 	}
 
 
@@ -171,8 +174,8 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 	 * @returns void
 	 */
 	public resetResults(): void {
-	this.resetComponent();
-	this._backtest.resetBacktestResults();
+		this.resetComponent();
+		this._backtest.resetBacktestResults();
 	}
 
 
@@ -184,21 +187,21 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 	 * @returns void
 	 */
 	private resetComponent(): void {
-	this.initialized = false;
-	this.initializing = false;
-	this.modelID = undefined;
-	this.section = this.generalSections[0];
-	this.activeIndex = 0;
-	this.loaded = false;
-	this.viewBest = true;
-	this.pointsDistChart = undefined;
-	this.pointsLineChart = undefined;
-	this.accuracyChart = undefined;
-	this.positionsChart = undefined;
-	this.durationChart = undefined;
-	this.modelCharts = {};
-	this.modelPointsRange = {min:0,max:0};
-	this.visiblePositions = 15;
+		this.initialized = false;
+		this.initializing = false;
+		this.modelID = undefined;
+		this.section = this.generalSections[0];
+		this.activeIndex = 0;
+		this.loaded = false;
+		this.viewBest = true;
+		this.pointsDistChart = undefined;
+		this.pointsLineChart = undefined;
+		this.accuracyChart = undefined;
+		this.positionsChart = undefined;
+		this.durationChart = undefined;
+		this.modelCharts = {};
+		this.modelPointsRange = {};
+		this.visiblePositions = 15;
 	}
 
 
@@ -221,29 +224,29 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 	 */
 	public async activateSection(section: ISection, modelID?: string): Promise<void> {
 		// Hide the sidenavs if any
-	if (this.predBacktestingSidenav && this.predBacktestingSidenavOpened) this.predBacktestingSidenav.close();
+		if (this.predBacktestingSidenav && this.predBacktestingSidenavOpened) this.predBacktestingSidenav.close();
 
-	// Scroll top
-	this._nav.scrollTop('#content-header')
+		// Scroll top
+		this._nav.scrollTop('#content-header')
 
-	// Set loading state
-	this.loaded = false;
+		// Set loading state
+		this.loaded = false;
 
-	// Set the section values
-	this.section = section;
-	this.modelID = modelID;
+		// Set the section values
+		this.section = section;
+		this.modelID = modelID;
 
-	// Initialize the data needed for the active section in case it hasn't been
-	this.initDataForActiveSection();
+		// Initialize the data needed for the active section in case it hasn't been
+		this.initDataForActiveSection();
 
-	// If the view is a model, reset the visible positions
-	if (this.section.id == 'model') this.visiblePositions = 15;
+		// If the view is a model, reset the visible positions
+		if (this.section.id == 'model') this.visiblePositions = 15;
 
-	// Allow a small delay
-	await this._utils.asyncDelay(0.5);
+		// Allow a small delay
+		await this._utils.asyncDelay(0.5);
 
-	// Set loading state
-	this.loaded = true;
+		// Set loading state
+		this.loaded = true;
 	}
 
 
@@ -264,20 +267,20 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 	 * @returns void
 	 */
 	private initDataForActiveSection(): void {
-	// Points
-	if (this.section.id == 'points' && (!this.pointsDistChart || !this.pointsLineChart)) { this.initPointsSection() }
+		// Points
+		if (this.section.id == 'points' && (!this.pointsDistChart || !this.pointsLineChart)) { this.initPointsSection() }
 
-	// Accuracy
-	else if (this.section.id == 'accuracy' && !this.accuracyChart) { this.initAccuracySection() }
+		// Accuracy
+		else if (this.section.id == 'accuracy' && !this.accuracyChart) { this.initAccuracySection() }
 
-	// Positions
-	else if (this.section.id == 'positions' && !this.positionsChart) { this.initPositionsSection() }
+		// Positions
+		else if (this.section.id == 'positions' && !this.positionsChart) { this.initPositionsSection() }
 
-	// Duration
-	else if (this.section.id == 'duration' && !this.durationChart) { this.initDurationSection() }
+		// Duration
+		else if (this.section.id == 'duration' && !this.durationChart) { this.initDurationSection() }
 
-	// Model
-	else if (this.section.id == 'model' && this.modelID && !this.modelCharts[this.modelID]) { this.initModelCharts() }
+		// Model
+		else if (this.section.id == 'model' && this.modelID && !this.modelCharts[this.modelID]) { this.initModelCharts() }
 	}
 
 
@@ -393,7 +396,7 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 	// Initializes the charts for a model
 	private initModelCharts(): void {
 		// Build the meta data
-		this.modelPointsRange = { 
+		this.modelPointsRange[this.modelID!] = { 
 			max: this._utils.getMax(this._backtest.performances[this.modelID!].points_hist),
 			min: this._utils.getMin(this._backtest.performances[this.modelID!].points_hist)
 		}
@@ -408,27 +411,27 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 				chart: {height: 350, type: 'bar',animations: { enabled: false}, toolbar: {show: true,tools: {download: false}}},
 				plotOptions: {bar: {borderRadius: 0, horizontal: false, distributed: true,}},
 				colors: colors,
-				yaxis: {forceNiceScale: false, min: this.modelPointsRange.min, max: this.modelPointsRange.max},
+				yaxis: {forceNiceScale: false, min: this.modelPointsRange[this.modelID!].min, max: this.modelPointsRange[this.modelID!].max},
 				grid: {show: true},
 				xaxis: {labels: { show: false } }
 			}, [], undefined, true),
-			accuracy: this._chart.getBarChartOptions({
-			series: [
-				{name:'Long Accuracy',data:[this._backtest.performances[this.modelID!].long_acc]},
-				{name:'Short Accuracy',data:[this._backtest.performances[this.modelID!].short_acc]},
-				{name:'General Accuracy',data:[this._backtest.performances[this.modelID!].general_acc]}
-			],
-			colors: [this._chart.upwardColor, this._chart.downwardColor, '#000000'],
-			yaxis: {labels: {show: false}}
+				accuracy: this._chart.getBarChartOptions({
+				series: [
+					{name:'Long Accuracy',data:[this._backtest.performances[this.modelID!].long_acc]},
+					{name:'Short Accuracy',data:[this._backtest.performances[this.modelID!].short_acc]},
+					{name:'General Accuracy',data:[this._backtest.performances[this.modelID!].general_acc]}
+				],
+				colors: [this._chart.upwardColor, this._chart.downwardColor, '#000000'],
+				yaxis: {labels: {show: false}}
 			}, [this.modelID!], 130),
 			positions: this._chart.getBarChartOptions({
-			series: [
-				{name:'Longs',data:[this._backtest.performances[this.modelID!].long_num]},
-				{name:'Shorts',data:[this._backtest.performances[this.modelID!].short_num]},
-				{name:'Total',data:[this._backtest.performances[this.modelID!].positions.length]}
-			],
-			colors: [this._chart.upwardColor, this._chart.downwardColor, '#000000'],
-			yaxis: {labels: {show: false}}
+				series: [
+					{name:'Longs',data:[this._backtest.performances[this.modelID!].long_num]},
+					{name:'Shorts',data:[this._backtest.performances[this.modelID!].short_num]},
+					{name:'Total',data:[this._backtest.performances[this.modelID!].positions.length]}
+				],
+				colors: [this._chart.upwardColor, this._chart.downwardColor, '#000000'],
+				yaxis: {labels: {show: false}}
 			}, [this.modelID!], 130)
 		}
 	}
@@ -443,17 +446,17 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 	 * @returns {colors: string[], values: number[]}
 	 */
 	private getModelPointsValues(id: string): {colors: string[], values: number[]}{
-	let colors: string[] = ['#000000'];
-	let values: number[] = [0];
-	for (let i = 0; i < this._backtest.performances[id].positions.length; i++) {
-		if (this._backtest.performances[id].positions[i].t == 1) { 
-		colors.push(this._chart.upwardColor);
-		}else { 
-		colors.push(this._chart.downwardColor);
+		let colors: string[] = ['#000000'];
+		let values: number[] = [0];
+		for (let i = 0; i < this._backtest.performances[id].positions.length; i++) {
+			if (this._backtest.performances[id].positions[i].t == 1) { 
+				colors.push(this._chart.upwardColor);
+			} else { 
+				colors.push(this._chart.downwardColor);
+			}
+			values.push(this._backtest.performances[id].points_hist[i+1])
 		}
-		values.push(this._backtest.performances[id].points_hist[i+1])
-	}
-	return {colors: colors, values: values};
+		return {colors: colors, values: values};
 	}
 
 
@@ -474,14 +477,14 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 	 * @returns void
 	 */
 	public displayModel(id: string|number): void {
-	// If the Model's index was provided instead of the id, populate it.
-	if (typeof id == "number" && id >= 0) id = this._backtest.modelIDs[id]; 
+		// If the Model's index was provided instead of the id, populate it.
+		if (typeof id == "number" && id >= 0) id = this._backtest.modelIDs[id]; 
 
-	// Init the model
-	const model: IModel = this._backtest.models[id];
+		// Init the model
+		const model: IModel = this._backtest.models[id];
 
-	// Display the dialog if the model was found
-	if (model) this._nav.displayModelDialog(model);
+		// Display the dialog if the model was found
+		if (model) this._nav.displayModelDialog(model);
 	}
 
 
@@ -496,14 +499,14 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 	 * @returns void
 	 */
 	public displayPosition(position: IBacktestPosition): void {
-	this.dialog.open(BacktestPositionDialogComponent, {
-		hasBackdrop: this._app.layout.value != 'mobile', // Mobile optimization
-		panelClass: 'small-dialog',
-			data: {
-		model: this._backtest.models[this.modelID!],
-		position: position
-		}
-	})
+		this.dialog.open(BacktestPositionDialogComponent, {
+			hasBackdrop: this._app.layout.value != 'mobile', // Mobile optimization
+			panelClass: 'small-dialog',
+				data: {
+					model: this._backtest.models[this.modelID!],
+					position: position
+				}
+		})
 	}
 
 
@@ -526,64 +529,63 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 	 * @returns void
 	 */
 	public copyBacktestSummary(): void {
-	// Initialize the model
-	const model: IModel = this._backtest.models[this.modelID!];
-	// Initialize the string
-	let sum: string = '====================\n';
+		// Initialize the model
+		const model: IModel = this._backtest.models[this.modelID!];
+		// Initialize the string
+		let sum: string = '====================\n';
 
-	// Add the basic information
-	sum += `MODEL:\n`;
-	sum += `ID: ${model.id}\n`;
-	sum += `Type: ${this._prediction.getModelTypeName(model)}\n`;
-	if (model.consensus) sum += `Consensus: ${model.consensus}\n`;
-	sum += '\n'
+		// Add the basic information
+		sum += `MODEL:\n`;
+		sum += `ID: ${model.id}\n`;
+		sum += `Type: ${this._prediction.getModelTypeName(model)}\n`;
+		sum += '\n'
 
-	// DATE RANGE
-	sum += `DATE RANGE:\n`;
-	sum += `${moment(this._backtest.backtests[model.id].start).format('DD MMMM YYYY HH:mm')}\n`;
-	sum += `${moment(this._backtest.backtests[model.id].end).format('DD MMMM YYYY HH:mm')}\n\n`;
+		// DATE RANGE
+		sum += `DATE RANGE:\n`;
+		sum += `${moment(this._backtest.backtests[model.id].start).format('DD MMMM YYYY HH:mm')}\n`;
+		sum += `${moment(this._backtest.backtests[model.id].end).format('DD MMMM YYYY HH:mm')}\n\n`;
 
-	// POSITION EXITS
-	sum += `POSITION EXITS:\n`;
-	sum += `Take Profit: ${this._backtest.backtests[model.id].take_profit}%\n`;
-	sum += `Stop Loss: ${this._backtest.backtests[model.id].stop_loss}%\n\n`;
+		// POSITION EXITS
+		sum += `POSITION EXITS:\n`;
+		sum += `Take Profit: ${this._backtest.backtests[model.id].take_profit}%\n`;
+		sum += `Stop Loss: ${this._backtest.backtests[model.id].stop_loss}%\n\n`;
 
-	// PERFORMANCE
-	sum += `PERFORMANCE:\n`;
-	sum += `Points: ${this._backtest.performances[model.id].points}\n`;
-	sum += `Accuracy:\n`;
-	sum += `- General: ${this._backtest.performances[model.id].general_acc}%\n`;
-	sum += `- Long: ${this._backtest.performances[model.id].long_acc}%\n`;
-	sum += `- Short: ${this._backtest.performances[model.id].short_acc}%\n`;
-	sum += `Positions:\n`;
-	sum += `- Total: ${this._backtest.performances[model.id].positions.length}\n`;
-	sum += `- Long: ${this._backtest.performances[model.id].long_num}\n`;
-	sum += `- Short: ${this._backtest.performances[model.id].short_num}\n`;
+		// PERFORMANCE
+		sum += `PERFORMANCE:\n`;
+		sum += `Points: ${this._backtest.performances[model.id].points}\n`;
+		sum += `Accuracy:\n`;
+		sum += `- General: ${this._backtest.performances[model.id].general_acc}%\n`;
+		sum += `- Long: ${this._backtest.performances[model.id].long_acc}%\n`;
+		sum += `- Short: ${this._backtest.performances[model.id].short_acc}%\n`;
+		sum += `Positions:\n`;
+		sum += `- Total: ${this._backtest.performances[model.id].positions.length}\n`;
+		sum += `- Long: ${this._backtest.performances[model.id].long_num}\n`;
+		sum += `- Short: ${this._backtest.performances[model.id].short_num}\n`;
 
-	// ARIMA MODELS
-	if (model.arima_models.length) {
-		sum += `\nARIMA MODELS (${model.arima_models.length}):`;
-		for (let sm of model.arima_models) {
-		sum += `\n\nLookback: ${sm.lookback}\n`;
-		sum += `Arima: (${sm.arima.p}, ${sm.arima.d}, ${sm.arima.q})`;
-		sum += `(${sm.arima.P}, ${sm.arima.D}, ${sm.arima.Q}, ${sm.arima.m})`;
-		sum += ` -> [${sm.predictions}]\n`;
-		sum += `Interpreter:\n`;
-		sum += `- Long: ${sm.interpreter.long}%\n`;
-		sum += `- Short: ${sm.interpreter.short}%\n`;
+		// ARIMA MODELS
+		if (model.arima_models && model.arima_models.length) {
+				sum += `\nARIMA MODELS (${model.arima_models.length}):`;
+				for (let sm of model.arima_models) {
+				sum += `\n\nLookback: ${sm.lookback}\n`;
+				sum += `Arima: (${sm.arima.p}, ${sm.arima.d}, ${sm.arima.q})`;
+				sum += `(${sm.arima.P}, ${sm.arima.D}, ${sm.arima.Q}, ${sm.arima.m})`;
+				sum += ` -> [${sm.predictions}]\n`;
+				sum += `Interpreter:\n`;
+				sum += `- Long: ${sm.interpreter.long}%\n`;
+				sum += `- Short: ${sm.interpreter.short}%\n`;
+			}
 		}
-	}
-	
+		
 
 
-	// Add the tail of the string
-	sum += '====================';
+		// Add the tail of the string
+		sum += '====================';
 
-	// Copy the contents to the clipboard
-	this._clipboard.copy(sum, false);
+		// Copy the contents to the clipboard
+		this._clipboard.copy(sum, false);
 
-	// Notify the user
-	this._snackbar.info('The Backtest Summary has been copied to your clipboard.');
+		// Notify the user
+		this._snackbar.info('The Backtest Summary has been copied to your clipboard.');
 	}
 
 
@@ -607,21 +609,21 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 	 * @returns number
 	 */
 	private getGeneralChartsHeight(): number {
-	if (this._backtest.modelIDs.length <= 3) 		{ return 350 }
-	else if (this._backtest.modelIDs.length <= 4) 	{ return 370 }
-	else if (this._backtest.modelIDs.length <= 5) 	{ return 390 }
-	else if (this._backtest.modelIDs.length <= 6) 	{ return 410 }
-	else if (this._backtest.modelIDs.length <= 7) 	{ return 430 }
-	else if (this._backtest.modelIDs.length <= 8) 	{ return 450 }
-	else if (this._backtest.modelIDs.length <= 10) 	{ return 600 }
-	else if (this._backtest.modelIDs.length <= 12) 	{ return 630 }
-	else if (this._backtest.modelIDs.length <= 15) 	{ return 660 }
-	else if (this._backtest.modelIDs.length <= 17) 	{ return 700 }
-	else if (this._backtest.modelIDs.length <= 20) 	{ return 730 }
-	else if (this._backtest.modelIDs.length <= 25) 	{ return 770 }
-	else if (this._backtest.modelIDs.length <= 30) 	{ return 800 }
-	else if (this._backtest.modelIDs.length <= 35) 	{ return 850 }
-	else if (this._backtest.modelIDs.length <= 40) 	{ return 900 }
-	else { return 1000}
+		if (this._backtest.modelIDs.length <= 3) 		{ return 350 }
+		else if (this._backtest.modelIDs.length <= 4) 	{ return 370 }
+		else if (this._backtest.modelIDs.length <= 5) 	{ return 390 }
+		else if (this._backtest.modelIDs.length <= 6) 	{ return 410 }
+		else if (this._backtest.modelIDs.length <= 7) 	{ return 430 }
+		else if (this._backtest.modelIDs.length <= 8) 	{ return 450 }
+		else if (this._backtest.modelIDs.length <= 10) 	{ return 600 }
+		else if (this._backtest.modelIDs.length <= 12) 	{ return 630 }
+		else if (this._backtest.modelIDs.length <= 15) 	{ return 660 }
+		else if (this._backtest.modelIDs.length <= 17) 	{ return 700 }
+		else if (this._backtest.modelIDs.length <= 20) 	{ return 730 }
+		else if (this._backtest.modelIDs.length <= 25) 	{ return 770 }
+		else if (this._backtest.modelIDs.length <= 30) 	{ return 800 }
+		else if (this._backtest.modelIDs.length <= 35) 	{ return 850 }
+		else if (this._backtest.modelIDs.length <= 40) 	{ return 900 }
+		else { return 1000}
 	}
 }

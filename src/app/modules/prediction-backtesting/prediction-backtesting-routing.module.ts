@@ -2,8 +2,9 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from '../../services';
 import { BacktestsComponent } from './backtests/backtests.component';
-import { ModelsTrainingComponent } from './models-training/models-training.component';
-import { TrainingDataComponent } from './training-data/training-data.component';
+import { ClassificationTrainingCertificatesComponent } from './classification-training-certificates/classification-training-certificates.component';
+import { ClassificationTrainingDataComponent } from './classification-training-data/classification-training-data.component';
+import { RegressionTrainingCertificatesComponent } from './regression-training-certificates/regression-training-certificates.component';
 
 const routes: Routes = [
 	{
@@ -12,13 +13,18 @@ const routes: Routes = [
 		canActivate: [AuthGuard]
 	},
 	{
-		path: 'trainingData',
-		component: TrainingDataComponent,
+		path: 'regressionTrainingCertificates',
+		component: RegressionTrainingCertificatesComponent,
 		canActivate: [AuthGuard]
 	},
 	{
-		path: 'modelsTraining',
-		component: ModelsTrainingComponent,
+		path: 'classificationTrainingData',
+		component: ClassificationTrainingDataComponent,
+		canActivate: [AuthGuard]
+	},
+	{
+		path: 'classificationTrainingCertificates',
+		component: ClassificationTrainingCertificatesComponent,
 		canActivate: [AuthGuard]
 	},
 ];

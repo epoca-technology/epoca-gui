@@ -442,11 +442,8 @@
                                             <div class="desktop-card">
                                                 <!-- Heading -->
                                                 <div fxLayout="row" fxLayoutAlign="start center">
-                                                    <h4 *ngIf="_backtest.models[modelID].arima_models.length == 0">DecisionModel</h4>
-                                                    <h4 *ngIf="_backtest.models[modelID].arima_models.length == 1">ArimaModel</h4>
-                                                    <h4 *ngIf="_backtest.models[modelID].arima_models.length > 1">MultiDecisionModel</h4>
+                                                    <h4>{{_backtest.modelTypeNames[modelID]}}</h4>
                                                     <span fxFlex></span>
-                                                    <div class="square-badge">{{_backtest.models[modelID].arima_models.length}}</div>
                                                 </div>
 
                                                 <!-- Content -->
@@ -468,8 +465,8 @@
                                                 <div fxLayout="row" fxLayoutAlign="start center">
                                                     <h4>Points</h4>
                                                     <span fxFlex></span>
-                                                    <div class="square-badge show-on-desktop">High: {{modelPointsRange.max}}</div>
-                                                    <div class="square-badge show-on-desktop">Low: {{modelPointsRange.min}}</div>
+                                                    <div class="square-badge show-on-desktop">High: {{modelPointsRange[modelID].max}}</div>
+                                                    <div class="square-badge show-on-desktop">Low: {{modelPointsRange[modelID].min}}</div>
                                                     <div class="square-badge">Final: {{_backtest.performances[modelID].points}}</div>
                                                 </div>
                                                 <div class="points-chart">

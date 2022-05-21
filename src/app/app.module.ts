@@ -42,6 +42,7 @@ import {
 	NotificationService,
 	PredictionService,
 	BacktestService,
+	ClassificationTrainingDataService,
 	ServerService,
 	UtilsService,
 } from './core';
@@ -117,6 +118,7 @@ import { AppComponent } from './app.component';
         NotificationService,
 		PredictionService,
 		BacktestService,
+		ClassificationTrainingDataService,
         ServerService,
         UtilsService,
 

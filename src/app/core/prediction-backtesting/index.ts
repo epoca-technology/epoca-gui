@@ -1,2 +1,2 @@
-export * from './interfaces'
-export * from './backtest.service'
+export * from './backtest';
+export * from './classification-training-data';

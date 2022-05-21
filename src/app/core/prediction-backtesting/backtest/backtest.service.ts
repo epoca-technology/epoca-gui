@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { UtilsService } from '../utils';
+import { PredictionService } from '../../prediction/prediction.service';
+import { UtilsService } from '../../utils';
 import { 
 	IBacktestService, 
 	IBacktestResult, 
@@ -12,6 +13,7 @@ import {
 	IAccuracyMetadata,
 	IPositionsMetadata,
 	IDurationMetadata,
+	IModelTypeNames
 } from './interfaces';
 
 @Injectable({
@@ -21,6 +23,7 @@ export class BacktestService implements IBacktestService {
 	// Main Properties
 	public modelIDs: string[] = [];
 	public models: IModels = {};
+	public modelTypeNames: IModelTypeNames = {};
 	public backtests: IBacktests = {};
 	public performances: IPerformances = {};
 
@@ -33,7 +36,8 @@ export class BacktestService implements IBacktestService {
 
 
 	constructor(
-		private _utils: UtilsService
+		private _utils: UtilsService,
+		private _prediction: PredictionService
 	) { }
 
 
@@ -91,6 +95,7 @@ export class BacktestService implements IBacktestService {
 		// Populate the main properties
 		this.modelIDs.push(finalID);
 		this.models[finalID] = res.model;
+		this.modelTypeNames[finalID] = this._prediction.getModelTypeName(res.model);
 		this.backtests[finalID] = res.backtest;
 		this.performances[finalID] = res.performance;
 	}

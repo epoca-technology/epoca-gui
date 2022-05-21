@@ -10,15 +10,17 @@ import {SharedModule} from "../../shared";
 // Components
 import { BacktestsComponent } from './backtests/backtests.component';
 import { BacktestPositionDialogComponent } from './backtests/backtest-position-dialog/backtest-position-dialog.component';
-import { TrainingDataComponent } from './training-data/training-data.component';
-import { ModelsTrainingComponent } from './models-training/models-training.component';
+import { ClassificationTrainingDataComponent } from './classification-training-data/classification-training-data.component';
+import { ClassificationTrainingCertificatesComponent } from './classification-training-certificates/classification-training-certificates.component';
+import { RegressionTrainingCertificatesComponent } from './regression-training-certificates/regression-training-certificates.component';
 
 @NgModule({
   declarations: [
     BacktestsComponent,
     BacktestPositionDialogComponent,
-    TrainingDataComponent,
-    ModelsTrainingComponent
+    ClassificationTrainingDataComponent,
+    ClassificationTrainingCertificatesComponent,
+    RegressionTrainingCertificatesComponent
   ],
   imports: [
     CommonModule,

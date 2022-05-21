@@ -7,7 +7,7 @@ import {
 	IModel, 
 	IPrediction,
 	IPredictionMetaData,
-	IArimaModel,
+	IArimaModelConfig,
 	PredictionService, 
 	UtilsService, 
 } from '../../../../core';
@@ -115,7 +115,7 @@ export class PredictionDialogComponent implements OnInit, IPredictionDialogCompo
 		if (!this.prediction.md.length) throw new Error('The provided prediction has no metadata.');
 
 		// Check if the metadata is based on prediction price change
-		if (this.prediction.md[0].pl) {
+		if (this.model.arima_models && this.prediction.md[0].pl) {
 			// Retrieve the maximum amount of predictions
 			const maxPredictions: number = this._utils.getMax(this.prediction.md.map((md) => {return md.pl!.length}));
 
@@ -153,7 +153,7 @@ export class PredictionDialogComponent implements OnInit, IPredictionDialogCompo
 	 * @param candlesticks 
 	 * @returns IChangeMetadata
 	 */
-	private getChangeMetadata(sm: IArimaModel, md: IPredictionMetaData, candlesticks: ICandlestick[]): IChangeMetadata {
+	private getChangeMetadata(sm: IArimaModelConfig, md: IPredictionMetaData, candlesticks: ICandlestick[]): IChangeMetadata {
 		// Calculate the % change from first to last price predictions
 		const change: number = <number>this._utils.calculatePercentageChange(md.pl![0], md.pl![md.pl!.length - 1], {ru: true});
 

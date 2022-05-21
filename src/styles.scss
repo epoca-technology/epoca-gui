@@ -701,8 +701,19 @@ form .mat-checkbox-inner-container{
 
 
 /* Icons */
-.flask-icon{max-width: 20px;margin-left:3px;}
+.flask-icon{max-width: 18px;margin-left:3px;}
 
+
+
+
+
+
+
+
+
+
+/* Formula Text */
+.formula{letter-spacing: .12em}
 
 
 
@@ -776,6 +787,9 @@ form .mat-checkbox-inner-container{
 
     // reCAPTCHA
     .recaptcha-container { width: 100%; min-height: 145px; }
+
+	// Formula
+	.formula{letter-spacing: normal!important;}
 }
 
 

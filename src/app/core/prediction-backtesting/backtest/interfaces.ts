@@ -1,4 +1,4 @@
-import { IModel, IPrediction, } from "../prediction/interfaces";
+import { IModel, IPrediction, IModelTypeName} from "../../prediction/interfaces";
 
 
 
@@ -11,6 +11,7 @@ export interface IBacktestService {
     // Main Properties
     modelIDs: string[],
     models: IModels,
+    modelTypeNames: IModelTypeNames,
     backtests: IBacktests,
     performances: IPerformances,
 
@@ -205,6 +206,10 @@ export interface IBacktestResult {
 // Models
 export interface IModels {
     [modelID: string]: IModel
+}
+
+export interface IModelTypeNames {
+    [modelID: string]: IModelTypeName
 }
 
 
