@@ -1,7 +1,7 @@
 import {BehaviorSubject} from "rxjs";
 import {MatDialogRef} from "@angular/material/dialog";
 import {MatBottomSheetRef} from "@angular/material/bottom-sheet";
-import { IModel, IPrediction } from "../../core";
+import { IKerasModelSummary, IModel, IPrediction } from "../../core";
 import {IConfirmationDialogData} from "../../shared/components/confirmation-dialog";
 import {IBottomSheetMenuItem} from "../../shared/components/bottom-sheet-menu";
 
@@ -17,10 +17,10 @@ export interface INavService {
 	tradingSimulations(): Promise<boolean>,
 	forecastModels(): Promise<boolean>,
 	backtests(): Promise<boolean>,
+	regressionSelection(): Promise<boolean>,
 	regressionTrainingCertificates(): Promise<boolean>,
 	classificationTrainingData(): Promise<boolean>,
 	classificationTrainingCertificates(): Promise<boolean>,
-	modelsTraining(): Promise<boolean>,
 	candlesticks(): Promise<boolean>,
     server(): Promise<boolean>,
     users(): Promise<boolean>,
@@ -29,7 +29,9 @@ export interface INavService {
 	
 	// Dialogs
     displayConfirmationDialog(data?: IConfirmationDialogData): MatDialogRef<any>,
+	displayDataDialog(name: string, value: any): MatDialogRef<any>,
 	displayModelDialog(model: IModel): MatDialogRef<any>,
+	displayKerasModelDialog(id: string, description: string, kerasModel: IKerasModelSummary): MatDialogRef<any>,
 	displayPredictionDialog(model: IModel, prediction: IPrediction): MatDialogRef<any>,
 	
 	// Bottom Sheets

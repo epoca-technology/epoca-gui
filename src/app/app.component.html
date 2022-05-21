@@ -64,6 +64,15 @@
                 </button>
             </mat-list-item>
 
+            <!-- Regression Selection -->
+            <mat-list-item *ngIf="backtestingExpanded" class="active-sub-menu">
+                <button mat-button (click)="_nav.regressionSelection()" [disabled]="state.subModule == 'regressionSelection'">
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <span>Regression Selection</span><span fxFlex></span><mat-icon svgIcon="microscope"></mat-icon>
+                    </div>
+                </button>
+            </mat-list-item>
+
             <!-- Regression Training Certificates -->
             <mat-list-item *ngIf="backtestingExpanded" class="active-sub-menu">
                 <button mat-button (click)="_nav.regressionTrainingCertificates()" [disabled]="state.subModule == 'regressionTrainingCertificates'">

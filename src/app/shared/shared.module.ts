@@ -64,19 +64,18 @@ import { FilesizePipe } from './pipes/filesize/filesize.pipe';
 
 
 
-// Bottom Sheets
-import { BottomSheetMenuComponent } from './components/bottom-sheet-menu';
-
-
 
 // Shared Components
-import { ConfirmationDialogComponent } from './components/confirmation-dialog';
+import { BottomSheetMenuComponent } from './components/bottom-sheet-menu';
 import { CandlestickDialogComponent, CandlestickBodyComponent} from './components/candlestick';
-import { RefreshButtonComponent } from './components/refresh-button/refresh-button.component';
+import { ConfirmationDialogComponent } from './components/confirmation-dialog';
+import { DataDialogComponent } from './components/data-dialog/data-dialog.component';
 import { MobileTabsComponent } from './components/mobile-tabs/mobile-tabs.component';
 import { ModelDialogComponent } from './components/prediction/model-dialog/model-dialog.component';
 import { ModelContentComponent } from './components/prediction/model-content/model-content.component';
 import { PredictionDialogComponent } from './components/prediction/prediction-dialog/prediction-dialog.component';
+import { KerasModelDialogComponent } from './components/prediction/keras-model-dialog/keras-model-dialog.component';
+import { RefreshButtonComponent } from './components/refresh-button/refresh-button.component';
 
 
 
@@ -93,10 +92,8 @@ import { PredictionDialogComponent } from './components/prediction/prediction-di
 		SecondToFormatPipe,
         FilesizePipe,
 
-        // Bottom Sheets
-		BottomSheetMenuComponent,
-		
 		// Shared Components
+		BottomSheetMenuComponent,
         ConfirmationDialogComponent,
         CandlestickDialogComponent,
         CandlestickBodyComponent,
@@ -105,6 +102,8 @@ import { PredictionDialogComponent } from './components/prediction/prediction-di
         ModelDialogComponent,
         ModelContentComponent,
         PredictionDialogComponent,
+        KerasModelDialogComponent,
+        DataDialogComponent,
 	],
 	imports: [
 		CommonModule,

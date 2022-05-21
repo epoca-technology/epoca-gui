@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from '../../services';
 import { BacktestsComponent } from './backtests/backtests.component';
+import { RegressionSelectionComponent } from './regression-selection/regression-selection.component';
 import { ClassificationTrainingCertificatesComponent } from './classification-training-certificates/classification-training-certificates.component';
 import { ClassificationTrainingDataComponent } from './classification-training-data/classification-training-data.component';
 import { RegressionTrainingCertificatesComponent } from './regression-training-certificates/regression-training-certificates.component';
@@ -10,6 +11,11 @@ const routes: Routes = [
 	{
 		path: 'backtests',
 		component: BacktestsComponent,
+		canActivate: [AuthGuard]
+	},
+	{
+		path: 'regressionSelection',
+		component: RegressionSelectionComponent,
 		canActivate: [AuthGuard]
 	},
 	{

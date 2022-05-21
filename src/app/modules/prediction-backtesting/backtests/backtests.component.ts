@@ -415,7 +415,7 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 				grid: {show: true},
 				xaxis: {labels: { show: false } }
 			}, [], undefined, true),
-				accuracy: this._chart.getBarChartOptions({
+			accuracy: this._chart.getBarChartOptions({
 				series: [
 					{name:'Long Accuracy',data:[this._backtest.performances[this.modelID!].long_acc]},
 					{name:'Short Accuracy',data:[this._backtest.performances[this.modelID!].short_acc]},
@@ -561,22 +561,6 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 		sum += `- Total: ${this._backtest.performances[model.id].positions.length}\n`;
 		sum += `- Long: ${this._backtest.performances[model.id].long_num}\n`;
 		sum += `- Short: ${this._backtest.performances[model.id].short_num}\n`;
-
-		// ARIMA MODELS
-		if (model.arima_models && model.arima_models.length) {
-				sum += `\nARIMA MODELS (${model.arima_models.length}):`;
-				for (let sm of model.arima_models) {
-				sum += `\n\nLookback: ${sm.lookback}\n`;
-				sum += `Arima: (${sm.arima.p}, ${sm.arima.d}, ${sm.arima.q})`;
-				sum += `(${sm.arima.P}, ${sm.arima.D}, ${sm.arima.Q}, ${sm.arima.m})`;
-				sum += ` -> [${sm.predictions}]\n`;
-				sum += `Interpreter:\n`;
-				sum += `- Long: ${sm.interpreter.long}%\n`;
-				sum += `- Short: ${sm.interpreter.short}%\n`;
-			}
-		}
-		
-
 
 		// Add the tail of the string
 		sum += '====================';

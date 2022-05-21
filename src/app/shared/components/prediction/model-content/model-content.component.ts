@@ -7,6 +7,7 @@ import {
 	IRegressionModelConfig,
 	IClassificationModelConfig
 } from '../../../../core';
+import { NavService } from '../../../../services';
 import { IModelContentComponent } from './interfaces';
 
 @Component({
@@ -26,7 +27,10 @@ export class ModelContentComponent implements OnInit, IModelContentComponent {
 	public regression_models?: IRegressionModelConfig[];
 	public classification_models?: IClassificationModelConfig[];
 
-    constructor(private _prediction: PredictionService) { }
+    constructor(
+		private _prediction: PredictionService,
+		public _nav: NavService
+	) { }
 
     ngOnInit(): void {
 		// Init the type name

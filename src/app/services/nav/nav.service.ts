@@ -6,10 +6,11 @@ import {MatBottomSheet, MatBottomSheetRef} from '@angular/material/bottom-sheet'
 import {BehaviorSubject, Observable} from "rxjs";
 import {filter} from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { IModel, IPrediction } from '../../core';
+import { IKerasModelSummary, IModel, IPrediction } from '../../core';
 import {AppService} from "../app";
 import {ConfirmationDialogComponent, IConfirmationDialogData} from "../../shared/components/confirmation-dialog";
-import {ModelDialogComponent, PredictionDialogComponent} from "../../shared/components/prediction";
+import {DataDialogComponent, IDataDialogComponent, IDataDialogData} from "../../shared/components/data-dialog";
+import {IKerasModelDialogData, KerasModelDialogComponent, ModelDialogComponent, PredictionDialogComponent} from "../../shared/components/prediction";
 import {BottomSheetMenuComponent, IBottomSheetMenuItem} from "../../shared/components/bottom-sheet-menu";
 import {INavService, IRouteState, IRouteStateData} from "./interfaces";
 
@@ -67,10 +68,10 @@ export class NavService implements INavService {
 	public tradingSimulations(): Promise<boolean> { return this.navigate('tradingSimulations') }
 	public forecastModels(): Promise<boolean> { return this.navigate('forecastModels') }
 	public backtests(): Promise<boolean> { return this.navigate('predictionBacktesting/backtests') }
+	public regressionSelection(): Promise<boolean> { return this.navigate('predictionBacktesting/regressionSelection') }
 	public regressionTrainingCertificates(): Promise<boolean> { return this.navigate('predictionBacktesting/regressionTrainingCertificates') }
 	public classificationTrainingData(): Promise<boolean> { return this.navigate('predictionBacktesting/classificationTrainingData') }
 	public classificationTrainingCertificates(): Promise<boolean> { return this.navigate('predictionBacktesting/classificationTrainingCertificates') }
-	public modelsTraining(): Promise<boolean> { return this.navigate('predictionBacktesting/modelsTraining') }
 	public candlesticks(): Promise<boolean> { return this.navigate('candlesticks') }
 	public server(): Promise<boolean> { return this.navigate('server') }
 	public users(): Promise<boolean> { return this.navigate('users') }
@@ -135,7 +136,25 @@ export class NavService implements INavService {
 	}
 
 	
+		
 	
+	/*
+	* Opens the data dialog.
+	* @param name
+	* @param value
+	* @returns MatDialogRef<any>
+	* */
+	public displayDataDialog(name: string, value: any): MatDialogRef<any> {
+		return this.dialog.open(DataDialogComponent, {
+			disableClose: false,
+			hasBackdrop: this._app.layout.value != 'mobile', // Mobile optimization
+			panelClass: 'large-dialog',
+			data: <IDataDialogData> {
+				name: name,
+				value: value
+			}
+		});
+	}
 
 
 	
@@ -158,6 +177,31 @@ export class NavService implements INavService {
 	}
 
 	
+
+
+
+
+	/*
+	* Opens the dialog that contains all information about a keras model.
+	* @param id
+	* @param description
+	* @param kerasModel
+	* @returns MatDialogRef<any>
+	* */
+	public displayKerasModelDialog(id: string, description: string, kerasModel: IKerasModelSummary): MatDialogRef<any> {
+		return this.dialog.open(KerasModelDialogComponent, {
+			hasBackdrop: this._app.layout.value != 'mobile', // Mobile optimization
+			panelClass: 'medium-dialog',
+			data: <IKerasModelDialogData>{
+				id: id,
+				description: description,
+				summary: kerasModel
+			}
+		});
+	}
+
+
+
 	
 	
 

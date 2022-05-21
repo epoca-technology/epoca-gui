@@ -13,6 +13,7 @@ import { BacktestPositionDialogComponent } from './backtests/backtest-position-d
 import { ClassificationTrainingDataComponent } from './classification-training-data/classification-training-data.component';
 import { ClassificationTrainingCertificatesComponent } from './classification-training-certificates/classification-training-certificates.component';
 import { RegressionTrainingCertificatesComponent } from './regression-training-certificates/regression-training-certificates.component';
+import { RegressionSelectionComponent } from './regression-selection/regression-selection.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { RegressionTrainingCertificatesComponent } from './regression-training-c
     BacktestPositionDialogComponent,
     ClassificationTrainingDataComponent,
     ClassificationTrainingCertificatesComponent,
-    RegressionTrainingCertificatesComponent
+    RegressionTrainingCertificatesComponent,
+    RegressionSelectionComponent
   ],
   imports: [
     CommonModule,
