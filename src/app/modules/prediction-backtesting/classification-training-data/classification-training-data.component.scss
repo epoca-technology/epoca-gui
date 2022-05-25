@@ -1,0 +1,60 @@
+
+.component {
+
+
+    h4{ margin:0; padding:0}
+    p {margin:0}
+
+
+    .summary-section {
+        padding:15px;
+        .margin-top {margin-top:20px;}
+
+    }
+
+    .data-section {
+        padding:15px;
+
+        .data-container {
+            max-width:100%;
+            overflow-x:auto;
+
+            .table {
+                td {text-align: center;}
+                th {text-align: center;}
+            }
+
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Responsiveness */
+
+
+/* mobile: sm & xs */
+@media only screen and (max-width: 959px) {
+    .data-section {
+        padding:0px!important;
+    }
+
+}
+
+
+
+/* desktop: md */
+@media only screen and (min-width: 960px) {
+
+}

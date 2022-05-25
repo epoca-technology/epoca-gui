@@ -13,7 +13,9 @@ import {
 	ApexPlotOptions,
 	ApexStroke,
 	ApexFill,
-	ApexMarkers
+	ApexMarkers,
+	ApexResponsive,
+	ApexNonAxisChartSeries
 } from "ng-apexcharts";
 import { MatDialogRef } from "@angular/material/dialog";
 
@@ -44,6 +46,13 @@ export interface IChartService {
 		range?: IChartRange
    ): ILineChartOptions,
 	getLineChartRange(series: ApexAxisChartSeries): IChartRange,
+
+	// Pie Chart
+	getPieChartOptions(
+		config: Partial<IPieChartOptions>, 
+		labels: string[], 
+		height?: number
+	): IPieChartOptions
 }
 
 
@@ -116,3 +125,14 @@ export type ILineChartOptions = {
 	annotations: ApexAnnotations;
 	colors: string[];
 };
+
+
+
+
+/* Pie Chart Options */
+export type IPieChartOptions = {
+	series: ApexNonAxisChartSeries;
+	chart: ApexChart;
+	labels: string[];
+	colors: string[];
+}

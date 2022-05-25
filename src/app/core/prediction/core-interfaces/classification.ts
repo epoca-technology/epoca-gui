@@ -134,11 +134,11 @@ export interface ITrainingDataFile {
     // List of ArimaModels|RegressionModels
     models: IModel[],
 
-    // Price Actions Insight - The up and down percentage proportions
+    // Price Actions Insight - The up and down counts
     price_actions_insight: ITrainingDataPriceActionsInsight,
 
     // Prediction Insight 
-    // Position type percentage proportions for each single model in this format:
+    // Position type count for each single model in this format:
     // {[modelID: str]: ITrainingDataPredictionInsight}
     predictions_insight: ITrainingDataPredictionInsights,
 

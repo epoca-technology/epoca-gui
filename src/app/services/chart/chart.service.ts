@@ -9,7 +9,8 @@ import {
 	ICandlestickChartOptions, 
 	IChartRange, 
 	IBarChartOptions, 
-	ILineChartOptions 
+	ILineChartOptions, 
+	IPieChartOptions
 } from './interfaces';
 
 
@@ -370,6 +371,55 @@ export class ChartService implements IChartService {
 				max: this._utils.getMax(seriesNumbers)
 			}
 	}
+
+
+
+
+
+
+
+
+	/* Pie Chart */
+
+
+
+
+
+
+	/**
+	 * Builds the configuration for a pie chart.
+	 * @param config 
+	 * @param labels
+	 * @param height?
+	 * @returns IBarChartOptions
+	 */
+	 public getPieChartOptions(
+		config: Partial<IPieChartOptions>, 
+		labels: string[], 
+		height?: number
+	): IPieChartOptions {
+		// Init the default chart
+		let defaultChart: ApexChart = {height: 400, type: 'pie',animations: { enabled: false}, toolbar: {show: false}};
+		if (typeof height == "number") defaultChart.height = height;
+
+		// Init the colors
+		let colors: string[] = config.colors || [];
+		if (!colors.length && labels && labels.length) {
+			colors = this.colors.slice(0, labels.length)
+		}
+
+		// Return the Options Object
+		return {
+			series: config.series!,
+			chart: config.chart ? config.chart: defaultChart,
+			colors: colors,
+			labels: labels
+		}
+	}
+
+
+
+
 
 
 

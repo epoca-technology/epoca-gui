@@ -35,9 +35,7 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 	private layoutSub?: Subscription;
 
 	// File Input Form
-    public fileInputForm: FormGroup = new FormGroup({
-        fileInput: new FormControl('', [ ]),
-    });
+    public fileInputForm: FormGroup = new FormGroup({ fileInput: new FormControl('', [ ]) });
 
 	// Backtest Initialization
 	public initialized: boolean = false;

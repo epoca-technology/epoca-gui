@@ -170,7 +170,7 @@ export class NavService implements INavService {
 	* */
 	public displayDialogMenu(title: string, items: IDialogMenuItem[]): MatDialogRef<any> {
 		return this.dialog.open(DialogMenuComponent, {
-			disableClose: false,
+			disableClose: true,
 			hasBackdrop: this._app.layout.value != 'mobile', // Mobile optimization
 			panelClass: 'small-dialog',
 			data: <IDialogMenuData> {

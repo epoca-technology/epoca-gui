@@ -1,1 +1,230 @@
-<p>classification-training-data works!</p>
+<!-- Secondary Header -->
+<mat-toolbar class="secondary-header">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <button mat-icon-button (click)="_nav.dashboard()" class="show-on-mobile" *ngIf="!initialized"><mat-icon>arrow_back</mat-icon></button>
+        <button mat-icon-button (click)="reset()" class="show-on-mobile" *ngIf="initialized"><mat-icon>arrow_back</mat-icon></button>
+        <span class="truncate">Class. Training Data</span>
+        <span fxFlex></span>
+        <button mat-icon-button 
+                matTooltip="Clear Backtest Results"
+                (click)="reset()"
+                class="show-on-desktop"
+                *ngIf="initialized"><mat-icon>close</mat-icon></button>
+    </div>
+</mat-toolbar>
+
+<!-- Content -->
+<div class="component">
+    <!-- Uninitialized Content -->
+    <div *ngIf="!initialized" class="fadeIn">
+        <div fxLayout="row" fxLayoutAlign="center center" class="file-init-container">
+            <!-- Button -->
+            <label for="trainingDataFile" class="file-label" role="button" matRipple *ngIf="!initializing">
+                <div fxLayout="row" fxLayoutAlign="start center" matRipple role="button" tabindex="0">
+                    <mat-icon svgIcon="file_invoice"></mat-icon>&nbsp;
+                    <p>Select Training Data File</p>
+                </div>
+            </label>
+
+            <!-- Input -->
+            <form [formGroup]="fileInputForm">
+                <input id="trainingDataFile" type="file" accept="application/json" 
+                        formControlName="fileInput" (change)="fileChanged($event)"/>
+            </form>
+
+            <!-- Initializing Loader-->
+            <h3 *ngIf="initializing" class="fadeIn">Initializing...</h3>
+        </div>
+    </div>
+    
+
+    <!-- Initialized Content -->
+    <div *ngIf="initialized">
+        <!-- Tabs Navigation-->
+        <mat-tab-group *ngIf="layout == 'mobile'" 
+                    [selectedIndex]="activeIndex" (selectedIndexChange)="activeIndex = $event"
+                    class="mat-elevation-z3" mat-stretch-tabs mat-align-tabs="center" backgroundColor="primary">
+            <mat-tab label="Summary"></mat-tab>
+            <mat-tab label="Data"></mat-tab>
+        </mat-tab-group>
+        <mat-tab-group *ngIf="layout == 'desktop'"  
+                        [selectedIndex]="activeIndex" (selectedIndexChange)="activeIndex = $event" 
+                        mat-align-tabs="center">
+            <mat-tab label="Summary"></mat-tab>
+            <mat-tab label="Data"></mat-tab>
+        </mat-tab-group>
+
+
+        <!-- Summary Section -->
+        <div *ngIf="activeIndex == 0" class="summary-section fadeIn">
+            <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column">
+                <span fxFlex="2"></span>
+
+                <!-- Info Cards-->
+                <div fxFlex="45" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                    <!-- General Information -->
+                    <div class="desktop-card">
+                        <h3>General Information</h3>
+
+                        <!-- Description -->
+                        <p class="ts-m margin-top">{{_td.description}}</p>
+
+                        <!-- ID -->
+                        <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+                            <p class="light-text show-on-desktop truncate">ID</p>
+                            <span fxFlex class="show-on-desktop"></span>
+                            <p class="ts-m">{{_td.id}}</p>
+                            <mat-icon class="clickable" (click)="_clipboard.copy(_td.id)">content_copy</mat-icon>
+                        </div>
+
+                        <!-- Creation -->
+                        <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+                            <p class="light-text truncate">Creation</p>
+                            <span fxFlex></span>
+                            <p>{{_td.creation | date:'medium'}}</p>
+                        </div>
+
+                        <!-- Start -->
+                        <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+                            <p class="light-text truncate">Start</p>
+                            <span fxFlex></span>
+                            <p matTooltip="First Candlestick's Open Time">{{_td.start | date:'medium'}}</p>
+                        </div>
+
+                        <!-- End -->
+                        <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+                            <p class="light-text truncate">End</p>
+                            <span fxFlex></span>
+                            <p matTooltip="Last Candlestick's Close Time">{{_td.end | date:'medium'}}</p>
+                        </div>
+
+                        <!-- End -->
+                        <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+                            <p class="light-text truncate">Duration</p>
+                            <span fxFlex></span>
+                            <p matTooltip="Number of minutes it took to build the data.">{{_td.duration_minutes}} mins</p>
+                        </div>
+
+                        <!-- Up & Down Percent Changes-->
+                        <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+                            <p class="light-text truncate">Price Actions</p>
+                            <span fxFlex></span>
+                            <p class="success-color" matTooltip="Up Percent Change">{{_td.up_percent_change}}%</p>
+                            <p>&nbsp;/&nbsp;</p>
+                            <p class="error-color" matTooltip="Down Percent Change">{{_td.down_percent_change}}%</p>
+                        </div>
+
+                        <!-- Shape -->
+                        <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+                            <p class="light-text truncate">Shape</p>
+                            <span fxFlex></span>
+                            <p matTooltip="Rows, Columns">({{_td.training_data.rows.length}}, {{_td.training_data.columns.length}})</p>
+                        </div>
+                    </div>
+
+                    <div class="divider show-on-mobile"></div>
+
+                    <!-- Models -->
+                    <div class="desktop-card">
+                        <h3>Models</h3>
+                        <div *ngFor="let id of _td.modelIDs; index as modelIndex; last as lastModel">
+                            <h4>{{modelIndex+1}}) {{_td.modelTypeNames[id]}}</h4>
+                            <div class="margin-top">
+                                <app-model-content [model]="_td.models[id]"></app-model-content>
+                            </div>
+                            <div *ngIf="!lastModel" class="divider"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <span fxFlex></span>
+
+                <div class="divider show-on-mobile"></div>
+
+                <!-- Chart Cards-->
+                <div fxFlex="45" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                    <!-- Price Actions -->
+                    <div class="desktop-card">
+                        <h3>Price Actions</h3>
+                        <apx-chart
+                            [series]="priceActions.series"
+                            [chart]="priceActions.chart"
+                            [labels]="priceActions.labels"
+                            [colors]="priceActions.colors"
+                            [legend]="{show: false}"
+                        ></apx-chart>
+                    </div>
+
+                    <div class="divider show-on-mobile"></div>
+
+                    <!-- Predictions -->
+                    <div class="desktop-card">
+                        <h3>Predictions</h3>
+                        <apx-chart
+                            [series]="predictions.series"
+                            [chart]="predictions.chart"
+                            [plotOptions]="predictions.plotOptions"
+                            [xaxis]="predictions.xaxis"
+                            [yaxis]="predictions.yaxis"
+                            [dataLabels]="predictions.dataLabels"
+                            [colors]="predictions.colors"
+                            [grid]="predictions.grid"
+                        ></apx-chart>
+                    </div>
+                </div>
+
+                <span fxFlex="2"></span>
+            </div>
+        </div>
+
+        <!-- Data Section -->
+        <div *ngIf="activeIndex == 1" class="data-section fadeIn">
+            <div fxLayout="row" fxLayoutAlign="center center">
+                <div fxFlex="100">
+                    <!-- Table -->
+                    <div class="data-container" [ngClass]="{'mat-elevation-z3' : layout == 'desktop'}">
+                        <table class="table highlight bordered">
+                            <thead>
+                                <tr>
+                                    <th *ngFor="let column_name of _td.training_data.columns">{{column_name}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let row of visibleRows; index as rowIndex" 
+                                    class="clickable" 
+                                    (click)="_nav.displayDataDialog('trainingDataRow', row)">
+                                    <td *ngFor="let column_name of _td.training_data.columns; index as columnIndex">
+                                        <!-- Features -->
+                                        <div *ngIf="column_name != 'up' && column_name != 'down'">
+                                            <mat-icon *ngIf="row[columnIndex] == 2" class="success-color">trending_up</mat-icon>
+                                            <mat-icon *ngIf="row[columnIndex] == 1" class="error-color">trending_down</mat-icon>
+                                        </div>
+
+                                        <!-- Labels -->
+                                        <div *ngIf="column_name == 'up' || column_name == 'down'">
+                                            <mat-icon *ngIf="row[columnIndex] == 1 && column_name == 'up'" class="success-color">north</mat-icon>
+                                            <mat-icon *ngIf="row[columnIndex] == 1 && column_name == 'down'" class="error-color">south</mat-icon>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Paginator -->
+                    <div class="margin-top" 
+                        fxLayout="row" 
+                        fxLayoutAlign="end center" 
+                        fxLayoutAlign.xs="center center" 
+                        fxLayoutAlign.sm="center center">
+                        <p class="light-text ts-s">{{rowsStart}} - {{rowsEnd}} of {{_td.training_data.rows.length}}</p>
+                        <button mat-icon-button (click)="gotoStart()" [disabled]="rowsStart == 0"><mat-icon>first_page</mat-icon></button>
+                        <button mat-icon-button (click)="goBackward()" [disabled]="rowsStart == 0"><mat-icon>navigate_before</mat-icon></button>
+                        <button mat-icon-button (click)="goForward()" [disabled]="rowsEnd == _td.training_data.rows.length"><mat-icon>navigate_next</mat-icon></button>
+                        <button mat-icon-button (click)="gotoEnd()" [disabled]="rowsEnd == _td.training_data.rows.length"><mat-icon>last_page</mat-icon></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
