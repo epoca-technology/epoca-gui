@@ -399,7 +399,7 @@ export class ChartService implements IChartService {
 		height?: number
 	): IPieChartOptions {
 		// Init the default chart
-		let defaultChart: ApexChart = {height: 400, type: 'pie',animations: { enabled: false}, toolbar: {show: false}};
+		let defaultChart: ApexChart = {height: 400, width: 450, type: 'pie',animations: { enabled: false}, toolbar: {show: false}};
 		if (typeof height == "number") defaultChart.height = height;
 
 		// Init the colors
@@ -413,7 +413,20 @@ export class ChartService implements IChartService {
 			series: config.series!,
 			chart: config.chart ? config.chart: defaultChart,
 			colors: colors,
-			labels: labels
+			labels: labels,
+			responsive: [
+				{
+					breakpoint: 480,
+					options: {
+					  chart: {
+						width: 250
+					  },
+					  legend: {
+						position: "bottom"
+					  }
+					}
+				  }
+			]
 		}
 	}
 

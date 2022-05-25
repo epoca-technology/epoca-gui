@@ -73,7 +73,7 @@
                         <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
                             <p class="light-text show-on-desktop truncate">ID</p>
                             <span fxFlex class="show-on-desktop"></span>
-                            <p class="ts-m">{{_td.id}}</p>
+                            <p class="ts-s">{{_td.id}}</p>
                             <mat-icon class="clickable" (click)="_clipboard.copy(_td.id)">content_copy</mat-icon>
                         </div>
 
@@ -146,13 +146,15 @@
                     <!-- Price Actions -->
                     <div class="desktop-card">
                         <h3>Price Actions</h3>
-                        <apx-chart
-                            [series]="priceActions.series"
-                            [chart]="priceActions.chart"
-                            [labels]="priceActions.labels"
-                            [colors]="priceActions.colors"
-                            [legend]="{show: false}"
-                        ></apx-chart>
+                        <div fxLayout="row" fxLayoutAlign="center center">
+                            <apx-chart
+                                [series]="priceActions.series"
+                                [chart]="priceActions.chart"
+                                [labels]="priceActions.labels"
+                                [colors]="priceActions.colors"
+                                [responsive]="priceActions.responsive"
+                            ></apx-chart>
+                        </div>
                     </div>
 
                     <div class="divider show-on-mobile"></div>

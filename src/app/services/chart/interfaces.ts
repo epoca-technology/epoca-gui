@@ -135,4 +135,5 @@ export type IPieChartOptions = {
 	chart: ApexChart;
 	labels: string[];
 	colors: string[];
+	responsive: ApexResponsive[];
 }
