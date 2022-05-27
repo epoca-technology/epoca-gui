@@ -1,7 +1,7 @@
 
 
-export interface IClassificationTrainingService {
-    init(event: any): Promise<void>
+export interface IClassificationTrainingDataService {
+    init(event: any|string): Promise<void>
 }
 
 

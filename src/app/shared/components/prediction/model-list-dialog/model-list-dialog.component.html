@@ -1,0 +1,26 @@
+<mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <button mat-icon-button class="show-on-mobile" (click)="close()"><mat-icon>arrow_back</mat-icon></button>
+        <span>Models</span>
+        <span fxFlex></span>
+        <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
+    </div>
+</mat-toolbar>
+<div mat-dialog-content>
+    <div class="model-list-dialog fadeIn">
+        <div *ngFor="let model of models; index as modelIndex" class="model-box">
+            <!-- Heading -->
+            <div fxLayout="row" fxLayoutAlign="start center" class="clickable" role="button" 
+                (click)="expanded[model.id] ? expanded[model.id] = false: expanded[model.id] = true">
+                <h5>{{modelIndex+1}}) {{types[model.id]}}</h5>
+                <span fxFlex></span>
+                <mat-icon>{{expanded[model.id] ? 'expand_less': 'expand_more'}}</mat-icon>
+            </div>
+    
+            <!-- Content -->
+            <div *ngIf="expanded[model.id]" class="model-box-content fadeIn">
+                <div><app-model-content [model]="model"></app-model-content></div>
+            </div>
+        </div>
+    </div>
+</div>

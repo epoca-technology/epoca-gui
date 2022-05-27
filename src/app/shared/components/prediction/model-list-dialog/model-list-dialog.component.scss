@@ -1,0 +1,17 @@
+@use '@angular/material' as mat;
+
+
+.model-list-dialog {
+    padding:10px;
+    .model-box {
+        @include mat.elevation(2);
+        padding:10px;
+        h5 { margin:0}
+        p {margin:0}
+        margin:20px 0 20px 0;
+
+        .model-box-content {
+            margin: 20px 0 0 0;
+        }
+    }
+}

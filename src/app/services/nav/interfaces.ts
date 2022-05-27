@@ -36,6 +36,7 @@ export interface INavService {
 	displayDataDialog(name: string, value: any): MatDialogRef<any>,
 	displayDialogMenu(title: string, items: IDialogMenuItem[]): MatDialogRef<any>,
 	displayModelDialog(model: IModel): MatDialogRef<any>,
+	displayModelListDialog(models: IModel[]): MatDialogRef<any>,
 	displayKerasModelDialog(id: string, description: string, kerasModel: IKerasModelSummary): MatDialogRef<any>,
 	displayPredictionDialog(model: IModel, prediction: IPrediction): MatDialogRef<any>,
 	

@@ -11,7 +11,13 @@ import {AppService} from "../app";
 import {ConfirmationDialogComponent, IConfirmationDialogData} from "../../shared/components/confirmation-dialog";
 import {DataDialogComponent, IDataDialogData} from "../../shared/components/data-dialog";
 import {DialogMenuComponent, IDialogMenuData, IDialogMenuItem} from "../../shared/components/dialog-menu";
-import {IKerasModelDialogData, KerasModelDialogComponent, ModelDialogComponent, PredictionDialogComponent} from "../../shared/components/prediction";
+import {
+	IKerasModelDialogData, 
+	KerasModelDialogComponent, 
+	ModelDialogComponent, 
+	ModelListDialogComponent,
+	PredictionDialogComponent
+} from "../../shared/components/prediction";
 import {BottomSheetMenuComponent, IBottomSheetMenuItem} from "../../shared/components/bottom-sheet-menu";
 import {INavService, IRouteState, IRouteStateData} from "./interfaces";
 
@@ -203,6 +209,25 @@ export class NavService implements INavService {
 	}
 
 	
+
+
+	
+	
+	/*
+	* Opens the dialog that contains all information about a list of models.
+	* @param model
+	* @returns MatDialogRef<any>
+	* */
+	public displayModelListDialog(models: IModel[]): MatDialogRef<any> {
+		return this.dialog.open(ModelListDialogComponent, {
+			hasBackdrop: this._app.layout.value != 'mobile', // Mobile optimization
+			panelClass: 'medium-dialog',
+			data: models
+		});
+	}
+
+
+
 
 
 

@@ -290,6 +290,27 @@ ul li ul, ol li ul { padding: 0 0 0 15px;}
 }
 
 
+.left-icon-button {
+	.square-badge, .square-badge-success, .square-badge-error {
+		padding:6px 7px 6px 7px;
+		border-radius: 3px;
+		width: auto;
+		max-height:13px;
+		text-align: right!important;
+
+		span {
+			color:#FFFFFF;
+			font-weight: 600;
+			font-size:11px!important;
+			display:table-cell!important;
+			line-height: 13px!important; 
+			vertical-align: middle!important;
+		}
+	}
+}
+
+
+
 
 
 

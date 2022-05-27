@@ -1,1 +1,433 @@
-<p>classification-training-certificates works!</p>
+<!-- Section Container -->
+<mat-drawer-container class="section-container component-container">
+
+    <!-- Main Sidenav -->
+    <mat-drawer #classTrainingCertificatesSidenav [(opened)]="classTrainingCertificatesSidenavOpened" *ngIf="initialized"
+                class="sidenav" position="start" mode="over" autoFocus="false">
+        <!-- Menu Heading Toolbar -->
+        <mat-toolbar color="primary">
+            <div fxLayout="row" fxLayoutAlign="start center">
+                <button mat-icon-button (click)="classTrainingCertificatesSidenav?.toggle()"><mat-icon>arrow_back</mat-icon></button>
+                <span class="truncate">Class. Training Certificates</span>
+                <span fxFlex></span>
+            </div>
+        </mat-toolbar>
+
+        <!-- Menu Content -->
+        <mat-list>
+            <div mat-subheader>General</div>
+            <mat-list-item *ngFor="let sect of generalSections">
+                <button mat-button class="left-icon-button" [disabled]="section.id == sect.id" (click)="navigate(sect.id)">
+                    <mat-icon>{{sect.icon}}</mat-icon> {{sect.name}}
+                </button>
+            </mat-list-item>
+            <div mat-subheader>Certificates</div>
+            <mat-list-item *ngFor="let certificate of _training.certificates; index as certIndex">
+                <button mat-button class="left-icon-button truncate" 
+                        [disabled]="section.id == 'certificate' && cert && certificate.id == cert.id" 
+                        (click)="navigate('certificate', certIndex)">
+                        <div fxLayout="row" fxLayoutAlign="start center">
+                            <span class="truncate">{{certificate.id}}</span>
+                            <span fxFlex></span>
+                            <div class="square-badge-success"><span>{{certificate.test_evaluation[1] | percent}}</span></div>
+                        </div>
+                </button>
+            </mat-list-item>
+        </mat-list>
+    </mat-drawer>
+
+
+    <!-- Section Content -->
+    <mat-drawer-content id="content-header">
+        <!-- Content Header -->
+        <mat-toolbar class="secondary-header">
+            <div fxLayout="row" fxLayoutAlign="center center">
+                <button mat-icon-button (click)="_nav.dashboard()" class="show-on-mobile" *ngIf="!initialized"><mat-icon>arrow_back</mat-icon></button>
+                <button mat-icon-button (click)="reset()" class="show-on-mobile" *ngIf="initialized && _training.certificates && _training.certificates.length > 1"><mat-icon>arrow_back</mat-icon></button>
+                <button mat-icon-button (click)="classTrainingCertificatesSidenav?.toggle()" *ngIf="initialized" class="show-on-mobile"><mat-icon>menu</mat-icon></button>
+                <span class="truncate show-on-mobile" *ngIf="!initialized">Class. Training Certificates</span>
+                <span class="truncate show-on-mobile" *ngIf="initialized">{{section.id == 'certificate' ? cert!.id: section.name}}</span>
+                <span class="truncate show-on-desktop">Class. Training Certificates</span>
+                <span fxFlex></span>
+                <button mat-icon-button 
+                        matTooltip="Clear Training Certificates"
+                        (click)="reset()"
+                        class="show-on-desktop"
+                        *ngIf="initialized"><mat-icon>close</mat-icon></button>
+            </div>
+        </mat-toolbar>
+
+
+
+        <!-- Uninitialized Content -->
+        <div *ngIf="!initialized" class="fadeIn">
+            <div fxLayout="row" fxLayoutAlign="center center" class="file-init-container">
+                <!-- Button -->
+                <label for="certificatesFile" class="file-label" role="button" matRipple *ngIf="!initializing">
+                    <div fxLayout="row" fxLayoutAlign="start center" matRipple role="button" tabindex="0">
+                        <mat-icon svgIcon="file_signature"></mat-icon>&nbsp;
+                        <p>Select Certificates</p>
+                    </div>
+                </label>
+
+                <!-- Input -->
+                <form [formGroup]="fileInputForm">
+                    <input id="certificatesFile" type="file" accept="application/json" 
+                            formControlName="fileInput" (change)="fileChanged($event)" multiple/>
+                </form>
+
+                <!-- Initializing Loader-->
+                <h3 *ngIf="initializing" class="fadeIn">Initializing...</h3>
+            </div>
+        </div>
+
+
+
+        <!-- Initialized Content -->
+        <div *ngIf="initialized" class="fadeIn">
+            <div fxLayout="row">
+                <div *ngIf="layout == 'desktop'" class="desktop-sidenav">
+                    <mat-list>
+                        <div mat-subheader>General</div>
+                        <mat-list-item *ngFor="let sect of generalSections">
+                            <button mat-button class="left-icon-button" [disabled]="section.id == sect.id" (click)="navigate(sect.id)">
+                                <mat-icon>{{sect.icon}}</mat-icon> {{sect.name}}
+                            </button>
+                        </mat-list-item>
+                        <div mat-subheader>Certificates</div>
+                        <mat-list-item *ngFor="let certificate of _training.certificates; index as certIndex">
+                            <button mat-button class="left-icon-button truncate" 
+                                    [disabled]="section.id == 'certificate' && cert && certificate.id == cert.id" 
+                                    (click)="navigate('certificate', certIndex)">
+                                    <div fxLayout="row" fxLayoutAlign="start center">
+                                        <span class="truncate">{{certificate.id}}</span>
+                                        <span fxFlex></span>
+                                        <div class="square-badge-success"><span>{{certificate.test_evaluation[1] | percent}}</span></div>
+                                    </div>
+                            </button>
+                        </mat-list-item>
+                    </mat-list>
+                </div>
+                <div fxFlex>
+                    <!-- General Sections -->
+                    <div class="general-sections" *ngIf="section.id != 'certificate' && evaluations && epochs">
+                        <!-- Evaluations-->
+                        <div *ngIf="section.id == 'evaluations'" class="fadeIn">
+                            <div fxLayout="row" fxLayoutAlign="center center">
+                                <div fxFlex="60" fxFlex.xs="100" fxFlex.sm="100">
+                                    <div class="desktop-card">
+                                        <div class="show-on-desktop" fxLayout="row" fxLayoutAlign="start center">
+                                            <h3>Evaluations</h3>
+                                            <span fxFlex></span>
+                                            <div class="square-badge-success clickable" role="button"
+                                                (click)="navigate('certificate', 0)"
+                                                matTooltip="Highest Accuracy: {{_training.certificates[0].id}}">
+                                                Highest: {{_training.certificates[0].test_evaluation[1] | percent}}
+                                            </div>
+                                        </div>
+                                        <apx-chart
+                                            [series]="evaluations.series"
+                                            [chart]="evaluations.chart"
+                                            [plotOptions]="evaluations.plotOptions"
+                                            [xaxis]="evaluations.xaxis"
+                                            [yaxis]="evaluations.yaxis"
+                                            [dataLabels]="evaluations.dataLabels"
+                                            [colors]="evaluations.colors"
+                                            [grid]="evaluations.grid"
+                                        ></apx-chart>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Epochs-->
+                        <div *ngIf="section.id == 'epochs'" class="fadeIn">
+                            <div fxLayout="row" fxLayoutAlign="center center">
+                                <div fxFlex="60" fxFlex.xs="100" fxFlex.sm="100">
+                                    <div class="desktop-card">
+                                        <h3 class="show-on-desktop">Epochs</h3>
+                                        <apx-chart
+                                            [series]="epochs.series"
+                                            [chart]="epochs.chart"
+                                            [plotOptions]="epochs.plotOptions"
+                                            [xaxis]="epochs.xaxis"
+                                            [yaxis]="epochs.yaxis"
+                                            [dataLabels]="epochs.dataLabels"
+                                            [colors]="epochs.colors"
+                                            [grid]="epochs.grid"
+                                        ></apx-chart>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <!-- Certificate Section -->
+                    <div class="certificate-section" *ngIf="section.id == 'certificate' && cert && evaluation && loss && accuracy">
+                        <!-- Tabs Navigation-->
+                        <mat-tab-group *ngIf="layout == 'mobile'" 
+                                    [selectedIndex]="activeTabIndex" (selectedIndexChange)="activeTabIndex = $event"
+                                    class="mat-elevation-z3" mat-stretch-tabs mat-align-tabs="center" backgroundColor="primary">
+                            <mat-tab label="Summary"></mat-tab>
+                            <mat-tab label="Epochs"></mat-tab>
+                        </mat-tab-group>
+                        <mat-tab-group *ngIf="layout == 'desktop'"  
+                                        [selectedIndex]="activeTabIndex" (selectedIndexChange)="activeTabIndex = $event" 
+                                        mat-align-tabs="center">
+                            <mat-tab label="Summary"></mat-tab>
+                            <mat-tab label="Epochs"></mat-tab>
+                        </mat-tab-group>
+
+                        <!-- Loader -->
+                        <div *ngIf="!loaded" class="loader">
+                            <div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div>
+                        </div>
+
+                        <!-- Sections -->
+                        <div *ngIf="loaded" class="fadeIn">
+                            <!-- Summary -->
+                            <div *ngIf="activeTabIndex == 0" class="summary-content">
+                                <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column">
+                                    <!-- Informational Cards-->
+                                    <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                                        <!-- Training Certificate -->
+                                        <div class="desktop-card">
+                                            <div fxLayout="row" fxLayoutAlign="start center">
+                                                <h3>Training Certificate</h3>
+                                                <span fxFlex></span>
+                                                <div class="square-badge" 
+                                                    matTooltip="The number of epochs the training process went through before being stopped by the EarlyStopping Callback.">
+                                                    Epochs: {{cert.training_history.loss.length}}
+                                                </div>
+                                            </div>
+
+                                            <p class="ts-m margin-top">{{cert.description}}</p>
+
+                                            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutAlign.xs="center center" fxLayoutAlign.sm="center center" class="margin-top">
+                                                <p class="light-text show-on-desktop">Class.</p>
+                                                <span fxFlex class="show-on-desktop"></span>
+                                                <div fxLayout="row" fxLayoutAlign="start center">
+                                                    <p class="formula clickable" role="button" 
+                                                        (click)="_nav.displayModelListDialog(cert.classification_config.models)"
+                                                        matTooltip="Features: The list of ArimaModel|RegressionModel that comprise the Classification.">
+                                                        [{{cert.classification_config.models.length}}] ->
+                                                    </p>
+                                                    <p class="formula clickable" role="button" 
+                                                        matTooltip="KerasClassificationModel" 
+                                                        (click)="_nav.displayKerasModelDialog(cert.classification_config.id, cert.classification_config.description, cert.classification_config.summary)">
+                                                        &nbsp;{{cert.classification_config.id}}
+                                                    </p>
+                                                    <p class="formula" 
+                                                        matTooltip="Labels: The probabilities for an up or down price action to take place.">
+                                                        &nbsp;-> [2]
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+                                                <p class="light-text">Start</p>
+                                                <span fxFlex></span>
+                                                <p matTooltip="The time when the model started training.">{{cert.training_start | date:'medium'}}</p>
+                                            </div>
+
+                                            <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+                                                <p class="light-text">End</p>
+                                                <span fxFlex></span>
+                                                <p matTooltip="The time when the model finished training.">{{cert.training_end | date:'medium'}}</p>
+                                            </div>
+
+                                            <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+                                                <p class="light-text truncate">Optimizer</p>
+                                                <span fxFlex></span>
+                                                <p matTooltip="Optimizer(learning_rate)">{{cert.optimizer}}({{cert.learning_rate}})</p>
+                                            </div>
+
+                                            <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+                                                <p class="light-text">Loss</p>
+                                                <span fxFlex></span>
+                                                <p>{{cert.loss}}</p>
+                                            </div>
+
+                                            <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+                                                <p class="light-text">Metric</p>
+                                                <span fxFlex></span>
+                                                <p>{{cert.metric}}</p>
+                                            </div>
+
+                                            <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+                                                <p class="light-text">Shuffle Data</p>
+                                                <span fxFlex></span>
+                                                <p [ngClass]="{'success-color': cert.shuffle_data, 'light-text': !cert.shuffle_data}">
+                                                    {{cert.shuffle_data ? 'Enabled': 'Disabled'}}
+                                                </p>
+                                            </div>
+
+                                            <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+                                                <p class="light-text">K. Model Config</p>
+                                                <span fxFlex></span>
+                                                <p class="clickable" role="button" 
+                                                    matTooltip="Configuration used to build the Keras Classification Model"
+                                                    (click)="_nav.displayDataDialog('Keras Model Configuration', cert.keras_model_config)">
+                                                    {{cert.keras_model_config.name}}
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div class="divider show-on-mobile"></div>
+
+                                        <!-- Training Data -->
+                                        <div class="desktop-card">
+                                            <h3>Training Data</h3>
+
+                                            <p class="ts-m margin-top">{{cert.training_data_summary.description}}</p>
+
+                                            <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+                                                <p class="light-text">ID</p>
+                                                <span fxFlex></span>
+                                                <p class="clickable" role="button" 
+                                                    (click)="_clipboard.copy(cert.training_data_summary.id)">
+                                                    {{cert.training_data_summary.id | stringOverview: 8}}
+                                                </p>
+                                            </div>
+
+                                            <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+                                                <p class="light-text">Start</p>
+                                                <span fxFlex></span>
+                                                <p>{{cert.training_data_summary.start | date:'medium'}}</p>
+                                            </div>
+
+                                            <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+                                                <p class="light-text">End</p>
+                                                <span fxFlex></span>
+                                                <p>{{cert.training_data_summary.end | date:'medium'}}</p>
+                                            </div>
+
+                                            <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+                                                <p class="light-text">Train Size</p>
+                                                <span fxFlex></span>
+                                                <p>{{cert.training_data_summary.train_size}}</p>
+                                            </div>
+
+                                            <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+                                                <p class="light-text">Test Size</p>
+                                                <span fxFlex></span>
+                                                <p>{{cert.training_data_summary.test_size}}</p>
+                                            </div>
+
+                                            <!-- Up & Down Percent Changes-->
+                                            <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+                                                <p class="light-text truncate">Price Actions</p>
+                                                <span fxFlex></span>
+                                                <p class="success-color" matTooltip="Up Percent Change">
+                                                    {{cert.training_data_summary.up_percent_change}}%
+                                                </p>
+                                                <p>&nbsp;/&nbsp;</p>
+                                                <p class="error-color" matTooltip="Down Percent Change">
+                                                    {{cert.training_data_summary.down_percent_change}}%
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <span fxFlex></span>
+                                    <div class="divider show-on-mobile"></div>
+
+                                    <!-- Training Charts -->
+                                    <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                                        <!-- Evaluation -->
+                                        <div class="desktop-card">
+                                            <div fxLayout="row" fxLayoutAlign="start center"s>
+                                                <h3>Evaluation</h3>
+                                                <span fxFlex></span>
+                                                <div class="square-badge-success">Accuracy: {{cert.test_evaluation[1] | percent}}</div>
+                                            </div>
+
+                                            <apx-chart
+                                                [series]="evaluation.series"
+                                                [chart]="evaluation.chart"
+                                                [plotOptions]="evaluation.plotOptions"
+                                                [xaxis]="evaluation.xaxis"
+                                                [yaxis]="evaluation.yaxis"
+                                                [dataLabels]="evaluation.dataLabels"
+                                                [colors]="evaluation.colors"
+                                                [grid]="evaluation.grid"
+                                            ></apx-chart>
+                                        </div>
+
+                                        <!-- Loss -->
+                                        <div class="desktop-card">
+                                            <h3 class="truncate">Training & Validation Loss</h3>
+                                            <apx-chart
+                                                [series]="loss.series"
+                                                [chart]="loss.chart"
+                                                [xaxis]="loss.xaxis"
+                                                [dataLabels]="loss.dataLabels"
+                                                [grid]="loss.grid"
+                                                [stroke]="loss.stroke"
+                                                [yaxis]="loss.yaxis"
+                                            ></apx-chart>
+                                        </div>
+
+                                        <!-- Accuracy -->
+                                        <div class="desktop-card">
+                                            <h3 class="truncate">Training & Validation Accuracy</h3>
+                                            <apx-chart
+                                                [series]="accuracy.series"
+                                                [chart]="accuracy.chart"
+                                                [xaxis]="accuracy.xaxis"
+                                                [dataLabels]="accuracy.dataLabels"
+                                                [grid]="accuracy.grid"
+                                                [stroke]="accuracy.stroke"
+                                                [yaxis]="accuracy.yaxis"
+                                            ></apx-chart>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Epochs -->
+                            <div *ngIf="activeTabIndex == 1" class="epochs-content">
+                                <div fxLayout="row" fxLayoutAlign="center center">
+                                    <div fxFlex fxFlex.xs="100" fxFlex.sm="100">
+                                        <!-- Table -->
+                                        <div class="data-container" [ngClass]="{'mat-elevation-z3' : layout == 'desktop'}">
+                                            <table class="highlight bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Epoch</th>
+                                                        <th>Loss</th>
+                                                        <th>Cat. Accuracy</th>
+                                                        <th>Val. Loss</th>
+                                                        <th>Val. Cat. Accuracy</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let row of cert.training_history.loss; index as rowIndex" 
+                                                        class="clickable" role="button"
+                                                        (click)="_nav.displayDataDialog('epoch_' + (rowIndex+1), 
+                                                        {   loss: cert.training_history.loss[rowIndex], 
+                                                            categorical_accuracy: cert.training_history.categorical_accuracy![rowIndex],
+                                                            val_loss: cert.training_history.val_loss![rowIndex],
+                                                            val_categorical_accuracy: cert.training_history.val_categorical_accuracy![rowIndex]
+                                                        })">
+                                                        <td><p class="light-text">{{rowIndex+1}}</p></td>
+                                                        <td><p>{{cert.training_history.loss[rowIndex]}}</p></td>
+                                                        <td><p>{{cert.training_history.categorical_accuracy![rowIndex]}}</p></td>
+                                                        <td><p>{{cert.training_history.val_loss[rowIndex]}}</p></td>
+                                                        <td><p>{{cert.training_history.val_categorical_accuracy![rowIndex]}}</p></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </mat-drawer-content>
+</mat-drawer-container>

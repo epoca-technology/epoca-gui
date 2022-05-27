@@ -71,10 +71,9 @@
 
                         <!-- ID -->
                         <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
-                            <p class="light-text show-on-desktop truncate">ID</p>
-                            <span fxFlex class="show-on-desktop"></span>
-                            <p class="ts-s">{{_td.id}}</p>
-                            <mat-icon class="clickable" (click)="_clipboard.copy(_td.id)">content_copy</mat-icon>
+                            <p class="light-text truncate">ID</p>
+                            <span fxFlex></span>
+                            <p class="clickable" (click)="_clipboard.copy(_td.id)">{{_td.id | stringOverview: 10}}</p>
                         </div>
 
                         <!-- Creation -->
@@ -120,29 +119,29 @@
                             <span fxFlex></span>
                             <p matTooltip="Rows, Columns">({{_td.training_data.rows.length}}, {{_td.training_data.columns.length}})</p>
                         </div>
+
+                        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutAlign.xs="center center" fxLayoutAlign.sm="center center" class="margin-top">
+                            <p class="light-text show-on-desktop">Class.</p>
+                            <span fxFlex class="show-on-desktop"></span>
+                            <div fxLayout="row" fxLayoutAlign="start center">
+                                <p class="formula clickable" role="button" 
+                                    (click)="_nav.displayModelListDialog(_td.modelList)"
+                                    matTooltip="Features: The list of ArimaModel|RegressionModel that comprise the Classification.">
+                                    [{{_td.modelList.length}}] ->
+                                </p>
+                                <p class="formula">
+                                    &nbsp;KerasClassificationModel
+                                </p>
+                                <p class="formula" 
+                                    matTooltip="Labels: The probabilities for an up or down price action to take place.">
+                                    &nbsp;-> [2]
+                                </p>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="divider show-on-mobile"></div>
 
-                    <!-- Models -->
-                    <div class="desktop-card">
-                        <h3>Models</h3>
-                        <div *ngFor="let id of _td.modelIDs; index as modelIndex; last as lastModel">
-                            <h4>{{modelIndex+1}}) {{_td.modelTypeNames[id]}}</h4>
-                            <div class="margin-top">
-                                <app-model-content [model]="_td.models[id]"></app-model-content>
-                            </div>
-                            <div *ngIf="!lastModel" class="divider"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <span fxFlex></span>
-
-                <div class="divider show-on-mobile"></div>
-
-                <!-- Chart Cards-->
-                <div fxFlex="45" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
                     <!-- Price Actions -->
                     <div class="desktop-card">
                         <h3>Price Actions</h3>
@@ -156,10 +155,14 @@
                             ></apx-chart>
                         </div>
                     </div>
+                </div>
 
-                    <div class="divider show-on-mobile"></div>
+                <span fxFlex></span>
 
-                    <!-- Predictions -->
+                <div class="divider show-on-mobile"></div>
+
+                <!-- Predictions Chart Card-->
+                <div fxFlex="45" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
                     <div class="desktop-card">
                         <h3>Predictions</h3>
                         <apx-chart

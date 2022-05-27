@@ -42,7 +42,14 @@ export interface IKerasModelConfig {
      * instance is initialized.
      * Also keep in mind that this property only exists Regressions.
      */
-     predictions?: number
+     predictions?: number,
+
+     /**
+      * Number of features used for the input layer of a Classification Network. This value is 
+      * not set in the ClassificationTraining.json file. Instead, it is populated once the 
+      * ClassificationTraining instance is initialized.
+      */
+    features_num?: number,
 }
 
 
@@ -100,6 +107,9 @@ export interface IKerasModelOptimizerConfig {
     beta_2?: string,
     epsilon?: string,
     amsgrad?: string,
+    rho?: string,
+    momentum?: string,
+    centered?: string,
 }
 
 
@@ -112,7 +122,10 @@ export interface IKerasModelOptimizerConfig {
  */
 export interface IKerasModelLossConfig {
     name: string,
-    reduction?: string
+    reduction?: string,
+    from_logits?: string,
+    label_smoothing?: string,
+    axis?: string,
 }
 
 

@@ -17,7 +17,27 @@ import { IKerasModelConfig, IKerasModelSummary, IKerasModelTrainingHistory } fro
 * Classification Configuration
 * The configuration that was used to train and will predict based on.
 */
-// @TODO
+export interface IClassificationConfig {
+    // The identifier of the model
+    id: string,
+
+    // Important information regarding the trained model
+    description: string,
+
+    // The identifier of the training data used
+    training_data_id: string,
+
+    // The list of ArimaModel|RegressionModel attached to the classification
+    models: IModel[]
+
+    // The summary of the KerasModel
+    summary: IKerasModelSummary
+}
+
+
+
+
+
 
 
 
@@ -158,3 +178,134 @@ export interface ITrainingDataFile {
 /* Classification Training */
 
 
+
+
+
+/**
+ * Classification Training Configuration
+ * The configuration that will be used to initialize, train and save the models.
+ */
+export interface IClassificationTrainingConfig {
+    // The ID of the model. Must be descriptive, compatible with filesystems and preffixed with 'C_'
+    id: string,
+
+    // Any relevant data that should be attached to the trained model.
+    description: string,
+
+    // The learning rate to be used by the optimizer
+    learning_rate: number,
+
+    // The optimizer to be used.
+    optimizer: string, // 'adam'|'rmsprop'
+
+    // The loss function to be used
+    loss: string, // 'categorical_crossentropy'|'?'
+
+    // The metric to be used for meassuring the val_loss
+    metric: string, // 'categorical_accuracy'|'?'
+
+    // Train Data Shuffling
+    shuffle_data: boolean,
+
+    // Keras Model Configuration
+    keras_model: IKerasModelConfig
+}
+
+
+
+
+
+
+
+/**
+ * Classification Training Batch
+ * Keras Models and created and evaluated in batches. Moreover, multiple batches can be combined
+ * in the GUI
+ */
+export interface IClassificationTrainingBatch {
+    // Descriptive name to easily identify the batch. Must be compatible with filesystems.
+    name: string,
+
+    // ID of the Classification Training Data that will be used to train all the models.
+    training_data_id: string,
+
+    // The configurations for the models that will be trained within the batch.
+    models: IClassificationTrainingConfig[]
+}
+
+
+
+
+
+
+
+/**
+ * Training Data Summary
+ * In order to simplify interactions with the IClassificationTrainingCertificate, the training
+ * data is summarized in a dictionary.
+ */
+export interface ITrainingDataSummary {
+    // Identifier
+    id: string,
+    description: string,
+
+    // Date Range
+    start: number,    // Open Time of the first prediction candlestick
+    end: number,      // Close Time of the last prediction candlestick
+
+    // Dataset Sizes
+    train_size: number,     // Number of rows in the train dataset
+    test_size: number,      // Number of rows in the test dataset
+
+    // Percentages that determine if the price moved up or down
+    up_percent_change: number,
+    down_percent_change: number
+}
+
+
+
+
+
+
+/**
+ * Classification Training Certificate
+ * Once the training, saving and evaluation completes, a certificate containing all the
+ * data is saved and issued for batching.
+ */
+export interface IClassificationTrainingCertificate {
+    /* Identification */
+    id: string,
+    description: string,
+
+
+    /* Training Data */
+    training_data_summary: ITrainingDataSummary,
+
+
+
+    /* Training Configuration */
+    learning_rate: number,
+    optimizer: string,
+    loss: string,
+    metric: string,
+    shuffle_data: boolean,
+    keras_model_config: IKerasModelConfig,
+
+
+
+
+    /* Training */
+
+    // Date Range
+    training_start: number,     // Time in which the training started
+    training_end: number,       // Time in which the training ended
+
+    // Training performance by epoch
+    training_history: IKerasModelTrainingHistory,
+
+    // Result of the evaluation of the test dataset
+    test_evaluation: [number, number], // [loss, metric]
+
+    // The configuration of the Classification
+    classification_config: IClassificationConfig
+}

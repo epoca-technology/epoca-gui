@@ -1,0 +1,57 @@
+
+.component-container {
+
+
+    .desktop-sidenav {
+        width: 300px;
+        button {text-align: left;width: 100%;}
+    }
+
+
+    .general-sections {
+        padding:15px;
+        h3 {margin:0;}
+    }
+
+
+    .certificate-section {
+        h3 {margin: 0}
+        p {margin:0}
+        .margin-top { margin-top:20px!important;}
+        .summary-content {
+            padding:15px;
+        }
+
+
+        .epochs-content {
+            padding:15px;
+            .data-container {
+                max-width:100%;
+                overflow-x:auto;
+                margin-top:20px;
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+/* Responsiveness */
+
+
+/* mobile: sm & xs */
+@media only screen and (max-width: 959px) {
+    .epochs-content{ padding:0!important;}
+    .data-container { margin-top:0!important;}
+}
+
+
+
+/* desktop: md */
+@media only screen and (min-width: 960px) {
+    
+}

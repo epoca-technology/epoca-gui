@@ -4,19 +4,21 @@ import {
 	ITrainingDataPredictionInsights, 
 	ITrainingDataPriceActionsInsight, 
 	PredictionService,
-	ICompressedTrainingData
+	ICompressedTrainingData,
+	IModel
 } from '../../prediction';
 import { FileService } from '../../file';
 import { IModels, IModelTypeNames } from '../backtest'
-import { IClassificationTrainingService, IDecompressedTrainingData } from './interfaces';
+import { IClassificationTrainingDataService } from './interfaces';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ClassificationTrainingDataService implements IClassificationTrainingService {
+export class ClassificationTrainingDataService implements IClassificationTrainingDataService {
 	// Global Helpers
 	public modelIDs!: string[];
 	public models!: IModels;
+	public modelList!: IModel[];
 	public modelTypeNames!: IModelTypeNames;
 
     // Universally Unique Identifier (uuid4)
@@ -61,11 +63,12 @@ export class ClassificationTrainingDataService implements IClassificationTrainin
 
 
 	/**
-	 * Initializes the Training Data based on an input file change.
+	 * Initializes the Training Data based on an input file change or
+	 * an ID that is stored in the db.
 	 * @param event 
 	 * @returns Promise<void>
 	 */
-	public async init(event: any): Promise<void> {
+	public async init(event: any|string): Promise<void> {
 		// Retrieve the training data file
 		const file: ITrainingDataFile = await this.getFile(event);
 
@@ -84,6 +87,7 @@ export class ClassificationTrainingDataService implements IClassificationTrainin
 		// Populate the general helpers
 		this.modelIDs = [];
 		this.models = {};
+		this.modelList = file.models;
 		this.modelTypeNames = {};
 		for (let m of file.models) {
 			this.modelIDs.push(m.id);
@@ -103,65 +107,31 @@ export class ClassificationTrainingDataService implements IClassificationTrainin
 
 
 	/**
-	 * Reads the json file, extracts the Training Data and validates it.
+	 * If the provided event is a string, it will download the training data file
+	 * from the Database. Otherwise, it reads the json file, extracts the 
+	 * Training Data and validates it.
 	 * An error is thrown if the validations dont pass.
 	 * @param event 
 	 * @returns Promise<ITrainingDataFile>
 	 */
-	 private async getFile(event: any): Promise<ITrainingDataFile> {
-		// Retrieve the training data file
-		const files: ITrainingDataFile[] = await this._file.readJSONFiles(event);
-
-		// Make sure the file is valid
-		this.validateTrainingDataFile(files[0])
-
-		// Return the first (only) item of the list
-		return files[0];
-	}
-
-
-
-
-
-
-
-	/**
-	 * Given a compressed training data object, it will iterate over each column
-	 * and row converting the data into a record list.
-	 * @param data 
-	 * @returns IDecompressedTrainingData[]
-	 */
-	private decompressTrainingData(data: ICompressedTrainingData): IDecompressedTrainingData[] {
-		// Init the records
-		let records: IDecompressedTrainingData[] = [];
-
-		// Iterate over the rows
-		for (let r = 0; r < data.rows.length; r++) {
-			// Init the record
-			let record: IDecompressedTrainingData = {};
-
-			// Iterate over the columns and build the record
-			for (let c = 0; c < data.columns.length; c++) { record[data.columns[c]] = data.rows[r][c] }
-
-			// Append the record to the list
-			records.push(record);
+	 private async getFile(event: any|string): Promise<ITrainingDataFile> {
+		// If it is a string, retrieve the file from the db
+		if (typeof event == "string") {
+			throw new Error("Training Data Init from db not implemented yet.")
 		}
 
-		// Return the final build
-		return records;
+		// Extract the data from a JSON File
+		else {
+			// Retrieve the training data file
+			const files: ITrainingDataFile[] = await this._file.readJSONFiles(event);
+
+			// Make sure the file is valid
+			this.validateTrainingDataFile(files[0])
+
+			// Return the first (only) item of the list
+			return files[0];
+		}
 	}
-
-
-
-
-
-
-
-
-
-
-
-	/* Misc Helpers */
 
 
 
@@ -198,6 +168,4 @@ export class ClassificationTrainingDataService implements IClassificationTrainin
 		if (!file.predictions_insight || typeof file.predictions_insight != "object") throw new Error("The provided predictions_insight is not an object.")
 		if (!file.training_data || typeof file.training_data != "object") throw new Error("The provided training_data is not an object.")
 	}
-
-
 }

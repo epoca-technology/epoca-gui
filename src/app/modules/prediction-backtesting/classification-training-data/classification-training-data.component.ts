@@ -125,12 +125,13 @@ export class ClassificationTrainingDataComponent implements OnInit, OnDestroy, I
 
 			// Mark the backtest as initialized
 			this.initialized = true;
-			this.initializing = false;
 		} catch (e) {
-			this.initializing = false;
 			this.fileInput.setValue('');
 			this._snackbar.error(e)
 		}
+
+		// Update Initializing State
+		this.initializing = false;
 	}
 
 
@@ -148,7 +149,7 @@ export class ClassificationTrainingDataComponent implements OnInit, OnDestroy, I
 		this.priceActions = this._chart.getPieChartOptions({
 			series: [this._td.price_actions_insight.up, this._td.price_actions_insight.down],
 			colors: [this._chart.upwardColor, this._chart.downwardColor]
-		}, ["Up", "Down"], 350);
+		}, ["Up", "Down"], 270);
 
 
 		/* Init Positions Chart */
@@ -168,8 +169,7 @@ export class ClassificationTrainingDataComponent implements OnInit, OnDestroy, I
 		this.predictions = this._chart.getBarChartOptions(
 			{
 				series: series, 
-				colors: [this._chart.upwardColor, this._chart.downwardColor, '#BDBDBD'],
-				yaxis: {labels: {show: false}}
+				colors: [this._chart.upwardColor, this._chart.downwardColor, '#BDBDBD']
 			}, 
 			this._td.modelIDs, 
 			this.getPositionChartHeight()

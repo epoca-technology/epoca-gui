@@ -57,9 +57,10 @@ import { DisableControlDirective } from './directives/disable-control/disable-co
 
 
 // Pipes
+import { FilesizePipe } from './pipes/filesize/filesize.pipe';
 import { FilterPipe } from './pipes/filter/filter.pipe';
 import { SecondToFormatPipe } from './pipes/second-to-format/second-to-format.pipe';
-import { FilesizePipe } from './pipes/filesize/filesize.pipe';
+import { StringOverviewPipe } from './pipes/string-overview/string-overview.pipe';
 
 
 
@@ -73,6 +74,7 @@ import { DataDialogComponent } from './components/data-dialog/data-dialog.compon
 import { DialogMenuComponent } from './components/dialog-menu/dialog-menu.component';
 import { MobileTabsComponent } from './components/mobile-tabs/mobile-tabs.component';
 import { ModelDialogComponent } from './components/prediction/model-dialog/model-dialog.component';
+import { ModelListDialogComponent } from './components/prediction/model-list-dialog/model-list-dialog.component';
 import { ModelContentComponent } from './components/prediction/model-content/model-content.component';
 import { PredictionDialogComponent } from './components/prediction/prediction-dialog/prediction-dialog.component';
 import { KerasModelDialogComponent } from './components/prediction/keras-model-dialog/keras-model-dialog.component';
@@ -89,9 +91,10 @@ import { RefreshButtonComponent } from './components/refresh-button/refresh-butt
 		DisableControlDirective,
 		
 		// Pipes
+        FilesizePipe,
 		FilterPipe,
 		SecondToFormatPipe,
-        FilesizePipe,
+		StringOverviewPipe,
 
 		// Shared Components
 		BottomSheetMenuComponent,
@@ -101,6 +104,7 @@ import { RefreshButtonComponent } from './components/refresh-button/refresh-butt
         RefreshButtonComponent,
         MobileTabsComponent,
         ModelDialogComponent,
+        ModelListDialogComponent,
         ModelContentComponent,
         PredictionDialogComponent,
         KerasModelDialogComponent,
@@ -229,9 +233,10 @@ import { RefreshButtonComponent } from './components/refresh-button/refresh-butt
 		DisableControlDirective,
 		
 		// Pipes
+        FilesizePipe,
 		FilterPipe,
 		SecondToFormatPipe,
-        FilesizePipe,
+		StringOverviewPipe,
 		
 		// Shared Components
         CandlestickBodyComponent,
