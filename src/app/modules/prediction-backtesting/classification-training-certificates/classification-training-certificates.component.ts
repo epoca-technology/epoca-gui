@@ -287,12 +287,12 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 				series: [
 					{
 						name: "loss", 
-						data: <any>this.cert!.training_history.loss.map(val => { return this._utils.outputNumber(val, {dp: 3})}), 
+						data: <any>this.cert!.training_history.loss.map(val => { return this._utils.outputNumber(val, {dp: 5})}), 
 						color: "#E57373"
 					},
 					{
 						name: "val_loss", 
-						data: this.cert!.training_history.val_loss.map(val => { return this._utils.outputNumber(val, {dp: 3})}),  
+						data: this.cert!.training_history.val_loss.map(val => { return this._utils.outputNumber(val, {dp: 5})}),  
 						color: "#B71C1C"
 					}
 				],
@@ -327,22 +327,22 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 			return {
 				accuracy: {
 					name: 'categorical_accuracy',
-					data: this.cert!.training_history.categorical_accuracy!.map(val => { return <number>this._utils.outputNumber(val, {dp: 3})})
+					data: this.cert!.training_history.categorical_accuracy!.map(val => { return <number>this._utils.outputNumber(val, {dp: 5})})
 				},
 				val_accuracy: {
 					name: 'val_categorical_accuracy',
-					data: this.cert!.training_history.val_categorical_accuracy!.map(val => { return <number>this._utils.outputNumber(val, {dp: 3})})
+					data: this.cert!.training_history.val_categorical_accuracy!.map(val => { return <number>this._utils.outputNumber(val, {dp: 5})})
 				}
 			}
 		} else {
 			return {
 				accuracy: {
 					name: 'binary_accuracy',
-					data: this.cert!.training_history.binary_accuracy!.map(val => { return <number>this._utils.outputNumber(val, {dp: 3})})
+					data: this.cert!.training_history.binary_accuracy!.map(val => { return <number>this._utils.outputNumber(val, {dp: 5})})
 				},
 				val_accuracy: {
 					name: 'val_binary_accuracy',
-					data: this.cert!.training_history.val_binary_accuracy!.map(val => { return <number>this._utils.outputNumber(val, {dp: 3})})
+					data: this.cert!.training_history.val_binary_accuracy!.map(val => { return <number>this._utils.outputNumber(val, {dp: 5})})
 				}
 			}
 		}
@@ -379,6 +379,21 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 		if (this._training.certificates.length <= 35) 		{ return 900 }
 		if (this._training.certificates.length <= 37) 		{ return 950 }
 		if (this._training.certificates.length <= 40) 		{ return 1000 }
-		else 												{ return 1250 }
+		if (this._training.certificates.length <= 43) 		{ return 1050 }
+		if (this._training.certificates.length <= 45) 		{ return 1100 }
+		if (this._training.certificates.length <= 47) 		{ return 1150 }
+		if (this._training.certificates.length <= 50) 		{ return 1200 }
+		if (this._training.certificates.length <= 53) 		{ return 1250 }
+		if (this._training.certificates.length <= 55) 		{ return 1300 }
+		if (this._training.certificates.length <= 57) 		{ return 1350 }
+		if (this._training.certificates.length <= 60) 		{ return 1400 }
+		if (this._training.certificates.length <= 63) 		{ return 1450 }
+		if (this._training.certificates.length <= 65) 		{ return 1500 }
+		if (this._training.certificates.length <= 67) 		{ return 1550 }
+		if (this._training.certificates.length <= 70) 		{ return 1600 }
+		if (this._training.certificates.length <= 75) 		{ return 1700 }
+		if (this._training.certificates.length <= 80) 		{ return 1800 }
+		if (this._training.certificates.length <= 90) 		{ return 1900 }
+		else 												{ return 2000 }
 	}
 }

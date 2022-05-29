@@ -180,7 +180,7 @@ export class AppComponent implements IAppComponent {
      private initializeFCM(): void {
         if (this._notification.fcmSupported) {
             this.fcmVisible = true;
-            setTimeout(() => { this.fcmVisible = false }, 35000);
+            setTimeout(() => { this.fcmVisible = false }, 7000);
         }
     }
 

@@ -1,26 +1,19 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { ApexAxisChartSeries } from 'ng-apexcharts';
-import * as moment from 'moment';
 import { Subscription } from 'rxjs';
-import {MatDialog} from '@angular/material/dialog';
 import { 
-	IBacktestPosition, 
 	IModel, 
-	BacktestService, 
 	PredictionService, 
 	UtilsService, 
-	ClassificationTrainingDataService, 
-	IDecompressedTrainingData
+	ClassificationTrainingDataService,
 } from '../../../core';
 import { 
 	AppService, 
 	ChartService, 
 	ClipboardService, 
 	IBarChartOptions, 
-	IChartRange, 
 	ILayout, 
-	ILineChartOptions, 
 	IPieChartOptions, 
 	NavService, 
 	SnackbarService,

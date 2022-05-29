@@ -58,8 +58,6 @@
         <!-- Summary Section -->
         <div *ngIf="activeIndex == 0" class="summary-section fadeIn">
             <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column">
-                <span fxFlex="2"></span>
-
                 <!-- Info Cards-->
                 <div fxFlex="45" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
                     <!-- General Information -->
@@ -177,8 +175,6 @@
                         ></apx-chart>
                     </div>
                 </div>
-
-                <span fxFlex="2"></span>
             </div>
         </div>
 
@@ -201,8 +197,8 @@
                                     <td *ngFor="let column_name of _td.training_data.columns; index as columnIndex">
                                         <!-- Features -->
                                         <div *ngIf="column_name != 'up' && column_name != 'down'">
-                                            <mat-icon *ngIf="row[columnIndex] == 2" class="success-color">trending_up</mat-icon>
-                                            <mat-icon *ngIf="row[columnIndex] == 1" class="error-color">trending_down</mat-icon>
+                                            <mat-icon *ngIf="row[columnIndex] == 1" class="success-color">trending_up</mat-icon>
+                                            <mat-icon *ngIf="row[columnIndex] == -1" class="error-color">trending_down</mat-icon>
                                         </div>
 
                                         <!-- Labels -->

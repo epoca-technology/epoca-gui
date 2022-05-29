@@ -12,7 +12,10 @@
             <!-- Heading -->
             <div fxLayout="row" fxLayoutAlign="start center" class="clickable" role="button" 
                 (click)="expanded[model.id] ? expanded[model.id] = false: expanded[model.id] = true">
-                <h5>{{modelIndex+1}}) {{types[model.id]}}</h5>
+                <div>
+                    <p>{{modelIndex+1}}) {{model.id}}</p>
+                    <p class="light-text">{{types[model.id]}}</p>
+                </div>
                 <span fxFlex></span>
                 <mat-icon>{{expanded[model.id] ? 'expand_less': 'expand_more'}}</mat-icon>
             </div>
