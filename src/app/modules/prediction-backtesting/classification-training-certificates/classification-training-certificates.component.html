@@ -29,7 +29,7 @@
                         <div fxLayout="row" fxLayoutAlign="start center">
                             <span class="truncate">{{certificate.id}}</span>
                             <span fxFlex></span>
-                            <div class="square-badge-success"><span>{{certificate.test_evaluation[1] | percent}}</span></div>
+                            <div class="square-badge-success"><span>{{certificate.test_evaluation[1] | percent: '1.2-2'}}</span></div>
                         </div>
                 </button>
             </mat-list-item>
@@ -102,7 +102,7 @@
                                     <div fxLayout="row" fxLayoutAlign="start center">
                                         <span class="truncate">{{certificate.id}}</span>
                                         <span fxFlex></span>
-                                        <div class="square-badge-success"><span>{{certificate.test_evaluation[1] | percent}}</span></div>
+                                        <div class="square-badge-success"><span>{{certificate.test_evaluation[1] | percent: '1.2-2'}}</span></div>
                                     </div>
                             </button>
                         </mat-list-item>
@@ -122,7 +122,7 @@
                                             <div class="square-badge-success clickable" role="button"
                                                 (click)="navigate('certificate', 0)"
                                                 matTooltip="Highest Accuracy: {{_training.certificates[0].id}}">
-                                                Highest: {{_training.certificates[0].test_evaluation[1] | percent}}
+                                                Highest: {{_training.certificates[0].test_evaluation[1] | percent: '1.2-2'}}
                                             </div>
                                         </div>
                                         <apx-chart
@@ -165,7 +165,7 @@
 
 
                     <!-- Certificate Section -->
-                    <div class="certificate-section" *ngIf="section.id == 'certificate' && cert && evaluation && loss && accuracy">
+                    <div class="certificate-section" *ngIf="section.id == 'certificate' && cert && loss && accuracy">
                         <!-- Tabs Navigation-->
                         <mat-tab-group *ngIf="layout == 'mobile'" 
                                     [selectedIndex]="activeTabIndex" (selectedIndexChange)="activeTabIndex = $event"
@@ -191,16 +191,18 @@
                             <div *ngIf="activeTabIndex == 0" class="summary-content">
                                 <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column">
                                     <!-- Informational Cards-->
-                                    <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                                    <div fxFlex="44" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
                                         <!-- Training Certificate -->
                                         <div class="desktop-card">
-                                            <div fxLayout="row" fxLayoutAlign="start center">
-                                                <h3>Training Certificate</h3>
+                                            <div class="certificate-header" fxLayout="row" fxLayoutAlign="start center">
+                                                <h3 class="truncate">Training Certificate</h3>
                                                 <span fxFlex></span>
                                                 <div class="square-badge" 
                                                     matTooltip="The number of epochs the training process went through before being stopped by the EarlyStopping Callback.">
-                                                    Epochs: {{cert.training_history.loss.length}}
+                                                    {{cert.training_history.loss.length}}
                                                 </div>
+                                                <div class="square-badge-error" matTooltip="Evaluation Loss">{{cert.test_evaluation[0] | percent: '1.2-2'}}</div>
+                                                <div class="square-badge-success" matTooltip="Evaluation Accuracy">{{cert.test_evaluation[1] | percent: '1.2-2'}}</div>
                                             </div>
 
                                             <p class="ts-m margin-top">{{cert.description}}</p>
@@ -254,14 +256,6 @@
                                                 <p class="light-text">Metric</p>
                                                 <span fxFlex></span>
                                                 <p>{{cert.metric}}</p>
-                                            </div>
-
-                                            <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
-                                                <p class="light-text">Shuffle Data</p>
-                                                <span fxFlex></span>
-                                                <p [ngClass]="{'success-color': cert.shuffle_data, 'light-text': !cert.shuffle_data}">
-                                                    {{cert.shuffle_data ? 'Enabled': 'Disabled'}}
-                                                </p>
                                             </div>
 
                                             <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
@@ -335,30 +329,20 @@
                                     <div class="divider show-on-mobile"></div>
 
                                     <!-- Training Charts -->
-                                    <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
-                                        <!-- Evaluation -->
-                                        <div class="desktop-card">
-                                            <div fxLayout="row" fxLayoutAlign="start center"s>
-                                                <h3>Evaluation</h3>
-                                                <span fxFlex></span>
-                                                <div class="square-badge-success">Accuracy: {{cert.test_evaluation[1] | percent}}</div>
-                                            </div>
-
-                                            <apx-chart
-                                                [series]="evaluation.series"
-                                                [chart]="evaluation.chart"
-                                                [plotOptions]="evaluation.plotOptions"
-                                                [xaxis]="evaluation.xaxis"
-                                                [yaxis]="evaluation.yaxis"
-                                                [dataLabels]="evaluation.dataLabels"
-                                                [colors]="evaluation.colors"
-                                                [grid]="evaluation.grid"
-                                            ></apx-chart>
-                                        </div>
+                                    <div fxFlex="54" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
 
                                         <!-- Loss -->
                                         <div class="desktop-card">
-                                            <h3 class="truncate">Training & Validation Loss</h3>
+                                            <div class="loss-header" fxLayout="row" fxLayoutAlign="start center">
+                                                <h3 class="truncate">Training & Validation Loss</h3>
+                                                <span fxFlex></span>
+                                                <div class="square-badge loss" matTooltip="Final Train Loss">
+                                                    {{cert.training_history.loss[cert.training_history.loss.length - 1] | percent: '1.2-2'}}
+                                                </div>
+                                                <div class="square-badge val-loss" matTooltip="Final Validation Loss">
+                                                    {{cert.training_history.val_loss[cert.training_history.val_loss.length - 1] | percent: '1.2-2'}}
+                                                </div>
+                                            </div>
                                             <apx-chart
                                                 [series]="loss.series"
                                                 [chart]="loss.chart"
@@ -372,7 +356,22 @@
 
                                         <!-- Accuracy -->
                                         <div class="desktop-card">
-                                            <h3 class="truncate">Training & Validation Accuracy</h3>
+                                            <div class="accuracy-header" fxLayout="row" fxLayoutAlign="start center">
+                                                <h3 class="truncate">Training & Validation Accuracy</h3>
+                                                <span fxFlex></span>
+                                                <div *ngIf="cert.training_history.categorical_accuracy" class="square-badge accuracy" matTooltip="Final Train Accuracy">
+                                                    {{cert.training_history.categorical_accuracy[cert.training_history.categorical_accuracy.length - 1] | percent: '1.2-2'}}
+                                                </div>
+                                                <div *ngIf="cert.training_history.binary_accuracy" class="square-badge accuracy" matTooltip="Final Train Accuracy">
+                                                    {{cert.training_history.binary_accuracy[cert.training_history.binary_accuracy.length - 1] | percent: '1.2-2'}}
+                                                </div>
+                                                <div *ngIf="cert.training_history.val_categorical_accuracy" class="square-badge val-accuracy" matTooltip="Final Validation Accuracy">
+                                                    {{cert.training_history.val_categorical_accuracy[cert.training_history.val_categorical_accuracy.length - 1] | percent: '1.2-2'}}
+                                                </div>
+                                                <div *ngIf="cert.training_history.val_binary_accuracy" class="square-badge val-accuracy" matTooltip="Final Validation Accuracy">
+                                                    {{cert.training_history.val_binary_accuracy[cert.training_history.val_binary_accuracy.length - 1] | percent: '1.2-2'}}
+                                                </div>
+                                            </div>
                                             <apx-chart
                                                 [series]="accuracy.series"
                                                 [chart]="accuracy.chart"
@@ -396,27 +395,34 @@
                                             <table class="highlight bordered">
                                                 <thead>
                                                     <tr>
-                                                        <th>Epoch</th>
-                                                        <th>Loss</th>
-                                                        <th>Cat. Accuracy</th>
-                                                        <th>Val. Loss</th>
-                                                        <th>Val. Cat. Accuracy</th>
+                                                        <th></th>
+                                                        <th>loss</th>
+                                                        <th>{{cert.training_history.categorical_accuracy ? 'categorical_accuracy': 'binary_accuracy'}}</th>
+                                                        <th>val_loss</th>
+                                                        <th>{{cert.training_history.categorical_accuracy ? 'val_categorical_accuracy': 'val_binary_accuracy'}}</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr *ngFor="let row of cert.training_history.loss; index as rowIndex" 
-                                                        class="clickable" role="button"
-                                                        (click)="_nav.displayDataDialog('epoch_' + (rowIndex+1), 
-                                                        {   loss: cert.training_history.loss[rowIndex], 
-                                                            categorical_accuracy: cert.training_history.categorical_accuracy![rowIndex],
-                                                            val_loss: cert.training_history.val_loss![rowIndex],
-                                                            val_categorical_accuracy: cert.training_history.val_categorical_accuracy![rowIndex]
-                                                        })">
+                                                    <tr *ngFor="let row of cert.training_history.loss; index as rowIndex">
                                                         <td><p class="light-text">{{rowIndex+1}}</p></td>
                                                         <td><p>{{cert.training_history.loss[rowIndex]}}</p></td>
-                                                        <td><p>{{cert.training_history.categorical_accuracy![rowIndex]}}</p></td>
+                                                        <td>
+                                                            <p *ngIf="cert.training_history.categorical_accuracy">
+                                                                {{cert.training_history.categorical_accuracy[rowIndex]}}
+                                                            </p>
+                                                            <p *ngIf="cert.training_history.binary_accuracy">
+                                                                {{cert.training_history.binary_accuracy[rowIndex]}}
+                                                            </p>
+                                                        </td>
                                                         <td><p>{{cert.training_history.val_loss[rowIndex]}}</p></td>
-                                                        <td><p>{{cert.training_history.val_categorical_accuracy![rowIndex]}}</p></td>
+                                                        <td>
+                                                            <p *ngIf="cert.training_history.val_categorical_accuracy">
+                                                                {{cert.training_history.val_categorical_accuracy[rowIndex]}}
+                                                            </p>
+                                                            <p *ngIf="cert.training_history.val_binary_accuracy">
+                                                                {{cert.training_history.val_binary_accuracy[rowIndex]}}
+                                                            </p>
+                                                        </td>
                                                     </tr>
                                                 </tbody>
                                             </table>

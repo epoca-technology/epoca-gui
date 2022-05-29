@@ -20,6 +20,20 @@
         .margin-top { margin-top:20px!important;}
         .summary-content {
             padding:15px;
+            .certificate-header {
+                .square-badge{ margin-right:5px;}
+                .square-badge-error{ margin-right:5px;}
+            }
+
+            .loss-header {
+                .loss {background: #E57373;margin-right:5px;}
+                .val-loss {background: #B71C1C;}
+            }
+
+            .accuracy-header {
+                .accuracy {background: #4DB6AC;margin-right:5px;}
+                .val-accuracy {background: #004D40;}
+            }
         }
 
 

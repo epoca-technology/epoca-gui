@@ -131,7 +131,6 @@ export class ClassificationTrainingService implements IClassificationTrainingSer
 		if (typeof certificate.optimizer != "string") throw new Error(`The provided optimizer (${certificate.optimizer}) is invalid.`);
 		if (typeof certificate.loss != "string") throw new Error(`The provided loss (${certificate.loss}) is invalid.`);
 		if (typeof certificate.metric != "string") throw new Error(`The provided metric (${certificate.metric}) is invalid.`);
-		if (typeof certificate.shuffle_data != "boolean") throw new Error(`The provided shuffle_data (${certificate.shuffle_data}) is invalid.`);
 		if (!certificate.keras_model_config || typeof certificate.keras_model_config != "object") {
 			console.log(certificate.keras_model_config);
 			throw new Error(`The provided keras_model_config is invalid.`);

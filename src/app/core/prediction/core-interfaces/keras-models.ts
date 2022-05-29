@@ -82,6 +82,8 @@ export interface IKerasModelTrainingHistory {
     // Classification Values
     categorical_accuracy?: number[],
     val_categorical_accuracy?: number[],
+    binary_accuracy?: number[],
+    val_binary_accuracy?: number[],
 }
 
 

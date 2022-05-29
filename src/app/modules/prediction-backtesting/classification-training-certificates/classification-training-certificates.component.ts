@@ -2,11 +2,8 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { MatSidenav } from '@angular/material/sidenav';
 import { ApexAxisChartSeries } from 'ng-apexcharts';
-import * as moment from 'moment';
 import { Subscription } from 'rxjs';
-import {MatDialog} from '@angular/material/dialog';
 import { 
-	IModel, 
 	ClassificationTrainingService, 
 	PredictionService, 
 	UtilsService, 
@@ -17,13 +14,12 @@ import {
 	ChartService, 
 	ClipboardService, 
 	IBarChartOptions, 
-	IChartRange, 
 	ILayout, 
 	ILineChartOptions, 
 	NavService, 
 	SnackbarService,
 } from '../../../services';
-import { IClassificationTrainingCertificatesComponent, ISection, ISectionID } from './interfaces';
+import { IClassificationTrainingCertificatesComponent, ISection, ISectionID, IAccuracyChartData } from './interfaces';
 
 @Component({
   selector: 'app-classification-training-certificates',
@@ -60,7 +56,6 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 	public epochs?: IBarChartOptions;
 
 	// Certificates Charts
-	public evaluation?: IBarChartOptions;
 	public loss?: ILineChartOptions;
 	public accuracy?: ILineChartOptions;
 
@@ -75,9 +70,7 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 		private _app: AppService,
 		private _chart: ChartService,
 		private _utils: UtilsService,
-		public _training: ClassificationTrainingService,
-		private _prediction: PredictionService,
-		private dialog: MatDialog,
+		public _training: ClassificationTrainingService
 	) { }
 
 
@@ -288,18 +281,6 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 	 * @returns void
 	 */
 	public buildCertificateCharts(): void {
-		// Build the Evaluation Chart
-		this.evaluation = this._chart.getBarChartOptions(
-			{
-				series: [{name:'Loss',data:[this.cert!.test_evaluation[0]]},{name:'Accuracy',data:[this.cert!.test_evaluation[1]]}], 
-				colors: [this._chart.downwardColor, this._chart.upwardColor],
-				yaxis: {labels: {show: false}}
-			}, 
-			["Loss", "Accuracy"], 
-			150
-		);
-
-
 		// Build the Loss Chart
 		this.loss = this._chart.getLineChartOptions(
 			{
@@ -321,19 +302,12 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 
 
 		// Build the Accuracy Chart
+		const accData: IAccuracyChartData = this.getAccuracyChartData();
 		this.accuracy = this._chart.getLineChartOptions(
 			{
 				series: [
-					{
-						name: "categorical_accuracy", 
-						data: <any>this.cert!.training_history.categorical_accuracy!.map(val => { return this._utils.outputNumber(val, {dp: 3})}), 
-						color: "#4DB6AC"
-					},
-					{
-						name: "val_categorical_accuracy", 
-						data: this.cert!.training_history.val_categorical_accuracy!.map(val => { return this._utils.outputNumber(val, {dp: 3})}),  
-						color: "#004D40"
-					}
+					{name: accData.accuracy.name, data: accData.accuracy.data, color: "#4DB6AC"},
+					{name: accData.val_accuracy.name, data: accData.val_accuracy.data, color: "#004D40"}
 				],
 				stroke: {curve: "straight", dashArray: [0, 5]}
 			}, 300, true
@@ -341,6 +315,38 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 	}
 
 
+
+
+
+	/**
+	 * Returns the accuracy data that will be charted in the certificate section.
+	 * @returns IAccuracyChartData
+	 */
+	private getAccuracyChartData(): IAccuracyChartData {
+		if (this.cert!.training_history.categorical_accuracy) {
+			return {
+				accuracy: {
+					name: 'categorical_accuracy',
+					data: this.cert!.training_history.categorical_accuracy!.map(val => { return <number>this._utils.outputNumber(val, {dp: 3})})
+				},
+				val_accuracy: {
+					name: 'val_categorical_accuracy',
+					data: this.cert!.training_history.val_categorical_accuracy!.map(val => { return <number>this._utils.outputNumber(val, {dp: 3})})
+				}
+			}
+		} else {
+			return {
+				accuracy: {
+					name: 'binary_accuracy',
+					data: this.cert!.training_history.binary_accuracy!.map(val => { return <number>this._utils.outputNumber(val, {dp: 3})})
+				},
+				val_accuracy: {
+					name: 'val_binary_accuracy',
+					data: this.cert!.training_history.val_binary_accuracy!.map(val => { return <number>this._utils.outputNumber(val, {dp: 3})})
+				}
+			}
+		}
+	}
 
 
 

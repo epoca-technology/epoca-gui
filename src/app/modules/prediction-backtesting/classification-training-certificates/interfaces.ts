@@ -19,3 +19,13 @@ export interface ISection {
 
 
 
+// Accuracy Chart Data
+
+export interface IAccuracyChartItem {
+    name: string, 
+    data: number[]
+}
+export interface IAccuracyChartData {
+    accuracy: IAccuracyChartItem,
+    val_accuracy: IAccuracyChartItem,
+}
