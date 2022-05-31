@@ -1,8 +1,14 @@
 // Expose the Core Interfaces
-export * from './core-interfaces';
+export * from './core-interfaces/arima';
+export * from './core-interfaces/classification';
+export * from './core-interfaces/interpreter';
+export * from './core-interfaces/keras-models';
+export * from './core-interfaces/model';
+export * from './core-interfaces/regression-selection';
+export * from './core-interfaces/regression';
 
 // Import required interfaces
-import { IPredictionResultName, IModel, IModelTypeName } from "./core-interfaces";
+import { IPredictionResultName, IModel, IModelTypeName } from "./core-interfaces/model";
 
 
 

@@ -15,7 +15,8 @@ import {
 	ApexFill,
 	ApexMarkers,
 	ApexResponsive,
-	ApexNonAxisChartSeries
+	ApexNonAxisChartSeries,
+	ApexLegend
 } from "ng-apexcharts";
 import { MatDialogRef } from "@angular/material/dialog";
 
@@ -105,6 +106,7 @@ export type IBarChartOptions = {
 	plotOptions: ApexPlotOptions;
 	dataLabels: ApexDataLabels;
 	grid: ApexGrid;
+	fill: ApexFill;
 	xaxis: ApexXAxis;
 	yaxis: ApexYAxis;
 };
@@ -136,4 +138,5 @@ export type IPieChartOptions = {
 	labels: string[];
 	colors: string[];
 	responsive: ApexResponsive[];
+	legend: ApexLegend;
 }

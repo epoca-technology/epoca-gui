@@ -41,7 +41,7 @@ export class AppComponent implements IAppComponent {
     'person','notifications','logo_google','paste','ubuntu','code_branch','hdd','microchip','server','database',
     'hardware_chip', 'ssid_chart', 'brain', 'auto_graph', 'bug_report', 'file_csv', 'file_waveform',
     'wand_magic_sparkles', 'flask', 'flask_vial', 'book', 'graduation_cap', 'microscope', 'file_invoice',
-    'file_signature'];
+    'file_signature', 'file_circle_check'];
 	
 	// Route State
 	public state: IRouteState = this._nav.routeState.value;
@@ -180,7 +180,7 @@ export class AppComponent implements IAppComponent {
      private initializeFCM(): void {
         if (this._notification.fcmSupported) {
             this.fcmVisible = true;
-            setTimeout(() => { this.fcmVisible = false }, 7000);
+            setTimeout(() => { this.fcmVisible = false }, 3000);
         }
     }
 

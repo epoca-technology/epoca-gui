@@ -269,7 +269,7 @@ ul li ul, ol li ul { padding: 0 0 0 15px;}
 	padding:5px 5px 5px 5px;
 	color:#FFFFFF;
 	border-radius: 7px;
-	min-width: 20px;
+	min-width: 25px;
 	text-align: center;
 	background-color: #000000;
 	font-weight: 600;
@@ -295,8 +295,9 @@ ul li ul, ol li ul { padding: 0 0 0 15px;}
 		padding:6px 7px 6px 7px;
 		border-radius: 3px;
 		width: auto;
+		min-width:25px;
+		text-align: center!important;
 		max-height:13px;
-		text-align: right!important;
 
 		span {
 			color:#FFFFFF;

@@ -279,6 +279,7 @@ export class ChartService implements IChartService {
 			plotOptions: config.plotOptions ? config.plotOptions: defaultPlotOptions,
 			dataLabels: config.dataLabels ? config.dataLabels: {enabled: false},
 			grid: config.grid ? config.grid: {show: false},
+			fill: config.fill ? config.fill: {},
 			xaxis: xaxis,
 			yaxis: config.yaxis ? config.yaxis: {}
 		}
@@ -414,6 +415,7 @@ export class ChartService implements IChartService {
 			chart: config.chart ? config.chart: defaultChart,
 			colors: colors,
 			labels: labels,
+			legend: config.legend ? config.legend: {},
 			responsive: [
 				{
 					breakpoint: 480,

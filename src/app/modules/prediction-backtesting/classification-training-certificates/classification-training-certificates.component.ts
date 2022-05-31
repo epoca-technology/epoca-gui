@@ -38,7 +38,7 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 	// File Input Form
     public fileInputForm: FormGroup = new FormGroup({ fileInput: new FormControl('', [ ]) });
 
-	// Backtest Initialization
+	// Initialization
 	public initialized: boolean = false;
 	public initializing: boolean = false;
 
@@ -250,7 +250,7 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 		this.evaluations = this._chart.getBarChartOptions(
 			{
 				series: series, 
-				colors: [this._chart.downwardColor, this._chart.upwardColor],
+				colors: [this._chart.downwardColor, this._chart.upwardColor]
 			}, 
 			this._training.ids, 
 			Math.round(epochsHeight*1.5)
