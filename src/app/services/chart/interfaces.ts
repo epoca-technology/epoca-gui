@@ -27,6 +27,7 @@ export interface IChartService {
 	colors: string[],
 	upwardColor: string,
 	downwardColor: string,
+	neutralColor: string,
 	
     // Candlesticks
     getCandlestickChartOptions(candlesticks: ICandlestick[], annotations?: ApexAnnotations, highlightCurrentPrice?: boolean): ICandlestickChartOptions,

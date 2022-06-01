@@ -162,7 +162,7 @@ export class ClassificationTrainingDataComponent implements OnInit, OnDestroy, I
 		this.predictions = this._chart.getBarChartOptions(
 			{
 				series: series, 
-				colors: [this._chart.upwardColor, this._chart.downwardColor, '#BDBDBD']
+				colors: [this._chart.upwardColor, this._chart.downwardColor, this._chart.neutralColor]
 			}, 
 			this._td.modelIDs, 
 			this.getPositionChartHeight()

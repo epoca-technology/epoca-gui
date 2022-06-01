@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { FileService } from '../../file';
 import { IClassificationTrainingCertificate } from '../../prediction';
-import { IClassificationTrainingService, IEvaluation } from './interfaces';
+import { IClassificationTrainingService, IEvaluation, IMetadataItem } from './interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +15,16 @@ export class ClassificationTrainingService implements IClassificationTrainingSer
 	public ids!: string[];
 	public certificates!: IClassificationTrainingCertificate[];
 
+	// Metadata
+	public accuraciesMetadata!: {best: IMetadataItem, worst: IMetadataItem};
+	public predictionsMetadata!: {highest: IMetadataItem, lowest: IMetadataItem};
+	public increaseProbsMetadata!: {highest: IMetadataItem, lowest: IMetadataItem};
+	public successfulIncreaseProbsMetadata!: {highest: IMetadataItem, lowest: IMetadataItem};
+	public decreaseProbsMetadata!: {highest: IMetadataItem, lowest: IMetadataItem};
+	public successfulDecreaseProbsMetadata!: {highest: IMetadataItem, lowest: IMetadataItem};
+	public testDSMetadata!: {best: IMetadataItem, worst: IMetadataItem};
+	public epochsMetadata!: {highest: IMetadataItem, lowest: IMetadataItem};
+
   	constructor(private _file: FileService) { }
 
 
@@ -27,29 +37,122 @@ export class ClassificationTrainingService implements IClassificationTrainingSer
 	 * Initializes the Training Certificates based on an input file change or
 	 * an ID that is stored in the db.
 	 * @param event
+	 * @param limit
 	 * @returns Promise<void>
 	 */
-	 public async init(event: any|string): Promise<void> {
+	 public async init(event: any|string, limit: number): Promise<void> {
 		// Retrieve the certificates
 		this.certificates = await this.getCertificates(event);
 
-		// Build the Summary Data
+		// Slice the certificates 
+		this.certificates = this.certificates.slice(0, limit);
+
+		// Init the summary data
 		this.ids = [];
 		this.epochs = [];
 		this.evals = [];
-		this.certificates.forEach((cert: IClassificationTrainingCertificate) => {
+
+		// Init the Metadata
+		this.accuraciesMetadata = {
+			best: {index: 0, id: this.certificates[0].id, value: this.certificates[0].classification_evaluation.acc},
+			worst: {index: this.certificates.length - 1, id: this.certificates[this.certificates.length - 1].id, value: this.certificates[this.certificates.length - 1].classification_evaluation.acc}
+		};
+		this.predictionsMetadata = {
+			highest: {index: 0, id: this.certificates[0].id, value: this.certificates[0].classification_evaluation.evaluations},
+			lowest: {index: 0, id: this.certificates[0].id, value: this.certificates[0].classification_evaluation.evaluations}
+		};
+		this.increaseProbsMetadata = {
+			highest: {index: 0, id: this.certificates[0].id, value: this.certificates[0].classification_evaluation.increase_mean},
+			lowest: {index: 0, id: this.certificates[0].id, value: this.certificates[0].classification_evaluation.increase_mean}
+		};
+		this.successfulIncreaseProbsMetadata = {
+			highest: {index: 0, id: this.certificates[0].id, value: this.certificates[0].classification_evaluation.increase_successful_mean},
+			lowest: {index: 0, id: this.certificates[0].id, value: this.certificates[0].classification_evaluation.increase_successful_mean}
+		};
+		this.decreaseProbsMetadata = {
+			highest: {index: 0, id: this.certificates[0].id, value: this.certificates[0].classification_evaluation.decrease_mean},
+			lowest: {index: 0, id: this.certificates[0].id, value: this.certificates[0].classification_evaluation.decrease_mean}
+		};
+		this.successfulDecreaseProbsMetadata = {
+			highest: {index: 0, id: this.certificates[0].id, value: this.certificates[0].classification_evaluation.decrease_successful_mean},
+			lowest: {index: 0, id: this.certificates[0].id, value: this.certificates[0].classification_evaluation.decrease_successful_mean}
+		};
+		this.testDSMetadata = {
+			best: {index: 0, id: this.certificates[0].id, value: this.certificates[0].test_evaluation[1]},
+			worst: {index: 0, id: this.certificates[0].id, value: this.certificates[0].test_evaluation[1]}
+		};
+		this.epochsMetadata = {
+			highest: {index: 0, id: this.certificates[0].id, value: this.certificates[0].training_history.loss.length},
+			lowest: {index: 0, id: this.certificates[0].id, value: this.certificates[0].training_history.loss.length}
+		};
+
+
+		// Iterate over each certificate building both, the summary and the metadata
+		for (let i = 0; i < this.certificates.length; i++) {
 			// Build the ids
-			this.ids.push(cert.id);
-			
+			this.ids.push(this.certificates[i].id);
+
 			// Build the number of epochs
-			this.epochs.push(cert.training_history.loss.length)
+			this.epochs.push(this.certificates[i].training_history.loss.length);
 
 			// Build the evaluations
 			this.evals.push({
-				loss: cert.test_evaluation[0],
-				accuracy: cert.test_evaluation[1],
-			})
-		});
+				loss: this.certificates[i].test_evaluation[0],
+				accuracy: this.certificates[i].test_evaluation[1],
+			});
+
+			// Check the predictions metadata
+			if (this.certificates[i].classification_evaluation.evaluations > this.predictionsMetadata.highest.value) {
+				this.predictionsMetadata.highest = {index: i, id: this.certificates[i].id, value: this.certificates[i].classification_evaluation.evaluations}
+			}
+			if (this.certificates[i].classification_evaluation.evaluations < this.predictionsMetadata.lowest.value) {
+				this.predictionsMetadata.lowest = {index: i, id: this.certificates[i].id, value: this.certificates[i].classification_evaluation.evaluations}
+			}
+
+			// Check the increase probs metadata
+			if (this.certificates[i].classification_evaluation.increase_mean > this.increaseProbsMetadata.highest.value) {
+				this.increaseProbsMetadata.highest = {index: i, id: this.certificates[i].id, value: this.certificates[i].classification_evaluation.increase_mean}
+			}
+			if (this.certificates[i].classification_evaluation.increase_mean < this.increaseProbsMetadata.lowest.value) {
+				this.increaseProbsMetadata.lowest = {index: i, id: this.certificates[i].id, value: this.certificates[i].classification_evaluation.increase_mean}
+			}
+			if (this.certificates[i].classification_evaluation.increase_successful_mean > this.successfulIncreaseProbsMetadata.highest.value) {
+				this.successfulIncreaseProbsMetadata.highest = {index: i, id: this.certificates[i].id, value: this.certificates[i].classification_evaluation.increase_successful_mean}
+			}
+			if (this.certificates[i].classification_evaluation.increase_successful_mean < this.successfulIncreaseProbsMetadata.lowest.value) {
+				this.successfulIncreaseProbsMetadata.lowest = {index: i, id: this.certificates[i].id, value: this.certificates[i].classification_evaluation.increase_successful_mean}
+			}
+
+			// Check the decrease probs metadata
+			if (this.certificates[i].classification_evaluation.decrease_mean > this.decreaseProbsMetadata.highest.value) {
+				this.decreaseProbsMetadata.highest = {index: i, id: this.certificates[i].id, value: this.certificates[i].classification_evaluation.decrease_mean}
+			}
+			if (this.certificates[i].classification_evaluation.decrease_mean < this.decreaseProbsMetadata.lowest.value) {
+				this.decreaseProbsMetadata.lowest = {index: i, id: this.certificates[i].id, value: this.certificates[i].classification_evaluation.decrease_mean}
+			}
+			if (this.certificates[i].classification_evaluation.decrease_successful_mean > this.successfulDecreaseProbsMetadata.highest.value) {
+				this.successfulDecreaseProbsMetadata.highest = {index: i, id: this.certificates[i].id, value: this.certificates[i].classification_evaluation.decrease_successful_mean}
+			}
+			if (this.certificates[i].classification_evaluation.decrease_successful_mean < this.successfulDecreaseProbsMetadata.lowest.value) {
+				this.successfulDecreaseProbsMetadata.lowest = {index: i, id: this.certificates[i].id, value: this.certificates[i].classification_evaluation.decrease_successful_mean}
+			}
+
+			// Check the test ds metadata
+			if (this.certificates[i].test_evaluation[1] > this.testDSMetadata.best.value) {
+				this.testDSMetadata.best = {index: i, id: this.certificates[i].id, value: this.certificates[i].test_evaluation[1]}
+			}
+			if (this.certificates[i].test_evaluation[1] < this.testDSMetadata.worst.value) {
+				this.testDSMetadata.worst = {index: i, id: this.certificates[i].id, value: this.certificates[i].test_evaluation[1]}
+			}
+
+			// Check the epochs metadata
+			if (this.certificates[i].training_history.loss.length > this.epochsMetadata.highest.value) {
+				this.epochsMetadata.highest = {index: i, id: this.certificates[i].id, value: this.certificates[i].training_history.loss.length}
+			}
+			if (this.certificates[i].training_history.loss.length < this.epochsMetadata.lowest.value) {
+				this.epochsMetadata.lowest = {index: i, id: this.certificates[i].id, value: this.certificates[i].training_history.loss.length}
+			}
+		}
 	}
 
 
@@ -92,7 +195,7 @@ export class ClassificationTrainingService implements IClassificationTrainingSer
 			certificates.forEach((c) => this.validateTrainingCertificate(c))
 
 			// Return the certificates ordered by accuracy
-			return certificates.sort((a, b) => (a.test_evaluation[1] < b.test_evaluation[1]) ? 1 : -1);;
+			return certificates.sort((a, b) => (a.classification_evaluation.acc < b.classification_evaluation.acc) ? 1 : -1);;
 		}
 	}
 
@@ -144,6 +247,10 @@ export class ClassificationTrainingService implements IClassificationTrainingSer
 		if (!Array.isArray(certificate.test_evaluation) || certificate.test_evaluation.length != 2) {
 			console.log(certificate.test_evaluation);
 			throw new Error(`The provided test_evaluation is invalid.`);
+		}
+		if (!certificate.classification_evaluation || typeof certificate.classification_evaluation != "object") {
+			console.log(certificate.classification_evaluation);
+			throw new Error(`The provided classification_evaluation is invalid.`);
 		}
 		if (!certificate.classification_config || typeof certificate.classification_config != "object") {
 			console.log(certificate.classification_config);

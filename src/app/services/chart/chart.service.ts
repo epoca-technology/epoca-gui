@@ -26,6 +26,7 @@ export class ChartService implements IChartService {
 	// Event Colors
 	public readonly upwardColor: string = '#00695C';
 	public readonly downwardColor: string = '#B71C1C';
+	public readonly neutralColor: string = '#78909C';
 
 
   	constructor(

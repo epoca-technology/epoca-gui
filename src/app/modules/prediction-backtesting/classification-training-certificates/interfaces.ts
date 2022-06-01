@@ -10,7 +10,7 @@ export interface IClassificationTrainingCertificatesComponent {
 
 
 // View Sections
-export type ISectionID = 'evaluations'|'epochs'|'certificate';
+export type ISectionID = 'class_evaluations'|'evaluations'|'epochs'|'certificate';
 export interface ISection {
     id: ISectionID,
     name: string,
@@ -28,4 +28,13 @@ export interface IAccuracyChartItem {
 export interface IAccuracyChartData {
     accuracy: IAccuracyChartItem,
     val_accuracy: IAccuracyChartItem,
+}
+
+
+
+
+// Badge Info
+export interface IBadgeInfo {
+    best: { id: number, value: number},
+    worst: { id: number, value: number},
 }

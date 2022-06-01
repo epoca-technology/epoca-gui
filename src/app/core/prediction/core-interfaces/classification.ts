@@ -267,6 +267,61 @@ export interface ITrainingDataSummary {
 
 
 
+
+
+/**
+ * Classification Evaluation
+ * Evaluation performed right after the model is trained in order to get an overview of the
+ * potential accuracy, as well as the prediction type distribution.
+ * Each evaluation is performed using a random candlestick open time and is evaluated against
+ * the sequence of 1 minute candlesticks that follow. The iteration will continue until the
+ * evaluation position is closed.
+ */
+export interface IClassificationEvaluation {
+    // The number of evaluations performed on the Regression
+    evaluations: number,
+    max_evaluations: number,
+
+    // The number of times the Regression predicted a price increase
+    increase_num: number,
+    increase_successful_num: number,
+
+    // The number of times the Regression predicted a price decrease
+    decrease_num: number,
+    decrease_successful_num: number,
+
+    // Accuracy
+    increase_acc: number,
+    decrease_acc: number,
+    acc: number,
+
+    // Increase Predictions Overview
+    increase_max: number,
+    increase_min: number,
+    increase_mean: number,
+    increase_successful_max: number,
+    increase_successful_min: number,
+    increase_successful_mean: number,
+
+    // Decrease Predictions Overview
+    decrease_max: number,
+    decrease_min: number,
+    decrease_mean: number,
+    decrease_successful_max: number,
+    decrease_successful_min: number,
+    decrease_successful_mean: number
+}
+
+
+
+
+
+
+
+
+
+
+
 /**
  * Classification Training Certificate
  * Once the training, saving and evaluation completes, a certificate containing all the
@@ -305,6 +360,9 @@ export interface IClassificationTrainingCertificate {
 
     // Result of the evaluation of the test dataset
     test_evaluation: [number, number], // [loss, metric]
+
+    // Classification Post-Training Evaluation
+    classification_evaluation: IClassificationEvaluation,
 
     // The configuration of the Classification
     classification_config: IClassificationConfig
