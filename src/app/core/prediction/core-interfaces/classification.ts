@@ -296,17 +296,21 @@ export interface IClassificationEvaluation {
     acc: number,
 
     // Increase Predictions Overview
+    increase_list: number[],
     increase_max: number,
     increase_min: number,
     increase_mean: number,
+    increase_successful_list: number[],
     increase_successful_max: number,
     increase_successful_min: number,
     increase_successful_mean: number,
 
     // Decrease Predictions Overview
+    decrease_list: number[],
     decrease_max: number,
     decrease_min: number,
     decrease_mean: number,
+    decrease_successful_list: number[],
     decrease_successful_max: number,
     decrease_successful_min: number,
     decrease_successful_mean: number

@@ -49,6 +49,14 @@ export interface IChartService {
    ): ILineChartOptions,
 	getLineChartRange(series: ApexAxisChartSeries): IChartRange,
 
+	// Scatter Chart
+	getScatterChartOptions(
+		config: Partial<IScatterChartOptions>, 
+		height?: number, 
+		disableNiceScale?: boolean, 
+		range?: IChartRange
+   ): IScatterChartOptions,
+
 	// Pie Chart
 	getPieChartOptions(
 		config: Partial<IPieChartOptions>, 
@@ -127,6 +135,15 @@ export type ILineChartOptions = {
 	yaxis: ApexYAxis;
 	annotations: ApexAnnotations;
 	colors: string[];
+};
+
+
+/* Scatter Chart Options */
+export type IScatterChartOptions = {
+	series: ApexAxisChartSeries;
+	chart: ApexChart;
+	xaxis: ApexXAxis;
+	yaxis: ApexYAxis;
 };
 
 

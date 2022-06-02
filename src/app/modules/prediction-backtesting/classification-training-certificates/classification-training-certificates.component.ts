@@ -16,6 +16,7 @@ import {
 	ILayout, 
 	ILineChartOptions, 
 	IPieChartOptions, 
+	IScatterChartOptions, 
 	NavService, 
 	SnackbarService,
 } from '../../../services';
@@ -79,8 +80,8 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 	public testDSAccuracy?: ILineChartOptions;
 	public classPrediction?: IPieChartOptions;
 	public classAccuracy?: IBarChartOptions;
-	public classPredictionProb?: IBarChartOptions;
-	public classSuccessfulPredictionProb?: IBarChartOptions;
+	public classProbs?: IScatterChartOptions;
+	public activeProb: number = 0;
 
 
 
@@ -239,6 +240,7 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 			this.cert = undefined;
 			this.activeClassTabIndex = 0;
 			this.activeTabIndex = 0;
+			this.activeProb = 0;
 		}
 
 		// Navigate to a certificate
@@ -489,7 +491,7 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 				this.cert!.classification_evaluation.max_evaluations - this.cert!.classification_evaluation.evaluations
 			],
 			colors: [this._chart.upwardColor, this._chart.downwardColor, this._chart.neutralColor]
-		}, ["Increase", "Decrease", "Neutral"], 270);
+		}, ["Increase", "Decrease", "Neutral"], 210);
 
 
 		// Build the accuracy chart
@@ -504,78 +506,47 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 				yaxis: {labels: {show: false}}
 			}, 
 			[this.cert!.id], 
-			150
+			200
 		);
 
+
+		
 		// Build the class. prediction probabilities
-		this.classPredictionProb = this._chart.getBarChartOptions(
+		let series: ApexAxisChartSeries = [
+			{name:'Gen. Increase',data:[], color: "#009688"},
+			{name:'Gen. Decrease',data:[], color: "#F44336"},
+			{name:'Succ. Increase',data:[], color: "#004D40"},
+			{name:'Succ. Decrease',data:[], color: "#B71C1C"},
+		];
+		const maxLength: number = 
+			this.cert!.classification_evaluation.increase_num > this.cert!.classification_evaluation.decrease_num ?
+				this.cert!.classification_evaluation.increase_num: this.cert!.classification_evaluation.decrease_num;
+		for (let i = 0; i < maxLength; i++) {
+			if (i < this.cert!.classification_evaluation.increase_list.length) {
+				series[0].data.push(<any>[i, this.cert!.classification_evaluation.increase_list[i]]);
+			}
+			if (i < this.cert!.classification_evaluation.decrease_list.length) {
+				series[1].data.push(<any>[i, this.cert!.classification_evaluation.decrease_list[i]]);
+			}
+			if (i < this.cert!.classification_evaluation.increase_successful_list.length) {
+				series[2].data.push(<any>[i, this.cert!.classification_evaluation.increase_successful_list[i]]);
+			}
+			if (i < this.cert!.classification_evaluation.decrease_successful_list.length) {
+				series[3].data.push(<any>[i, this.cert!.classification_evaluation.decrease_successful_list[i]]);
+			}
+		}
+		this.classProbs = this._chart.getScatterChartOptions(
 			{
-				series: [
-					{
-						name:'Min. Prob.',
-						data:[
-							this.cert!.classification_evaluation.increase_min,
-							this.cert!.classification_evaluation.decrease_min,
-						],
-						color: "#78909C"
-					},
-					{
-						name:'Mean Prob.',
-						data:[
-							this.cert!.classification_evaluation.increase_mean,
-							this.cert!.classification_evaluation.decrease_mean,
-						],
-						color: "#455A64"
-					},
-					{
-						name:'Max. Prob.',
-						data:[
-							this.cert!.classification_evaluation.increase_max,
-							this.cert!.classification_evaluation.decrease_max,
-						],
-						color: "#263238"
-					},
-				]
-			}, 
-			["Increase", "Decrease"], 
-			205,
-			false
-		);
-
-
-		// Build the class. successful prediction probabilities
-		this.classSuccessfulPredictionProb = this._chart.getBarChartOptions(
-			{
-				series: [
-					{
-						name:'Min. Prob.',
-						data:[
-							this.cert!.classification_evaluation.increase_successful_min,
-							this.cert!.classification_evaluation.decrease_successful_min,
-						],
-						color: "#78909C"
-					},
-					{
-						name:'Mean Prob.',
-						data:[
-							this.cert!.classification_evaluation.increase_successful_mean,
-							this.cert!.classification_evaluation.decrease_successful_mean,
-						],
-						color: "#455A64"
-					},
-					{
-						name:'Max. Prob.',
-						data:[
-							this.cert!.classification_evaluation.increase_successful_max,
-							this.cert!.classification_evaluation.decrease_successful_max,
-						],
-						color: "#263238"
-					},
-				]
-			}, 
-			["Increase", "Decrease"], 
-			205,
-			false
+				chart: {
+					height: 600, type: 'scatter',
+					animations: { enabled: false}, 
+					toolbar: {show: true, tools: {download: false}}, 
+					zoom: {enabled: true, type: 'y'}},
+				series: series
+			},
+			600,
+			true,
+			{min: 0.5, max: 1}
 		);
 	}
 

@@ -10,6 +10,7 @@ import {
 	IChartRange, 
 	IBarChartOptions, 
 	ILineChartOptions, 
+	IScatterChartOptions,
 	IPieChartOptions
 } from './interfaces';
 
@@ -373,6 +374,56 @@ export class ChartService implements IChartService {
 				max: this._utils.getMax(seriesNumbers)
 			}
 	}
+
+
+
+
+
+
+
+	/**
+	 * Builds the configuration for a scatter chart.
+	 * @param config 
+	 * @param height?
+	 * @param disableNiceScale?
+	 * @param range?
+	 * @param colors?
+	 * @returns IScatterChartOptions
+	 */
+	 public getScatterChartOptions(
+		config: Partial<IScatterChartOptions>, 
+		height?: number, 
+		disableNiceScale?: boolean, 
+		range?: IChartRange
+   ): IScatterChartOptions {
+	   // Init the default chart
+	   let defaultChart: ApexChart = {height: 600, type: 'scatter',animations: { enabled: false}, toolbar: {show: false}, zoom: {enabled: false}};
+	   if (typeof height == "number") defaultChart.height = height;
+
+	   // Init the yaxis
+	   let yaxis: ApexYAxis|undefined = config.yaxis;
+
+	   // Check if the nice scale should be disabled
+	   if (disableNiceScale) {
+		   // Check if the range was provided, otherwise, calculate it
+		   if (!range) range = this.getLineChartRange(config.series!);
+
+		   // Check if a yaxis was needs to be initialized or updated
+		   if (yaxis) { yaxis = {...yaxis, forceNiceScale: false, min: range.min, max: range.max}} 
+		   else { yaxis = {forceNiceScale: false, min: range.min, max: range.max} }
+	   }
+
+
+	   // Return the Options Object
+	   return {
+		   series: config.series!,
+		   chart: config.chart ? config.chart: defaultChart,
+		   xaxis: config.xaxis ? config.xaxis: {labels: { show: false } },
+		   yaxis: yaxis || {}
+	   }
+   }
+
+
 
 
 
