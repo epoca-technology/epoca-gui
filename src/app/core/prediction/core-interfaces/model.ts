@@ -142,6 +142,13 @@ export interface IClassificationConfig {
     // The list of ArimaModel|RegressionModel attached to the classification
     models: IModel[]
 
+    // Optional Technical Analysis Features
+    include_rsi: boolean,   // Momentum
+    include_aroon: boolean, // Trend
+
+    // The total number of features that will be used by the model to predict
+    features_num: number,
+
     // The summary of the KerasModel
     summary: IKerasModelSummary
 }
@@ -223,7 +230,7 @@ export interface IClassificationModelConfig {
      * The entire configuration used by the classification. This value is only present
      * when the function get_model is used.
      */
-    classification: any // @TODO
+    classification: IClassificationConfig
 }
  
  

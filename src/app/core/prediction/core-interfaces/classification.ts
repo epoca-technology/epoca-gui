@@ -73,12 +73,24 @@ export interface ITrainingDataConfig {
     start: string|number|null,
     end: string|number|null,
 
+    /**
+     * The Prediction Candlestick steps that will be used to generate the data. If 0 is provided
+     * the training data will be generated the traditional way.
+     * The purpose of this mode is to increase the size of the Training Dataset and cover more 
+     * cases.
+     */
+    steps: number,
+
     // Percentages that will determine if the price moved up or down after a position is opened
     up_percent_change: number,
     down_percent_change: number,
 
     // The list of ArimaModels|RegressionModels that will be used to predict
-    models: IModel[]
+    models: IModel[],
+
+    // Optional Technical Analysis Features
+    include_rsi: boolean,   // Momentum
+    include_aroon: boolean // Trend
 }
 
 
@@ -105,6 +117,9 @@ export interface ITrainingDataFile {
     // Universally Unique Identifier (uuid4)
     id: string,
 
+    // The ID of the Regression Selection that was used to pick the Regression Models
+    regression_selection_id: string,
+
     // The description of the Training Data that will be generated.
     description: string,
 
@@ -118,12 +133,27 @@ export interface ITrainingDataFile {
     // The number of minutes that took to generate the training data
     duration_minutes: number,
 
+    /**
+     * The Prediction Candlestick steps that will be used to generate the data. If 0 is provided
+     * the training data will be generated the traditional way.
+     * The purpose of this mode is to increase the size of the Training Dataset and cover more 
+     * cases.
+     */
+    steps: number,
+
     // Percentages that will determine if the price moved up or down after a position is opened
     up_percent_change: number,
     down_percent_change: number,
 
     // List of ArimaModels|RegressionModels
     models: IModel[],
+
+    // Optional Technical Analysis Features
+    include_rsi: boolean,   // Momentum
+    include_aroon: boolean, // Trend
+
+    // The total number of features that will be used by the model to predict
+    features_num: number,
 
     // Price Actions Insight - The up and down counts
     price_actions_insight: ITrainingDataPriceActionsInsight,
@@ -216,6 +246,9 @@ export interface IClassificationTrainingBatch {
  * data is summarized in a dictionary.
  */
 export interface ITrainingDataSummary {
+    // The ID of the Regression Selection that was used to pick the Regression Models
+    regression_selection_id: string,
+
     // Identifier
     id: string,
     description: string,
@@ -228,9 +261,24 @@ export interface ITrainingDataSummary {
     train_size: number,     // Number of rows in the train dataset
     test_size: number,      // Number of rows in the test dataset
 
+    /**
+     * The Prediction Candlestick steps that will be used to generate the data. If 0 is provided
+     * the training data will be generated the traditional way.
+     * The purpose of this mode is to increase the size of the Training Dataset and cover more 
+     * cases.
+     */
+    steps: number,
+
     // Percentages that determine if the price moved up or down
     up_percent_change: number,
-    down_percent_change: number
+    down_percent_change: number,
+
+    // Optional Technical Analysis Features
+    include_rsi: boolean,   // Momentum
+    include_aroon: boolean, // Trend
+
+    // The total number of features that will be used by the model to predict
+    features_num: number
 }
 
 

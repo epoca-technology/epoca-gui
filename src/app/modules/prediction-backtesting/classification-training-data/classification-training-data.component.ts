@@ -142,7 +142,7 @@ export class ClassificationTrainingDataComponent implements OnInit, OnDestroy, I
 		this.priceActions = this._chart.getPieChartOptions({
 			series: [this._td.price_actions_insight.up, this._td.price_actions_insight.down],
 			colors: [this._chart.upwardColor, this._chart.downwardColor]
-		}, ["Up", "Down"], 270);
+		}, ["Up", "Down"], 300);
 
 
 		/* Init Positions Chart */
