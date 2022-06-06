@@ -1,6 +1,6 @@
 import { IArimaConfig } from "./arima";
 import { IPercentChangeInterpreterConfig, IProbabilityInterpreterConfig } from "./interpreter";
-import { IRegressionConfig } from "./regression";
+import { IKerasModelSummary } from "./keras-models";
 
 
 
@@ -50,10 +50,10 @@ import { IRegressionConfig } from "./regression";
      npl?: number[],
  
      /**
-      * ArimaModel|RegressionModel prediction results. Only present in ClassificationModel
-      * Predictions.
+      * Features: ArimaModel|RegressionModel prediction results and/or technical analysis data. 
+      * Only present in ClassificationModel Predictions.
       */
-     pr?: number[]
+     f?: number[]
  
      // Up Probability. Only present in ClassificationModel Predictions.
      up?: number,
@@ -92,11 +92,67 @@ import { IRegressionConfig } from "./regression";
  
  
  
+
+
+
+
+ /* Keras Models Configurations */
+ 
+
+ 
+/**
+* Regresion Configuration
+* The configuration that was used to train and will predict based on.
+*/
+export interface IRegressionConfig {
+	// The identifier of the model
+	id: string,
+
+	// Important information regarding the trained model
+    description: string,
+
+    // The number of candlesticks it will lookback to make a prediction
+    lookback: number,
+
+    // The number of predictions it will generate
+    predictions: number
+
+    // The summary of the KerasModel
+    summary: IKerasModelSummary
+}
+
+
  
  
- 
- 
- 
+
+/**
+* Classification Configuration
+* The configuration that was used to train and will predict based on.
+*/
+export interface IClassificationConfig {
+    // The identifier of the model
+    id: string,
+
+    // Important information regarding the trained model
+    description: string,
+
+    // The identifier of the training data used
+    training_data_id: string,
+
+    // The list of ArimaModel|RegressionModel attached to the classification
+    models: IModel[]
+
+    // The summary of the KerasModel
+    summary: IKerasModelSummary
+}
+
+
+
+
+
+
+
+
  
  
  

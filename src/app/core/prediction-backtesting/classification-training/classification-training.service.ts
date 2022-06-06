@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { FileService } from '../../file';
 import { IClassificationTrainingCertificate } from '../../prediction';
-import { IClassificationTrainingService, IEvaluation, IMetadataItem } from './interfaces';
+import { ClassificationTrainingEvaluationService } from './classification-training-evaluation.service';
+import { IClassificationTrainingService, IEvaluation, IMetadataItem, IClassificationCertificatesOrder } from './interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +17,7 @@ export class ClassificationTrainingService implements IClassificationTrainingSer
 	public certificates!: IClassificationTrainingCertificate[];
 
 	// Metadata
+	public pointsMetadata!: {best: IMetadataItem, worst: IMetadataItem};
 	public accuraciesMetadata!: {best: IMetadataItem, worst: IMetadataItem};
 	public predictionsMetadata!: {highest: IMetadataItem, lowest: IMetadataItem};
 	public increaseProbsMetadata!: {highest: IMetadataItem, lowest: IMetadataItem};
@@ -25,7 +27,10 @@ export class ClassificationTrainingService implements IClassificationTrainingSer
 	public testDSMetadata!: {best: IMetadataItem, worst: IMetadataItem};
 	public epochsMetadata!: {highest: IMetadataItem, lowest: IMetadataItem};
 
-  	constructor(private _file: FileService) { }
+  	constructor(
+		  private _file: FileService,
+		  private _evaluation: ClassificationTrainingEvaluationService
+	) { }
 
 
 
@@ -37,12 +42,13 @@ export class ClassificationTrainingService implements IClassificationTrainingSer
 	 * Initializes the Training Certificates based on an input file change or
 	 * an ID that is stored in the db.
 	 * @param event
+	 * @param order
 	 * @param limit
 	 * @returns Promise<void>
 	 */
-	 public async init(event: any|string, limit: number): Promise<void> {
+	 public async init(event: any|string, order: IClassificationCertificatesOrder, limit: number): Promise<void> {
 		// Retrieve the certificates
-		this.certificates = await this.getCertificates(event);
+		this.certificates = await this.getCertificates(event, order);
 
 		// Slice the certificates 
 		this.certificates = this.certificates.slice(0, limit);
@@ -53,9 +59,13 @@ export class ClassificationTrainingService implements IClassificationTrainingSer
 		this.evals = [];
 
 		// Init the Metadata
+		this.pointsMetadata = {
+			best: {index: 0, id: this.certificates[0].id, value: this.certificates[0].general.points},
+			worst: {index: 0, id: this.certificates[0].id, value: this.certificates[0].general.points},
+		};
 		this.accuraciesMetadata = {
 			best: {index: 0, id: this.certificates[0].id, value: this.certificates[0].classification_evaluation.acc},
-			worst: {index: this.certificates.length - 1, id: this.certificates[this.certificates.length - 1].id, value: this.certificates[this.certificates.length - 1].classification_evaluation.acc}
+			worst: {index: 0, id: this.certificates[0].id, value: this.certificates[0].classification_evaluation.acc},
 		};
 		this.predictionsMetadata = {
 			highest: {index: 0, id: this.certificates[0].id, value: this.certificates[0].classification_evaluation.evaluations},
@@ -100,6 +110,22 @@ export class ClassificationTrainingService implements IClassificationTrainingSer
 				loss: this.certificates[i].test_evaluation[0],
 				accuracy: this.certificates[i].test_evaluation[1],
 			});
+
+			// Check the points metadata
+			if (this.certificates[i].general.points > this.pointsMetadata.best.value) {
+				this.pointsMetadata.best = {index: i, id: this.certificates[i].id, value: this.certificates[i].general.points}
+			}
+			if (this.certificates[i].general.points < this.pointsMetadata.worst.value) {
+				this.pointsMetadata.worst = {index: i, id: this.certificates[i].id, value: this.certificates[i].general.points}
+			}
+
+			// Check the accuracies metadata
+			if (this.certificates[i].classification_evaluation.acc > this.accuraciesMetadata.best.value) {
+				this.accuraciesMetadata.best = {index: i, id: this.certificates[i].id, value: this.certificates[i].classification_evaluation.acc}
+			}
+			if (this.certificates[i].classification_evaluation.acc < this.accuraciesMetadata.worst.value) {
+				this.accuraciesMetadata.worst = {index: i, id: this.certificates[i].id, value: this.certificates[i].classification_evaluation.acc}
+			}
 
 			// Check the predictions metadata
 			if (this.certificates[i].classification_evaluation.evaluations > this.predictionsMetadata.highest.value) {
@@ -160,6 +186,12 @@ export class ClassificationTrainingService implements IClassificationTrainingSer
 
 
 
+	
+
+
+
+
+
 
 
 
@@ -169,9 +201,10 @@ export class ClassificationTrainingService implements IClassificationTrainingSer
 	 * certificates.
 	 * An error is thrown if the validations dont pass.
 	 * @param event 
+	 * @param order
 	 * @returns Promise<ITrainingDataFile>
 	 */
-	 private async getCertificates(event: any|string): Promise<IClassificationTrainingCertificate[]> {
+	 private async getCertificates(event: any|string, order: IClassificationCertificatesOrder): Promise<IClassificationTrainingCertificate[]> {
 		// If it is a string, retrieve the certificate from the db
 		if (typeof event == "string") {
 			throw new Error("Classification Training Certificates Init from db not implemented yet.")
@@ -184,18 +217,30 @@ export class ClassificationTrainingService implements IClassificationTrainingSer
 				await this._file.readJSONFiles(event);
 
 			// Flatten the certificates
-			const certificates: IClassificationTrainingCertificate[] = rawCertificates.flat();
+			let certificates: IClassificationTrainingCertificate[] = rawCertificates.flat();
 
 			// Make sure there is at least 1 certificate
 			if (certificates.length == 0) {
 				throw new Error("The Classification Training Certificates could not be extracted from the JSON Files.") 
 			}
 
-			// Make sure the extracted certificates are valid
-			certificates.forEach((c) => this.validateTrainingCertificate(c))
+			// Iterate over each certificate
+			for (let i = 0; i < certificates.length; i++) {
+				// Make sure the certificate is valid
+				this.validateTrainingCertificate(certificates[i]);
 
-			// Return the certificates ordered by accuracy
-			return certificates.sort((a, b) => (a.classification_evaluation.acc < b.classification_evaluation.acc) ? 1 : -1);;
+				// Build the General Evaluation
+				certificates[i].general = this._evaluation.buildGeneralEvaluation(certificates[i]);
+			}
+
+			// Return the certificates based on the provided order
+			if (order == "general_points") {
+				return certificates.sort((a, b) => (a.general.points < b.general.points) ? 1 : -1);
+			} else if (order == "acc") {
+				return certificates.sort((a, b) => (a.classification_evaluation.acc < b.classification_evaluation.acc) ? 1 : -1);
+			} else {
+				return certificates.sort((a, b) => (a.test_evaluation[1] < b.test_evaluation[1]) ? 1 : -1);
+			}
 		}
 	}
 

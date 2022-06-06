@@ -10,10 +10,11 @@ import {SharedModule} from "../../shared";
 // Components
 import { BacktestsComponent } from './backtests/backtests.component';
 import { BacktestPositionDialogComponent } from './backtests/backtest-position-dialog/backtest-position-dialog.component';
+import { RegressionSelectionComponent } from './regression-selection/regression-selection.component';
+import { RegressionTrainingCertificatesComponent } from './regression-training-certificates/regression-training-certificates.component';
 import { ClassificationTrainingDataComponent } from './classification-training-data/classification-training-data.component';
 import { ClassificationTrainingCertificatesComponent } from './classification-training-certificates/classification-training-certificates.component';
-import { RegressionTrainingCertificatesComponent } from './regression-training-certificates/regression-training-certificates.component';
-import { RegressionSelectionComponent } from './regression-selection/regression-selection.component';
+import { ClassificationTrainingCertificatesConfigDialogComponent } from './classification-training-certificates/classification-training-certificates-config-dialog';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { RegressionSelectionComponent } from './regression-selection/regression-
     ClassificationTrainingDataComponent,
     ClassificationTrainingCertificatesComponent,
     RegressionTrainingCertificatesComponent,
-    RegressionSelectionComponent
+    RegressionSelectionComponent,
+    ClassificationTrainingCertificatesConfigDialogComponent
   ],
   imports: [
     CommonModule,

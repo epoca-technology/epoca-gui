@@ -1,0 +1,8 @@
+<div mat-dialog-title fxLayout="row" fxLayoutAlign="start center">
+    <h1 class="truncate">{{title}}</h1>
+    <span fxFlex></span>
+    <button mat-icon-button (click)="dialogRef.close()"><mat-icon>close</mat-icon></button>
+</div>
+<div mat-dialog-content>
+    <p *ngFor="let item of content">{{item}}</p>
+</div>

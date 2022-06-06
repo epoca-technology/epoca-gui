@@ -9,10 +9,3 @@ export interface IClassificationTrainingDataService {
 
 
 
-
-/* Service Specific Types */
-
-
-export interface IDecompressedTrainingData {
-    [featureOrLabel: string]: number
-}

@@ -144,6 +144,7 @@ export type IScatterChartOptions = {
 	chart: ApexChart;
 	xaxis: ApexXAxis;
 	yaxis: ApexYAxis;
+	dataLabels: ApexDataLabels;
 };
 
 

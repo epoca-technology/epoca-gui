@@ -11,6 +11,7 @@ import {AppService} from "../app";
 import {ConfirmationDialogComponent, IConfirmationDialogData} from "../../shared/components/confirmation-dialog";
 import {DataDialogComponent, IDataDialogData} from "../../shared/components/data-dialog";
 import {DialogMenuComponent, IDialogMenuData, IDialogMenuItem} from "../../shared/components/dialog-menu";
+import { ITooltipData, TooltipDialogComponent } from '../../shared/components/tooltip-dialog';
 import {
 	IKerasModelDialogData, 
 	KerasModelDialogComponent, 
@@ -186,6 +187,26 @@ export class NavService implements INavService {
 		});
 	}
 
+
+
+
+	/*
+	* Opens the tooltips dialog.
+	* @param title
+	* @param content
+	* @returns any
+	* */
+	public displayTooltip(title: string, content: string|string[]): MatDialogRef<any> {
+		return this.dialog.open(TooltipDialogComponent, {
+			disableClose: false,
+			hasBackdrop: true,
+			panelClass: 'light-dialog',
+			data: <ITooltipData> {
+				title: title,
+				content: content
+			}
+		});
+	}
 
 
 

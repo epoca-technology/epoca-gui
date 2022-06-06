@@ -34,6 +34,7 @@ import {MatBottomSheetModule, MAT_BOTTOM_SHEET_DEFAULT_OPTIONS} from '@angular/m
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatNativeDateModule} from '@angular/material/core';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatChipsModule} from '@angular/material/chips';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 
 // DateTime Picker
@@ -79,6 +80,7 @@ import { ModelContentComponent } from './components/prediction/model-content/mod
 import { PredictionDialogComponent } from './components/prediction/prediction-dialog/prediction-dialog.component';
 import { KerasModelDialogComponent } from './components/prediction/keras-model-dialog/keras-model-dialog.component';
 import { RefreshButtonComponent } from './components/refresh-button/refresh-button.component';
+import { TooltipDialogComponent } from './components/tooltip-dialog/tooltip-dialog.component';
 
 
 
@@ -110,6 +112,7 @@ import { RefreshButtonComponent } from './components/refresh-button/refresh-butt
         KerasModelDialogComponent,
         DataDialogComponent,
         DialogMenuComponent,
+        TooltipDialogComponent,
 	],
 	imports: [
 		CommonModule,
@@ -151,6 +154,7 @@ import { RefreshButtonComponent } from './components/refresh-button/refresh-butt
         MatDatepickerModule,
         MatNativeDateModule,
         MatTooltipModule,
+		MatChipsModule,
         DragDropModule,
 
         // DateTime Picker
@@ -215,6 +219,7 @@ import { RefreshButtonComponent } from './components/refresh-button/refresh-butt
         MatDatepickerModule,
         MatNativeDateModule,
         MatTooltipModule,
+		MatChipsModule,
         DragDropModule,
 
         // DateTime Picker

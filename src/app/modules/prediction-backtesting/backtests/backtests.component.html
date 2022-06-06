@@ -29,7 +29,7 @@
                         <div fxLayout="row" fxLayoutAlign="start center">
                             <span class="truncate">{{id}}</span>
                             <span fxFlex></span>
-                            <div class="square-badge"><span>{{_backtest.performances[id].points}}</span></div>
+                            <div class="square-badge"><span>{{_backtest.performances[id].points | number:'1.2-2'}}</span></div>
                         </div>
                 </button>
             </mat-list-item>
@@ -102,7 +102,7 @@
                                     <div fxLayout="row" fxLayoutAlign="start center">
                                         <span class="truncate">{{id}}</span>
                                         <span fxFlex></span>
-                                        <div class="square-badge"><span>{{_backtest.performances[id].points}}</span></div>
+                                        <div class="square-badge"><span>{{_backtest.performances[id].points | number:'1.2-2'}}</span></div>
                                     </div>
                             </button>
                         </mat-list-item>

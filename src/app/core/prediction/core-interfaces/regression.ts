@@ -1,38 +1,9 @@
-import { IKerasModelConfig, IKerasModelSummary, IKerasModelTrainingHistory } from "./keras-models"
+import { IKerasModelConfig, IKerasModelTrainingHistory } from "./keras-models";
+import { IRegressionConfig } from "./model";
 
 
 
 /* Regression Types at regression/types.py */
-
-
-
-
-
-/* Regression */
-
-
-
-/**
-* Regresion Configuration
-* The configuration that was used to train and will predict based on.
-*/
-export interface IRegressionConfig {
-	// The identifier of the model
-	id: string,
-
-	// Important information regarding the trained model
-    description: string,
-
-    // The number of candlesticks it will lookback to make a prediction
-    lookback: number,
-
-    // The number of predictions it will generate
-    predictions: number
-
-    // The summary of the KerasModel
-    summary: IKerasModelSummary
-}
-
 
 
 

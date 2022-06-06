@@ -10,7 +10,7 @@ export interface IClassificationTrainingCertificatesComponent {
 
 
 // View Sections
-export type ISectionID = 'class_evaluations'|'evaluations'|'epochs'|'certificate';
+export type ISectionID = 'general_evaluations'|'class_evaluations'|'evaluations'|'epochs'|'certificate';
 export interface ISection {
     id: ISectionID,
     name: string,

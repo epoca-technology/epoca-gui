@@ -1,39 +1,10 @@
 import { IModel } from "./model";
-import { IKerasModelConfig, IKerasModelSummary, IKerasModelTrainingHistory } from "./keras-models";
+import { IKerasModelConfig, IKerasModelTrainingHistory } from "./keras-models";
+import { IClassificationConfig } from "./model";
 
 
 
 /* Regression Types at classification/types.py */
-
-
-
-
-
-/* Classification */
-
-
-
-/**
-* Classification Configuration
-* The configuration that was used to train and will predict based on.
-*/
-export interface IClassificationConfig {
-    // The identifier of the model
-    id: string,
-
-    // Important information regarding the trained model
-    description: string,
-
-    // The identifier of the training data used
-    training_data_id: string,
-
-    // The list of ArimaModel|RegressionModel attached to the classification
-    models: IModel[]
-
-    // The summary of the KerasModel
-    summary: IKerasModelSummary
-}
-
 
 
 
@@ -313,13 +284,12 @@ export interface IClassificationEvaluation {
     decrease_successful_list: number[],
     decrease_successful_max: number,
     decrease_successful_min: number,
-    decrease_successful_mean: number
+    decrease_successful_mean: number,
+
+    // Outcomes
+    increase_outcomes: number,
+    decrease_outcomes: number
 }
-
-
-
-
-
 
 
 
@@ -369,5 +339,112 @@ export interface IClassificationTrainingCertificate {
     classification_evaluation: IClassificationEvaluation,
 
     // The configuration of the Classification
-    classification_config: IClassificationConfig
+    classification_config: IClassificationConfig,
+
+
+    /* General Evaluation */
+    general: IGeneralEvaluation // Only exists in the GUI
+}
+
+
+
+
+
+
+
+
+
+
+
+/* General Evaluation */
+
+
+
+
+
+
+
+/**
+ * General Evaluation (GUI)
+ * This evaluation is performed on each certificate when they are extracted 
+ * from the JSON files.
+ */
+export interface IGeneralEvaluation {
+    // Total points collected by all the items and categories
+    points: number,
+
+    // The maximum number of points that can be collected within the evaluation
+    max_points: number,
+    
+    // List of categories
+    categories: IGeneralEvaluationCategory[]
+}
+
+
+
+export interface IGeneralEvaluationCategory {
+    // The name of the category
+    name: string,
+
+    // The description of the category
+    description: string,
+
+    // Total points collected within the category
+    points: number,
+
+    // The maximum number of points that can be collected within the category
+    max_points: number,
+
+    // Category Items
+    items: IGeneralEvaluationItem[]
+}
+
+
+export interface IGeneralEvaluationItem {
+    // The identifier of the item
+    id: IGeneralEvaluationItemID,
+
+    // The name of the item
+    name: string,
+
+    // A brief description of what the evaluation does
+    description: string,
+
+    // A brief description of the item's state
+    state: string,
+
+    // Total points collected by the item
+    points: number,
+
+    // The maximum number of points that can be collected within the category
+    max_points: number
+}
+
+
+export type IGeneralEvaluationItemID = 
+// Training
+"loss_improvement"|
+"val_loss_improvement"|
+"loss_vs_val_loss"|
+"accuracy_improvement"|
+"val_accuracy_improvement"|
+"accuracy_vs_val_accuracy"|
+
+// Test Dataset Evaluation
+"test_ds_accuracy"|
+
+// Classification Evaluation
+"long_accuracy"|
+"short_accuracy"|
+"general_accuracy"|
+"prediction_neutrality"|
+"long_prediction_balance"|
+"short_prediction_balance";
+
+
+
+
+export interface IItemGeneralEvaluation {
+    points: number,
+    state: string
 }

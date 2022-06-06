@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { MatSidenav } from '@angular/material/sidenav';
+import {MatDialog} from '@angular/material/dialog';
 import { ApexAxisChartSeries } from 'ng-apexcharts';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
-import {MatDialog} from '@angular/material/dialog';
 import { IBacktestPosition, IModel, BacktestService, PredictionService, UtilsService } from '../../../core';
 import { 
 	AppService, 

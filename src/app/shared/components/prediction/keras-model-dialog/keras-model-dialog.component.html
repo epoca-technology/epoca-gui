@@ -24,21 +24,21 @@
             <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
                 <p class="light-text">Class</p>
                 <span fxFlex></span>
-                <p class="formula">{{sum.model_class}}</p>
+                <p>{{sum.model_class}}</p>
             </div>
 
             <!-- Shape -->
             <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
                 <p class="light-text truncate">Shape</p>
                 <span fxFlex></span>
-                <p class="formula" matTooltip="Input -> Output">({{sum.input_shape}}) -> ({{sum.output_shape}})</p>
+                <p matTooltip="Input -> Output">({{sum.input_shape}}) -> ({{sum.output_shape}})</p>
             </div>
 
             <!-- Optimizer -->
             <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
                 <p class="light-text truncate">Optimizer</p>
                 <span fxFlex></span>
-                <p class="formula clickable" role="button" 
+                <p class="clickable" role="button" 
                     (click)="_nav.displayDataDialog('Optimizer', sum.optimizer_config)">
                     {{sum.optimizer_config.name}}(lr={{sum.optimizer_config.learning_rate}})
                 </p>
@@ -48,7 +48,7 @@
             <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
                 <p class="light-text truncate">Loss</p>
                 <span fxFlex></span>
-                <p class="formula clickable" role="button"
+                <p class="clickable" role="button"
                 (click)="_nav.displayDataDialog('Loss', sum.loss_config)">{{sum.loss_config.name}}</p>
             </div>
 
@@ -56,16 +56,16 @@
             <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
                 <p class="light-text truncate">Metric</p>
                 <span fxFlex></span>
-                <p class="formula clickable" role="button"
+                <p class="clickable" role="button"
                 (click)="_nav.displayDataDialog('Metrics', sum.metrics)">{{sum.metrics[1] || sum.metrics[0]}}</p>
             </div>
 
             <!-- Network -->
-            <div class="margin-top" fxLayout="row" fxLayoutAlign="start start">
-                <p class="light-text truncate">Net.</p>
+            <div class="margin-top" fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" fxLayoutAlign="start start">
+                <p class="light-text truncate margin-bottom">Network</p>
                 <span fxFlex></span>
                 <div class="formula">
-                    <p *ngFor="let l of sum.layers" class="smt">{{l.name}}({{l.input_shape}}) -> ({{l.output_shape}})</p>
+                    <p *ngFor="let l of sum.layers" class="smt">{{l.name}}({{l.input_shape}}) > ({{l.output_shape}})</p>
                 </div>
             </div>
         </div>

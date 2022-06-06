@@ -1,12 +1,14 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { MatSidenav } from '@angular/material/sidenav';
+import {MatDialog} from '@angular/material/dialog';
 import { ApexAxisChartSeries } from 'ng-apexcharts';
 import { Subscription } from 'rxjs';
 import { 
 	ClassificationTrainingService, 
 	UtilsService, 
-	IClassificationTrainingCertificate 
+	IClassificationTrainingCertificate, 
+	IClassificationCertificatesOrder
 } from '../../../core';
 import { 
 	AppService, 
@@ -20,6 +22,10 @@ import {
 	NavService, 
 	SnackbarService,
 } from '../../../services';
+import { 
+	ClassificationTrainingCertificatesConfigDialogComponent, 
+	IConfigResponse 
+} from './classification-training-certificates-config-dialog';
 import { 
 	IClassificationTrainingCertificatesComponent, 
 	ISection, 
@@ -48,16 +54,21 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 	public initialized: boolean = false;
 	public initializing: boolean = false;
 
+	// Certificates Order
+	public order: IClassificationCertificatesOrder = "general_points";
+
 	// Navigation
 	public readonly generalSections: ISection[] = [
+		{id: 'general_evaluations', name: 'General Evaluations', icon: 'query_stats'},
 		{id: 'class_evaluations', name: 'Classification Evaluations', icon: 'rule'},
 		{id: 'evaluations', name: 'Test Dataset Evaluations', icon: 'playlist_add_check'},
 		{id: 'epochs', name: 'Epochs', icon: 'format_list_numbered'}
 	]
 	private readonly generalSectionIndex: {[sectionID: string]: number} = {
-		'class_evaluations': 0,
-		'evaluations': 1,
-		'epochs': 2,
+		'general_evaluations': 0,
+		'class_evaluations': 1,
+		'evaluations': 2,
+		'epochs': 3,
 	}
 	public section: ISection = this.generalSections[0];
 	public cert?: IClassificationTrainingCertificate;
@@ -65,6 +76,7 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 	public activeTabIndex: number = 0;
 
 	// General Charts
+	public points?: IBarChartOptions;
 	public classAccuracies?: IBarChartOptions;
 	public classPredictions?: IBarChartOptions;
 	public classIncreaseProbs?: IBarChartOptions;
@@ -75,11 +87,13 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 	public epochs?: IBarChartOptions;
 
 	// Certificates Charts
+	public activeGeneralEvaluationCategory?: number;
 	public testDSEvaluation?: IBarChartOptions;
 	public testDSLoss?: ILineChartOptions;
 	public testDSAccuracy?: ILineChartOptions;
-	public classPrediction?: IPieChartOptions;
 	public classAccuracy?: IBarChartOptions;
+	public classPrediction?: IPieChartOptions;
+	public classOutcome?: IPieChartOptions;
 	public classProbs?: IScatterChartOptions;
 	public activeProb: number = 0;
 
@@ -96,7 +110,8 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 		private _app: AppService,
 		private _chart: ChartService,
 		private _utils: UtilsService,
-		public _training: ClassificationTrainingService
+		public _training: ClassificationTrainingService,
+		private dialog: MatDialog,
 	) { }
 
 
@@ -136,28 +151,24 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 		// Set the state
 		this.initializing = true;
 
-		// Abort the bottom sheet if there are no files
+		// Abort the dialog if there are no files
 		if (!event || !event.target || !event.target.files || !event.target.files.length) return;
 
-
-		// Display the bottom sheet and handle the action
-		this._nav.displayDialogMenu('Training Certificates', [
-			{icon: 'format_list_numbered', title: 'View all', response: 10000},
-			{icon: 'leaderboard', title: 'View top 5', response: 5},
-			{icon: 'leaderboard', title: 'View top 10', response: 10},
-			{icon: 'leaderboard', title: 'View top 20', response: 20},
-			{icon: 'leaderboard', title: 'View top 40', response: 40},
-			{icon: 'leaderboard', title: 'View top 60', response: 60},
-			{icon: 'leaderboard', title: 'View top 100', response: 100},
-			{icon: 'leaderboard', title: 'View top 150', response: 150},
-			{icon: 'leaderboard', title: 'View top 200', response: 200},
-		]).afterClosed().subscribe(async (response: any) => {
-			if (typeof response == "number") {
+		// Open the configuration dialog
+		this.dialog.open(ClassificationTrainingCertificatesConfigDialogComponent, {
+			hasBackdrop: this._app.layout.value != 'mobile', // Mobile optimization
+			panelClass: 'small-dialog',
+			disableClose: true
+		}).afterClosed().subscribe(async (response: IConfigResponse|undefined) => {
+			if (response) {
 				// Attempt to initiaze the certificates
 				try {
 					// Pass the files to the service
-					await this._training.init(event, response);
+					await this._training.init(event, response.order, response.limit);
 
+					// Set the order
+					this.order = response.order;
+					
 					// Build the general charts
 					this.buildGeneralCharts();
 
@@ -167,7 +178,7 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 						await this.navigate('certificate', 0);
 					} else { 
 						// Navigate to evaluations
-						await this.navigate('class_evaluations');
+						await this.navigate('general_evaluations');
 					}
 
 					// Allow a small delay
@@ -240,6 +251,7 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 			this.cert = undefined;
 			this.activeClassTabIndex = 0;
 			this.activeTabIndex = 0;
+			this.activeGeneralEvaluationCategory = undefined;
 			this.activeProb = 0;
 		}
 
@@ -303,6 +315,16 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 	private buildGeneralClassificationEvaluationCharts(baseHeight: number): void {
 		// Create a copy of the instance to handle chart click events
 		const self = this;
+
+
+		/* Build the Points Chart */
+		this.points = this._chart.getBarChartOptions(
+			{series: [{name: "General Points",data: this._training.certificates.map((c) => { return c.general.points }),color: "#000000"}]}, 
+			this._training.ids, 
+			baseHeight
+		);
+		this.points.chart.events = {click: function(e, cc, c) {if (c.dataPointIndex >= 0) setTimeout(() => {self.navigate("certificate", c.dataPointIndex)}, 100)}}
+
 
 		/* Build the Accuracies Chart */
 		
@@ -483,17 +505,6 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 	 * @returns void
 	 */
 	private buildCertificateClassificationEvaluationCharts(): void {
-		// Build the predictions chart
-		this.classPrediction = this._chart.getPieChartOptions({
-			series: [
-				this.cert!.classification_evaluation.increase_num, 
-				this.cert!.classification_evaluation.decrease_num, 
-				this.cert!.classification_evaluation.max_evaluations - this.cert!.classification_evaluation.evaluations
-			],
-			colors: [this._chart.upwardColor, this._chart.downwardColor, this._chart.neutralColor]
-		}, ["Increase", "Decrease", "Neutral"], 210);
-
-
 		// Build the accuracy chart
 		this.classAccuracy = this._chart.getBarChartOptions(
 			{
@@ -503,12 +514,36 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 					{name:'General Acc.%',data:[this.cert!.classification_evaluation.acc]}
 				], 
 				colors: [this._chart.upwardColor, this._chart.downwardColor, "#000000"],
-				yaxis: {labels: {show: false}}
+				xaxis: {categories: [this.cert!.id], labels: {show: false}},
+				yaxis: {labels: {show: false}},
+				plotOptions: { bar: { horizontal: false, borderRadius: 4, columnWidth: "25%",}}
 			}, 
 			[this.cert!.id], 
-			200
+			295
 		);
 
+
+		// Build the predictions chart
+		this.classPrediction = this._chart.getPieChartOptions({
+			series: [
+				this.cert!.classification_evaluation.increase_num, 
+				this.cert!.classification_evaluation.decrease_num, 
+				this.cert!.classification_evaluation.max_evaluations - this.cert!.classification_evaluation.evaluations
+			],
+			colors: [this._chart.upwardColor, this._chart.downwardColor, this._chart.neutralColor],
+			legend: {position: "bottom"}
+		}, ["Increase", "Decrease", "Neutral"], 345);
+
+
+		// Build the outcomes chart
+		this.classOutcome = this._chart.getPieChartOptions({
+			series: [
+				this.cert!.classification_evaluation.increase_outcomes || 0, 
+				this.cert!.classification_evaluation.decrease_outcomes || 0
+			],
+			colors: [this._chart.upwardColor, this._chart.downwardColor],
+			legend: {position: "bottom"}
+		}, ["Increase", "Decrease"], 345);
 
 		
 		// Build the class. prediction probabilities
@@ -523,30 +558,29 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 				this.cert!.classification_evaluation.increase_num: this.cert!.classification_evaluation.decrease_num;
 		for (let i = 0; i < maxLength; i++) {
 			if (i < this.cert!.classification_evaluation.increase_list.length) {
-				series[0].data.push(<any>[i, this.cert!.classification_evaluation.increase_list[i]]);
+				series[0].data.push(<any>[i, this._utils.outputNumber(this.cert!.classification_evaluation.increase_list[i], {dp: 3})]);
 			}
 			if (i < this.cert!.classification_evaluation.decrease_list.length) {
-				series[1].data.push(<any>[i, this.cert!.classification_evaluation.decrease_list[i]]);
+				series[1].data.push(<any>[i, this._utils.outputNumber(this.cert!.classification_evaluation.decrease_list[i], {dp: 3})]);
 			}
 			if (i < this.cert!.classification_evaluation.increase_successful_list.length) {
-				series[2].data.push(<any>[i, this.cert!.classification_evaluation.increase_successful_list[i]]);
+				series[2].data.push(<any>[i, this._utils.outputNumber(this.cert!.classification_evaluation.increase_successful_list[i], {dp: 3})]);
 			}
 			if (i < this.cert!.classification_evaluation.decrease_successful_list.length) {
-				series[3].data.push(<any>[i, this.cert!.classification_evaluation.decrease_successful_list[i]]);
+				series[3].data.push(<any>[i, this._utils.outputNumber(this.cert!.classification_evaluation.decrease_successful_list[i], {dp: 3})]);
 			}
 		}
 		this.classProbs = this._chart.getScatterChartOptions(
 			{
 				chart: {
-					height: 600, type: 'scatter',
+					height: 600, 
+					type: 'scatter',
 					animations: { enabled: false}, 
 					toolbar: {show: true, tools: {download: false}}, 
-					zoom: {enabled: true, type: 'y'}},
-				series: series
-			},
-			600,
-			true,
-			{min: 0.5, max: 1}
+					zoom: {enabled: true, type: 'xy'},
+				},
+				series: series,
+			},600,true,{min: 0.5, max: 1}
 		);
 	}
 
@@ -566,10 +600,12 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 			{
 				series: [{name:'Loss',data:[this.cert!.test_evaluation[0]]},{name:'Accuracy',data:[this.cert!.test_evaluation[1]]}], 
 				colors: [this._chart.downwardColor, this._chart.upwardColor],
-				yaxis: {labels: {show: false}}
+				xaxis: {categories: [this.cert!.id], labels: {show: false}},
+				yaxis: {labels: {show: false}},
+				plotOptions: { bar: { horizontal: false, borderRadius: 4, columnWidth: "20%",}},
 			}, 
 			[this.cert!.id], 
-			110
+			300
 		);
 
 		// Build the Loss Chart
