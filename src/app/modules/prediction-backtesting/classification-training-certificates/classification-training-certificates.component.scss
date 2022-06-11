@@ -41,24 +41,20 @@
 
             .general-evaluation {
                 .desktop-card { padding:0px; }
-                .square-badge-category { background-color: #424242;}
+                .square-badge-category { 
+                    background-color: #424242;
+                    padding:4px 6px 4px 6px!important;
+                    min-width: 25px;
+                    font-weight: 600;
+                    width: auto;
+                    font-size:10.5px!important;
+                }
                 .general-header { padding: 15px;}
                 .categories-content {
                     .divider { margin: 20px 0 20px 0;}
                     .category {
                         .category-header {padding: 25px 15px 25px 15px;}
                         .divider { margin:0;}
-
-                        .square-badge, .square-badge-success, .square-badge-error { 
-                            padding:4px 5px 4px 5px;
-                            min-width: 25px;
-                            font-weight: 600;
-                            font-size:10px!important;
-                            max-height:18px;
-                            width: auto;
-                        
-                            .mat-icon { vertical-align: middle!important; }
-                        }
     
                         .item {
                             padding:10px 15px 10px 25px;

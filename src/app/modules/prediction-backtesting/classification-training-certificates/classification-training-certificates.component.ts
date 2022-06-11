@@ -177,8 +177,14 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 						// Navigate to the certificate
 						await this.navigate('certificate', 0);
 					} else { 
-						// Navigate to evaluations
-						await this.navigate('general_evaluations');
+						// Navigate to the selected evaluation
+						if (this.order == "general_points") {
+							await this.navigate('general_evaluations');
+						} else if (this.order == "acc") {
+							await this.navigate('class_evaluations');
+						} else {
+							await this.navigate('evaluations');
+						}
 					}
 
 					// Allow a small delay

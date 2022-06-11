@@ -722,7 +722,7 @@
                                                     <!-- Items -->
                                                     <div *ngIf="activeGeneralEvaluationCategory == catIndex" class="fadeIn">
                                                         <div *ngFor="let item of cat.items; last as lastItem" 
-                                                            class="item fake-button" role="button" matRipple 
+                                                            class="item clickable" role="button" 
                                                             (click)="_nav.displayTooltip(item.name, item.description)">
                                                             <div fxLayout="row" fxLayoutAlign="start start">
                                                                 <div fxFlex="80" fxFlex.xs="70" fxFlex.sm="70">
@@ -832,6 +832,16 @@
                                                 <p [ngClass]="{'success-color': cert.training_data_summary.include_aroon, 'light-text': !cert.training_data_summary.include_aroon}" 
                                                     matTooltip="If enabled, Aroon Up and Down will be included as features.">
                                                     {{cert.training_data_summary.include_aroon ? 'Enabled': 'Disabled'}}
+                                                </p>
+                                            </div>
+
+                                            <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+                                                <p class="light-text">K. Model Config</p>
+                                                <span fxFlex></span>
+                                                <p class="clickable" role="button" 
+                                                    matTooltip="Configuration used to build the Keras Classification Model"
+                                                    (click)="_nav.displayDataDialog('Keras Model Configuration', cert.keras_model_config)">
+                                                    {{cert.keras_model_config.name}}
                                                 </p>
                                             </div>
                                         </div>
