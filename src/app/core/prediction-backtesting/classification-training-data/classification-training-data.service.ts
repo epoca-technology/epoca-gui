@@ -48,8 +48,11 @@ export class ClassificationTrainingDataService implements IClassificationTrainin
     public down_percent_change!: number;
 
     // Optional Technical Analysis Features
-    public include_rsi!: boolean;   // Momentum
-    public include_aroon!: boolean; // Trend
+    public include_rsi!: boolean;   	// Momentum
+    public include_stoch!: boolean;   	// Momentum
+    public include_aroon!: boolean; 	// Trend
+    public include_stc!: boolean; 		// Trend
+    public include_mfi!: boolean; 		// Volume
 
     // The total number of features that will be used by the model to predict
     public features_num!: number;
@@ -97,7 +100,10 @@ export class ClassificationTrainingDataService implements IClassificationTrainin
 		this.up_percent_change = file.up_percent_change;
 		this.down_percent_change = file.down_percent_change;
 		this.include_rsi = file.include_rsi;
+		this.include_stoch = file.include_stoch;
 		this.include_aroon = file.include_aroon;
+		this.include_stc = file.include_stc;
+		this.include_mfi = file.include_mfi;
 		this.features_num = file.features_num;
 		this.price_actions_insight = file.price_actions_insight;
 		this.predictions_insight = file.predictions_insight;
@@ -185,7 +191,10 @@ export class ClassificationTrainingDataService implements IClassificationTrainin
 		if (typeof file.down_percent_change != "number") throw new Error(`The provided down_percent_change (${file.down_percent_change}) is invalid.`);
 		if (!Array.isArray(file.models)) throw new Error(`The provided models are invalid.`);
 		if (typeof file.include_rsi != "boolean") throw new Error(`The provided include_rsi (${file.include_rsi}) is invalid.`);
+		if (typeof file.include_stoch != "boolean") throw new Error(`The provided include_stoch (${file.include_stoch}) is invalid.`);
 		if (typeof file.include_aroon != "boolean") throw new Error(`The provided include_aroon (${file.include_aroon}) is invalid.`);
+		if (typeof file.include_stc != "boolean") throw new Error(`The provided include_stc (${file.include_stc}) is invalid.`);
+		if (typeof file.include_mfi != "boolean") throw new Error(`The provided include_mfi (${file.include_mfi}) is invalid.`);
 		if (typeof file.features_num != "number") throw new Error(`The provided features_num (${file.features_num}) is invalid.`);
 		if (!file.price_actions_insight || typeof file.price_actions_insight != "object") throw new Error("The provided price_actions_insight is not an object.")
 		if (!file.predictions_insight || typeof file.predictions_insight != "object") throw new Error("The provided predictions_insight is not an object.")

@@ -143,8 +143,11 @@ export interface IClassificationConfig {
     models: IModel[]
 
     // Optional Technical Analysis Features
-    include_rsi: boolean,   // Momentum
-    include_aroon: boolean, // Trend
+    include_rsi: boolean,       // Momentum
+    include_stoch: boolean,     // Momentum
+    include_aroon: boolean,     // Trend
+    include_stc: boolean,       // Trend
+    include_mfi: boolean,       // Volume
 
     // The total number of features that will be used by the model to predict
     features_num: number,

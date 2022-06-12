@@ -670,14 +670,44 @@
                                                     {{cert.training_data_summary.include_rsi ? 'Enabled': 'Disabled'}}
                                                 </p>
                                             </div>
+
+                                            <!-- Stoch -->
+                                            <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+                                                <p class="light-text truncate">Stoch</p>
+                                                <span fxFlex></span>
+                                                <p [ngClass]="{'success-color': cert.training_data_summary.include_stoch, 'light-text': !cert.training_data_summary.include_stoch}" 
+                                                    matTooltip="If enabled, the Stoch will be included as a feature.">
+                                                    {{cert.training_data_summary.include_stoch ? 'Enabled': 'Disabled'}}
+                                                </p>
+                                            </div>
                     
                                             <!-- Aroon -->
                                             <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
                                                 <p class="light-text truncate">Aroon</p>
                                                 <span fxFlex></span>
                                                 <p [ngClass]="{'success-color': cert.training_data_summary.include_aroon, 'light-text': !cert.training_data_summary.include_aroon}" 
-                                                    matTooltip="If enabled, Aroon Up and Down will be included as features.">
+                                                    matTooltip="If enabled, Aroon will be included as a feature.">
                                                     {{cert.training_data_summary.include_aroon ? 'Enabled': 'Disabled'}}
+                                                </p>
+                                            </div>
+
+                                            <!-- STC -->
+                                            <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+                                                <p class="light-text truncate">STC</p>
+                                                <span fxFlex></span>
+                                                <p [ngClass]="{'success-color': cert.training_data_summary.include_stc, 'light-text': !cert.training_data_summary.include_stc}" 
+                                                    matTooltip="If enabled, the STC will be included as features.">
+                                                    {{cert.training_data_summary.include_stc ? 'Enabled': 'Disabled'}}
+                                                </p>
+                                            </div>
+                    
+                                            <!-- MFI -->
+                                            <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+                                                <p class="light-text truncate">MFI</p>
+                                                <span fxFlex></span>
+                                                <p [ngClass]="{'success-color': cert.training_data_summary.include_mfi, 'light-text': !cert.training_data_summary.include_mfi}" 
+                                                    matTooltip="If enabled, the MFI will be included as features.">
+                                                    {{cert.training_data_summary.include_mfi ? 'Enabled': 'Disabled'}}
                                                 </p>
                                             </div>
                                         </div>
@@ -806,33 +836,6 @@
                                                 <p class="light-text">End</p>
                                                 <span fxFlex></span>
                                                 <p matTooltip="The time when the model finished training.">{{cert.training_end | date:'medium'}}</p>
-                                            </div>
-
-                                            <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
-                                                <p class="light-text truncate">Steps</p>
-                                                <span fxFlex></span>
-                                                <p matTooltip="The number of prediction candlesticks it will skip for every position when building \
-                                                the data regardless of how long a position takes to be closed.">
-                                                    {{cert.training_data_summary.steps}}
-                                                </p>
-                                            </div>
-
-                                            <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
-                                                <p class="light-text truncate">RSI</p>
-                                                <span fxFlex></span>
-                                                <p [ngClass]="{'success-color': cert.training_data_summary.include_rsi, 'light-text': !cert.training_data_summary.include_rsi}" 
-                                                    matTooltip="If enabled, the RSI will be included as a feature.">
-                                                    {{cert.training_data_summary.include_rsi ? 'Enabled': 'Disabled'}}
-                                                </p>
-                                            </div>
-                    
-                                            <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
-                                                <p class="light-text truncate">Aroon</p>
-                                                <span fxFlex></span>
-                                                <p [ngClass]="{'success-color': cert.training_data_summary.include_aroon, 'light-text': !cert.training_data_summary.include_aroon}" 
-                                                    matTooltip="If enabled, Aroon Up and Down will be included as features.">
-                                                    {{cert.training_data_summary.include_aroon ? 'Enabled': 'Disabled'}}
-                                                </p>
                                             </div>
 
                                             <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
