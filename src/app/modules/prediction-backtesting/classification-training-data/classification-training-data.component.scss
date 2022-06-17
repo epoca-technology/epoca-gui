@@ -5,9 +5,26 @@
     h3{ margin:0; padding:0}
     p {margin:0}
 
+    .technical-analysis {
+        padding:0!important;
+        h3 {padding: 15px 0 15px 15px;}
+        .table{
+            tr td:first-child { text-align: left!important;}
+        }
+    }
+
+    .data-container {
+        max-width:100%;
+        overflow-x:auto;
+
+        .table {
+            td {text-align: center;}
+            th {text-align: center;}
+        }
+    }
 
     .summary-section {
-        padding:15px 30px 15px 30px;
+        padding:15px;
         .margin-top {margin-top:20px;}
 
     }
@@ -15,16 +32,7 @@
     .data-section {
         padding:15px;
 
-        .data-container {
-            max-width:100%;
-            overflow-x:auto;
 
-            .table {
-                td {text-align: center;}
-                th {text-align: center;}
-            }
-
-        }
     }
 }
 
@@ -49,7 +57,7 @@
     .data-section {
         padding:0px!important;
     }
-
+    .technical-analysis h3 {padding:0px!important;}
 }
 
 

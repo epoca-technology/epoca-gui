@@ -28,29 +28,24 @@ export interface IRegressionTrainingConfig {
     // Any relevant data that should be attached to the trained model.
     description: string,
 
+    /**
+     * Regression Model Type
+     * Default: will generate all predictions in one go.
+     * Autoregressive: will generate 1 prediction at a time and feed it to itself as an input 
+     */
+    autoregressive: boolean,
+
     // The number of prediction candlesticks that will look into the past in order to make a prediction.
     lookback: number,
 
     // The number of predictions to be generated
     predictions: number,
 
-    // The learning rate to be used by the optimizer
-    learning_rate: number,
-
     // The optimizer to be used.
-    optimizer: string, // 'adam'|'rmsprop'
+    optimizer: "adam"|"rmsprop",
 
     // The loss function to be used
-    loss: string, // 'mse'|'mae'
-
-    // The metric to be used for meassuring the val_loss
-    metric: string, // 'mse'|'mae'
-
-    // Batch Size
-    batch_size: number,
-
-    // Train Data Shuffling
-    shuffle_data: boolean,
+    loss: "mean_squared_error"|"mean_absolute_error",
 
     // Keras Model Configuration
     keras_model: IKerasModelConfig
@@ -72,8 +67,36 @@ export interface IRegressionTrainingBatch {
     start: string|number|null,
     end: string|number|null,
 
+    // If enabled, it will delete the model files once the evaluation is complete
+    hyperparams_mode: boolean,
+
 	// The configurations for the models that will be trained within the batch.
 	models: IRegressionTrainingConfig[]
+}
+
+
+
+
+/**
+ * Regression Training Type Configuration
+ * Based on the type of training (hyperparams|shortlist), different training settings will be used.
+ * For more information regarding these args, view the KerasTraining.ipynb notebook.
+ */
+export interface IRegressionTrainingTypeConfig {
+    // A scalar float32 or float64 Tensor or a Python number. The initial learning rate.
+    initial_lr: number,
+
+    // How often to apply decay.
+    decay_steps: number,
+
+    // A Python number. The decay rate for the learning rate per step.
+    decay_rate: number,
+
+    // The maximum number of epochs the training process will go through
+    epochs: number,
+
+    // Number of epochs with no improvement after which training will be stopped.
+    patience: number
 }
 
 
@@ -107,17 +130,21 @@ export interface IRegressionEvaluation {
     acc: number,
 
     // Increase Predictions Overview
+    increase_list: number[],
     increase_max: number,
     increase_min: number,
     increase_mean: number,
+    increase_successful_list: number[],
     increase_successful_max: number,
     increase_successful_min: number,
     increase_successful_mean: number,
 
     // Decrease Predictions Overview
+    decrease_list: number[],
     decrease_max: number,
     decrease_min: number,
     decrease_mean: number,
+    decrease_successful_list: number[],
     decrease_successful_max: number,
     decrease_successful_min: number,
     decrease_successful_mean: number
@@ -139,12 +166,6 @@ export interface IRegressionTrainingDataSummaryItem {
 	"50%": number,
 	"75%": number,
 	"max": number
-}
-export interface IRegressionTrainingDataSummary {
-	o: IRegressionTrainingDataSummaryItem,	// Open Price
-	h: IRegressionTrainingDataSummaryItem,	// Highest Price
-	l: IRegressionTrainingDataSummaryItem,	// Lowest Price
-	c: IRegressionTrainingDataSummaryItem,	// Close Price
 }
 
 
@@ -170,22 +191,18 @@ export interface IRegressionTrainingCertificate {
 
     // Dataset Sizes
     train_size: number,     // Number of rows in the train dataset
-    val_size: number,       // Number of rows in the val dataset
     test_size: number,      // Number of rows in the test dataset
 
     // Data Summary - Description extracted directly from the normalized dataframe
-    training_data_summary: IRegressionTrainingDataSummary,
+    training_data_summary: IRegressionTrainingDataSummaryItem,
 
 
     /* Training Configuration */
+    autoregressive: boolean,
     lookback: number,
     predictions: number,
-    learning_rate: number,
-    optimizer: string,
-    loss: string,
-    metric: string,
-    batch_size: number,
-    shuffle_data: boolean,
+    optimizer: "adam"|"rmsprop",
+    loss: "mean_squared_error"|"mean_absolute_error",
     keras_model_config: IKerasModelConfig,
 
 
@@ -199,7 +216,7 @@ export interface IRegressionTrainingCertificate {
     training_history: IKerasModelTrainingHistory,
 
     // Result of the evaluation of the test dataset
-    test_evaluation: [number, number], // [loss, metric]
+    test_evaluation: number, // loss
 
     // Regression Post-Training Evaluation
     regression_evaluation: IRegressionEvaluation,

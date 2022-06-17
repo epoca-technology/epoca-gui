@@ -1,0 +1,16 @@
+<div fxLayout="row" fxLayoutAlign="start center">
+    <p class="formula clickable" role="button" 
+        (click)="_nav.displayModelListDialog(config.models)"
+        matTooltip="Features: The list of ArimaModel|RegressionModel (and other data) that comprise the Classification.">
+        [{{config.features_num}}] >
+    </p>
+    <p class="formula clickable" role="button" 
+        matTooltip="KerasClassificationModel" 
+        (click)="_nav.displayKerasModelDialog(config.id, config.description, config.summary)">
+        &nbsp;{{config.id | stringOverview: _app.layout.value == 'desktop' ? 16: 12: true}}
+    </p>
+    <p class="formula" 
+        matTooltip="Labels: The probabilities for an up or down price action to take place.">
+        &nbsp;> [2]
+    </p>
+</div>

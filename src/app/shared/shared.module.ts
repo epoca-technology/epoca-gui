@@ -78,9 +78,11 @@ import { ModelDialogComponent } from './components/prediction/model-dialog/model
 import { ModelListDialogComponent } from './components/prediction/model-list-dialog/model-list-dialog.component';
 import { ModelContentComponent } from './components/prediction/model-content/model-content.component';
 import { PredictionDialogComponent } from './components/prediction/prediction-dialog/prediction-dialog.component';
+import { ClassificationElementComponent } from './components/prediction/classification-element/classification-element.component';
 import { KerasModelDialogComponent } from './components/prediction/keras-model-dialog/keras-model-dialog.component';
 import { RefreshButtonComponent } from './components/refresh-button/refresh-button.component';
 import { TooltipDialogComponent } from './components/tooltip-dialog/tooltip-dialog.component';
+import { RegressionElementComponent } from './components/prediction/regression-element/regression-element.component';
 
 
 
@@ -109,10 +111,12 @@ import { TooltipDialogComponent } from './components/tooltip-dialog/tooltip-dial
         ModelListDialogComponent,
         ModelContentComponent,
         PredictionDialogComponent,
+		ClassificationElementComponent,
         KerasModelDialogComponent,
         DataDialogComponent,
         DialogMenuComponent,
         TooltipDialogComponent,
+        RegressionElementComponent,
 	],
 	imports: [
 		CommonModule,
@@ -248,6 +252,8 @@ import { TooltipDialogComponent } from './components/tooltip-dialog/tooltip-dial
         RefreshButtonComponent,
         MobileTabsComponent,
 		ModelContentComponent,
+		ClassificationElementComponent,
+		RegressionElementComponent,
 	]
 })
 export class SharedModule { }

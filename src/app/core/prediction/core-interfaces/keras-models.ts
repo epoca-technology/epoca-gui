@@ -28,6 +28,22 @@ export interface IKerasModelConfig {
     // Activations
     activations?: string[],
 
+    // Filters
+    filters?: number[],
+
+    // Kernel Sizes
+    kernel_sizes?: number[],
+
+    // Pool Sizes
+    pool_sizes?: number[],
+
+    /**
+     * Regression Model Type
+     * Default: will generate all predictions in one go.
+     * Autoregressive: will generate 1 prediction at a time and feed it to itself as an input 
+     */
+    autoregressive?: boolean,
+
     /**
      * Lookback used as the model's input. This lookback is not set in the 
      * RegressionTraining.json config file. However, it is populated once the RegressionTraining

@@ -58,8 +58,9 @@
         <!-- Summary Section -->
         <div *ngIf="activeIndex == 0" class="summary-section fadeIn">
             <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column">
+                <span fxFlex></span>
                 <!-- Info Cards-->
-                <div fxFlex="46" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                <div fxFlex="40" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
                     <!-- General Information -->
                     <div class="desktop-card">
                         <h3>General Information</h3>
@@ -71,7 +72,7 @@
                         <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
                             <p class="light-text truncate">ID</p>
                             <span fxFlex></span>
-                            <p class="clickable" (click)="_clipboard.copy(_td.id)">{{_td.id | stringOverview: 10}}</p>
+                            <p class="clickable" (click)="_clipboard.copy(_td.id)">{{_td.id | stringOverview: 6}}</p>
                         </div>
 
                         <!-- Regression Selection ID -->
@@ -79,7 +80,7 @@
                             <p class="light-text truncate">Regr. Selection</p>
                             <span fxFlex></span>
                             <p class="clickable" (click)="_clipboard.copy(_td.regression_selection_id)">
-                                {{_td.regression_selection_id | stringOverview: 10}}
+                                {{_td.regression_selection_id | stringOverview: 6}}
                             </p>
                         </div>
 
@@ -87,7 +88,7 @@
                         <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
                             <p class="light-text truncate">Creation</p>
                             <span fxFlex></span>
-                            <p>{{_td.creation | date:'medium'}}</p>
+                            <p matTooltip="The time in which the training data process was completed.">{{_td.creation | date:'medium'}}</p>
                         </div>
 
                         <!-- Start -->
@@ -130,56 +131,6 @@
                             <p class="error-color" matTooltip="Down Percent Change">{{_td.down_percent_change}}%</p>
                         </div>
 
-                        <!-- RSI -->
-                        <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
-                            <p class="light-text truncate">RSI</p>
-                            <span fxFlex></span>
-                            <p [ngClass]="{'success-color': _td.include_rsi, 'light-text': !_td.include_rsi}" 
-                                matTooltip="If enabled, the RSI will be included as a feature.">
-                                {{_td.include_rsi ? 'Enabled': 'Disabled'}}
-                            </p>
-                        </div>
-
-                        <!-- Stoch -->
-                        <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
-                            <p class="light-text truncate">Stoch</p>
-                            <span fxFlex></span>
-                            <p [ngClass]="{'success-color': _td.include_stoch, 'light-text': !_td.include_stoch}" 
-                                matTooltip="If enabled, the Stoch will be included as a feature.">
-                                {{_td.include_stoch ? 'Enabled': 'Disabled'}}
-                            </p>
-                        </div>
-
-                        <!-- Aroon -->
-                        <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
-                            <p class="light-text truncate">Aroon</p>
-                            <span fxFlex></span>
-                            <p [ngClass]="{'success-color': _td.include_aroon, 'light-text': !_td.include_aroon}" 
-                                matTooltip="If enabled, Aroon will be included a feature.">
-                                {{_td.include_aroon ? 'Enabled': 'Disabled'}}
-                            </p>
-                        </div>
-
-                        <!-- STC -->
-                        <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
-                            <p class="light-text truncate">STC</p>
-                            <span fxFlex></span>
-                            <p [ngClass]="{'success-color': _td.include_stc, 'light-text': !_td.include_stc}" 
-                                matTooltip="If enabled, the STC will be included as features.">
-                                {{_td.include_stc ? 'Enabled': 'Disabled'}}
-                            </p>
-                        </div>
-
-                        <!-- MFI -->
-                        <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
-                            <p class="light-text truncate">MFI</p>
-                            <span fxFlex></span>
-                            <p [ngClass]="{'success-color': _td.include_mfi, 'light-text': !_td.include_mfi}" 
-                                matTooltip="If enabled, the MFI will be included as features.">
-                                {{_td.include_mfi ? 'Enabled': 'Disabled'}}
-                            </p>
-                        </div>
-
                         <!-- Shape -->
                         <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
                             <p class="light-text truncate">Shape</p>
@@ -187,9 +138,10 @@
                             <p matTooltip="Rows, Columns">({{_td.training_data.rows.length}}, {{_td.training_data.columns.length}})</p>
                         </div>
 
+                        <!-- Classification Preview -->
                         <div fxLayout="row" fxLayoutAlign="start center" fxLayoutAlign.xs="center center" fxLayoutAlign.sm="center center" class="margin-top">
-                            <p class="light-text show-on-desktop">Class.</p>
-                            <span fxFlex class="show-on-desktop"></span>
+                            <p class="light-text">Class.</p>
+                            <span fxFlex></span>
                             <div fxLayout="row" fxLayoutAlign="start center">
                                 <p class="formula clickable" role="button" 
                                     (click)="_nav.displayModelListDialog(_td.modelList)"
@@ -198,7 +150,7 @@
                                     [{{_td.features_num}}] ->
                                 </p>
                                 <p class="formula">
-                                    &nbsp;KerasClassificationModel
+                                    &nbsp;ClassificationModel
                                 </p>
                                 <p class="formula" 
                                     matTooltip="Labels: The probabilities for an up or down price action to take place.">
@@ -210,6 +162,69 @@
 
                     <div class="divider show-on-mobile"></div>
 
+                    <!-- Technical Analysis -->
+                    <div class="desktop-card technical-analysis">
+                        <h3>Technical Analysis</h3>
+
+                        <!-- No TA Provided-->
+                        <p *ngIf="!_td.technical_analysis_insight" class="light-text align-center" style="padding:35px;">
+                            No features were included
+                        </p>
+
+                        <!-- TA was provided-->
+                        <div *ngIf="_td.technical_analysis_insight" class="data-container">
+                            <table class="table bordered highlight">
+                                <thead>
+                                    <tr>
+                                        <td></td>
+                                        <td *ngFor="let ta of incudedTA"><strong>{{ta}}</strong></td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Count</strong></td>
+                                        <td *ngFor="let ta of incudedTA">{{_td.technical_analysis_insight[ta].count | number}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Mean</strong></td>
+                                        <td *ngFor="let ta of incudedTA">{{_td.technical_analysis_insight[ta].mean | number:'1.0-2'}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>STD</strong></td>
+                                        <td *ngFor="let ta of incudedTA">{{_td.technical_analysis_insight[ta].std | number:'1.0-2'}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Min</strong></td>
+                                        <td *ngFor="let ta of incudedTA">{{_td.technical_analysis_insight[ta].min | number:'1.0-2'}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>25%</strong></td>
+                                        <td *ngFor="let ta of incudedTA">{{_td.technical_analysis_insight[ta]["25%"] | number:'1.0-2'}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>50%</strong></td>
+                                        <td *ngFor="let ta of incudedTA">{{_td.technical_analysis_insight[ta]["50%"] | number:'1.0-2'}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>75%</strong></td>
+                                        <td *ngFor="let ta of incudedTA">{{_td.technical_analysis_insight[ta]["75%"] | number:'1.0-2'}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Max</strong></td>
+                                        <td *ngFor="let ta of incudedTA">{{_td.technical_analysis_insight[ta].max | number:'1.0-2'}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <span fxFlex></span>
+
+                <div class="divider show-on-mobile"></div>
+
+                <!-- Predictions Chart Card-->
+                <div fxFlex="40" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
                     <!-- Price Actions -->
                     <div class="desktop-card">
                         <h3>Price Actions</h3>
@@ -221,14 +236,10 @@
                             [responsive]="priceActions.responsive"
                         ></apx-chart>
                     </div>
-                </div>
 
-                <span fxFlex></span>
+                    <div class="divider show-on-mobile"></div>
 
-                <div class="divider show-on-mobile"></div>
-
-                <!-- Predictions Chart Card-->
-                <div fxFlex="52" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                    <!-- Predictions-->
                     <div class="desktop-card">
                         <h3>Predictions</h3>
                         <apx-chart
@@ -240,9 +251,11 @@
                             [dataLabels]="predictions.dataLabels"
                             [colors]="predictions.colors"
                             [grid]="predictions.grid"
+                            [legend]="{position: 'top'}"
                         ></apx-chart>
                     </div>
                 </div>
+                <span fxFlex></span>
             </div>
         </div>
 

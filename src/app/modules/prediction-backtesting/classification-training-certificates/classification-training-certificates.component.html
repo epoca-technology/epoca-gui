@@ -539,31 +539,16 @@
 
                                             <p class="ts-m margin-top">{{cert.description}}</p>
 
-                                            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutAlign.xs="center center" fxLayoutAlign.sm="center center" class="margin-top">
+                                            <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
                                                 <p class="light-text">Class.</p>
                                                 <span fxFlex></span>
-                                                <div fxLayout="row" fxLayoutAlign="start center">
-                                                    <p class="formula clickable" role="button" 
-                                                        (click)="_nav.displayModelListDialog(cert.classification_config.models)"
-                                                        matTooltip="Features: The list of ArimaModel|RegressionModel (and other data) that comprise the Classification.">
-                                                        [{{cert.keras_model_config.features_num}}] >
-                                                    </p>
-                                                    <p class="formula clickable" role="button" 
-                                                        matTooltip="KerasClassificationModel" 
-                                                        (click)="_nav.displayKerasModelDialog(cert.classification_config.id, cert.classification_config.description, cert.classification_config.summary)">
-                                                        &nbsp;{{cert.classification_config.id | stringOverview: layout == 'desktop' ? 8: 6: '...'}}
-                                                    </p>
-                                                    <p class="formula" 
-                                                        matTooltip="Labels: The probabilities for an up or down price action to take place.">
-                                                        &nbsp;> [2]
-                                                    </p>
-                                                </div>
+                                                <app-classification-element [config]="cert.classification_config"></app-classification-element>
                                             </div>
 
                                             <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
                                                 <p class="light-text truncate">Optimizer</p>
                                                 <span fxFlex></span>
-                                                <p matTooltip="Optimizer(learning_rate)">{{cert.optimizer}}({{cert.learning_rate}})</p>
+                                                <p>{{cert.optimizer}}</p>
                                             </div>
 
                                             <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
@@ -661,54 +646,24 @@
                                                 </p>
                                             </div>
 
-                                            <!-- RSI -->
+                                            <!-- Technical Analysis -->
                                             <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
-                                                <p class="light-text truncate">RSI</p>
+                                                <p class="light-text truncate">{{layout == 'desktop' ? 'Technical Analysis': 'TA'}}</p>
                                                 <span fxFlex></span>
-                                                <p [ngClass]="{'success-color': cert.training_data_summary.include_rsi, 'light-text': !cert.training_data_summary.include_rsi}" 
-                                                    matTooltip="If enabled, the RSI will be included as a feature.">
-                                                    {{cert.training_data_summary.include_rsi ? 'Enabled': 'Disabled'}}
-                                                </p>
-                                            </div>
-
-                                            <!-- Stoch -->
-                                            <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
-                                                <p class="light-text truncate">Stoch</p>
-                                                <span fxFlex></span>
-                                                <p [ngClass]="{'success-color': cert.training_data_summary.include_stoch, 'light-text': !cert.training_data_summary.include_stoch}" 
-                                                    matTooltip="If enabled, the Stoch will be included as a feature.">
-                                                    {{cert.training_data_summary.include_stoch ? 'Enabled': 'Disabled'}}
-                                                </p>
-                                            </div>
-                    
-                                            <!-- Aroon -->
-                                            <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
-                                                <p class="light-text truncate">Aroon</p>
-                                                <span fxFlex></span>
-                                                <p [ngClass]="{'success-color': cert.training_data_summary.include_aroon, 'light-text': !cert.training_data_summary.include_aroon}" 
-                                                    matTooltip="If enabled, Aroon will be included as a feature.">
-                                                    {{cert.training_data_summary.include_aroon ? 'Enabled': 'Disabled'}}
-                                                </p>
-                                            </div>
-
-                                            <!-- STC -->
-                                            <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
-                                                <p class="light-text truncate">STC</p>
-                                                <span fxFlex></span>
-                                                <p [ngClass]="{'success-color': cert.training_data_summary.include_stc, 'light-text': !cert.training_data_summary.include_stc}" 
-                                                    matTooltip="If enabled, the STC will be included as features.">
-                                                    {{cert.training_data_summary.include_stc ? 'Enabled': 'Disabled'}}
-                                                </p>
-                                            </div>
-                    
-                                            <!-- MFI -->
-                                            <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
-                                                <p class="light-text truncate">MFI</p>
-                                                <span fxFlex></span>
-                                                <p [ngClass]="{'success-color': cert.training_data_summary.include_mfi, 'light-text': !cert.training_data_summary.include_mfi}" 
-                                                    matTooltip="If enabled, the MFI will be included as features.">
-                                                    {{cert.training_data_summary.include_mfi ? 'Enabled': 'Disabled'}}
-                                                </p>
+                                                <div *ngIf="!cert.training_data_summary.include_rsi && !cert.training_data_summary.include_stoch && 
+                                                    !cert.training_data_summary.include_aroon && !cert.training_data_summary.include_stc && 
+                                                    !cert.training_data_summary.include_mfi;else ta_included">
+                                                    <p class="light-text">Disabled</p>
+                                                </div>
+                                                <ng-template #ta_included>
+                                                    <mat-chip-list>
+                                                        <mat-chip matTooltip="Relative Strength Index Indicator" *ngIf="cert.training_data_summary.include_rsi">rsi</mat-chip>
+                                                        <mat-chip matTooltip="Stochastic Oscillator Indicator" *ngIf="cert.training_data_summary.include_stoch">stoch</mat-chip>
+                                                        <mat-chip matTooltip="Aroon Indicator" *ngIf="cert.training_data_summary.include_aroon">aroon</mat-chip>
+                                                        <mat-chip matTooltip="Schaff Trend Cycle Indicator" *ngIf="cert.training_data_summary.include_stc">stc</mat-chip>
+                                                        <mat-chip matTooltip="Money Flow Index Indicator" *ngIf="cert.training_data_summary.include_mfi">mfi</mat-chip>
+                                                    </mat-chip-list>
+                                                </ng-template>
                                             </div>
                                         </div>
                                     </div>
@@ -793,25 +748,10 @@
                                                 </div>
                                             </div>
 
-                                            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutAlign.xs="center center" fxLayoutAlign.sm="center center" class="margin-top">
-                                                <p class="light-text show-on-desktop">Class.</p>
-                                                <span fxFlex class="show-on-desktop"></span>
-                                                <div fxLayout="row" fxLayoutAlign="start center">
-                                                    <p class="formula clickable" role="button" 
-                                                        (click)="_nav.displayModelListDialog(cert.classification_config.models)"
-                                                        matTooltip="Features: The list of ArimaModel|RegressionModel (and other data) that comprise the Classification.">
-                                                        [{{cert.keras_model_config.features_num}}] ->
-                                                    </p>
-                                                    <p class="formula clickable" role="button" 
-                                                        matTooltip="KerasClassificationModel" 
-                                                        (click)="_nav.displayKerasModelDialog(cert.classification_config.id, cert.classification_config.description, cert.classification_config.summary)">
-                                                        &nbsp;{{cert.classification_config.id}}
-                                                    </p>
-                                                    <p class="formula" 
-                                                        matTooltip="Labels: The probabilities for an up or down price action to take place.">
-                                                        &nbsp;-> [2]
-                                                    </p>
-                                                </div>
+                                            <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+                                                <p class="light-text">Class.</p>
+                                                <span fxFlex></span>
+                                                <app-classification-element [config]="cert.classification_config"></app-classification-element>
                                             </div>
 
                                             <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">

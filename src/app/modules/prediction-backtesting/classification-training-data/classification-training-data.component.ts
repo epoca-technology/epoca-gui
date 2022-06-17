@@ -43,11 +43,14 @@ export class ClassificationTrainingDataComponent implements OnInit, OnDestroy, I
 	// Price Actions Insight Chart
 	public priceActions!: IPieChartOptions;
 
+	// List of Technical Analysis Features included
+	public incudedTA: string[] = [];
+
 	// Predictions Insight Chart
 	public predictions!: IBarChartOptions;
 
 	// Visible Data Rows
-	public rowsPerPage: number = this.layout == 'desktop' ? 7: 5;
+	public rowsPerPage: number = this.layout == 'desktop' ? 8: 5;
 	public rowsStart: number = 0;
 	public rowsEnd: number = 0;
 	public visibleRows: Array<number[]> = [];
@@ -138,6 +141,14 @@ export class ClassificationTrainingDataComponent implements OnInit, OnDestroy, I
 	 * @returns void
 	 */
 	private build(): void {
+		/* TA Features List */
+		this.incudedTA = [];
+		if (this._td.include_rsi) this.incudedTA.push("RSI");
+		if (this._td.include_stoch) this.incudedTA.push("STOCH");
+		if (this._td.include_aroon) this.incudedTA.push("AROON");
+		if (this._td.include_stc) this.incudedTA.push("STC");
+		if (this._td.include_mfi) this.incudedTA.push("MFI");
+		
 		/* Init Price Actions Chart */
 		this.priceActions = this._chart.getPieChartOptions({
 			series: [this._td.price_actions_insight.up, this._td.price_actions_insight.down],

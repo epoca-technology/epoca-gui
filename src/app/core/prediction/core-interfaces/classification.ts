@@ -56,6 +56,18 @@ export interface ITrainingDataPredictionInsight {
 export interface ITrainingDataPredictionInsights {
     [modelID: string]: ITrainingDataPredictionInsight
 }
+export interface ITechnicalAnalysisInsight {
+    [taName: string]: {
+        "count": number,
+        "mean": number,
+        "std": number,
+        "min": number,
+        "25%": number,
+        "50%": number,
+        "75%": number,
+        "max": number
+    }
+}
 
 
 
@@ -164,13 +176,24 @@ export interface ITrainingDataFile {
     // Price Actions Insight - The up and down counts
     price_actions_insight: ITrainingDataPriceActionsInsight,
 
-    // Prediction Insight 
-    // Position type count for each single model in this format:
-    // {[modelID: str]: ITrainingDataPredictionInsight}
+    /**
+     * Prediction Insight 
+     * Position type count for each single model in this format:
+     * {[modelID: str]: ITrainingDataPredictionInsight}
+     */
     predictions_insight: ITrainingDataPredictionInsights,
 
-    // Training Data
-    // The training data generated in a compressed format.
+    /**
+     * Technical Analysis Summary
+     * If none of the technical analysis features are enabled, this value will be None.
+     * {[taName: str]: df.describe().to_dict()}|null
+     */
+    technical_analysis_insight: ITechnicalAnalysisInsight|null,
+
+    /**
+     * Training Data
+     * The training data generated in a compressed format.
+     */
     training_data: ICompressedTrainingData
 }
 
@@ -199,20 +222,14 @@ export interface IClassificationTrainingConfig {
     // Any relevant data that should be attached to the trained model.
     description: string,
 
-    // The learning rate to be used by the optimizer
-    learning_rate: number,
-
     // The optimizer to be used.
-    optimizer: string, // 'adam'|'rmsprop'
+    optimizer: "adam"|"rmsprop",
 
     // The loss function to be used
-    loss: string, // 'categorical_crossentropy'|'?'
+    loss: "categorical_crossentropy"|"binary_crossentropy",
 
     // The metric to be used for meassuring the val_loss
-    metric: string, // 'categorical_accuracy'|'?'
-
-    // Train Data Shuffling
-    shuffle_data: boolean,
+    metric: "categorical_accuracy"|"binary_accuracy",
 
     // Keras Model Configuration
     keras_model: IKerasModelConfig

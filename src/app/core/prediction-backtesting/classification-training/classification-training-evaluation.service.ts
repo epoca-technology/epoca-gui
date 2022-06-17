@@ -140,7 +140,7 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 						In the case of accuracy, the bigger the value the better.",
 						state: "",
 						points: 0,
-						max_points: 19,
+						max_points: 21,
 					},
 					{
 						id: "prediction_neutrality",
@@ -149,7 +149,7 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 						to a balanced prediction distribution.",
 						state: "",
 						points: 0,
-						max_points: 14,
+						max_points: 12,
 					},
 					{
 						id: "long_prediction_balance",

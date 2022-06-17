@@ -3,6 +3,7 @@ import {
 	ITrainingDataFile,
 	ITrainingDataPredictionInsights, 
 	ITrainingDataPriceActionsInsight, 
+	ITechnicalAnalysisInsight,
 	PredictionService,
 	ICompressedTrainingData,
 	IModel
@@ -60,13 +61,26 @@ export class ClassificationTrainingDataService implements IClassificationTrainin
     // Price Actions Insight - The up and down counts
     public price_actions_insight!: ITrainingDataPriceActionsInsight;
 
-    // Prediction Insight 
-    // Position type count for each single model in this format:
-    // {[modelID: str]: ITrainingDataPredictionInsight}
+    /**
+     * Technical Analysis Summary
+     * If none of the technical analysis features are enabled, this value will be None.
+     * {[taName: str]: df.describe().to_dict()}|null
+     */
+	public technical_analysis_insight!: ITechnicalAnalysisInsight|null;
+
+	/**
+	 * Prediction Insight 
+	 * Position type count for each single model in this format:
+	 * {[modelID: str]: ITrainingDataPredictionInsight}
+	 */
     public predictions_insight!: ITrainingDataPredictionInsights;
 
-    // Training Data
-    // The training data generated in a decompressed format.
+
+
+	/**
+	 * Training Data
+	 * The training data generated in a decompressed format.
+	 */
 	public training_data!: ICompressedTrainingData;
 
   	constructor(
@@ -107,6 +121,7 @@ export class ClassificationTrainingDataService implements IClassificationTrainin
 		this.features_num = file.features_num;
 		this.price_actions_insight = file.price_actions_insight;
 		this.predictions_insight = file.predictions_insight;
+		this.technical_analysis_insight = file.technical_analysis_insight;
 
 		// Populate the general helpers
 		this.modelIDs = [];
