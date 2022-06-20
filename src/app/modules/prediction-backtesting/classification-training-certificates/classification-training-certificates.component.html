@@ -494,7 +494,7 @@
                         <!-- Certificate Section -->
                         <div class="certificate-section" 
                             *ngIf="section.id == 'certificate' && cert && testDSEvaluation && testDSLoss && testDSAccuracy && 
-                            classAccuracy && classPrediction && classOutcome && classProbs">
+                            classAccuracy && classPrediction && classOutcome">
                             <!-- Tabs Navigation-->
                             <mat-tab-group *ngIf="layout == 'mobile'" 
                                         [selectedIndex]="activeTabIndex" (selectedIndexChange)="activeTabIndex = $event"
@@ -502,17 +502,15 @@
                                 <mat-tab><ng-template mat-tab-label><mat-icon>feed</mat-icon></ng-template></mat-tab>
                                 <mat-tab><ng-template mat-tab-label><mat-icon>cast_for_education</mat-icon></ng-template></mat-tab>
                                 <mat-tab><ng-template mat-tab-label><mat-icon>rule</mat-icon></ng-template></mat-tab>
-                                <mat-tab><ng-template mat-tab-label><mat-icon svgIcon="brain"></mat-icon></ng-template></mat-tab>
                                 <mat-tab><ng-template mat-tab-label><mat-icon>format_list_numbered</mat-icon></ng-template></mat-tab>
                             </mat-tab-group>
                             <mat-tab-group *ngIf="layout == 'desktop'"  
                                             [selectedIndex]="activeTabIndex" (selectedIndexChange)="activeTabIndex = $event" 
                                             mat-align-tabs="center">
-                                <mat-tab label="Summary"></mat-tab>
-                                <mat-tab label="Training"></mat-tab>
-                                <mat-tab label="Classification Evaluation"></mat-tab>
-                                <mat-tab label="Probabilities"></mat-tab>
-                                <mat-tab label="Epochs"></mat-tab>
+                                <mat-tab><ng-template mat-tab-label><mat-icon>feed</mat-icon>&nbsp;Summary</ng-template></mat-tab>
+                                <mat-tab><ng-template mat-tab-label><mat-icon>cast_for_education</mat-icon>&nbsp;Training</ng-template></mat-tab>
+                                <mat-tab><ng-template mat-tab-label><mat-icon>rule</mat-icon>&nbsp;Evaluation</ng-template></mat-tab>
+                                <mat-tab><ng-template mat-tab-label><mat-icon>format_list_numbered</mat-icon>&nbsp;Epochs</ng-template></mat-tab>
                             </mat-tab-group>
     
                             <!-- Summary -->
@@ -546,6 +544,16 @@
                                             </div>
 
                                             <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+                                                <p class="light-text truncate">Keras Model</p>
+                                                <span fxFlex></span>
+                                                <p class="clickable" role="button" 
+                                                    matTooltip="Configuration used to build the Keras Classification Model"
+                                                    (click)="_nav.displayDataDialog('KerasModelConfiguration', cert.keras_model_config)">
+                                                    {{cert.keras_model_config.name}}
+                                                </p>
+                                            </div>
+
+                                            <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
                                                 <p class="light-text truncate">Optimizer</p>
                                                 <span fxFlex></span>
                                                 <p>{{cert.optimizer}}</p>
@@ -562,23 +570,21 @@
                                                 <span fxFlex></span>
                                                 <p>{{cert.metric}}</p>
                                             </div>
-
-                                            <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
-                                                <p class="light-text">K. Model Config</p>
-                                                <span fxFlex></span>
-                                                <p class="clickable" role="button" 
-                                                    matTooltip="Configuration used to build the Keras Classification Model"
-                                                    (click)="_nav.displayDataDialog('Keras Model Configuration', cert.keras_model_config)">
-                                                    {{cert.keras_model_config.name}}
-                                                </p>
-                                            </div>
                                         </div>
 
                                         <div class="divider show-on-mobile"></div>
 
                                         <!-- Training Data -->
                                         <div class="desktop-card">
-                                            <h3>Training Data</h3>
+                                            <div fxLayout="row" fxLayoutAlign="start start">
+                                                <h3 class="truncate">Training Data</h3>
+                                                <span fxFlex></span>
+                                                <div class="square-badge" 
+                                                    matTooltip="Steps: The number of prediction candlesticks it will skip for every position when building
+                                                        the data regardless of how long a position takes to be closed.">
+                                                    Steps: {{cert.training_data_summary.steps}}
+                                                </div>
+                                            </div>
 
                                             <p class="ts-m margin-top">{{cert.training_data_summary.description}}</p>
 
@@ -623,16 +629,6 @@
                                                 <p>{{cert.training_data_summary.test_size}}</p>
                                             </div>
 
-                                            <!-- Steps -->
-                                            <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
-                                                <p class="light-text truncate">Steps</p>
-                                                <span fxFlex></span>
-                                                <p matTooltip="The number of prediction candlesticks it will skip for every position when building \
-                                                the data regardless of how long a position takes to be closed.">
-                                                    {{cert.training_data_summary.steps}}
-                                                </p>
-                                            </div>
-
                                             <!-- Up & Down Percent Changes-->
                                             <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
                                                 <p class="light-text truncate">Price Actions</p>
@@ -648,13 +644,12 @@
 
                                             <!-- Technical Analysis -->
                                             <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
-                                                <p class="light-text truncate">{{layout == 'desktop' ? 'Technical Analysis': 'TA'}}</p>
+                                                <p class="light-text truncate">Technical Analysis</p>
                                                 <span fxFlex></span>
-                                                <div *ngIf="!cert.training_data_summary.include_rsi && !cert.training_data_summary.include_stoch && 
+                                                <p class="light-text" 
+                                                    *ngIf="!cert.training_data_summary.include_rsi && !cert.training_data_summary.include_stoch && 
                                                     !cert.training_data_summary.include_aroon && !cert.training_data_summary.include_stc && 
-                                                    !cert.training_data_summary.include_mfi;else ta_included">
-                                                    <p class="light-text">Disabled</p>
-                                                </div>
+                                                    !cert.training_data_summary.include_mfi;else ta_included" >Disabled</p>
                                                 <ng-template #ta_included>
                                                     <mat-chip-list>
                                                         <mat-chip matTooltip="Relative Strength Index Indicator" *ngIf="cert.training_data_summary.include_rsi">rsi</mat-chip>
@@ -711,8 +706,8 @@
                                                             (click)="_nav.displayTooltip(item.name, item.description)">
                                                             <div fxLayout="row" fxLayoutAlign="start start">
                                                                 <div fxFlex="80" fxFlex.xs="70" fxFlex.sm="70">
-                                                                    <p class="truncate light-text"><strong>{{item.name}}</strong></p>
-                                                                    <p class="light-text ts-m">{{item.state}}</p>
+                                                                    <p class="truncate light-text ts-m"><strong>{{item.name}}</strong></p>
+                                                                    <p class="light-text ts-s">{{item.state}}</p>
                                                                 </div>
                                                                 <span fxFlex></span>
                                                                 <div [ngClass]="{'square-badge-success': item.points > 0, 'square-badge-error': item.points == 0}">
@@ -732,7 +727,7 @@
 
 
                             <!-- Training -->
-                            <div *ngIf="activeTabIndex == 1" class="test-ds-eval-content fadeIn">
+                            <div *ngIf="activeTabIndex == 1" class="test-ds-eval-content">
                                 <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column">
                                     <!-- Informational Cards-->
                                     <div fxFlex="40" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
@@ -755,6 +750,28 @@
                                             </div>
 
                                             <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+                                                <p class="light-text truncate">Keras Model</p>
+                                                <span fxFlex></span>
+                                                <p class="clickable" role="button" 
+                                                    matTooltip="Configuration used to build the Keras Classification Model"
+                                                    (click)="_nav.displayDataDialog('KerasModelConfiguration', cert.keras_model_config)">
+                                                    {{cert.keras_model_config.name}}
+                                                </p>
+                                            </div>
+
+                                            <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+                                                <p class="light-text truncate">Optimizer</p>
+                                                <span fxFlex></span>
+                                                <p>{{cert.optimizer}}</p>
+                                            </div>
+
+                                            <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+                                                <p class="light-text">Loss</p>
+                                                <span fxFlex></span>
+                                                <p>{{cert.loss}}</p>
+                                            </div>
+
+                                            <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
                                                 <p class="light-text">Train Size</p>
                                                 <span fxFlex></span>
                                                 <p>{{cert.training_data_summary.train_size}}</p>
@@ -767,25 +784,15 @@
                                             </div>
 
                                             <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
-                                                <p class="light-text">Start</p>
+                                                <p class="light-text truncate">Train Start</p>
                                                 <span fxFlex></span>
                                                 <p matTooltip="The time when the model started training.">{{cert.training_start | date:'medium'}}</p>
                                             </div>
 
                                             <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
-                                                <p class="light-text">End</p>
+                                                <p class="light-text truncate">Train End</p>
                                                 <span fxFlex></span>
                                                 <p matTooltip="The time when the model finished training.">{{cert.training_end | date:'medium'}}</p>
-                                            </div>
-
-                                            <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
-                                                <p class="light-text">K. Model Config</p>
-                                                <span fxFlex></span>
-                                                <p class="clickable" role="button" 
-                                                    matTooltip="Configuration used to build the Keras Classification Model"
-                                                    (click)="_nav.displayDataDialog('Keras Model Configuration', cert.keras_model_config)">
-                                                    {{cert.keras_model_config.name}}
-                                                </p>
                                             </div>
                                         </div>
 
@@ -881,11 +888,11 @@
 
 
                             <!-- Classification Evaluation -->
-                            <div *ngIf="activeTabIndex == 2" class="class-evals-content fadeIn">
-                                <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column">
-
+                            <div *ngIf="activeTabIndex == 2" class="class-evals-content">
+                                <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" fxLayoutalign="center center">
+                                    <span fxFlex></span>
                                     <!-- Class. Accuracy -->
-                                    <div fxFlex="32" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                                    <div fxFlex="43" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
                                         <div class="desktop-card">
                                             <div class="badged-header" fxLayout="row" fxLayoutAlign="start center">
                                                 <h3 class="truncate">{{layout == 'desktop' ? 'Accuracy': 'Acc.'}}</h3>
@@ -913,14 +920,118 @@
                                                 ></apx-chart>
                                             </div>
                                         </div>
+
+                                        <div class="divider show-on-mobile"></div>
+
+                                        <div class="desktop-card">
+                                            <div class="badged-header" fxLayout="row" fxLayoutAlign="center center">
+                                                <h3>{{layout == 'desktop' ? 'Probabilities': 'Probs.'}}</h3>
+                                                <span fxFlex></span>
+                                                <button mat-icon-button 
+                                                        [disabled]="activeProb == 0" 
+                                                        (click)="activeProb = activeProb - 1">
+                                                        <mat-icon>arrow_left</mat-icon>
+                                                </button>
+                                                <!-- General Increase Predictions-->
+                                                <div *ngIf="activeProb == 0" fxLayout="row" fxLayoutAlign="center center">
+                                                    <div class="square-badge" style="background:#4DB6AC"
+                                                        matTooltip="The minimum general increase prediction generated by the Classification.">
+                                                        {{cert.classification_evaluation.increase_min | number: '1.2-2'}}
+                                                    </div>
+                                                    <div class="square-badge" style="background:#4DB6AC"
+                                                        matTooltip="The mean of the general increase predictions generated by the Classification.">
+                                                        {{cert.classification_evaluation.increase_mean | number: '1.2-2'}}
+                                                    </div>
+                                                    <div class="square-badge" style="background:#4DB6AC"
+                                                        matTooltip="The maximum general increase prediction generated by the Classification.">
+                                                        {{cert.classification_evaluation.increase_max | number: '1.2-2'}}
+                                                    </div>
+                                                </div>
+        
+                                                <!-- Successful Increase Predictions-->
+                                                <div *ngIf="activeProb == 1" fxLayout="row" fxLayoutAlign="center center">
+                                                    <div class="square-badge-success"
+                                                        matTooltip="The minimum successful increase prediction generated by the Classification.">
+                                                        {{cert.classification_evaluation.increase_successful_min | number: '1.2-2'}}
+                                                    </div>
+                                                    <div class="square-badge-success"
+                                                        matTooltip="The mean of the successful increase predictions generated by the Classification.">
+                                                        {{cert.classification_evaluation.increase_successful_mean | number: '1.2-2'}}
+                                                    </div>
+                                                    <div class="square-badge-success"
+                                                        matTooltip="The maximum successful increase prediction generated by the Classification.">
+                                                        {{cert.classification_evaluation.increase_successful_max | number: '1.2-2'}}
+                                                    </div>
+                                                </div>
+        
+                                                <!-- General Decrease Predictions-->
+                                                <div *ngIf="activeProb == 2" fxLayout="row" fxLayoutAlign="center center">
+                                                    <div class="square-badge" style="background:#E57373"
+                                                        matTooltip="The minimum general decrease prediction generated by the Classification.">
+                                                        {{cert.classification_evaluation.decrease_min | number: '1.2-2'}}
+                                                    </div>
+                                                    <div class="square-badge" style="background:#E57373"
+                                                        matTooltip="The mean of the general decrease predictions generated by the Classification.">
+                                                        {{cert.classification_evaluation.decrease_mean | number: '1.2-2'}}
+                                                    </div>
+                                                    <div class="square-badge" style="background:#E57373"
+                                                        matTooltip="The maximum general decrease prediction generated by the Classification.">
+                                                        {{cert.classification_evaluation.decrease_max | number: '1.2-2'}}
+                                                    </div>
+                                                </div>
+        
+                                                <!-- Successful Decrease Predictions-->
+                                                <div *ngIf="activeProb == 3" fxLayout="row" fxLayoutAlign="center center">
+                                                    <div class="square-badge-error"
+                                                        matTooltip="The minimum successful decrease prediction generated by the Classification.">
+                                                        {{cert.classification_evaluation.decrease_successful_min | number: '1.2-2'}}
+                                                    </div>
+                                                    <div class="square-badge-error"
+                                                        matTooltip="The mean of the successful decrease predictions generated by the Classification.">
+                                                        {{cert.classification_evaluation.decrease_successful_mean | number: '1.2-2'}}
+                                                    </div>
+                                                    <div class="square-badge-error"
+                                                        matTooltip="The maximum successful decrease prediction generated by the Classification.">
+                                                        {{cert.classification_evaluation.decrease_successful_max | number: '1.2-2'}}
+                                                    </div>
+                                                </div>
+                                                <button mat-icon-button 
+                                                        [disabled]="activeProb == 3" 
+                                                        (click)="activeProb = activeProb + 1">
+                                                        <mat-icon>arrow_right</mat-icon>
+                                                </button>
+                                            </div>
+                                            <div class="heat-map">
+                                                <mat-grid-list cols="5" [rowHeight]="layout == 'desktop' ? '37px': '30px'">
+                                                    <div *ngFor="let item of probsHeatmap">
+                                                        <mat-grid-tile><p class="y-label">{{item.prob_range}}</p></mat-grid-tile>
+                                                        <mat-grid-tile [matTooltip]="item.increase.state_description" 
+                                                                        [ngClass]="item.increase_successful.state_class"></mat-grid-tile>
+                                                        <mat-grid-tile [matTooltip]="item.increase_successful.state_description"
+                                                                        [ngClass]="item.increase_successful.state_class"></mat-grid-tile>
+                                                        <mat-grid-tile [matTooltip]="item.decrease.state_description"
+                                                                        [ngClass]="item.decrease.state_class"></mat-grid-tile>
+                                                        <mat-grid-tile [matTooltip]="item.decrease_successful.state_description"
+                                                                        [ngClass]="item.decrease_successful.state_class"></mat-grid-tile>
+                                                    </div>
+
+                                                    <mat-grid-tile></mat-grid-tile>
+                                                    <mat-grid-tile class="x-label">Incr.</mat-grid-tile>
+                                                    <mat-grid-tile class="x-label">Succ. Incr.</mat-grid-tile>
+                                                    <mat-grid-tile class="x-label">Decr.</mat-grid-tile>
+                                                    <mat-grid-tile class="x-label">Succ. Decr.</mat-grid-tile>
+                                                </mat-grid-list>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <span fxFlex></span>
 
                                     <div class="divider show-on-mobile"></div>
 
-                                    <!-- Class. Predictions -->
-                                    <div fxFlex="32" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                                    
+                                    <div fxFlex="43" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                                        <!-- Predictions -->
                                         <div class="desktop-card">
                                             <div class="badged-header" fxLayout="row" fxLayoutAlign="start center">
                                                 <h3 class="truncate">{{layout == 'desktop' ? 'Predictions': 'Preds.'}}</h3>
@@ -940,26 +1051,19 @@
                                                 </div>
                                             </div>
 
-                                            <div fxLayout="row" fxLayoutAlign="center center">
-                                                <apx-chart
-                                                    [series]="classPrediction.series"
-                                                    [chart]="classPrediction.chart"
-                                                    [labels]="classPrediction.labels"
-                                                    [colors]="classPrediction.colors"
-                                                    [legend]="classPrediction.legend"
-                                                    [responsive]="classPrediction.responsive"
-                                                ></apx-chart>
-                                            </div>
+                                            <apx-chart
+                                                [series]="classPrediction.series"
+                                                [chart]="classPrediction.chart"
+                                                [labels]="classPrediction.labels"
+                                                [colors]="classPrediction.colors"
+                                                [legend]="classPrediction.legend"
+                                                [responsive]="classPrediction.responsive"
+                                            ></apx-chart>
                                         </div>
-                                    </div>
 
+                                        <div class="divider show-on-mobile"></div>
 
-                                    <span fxFlex></span>
-
-                                    <div class="divider show-on-mobile"></div>
-
-                                    <!-- Class. Outcomes -->
-                                    <div fxFlex="32" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                                        <!-- Outcomes -->
                                         <div class="desktop-card">
                                             <div class="badged-header" fxLayout="row" fxLayoutAlign="start center">
                                                 <h3 class="truncate">{{layout == 'desktop' ? 'Outcomes': 'Outs.'}}</h3>
@@ -979,110 +1083,17 @@
                                                 </div>
                                             </div>
 
-                                            <div fxLayout="row" fxLayoutAlign="center center">
-                                                <apx-chart
-                                                    [series]="classOutcome.series"
-                                                    [chart]="classOutcome.chart"
-                                                    [labels]="classOutcome.labels"
-                                                    [colors]="classOutcome.colors"
-                                                    [legend]="classPrediction.legend"
-                                                    [responsive]="classOutcome.responsive"
-                                                ></apx-chart>
-                                            </div>
+                                            <apx-chart
+                                                [series]="classOutcome.series"
+                                                [chart]="classOutcome.chart"
+                                                [labels]="classOutcome.labels"
+                                                [colors]="classOutcome.colors"
+                                                [legend]="classOutcome.legend"
+                                                [responsive]="classOutcome.responsive"
+                                            ></apx-chart>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-
-
-
-                            <!-- Prediction Probabilities -->
-                            <div *ngIf="activeTabIndex == 3" class="class-evals-content">
-                                <div class="full-width">
-                                    <div class="badged-header" fxLayout="row" fxLayoutAlign="center center">
-                                        <h3>{{layout == 'desktop' ? 'Prediction Probabilities': 'Probs.'}}</h3>
-                                        <span fxFlex></span>
-                                        <button mat-icon-button 
-                                                [disabled]="activeProb == 0" 
-                                                (click)="activeProb = activeProb - 1">
-                                                <mat-icon>arrow_left</mat-icon>
-                                        </button>
-                                        <!-- General Increase Predictions-->
-                                        <div *ngIf="activeProb == 0" fxLayout="row" fxLayoutAlign="center center" class="fadeIn">
-                                            <div class="square-badge" style="background:#009688"
-                                                matTooltip="The minimum general increase prediction generated by the Classification.">
-                                                {{cert.classification_evaluation.increase_min | number: '1.2-2'}}
-                                            </div>
-                                            <div class="square-badge" style="background:#009688"
-                                                matTooltip="The mean of the general increase predictions generated by the Classification.">
-                                                {{cert.classification_evaluation.increase_mean | number: '1.2-2'}}
-                                            </div>
-                                            <div class="square-badge" style="background:#009688"
-                                                matTooltip="The maximum general increase prediction generated by the Classification.">
-                                                {{cert.classification_evaluation.increase_max | number: '1.2-2'}}
-                                            </div>
-                                        </div>
-
-                                        <!-- General Decrease Predictions-->
-                                        <div *ngIf="activeProb == 1" fxLayout="row" fxLayoutAlign="center center" class="fadeIn">
-                                            <div class="square-badge" style="background:#F44336"
-                                                matTooltip="The minimum general decrease prediction generated by the Classification.">
-                                                {{cert.classification_evaluation.decrease_min | number: '1.2-2'}}
-                                            </div>
-                                            <div class="square-badge" style="background:#F44336"
-                                                matTooltip="The mean of the general decrease predictions generated by the Classification.">
-                                                {{cert.classification_evaluation.decrease_mean | number: '1.2-2'}}
-                                            </div>
-                                            <div class="square-badge" style="background:#F44336"
-                                                matTooltip="The maximum general decrease prediction generated by the Classification.">
-                                                {{cert.classification_evaluation.decrease_max | number: '1.2-2'}}
-                                            </div>
-                                        </div>
-
-                                        <!-- Successful Increase Predictions-->
-                                        <div *ngIf="activeProb == 2" fxLayout="row" fxLayoutAlign="center center" class="fadeIn">
-                                            <div class="square-badge-success"
-                                                matTooltip="The minimum successful increase prediction generated by the Classification.">
-                                                {{cert.classification_evaluation.increase_successful_min | number: '1.2-2'}}
-                                            </div>
-                                            <div class="square-badge-success"
-                                                matTooltip="The mean of the successful increase predictions generated by the Classification.">
-                                                {{cert.classification_evaluation.increase_successful_mean | number: '1.2-2'}}
-                                            </div>
-                                            <div class="square-badge-success"
-                                                matTooltip="The maximum successful increase prediction generated by the Classification.">
-                                                {{cert.classification_evaluation.increase_successful_max | number: '1.2-2'}}
-                                            </div>
-                                        </div>
-
-                                        <!-- Successful Decrease Predictions-->
-                                        <div *ngIf="activeProb == 3" fxLayout="row" fxLayoutAlign="center center" class="fadeIn">
-                                            <div class="square-badge-error"
-                                                matTooltip="The minimum successful decrease prediction generated by the Classification.">
-                                                {{cert.classification_evaluation.decrease_successful_min | number: '1.2-2'}}
-                                            </div>
-                                            <div class="square-badge-error"
-                                                matTooltip="The mean of the successful decrease predictions generated by the Classification.">
-                                                {{cert.classification_evaluation.decrease_successful_mean | number: '1.2-2'}}
-                                            </div>
-                                            <div class="square-badge-error"
-                                                matTooltip="The maximum successful decrease prediction generated by the Classification.">
-                                                {{cert.classification_evaluation.decrease_successful_max | number: '1.2-2'}}
-                                            </div>
-                                        </div>
-                                        <button mat-icon-button 
-                                                [disabled]="activeProb == 3" 
-                                                (click)="activeProb = activeProb + 1">
-                                                <mat-icon>arrow_right</mat-icon>
-                                        </button>
-                                    </div>
-                                    <apx-chart
-                                        [series]="classProbs.series"
-                                        [chart]="classProbs.chart"
-                                        [xaxis]="classProbs.xaxis"
-                                        [yaxis]="classProbs.yaxis"
-                                        [dataLabels]="classProbs.dataLabels"
-                                    ></apx-chart>
+                                    <span fxFlex></span>
                                 </div>
                             </div>
 
@@ -1090,7 +1101,7 @@
 
 
                             <!-- Epochs -->
-                            <div *ngIf="activeTabIndex == 4" class="epochs-content fadeIn">
+                            <div *ngIf="activeTabIndex == 3" class="epochs-content fadeIn">
                                 <div fxLayout="row" fxLayoutAlign="center center">
                                     <div fxFlex fxFlex.xs="100" fxFlex.sm="100">
                                         <!-- Table -->

@@ -275,7 +275,6 @@ export class ClassificationTrainingService implements IClassificationTrainingSer
 			console.log(certificate.training_data_summary);
 			throw new Error(`The provided training_data_summary is invalid.`);
 		}
-		if (typeof certificate.learning_rate != "number") throw new Error(`The provided learning_rate (${certificate.learning_rate}) is invalid.`);
 		if (typeof certificate.optimizer != "string") throw new Error(`The provided optimizer (${certificate.optimizer}) is invalid.`);
 		if (typeof certificate.loss != "string") throw new Error(`The provided loss (${certificate.loss}) is invalid.`);
 		if (typeof certificate.metric != "string") throw new Error(`The provided metric (${certificate.metric}) is invalid.`);

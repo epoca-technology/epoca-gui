@@ -18,7 +18,6 @@ import {
 	ILayout, 
 	ILineChartOptions, 
 	IPieChartOptions, 
-	IScatterChartOptions, 
 	NavService, 
 	SnackbarService,
 } from '../../../services';
@@ -31,6 +30,11 @@ import {
 	ISection, 
 	ISectionID, 
 	IAccuracyChartData,
+	IHeatmapItem,
+	IHeatmapItemState,
+	IHeatmapItemName,
+	IHeatmapItemProbabilityRange,
+	IHeatmapItemStateClass
 } from './interfaces';
 
 @Component({
@@ -94,7 +98,19 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 	public classAccuracy?: IBarChartOptions;
 	public classPrediction?: IPieChartOptions;
 	public classOutcome?: IPieChartOptions;
-	public classProbs?: IScatterChartOptions;
+	public probsHeatmap: IHeatmapItem[] = [];
+	private probsRanges: IHeatmapItemProbabilityRange[] = [
+		{min: 95, max: 100},
+		{min: 90, max: 94.99},
+		{min: 85, max: 89.99},
+		{min: 80, max: 84.99},
+		{min: 75, max: 79.99},
+		{min: 70, max: 74.99},
+		{min: 65, max: 69.99},
+		{min: 60, max: 64.99},
+		{min: 55, max: 59.99},
+		{min: 50, max: 54.99},
+	];
 	public activeProb: number = 0;
 
 
@@ -506,101 +522,13 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 
 
 
-	/**
-	 * Builds the certificate's Classification Evaluation Charts.
-	 * @returns void
-	 */
-	private buildCertificateClassificationEvaluationCharts(): void {
-		// Build the accuracy chart
-		this.classAccuracy = this._chart.getBarChartOptions(
-			{
-				series: [
-					{name:'Increase Acc.%',data:[this.cert!.classification_evaluation.increase_acc]},
-					{name:'Decrease Acc.%',data:[this.cert!.classification_evaluation.decrease_acc]},
-					{name:'General Acc.%',data:[this.cert!.classification_evaluation.acc]}
-				], 
-				colors: [this._chart.upwardColor, this._chart.downwardColor, "#000000"],
-				xaxis: {categories: [this.cert!.id], labels: {show: false}},
-				yaxis: {labels: {show: false}},
-				plotOptions: { bar: { horizontal: false, borderRadius: 4, columnWidth: "25%",}}
-			}, 
-			[this.cert!.id], 
-			295
-		);
-
-
-		// Build the predictions chart
-		this.classPrediction = this._chart.getPieChartOptions({
-			series: [
-				this.cert!.classification_evaluation.increase_num, 
-				this.cert!.classification_evaluation.decrease_num, 
-				this.cert!.classification_evaluation.max_evaluations - this.cert!.classification_evaluation.evaluations
-			],
-			colors: [this._chart.upwardColor, this._chart.downwardColor, this._chart.neutralColor],
-			legend: {position: "bottom"}
-		}, ["Increase", "Decrease", "Neutral"], 345);
-
-
-		// Build the outcomes chart
-		this.classOutcome = this._chart.getPieChartOptions({
-			series: [
-				this.cert!.classification_evaluation.increase_outcomes || 0, 
-				this.cert!.classification_evaluation.decrease_outcomes || 0
-			],
-			colors: [this._chart.upwardColor, this._chart.downwardColor],
-			legend: {position: "bottom"}
-		}, ["Increase", "Decrease"], 345);
-
-		
-		// Build the class. prediction probabilities
-		let series: ApexAxisChartSeries = [
-			{name:'Gen. Increase',data:[], color: "#009688"},
-			{name:'Gen. Decrease',data:[], color: "#F44336"},
-			{name:'Succ. Increase',data:[], color: "#004D40"},
-			{name:'Succ. Decrease',data:[], color: "#B71C1C"},
-		];
-		const maxLength: number = 
-			this.cert!.classification_evaluation.increase_num > this.cert!.classification_evaluation.decrease_num ?
-				this.cert!.classification_evaluation.increase_num: this.cert!.classification_evaluation.decrease_num;
-		for (let i = 0; i < maxLength; i++) {
-			if (i < this.cert!.classification_evaluation.increase_list.length) {
-				series[0].data.push(<any>[i, this._utils.outputNumber(this.cert!.classification_evaluation.increase_list[i], {dp: 3})]);
-			}
-			if (i < this.cert!.classification_evaluation.decrease_list.length) {
-				series[1].data.push(<any>[i, this._utils.outputNumber(this.cert!.classification_evaluation.decrease_list[i], {dp: 3})]);
-			}
-			if (i < this.cert!.classification_evaluation.increase_successful_list.length) {
-				series[2].data.push(<any>[i, this._utils.outputNumber(this.cert!.classification_evaluation.increase_successful_list[i], {dp: 3})]);
-			}
-			if (i < this.cert!.classification_evaluation.decrease_successful_list.length) {
-				series[3].data.push(<any>[i, this._utils.outputNumber(this.cert!.classification_evaluation.decrease_successful_list[i], {dp: 3})]);
-			}
-		}
-		this.classProbs = this._chart.getScatterChartOptions(
-			{
-				chart: {
-					height: 600, 
-					type: 'scatter',
-					animations: { enabled: false}, 
-					toolbar: {show: true, tools: {download: false}}, 
-					zoom: {enabled: true, type: 'xy'},
-				},
-				series: series,
-			},600,true,{min: 0.5, max: 1}
-		);
-	}
-
-
-
-
-
 
 
 	/**
 	 * Builds the certificate's Test Dataset Charts.
 	 * @returns void
 	 */
-	private buildCertificateTestDatasetCharts(): void {
+	 private buildCertificateTestDatasetCharts(): void {
 		// Build the Test DS Evaluation
 		this.testDSEvaluation = this._chart.getBarChartOptions(
 			{
@@ -608,10 +536,10 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 				colors: [this._chart.downwardColor, this._chart.upwardColor],
 				xaxis: {categories: [this.cert!.id], labels: {show: false}},
 				yaxis: {labels: {show: false}},
-				plotOptions: { bar: { horizontal: false, borderRadius: 4, columnWidth: "20%",}},
+				plotOptions: { bar: { horizontal: false, borderRadius: 4, columnWidth: "15%",}},
 			}, 
 			[this.cert!.id], 
-			300
+			304
 		);
 
 		// Build the Loss Chart
@@ -630,7 +558,7 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 					}
 				],
 				stroke: {curve: "straight", dashArray: [0, 5]}
-			}, 300, true
+			}, 305, true
 		);
 
 
@@ -643,7 +571,7 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 					{name: accData.val_accuracy.name, data: accData.val_accuracy.data, color: "#004D40"}
 				],
 				stroke: {curve: "straight", dashArray: [0, 5]}
-			}, 300, true
+			}, 305, true
 		);
 	}
 
@@ -686,6 +614,132 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 
 
 
+
+
+
+
+
+
+
+	/**
+	 * Builds the certificate's Classification Evaluation Charts.
+	 * @returns void
+	 */
+	private buildCertificateClassificationEvaluationCharts(): void {
+		// Build the accuracy chart
+		this.classAccuracy = this._chart.getBarChartOptions(
+			{
+				series: [
+					{name:'Increase Acc.%',data:[this.cert!.classification_evaluation.increase_acc]},
+					{name:'Decrease Acc.%',data:[this.cert!.classification_evaluation.decrease_acc]},
+					{name:'General Acc.%',data:[this.cert!.classification_evaluation.acc]}
+				], 
+				colors: [this._chart.upwardColor, this._chart.downwardColor, "#000000"],
+				xaxis: {categories: [this.cert!.id], labels: {show: false}},
+				yaxis: {labels: {show: false}},
+			}, 
+			[this.cert!.id], 
+			110
+		);
+
+
+		// Build the predictions chart
+		this.classPrediction = this._chart.getPieChartOptions({
+			series: [
+				this.cert!.classification_evaluation.increase_num, 
+				this.cert!.classification_evaluation.decrease_num, 
+				this.cert!.classification_evaluation.max_evaluations - this.cert!.classification_evaluation.evaluations
+			],
+			colors: [this._chart.upwardColor, this._chart.downwardColor, this._chart.neutralColor],
+			legend: {position: "bottom"}
+		}, ["Increase", "Decrease", "Neutral"], 316);
+
+
+		// Build the outcomes chart
+		this.classOutcome = this._chart.getPieChartOptions({
+			series: [
+				this.cert!.classification_evaluation.increase_outcomes || 0, 
+				this.cert!.classification_evaluation.decrease_outcomes || 0
+			],
+			colors: [this._chart.upwardColor, this._chart.downwardColor],
+			legend: {position: "bottom"}
+		}, ["Increase", "Decrease"], 316);
+
+
+
+
+		/* Build the Probability Heatmap */
+
+		// Init values
+		this.probsHeatmap = [];
+
+		// Iterate over each one of the ranges
+		for (let range of this.probsRanges) {
+
+			// Add the item to the list
+			this.probsHeatmap.push({
+				prob_range: `${range.min}% - ${range.max}%`,
+				increase: this.getHeatmapItemState(range, "increase", this.cert!.classification_evaluation.increase_list),
+				increase_successful: this.getHeatmapItemState(range, "increase_successful", this.cert!.classification_evaluation.increase_successful_list),
+				decrease: this.getHeatmapItemState(range, "decrease", this.cert!.classification_evaluation.decrease_list),
+				decrease_successful: this.getHeatmapItemState(range, "decrease_successful", this.cert!.classification_evaluation.decrease_successful_list)
+			});
+		}
+	}
+
+
+
+
+
+
+
+	/**
+	 * Builds an item state based on a range.
+	 * @param range 
+	 * @param name 
+	 * @param preds 
+	 * @returns IHeatmapItemState
+	 */
+	private getHeatmapItemState(
+		range: IHeatmapItemProbabilityRange, 
+		name: IHeatmapItemName, 
+		preds: number[]
+	): IHeatmapItemState {
+		// Init the predictions within the range
+		const rangePreds: number[] = preds.filter(pred => (pred*100) >= range.min && (pred*100) <= range.max);
+
+		// Calculate the percentage it represents
+		const percentValue: number = <number>this._utils.calculatePercentageOutOfTotal(rangePreds.length, preds.length);
+
+		// Calculate the intensity
+		const intensity: number = this.getStateIntensity(percentValue);
+
+		// Finally, return the item
+		return {
+			state_description: `${rangePreds.length} predictions (${percentValue}%)`,
+			state_class: name.includes("increase") ? 
+				<IHeatmapItemStateClass>`increase-intensity-${intensity}`: 
+				<IHeatmapItemStateClass>`decrease-intensity-${intensity}`
+		}
+	}
+
+
+
+
+
+	/**
+	 * Given the percent value of the predictions within the range,
+	 * returns the intensity that should be attached to the class.
+	 * @param percentValue 
+	 * @returns number
+	 */
+	private getStateIntensity(percentValue: number): number {
+		if 		(percentValue <= 5) 	{ return 1  }
+		else if (percentValue <= 15) 	{ return 2  }
+		else if (percentValue <= 30) 	{ return 3  }
+		else if (percentValue <= 50) 	{ return 4  }
+		else							{ return 5  }
+	}
 
 
 

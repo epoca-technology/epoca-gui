@@ -18,7 +18,7 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 	private readonly minAccuracy: number = 40;
 
 	// The maximum neutrality percentage allowed
-	private readonly maxNeutrality: number = 15;
+	private readonly maxNeutrality: number = 20;
 
 	// The maximum percentage difference allowed for predictions vs outcomes
 	private readonly maxPredictionDifference: number = 20;
@@ -140,7 +140,7 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 						In the case of accuracy, the bigger the value the better.",
 						state: "",
 						points: 0,
-						max_points: 21,
+						max_points: 23,
 					},
 					{
 						id: "prediction_neutrality",
@@ -149,7 +149,7 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 						to a balanced prediction distribution.",
 						state: "",
 						points: 0,
-						max_points: 12,
+						max_points: 10,
 					},
 					{
 						id: "long_prediction_balance",
@@ -669,11 +669,16 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 
 			// Calculate the points
 			let points: number = 0;
-			if 		(percentage > 14) 	{ points = maxPoints/12 }
-			else if (percentage >= 13) 	{ points = maxPoints/10 }
-			else if (percentage >= 12) 	{ points = maxPoints/8 }
-			else if (percentage >= 11) 	{ points = maxPoints/6 }
-			else if (percentage >= 10) 	{ points = maxPoints/4 }
+			if 		(percentage > 19) 	{ points = maxPoints/14 }
+			else if (percentage >= 18) 	{ points = maxPoints/12 }
+			else if (percentage >= 17) 	{ points = maxPoints/10 }
+			else if (percentage >= 16) 	{ points = maxPoints/9 }
+			else if (percentage >= 15) 	{ points = maxPoints/8 }
+			else if (percentage >= 14) 	{ points = maxPoints/7 }
+			else if (percentage >= 13) 	{ points = maxPoints/6 }
+			else if (percentage >= 12) 	{ points = maxPoints/5 }
+			else if (percentage >= 11) 	{ points = maxPoints/4 }
+			else if (percentage >= 10) 	{ points = maxPoints/3 }
 			else if (percentage >= 9) 	{ points = maxPoints/1.9 }
 			else if (percentage >= 8) 	{ points = maxPoints/1.8 }
 			else if (percentage >= 7) 	{ points = maxPoints/1.7 }

@@ -63,7 +63,16 @@
                 <div fxFlex="40" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
                     <!-- General Information -->
                     <div class="desktop-card">
-                        <h3>General Information</h3>
+                        <div fxLayout="row" fxLayoutAlign="start center">
+                            <h3 class="truncate">General Information</h3>
+                            <span fxFlex></span>
+                            <div class="square-badge" 
+                                matTooltip="Steps: The number of prediction candlesticks it will skip for every position when building
+                                    the data regardless of how long a position takes to be closed.">
+                                Steps: {{_td.steps}}
+                            </div>
+                        </div>
+                        
 
                         <!-- Description -->
                         <p class="ts-m margin-top">{{_td.description}}</p>
@@ -110,16 +119,6 @@
                             <p class="light-text truncate">Duration</p>
                             <span fxFlex></span>
                             <p matTooltip="Number of minutes it took to build the data.">{{_td.duration_minutes}} mins</p>
-                        </div>
-
-                        <!-- Steps -->
-                        <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
-                            <p class="light-text truncate">Steps</p>
-                            <span fxFlex></span>
-                            <p matTooltip="The number of prediction candlesticks it will skip for every position when building \
-                            the data regardless of how long a position takes to be closed.">
-                                {{_td.steps}}
-                            </p>
                         </div>
 
                         <!-- Up & Down Percent Changes-->
@@ -183,7 +182,7 @@
                                 <tbody>
                                     <tr>
                                         <td><strong>Count</strong></td>
-                                        <td *ngFor="let ta of incudedTA">{{_td.technical_analysis_insight[ta].count | number}}</td>
+                                        <td *ngFor="let ta of incudedTA" class="light-text">{{_td.technical_analysis_insight[ta].count | number}}</td>
                                     </tr>
                                     <tr>
                                         <td><strong>Mean</strong></td>
