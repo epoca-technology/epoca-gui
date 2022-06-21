@@ -24,7 +24,8 @@
             <div mat-subheader>
                 Certificates&nbsp;
                 <mat-icon *ngIf="order == 'general_points'" class="order-icon" matTooltip="Ordered by General Points">query_stats</mat-icon>
-                <mat-icon *ngIf="order == 'acc'" class="order-icon" matTooltip="Ordered by Classification Evaluation Accuracy">rule</mat-icon>
+                <mat-icon *ngIf="order == 'class_eval_acc'" class="order-icon" matTooltip="Ordered by Classification Evaluation Accuracy">rule</mat-icon>
+                <mat-icon *ngIf="order == 'class_eval_points'" class="order-icon" matTooltip="Ordered by Classification Evaluation Points">timeline</mat-icon>
                 <mat-icon *ngIf="order == 'test_ds_acc'" class="order-icon" matTooltip="Ordered by Test Dataset Evaluation Accuracy">playlist_add_check</mat-icon>
             </div>
             <mat-list-item *ngFor="let certificate of _training.certificates; index as certIndex">
@@ -34,8 +35,15 @@
                         <div fxLayout="row" fxLayoutAlign="start center">
                             <span class="truncate" style="max-width: 70%;">{{certificate.id}}</span>
                             <span fxFlex></span>
-                            <div *ngIf="order == 'general_points'" class="square-badge"><span>{{certificate.general.points | number: '1.2-2'}}</span></div>
-                            <div *ngIf="order == 'acc'" class="square-badge"><span>{{certificate.classification_evaluation.acc | number: '1.2-2'}}%</span></div>
+                            <div *ngIf="order == 'general_points'" 
+                                [ngClass]="certificate.general.state_class" 
+                                class="square-badge"><span>{{certificate.general.points | number: '1.2-2'}}</span></div>
+                            <div *ngIf="order == 'class_eval_acc'" class="square-badge"><span>{{certificate.classification_evaluation.acc | number: '1.2-2'}}%</span></div>
+                            <div *ngIf="order == 'class_eval_points'" class="square-badge">
+                                <span>
+                                    {{certificate.classification_evaluation.positions[certificate.classification_evaluation.positions.length-1].pts | number: '1.2-2'}}
+                                </span>
+                            </div>
                             <div *ngIf="order == 'test_ds_acc'" class="square-badge"><span>{{certificate.test_evaluation[1] | percent: '1.2-2'}}</span></div>
                         </div>
                 </button>
@@ -105,7 +113,8 @@
                         <div mat-subheader>
                             Certificates&nbsp;
                             <mat-icon *ngIf="order == 'general_points'" class="order-icon" matTooltip="Ordered by General Points">query_stats</mat-icon>
-                            <mat-icon *ngIf="order == 'acc'" class="order-icon" matTooltip="Ordered by Classification Evaluation Accuracy">rule</mat-icon>
+                            <mat-icon *ngIf="order == 'class_eval_acc'" class="order-icon" matTooltip="Ordered by Classification Evaluation Accuracy">rule</mat-icon>
+                            <mat-icon *ngIf="order == 'class_eval_points'" class="order-icon" matTooltip="Ordered by Classification Evaluation Points">timeline</mat-icon>
                             <mat-icon *ngIf="order == 'test_ds_acc'" class="order-icon" matTooltip="Ordered by Test Dataset Evaluation Accuracy">playlist_add_check</mat-icon>
                         </div>
                         <mat-list-item *ngFor="let certificate of _training.certificates; index as certIndex">
@@ -115,8 +124,15 @@
                                     <div fxLayout="row" fxLayoutAlign="start center">
                                         <span class="truncate" style="max-width: 70%;">{{certificate.id}}</span>
                                         <span fxFlex></span>
-                                        <div *ngIf="order == 'general_points'" class="square-badge"><span>{{certificate.general.points | number: '1.2-2'}}</span></div>
-                                        <div *ngIf="order == 'acc'" class="square-badge"><span>{{certificate.classification_evaluation.acc | number: '1.2-2'}}%</span></div>
+                                        <div *ngIf="order == 'general_points'" 
+                                        [ngClass]="certificate.general.state_class" 
+                                        class="square-badge"><span>{{certificate.general.points | number: '1.2-2'}}</span></div>
+                                        <div *ngIf="order == 'class_eval_acc'" class="square-badge"><span>{{certificate.classification_evaluation.acc | number: '1.2-2'}}%</span></div>
+                                        <div *ngIf="order == 'class_eval_points'" class="square-badge">
+                                            <span>
+                                                {{certificate.classification_evaluation.positions[certificate.classification_evaluation.positions.length-1].pts | number: '1.2-2'}}
+                                            </span>
+                                        </div>
                                         <div *ngIf="order == 'test_ds_acc'" class="square-badge"><span>{{certificate.test_evaluation[1] | percent: '1.2-2'}}</span></div>
                                     </div>
                             </button>
@@ -494,7 +510,7 @@
                         <!-- Certificate Section -->
                         <div class="certificate-section" 
                             *ngIf="section.id == 'certificate' && cert && testDSEvaluation && testDSLoss && testDSAccuracy && 
-                            classAccuracy && classPrediction && classOutcome">
+                            classAccuracy && classPoints && classPrediction && classOutcome">
                             <!-- Tabs Navigation-->
                             <mat-tab-group *ngIf="layout == 'mobile'" 
                                         [selectedIndex]="activeTabIndex" (selectedIndexChange)="activeTabIndex = $event"
@@ -674,6 +690,7 @@
                                                 <h3 class="truncate">General Evaluation</h3>
                                                 <span fxFlex></span>
                                                 <div class="square-badge"
+                                                    [ngClass]="cert.general.state_class"
                                                     matTooltip="Total points collected during the general evaluation.">
                                                     {{cert.general.points | number: '1.0-2'}} / {{cert.general.max_points | number: '1.0-2'}}
                                                 </div>
@@ -690,6 +707,7 @@
                                                             <h4 class="truncate">{{cat.name}}</h4>
                                                             <span fxFlex></span>
                                                             <div class="square-badge square-badge-category"
+                                                                [ngClass]="cat.state_class"
                                                                 matTooltip="Total points collected during the {{cat.name}}.">
                                                                 {{cat.points | number: '1.0-2'}} / {{cat.max_points | number: '1.0-2'}}
                                                             </div>
@@ -710,7 +728,7 @@
                                                                     <p class="light-text ts-s">{{item.state}}</p>
                                                                 </div>
                                                                 <span fxFlex></span>
-                                                                <div [ngClass]="{'square-badge-success': item.points > 0, 'square-badge-error': item.points == 0}">
+                                                                <div [ngClass]="item.state_class" class="square-badge">
                                                                     {{item.points | number: '1.0-2'}} / {{item.max_points | number: '1.0-2'}}
                                                                 </div>
                                                             </div>
@@ -889,10 +907,9 @@
 
                             <!-- Classification Evaluation -->
                             <div *ngIf="activeTabIndex == 2" class="class-evals-content">
-                                <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" fxLayoutalign="center center">
-                                    <span fxFlex></span>
+                                <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" fxLayoutalign="center start">
                                     <!-- Class. Accuracy -->
-                                    <div fxFlex="43" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                                    <div fxFlex="40" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
                                         <div class="desktop-card">
                                             <div class="badged-header" fxLayout="row" fxLayoutAlign="start center">
                                                 <h3 class="truncate">{{layout == 'desktop' ? 'Accuracy': 'Acc.'}}</h3>
@@ -1002,7 +1019,7 @@
                                                 </button>
                                             </div>
                                             <div class="heat-map">
-                                                <mat-grid-list cols="5" [rowHeight]="layout == 'desktop' ? '37px': '30px'">
+                                                <mat-grid-list cols="5" [rowHeight]="layout == 'desktop' ? '45px': '30px'">
                                                     <div *ngFor="let item of probsHeatmap">
                                                         <mat-grid-tile><p class="y-label">{{item.prob_range}}</p></mat-grid-tile>
                                                         <mat-grid-tile [matTooltip]="item.increase.state_description" 
@@ -1030,70 +1047,107 @@
                                     <div class="divider show-on-mobile"></div>
 
                                     
-                                    <div fxFlex="43" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
-                                        <!-- Predictions -->
+                                    <div fxFlex="58" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                                        
+                                        
+                                        <!-- Positions Chart -->
                                         <div class="desktop-card">
                                             <div class="badged-header" fxLayout="row" fxLayoutAlign="start center">
-                                                <h3 class="truncate">{{layout == 'desktop' ? 'Predictions': 'Preds.'}}</h3>
+                                                <h3 class="truncate">Positions</h3>
                                                 <span fxFlex></span>
-                                                <div class="square-badge-success" 
-                                                    matTooltip="The number of increase predictions generated by the Classification.">
-                                                    {{cert.classification_evaluation.increase_num | number}}
-                                                </div>
-                                                <div class="square-badge-error" 
-                                                    matTooltip="The number of decrease predictions generated by the Classification.">
-                                                    {{cert.classification_evaluation.decrease_num | number}}
-                                                </div>
                                                 <div class="square-badge" 
-                                                    matTooltip="The number of non-neutral predictions generated by the Classification out of
-                                                    a maximum of {{cert.classification_evaluation.max_evaluations}} evaluations.">
-                                                    {{cert.classification_evaluation.evaluations | number}}
+                                                    matTooltip="Total points collected during the Classification Evaluation">
+                                                    Points: {{cert.classification_evaluation.positions[cert.classification_evaluation.positions.length-1].pts | number}}
                                                 </div>
                                             </div>
 
-                                            <apx-chart
-                                                [series]="classPrediction.series"
-                                                [chart]="classPrediction.chart"
-                                                [labels]="classPrediction.labels"
-                                                [colors]="classPrediction.colors"
-                                                [legend]="classPrediction.legend"
-                                                [responsive]="classPrediction.responsive"
-                                            ></apx-chart>
+                                            <div>
+                                                <apx-chart
+                                                    [series]="classPoints.series"
+                                                    [chart]="classPoints.chart"
+                                                    [plotOptions]="classPoints.plotOptions"
+                                                    [xaxis]="classPoints.xaxis"
+                                                    [dataLabels]="classPoints.dataLabels"
+                                                    [colors]="classPoints.colors"
+                                                    [grid]="classPoints.grid"
+                                                    [legend]="{show: false}"
+                                                    [yaxis]="classPoints.yaxis"
+                                                ></apx-chart>
+                                            </div>
                                         </div>
 
                                         <div class="divider show-on-mobile"></div>
 
-                                        <!-- Outcomes -->
-                                        <div class="desktop-card">
-                                            <div class="badged-header" fxLayout="row" fxLayoutAlign="start center">
-                                                <h3 class="truncate">{{layout == 'desktop' ? 'Outcomes': 'Outs.'}}</h3>
-                                                <span fxFlex></span>
-                                                <div class="square-badge-success" 
-                                                    matTooltip="The number of increase outcomes during the evaluation.">
-                                                    {{cert.classification_evaluation.increase_outcomes | number}}
-                                                </div>
-                                                <div class="square-badge-error" 
-                                                    matTooltip="The number of decrease outcomes during the evaluation.">
-                                                    {{cert.classification_evaluation.decrease_outcomes | number}}
-                                                </div>
-                                                <div class="square-badge" 
-                                                    matTooltip="The total number outcomes during the evaluation.">
-                                                    {{cert.classification_evaluation.increase_outcomes + 
-                                                        cert.classification_evaluation.decrease_outcomes | number}}
+                                        <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" class="full-width">
+                                            <!-- Predictions -->
+                                            <div fxFlex="49">
+                                                <div class="desktop-card">
+                                                    <div class="badged-header" fxLayout="row" fxLayoutAlign="start center">
+                                                        <h3 class="truncate">{{layout == 'desktop' ? 'Predictions': 'Preds.'}}</h3>
+                                                        <span fxFlex></span>
+                                                        <div class="square-badge-success" 
+                                                            matTooltip="The number of increase predictions generated by the Classification.">
+                                                            {{cert.classification_evaluation.increase_num | number}}
+                                                        </div>
+                                                        <div class="square-badge-error" 
+                                                            matTooltip="The number of decrease predictions generated by the Classification.">
+                                                            {{cert.classification_evaluation.decrease_num | number}}
+                                                        </div>
+                                                        <div class="square-badge" 
+                                                            matTooltip="The number of non-neutral predictions generated by the Classification.
+                                                            A total of {{cert.classification_evaluation.neutral_predictions}} neutral predictions
+                                                            were generated.">
+                                                            {{cert.classification_evaluation.positions.length | number}}
+                                                        </div>
+                                                    </div>
+    
+                                                    <apx-chart
+                                                        [series]="classPrediction.series"
+                                                        [chart]="classPrediction.chart"
+                                                        [labels]="classPrediction.labels"
+                                                        [colors]="classPrediction.colors"
+                                                        [legend]="classPrediction.legend"
+                                                        [responsive]="classPrediction.responsive"
+                                                    ></apx-chart>
                                                 </div>
                                             </div>
 
-                                            <apx-chart
-                                                [series]="classOutcome.series"
-                                                [chart]="classOutcome.chart"
-                                                [labels]="classOutcome.labels"
-                                                [colors]="classOutcome.colors"
-                                                [legend]="classOutcome.legend"
-                                                [responsive]="classOutcome.responsive"
-                                            ></apx-chart>
+                                            <span fxFlex></span>
+                                            <div class="divider show-on-mobile"></div>
+
+                                            <!-- Outcomes -->
+                                            <div fxFlex="49">
+                                                <div class="desktop-card">
+                                                    <div class="badged-header" fxLayout="row" fxLayoutAlign="start center">
+                                                        <h3 class="truncate">{{layout == 'desktop' ? 'Outcomes': 'Outs.'}}</h3>
+                                                        <span fxFlex></span>
+                                                        <div class="square-badge-success" 
+                                                            matTooltip="The number of increase outcomes during the evaluation.">
+                                                            {{cert.classification_evaluation.increase_outcomes | number}}
+                                                        </div>
+                                                        <div class="square-badge-error" 
+                                                            matTooltip="The number of decrease outcomes during the evaluation.">
+                                                            {{cert.classification_evaluation.decrease_outcomes | number}}
+                                                        </div>
+                                                        <div class="square-badge" 
+                                                            matTooltip="The total number outcomes during the evaluation.">
+                                                            {{cert.classification_evaluation.increase_outcomes + 
+                                                                cert.classification_evaluation.decrease_outcomes | number}}
+                                                        </div>
+                                                    </div>
+        
+                                                    <apx-chart
+                                                        [series]="classOutcome.series"
+                                                        [chart]="classOutcome.chart"
+                                                        [labels]="classOutcome.labels"
+                                                        [colors]="classOutcome.colors"
+                                                        [legend]="classOutcome.legend"
+                                                        [responsive]="classOutcome.responsive"
+                                                    ></apx-chart>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                    <span fxFlex></span>
                                 </div>
                             </div>
 

@@ -6,7 +6,8 @@ import {
 	IGeneralEvaluation, 
 	IItemGeneralEvaluation, 
 	IGeneralEvaluationItem,
-	IGeneralEvaluationCategory
+	IGeneralEvaluationCategory,
+	IGeneralEvaluationStateClass
 } from '../../prediction';
 import { IClassificationTrainingEvaluationService, } from './interfaces';
 
@@ -18,7 +19,7 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 	private readonly minAccuracy: number = 40;
 
 	// The maximum neutrality percentage allowed
-	private readonly maxNeutrality: number = 20;
+	private readonly maxNeutrality: number = 85;
 
 	// The maximum percentage difference allowed for predictions vs outcomes
 	private readonly maxPredictionDifference: number = 20;
@@ -27,12 +28,14 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 	private evaluationTemplate: IGeneralEvaluation = {
 		points: 0,
 		max_points: 100,
+		state_class: "error",
 		categories: [
 			{
 				name: "Training",
 				description: "Analyzes the Model's Training Performance based on the Losses and Accuracies.",
 				points: 0,
 				max_points: 5,
+				state_class: "error",
 				items: [
 					{
 						id: "loss_improvement",
@@ -42,6 +45,7 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 						state: "",
 						points: 0,
 						max_points: 0.83,
+						state_class: "error"
 					},
 					{
 						id: "val_loss_improvement",
@@ -51,6 +55,7 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 						state: "",
 						points: 0,
 						max_points: 0.83,
+						state_class: "error"
 					},
 					{
 						id: "loss_vs_val_loss",
@@ -61,6 +66,7 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 						state: "",
 						points: 0,
 						max_points: 0.83,
+						state_class: "error"
 					},
 					{
 						id: "accuracy_improvement",
@@ -70,6 +76,7 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 						state: "",
 						points: 0,
 						max_points: 0.83,
+						state_class: "error"
 					},
 					{
 						id: "val_accuracy_improvement",
@@ -79,6 +86,7 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 						state: "",
 						points: 0,
 						max_points: 0.83,
+						state_class: "error"
 					},
 					{
 						id: "accuracy_vs_val_accuracy",
@@ -89,6 +97,7 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 						state: "",
 						points: 0,
 						max_points: 0.83,
+						state_class: "error"
 					}
 				]
 			},
@@ -96,7 +105,8 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 				name: "Test Dataset Evaluation",
 				description: "Analyzes the Model's Test Dataset Evaluation based on the result's accuracy.",
 				points: 0,
-				max_points: 45,
+				max_points: 40,
+				state_class: "error",
 				items: [
 					{
 						id: "test_ds_accuracy",
@@ -105,7 +115,8 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 						In the case of accuracy, the bigger the value the better.",
 						state: "",
 						points: 0,
-						max_points: 45,
+						max_points: 40,
+						state_class: "error"
 					}
 				]
 			},
@@ -113,7 +124,8 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 				name: "Classification Evaluation",
 				description: "Analyzes the Model's Classification Evaluation based on the accuracies, predictions and real outcomes.",
 				points: 0,
-				max_points: 50,
+				max_points: 55,
+				state_class: "error",
 				items: [
 					{
 						id: "long_accuracy",
@@ -123,6 +135,7 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 						state: "",
 						points: 0,
 						max_points: 4.5,
+						state_class: "error"
 					},
 					{
 						id: "short_accuracy",
@@ -132,6 +145,7 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 						state: "",
 						points: 0,
 						max_points: 4.5,
+						state_class: "error"
 					},
 					{
 						id: "general_accuracy",
@@ -140,7 +154,8 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 						In the case of accuracy, the bigger the value the better.",
 						state: "",
 						points: 0,
-						max_points: 23,
+						max_points: 25,
+						state_class: "error"
 					},
 					{
 						id: "prediction_neutrality",
@@ -149,7 +164,8 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 						to a balanced prediction distribution.",
 						state: "",
 						points: 0,
-						max_points: 10,
+						max_points: 6,
+						state_class: "error"
 					},
 					{
 						id: "long_prediction_balance",
@@ -159,7 +175,8 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 						actual outcomes the better.",
 						state: "",
 						points: 0,
-						max_points: 4,
+						max_points: 7.5,
+						state_class: "error"
 					},
 					{
 						id: "short_prediction_balance",
@@ -169,7 +186,8 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 						actual outcomes the better.",
 						state: "",
 						points: 0,
-						max_points: 4,
+						max_points: 7.5,
+						state_class: "error"
 					},
 				]
 			}
@@ -221,6 +239,7 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 		return {
 			points: totalPoints,
 			max_points: this.evaluationTemplate.max_points,
+			state_class: this.getStateClass(totalPoints, this.evaluationTemplate.max_points),
 			categories: categories
 		}
 	}
@@ -291,14 +310,17 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 
 		// Check if there was an improvement
 		if (change < 0) {
+			const points: number = this.calculatePoints(this.getAbsoluteValue(change), 0, 0.1, maxPoints);
 			return {
-				points: this.calculatePoints(this.getAbsoluteValue(change), 0, 0.1, maxPoints), 
-				state: `The training loss decreased by ${change}% during the training process.`
+				points: points, 
+				state: `The training loss decreased by ${change}% during the training process.`,
+				state_class: this.getStateClass(points, maxPoints)
 			}
 		} else {
 			return {
 				points: 0, 
-				state: `The training loss did not decrease during the training process. Instead, it increased by ${change}%.`
+				state: `The training loss did not decrease during the training process. Instead, it increased by ${change}%.`,
+				state_class: "error"
 			}
 		}
 	}
@@ -324,14 +346,17 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 
 		// Check if there was an improvement
 		if (change < 0) {
+			const points: number = this.calculatePoints(this.getAbsoluteValue(change), 0, 0.1, maxPoints);
 			return {
-				points: this.calculatePoints(this.getAbsoluteValue(change), 0, 0.1, maxPoints), 
-				state: `The validation loss decreased by ${change}% during the training process.`
+				points: points, 
+				state: `The validation loss decreased by ${change}% during the training process.`,
+				state_class: this.getStateClass(points, maxPoints)
 			}
 		} else {
 			return {
 				points: 0, 
-				state: `The validation loss did not decrease during the training process. Instead, it increased by ${change}%.`
+				state: `The validation loss did not decrease during the training process. Instead, it increased by ${change}%.`,
+				state_class: "error"
 			}
 		}
 	}
@@ -357,14 +382,17 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 
 		// Check if the val loss ended up performing better than the loss
 		if (change < 0) {
+			const points: number = this.calculatePoints(this.getAbsoluteValue(change), 0, 0.1, maxPoints);
 			return {
-				points: this.calculatePoints(this.getAbsoluteValue(change), 0, 0.1, maxPoints), 
-				state: `The validation loss is smaller than the loss by ${change}%.`
+				points: points, 
+				state: `The validation loss is smaller than the loss by ${change}%.`,
+				state_class: this.getStateClass(points, maxPoints)
 			}
 		} else {
 			return {
 				points: 0,
-				state: `The loss is smaller than the validation loss by ${change}%.`
+				state: `The loss is smaller than the validation loss by ${change}%.`,
+				state_class: "error"
 			}
 		}
 	}
@@ -394,14 +422,17 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 
 		// Check if there was an improvement
 		if (change > 0) {
+			const points: number = this.calculatePoints(change, 0, 0.1, maxPoints);
 			return {
 				points: this.calculatePoints(change, 0, 0.1, maxPoints), 
-				state: `The training accuracy increased by ${change}% during the training process.`
+				state: `The training accuracy increased by ${change}% during the training process.`,
+				state_class: this.getStateClass(points, maxPoints)
 			}
 		} else {
 			return {
 				points: 0, 
-				state: `The training accuracy did not increase during the training process. Instead, it decreased by ${change}%.`
+				state: `The training accuracy did not increase during the training process. Instead, it decreased by ${change}%.`,
+				state_class: "error"
 			}
 		}
 	}
@@ -433,14 +464,17 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 
 		// Check if there was an improvement
 		if (change > 0) {
+			const points: number = this.calculatePoints(change, 0, 0.1, maxPoints);
 			return {
-				points: this.calculatePoints(change, 0, 0.1, maxPoints), 
-				state: `The validation accuracy increased by ${change}% during the training process.`
+				points: points, 
+				state: `The validation accuracy increased by ${change}% during the training process.`,
+				state_class: this.getStateClass(points, maxPoints)
 			}
 		} else {
 			return {
 				points: 0, 
-				state: `The validation accuracy did not increase during the training process. Instead, it decreased by ${change}%.`
+				state: `The validation accuracy did not increase during the training process. Instead, it decreased by ${change}%.`,
+				state_class: "error"
 			}
 		}
 	}
@@ -471,14 +505,17 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 
 		// Check if the val accuracy ended up performing better than the accuracy
 		if (change > 0) {
+			const points: number = this.calculatePoints(change, 0, 0.1, maxPoints);
 			return {
-				points: this.calculatePoints(change, 0, 0.1, maxPoints), 
-				state: `The validation accuracy is bigger than the accuracy by ${change}%.`
+				points: points, 
+				state: `The validation accuracy is bigger than the accuracy by ${change}%.`,
+				state_class: this.getStateClass(points, maxPoints)
 			}
 		} else {
 			return {
 				points: 0,
-				state: `The accuracy is bigger than the validation accuracy by ${change}%.`
+				state: `The accuracy is bigger than the validation accuracy by ${change}%.`,
+				state_class: "error"
 			}
 		}
 	}
@@ -508,14 +545,17 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 
 		// Check if there was an improvement
 		if (accuracy >= 0.45) {
+			const points: number = this.calculatePoints(accuracy, 0.45, 0.75, maxPoints);
 			return {
-				points: this.calculatePoints(accuracy, 0.45, 0.75, maxPoints), 
-				state: `The test dataset evaluation concluded with an accuracy of ${accuracy*100}%.`
+				points: points, 
+				state: `The test dataset evaluation concluded with an accuracy of ${accuracy*100}%.`,
+				state_class: this.getStateClass(points, maxPoints)
 			}
 		} else {
 			return {
 				points: 0, 
-				state: `The accuracy received in the test dataset evaluation is unacceptable (${accuracy*100}%).`
+				state: `The accuracy received in the test dataset evaluation is unacceptable (${accuracy*100}%).`,
+				state_class: "error"
 			}
 		}
 	}
@@ -545,8 +585,8 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 
 		// Firstly, check the neutrality
 		const neutralPercent: number = <number>this._utils.calculatePercentageOutOfTotal(
-			cert.classification_evaluation.max_evaluations - cert.classification_evaluation.evaluations, 
-			cert.classification_evaluation.max_evaluations
+			cert.classification_evaluation.neutral_predictions, 
+			cert.classification_evaluation.neutral_predictions + cert.classification_evaluation.positions.length
 		);
 		if (neutralPercent >= this.maxNeutrality) {
 			broken = true;
@@ -627,17 +667,20 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 
 			// Check if there was an improvement
 			if (accuracy >= 45) {
+				const points: number = this.calculatePoints(accuracy, 45, 75, maxPoints)
 				return {
-					points: this.calculatePoints(accuracy, 45, 75, maxPoints), 
-					state: `The classification evaluation concluded with an accuracy of ${accuracy}%.`
+					points: points, 
+					state: `The classification evaluation concluded with an accuracy of ${accuracy}%.`,
+					state_class: this.getStateClass(points, maxPoints)
 				}
 			} else {
 				return {
 					points: 0, 
-					state: `The accuracy received in the classification evaluation is unacceptable (${accuracy}%).`
+					state: `The accuracy received in the classification evaluation is unacceptable (${accuracy}%).`, 
+					state_class: "error"
 				}
 			}
-		} else { return { points: 0, state: brokenState} }
+		} else { return { points: 0, state: brokenState, state_class: "error"} }
 	}
 
 
@@ -651,7 +694,7 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 	 * @param maxPoints 
 	 * @param broken
 	 * @param brokenState
-	 * @returns  IItemGeneralEvaluation
+	 * @returns IItemGeneralEvaluation
 	 */
 	private predictionNeutrality(
 		cert: IClassificationTrainingCertificate, 
@@ -661,11 +704,11 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 	): IItemGeneralEvaluation {
 		// Firstly, make sure the classification isn't broken
 		if (!broken) {
-			// Calculate the number of neutral predictions
-			const neutral: number = cert.classification_evaluation.max_evaluations - cert.classification_evaluation.evaluations;
-
 			// Calculate the percentage that it represents out of total predictions
-			const percentage: number = <number>this._utils.calculatePercentageOutOfTotal(neutral, cert.classification_evaluation.max_evaluations);
+			const percentage: number = <number>this._utils.calculatePercentageOutOfTotal(
+				cert.classification_evaluation.neutral_predictions, 
+				cert.classification_evaluation.neutral_predictions + cert.classification_evaluation.positions.length
+			);
 
 			// Calculate the points
 			let points: number = 0;
@@ -693,9 +736,10 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 			// Finally, return the evaluation
 			return {
 				points: points, 
-				state: `The neutrality represents ${percentage}% of the predictions.`
+				state: `The neutrality represents ${percentage}% of the predictions.`,
+				state_class: this.getStateClass(points, maxPoints)
 			}
-		} else { return { points: 0, state: brokenState} }
+		} else { return { points: 0, state: brokenState, state_class: "error"} }
 	}
 
 
@@ -733,16 +777,23 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 
 			// Calculate the points
 			let points: number = 0;
-			if 		(change > 19) 	{ points = maxPoints/12 }
-			else if (change >= 18) 	{ points = maxPoints/11 }
-			else if (change >= 17) 	{ points = maxPoints/10 }
-			else if (change >= 16) 	{ points = maxPoints/9 }
-			else if (change >= 15) 	{ points = maxPoints/8 }
-			else if (change >= 14) 	{ points = maxPoints/7 }
-			else if (change >= 13) 	{ points = maxPoints/5.5 }
-			else if (change >= 12) 	{ points = maxPoints/4 }
-			else if (change >= 11) 	{ points = maxPoints/3.5 }
-			else if (change >= 10) 	{ points = maxPoints/3 }
+			if 		(change > 70) 	{ points = maxPoints/18 }
+			else if (change >= 60) 	{ points = maxPoints/16 }
+			else if (change >= 50) 	{ points = maxPoints/14 }
+			else if (change >= 40) 	{ points = maxPoints/12 }
+			else if (change >= 30) 	{ points = maxPoints/10 }
+			else if (change >= 25) 	{ points = maxPoints/9 }
+			else if (change >= 20) 	{ points = maxPoints/8 }
+			else if (change >= 19) 	{ points = maxPoints/7 }
+			else if (change >= 18) 	{ points = maxPoints/6 }
+			else if (change >= 17) 	{ points = maxPoints/5 }
+			else if (change >= 16) 	{ points = maxPoints/4 }
+			else if (change >= 15) 	{ points = maxPoints/3 }
+			else if (change >= 14) 	{ points = maxPoints/2.8 }
+			else if (change >= 13) 	{ points = maxPoints/2.6 }
+			else if (change >= 12) 	{ points = maxPoints/2.4 }
+			else if (change >= 11) 	{ points = maxPoints/2.2 }
+			else if (change >= 10) 	{ points = maxPoints/2 }
 			else if (change >= 9) 	{ points = maxPoints/1.9 }
 			else if (change >= 8) 	{ points = maxPoints/1.8 }
 			else if (change >= 7) 	{ points = maxPoints/1.7 }
@@ -757,9 +808,10 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 			// Finally, return the evaluation
 			return {
 				points: points, 
-				state: `The prediction balance is ${change}% away from the actual outcomes.`
+				state: `The prediction balance is ${change}% away from the actual outcomes.`,
+				state_class: this.getStateClass(points, maxPoints)
 			}
-		} else { return { points: 0, state: brokenState} }
+		} else { return { points: 0, state: brokenState, state_class: "error"} }
 	}
 
 
@@ -811,6 +863,30 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 
 
 	/* Misc Helpers */
+
+
+
+
+
+
+	/**
+	 * Returns the state class based on the points obtained.
+	 * @param pointsReceived 
+	 * @param maxPoints 
+	 * @returns IGeneralEvaluationStateClass
+	 */
+	private getStateClass(pointsReceived: number, maxPoints: number): IGeneralEvaluationStateClass {
+		// Calculate the percent received
+		const pointsPercent: number = <number>this._utils.calculatePercentageOutOfTotal(pointsReceived, maxPoints);
+
+		// Return the class based on the performance
+		if 		(pointsPercent >= 80) { return "optimal"}
+		else if (pointsPercent >= 60) { return "decent"}
+		else if (pointsPercent >= 40) { return "neutral"}
+		else if (pointsPercent >= 30) { return "warning"}
+		else 						  { return "error"}
+	}
+
 
 
 

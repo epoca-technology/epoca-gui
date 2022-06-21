@@ -245,6 +245,8 @@ export class ChartService implements IChartService {
 	 * @param categories? 
 	 * @param height?
 	 * @param plotOptionsDistributed?
+	 * @param disableNiceScale?
+	 * @param range?
 	 * @returns IBarChartOptions
 	 */
 	public getBarChartOptions(
@@ -252,6 +254,8 @@ export class ChartService implements IChartService {
 		categories?: string[], 
 		height?: number,
 		plotOptionsDistributed?: boolean,
+		disableNiceScale?: boolean,
+		range?: IChartRange,
 	): IBarChartOptions {
 		// Init the default chart
 		let defaultChart: ApexChart = {height: 600, type: 'bar',animations: { enabled: false}, toolbar: {show: false}};
@@ -273,6 +277,17 @@ export class ChartService implements IChartService {
 			xaxis = {categories: categories}
 		}
 
+		// Check if the nice scale should be disabled
+		let yaxis = config.yaxis || {};
+		if (disableNiceScale) {
+			// Check if the range was provided, otherwise, calculate it
+			if (!range) range = this.getLineChartRange(config.series!);
+
+			// Check if a yaxis was needs to be initialized or updated
+			if (yaxis) { yaxis = {...yaxis, forceNiceScale: false, min: range.min, max: range.max}} 
+			else { yaxis = {forceNiceScale: false, min: range.min, max: range.max} }
+		}
+
 		// Return the Options Object
 		return {
 			series: config.series!,
@@ -283,7 +298,7 @@ export class ChartService implements IChartService {
 			grid: config.grid ? config.grid: {show: false},
 			fill: config.fill ? config.fill: {},
 			xaxis: xaxis,
-			yaxis: config.yaxis ? config.yaxis: {}
+			yaxis: yaxis
 		}
 	}
 

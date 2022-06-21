@@ -1,6 +1,6 @@
 
 
-/* Keras Model Types at keras_models/types.py */
+/* Keras Model Types at types/keras_models_types.py */
 
 
 

@@ -11,6 +11,13 @@
 
     .order-icon { color: var(--light-text-color); font-size:17px;padding-top:7px;}
 
+    // States
+    .optimal { background-color: #004D40!important; }
+    .decent { background-color: #009688!important; }
+    .neutral { background-color: #9E9E9E!important; }
+    .warning { background-color: #F57C00!important; }
+    .error { background-color: #B71C1C!important; }
+
     .desktop-sidenav {
         width: 300px;
         button {text-align: left;width: 100%;}

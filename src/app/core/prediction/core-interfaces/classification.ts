@@ -1,10 +1,11 @@
 import { IModel } from "./model";
 import { IKerasModelConfig, IKerasModelTrainingHistory } from "./keras-models";
 import { IClassificationConfig } from "./model";
+import { IModelEvaluation } from "./model-evaluation";
 
 
 
-/* Regression Types at classification/types.py */
+/* Classification Types at types/classification_types.py */
 
 
 
@@ -314,58 +315,6 @@ export interface ITrainingDataSummary {
 
 
 
-/**
- * Classification Evaluation
- * Evaluation performed right after the model is trained in order to get an overview of the
- * potential accuracy, as well as the prediction type distribution.
- * Each evaluation is performed using a random candlestick open time and is evaluated against
- * the sequence of 1 minute candlesticks that follow. The iteration will continue until the
- * evaluation position is closed.
- */
-export interface IClassificationEvaluation {
-    // The number of evaluations performed on the Regression
-    evaluations: number,
-    max_evaluations: number,
-
-    // The number of times the Regression predicted a price increase
-    increase_num: number,
-    increase_successful_num: number,
-
-    // The number of times the Regression predicted a price decrease
-    decrease_num: number,
-    decrease_successful_num: number,
-
-    // Accuracy
-    increase_acc: number,
-    decrease_acc: number,
-    acc: number,
-
-    // Increase Predictions Overview
-    increase_list: number[],
-    increase_max: number,
-    increase_min: number,
-    increase_mean: number,
-    increase_successful_list: number[],
-    increase_successful_max: number,
-    increase_successful_min: number,
-    increase_successful_mean: number,
-
-    // Decrease Predictions Overview
-    decrease_list: number[],
-    decrease_max: number,
-    decrease_min: number,
-    decrease_mean: number,
-    decrease_successful_list: number[],
-    decrease_successful_max: number,
-    decrease_successful_min: number,
-    decrease_successful_mean: number,
-
-    // Outcomes
-    increase_outcomes: number,
-    decrease_outcomes: number
-}
-
-
 
 
 
@@ -410,7 +359,7 @@ export interface IClassificationTrainingCertificate {
     test_evaluation: [number, number], // [loss, metric]
 
     // Classification Post-Training Evaluation
-    classification_evaluation: IClassificationEvaluation,
+    classification_evaluation: IModelEvaluation,
 
     // The configuration of the Classification
     classification_config: IClassificationConfig,
@@ -434,7 +383,7 @@ export interface IClassificationTrainingCertificate {
 
 
 
-
+export type IGeneralEvaluationStateClass = "error"|"warning"|"neutral"|"decent"|"optimal";
 
 
 
@@ -449,6 +398,9 @@ export interface IGeneralEvaluation {
 
     // The maximum number of points that can be collected within the evaluation
     max_points: number,
+
+    // State Class
+    state_class: IGeneralEvaluationStateClass,
     
     // List of categories
     categories: IGeneralEvaluationCategory[]
@@ -468,6 +420,9 @@ export interface IGeneralEvaluationCategory {
 
     // The maximum number of points that can be collected within the category
     max_points: number,
+
+    // State Class
+    state_class: IGeneralEvaluationStateClass,
 
     // Category Items
     items: IGeneralEvaluationItem[]
@@ -491,7 +446,10 @@ export interface IGeneralEvaluationItem {
     points: number,
 
     // The maximum number of points that can be collected within the category
-    max_points: number
+    max_points: number,
+
+    // State Class
+    state_class: IGeneralEvaluationStateClass,
 }
 
 
@@ -520,5 +478,6 @@ export type IGeneralEvaluationItemID =
 
 export interface IItemGeneralEvaluation {
     points: number,
-    state: string
+    state: string,
+    state_class: IGeneralEvaluationStateClass
 }

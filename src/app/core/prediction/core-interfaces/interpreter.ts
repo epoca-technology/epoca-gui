@@ -1,6 +1,6 @@
 
 
-/* Interpreter Types at interpreter/types.py */
+/* Interpreter Types at types/interpreter_types.py */
 
 
 

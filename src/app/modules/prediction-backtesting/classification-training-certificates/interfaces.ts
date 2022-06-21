@@ -68,7 +68,7 @@ export interface IHeatmapItemState {
 }
 
 export interface IHeatmapItem {
-    prob_range: string, // 50% - 54.99%
+    prob_range: string, // 60% - 64.99%
     increase: IHeatmapItemState,
     increase_successful: IHeatmapItemState,
     decrease: IHeatmapItemState,

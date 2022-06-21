@@ -4,7 +4,7 @@ import { IKerasModelSummary } from "./keras-models";
 
 
 
-/* Model Types at model/types.py */
+/* Model Types at types/model_types.py */
 
 
 

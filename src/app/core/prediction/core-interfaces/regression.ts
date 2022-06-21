@@ -1,9 +1,10 @@
 import { IKerasModelConfig, IKerasModelTrainingHistory } from "./keras-models";
 import { IRegressionConfig } from "./model";
+import { IModelEvaluation } from "./model-evaluation";
 
 
 
-/* Regression Types at regression/types.py */
+/* Regression Types at types/regression_types.py */
 
 
 
@@ -104,53 +105,6 @@ export interface IRegressionTrainingTypeConfig {
 
 
 
-/**
- * Regression Evaluation
- * Evaluation performed right after the model is trained in order to get an overview of the
- * potential accuracy, as well as the prediction type distribution.
- * Each evaluation is performed using a random candlestick open time and is evaluated against
- * the candlestick placed at the end of the window based on the model's predictions config.
- */
-export interface IRegressionEvaluation {
-    // The number of evaluations performed on the Regression
-    evaluations: number,
-    max_evaluations: number,
-
-    // The number of times the Regression predicted a price increase
-    increase_num: number,
-    increase_successful_num: number,
-
-    // The number of times the Regression predicted a price decrease
-    decrease_num: number,
-    decrease_successful_num: number,
-
-    // Accuracy
-    increase_acc: number,
-    decrease_acc: number,
-    acc: number,
-
-    // Increase Predictions Overview
-    increase_list: number[],
-    increase_max: number,
-    increase_min: number,
-    increase_mean: number,
-    increase_successful_list: number[],
-    increase_successful_max: number,
-    increase_successful_min: number,
-    increase_successful_mean: number,
-
-    // Decrease Predictions Overview
-    decrease_list: number[],
-    decrease_max: number,
-    decrease_min: number,
-    decrease_mean: number,
-    decrease_successful_list: number[],
-    decrease_successful_max: number,
-    decrease_successful_min: number,
-    decrease_successful_mean: number
-}
-
-
 
 
 /**
@@ -219,7 +173,7 @@ export interface IRegressionTrainingCertificate {
     test_evaluation: number, // loss
 
     // Regression Post-Training Evaluation
-    regression_evaluation: IRegressionEvaluation,
+    regression_evaluation: IModelEvaluation,
 
     // The configuration of the Regression
     regression_config: IRegressionConfig

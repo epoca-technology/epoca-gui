@@ -96,6 +96,7 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 	public testDSLoss?: ILineChartOptions;
 	public testDSAccuracy?: ILineChartOptions;
 	public classAccuracy?: IBarChartOptions;
+	public classPoints?: IBarChartOptions;
 	public classPrediction?: IPieChartOptions;
 	public classOutcome?: IPieChartOptions;
 	public probsHeatmap: IHeatmapItem[] = [];
@@ -108,8 +109,6 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 		{min: 70, max: 74.99},
 		{min: 65, max: 69.99},
 		{min: 60, max: 64.99},
-		{min: 55, max: 59.99},
-		{min: 50, max: 54.99},
 	];
 	public activeProb: number = 0;
 
@@ -196,7 +195,7 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 						// Navigate to the selected evaluation
 						if (this.order == "general_points") {
 							await this.navigate('general_evaluations');
-						} else if (this.order == "acc") {
+						} else if (this.order == "class_eval_acc" || this.order == "class_eval_points") {
 							await this.navigate('class_evaluations');
 						} else {
 							await this.navigate('evaluations');
@@ -384,7 +383,7 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 		for (let cert of this._training.certificates) {
 			predsSeries[0].data.push(<any>cert.classification_evaluation.increase_num);
 			predsSeries[1].data.push(<any>cert.classification_evaluation.decrease_num);
-			predsSeries[2].data.push(<any>cert.classification_evaluation.evaluations);
+			predsSeries[2].data.push(<any>cert.classification_evaluation.positions.length);
 		}
 
 		// Build the class. preds. chart options
@@ -639,20 +638,45 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 				yaxis: {labels: {show: false}},
 			}, 
 			[this.cert!.id], 
-			110
+			130
 		);
+
+
+		// Probability Heatmap: Iterate over each one of the ranges and add the states to the list
+		this.probsHeatmap = [];
+		for (let range of this.probsRanges) {
+			this.probsHeatmap.push({
+				prob_range: `${range.min}% - ${range.max}%`,
+				increase: this.getHeatmapItemState(range, "increase", this.cert!.classification_evaluation.increase_list),
+				increase_successful: this.getHeatmapItemState(range, "increase_successful", this.cert!.classification_evaluation.increase_successful_list),
+				decrease: this.getHeatmapItemState(range, "decrease", this.cert!.classification_evaluation.decrease_list),
+				decrease_successful: this.getHeatmapItemState(range, "decrease_successful", this.cert!.classification_evaluation.decrease_successful_list)
+			});
+		}
+
+
+		// Build the points chart
+		const {colors, values} = this.getModelPointsValues()
+		this.classPoints = this._chart.getBarChartOptions({
+			series: [{name: this.cert!.id,data: values}],
+			chart: {height: 293, type: 'bar',animations: { enabled: false}, toolbar: {show: true,tools: {download: false}}},
+			plotOptions: {bar: {borderRadius: 0, horizontal: false, distributed: true,}},
+			colors: colors,
+			grid: {show: true},
+			xaxis: {labels: { show: false } }
+		}, undefined, undefined, undefined, true);
+
 
 
 		// Build the predictions chart
 		this.classPrediction = this._chart.getPieChartOptions({
 			series: [
 				this.cert!.classification_evaluation.increase_num, 
-				this.cert!.classification_evaluation.decrease_num, 
-				this.cert!.classification_evaluation.max_evaluations - this.cert!.classification_evaluation.evaluations
+				this.cert!.classification_evaluation.decrease_num
 			],
-			colors: [this._chart.upwardColor, this._chart.downwardColor, this._chart.neutralColor],
-			legend: {position: "bottom"}
-		}, ["Increase", "Decrease", "Neutral"], 316);
+			colors: [this._chart.upwardColor, this._chart.downwardColor],
+			legend: {show: false}
+		}, ["Increase", "Decrease"], 280);
 
 
 		// Build the outcomes chart
@@ -662,29 +686,8 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 				this.cert!.classification_evaluation.decrease_outcomes || 0
 			],
 			colors: [this._chart.upwardColor, this._chart.downwardColor],
-			legend: {position: "bottom"}
-		}, ["Increase", "Decrease"], 316);
-
-
-
-
-		/* Build the Probability Heatmap */
-
-		// Init values
-		this.probsHeatmap = [];
-
-		// Iterate over each one of the ranges
-		for (let range of this.probsRanges) {
-
-			// Add the item to the list
-			this.probsHeatmap.push({
-				prob_range: `${range.min}% - ${range.max}%`,
-				increase: this.getHeatmapItemState(range, "increase", this.cert!.classification_evaluation.increase_list),
-				increase_successful: this.getHeatmapItemState(range, "increase_successful", this.cert!.classification_evaluation.increase_successful_list),
-				decrease: this.getHeatmapItemState(range, "decrease", this.cert!.classification_evaluation.decrease_list),
-				decrease_successful: this.getHeatmapItemState(range, "decrease_successful", this.cert!.classification_evaluation.decrease_successful_list)
-			});
-		}
+			legend: {show: false}
+		}, ["Increase", "Decrease"], 280);
 	}
 
 
@@ -745,6 +748,23 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 
 
 
+	/**
+	 * Builds the points bar chart's data.
+	 * @returns {colors: string[], values: number[]}
+	 */
+	 private getModelPointsValues(): {colors: string[], values: number[]}{
+		let colors: string[] = ['#000000'];
+		let values: number[] = [0];
+		for (let i = 0; i < this.cert!.classification_evaluation.positions.length; i++) {
+			if (this.cert!.classification_evaluation.positions[i].t == 1) { 
+				colors.push(this._chart.upwardColor);
+			} else { 
+				colors.push(this._chart.downwardColor);
+			}
+			values.push(this.cert!.classification_evaluation.positions[i].pts)
+		}
+		return {colors: colors, values: values};
+	}
 
 
 

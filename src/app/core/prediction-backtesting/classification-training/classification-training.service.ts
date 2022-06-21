@@ -68,8 +68,8 @@ export class ClassificationTrainingService implements IClassificationTrainingSer
 			worst: {index: 0, id: this.certificates[0].id, value: this.certificates[0].classification_evaluation.acc},
 		};
 		this.predictionsMetadata = {
-			highest: {index: 0, id: this.certificates[0].id, value: this.certificates[0].classification_evaluation.evaluations},
-			lowest: {index: 0, id: this.certificates[0].id, value: this.certificates[0].classification_evaluation.evaluations}
+			highest: {index: 0, id: this.certificates[0].id, value: this.certificates[0].classification_evaluation.positions.length},
+			lowest: {index: 0, id: this.certificates[0].id, value: this.certificates[0].classification_evaluation.positions.length}
 		};
 		this.increaseProbsMetadata = {
 			highest: {index: 0, id: this.certificates[0].id, value: this.certificates[0].classification_evaluation.increase_mean},
@@ -128,11 +128,11 @@ export class ClassificationTrainingService implements IClassificationTrainingSer
 			}
 
 			// Check the predictions metadata
-			if (this.certificates[i].classification_evaluation.evaluations > this.predictionsMetadata.highest.value) {
-				this.predictionsMetadata.highest = {index: i, id: this.certificates[i].id, value: this.certificates[i].classification_evaluation.evaluations}
+			if (this.certificates[i].classification_evaluation.positions.length > this.predictionsMetadata.highest.value) {
+				this.predictionsMetadata.highest = {index: i, id: this.certificates[i].id, value: this.certificates[i].classification_evaluation.positions.length}
 			}
-			if (this.certificates[i].classification_evaluation.evaluations < this.predictionsMetadata.lowest.value) {
-				this.predictionsMetadata.lowest = {index: i, id: this.certificates[i].id, value: this.certificates[i].classification_evaluation.evaluations}
+			if (this.certificates[i].classification_evaluation.positions.length < this.predictionsMetadata.lowest.value) {
+				this.predictionsMetadata.lowest = {index: i, id: this.certificates[i].id, value: this.certificates[i].classification_evaluation.positions.length}
 			}
 
 			// Check the increase probs metadata
@@ -233,12 +233,26 @@ export class ClassificationTrainingService implements IClassificationTrainingSer
 				certificates[i].general = this._evaluation.buildGeneralEvaluation(certificates[i]);
 			}
 
-			// Return the certificates based on the provided order
+			// Order the certificates by general points
 			if (order == "general_points") {
 				return certificates.sort((a, b) => (a.general.points < b.general.points) ? 1 : -1);
-			} else if (order == "acc") {
+			} 
+			
+			// Order the certificates by the accuracy received in the classification evaluation
+			else if (order == "class_eval_acc") {
 				return certificates.sort((a, b) => (a.classification_evaluation.acc < b.classification_evaluation.acc) ? 1 : -1);
-			} else {
+			} 
+			
+			// Order the certificates by the points received in the classification evaluation
+			else if (order == "class_eval_points") {
+				return certificates.sort((a, b) => (
+					a.classification_evaluation.positions[a.classification_evaluation.positions.length-1].pts < 
+					b.classification_evaluation.positions[b.classification_evaluation.positions.length-1].pts
+				) ? 1 : -1);
+			} 
+			
+			// Order the certificates by the accuracy received in the test dataset evaluation
+			else {
 				return certificates.sort((a, b) => (a.test_evaluation[1] < b.test_evaluation[1]) ? 1 : -1);
 			}
 		}

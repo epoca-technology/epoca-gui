@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-import { PredictionService } from '../../prediction';
+import { PredictionService, IBacktestResult } from '../../prediction';
 import { FileService } from '../../file';
 import { UtilsService } from '../../utils';
 import { 
 	IBacktestService, 
-	IBacktestResult, 
 	IModels, 
 	IBacktests, 
 	IPerformances,

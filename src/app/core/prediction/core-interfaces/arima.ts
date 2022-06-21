@@ -1,6 +1,6 @@
 
 
-/* Arima Types at arima/types.py */
+/* Arima Types at types/arima_types.py */
 
 
 

@@ -4,7 +4,7 @@ import { IModel } from "./model";
 
 
 
-/* Regression Selection Types at regression_selection/types.py */
+/* Regression Selection Types at types/regression_selection_types.py */
 
 
 
