@@ -1,4 +1,4 @@
-import { ICandlestick } from "../../core";
+import { IBacktestPosition, ICandlestick } from "../../core";
 import {
 	ApexAxisChartSeries,
 	ApexChart,
@@ -18,7 +18,6 @@ import {
 	ApexNonAxisChartSeries,
 	ApexLegend
 } from "ng-apexcharts";
-import { MatDialogRef } from "@angular/material/dialog";
 
 
 
@@ -62,7 +61,10 @@ export interface IChartService {
 		config: Partial<IPieChartOptions>, 
 		labels: string[], 
 		height?: number
-	): IPieChartOptions
+	): IPieChartOptions,
+
+	// Misc Helpers
+	getModelPointsValues(positions: IBacktestPosition[]): {colors: string[], values: number[]}
 }
 
 

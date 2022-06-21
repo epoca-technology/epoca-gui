@@ -19,6 +19,7 @@ export class ClassificationTrainingService implements IClassificationTrainingSer
 	// Metadata
 	public pointsMetadata!: {best: IMetadataItem, worst: IMetadataItem};
 	public accuraciesMetadata!: {best: IMetadataItem, worst: IMetadataItem};
+	public classPointsMetadata!: {best: IMetadataItem, worst: IMetadataItem};
 	public predictionsMetadata!: {highest: IMetadataItem, lowest: IMetadataItem};
 	public increaseProbsMetadata!: {highest: IMetadataItem, lowest: IMetadataItem};
 	public successfulIncreaseProbsMetadata!: {highest: IMetadataItem, lowest: IMetadataItem};
@@ -66,6 +67,10 @@ export class ClassificationTrainingService implements IClassificationTrainingSer
 		this.accuraciesMetadata = {
 			best: {index: 0, id: this.certificates[0].id, value: this.certificates[0].classification_evaluation.acc},
 			worst: {index: 0, id: this.certificates[0].id, value: this.certificates[0].classification_evaluation.acc},
+		};
+		this.classPointsMetadata = {
+			best: {index: 0, id: this.certificates[0].id, value: this.certificates[0].classification_evaluation.positions[this.certificates[0].classification_evaluation.positions.length-1].pts},
+			worst: {index: 0, id: this.certificates[0].id, value: this.certificates[0].classification_evaluation.positions[this.certificates[0].classification_evaluation.positions.length-1].pts},
 		};
 		this.predictionsMetadata = {
 			highest: {index: 0, id: this.certificates[0].id, value: this.certificates[0].classification_evaluation.positions.length},
@@ -125,6 +130,14 @@ export class ClassificationTrainingService implements IClassificationTrainingSer
 			}
 			if (this.certificates[i].classification_evaluation.acc < this.accuraciesMetadata.worst.value) {
 				this.accuraciesMetadata.worst = {index: i, id: this.certificates[i].id, value: this.certificates[i].classification_evaluation.acc}
+			}
+
+			// Check the classification points metadata
+			if (this.certificates[i].classification_evaluation.positions[this.certificates[i].classification_evaluation.positions.length-1].pts > this.pointsMetadata.best.value) {
+				this.pointsMetadata.best = {index: i, id: this.certificates[i].id, value: this.certificates[i].classification_evaluation.positions[this.certificates[i].classification_evaluation.positions.length-1].pts}
+			}
+			if (this.certificates[i].classification_evaluation.positions[this.certificates[i].classification_evaluation.positions.length-1].pts < this.pointsMetadata.worst.value) {
+				this.pointsMetadata.worst = {index: i, id: this.certificates[i].id, value: this.certificates[i].classification_evaluation.positions[this.certificates[i].classification_evaluation.positions.length-1].pts}
 			}
 
 			// Check the predictions metadata

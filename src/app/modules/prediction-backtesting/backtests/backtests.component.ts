@@ -411,7 +411,7 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 		}
 
 		// Retrieve the points charts data
-		const {colors, values} = this.getModelPointsValues(this.modelID!)
+		const {colors, values} = this._chart.getModelPointsValues(this._backtest.performances[this.modelID!].positions);
 
 		// Build the chart
 		this.modelCharts[this.modelID!] = {
@@ -448,25 +448,6 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 
 
 
-
-	/**
-	 * Builds the points bar chart's data.
-	 * @param id 
-	 * @returns {colors: string[], values: number[]}
-	 */
-	private getModelPointsValues(id: string): {colors: string[], values: number[]}{
-		let colors: string[] = ['#000000'];
-		let values: number[] = [0];
-		for (let i = 0; i < this._backtest.performances[id].positions.length; i++) {
-			if (this._backtest.performances[id].positions[i].t == 1) { 
-				colors.push(this._chart.upwardColor);
-			} else { 
-				colors.push(this._chart.downwardColor);
-			}
-			values.push(this._backtest.performances[id].points_hist[i+1])
-		}
-		return {colors: colors, values: values};
-	}
 
 
 

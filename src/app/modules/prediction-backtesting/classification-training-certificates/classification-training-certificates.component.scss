@@ -18,6 +18,8 @@
     .warning { background-color: #F57C00!important; }
     .error { background-color: #B71C1C!important; }
 
+    .wand-icon { max-width: 21px;}
+
     .desktop-sidenav {
         width: 300px;
         button {text-align: left;width: 100%;}
@@ -130,6 +132,14 @@
             }
         }
 
+
+        .positions-content{
+            padding:15px;
+            .desktop-card {
+                padding:0;
+                p { margin:0}
+            }
+        }
 
         .epochs-content {
             padding:15px;

@@ -8,7 +8,9 @@ import {
 	ClassificationTrainingService, 
 	UtilsService, 
 	IClassificationTrainingCertificate, 
-	IClassificationCertificatesOrder
+	IClassificationCertificatesOrder,
+	IBacktestPosition,
+	IModel
 } from '../../../core';
 import { 
 	AppService, 
@@ -36,6 +38,7 @@ import {
 	IHeatmapItemProbabilityRange,
 	IHeatmapItemStateClass
 } from './interfaces';
+import { BacktestPositionDialogComponent } from '../backtests/backtest-position-dialog';
 
 @Component({
   selector: 'app-classification-training-certificates',
@@ -82,6 +85,7 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 	// General Charts
 	public points?: IBarChartOptions;
 	public classAccuracies?: IBarChartOptions;
+	public classGeneralPoints?: IBarChartOptions;
 	public classPredictions?: IBarChartOptions;
 	public classIncreaseProbs?: IBarChartOptions;
 	public classSuccessfulIncreaseProbs?: IBarChartOptions;
@@ -111,7 +115,7 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 		{min: 60, max: 64.99},
 	];
 	public activeProb: number = 0;
-
+	public visiblePositions: number = 15;
 
 
 	// Loading state - Just for certificates
@@ -274,6 +278,7 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 			this.activeTabIndex = 0;
 			this.activeGeneralEvaluationCategory = undefined;
 			this.activeProb = 0;
+			this.visiblePositions = 15;
 		}
 
 		// Navigate to a certificate
@@ -358,6 +363,20 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 			series[1].data.push(<any>cert.classification_evaluation.decrease_acc);
 			series[2].data.push(<any>cert.classification_evaluation.acc);
 		}
+
+
+
+		/* Build the Classification Points Chart */
+		this.classGeneralPoints = this._chart.getBarChartOptions(
+			{series: [{name: "Class. Points",data: this._training.certificates.map((c) => { 
+				return c.classification_evaluation.positions[c.classification_evaluation.positions.length-1].pts
+			}),color: "#000000"}]}, 
+			this._training.ids, 
+			baseHeight
+		);
+		this.classGeneralPoints.chart.events = {click: function(e, cc, c) {if (c.dataPointIndex >= 0) setTimeout(() => {self.navigate("certificate", c.dataPointIndex)}, 100)}}
+
+
 
 		// Build the test ds chart options
 		this.classAccuracies = this._chart.getBarChartOptions(
@@ -656,7 +675,7 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 
 
 		// Build the points chart
-		const {colors, values} = this.getModelPointsValues()
+		const {colors, values} = this._chart.getModelPointsValues(this.cert!.classification_evaluation.positions)
 		this.classPoints = this._chart.getBarChartOptions({
 			series: [{name: this.cert!.id,data: values}],
 			chart: {height: 293, type: 'bar',animations: { enabled: false}, toolbar: {show: true,tools: {download: false}}},
@@ -748,25 +767,32 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 
 
 
+
+
+
+
 	/**
-	 * Builds the points bar chart's data.
-	 * @returns {colors: string[], values: number[]}
+	 * Opens the backtest position dialog.
+	 * @param position 
+	 * @returns void
 	 */
-	 private getModelPointsValues(): {colors: string[], values: number[]}{
-		let colors: string[] = ['#000000'];
-		let values: number[] = [0];
-		for (let i = 0; i < this.cert!.classification_evaluation.positions.length; i++) {
-			if (this.cert!.classification_evaluation.positions[i].t == 1) { 
-				colors.push(this._chart.upwardColor);
-			} else { 
-				colors.push(this._chart.downwardColor);
-			}
-			values.push(this.cert!.classification_evaluation.positions[i].pts)
-		}
-		return {colors: colors, values: values};
+	 public displayPosition(position: IBacktestPosition): void {
+		this.dialog.open(BacktestPositionDialogComponent, {
+			hasBackdrop: this._app.layout.value != 'mobile', // Mobile optimization
+			panelClass: 'small-dialog',
+				data: {
+					model: <IModel>{
+						id: this.cert!.id,
+						classification_models: [{
+							classification_id: this.cert!.id,
+							interpreter: { min_probability: 0.6},
+							classification: this.cert!.classification_config
+						}]
+					},
+					position: position
+				}
+		})
 	}
-
-
 
 
 

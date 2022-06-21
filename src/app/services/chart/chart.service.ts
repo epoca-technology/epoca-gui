@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as moment from 'moment';
 import { ApexAnnotations, ApexChart, ApexPlotOptions, ApexYAxis, ApexAxisChartSeries, ApexXAxis } from 'ng-apexcharts';
-import { ICandlestick, UtilsService } from '../../core';
+import { IBacktestPosition, ICandlestick, UtilsService } from '../../core';
 import { AppService, ILayout } from '../app';
 import { 
 	IApexCandlestick, 
@@ -514,6 +514,31 @@ export class ChartService implements IChartService {
     /* Misc Helpers */
 
 
+
+
+
+
+
+
+	/**
+	 * Builds the points bar chart's data based on a series of
+	 * backtest positions.
+	 * @param positions
+	 * @returns {colors: string[], values: number[]}
+	 */
+	 public getModelPointsValues(positions: IBacktestPosition[]): {colors: string[], values: number[]} {
+		let colors: string[] = ['#000000'];
+		let values: number[] = [0];
+		for (let i = 0; i < positions.length; i++) {
+			if (positions[i].t == 1) { 
+				colors.push(this.upwardColor);
+			} else { 
+				colors.push(this.downwardColor);
+			}
+			values.push(positions[i].pts)
+		}
+		return {colors: colors, values: values};
+	}
 
 
 

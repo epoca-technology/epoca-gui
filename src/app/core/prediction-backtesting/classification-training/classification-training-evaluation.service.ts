@@ -219,20 +219,20 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 			// Iterate over each item
 			for (let itemIndex = 0; itemIndex < this.evaluationTemplate.categories[catIndex].items.length; itemIndex++) {
 				// Evaluate the item
-				const { points, state } = this.evaluate(cert, this.evaluationTemplate.categories[catIndex].items[itemIndex]);
+				const { points, state, state_class } = this.evaluate(cert, this.evaluationTemplate.categories[catIndex].items[itemIndex]);
 
 				// Increase the category points
 				catPoints += points;
 
 				// Append the item to the list
-				items.push({...this.evaluationTemplate.categories[catIndex].items[itemIndex], points: points, state: state});
+				items.push({...this.evaluationTemplate.categories[catIndex].items[itemIndex], points: points, state: state, state_class: state_class});
 			}
 
 			// Add the collected points to the total
 			totalPoints += catPoints;
 
 			// Append the category to the list
-			categories.push({...this.evaluationTemplate.categories[catIndex], points: catPoints, items: items});
+			categories.push({...this.evaluationTemplate.categories[catIndex], points: catPoints, items: items, state_class: this.getStateClass(catPoints, this.evaluationTemplate.categories[catIndex].max_points)});
 		}
 
 		// Finally, return the evaluation
@@ -883,7 +883,7 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 		if 		(pointsPercent >= 80) { return "optimal"}
 		else if (pointsPercent >= 60) { return "decent"}
 		else if (pointsPercent >= 40) { return "neutral"}
-		else if (pointsPercent >= 30) { return "warning"}
+		else if (pointsPercent >= 20) { return "warning"}
 		else 						  { return "error"}
 	}
 

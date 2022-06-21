@@ -28,7 +28,7 @@ export class ClassificationTrainingCertificatesConfigDialogComponent implements 
 			id: "class_eval_points", 
 			name: "Class. Evaluation Points", 
 			description: "Certificates will be ordered by the points received during the Classification Evaluation.",
-			icon: "timeline"
+			icon: "attach_money"
 		},
 		{
 			id: "test_ds_acc", 

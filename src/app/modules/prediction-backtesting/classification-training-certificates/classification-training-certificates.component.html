@@ -25,7 +25,7 @@
                 Certificates&nbsp;
                 <mat-icon *ngIf="order == 'general_points'" class="order-icon" matTooltip="Ordered by General Points">query_stats</mat-icon>
                 <mat-icon *ngIf="order == 'class_eval_acc'" class="order-icon" matTooltip="Ordered by Classification Evaluation Accuracy">rule</mat-icon>
-                <mat-icon *ngIf="order == 'class_eval_points'" class="order-icon" matTooltip="Ordered by Classification Evaluation Points">timeline</mat-icon>
+                <mat-icon *ngIf="order == 'class_eval_points'" class="order-icon" matTooltip="Ordered by Classification Evaluation Points">attach_money</mat-icon>
                 <mat-icon *ngIf="order == 'test_ds_acc'" class="order-icon" matTooltip="Ordered by Test Dataset Evaluation Accuracy">playlist_add_check</mat-icon>
             </div>
             <mat-list-item *ngFor="let certificate of _training.certificates; index as certIndex">
@@ -114,7 +114,7 @@
                             Certificates&nbsp;
                             <mat-icon *ngIf="order == 'general_points'" class="order-icon" matTooltip="Ordered by General Points">query_stats</mat-icon>
                             <mat-icon *ngIf="order == 'class_eval_acc'" class="order-icon" matTooltip="Ordered by Classification Evaluation Accuracy">rule</mat-icon>
-                            <mat-icon *ngIf="order == 'class_eval_points'" class="order-icon" matTooltip="Ordered by Classification Evaluation Points">timeline</mat-icon>
+                            <mat-icon *ngIf="order == 'class_eval_points'" class="order-icon" matTooltip="Ordered by Classification Evaluation Points">attach_money</mat-icon>
                             <mat-icon *ngIf="order == 'test_ds_acc'" class="order-icon" matTooltip="Ordered by Test Dataset Evaluation Accuracy">playlist_add_check</mat-icon>
                         </div>
                         <mat-list-item *ngFor="let certificate of _training.certificates; index as certIndex">
@@ -149,7 +149,7 @@
                     <div *ngIf="loaded" class="fadeIn">
                         <!-- General Sections -->
                         <div class="general-sections" 
-                            *ngIf="section.id != 'certificate' && points && classAccuracies && classPredictions && classIncreaseProbs && 
+                            *ngIf="section.id != 'certificate' && points && classAccuracies && classGeneralPoints && classPredictions && classIncreaseProbs && 
                             classSuccessfulIncreaseProbs && classDecreaseProbs && classSuccessfulDecreaseProbs && testDSEvaluations && epochs">
 
 
@@ -197,24 +197,26 @@
                                             [selectedIndex]="activeClassTabIndex" (selectedIndexChange)="activeClassTabIndex = $event"
                                             class="mat-elevation-z3" backgroundColor="primary">
                                     <mat-tab><ng-template mat-tab-label><mat-icon>ads_click</mat-icon></ng-template></mat-tab>
-                                    <mat-tab><ng-template mat-tab-label><mat-icon>auto_graph</mat-icon></ng-template></mat-tab>
+                                    <mat-tab><ng-template mat-tab-label><mat-icon>attach_money</mat-icon></ng-template></mat-tab>
+                                    <mat-tab><ng-template mat-tab-label><mat-icon svgIcon="wand_magic_sparkles" class="wand-icon"></mat-icon></ng-template></mat-tab>
                                     <mat-tab><ng-template mat-tab-label><mat-icon>trending_up</mat-icon></ng-template></mat-tab>
                                     <mat-tab><ng-template mat-tab-label><mat-icon>trending_down</mat-icon></ng-template></mat-tab>
                                 </mat-tab-group>
                                 <mat-tab-group *ngIf="layout == 'desktop'"  
                                                 [selectedIndex]="activeClassTabIndex" (selectedIndexChange)="activeClassTabIndex = $event" 
                                                 mat-align-tabs="center">
-                                    <mat-tab label="Accuracies"></mat-tab>
-                                    <mat-tab label="Predictions"></mat-tab>
-                                    <mat-tab label="Increase Probs."></mat-tab>
-                                    <mat-tab label="Decrease Probs."></mat-tab>
+                                    <mat-tab><ng-template mat-tab-label><mat-icon>ads_click</mat-icon>&nbsp;Accuracies</ng-template></mat-tab>            
+                                    <mat-tab><ng-template mat-tab-label><mat-icon>attach_money</mat-icon>&nbsp;Points</ng-template></mat-tab>               
+                                    <mat-tab><ng-template mat-tab-label><mat-icon svgIcon="wand_magic_sparkles" class="wand-icon"></mat-icon>&nbsp;Predictions</ng-template></mat-tab>         
+                                    <mat-tab><ng-template mat-tab-label><mat-icon>trending_up</mat-icon>&nbsp;Increase Probs.</ng-template></mat-tab>            
+                                    <mat-tab><ng-template mat-tab-label><mat-icon>trending_down</mat-icon>&nbsp;Decrease Probs.</ng-template></mat-tab>            
                                 </mat-tab-group>
 
                                 <!-- General Classification Content-->
                                 <div class="padding">
 
                                     <!-- Accuracies-->
-                                    <div *ngIf="activeClassTabIndex == 0" class="fadeIn">
+                                    <div *ngIf="activeClassTabIndex == 0">
                                         <div fxLayout="row" fxLayoutAlign="center center">
                                             <div fxFlex="60" fxFlex.xs="100" fxFlex.sm="100">
                                                 <div class="desktop-card">
@@ -251,9 +253,45 @@
                                     </div>
 
 
+                                    <!-- Points-->
+                                    <div *ngIf="activeClassTabIndex == 1">
+                                        <div fxLayout="row" fxLayoutAlign="center center">
+                                            <div fxFlex="60" fxFlex.xs="100" fxFlex.sm="100">
+                                                <div class="desktop-card">
+                                                    <div fxLayout="row" fxLayoutAlign="center center" class="badged-header">
+                                                        <h3 class="show-on-desktop">Points</h3>
+                                                        <span class="show-on-desktop" fxFlex></span>
+                                                        <div class="square-badge clickable" role="button"
+                                                            (click)="navigate('certificate', _training.classPointsMetadata.best.index)"
+                                                            matTooltip="Best Points: {{_training.classPointsMetadata.best.id}}">
+                                                            Best: {{_training.classPointsMetadata.best.value | number: '1.2-3'}}
+                                                        </div>
+                                                        <div class="square-badge clickable lowest" role="button"
+                                                            (click)="navigate('certificate', _training.classPointsMetadata.worst.index)"
+                                                            matTooltip="Worst Points: {{_training.classPointsMetadata.worst.id}}">
+                                                            Worst: {{_training.classPointsMetadata.worst.value | number: '1.0-2'}}
+                                                        </div>
+                                                    </div>
+                                                    <div class="margin-top">
+                                                        <apx-chart
+                                                            [series]="classGeneralPoints.series"
+                                                            [chart]="classGeneralPoints.chart"
+                                                            [plotOptions]="classGeneralPoints.plotOptions"
+                                                            [xaxis]="classGeneralPoints.xaxis"
+                                                            [yaxis]="classGeneralPoints.yaxis"
+                                                            [dataLabels]="classGeneralPoints.dataLabels"
+                                                            [colors]="classGeneralPoints.colors"
+                                                            [grid]="classGeneralPoints.grid"
+                                                        ></apx-chart>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
 
                                     <!-- Predictions -->
-                                    <div *ngIf="activeClassTabIndex == 1" class="fadeIn">
+                                    <div *ngIf="activeClassTabIndex == 2">
                                         <div fxLayout="row" fxLayoutAlign="center center">
                                             <div fxFlex="60" fxFlex.xs="100" fxFlex.sm="100">
                                                 <div class="desktop-card">
@@ -290,7 +328,7 @@
                                     </div>
 
                                     <!-- Increase Probabilities -->
-                                    <div *ngIf="activeClassTabIndex == 2" class="fadeIn">
+                                    <div *ngIf="activeClassTabIndex == 3">
                                         <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" fxLayoutAlign="center center">
                                             <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
                                                 <div class="desktop-card">
@@ -361,7 +399,7 @@
 
 
                                     <!-- Decrease Probabilities -->
-                                    <div *ngIf="activeClassTabIndex == 3" class="fadeIn">
+                                    <div *ngIf="activeClassTabIndex == 4">
                                         <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" fxLayoutAlign="center center">
                                             <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
                                                 <div class="desktop-card">
@@ -518,6 +556,7 @@
                                 <mat-tab><ng-template mat-tab-label><mat-icon>feed</mat-icon></ng-template></mat-tab>
                                 <mat-tab><ng-template mat-tab-label><mat-icon>cast_for_education</mat-icon></ng-template></mat-tab>
                                 <mat-tab><ng-template mat-tab-label><mat-icon>rule</mat-icon></ng-template></mat-tab>
+                                <mat-tab><ng-template mat-tab-label><mat-icon svgIcon="wand_magic_sparkles" class="wand-icon"></mat-icon></ng-template></mat-tab>
                                 <mat-tab><ng-template mat-tab-label><mat-icon>format_list_numbered</mat-icon></ng-template></mat-tab>
                             </mat-tab-group>
                             <mat-tab-group *ngIf="layout == 'desktop'"  
@@ -526,6 +565,7 @@
                                 <mat-tab><ng-template mat-tab-label><mat-icon>feed</mat-icon>&nbsp;Summary</ng-template></mat-tab>
                                 <mat-tab><ng-template mat-tab-label><mat-icon>cast_for_education</mat-icon>&nbsp;Training</ng-template></mat-tab>
                                 <mat-tab><ng-template mat-tab-label><mat-icon>rule</mat-icon>&nbsp;Evaluation</ng-template></mat-tab>
+                                <mat-tab><ng-template mat-tab-label><mat-icon svgIcon="wand_magic_sparkles" class="wand-icon"></mat-icon>&nbsp;Positions</ng-template></mat-tab>
                                 <mat-tab><ng-template mat-tab-label><mat-icon>format_list_numbered</mat-icon>&nbsp;Epochs</ng-template></mat-tab>
                             </mat-tab-group>
     
@@ -537,7 +577,7 @@
                                         <!-- Training Certificate -->
                                         <div class="desktop-card">
                                             <div class="certificate-header badged-header" fxLayout="row" fxLayoutAlign="start center">
-                                                <h3 class="truncate">Certificate</h3>
+                                                <h3 class="truncate">{{layout == 'desktop' ? "Certificate": "Cert."}}</h3>
                                                 <span fxFlex></span>
                                                 <div class="square-badge clickable" role="button" 
                                                     matTooltip="Test Dataset Evaluation Accuracy" 
@@ -548,6 +588,11 @@
                                                     matTooltip="Classification Evaluation Accuracy" 
                                                     (click)="activeTabIndex=2">
                                                     {{cert.classification_evaluation.acc | number: '1.2-2'}}%
+                                                </div>
+                                                <div class="square-badge clickable" role="button" 
+                                                    matTooltip="Classification Evaluation Points" 
+                                                    (click)="activeTabIndex=2">
+                                                    {{cert.classification_evaluation.positions[cert.classification_evaluation.positions.length-1].pts | number: '1.2-2'}}
                                                 </div>
                                             </div>
 
@@ -1053,7 +1098,7 @@
                                         <!-- Positions Chart -->
                                         <div class="desktop-card">
                                             <div class="badged-header" fxLayout="row" fxLayoutAlign="start center">
-                                                <h3 class="truncate">Positions</h3>
+                                                <h3 class="truncate">{{layout == "desktop" ? "Positions History": "Pos. Hist."}}</h3>
                                                 <span fxFlex></span>
                                                 <div class="square-badge" 
                                                     matTooltip="Total points collected during the Classification Evaluation">
@@ -1153,9 +1198,62 @@
 
 
 
+                            <!-- Positions -->
+                            <div *ngIf="activeTabIndex == 3" class="positions-content fadeIn">
+                                <div fxLayout="row" fxLayoutAlign="center center">
+                                    <div fxFlex="60" fxFlex.xs="100" fxFlex.sm="100">
+                                        <!-- Positions Table -->
+                                        <div class="desktop-card">
+                                            <table class="bordered highlight">
+                                                <thead>
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>Open</th>
+                                                        <th *ngIf="layout == 'desktop'">Close</th>
+                                                        <th>Type</th>
+                                                        <th>Points</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let p of cert!.classification_evaluation.positions; let i = index" 
+                                                        (click)="displayPosition(p)" class="clickable" role="button">
+                                                        <td *ngIf="(i+1) <= visiblePositions">
+                                                            <p class="light-text">{{i+1}}</p>
+                                                        </td>
+                                                        <td *ngIf="(i+1) <= visiblePositions">
+                                                            <p class="show-on-mobile">{{p.ot | date:'short'}}</p>
+                                                            <p class="show-on-desktop">{{p.ot | date:'medium'}}</p>
+                                                        </td>
+                                                        <td *ngIf="(i+1) <= visiblePositions && layout == 'desktop'">
+                                                            <p>{{p.ct | date:'medium'}}</p>
+                                                        </td>
+                                                        <td *ngIf="(i+1) <= visiblePositions">
+                                                            <p [ngClass]="{'success-color': p.t == 1, 'error-color': p.t == -1}">
+                                                                {{p.t == 1 ? 'Long': 'Short'}}
+                                                            </p>
+                                                        </td>
+                                                        <td *ngIf="(i+1) <= visiblePositions" class="align-right">
+                                                            <p [ngClass]="{'success-color': p.o, 'error-color': !p.o}">
+                                                                <strong>{{p.pts}}</strong>
+                                                            </p>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                        <!-- Paginator -->
+                                        <div *ngIf="visiblePositions <= cert!.classification_evaluation.positions.length" class="paginator">
+                                            <button mat-button (click)="visiblePositions=visiblePositions+15">View More</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
 
                             <!-- Epochs -->
-                            <div *ngIf="activeTabIndex == 3" class="epochs-content fadeIn">
+                            <div *ngIf="activeTabIndex == 4" class="epochs-content fadeIn">
                                 <div fxLayout="row" fxLayoutAlign="center center">
                                     <div fxFlex fxFlex.xs="100" fxFlex.sm="100">
                                         <!-- Table -->
