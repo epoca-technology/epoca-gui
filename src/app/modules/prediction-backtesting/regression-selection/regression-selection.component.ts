@@ -227,10 +227,10 @@ export class RegressionSelectionComponent implements OnInit, OnDestroy, IRegress
 			{
 				series: this._rs.results.map((r) => { return r.models_num }),
 				colors: this._chart.colors.slice(0, this._rs.results.length),
-				legend: { position: "bottom" }
+				legend: { position: "right" }
 			}, 
 			this._rs.combinations, 
-			450
+			350
 		);
 
 
@@ -369,7 +369,7 @@ export class RegressionSelectionComponent implements OnInit, OnDestroy, IRegress
 		this.combPositions = this._chart.getBarChartOptions(
 			{series: series, colors: [this._chart.upwardColor, this._chart.downwardColor, '#000000']}, 
 			modelIDs, 
-			baseBarHeight*1.5
+			this.getBarChartHeight(modelIDs.length, 3)
 		);
 		this.combPositions.chart.events = {click: function(e, cc, c) { self.displayActiveCombinationModel(c.dataPointIndex) }}
 	}
@@ -396,7 +396,7 @@ export class RegressionSelectionComponent implements OnInit, OnDestroy, IRegress
 		this.combAccuracy = this._chart.getBarChartOptions(
 			{series: series, colors: [this._chart.upwardColor, this._chart.downwardColor, '#000000']}, 
 			modelIDs, 
-			baseBarHeight*1.5
+			this.getBarChartHeight(modelIDs.length, 3)
 		);
 		this.combAccuracy.chart.events = {click: function(e, cc, c) { self.displayActiveCombinationModel(c.dataPointIndex) }}
 	}
@@ -432,43 +432,17 @@ export class RegressionSelectionComponent implements OnInit, OnDestroy, IRegress
 	/* Misc Helpers */
 
 
+
+
+
+
 	/**
-	 * Returns the height for a bar chart based on a number of items.
-	 * If it is a multi-bar, make sure to multiply this number by 1.5-2 
-	 * according to the number of bars.
+	 * Returns the optimal bar chart height based on the number of models.
+	 * @param categories
+	 * @param itemsPerCategory
 	 * @returns number
 	 */
-	 private getBarChartHeight(items: number): number {
-		if (items <= 5) 		{ return 400 }
-		if (items <= 7) 		{ return 450 }
-		if (items <= 10) 		{ return 500 }
-		if (items <= 13) 		{ return 550 }
-		if (items <= 15) 		{ return 600 }
-		if (items <= 17) 		{ return 650 }
-		if (items <= 20) 		{ return 700 }
-		if (items <= 23) 		{ return 750 }
-		if (items <= 25) 		{ return 800 }
-		if (items <= 27) 		{ return 850 }
-		if (items <= 30) 		{ return 900 }
-		if (items <= 33) 		{ return 950 }
-		if (items <= 35) 		{ return 1000 }
-		if (items <= 37) 		{ return 1050 }
-		if (items <= 40) 		{ return 1100 }
-		if (items <= 43) 		{ return 1150 }
-		if (items <= 45) 		{ return 1200 }
-		if (items <= 47) 		{ return 1250 }
-		if (items <= 50) 		{ return 1300 }
-		if (items <= 53) 		{ return 1350 }
-		if (items <= 55) 		{ return 1400 }
-		if (items <= 57) 		{ return 1450 }
-		if (items <= 60) 		{ return 1500 }
-		if (items <= 63) 		{ return 1550 }
-		if (items <= 65) 		{ return 1600 }
-		if (items <= 67) 		{ return 1650 }
-		if (items <= 70) 		{ return 1700 }
-		if (items <= 75) 		{ return 1800 }
-		if (items <= 80) 		{ return 1900 }
-		if (items <= 90) 		{ return 2000 }
-		else 					{ return 2100 }
+	 private getBarChartHeight(categories: number, itemsPerCategory?: number): number {
+		return this._chart.calculateChartHeight(110, 20, categories, itemsPerCategory);
 	}
 }

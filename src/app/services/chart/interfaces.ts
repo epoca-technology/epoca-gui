@@ -64,7 +64,14 @@ export interface IChartService {
 	): IPieChartOptions,
 
 	// Misc Helpers
-	getModelPointsValues(positions: IBacktestPosition[]): {colors: string[], values: number[]}
+	getModelPointsValues(positions: IBacktestPosition[]): {colors: string[], values: number[]},
+	calculateChartHeight(
+		baseHeight: number,
+		increment: number,
+		categoriesNum: number,
+		itemsPerCategory?: number,
+		maxHeight?: number
+	): number
 }
 
 

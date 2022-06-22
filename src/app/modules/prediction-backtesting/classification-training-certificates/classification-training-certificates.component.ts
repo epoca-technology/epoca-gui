@@ -319,14 +319,11 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 	 * @returns void
 	 */
 	 private buildGeneralCharts(): void {
-		// Get the Epochs chart height
-		const baseHeight: number = this.getBarChartBaseHeight(this._training.certificates.length);
-
 		// Build the classification evaluation charts
-		this.buildGeneralClassificationEvaluationCharts(baseHeight);
+		this.buildGeneralClassificationEvaluationCharts();
 
 		// Build the geenral training charts
-		this.buildGeneralTrainingCharts(baseHeight);
+		this.buildGeneralTrainingCharts();
 	}
 
 
@@ -335,10 +332,9 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 
 	/**
 	 * Builds all the charts related to the classification evaluation.
-	 * @param baseHeight 
 	 * @returns void
 	 */
-	private buildGeneralClassificationEvaluationCharts(baseHeight: number): void {
+	private buildGeneralClassificationEvaluationCharts(): void {
 		// Create a copy of the instance to handle chart click events
 		const self = this;
 
@@ -347,7 +343,7 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 		this.points = this._chart.getBarChartOptions(
 			{series: [{name: "General Points",data: this._training.certificates.map((c) => { return c.general.points }),color: "#000000"}]}, 
 			this._training.ids, 
-			baseHeight
+			this.getBarChartHeight()
 		);
 		this.points.chart.events = {click: function(e, cc, c) {if (c.dataPointIndex >= 0) setTimeout(() => {self.navigate("certificate", c.dataPointIndex)}, 100)}}
 
@@ -372,7 +368,7 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 				return c.classification_evaluation.positions[c.classification_evaluation.positions.length-1].pts
 			}),color: "#000000"}]}, 
 			this._training.ids, 
-			baseHeight
+			this.getBarChartHeight()
 		);
 		this.classGeneralPoints.chart.events = {click: function(e, cc, c) {if (c.dataPointIndex >= 0) setTimeout(() => {self.navigate("certificate", c.dataPointIndex)}, 100)}}
 
@@ -385,7 +381,7 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 				colors: [this._chart.upwardColor, this._chart.downwardColor, "#000000"],
 			}, 
 			this._training.ids, 
-			Math.round(baseHeight*1.8)
+			this.getBarChartHeight(3)
 		);
 		this.classAccuracies.chart.events = {click: function(e, cc, c) {
 			if (c.dataPointIndex >= 0) setTimeout(() => {self.navigate("certificate", c.dataPointIndex)}, 100)
@@ -412,7 +408,7 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 				colors: [this._chart.upwardColor, this._chart.downwardColor, "#000000"],
 			}, 
 			this._training.ids, 
-			Math.round(baseHeight*1.8)
+			this.getBarChartHeight(3)
 		);
 		this.classPredictions.chart.events = {click: function(e, cc, c) {
 			if (c.dataPointIndex >= 0) setTimeout(() => {self.navigate("certificate", c.dataPointIndex)}, 100)
@@ -423,7 +419,7 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 		this.classIncreaseProbs = this._chart.getBarChartOptions(
 			{series: [{name: "Probabilities Mean",data: this._training.certificates.map((c) => { return c.classification_evaluation.increase_mean }),color: this._chart.upwardColor}]}, 
 			this._training.ids, 
-			baseHeight
+			this.getBarChartHeight()
 		);
 		this.classIncreaseProbs.chart.events = {click: function(e, cc, c) {if (c.dataPointIndex >= 0) setTimeout(() => {self.navigate("certificate", c.dataPointIndex)}, 100)}}
 
@@ -431,7 +427,7 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 		this.classSuccessfulIncreaseProbs = this._chart.getBarChartOptions(
 			{series: [{name: "Successful Probabilities Mean",data: this._training.certificates.map((c) => { return c.classification_evaluation.increase_successful_mean }),color: this._chart.upwardColor}], }, 
 			this._training.ids, 
-			baseHeight
+			this.getBarChartHeight()
 		);
 		this.classSuccessfulIncreaseProbs.chart.events = {click: function(e, cc, c) {if (c.dataPointIndex >= 0) setTimeout(() => {self.navigate("certificate", c.dataPointIndex)}, 100)}}
 
@@ -440,7 +436,7 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 		this.classDecreaseProbs = this._chart.getBarChartOptions(
 			{series: [{name: "Probabilities Mean",data: this._training.certificates.map((c) => { return c.classification_evaluation.decrease_mean }),color: this._chart.downwardColor}]}, 
 			this._training.ids, 
-			baseHeight
+			this.getBarChartHeight()
 		);
 		this.classDecreaseProbs.chart.events = {click: function(e, cc, c) {if (c.dataPointIndex >= 0) setTimeout(() => {self.navigate("certificate", c.dataPointIndex)}, 100)}}
 
@@ -448,7 +444,7 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 		this.classSuccessfulDecreaseProbs = this._chart.getBarChartOptions(
 			{series: [{name: "Successful Probabilities Mean",data: this._training.certificates.map((c) => { return c.classification_evaluation.decrease_successful_mean }),color: this._chart.downwardColor}], }, 
 			this._training.ids, 
-			baseHeight
+			this.getBarChartHeight()
 		);
 		this.classSuccessfulDecreaseProbs.chart.events = {click: function(e, cc, c) {if (c.dataPointIndex >= 0) setTimeout(() => {self.navigate("certificate", c.dataPointIndex)}, 100)}}
 	}
@@ -458,10 +454,9 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 
 	/**
 	 * Builds the general training charts such as the test ds evaluation and the epochs.
-	 * @param baseHeight
 	 * @returns void
 	 */
-	private buildGeneralTrainingCharts(baseHeight: number): void {
+	private buildGeneralTrainingCharts(): void {
 		// Create a copy of the instance to handle chart click events
 		const self = this;
 
@@ -483,7 +478,7 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 				colors: [this._chart.downwardColor, this._chart.upwardColor],
 			}, 
 			this._training.ids, 
-			Math.round(baseHeight*1.5)
+			this.getBarChartHeight(2)
 		);
 		this.testDSEvaluations.chart.events = {click: function(e, cc, c) {
 			if (c.dataPointIndex >= 0) setTimeout(() => {self.navigate("certificate", c.dataPointIndex)}, 100)
@@ -499,7 +494,7 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 				colors: ["#000000"],
 			}, 
 			this._training.ids, 
-			baseHeight
+			this.getBarChartHeight()
 		);
 		this.epochs.chart.events = {click: function(e, cc, c) {
 			if (c.dataPointIndex >= 0) setTimeout(() => {self.navigate("certificate", c.dataPointIndex)}, 100)
@@ -808,54 +803,12 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 
 
 
+
 	/**
-	 * Based on the total number of certificates, it determines the best height
-	 * for bar charts.
-	 * @param certificates
+	 * Returns the optimal bar chart height based on the number of models.
 	 * @returns number
 	 */
-	 private getBarChartBaseHeight(certificates: number): number {
-		if (certificates <= 1) 			{ return 100 }
-		if (certificates <= 5) 			{ return 300 }
-		if (certificates <= 7) 			{ return 350 }
-		if (certificates <= 10) 		{ return 400 }
-		if (certificates <= 13) 		{ return 450 }
-		if (certificates <= 15) 		{ return 500 }
-		if (certificates <= 17) 		{ return 550 }
-		if (certificates <= 20) 		{ return 600 }
-		if (certificates <= 23) 		{ return 650 }
-		if (certificates <= 25) 		{ return 700 }
-		if (certificates <= 27) 		{ return 750 }
-		if (certificates <= 30) 		{ return 800 }
-		if (certificates <= 33) 		{ return 850 }
-		if (certificates <= 35) 		{ return 900 }
-		if (certificates <= 37) 		{ return 950 }
-		if (certificates <= 40) 		{ return 1000 }
-		if (certificates <= 43) 		{ return 1050 }
-		if (certificates <= 45) 		{ return 1100 }
-		if (certificates <= 47) 		{ return 1150 }
-		if (certificates <= 50) 		{ return 1200 }
-		if (certificates <= 53) 		{ return 1250 }
-		if (certificates <= 55) 		{ return 1300 }
-		if (certificates <= 57) 		{ return 1350 }
-		if (certificates <= 60) 		{ return 1400 }
-		if (certificates <= 63) 		{ return 1450 }
-		if (certificates <= 65) 		{ return 1500 }
-		if (certificates <= 67) 		{ return 1550 }
-		if (certificates <= 70) 		{ return 1600 }
-		if (certificates <= 75) 		{ return 1700 }
-		if (certificates <= 80) 		{ return 1800 }
-		if (certificates <= 90) 		{ return 1900 }
-		if (certificates <= 100) 		{ return 2100 }
-		if (certificates <= 110) 		{ return 2300 }
-		if (certificates <= 120) 		{ return 2500 }
-		if (certificates <= 130) 		{ return 2700 }
-		if (certificates <= 140) 		{ return 2900 }
-		if (certificates <= 150) 		{ return 3100 }
-		if (certificates <= 160) 		{ return 3300 }
-		if (certificates <= 170) 		{ return 3500 }
-		if (certificates <= 180) 		{ return 3700 }
-		if (certificates <= 190) 		{ return 3900 }
-		else 							{ return 4100 }
+	 private getBarChartHeight(itemsPerCategory?: number): number {
+		return this._chart.calculateChartHeight(110, 20, this._training.certificates.length, itemsPerCategory);
 	}
 }

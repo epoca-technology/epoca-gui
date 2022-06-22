@@ -133,11 +133,11 @@ export class ClassificationTrainingService implements IClassificationTrainingSer
 			}
 
 			// Check the classification points metadata
-			if (this.certificates[i].classification_evaluation.positions[this.certificates[i].classification_evaluation.positions.length-1].pts > this.pointsMetadata.best.value) {
-				this.pointsMetadata.best = {index: i, id: this.certificates[i].id, value: this.certificates[i].classification_evaluation.positions[this.certificates[i].classification_evaluation.positions.length-1].pts}
+			if (this.certificates[i].classification_evaluation.positions[this.certificates[i].classification_evaluation.positions.length-1].pts > this.classPointsMetadata.best.value) {
+				this.classPointsMetadata.best = {index: i, id: this.certificates[i].id, value: this.certificates[i].classification_evaluation.positions[this.certificates[i].classification_evaluation.positions.length-1].pts}
 			}
-			if (this.certificates[i].classification_evaluation.positions[this.certificates[i].classification_evaluation.positions.length-1].pts < this.pointsMetadata.worst.value) {
-				this.pointsMetadata.worst = {index: i, id: this.certificates[i].id, value: this.certificates[i].classification_evaluation.positions[this.certificates[i].classification_evaluation.positions.length-1].pts}
+			if (this.certificates[i].classification_evaluation.positions[this.certificates[i].classification_evaluation.positions.length-1].pts < this.classPointsMetadata.worst.value) {
+				this.classPointsMetadata.worst = {index: i, id: this.certificates[i].id, value: this.certificates[i].classification_evaluation.positions[this.certificates[i].classification_evaluation.positions.length-1].pts}
 			}
 
 			// Check the predictions metadata

@@ -55,9 +55,6 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 
 	/* General Charts */
 
-	// Height
-	public generalChartHeight: number = 600;
-
 	// Badges views
 	public viewBest: boolean = true;
 	
@@ -151,9 +148,6 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 				try {
 					// Pass the files to the service
 					await this._backtest.init(event, response);
-
-					// Calculate the height of the general charts
-					this.generalChartHeight = this.getGeneralChartsHeight()
 
 					// Activate default section
 					await this.activateSection(this.generalSections[0]);
@@ -261,6 +255,42 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 
 
 
+	/**
+	 * Navigates to a model based on its id.
+	 * @param modelID 
+	 * @returns void
+	 */
+	 public activateModel(modelID: string): void {
+		this.activateSection({id: 'model', name: modelID}, modelID);
+	}
+
+
+
+
+
+	/**
+	 * Navigates to a model based on its index.
+	 * @param index 
+	 * @returns void
+	 */
+	 private activateModelByIndex(index: number): void {
+		// Init the id of the model
+		let id: string|undefined;
+
+		// If the Model's index was provided instead of the id, populate it.
+		if (typeof index == "number" && index >= 0) id = this._backtest.modelIDs[index]; 
+
+		// Display the dialog if the model was found
+		if (id) this.activateSection({id: 'model', name: id}, id);
+	}
+
+
+
+
+
+
+
+
 
 
 
@@ -323,15 +353,18 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 		const self = this;
 
 		// Build the dist chart options
-		this.pointsDistChart = this._chart.getBarChartOptions({series: dist}, this._backtest.modelIDs, this.generalChartHeight, true);
-		this.pointsDistChart.chart.events = {click: function(e, cc, c) {self.displayModel(c.dataPointIndex)}}
+		this.pointsDistChart = this._chart.getBarChartOptions({series: dist}, this._backtest.modelIDs, this.getBarChartHeight(), true);
+		this.pointsDistChart.chart.events = {click: function(e, cc, c) {setTimeout(() => {self.activateModelByIndex(c.dataPointIndex)}, 100)}}
 
 		// Populate the line chart values
-		this.pointsLineChart = this._chart.getLineChartOptions({series: lines}, this.generalChartHeight, true, {
+		this.pointsLineChart = this._chart.getLineChartOptions({
+			series: lines,
+			stroke: {width: 5, curve: "straight"}
+		}, this.getLineChartHeight(), true, {
 			max: this._backtest.pointsHistoryMD.max.value,
 			min: this._backtest.pointsHistoryMD.min.value,
 		});
-		this.pointsLineChart.chart.events = {click: function(e: any, cc: any, c: any) {self.displayModel(c.seriesIndex)}}
+		this.pointsLineChart.chart.events = {click: function(e: any, cc: any, c: any) {setTimeout(() => {self.activateModelByIndex(c.dataPointIndex)}, 100)}}
 	}
 
 
@@ -354,9 +387,9 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 		const self = this;
 		this.accuracyChart = this._chart.getBarChartOptions(
 			{series: series, colors: [this._chart.upwardColor, this._chart.downwardColor, '#000000']}, 
-			this._backtest.modelIDs, this.generalChartHeight
+			this._backtest.modelIDs, this.getBarChartHeight(3)
 		);
-		this.accuracyChart.chart.events = {click: function(e, cc, c) {self.displayModel(c.dataPointIndex)}}
+		this.accuracyChart.chart.events = {click: function(e, cc, c) {setTimeout(() => { self.activateModelByIndex(c.dataPointIndex) }, 100)}}
 	}
 
 
@@ -378,9 +411,9 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 		const self = this;
 		this.positionsChart = this._chart.getBarChartOptions(
 			{series: series, colors: [this._chart.upwardColor, this._chart.downwardColor, '#000000']}, 
-			this._backtest.modelIDs, this.generalChartHeight
+			this._backtest.modelIDs, this.getBarChartHeight(3)
 		);
-		this.positionsChart.chart.events = {click: function(e, cc, c) {self.displayModel(c.dataPointIndex)}}
+		this.positionsChart.chart.events = {click: function(e, cc, c) {setTimeout(() => { self.activateModelByIndex(c.dataPointIndex) }, 100)}}
 	}
 
 
@@ -395,8 +428,8 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 
 		// Build the chart options
 		const self = this;
-		this.durationChart = this._chart.getBarChartOptions({series: series}, this._backtest.modelIDs, this.generalChartHeight, true);
-		this.durationChart.chart.events = {click: function(e, cc, c) {self.displayModel(c.dataPointIndex)}}
+		this.durationChart = this._chart.getBarChartOptions({series: series}, this._backtest.modelIDs, this.getBarChartHeight(), true);
+		this.durationChart.chart.events = {click: function(e, cc, c) {setTimeout(() => { self.activateModelByIndex(c.dataPointIndex) }, 100)}}
 	}
 
 
@@ -432,7 +465,7 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 				],
 				colors: [this._chart.upwardColor, this._chart.downwardColor, '#000000'],
 				yaxis: {labels: {show: false}}
-			}, [this.modelID!], 130),
+			}, [this.modelID!], 150),
 			positions: this._chart.getBarChartOptions({
 				series: [
 					{name:'Longs',data:[this._backtest.performances[this.modelID!].long_num]},
@@ -441,7 +474,7 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 				],
 				colors: [this._chart.upwardColor, this._chart.downwardColor, '#000000'],
 				yaxis: {labels: {show: false}}
-			}, [this.modelID!], 130)
+			}, [this.modelID!], 150)
 		}
 	}
 
@@ -457,6 +490,8 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 
 
 	/* Dialogs */
+
+
 
 
 
@@ -476,6 +511,11 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 		// Display the dialog if the model was found
 		if (model) this._nav.displayModelDialog(model);
 	}
+
+
+
+
+
 
 
 
@@ -575,29 +615,23 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 
 
 
+	/**
+	 * Returns the optimal bar chart height based on the number of models.
+	 * @returns number
+	 */
+	private getBarChartHeight(itemsPerCategory?: number): number {
+		return this._chart.calculateChartHeight(110, 20, this._backtest.modelIDs.length, itemsPerCategory);
+	}
+
+
+
 
 
 	/**
-	 * Based on the total number of models, it determines the best height
-	 * for the general charts.
+	 * Returns the optimal line chart height based on the number of models.
 	 * @returns number
 	 */
-	private getGeneralChartsHeight(): number {
-		if (this._backtest.modelIDs.length <= 3) 		{ return 350 }
-		else if (this._backtest.modelIDs.length <= 4) 	{ return 370 }
-		else if (this._backtest.modelIDs.length <= 5) 	{ return 390 }
-		else if (this._backtest.modelIDs.length <= 6) 	{ return 410 }
-		else if (this._backtest.modelIDs.length <= 7) 	{ return 430 }
-		else if (this._backtest.modelIDs.length <= 8) 	{ return 450 }
-		else if (this._backtest.modelIDs.length <= 10) 	{ return 600 }
-		else if (this._backtest.modelIDs.length <= 12) 	{ return 630 }
-		else if (this._backtest.modelIDs.length <= 15) 	{ return 660 }
-		else if (this._backtest.modelIDs.length <= 17) 	{ return 700 }
-		else if (this._backtest.modelIDs.length <= 20) 	{ return 730 }
-		else if (this._backtest.modelIDs.length <= 25) 	{ return 770 }
-		else if (this._backtest.modelIDs.length <= 30) 	{ return 800 }
-		else if (this._backtest.modelIDs.length <= 35) 	{ return 850 }
-		else if (this._backtest.modelIDs.length <= 40) 	{ return 900 }
-		else { return 1000}
+	 private getLineChartHeight(): number {
+		return this._chart.calculateChartHeight(400, 10, this._backtest.modelIDs.length, undefined, 800);
 	}
 }

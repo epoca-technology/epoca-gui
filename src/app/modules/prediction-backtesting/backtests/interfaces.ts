@@ -10,6 +10,7 @@ export interface IBacktestsComponent {
 
     // Navigation
     activateSection(section: ISection, modelID?: string): void,
+    activateModel(modelID: string): void,
 
     // Dialogs
     displayModel(id: string|number): void,

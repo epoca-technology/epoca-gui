@@ -545,6 +545,49 @@ export class ChartService implements IChartService {
 
 
 
+	/**
+	 * Retrieves the recommended height for a chart based on the 
+	 * number of categories in it.
+	 * @param baseHeight	HorizontalBarCharts: 110 | Lines: 400
+	 * @param increment		HorizontalBarCharts: 20 | Lines: 10
+	 * @param categoriesNum
+	 * @param itemsPerCategory?
+	 * @param maxHeight?	Lines: 800
+	 */
+	public calculateChartHeight(
+		baseHeight: number,
+		increment: number,
+		categoriesNum: number,
+		itemsPerCategory?: number,
+		maxHeight?: number
+	): number {
+		// Calculate the recommended height
+		let height: number = ((categoriesNum-1) * increment) + baseHeight;
+
+		// Check if the items per category was provided
+		if (typeof itemsPerCategory == "number" && itemsPerCategory > 1) {
+			if (itemsPerCategory == 2) {
+				height = height * 1.4;
+			} else if (itemsPerCategory == 3) {
+				height = height * 2.3;
+			}
+		}
+
+		// Check if the max height has been exceeded
+		if (typeof maxHeight == "number" && height > maxHeight) {
+			return maxHeight;
+		} else {
+			return height;
+		}
+	}
+
+
+
+
+
+
+
+
 
 	/**
 	 * Returns a large list of colors ordered randomly.

@@ -39,7 +39,12 @@
                                 [ngClass]="certificate.general.state_class" 
                                 class="square-badge"><span>{{certificate.general.points | number: '1.2-2'}}</span></div>
                             <div *ngIf="order == 'class_eval_acc'" class="square-badge"><span>{{certificate.classification_evaluation.acc | number: '1.2-2'}}%</span></div>
-                            <div *ngIf="order == 'class_eval_points'" class="square-badge">
+                            <div *ngIf="order == 'class_eval_points'"
+                                [ngClass]="{
+                                    'square-badge': certificate.classification_evaluation.positions[certificate.classification_evaluation.positions.length-1].pts == 0,
+                                    'square-badge-success': certificate.classification_evaluation.positions[certificate.classification_evaluation.positions.length-1].pts > 0,
+                                    'square-badge-error': certificate.classification_evaluation.positions[certificate.classification_evaluation.positions.length-1].pts < 0
+                                }">
                                 <span>
                                     {{certificate.classification_evaluation.positions[certificate.classification_evaluation.positions.length-1].pts | number: '1.2-2'}}
                                 </span>
@@ -128,7 +133,12 @@
                                         [ngClass]="certificate.general.state_class" 
                                         class="square-badge"><span>{{certificate.general.points | number: '1.2-2'}}</span></div>
                                         <div *ngIf="order == 'class_eval_acc'" class="square-badge"><span>{{certificate.classification_evaluation.acc | number: '1.2-2'}}%</span></div>
-                                        <div *ngIf="order == 'class_eval_points'" class="square-badge">
+                                        <div *ngIf="order == 'class_eval_points'"
+                                            [ngClass]="{
+                                                'square-badge': certificate.classification_evaluation.positions[certificate.classification_evaluation.positions.length-1].pts == 0,
+                                                'square-badge-success': certificate.classification_evaluation.positions[certificate.classification_evaluation.positions.length-1].pts > 0,
+                                                'square-badge-error': certificate.classification_evaluation.positions[certificate.classification_evaluation.positions.length-1].pts < 0
+                                            }">
                                             <span>
                                                 {{certificate.classification_evaluation.positions[certificate.classification_evaluation.positions.length-1].pts | number: '1.2-2'}}
                                             </span>

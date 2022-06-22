@@ -29,7 +29,11 @@
                         <div fxLayout="row" fxLayoutAlign="start center">
                             <span class="truncate">{{combination.combination_id}}</span>
                             <span fxFlex></span>
-                            <div class="square-badge"><span>{{combination.points_mean | number: '1.2-2'}}</span></div>
+                            <div [ngClass]="{
+                                'square-badge': combination.points_mean == 0,
+                                'square-badge-success': combination.points_mean > 0,
+                                'square-badge-error': combination.points_mean < 0
+                            }"><span>{{combination.points_mean | number: '1.2-2'}}</span></div>
                         </div>
                 </button>
             </mat-list-item>
@@ -67,7 +71,7 @@
                 <label for="certificatesFile" class="file-label" role="button" matRipple *ngIf="!initializing">
                     <div fxLayout="row" fxLayoutAlign="start center" matRipple role="button" tabindex="0">
                         <mat-icon svgIcon="file_circle_check"></mat-icon>&nbsp;
-                        <p>Regression Selection</p>
+                        <p>Select Regr. Selection</p>
                     </div>
                 </label>
 
@@ -103,7 +107,11 @@
                                     <div fxLayout="row" fxLayoutAlign="start center">
                                         <span class="truncate">{{combination.combination_id}}</span>
                                         <span fxFlex></span>
-                                        <div class="square-badge"><span>{{combination.points_mean | number: '1.2-2'}}</span></div>
+                                        <div [ngClass]="{
+                                            'square-badge': combination.points_mean == 0,
+                                            'square-badge-success': combination.points_mean > 0,
+                                            'square-badge-error': combination.points_mean < 0
+                                        }"><span>{{combination.points_mean | number: '1.2-2'}}</span></div>
                                     </div>
                             </button>
                         </mat-list-item>
@@ -173,16 +181,14 @@
                                         <div class="desktop-card">
                                             <h3>Models by Combination</h3>
 
-                                            <div fxLayout="row" fxLayoutAlign="center center">
-                                                <apx-chart
-                                                    [series]="models.series"
-                                                    [chart]="models.chart"
-                                                    [labels]="models.labels"
-                                                    [colors]="models.colors"
-                                                    [legend]="models.legend"
-                                                    [responsive]="models.responsive"
-                                                ></apx-chart>
-                                            </div>
+                                            <apx-chart
+                                                [series]="models.series"
+                                                [chart]="models.chart"
+                                                [labels]="models.labels"
+                                                [colors]="models.colors"
+                                                [legend]="models.legend"
+                                                [responsive]="models.responsive"
+                                            ></apx-chart>
                                         </div>
                                     </div>
 
@@ -218,19 +224,19 @@
                             <!-- Tabs Navigation-->
                             <mat-tab-group *ngIf="layout == 'mobile'" 
                                         [selectedIndex]="activeTabIndex" (selectedIndexChange)="activeTabIndex = $event"
-                                        class="mat-elevation-z3" backgroundColor="primary">
-                                <mat-tab label="Points"></mat-tab>
-                                <mat-tab label="Points H."></mat-tab>
-                                <mat-tab label="Positions"></mat-tab>
-                                <mat-tab label="Accuracy"></mat-tab>
+                                        mat-stretch-tabs class="mat-elevation-z3" backgroundColor="primary">
+                                <mat-tab><ng-template mat-tab-label><mat-icon>attach_money</mat-icon></ng-template></mat-tab>
+                                <mat-tab><ng-template mat-tab-label><mat-icon>query_stats</mat-icon></ng-template></mat-tab>
+                                <mat-tab><ng-template mat-tab-label><mat-icon>ads_click</mat-icon></ng-template></mat-tab>
+                                <mat-tab><ng-template mat-tab-label><mat-icon svgIcon="wand_magic_sparkles" class="wand-icon"></mat-icon></ng-template></mat-tab>
                             </mat-tab-group>
                             <mat-tab-group *ngIf="layout == 'desktop'"  
                                             [selectedIndex]="activeTabIndex" (selectedIndexChange)="activeTabIndex = $event" 
                                             mat-align-tabs="center">
-                                <mat-tab label="Points"></mat-tab>
-                                <mat-tab label="Points History"></mat-tab>
-                                <mat-tab label="Positions"></mat-tab>
-                                <mat-tab label="Accuracy"></mat-tab>
+                                <mat-tab><ng-template mat-tab-label><mat-icon>attach_money</mat-icon>&nbsp;Points</ng-template></mat-tab>
+                                <mat-tab><ng-template mat-tab-label><mat-icon>query_stats</mat-icon>&nbsp;Points History</ng-template></mat-tab>
+                                <mat-tab><ng-template mat-tab-label><mat-icon>ads_click</mat-icon>&nbsp;Accuracy</ng-template></mat-tab>
+                                <mat-tab><ng-template mat-tab-label><mat-icon svgIcon="wand_magic_sparkles" class="wand-icon"></mat-icon>&nbsp;Positions</ng-template></mat-tab>
                             </mat-tab-group>
 
 
@@ -240,27 +246,17 @@
 
                                     <!-- Points -->
                                     <div *ngIf="activeTabIndex == 0" fxFlex="70" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
-                                        <div class="desktop-card">
-                                            <div fxLayout="row" fxLayoutAlign="start center">
-                                                <h3 class="truncate">Models</h3>
-                                                <span fxFlex></span>
-                                                <div class="square-badge" 
-                                                    matTooltip="The mean of all the points medians in the combination.">
-                                                    Mean: {{_rs.results[activeComb].points_mean | number}}
-                                                </div>
-                                            </div>
-                                            <apx-chart
-                                                [series]="combPoints.series"
-                                                [chart]="combPoints.chart"
-                                                [plotOptions]="combPoints.plotOptions"
-                                                [xaxis]="combPoints.xaxis"
-                                                [yaxis]="combPoints.yaxis"
-                                                [dataLabels]="combPoints.dataLabels"
-                                                [colors]="combPoints.colors"
-                                                [grid]="combPoints.grid"
-                                                [legend]="{show: false}"
-                                            ></apx-chart>
-                                        </div>
+                                        <apx-chart
+                                            [series]="combPoints.series"
+                                            [chart]="combPoints.chart"
+                                            [plotOptions]="combPoints.plotOptions"
+                                            [xaxis]="combPoints.xaxis"
+                                            [yaxis]="combPoints.yaxis"
+                                            [dataLabels]="combPoints.dataLabels"
+                                            [colors]="combPoints.colors"
+                                            [grid]="combPoints.grid"
+                                            [legend]="{show: false}"
+                                        ></apx-chart>
                                     </div>
 
 

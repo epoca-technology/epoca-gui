@@ -176,7 +176,7 @@ export class ClassificationTrainingDataComponent implements OnInit, OnDestroy, I
 				colors: [this._chart.upwardColor, this._chart.downwardColor, this._chart.neutralColor]
 			}, 
 			this._td.modelIDs, 
-			this.getPositionChartHeight()
+			this._chart.calculateChartHeight(110, 20, this._td.modelIDs.length, 3)
 		);
 		this.predictions.chart.events = {click: function(e, cc, c) {self.displayModel(c.dataPointIndex)}}
 
@@ -319,19 +319,4 @@ export class ClassificationTrainingDataComponent implements OnInit, OnDestroy, I
 	/* Misc Helpers */
 
 
-	/**
-	 * Based on the total number of models, it determines the best height
-	 * for the positions chart.
-	 * @returns number
-	 */
-	 private getPositionChartHeight(): number {
-		if (this._td.modelIDs.length <= 5) 		{ return 500 }
-		if (this._td.modelIDs.length <= 7) 		{ return 650 }
-		if (this._td.modelIDs.length <= 10) 	{ return 750 }
-		if (this._td.modelIDs.length <= 13) 	{ return 850 }
-		if (this._td.modelIDs.length <= 15) 	{ return 900 }
-		if (this._td.modelIDs.length <= 17) 	{ return 1000 }
-		if (this._td.modelIDs.length <= 20) 	{ return 1150 }
-		else { return 1500}
-	}
 }
