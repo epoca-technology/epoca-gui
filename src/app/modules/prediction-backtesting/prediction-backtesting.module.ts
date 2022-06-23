@@ -15,6 +15,7 @@ import { RegressionTrainingCertificatesComponent } from './regression-training-c
 import { ClassificationTrainingDataComponent } from './classification-training-data/classification-training-data.component';
 import { ClassificationTrainingCertificatesComponent } from './classification-training-certificates/classification-training-certificates.component';
 import { ClassificationTrainingCertificatesConfigDialogComponent } from './classification-training-certificates/classification-training-certificates-config-dialog';
+import { RegressionTrainingCertificatesConfigDialogComponent } from './regression-training-certificates/regression-training-certificates-config-dialog/regression-training-certificates-config-dialog.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { ClassificationTrainingCertificatesConfigDialogComponent } from './class
     ClassificationTrainingCertificatesComponent,
     RegressionTrainingCertificatesComponent,
     RegressionSelectionComponent,
-    ClassificationTrainingCertificatesConfigDialogComponent
+    ClassificationTrainingCertificatesConfigDialogComponent,
+    RegressionTrainingCertificatesConfigDialogComponent
   ],
   imports: [
     CommonModule,

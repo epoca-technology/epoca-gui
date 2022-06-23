@@ -336,7 +336,6 @@ export interface IClassificationTrainingCertificate {
 
 
     /* Training Configuration */
-    learning_rate: number,
     optimizer: string,
     loss: string,
     metric: string,
@@ -466,6 +465,7 @@ export type IGeneralEvaluationItemID =
 "test_ds_accuracy"|
 
 // Classification Evaluation
+"points_median"|
 "long_accuracy"|
 "short_accuracy"|
 "general_accuracy"|

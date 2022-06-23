@@ -41,12 +41,12 @@
                             <div *ngIf="order == 'class_eval_acc'" class="square-badge"><span>{{certificate.classification_evaluation.acc | number: '1.2-2'}}%</span></div>
                             <div *ngIf="order == 'class_eval_points'"
                                 [ngClass]="{
-                                    'square-badge': certificate.classification_evaluation.positions[certificate.classification_evaluation.positions.length-1].pts == 0,
-                                    'square-badge-success': certificate.classification_evaluation.positions[certificate.classification_evaluation.positions.length-1].pts > 0,
-                                    'square-badge-error': certificate.classification_evaluation.positions[certificate.classification_evaluation.positions.length-1].pts < 0
+                                    'square-badge': certificate.classification_evaluation.points_median == 0,
+                                    'square-badge-success': certificate.classification_evaluation.points_median > 0,
+                                    'square-badge-error': certificate.classification_evaluation.points_median < 0
                                 }">
                                 <span>
-                                    {{certificate.classification_evaluation.positions[certificate.classification_evaluation.positions.length-1].pts | number: '1.2-2'}}
+                                    {{certificate.classification_evaluation.points_median | number: '1.2-2'}}
                                 </span>
                             </div>
                             <div *ngIf="order == 'test_ds_acc'" class="square-badge"><span>{{certificate.test_evaluation[1] | percent: '1.2-2'}}</span></div>
@@ -135,12 +135,12 @@
                                         <div *ngIf="order == 'class_eval_acc'" class="square-badge"><span>{{certificate.classification_evaluation.acc | number: '1.2-2'}}%</span></div>
                                         <div *ngIf="order == 'class_eval_points'"
                                             [ngClass]="{
-                                                'square-badge': certificate.classification_evaluation.positions[certificate.classification_evaluation.positions.length-1].pts == 0,
-                                                'square-badge-success': certificate.classification_evaluation.positions[certificate.classification_evaluation.positions.length-1].pts > 0,
-                                                'square-badge-error': certificate.classification_evaluation.positions[certificate.classification_evaluation.positions.length-1].pts < 0
+                                                'square-badge': certificate.classification_evaluation.points_median == 0,
+                                                'square-badge-success': certificate.classification_evaluation.points_median > 0,
+                                                'square-badge-error': certificate.classification_evaluation.points_median < 0
                                             }">
                                             <span>
-                                                {{certificate.classification_evaluation.positions[certificate.classification_evaluation.positions.length-1].pts | number: '1.2-2'}}
+                                                {{certificate.classification_evaluation.points_median | number: '1.2-2'}}
                                             </span>
                                         </div>
                                         <div *ngIf="order == 'test_ds_acc'" class="square-badge"><span>{{certificate.test_evaluation[1] | percent: '1.2-2'}}</span></div>
@@ -600,9 +600,9 @@
                                                     {{cert.classification_evaluation.acc | number: '1.2-2'}}%
                                                 </div>
                                                 <div class="square-badge clickable" role="button" 
-                                                    matTooltip="Classification Evaluation Points" 
+                                                    matTooltip="Classification Evaluation Points Median" 
                                                     (click)="activeTabIndex=2">
-                                                    {{cert.classification_evaluation.positions[cert.classification_evaluation.positions.length-1].pts | number: '1.2-2'}}
+                                                    {{cert.classification_evaluation.points_median | number: '1.2-2'}}
                                                 </div>
                                             </div>
 
@@ -1111,8 +1111,12 @@
                                                 <h3 class="truncate">{{layout == "desktop" ? "Positions History": "Pos. Hist."}}</h3>
                                                 <span fxFlex></span>
                                                 <div class="square-badge" 
-                                                    matTooltip="Total points collected during the Classification Evaluation">
-                                                    Points: {{cert.classification_evaluation.positions[cert.classification_evaluation.positions.length-1].pts | number}}
+                                                    matTooltip="Median of the points collected during the Classification Evaluation">
+                                                    Median: {{cert.classification_evaluation.points_median | number}}
+                                                </div>
+                                                <div class="square-badge" 
+                                                    matTooltip="Final points collected during the Classification Evaluation">
+                                                    Final: {{cert.classification_evaluation.positions[cert.classification_evaluation.positions.length-1].pts | number}}
                                                 </div>
                                             </div>
 

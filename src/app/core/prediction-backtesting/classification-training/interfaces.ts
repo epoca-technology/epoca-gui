@@ -42,7 +42,7 @@ export interface IMetadataItem {
  * the general evaluation.
  * 2) class_eval_acc: certificates are ordered by the general accuracy received in the
  * classification evaluation.
- * 3) class_eval_points: certificates are ordered by the points obtained durin the 
+ * 3) class_eval_points: certificates are ordered by the points obtained during the 
  * classification evaluation.
  * 4) test_ds_acc: certificates are ordered by the accuracy received when 
  * evaluating the test dataset.

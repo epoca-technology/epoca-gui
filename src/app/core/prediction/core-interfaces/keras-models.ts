@@ -72,6 +72,40 @@ export interface IKerasModelConfig {
 
 
 
+/* Training Configuration */
+
+
+
+/**
+ * Keras Model Training Type Configuration
+ * Based on the type of training (hyperparams|shortlist), different training settings will be used.
+ * For more information regarding these args, view the KerasTraining.ipynb notebook.
+ */
+export interface IKerasTrainingTypeConfig {
+    // The split that will be applied to the data in order to generate the train and test datasets
+    train_split: number
+
+    // A scalar float32 or float64 Tensor or a Python number. The initial learning rate.
+    initial_lr: number
+
+    // How often to apply decay.
+    decay_steps: number
+
+    // A Python number. The decay rate for the learning rate per step.
+    decay_rate: number
+
+    // The maximum number of epochs the training process will go through
+    epochs: number
+
+    // Number of epochs with no improvement after which training will be stopped.
+    patience: number
+}
+
+
+
+
+
+
 
 
 

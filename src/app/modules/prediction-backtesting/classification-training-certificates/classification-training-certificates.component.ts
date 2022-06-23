@@ -27,6 +27,7 @@ import {
 	ClassificationTrainingCertificatesConfigDialogComponent, 
 	IConfigResponse 
 } from './classification-training-certificates-config-dialog';
+import { BacktestPositionDialogComponent } from '../backtests/backtest-position-dialog';
 import { 
 	IClassificationTrainingCertificatesComponent, 
 	ISection, 
@@ -38,7 +39,9 @@ import {
 	IHeatmapItemProbabilityRange,
 	IHeatmapItemStateClass
 } from './interfaces';
-import { BacktestPositionDialogComponent } from '../backtests/backtest-position-dialog';
+
+
+
 
 @Component({
   selector: 'app-classification-training-certificates',
@@ -364,8 +367,8 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 
 		/* Build the Classification Points Chart */
 		this.classGeneralPoints = this._chart.getBarChartOptions(
-			{series: [{name: "Class. Points",data: this._training.certificates.map((c) => { 
-				return c.classification_evaluation.positions[c.classification_evaluation.positions.length-1].pts
+			{series: [{name: "Points Median",data: this._training.certificates.map((c) => { 
+				return c.classification_evaluation.points_median
 			}),color: "#000000"}]}, 
 			this._training.ids, 
 			this.getBarChartHeight()

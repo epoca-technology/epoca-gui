@@ -45,6 +45,8 @@ import {
 	RegressionSelectionService,
 	ClassificationTrainingService,
 	ClassificationTrainingDataService,
+	RegressionTrainingEvaluationService,
+	RegressionTrainingService,
 	ServerService,
 	UtilsService,
 } from './core';
@@ -120,9 +122,11 @@ import { AppComponent } from './app.component';
         NotificationService,
 		PredictionService,
 		BacktestService,
-		RegressionSelectionService,
 		ClassificationTrainingService,
 		ClassificationTrainingDataService,
+		RegressionSelectionService,
+		RegressionTrainingEvaluationService,
+		RegressionTrainingService,
         ServerService,
         UtilsService,
 

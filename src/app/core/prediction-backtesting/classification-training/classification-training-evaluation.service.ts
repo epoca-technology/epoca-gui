@@ -15,11 +15,14 @@ import { IClassificationTrainingEvaluationService, } from './interfaces';
   providedIn: 'root'
 })
 export class ClassificationTrainingEvaluationService implements IClassificationTrainingEvaluationService {
-	// The minimum accuracy percentage allowed
-	private readonly minAccuracy: number = 40;
+	// The minimum points median accepted
+	private readonly minPointsMedian: number = -40;
 
 	// The maximum neutrality percentage allowed
 	private readonly maxNeutrality: number = 85;
+
+	// The minimum accuracy percentage allowed
+	private readonly minAccuracy: number = 40;
 
 	// The maximum percentage difference allowed for predictions vs outcomes
 	private readonly maxPredictionDifference: number = 20;
@@ -128,13 +131,22 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 				state_class: "error",
 				items: [
 					{
+						id: "points_median",
+						name: "Points Median",
+						description: "Evaluates the median of the points collected in order to determine which models managed to sustain overtime.",
+						state: "",
+						points: 0,
+						max_points: 14,
+						state_class: "error"
+					},
+					{
 						id: "long_accuracy",
 						name: "Long Accuracy",
 						description: "Evaluates the accuracy received in long predictions during the Classification Evaluation.\
 						In the case of accuracy, the bigger the value the better.",
 						state: "",
 						points: 0,
-						max_points: 4.5,
+						max_points: 3,
 						state_class: "error"
 					},
 					{
@@ -144,7 +156,7 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 						In the case of accuracy, the bigger the value the better.",
 						state: "",
 						points: 0,
-						max_points: 4.5,
+						max_points: 3,
 						state_class: "error"
 					},
 					{
@@ -164,7 +176,7 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 						to a balanced prediction distribution.",
 						state: "",
 						points: 0,
-						max_points: 6,
+						max_points: 2,
 						state_class: "error"
 					},
 					{
@@ -175,7 +187,7 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 						actual outcomes the better.",
 						state: "",
 						points: 0,
-						max_points: 7.5,
+						max_points: 4,
 						state_class: "error"
 					},
 					{
@@ -186,7 +198,7 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 						actual outcomes the better.",
 						state: "",
 						points: 0,
-						max_points: 7.5,
+						max_points: 4,
 						state_class: "error"
 					},
 				]
@@ -273,6 +285,7 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 		else if (item.id == "test_ds_accuracy") { return this.testDatasetAccuracy(cert, item.max_points) }
 
 		// Classification Evaluation
+		else if (item.id == "points_median") { return this.classificationPointsMedian(cert, item.max_points, broken, state) }
 		else if (item.id == "long_accuracy") { return this.classificationEvaluationAccuracy(cert, item.max_points, "increase_acc", broken, state) }
 		else if (item.id == "short_accuracy") { return this.classificationEvaluationAccuracy(cert, item.max_points, "decrease_acc", broken, state) }
 		else if (item.id == "general_accuracy") { return this.classificationEvaluationAccuracy(cert, item.max_points, "acc", broken, state) }
@@ -583,6 +596,13 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 		let broken: boolean = false;
 		let state: string = "";
 
+		// Firstly, check the points median
+		if (cert.classification_evaluation.points_median < this.minPointsMedian) {
+			broken = true;
+			state = `Broken Classification: the points median is unacceptable: ${cert.classification_evaluation.points_median}.`;
+		}
+
+
 		// Firstly, check the neutrality
 		const neutralPercent: number = <number>this._utils.calculatePercentageOutOfTotal(
 			cert.classification_evaluation.neutral_predictions, 
@@ -636,6 +656,57 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 		// Return the final state
 		return { broken: broken, state: state}
 	}
+
+
+
+
+	/**
+	 * Evaluates the points median during the Classification Evaluation.
+	 * @param cert
+	 * @param maxPoints
+	 * @param broken
+	 * @param brokenState
+	 * @returns IItemGeneralEvaluation
+	 */
+	 private classificationPointsMedian(
+		cert: IClassificationTrainingCertificate, 
+		maxPoints: number,
+		broken: boolean,
+		brokenState: string
+   ): IItemGeneralEvaluation {
+	   // Firstly, make sure the classification isnt broken
+	   if (!broken) {
+			// Init the points
+			let points: number = 0;
+
+			// Calculate the points 
+			if (cert.classification_evaluation.points_median >= 10) 		{ points = maxPoints }
+			else if (cert.classification_evaluation.points_median >= 7) 	{ points = maxPoints/1.1 }
+			else if (cert.classification_evaluation.points_median >= 5) 	{ points = maxPoints/1.2 }
+			else if (cert.classification_evaluation.points_median >= 3) 	{ points = maxPoints/1.3 }
+			else if (cert.classification_evaluation.points_median >= 1) 	{ points = maxPoints/1.4 }
+			else if (cert.classification_evaluation.points_median >= 0) 	{ points = maxPoints/1.5 }
+			else if (cert.classification_evaluation.points_median >= -1) 	{ points = maxPoints/2 }
+			else if (cert.classification_evaluation.points_median >= -3) 	{ points = maxPoints/2.4 }
+			else if (cert.classification_evaluation.points_median >= -5) 	{ points = maxPoints/2.7 }
+			else if (cert.classification_evaluation.points_median >= -7) 	{ points = maxPoints/3 }
+			else if (cert.classification_evaluation.points_median >= -9) 	{ points = maxPoints/3.5 }
+			else if (cert.classification_evaluation.points_median >= -12) 	{ points = maxPoints/4 }
+			else if (cert.classification_evaluation.points_median >= -15) 	{ points = maxPoints/4.5 }
+			else if (cert.classification_evaluation.points_median >= -20) 	{ points = maxPoints/5 }
+			else if (cert.classification_evaluation.points_median >= -25) 	{ points = maxPoints/6 }
+			else  															{ points = maxPoints/10 }
+
+			// Finally, return the results
+			return {
+				points: points, 
+				state: `The evaluation concluded with a points median of ${cert.classification_evaluation.points_median}%.`,
+				state_class: this.getStateClass(points, maxPoints)
+			}
+	   } else { return { points: 0, state: brokenState, state_class: "error"} }
+	}
+
+
 
 
 

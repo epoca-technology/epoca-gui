@@ -1,0 +1,120 @@
+
+.component-container {
+
+
+    .lowest {opacity: 0.7;}
+
+    .badged-header {
+        .square-badge, .square-badge-error, .square-badge-success{ margin-left:5px;}
+    }
+
+
+    .order-icon { color: var(--light-text-color); font-size:17px;padding-top:7px;}
+
+    // States
+    .optimal { background-color: #004D40!important; }
+    .decent { background-color: #009688!important; }
+    .neutral { background-color: #9E9E9E!important; }
+    .warning { background-color: #F57C00!important; }
+    .error { background-color: #B71C1C!important; }
+
+    .wand-icon { max-width: 21px;}
+
+    .desktop-sidenav {
+        width: 300px;
+        button {text-align: left;width: 100%;}
+    }
+
+
+    .general-sections {
+        h3 {margin:0;}
+        .reg_evaluations {
+
+        }
+        .epochs {
+            padding:15px;
+        }
+    }
+
+
+    .certificate-section {
+        h3 {margin: 0}
+        h4 {margin: 0}
+        p {margin:0}
+        .margin-top { margin-top:20px!important;}
+        .summary-content {
+            padding:15px;
+
+
+            .general-evaluation {
+                .item {
+                    margin:25px 0px 25px 0px;
+                    .square-badge, .square-badge-success, .square-badge-error { 
+                        padding:3px 5px 3px 5px;
+                        min-width: 25px;
+                        font-weight: 600;
+                        font-size:10px!important;
+                        max-height:18px;
+                        width: auto;
+                    
+                        .mat-icon { vertical-align: middle!important; }
+                    }
+                }
+                .item:last-child { margin:25px 0px 5px 0px!important; }
+            }
+        }
+
+        .loss {background: #E57373;}
+        .val-loss {background: #B71C1C;}
+
+        .reg-evals-content {
+            padding:15px;
+
+            .predicted-trends-container {
+                padding:0px!important;
+                h3 {padding:15px;}
+
+            }
+        }
+
+
+        .positions-content{
+            padding:15px;
+            .desktop-card {
+                padding:0;
+                p { margin:0}
+            }
+        }
+
+        .epochs-content {
+            padding:15px;
+            .desktop-card { padding:0px}
+            .data-container {
+                max-width:100%;
+                overflow-x:auto;
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+/* Responsiveness */
+
+
+/* mobile: sm & xs */
+@media only screen and (max-width: 959px) {
+    .general-header { padding: 0px!important;}
+    .item {padding:10px 0px 10px 0px!important;}
+}
+
+
+
+/* desktop: md */
+@media only screen and (min-width: 960px) {
+    
+}

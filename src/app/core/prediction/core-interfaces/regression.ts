@@ -1,3 +1,4 @@
+import { IGeneralEvaluationItem, IGeneralEvaluationStateClass } from "./classification";
 import { IKerasModelConfig, IKerasModelTrainingHistory } from "./keras-models";
 import { IRegressionConfig } from "./model";
 import { IModelEvaluation } from "./model-evaluation";
@@ -78,29 +79,6 @@ export interface IRegressionTrainingBatch {
 
 
 
-/**
- * Regression Training Type Configuration
- * Based on the type of training (hyperparams|shortlist), different training settings will be used.
- * For more information regarding these args, view the KerasTraining.ipynb notebook.
- */
-export interface IRegressionTrainingTypeConfig {
-    // A scalar float32 or float64 Tensor or a Python number. The initial learning rate.
-    initial_lr: number,
-
-    // How often to apply decay.
-    decay_steps: number,
-
-    // A Python number. The decay rate for the learning rate per step.
-    decay_rate: number,
-
-    // The maximum number of epochs the training process will go through
-    epochs: number,
-
-    // Number of epochs with no improvement after which training will be stopped.
-    patience: number
-}
-
-
 
 
 
@@ -176,5 +154,42 @@ export interface IRegressionTrainingCertificate {
     regression_evaluation: IModelEvaluation,
 
     // The configuration of the Regression
-    regression_config: IRegressionConfig
+    regression_config: IRegressionConfig,
+
+
+    /* General Evaluation */
+    general: IGeneralRegressionEvaluation // Only exists in the GUI
+}
+
+
+
+
+
+
+
+
+
+
+/* General Evaluation */
+
+
+
+
+/**
+ * General Evaluation (GUI)
+ * This evaluation is performed on each certificate when they are extracted 
+ * from the JSON files.
+ */
+ export interface IGeneralRegressionEvaluation {
+    // Total points collected by all the items and categories
+    points: number,
+
+    // The maximum number of points that can be collected within the evaluation
+    max_points: number,
+
+    // State Class
+    state_class: IGeneralEvaluationStateClass,
+    
+    // List of items
+    items: IGeneralEvaluationItem[]
 }

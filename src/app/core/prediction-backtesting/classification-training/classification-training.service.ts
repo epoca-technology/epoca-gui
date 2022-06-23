@@ -69,8 +69,8 @@ export class ClassificationTrainingService implements IClassificationTrainingSer
 			worst: {index: 0, id: this.certificates[0].id, value: this.certificates[0].classification_evaluation.acc},
 		};
 		this.classPointsMetadata = {
-			best: {index: 0, id: this.certificates[0].id, value: this.certificates[0].classification_evaluation.positions[this.certificates[0].classification_evaluation.positions.length-1].pts},
-			worst: {index: 0, id: this.certificates[0].id, value: this.certificates[0].classification_evaluation.positions[this.certificates[0].classification_evaluation.positions.length-1].pts},
+			best: {index: 0, id: this.certificates[0].id, value: this.certificates[0].classification_evaluation.points_median},
+			worst: {index: 0, id: this.certificates[0].id, value: this.certificates[0].classification_evaluation.points_median},
 		};
 		this.predictionsMetadata = {
 			highest: {index: 0, id: this.certificates[0].id, value: this.certificates[0].classification_evaluation.positions.length},
@@ -133,11 +133,11 @@ export class ClassificationTrainingService implements IClassificationTrainingSer
 			}
 
 			// Check the classification points metadata
-			if (this.certificates[i].classification_evaluation.positions[this.certificates[i].classification_evaluation.positions.length-1].pts > this.classPointsMetadata.best.value) {
-				this.classPointsMetadata.best = {index: i, id: this.certificates[i].id, value: this.certificates[i].classification_evaluation.positions[this.certificates[i].classification_evaluation.positions.length-1].pts}
+			if (this.certificates[i].classification_evaluation.points_median > this.classPointsMetadata.best.value) {
+				this.classPointsMetadata.best = {index: i, id: this.certificates[i].id, value: this.certificates[i].classification_evaluation.points_median}
 			}
-			if (this.certificates[i].classification_evaluation.positions[this.certificates[i].classification_evaluation.positions.length-1].pts < this.classPointsMetadata.worst.value) {
-				this.classPointsMetadata.worst = {index: i, id: this.certificates[i].id, value: this.certificates[i].classification_evaluation.positions[this.certificates[i].classification_evaluation.positions.length-1].pts}
+			if (this.certificates[i].classification_evaluation.points_median < this.classPointsMetadata.worst.value) {
+				this.classPointsMetadata.worst = {index: i, id: this.certificates[i].id, value: this.certificates[i].classification_evaluation.points_median}
 			}
 
 			// Check the predictions metadata
