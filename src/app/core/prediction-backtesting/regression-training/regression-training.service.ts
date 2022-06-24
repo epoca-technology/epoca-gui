@@ -189,8 +189,8 @@ export class RegressionTrainingService implements IRegressionTrainingService{
 			// Order the certificates by the points received in the classification evaluation
 			else if (order == "reg_eval_points") {
 				return certificates.sort((a, b) => (
-					a.regression_evaluation.positions[a.regression_evaluation.positions.length-1].pts < 
-					b.regression_evaluation.positions[b.regression_evaluation.positions.length-1].pts
+					a.regression_evaluation.points_median < 
+					b.regression_evaluation.points_median
 				) ? 1 : -1);
 			} 
 			

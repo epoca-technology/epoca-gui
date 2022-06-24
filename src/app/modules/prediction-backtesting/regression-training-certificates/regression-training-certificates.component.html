@@ -411,7 +411,7 @@
                                                 <div class="square-badge clickable" role="button" 
                                                     matTooltip="Regression Evaluation Points Median" 
                                                     (click)="activeTabIndex=2">
-                                                    {{cert.regression_evaluation.points_median | number: '1.2-2'}}
+                                                    {{cert.regression_evaluation.points_median | number: '1.0-2'}}
                                                 </div>
                                             </div>
 
@@ -709,7 +709,7 @@
                                             <table class="bordered highlight">
                                                 <thead>
                                                     <tr>
-                                                        <th></th>
+                                                        <th>Type</th>
                                                         <th>Min</th>
                                                         <th>Mean</th>
                                                         <th>Max</th>
@@ -761,11 +761,11 @@
                                                 <span fxFlex></span>
                                                 <div class="square-badge" 
                                                     matTooltip="Median of the points collected during the Regression Evaluation">
-                                                    Median: {{cert.regression_evaluation.points_median | number}}
+                                                    Median: {{cert.regression_evaluation.points_median | number: '1.0-2'}}
                                                 </div>
                                                 <div class="square-badge" 
                                                     matTooltip="Final points collected during the Regression Evaluation">
-                                                    Final: {{cert.regression_evaluation.positions[cert.regression_evaluation.positions.length-1].pts | number}}
+                                                    Final: {{cert.regression_evaluation.positions[cert.regression_evaluation.positions.length-1].pts | number: '1.0-2'}}
                                                 </div>
                                             </div>
 

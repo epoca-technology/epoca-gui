@@ -259,8 +259,8 @@ export class ClassificationTrainingService implements IClassificationTrainingSer
 			// Order the certificates by the points received in the classification evaluation
 			else if (order == "class_eval_points") {
 				return certificates.sort((a, b) => (
-					a.classification_evaluation.positions[a.classification_evaluation.positions.length-1].pts < 
-					b.classification_evaluation.positions[b.classification_evaluation.positions.length-1].pts
+					a.classification_evaluation.points_median < 
+					b.classification_evaluation.points_median
 				) ? 1 : -1);
 			} 
 			
