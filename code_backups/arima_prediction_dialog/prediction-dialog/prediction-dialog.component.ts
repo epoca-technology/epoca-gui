@@ -8,8 +8,7 @@ import {
 	IPrediction,
 	PredictionService, 
 	UtilsService, 
-	IPercentChangeInterpreterConfig,
-	IClassificationModelConfig
+	IPercentChangeInterpreterConfig
 } from '../../../../core';
 import { ChartService, ILineChartOptions, NavService, SnackbarService } from '../../../../services';
 import { 
@@ -17,12 +16,9 @@ import {
 	IPredictionDialogComponentData, 
 	IMetadata,
 	IChangeMetadata,
-	IProbabilityMetadata,
-	IMetadataResultName,
+	IChangeMetadataResult,
 	IChangeMetadataChartSeries,
-	ISeparatedCandlesticks,
-	IMetadataResultBadge,
-	IProbabilityMetadataFeature,
+	ISeparatedCandlesticks
 } from './interfaces';
 
 @Component({
@@ -84,8 +80,10 @@ export class PredictionDialogComponent implements OnInit, IPredictionDialogCompo
 		}
 
 		// Init Essential Properties
-		this.model = this.data.model;
-		this.prediction = this.data.prediction;
+		//this.model = this.data.model;
+		//this.prediction = this.data.prediction;
+		this.model = {'id': 'A212','arima_models': [{'lookback': 150,'predictions': 10,'arima': <any>{ 'p': 2, 'd': 1, 'q': 2 },'interpreter': { 'long': 0.5, 'short': 0.5 }}]};
+		this.prediction = {'r': -1,'t': 1634000880000,'md': [{'d': 'short','pl': [60545.65, 60525.85, 60510.63, 60485.36, 60320.55, 60318.63, 60654,11, 60854.01, 60994.96, 61254.54]}]};
 		this.resultName = this._prediction.resultNames[this.prediction.r];
 		this.modelTypeName = this._prediction.getModelTypeName(this.model);
 
@@ -152,12 +150,7 @@ export class PredictionDialogComponent implements OnInit, IPredictionDialogCompo
 					this.prediction.md[i].f && this.prediction.md[i].up && this.prediction.md[i].dp &&
 					this._prediction.getModelTypeName(this.model.consensus_model.sub_models[i]) == "ClassificationModel"
 				) {
-					metadata.probabilities = this.getProbabilityMetadata(
-						this.model.consensus_model.sub_models[i].classification_models![0],
-						this.prediction.md[i].f!,
-						this.prediction.md[i].up!,
-						this.prediction.md[i].dp!
-					)
+					
 				}
 
 				// Finally, add the item to the list
@@ -182,102 +175,13 @@ export class PredictionDialogComponent implements OnInit, IPredictionDialogCompo
 
 			// Check if the metadata contains classification related values
 			else if (this.prediction.md[0].f && this.prediction.md[0].up && this.prediction.md[0].dp && this.model.classification_models) {
-				metadata.probabilities = this.getProbabilityMetadata(
-					this.model.classification_models[0],
-					this.prediction.md[0].f,
-					this.prediction.md[0].up,
-					this.prediction.md[0].dp
-				)
+				// @TODO
 			}
 
 			// Finally, add the metadata to the list
 			this.metadata.push(metadata);
 		}
 	}
-
-
-
-
-
-
-
-
-	/* Classification Prediction Builder */
-
-
-
-	/**
-	 * Retrieves all the metadata related to a prediction based on probability.
-	 * @param interpreter 
-	 * @param features 
-	 * @param upProbability 
-	 * @param downProbability 
-	 * @returns IProbabilityMetadata
-	 */
-	private getProbabilityMetadata(
-		classificationConfig: IClassificationModelConfig, 
-		features: number[],
-		upProbability: number, 
-		downProbability: number
-	): IProbabilityMetadata {
-		// Init values
-		let result: IMetadataResultName = "neutral";
-		let badge: IMetadataResultBadge = "square-badge-neutral";
-		let finalFeatures: IProbabilityMetadataFeature[] = [];
-
-		// Check if the model predicted a long
-		if (upProbability >= classificationConfig.interpreter.min_probability) {
-			result = "long";
-			badge = "square-badge-success";
-		}
-
-		// Check if the model predicted a short
-		else if (downProbability >= classificationConfig.interpreter.min_probability) {
-			result = "short";
-			badge = "square-badge-error";
-		}
-
-		// Include the regression features
-		for (let i = 0; i < classificationConfig.classification.models.length; i++) {
-			finalFeatures.push({value: features[i], type: "regression", model: classificationConfig.classification.models[i]})
-		}
-
-		// Include the technical analysis features
-		let currentIndex: number = classificationConfig.classification.models.length;
-		if (classificationConfig.classification.include_rsi) {
-			finalFeatures.push({value: features[currentIndex], type: "rsi"});
-			currentIndex += 1;
-		}
-		if (classificationConfig.classification.include_stoch) {
-			finalFeatures.push({value: features[currentIndex], type: "stoch"})
-			currentIndex += 1;
-		}
-		if (classificationConfig.classification.include_aroon) {
-			finalFeatures.push({value: features[currentIndex], type: "aroon"})
-			currentIndex += 1;
-		}
-		if (classificationConfig.classification.include_stc) {
-			finalFeatures.push({value: features[currentIndex], type: "stc"})
-			currentIndex += 1;
-		}
-		if (classificationConfig.classification.include_mfi) {
-			finalFeatures.push({value: features[currentIndex], type: "mfi"})
-			currentIndex += 1;
-		}
-
-
-		// Finally, return the metadata
-		return {
-			result: result,
-			badge: badge,
-			upProbability: <number>this._utils.outputNumber(upProbability*100, {dp: 2}),
-			downProbability: <number>this._utils.outputNumber(downProbability*100, {dp: 2}),
-			features: finalFeatures
-		}
-	}
-
-
-
 
 
 
@@ -347,7 +251,7 @@ export class PredictionDialogComponent implements OnInit, IPredictionDialogCompo
 	 * @param result 
 	 * @returns Promise<ILineChartOptions>
 	 */
-	private async getRegressionMetadataChart(preds: number[], result: IMetadataResultName): Promise<ILineChartOptions> {
+	private async getRegressionMetadataChart(preds: number[], result: IChangeMetadataResult): Promise<ILineChartOptions> {
 		// Arima Line Chart
 		if (this.modelTypeName == "ArimaModel") {
 			return this.getArimaMetadataChart(preds, result);
@@ -379,7 +283,7 @@ export class PredictionDialogComponent implements OnInit, IPredictionDialogCompo
 	 * @param result 
 	 * @returns Promise<ILineChartOptions>
 	 */
-	private async getArimaMetadataChart(preds: number[], result: IMetadataResultName): Promise<ILineChartOptions> {
+	private async getArimaMetadataChart(preds: number[], result: IChangeMetadataResult): Promise<ILineChartOptions> {
 		// Retrieve the candlesticks that will be used to build the lines chart
 		const candlesticks: ICandlestick[] = await this.getCandlesticks(preds.length);
 
@@ -548,7 +452,7 @@ export class PredictionDialogComponent implements OnInit, IPredictionDialogCompo
 	 * @param result 
 	 * @returns string
 	 */
-	 private getPredictionLineColor(result: IMetadataResultName): string {
+	 private getPredictionLineColor(result: IChangeMetadataResult): string {
 		switch(result) {
 			case 'long':
 				return this._chart.upwardColor;

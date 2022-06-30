@@ -1,5 +1,5 @@
 import { IArimaConfig } from "./arima";
-import { IPercentChangeInterpreterConfig, IProbabilityInterpreterConfig } from "./interpreter";
+import { IPercentChangeInterpreterConfig, IProbabilityInterpreterConfig, IConsensusInterpreterConfig } from "./interpreter";
 import { IKerasModelSummary } from "./keras-models";
 
 
@@ -243,6 +243,22 @@ export interface IClassificationModelConfig {
     classification: IClassificationConfig
 }
  
+
+
+/**
+ * ConsensusModel Configuration
+ * The configuration that will be use to generate and interpret predictions.
+ */
+export interface IConsensusModelConfig {
+    /**
+     * The list of ArimaModel|RegressionModel|ClassificationModel attached to the ConsensusModel.
+     * This value is only populated when get_model is invoked
+     */
+    sub_models: IModel[],
+
+    // The interpreter that will determine the prediction's result
+    interpreter: IConsensusInterpreterConfig
+}
  
  
  
@@ -260,7 +276,7 @@ export interface IClassificationModelConfig {
   * Model Type Name
   * The names of the existing models.
   */
-  export type IModelTypeName = 'ArimaModel'|'RegressionModel'|'ClassificationModel';
+  export type IModelTypeName = 'ArimaModel'|'RegressionModel'|'ClassificationModel'|'ConsensusModel';
  
  
  
@@ -271,24 +287,29 @@ export interface IClassificationModelConfig {
  
  /**
   * Model
-  * The final state of an ArimaModel, RegressionModel or ClassificationModel once an 
+  * The final state of an ArimaModel, RegressionModel, ClassificationModel or ConsensusModel once an 
   * instance is initialized.
   * The type of a model can be determined based on its configuration. Existing models are:
-  * 1) ArimaModel: A model with a single ArimaModel.
-  * 2) RegressionModel: A model with a single RegressionModel.
-  * 3) ClassificationModel: A model with a minimum of 5 ArimaModels|RegressionModels as well as
-  * a single ClassificationModel Config.
+  * 1) ArimaModel: a model with a single ArimaModel.
+  * 2) RegressionModel: a model with a single RegressionModel.
+  * 3) ClassificationModel: a model with a minimum of 5 ArimaModels|RegressionModels embedded in the
+  *         Training Data as well as a single ClassificationModel Config.
+  * 4) ConsensusModel: a model that can contain any number (>= 2) of models except for itself as well as a 
+  *         single ConsensusModelConfig.
   */
  export interface IModel {
     // Identity of the Model. If it is an ArimaModel, it must follow the guidelines.
     id: string,
  
-    // ArimaModels that will be used to predict accordingly based on the type of model.
+    // ArimaModels' Configurations
     arima_models?: IArimaModelConfig[],
 
-    // RegressionModels that will be used to predict accordingly based on the type of model.
+    // RegressionModels' Configurations
     regression_models?: IRegressionModelConfig[],
  
-    // ClassificationModels that will be used to predict accordingly based on the type of model.
-    classification_models?: IClassificationModelConfig[]
+    // ClassificationModels' Configurations
+    classification_models?: IClassificationModelConfig[],
+
+    // ConsensusModel's Configuration
+    consensus_model?: IConsensusModelConfig
  } 

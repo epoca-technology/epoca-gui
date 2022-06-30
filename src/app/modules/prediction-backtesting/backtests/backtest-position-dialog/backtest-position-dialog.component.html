@@ -1,7 +1,9 @@
 <mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
     <div fxLayout="row" fxLayoutAlign="center center">
         <button mat-icon-button class="show-on-mobile" (click)="close()"><mat-icon>arrow_back</mat-icon></button>
-        <span class="truncate">{{position.t == 1 ? 'Long': 'Short'}}</span>
+        <span class="truncate">{{position.t == 1 ? 'Long': 'Short'}}</span>&nbsp;
+        <mat-icon *ngIf="position.o">done</mat-icon>
+        <mat-icon *ngIf="!position.o">warning</mat-icon>
         <span fxFlex></span>
         <button mat-icon-button matTooltip="Display Model" 
             (click)="_nav.displayModelDialog(model)">

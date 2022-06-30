@@ -18,7 +18,7 @@ export class RegressionTrainingEvaluationService implements IRegressionTrainingE
 	private readonly minPointsMedian: number = -40;
 
 	// The minimum number of positions allowed
-	private readonly minPositions: number = 100;
+	private readonly minPositions: number = 70;
 
 	// The minimum accuracy percentage allowed
 	private readonly minAccuracy: number = 40;
@@ -68,7 +68,7 @@ export class RegressionTrainingEvaluationService implements IRegressionTrainingE
 				In the case of accuracy, the bigger the value the better.",
 				state: "",
 				points: 0,
-				max_points: 50,
+				max_points: 54,
 				state_class: "error"
 			},
 			{
@@ -88,7 +88,7 @@ export class RegressionTrainingEvaluationService implements IRegressionTrainingE
 				actual outcomes the better.",
 				state: "",
 				points: 0,
-				max_points: 10,
+				max_points: 8,
 				state_class: "error"
 			},
 			{
@@ -99,7 +99,7 @@ export class RegressionTrainingEvaluationService implements IRegressionTrainingE
 				actual outcomes the better.",
 				state: "",
 				points: 0,
-				max_points: 10,
+				max_points: 8,
 				state_class: "error"
 			},
 		]
@@ -291,7 +291,7 @@ export class RegressionTrainingEvaluationService implements IRegressionTrainingE
 			// Finally, return the results
 			return {
 				points: points, 
-				state: `The evaluation concluded with a points median of ${cert.regression_evaluation.points_median}%.`,
+				state: `The evaluation concluded with a points median of ${cert.regression_evaluation.points_median}.`,
 				state_class: this.getStateClass(points, maxPoints)
 			}
 	   } else { return { points: 0, state: brokenState, state_class: "error"} }

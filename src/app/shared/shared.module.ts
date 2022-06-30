@@ -77,6 +77,9 @@ import { MobileTabsComponent } from './components/mobile-tabs/mobile-tabs.compon
 import { ModelDialogComponent } from './components/prediction/model-dialog/model-dialog.component';
 import { ModelListDialogComponent } from './components/prediction/model-list-dialog/model-list-dialog.component';
 import { ModelContentComponent } from './components/prediction/model-content/model-content.component';
+import { ArimaModelContentComponent } from './components/prediction/model-content/arima-model-content/arima-model-content.component';
+import { RegressionModelContentComponent } from './components/prediction/model-content/regression-model-content/regression-model-content.component';
+import { ClassificationModelContentComponent } from './components/prediction/model-content/classification-model-content/classification-model-content.component';
 import { PredictionDialogComponent } from './components/prediction/prediction-dialog/prediction-dialog.component';
 import { ClassificationElementComponent } from './components/prediction/classification-element/classification-element.component';
 import { KerasModelDialogComponent } from './components/prediction/keras-model-dialog/keras-model-dialog.component';
@@ -117,6 +120,9 @@ import { RegressionElementComponent } from './components/prediction/regression-e
         DialogMenuComponent,
         TooltipDialogComponent,
         RegressionElementComponent,
+        ArimaModelContentComponent,
+        RegressionModelContentComponent,
+        ClassificationModelContentComponent,
 	],
 	imports: [
 		CommonModule,

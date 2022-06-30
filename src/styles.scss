@@ -54,6 +54,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;overscroll-b
 	--info-color: #01579B;
 	--light-text-color: #757575;
 	--light-background-color: #F5F5F5;
+	--neutral-color: #78909C;
 
 	// Text
 	--normal-text-size: 15px;
@@ -127,6 +128,7 @@ div {min-width: 0;}
 .success-color { color: var(--success-color) };
 .error-color { color: var(--error-color) };
 .light-text { color: var(--light-text-color) };
+.neutral { color: var(--neutral-color) };
 
 
 
@@ -158,8 +160,9 @@ h2 { font-size: 22px!important; font-weight: normal!important;}
 h3 { font-size: 21px!important; }
 h4 { font-size: 19px!important; }
 h5 { font-size: 18px!important; }
+h6 { font-size: 17px!important; }
 
-h1,h2,h3,h4,h5 { overflow-wrap: break-word; }
+h1,h2,h3,h4,h5, h6 { overflow-wrap: break-word; }
 
 
 // Parragraphs
@@ -288,6 +291,10 @@ ul li ul, ol li ul { padding: 0 0 0 15px;}
 .square-badge-error { 
 	@extend .square-badge;
 	background-color: var(--error-color)!important; 
+}
+.square-badge-neutral { 
+	@extend .square-badge;
+	background-color: var(--neutral-color)!important;  
 }
 
 

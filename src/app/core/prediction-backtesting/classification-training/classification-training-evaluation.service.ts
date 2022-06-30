@@ -19,7 +19,7 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 	private readonly minPointsMedian: number = -40;
 
 	// The minimum number of positions allowed
-	private readonly minPositions: number = 100;
+	private readonly minPositions: number = 70;
 
 	// The minimum accuracy percentage allowed
 	private readonly minAccuracy: number = 40;
@@ -694,7 +694,7 @@ export class ClassificationTrainingEvaluationService implements IClassificationT
 			// Finally, return the results
 			return {
 				points: points, 
-				state: `The evaluation concluded with a points median of ${cert.classification_evaluation.points_median}%.`,
+				state: `The evaluation concluded with a points median of ${cert.classification_evaluation.points_median}.`,
 				state_class: this.getStateClass(points, maxPoints)
 			}
 	   } else { return { points: 0, state: brokenState, state_class: "error"} }

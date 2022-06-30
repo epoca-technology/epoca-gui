@@ -1,0 +1,18 @@
+<!-- Interpreter -->
+<div fxLayout="row" fxLayoutAlign="start start">
+    <p class="light-text truncate">Interpreter</p>
+    <span fxFlex></span>
+    <div class="align-right">
+        <p class="formula" 
+            matTooltip="PCT_CHNG(long, short): The percentage change required in the Regression Predictions to make a decision.">
+            PCT_CHNG({{model.interpreter.long}}%, {{model.interpreter.short}}%)
+        </p>
+    </div>
+</div>
+
+<!-- Details -->
+<div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+    <p class="light-text truncate">Regr.</p>
+    <span fxFlex></span>
+    <app-regression-element [config]="model.regression"></app-regression-element>
+</div>

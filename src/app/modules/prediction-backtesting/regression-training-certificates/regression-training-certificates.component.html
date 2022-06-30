@@ -764,6 +764,7 @@
                                                     Median: {{cert.regression_evaluation.points_median | number: '1.0-2'}}
                                                 </div>
                                                 <div class="square-badge" 
+                                                    *ngIf="cert.regression_evaluation.positions.length"
                                                     matTooltip="Final points collected during the Regression Evaluation">
                                                     Final: {{cert.regression_evaluation.positions[cert.regression_evaluation.positions.length-1].pts | number: '1.0-2'}}
                                                 </div>

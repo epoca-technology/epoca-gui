@@ -10,7 +10,7 @@
 
 
 
-    .square-badge{ 
+    .square-badge-neutral{ 
         margin-left:5px;   
         .mat-icon{ margin-top:-2px;}
     }
@@ -24,6 +24,36 @@
     }
 
 
+
+
+    .probabilities {
+        margin-top: 15px;
+        .probability {
+            color:white;
+            padding: 10px 0 10px 0;
+            text-align: center;
+            font-size:13px;
+            font-weight:600;
+        }
+        .up-probability {
+            @extend .probability;
+            background: var(--success-color)
+        }
+        .down-probability {
+            @extend .probability;
+            background: var(--error-color)
+        }
+    }
+
+
+    .features {
+        margin-top:15px;
+        max-width: 100%;
+        .feature {
+            margin:10px;
+            display:inline-block;
+        }
+    }
 }
 
 

@@ -29,35 +29,21 @@ export interface IMetadata {
     // Present in Regression Models
     priceChange?: IChangeMetadata,
 
-    // Present in Classification Models
-    probabilities?: any
+    
 }
-
-
 
 
 
 // Result Badges
 export type IMetadataResultBadge = 'square-badge-neutral'|'square-badge-success'|'square-badge-error';
 
-
-
 // Results
-export type IMetadataResultName = 'long'|'short'|'neutral';
-
-
-
-
-
-
-
-/* Prediction Percent Change */
-
+export type IChangeMetadataResult = 'long'|'short'|'neutral';
 
 // Prediction Price Change Metadata
 export interface IChangeMetadata { 
     value: number,
-    result: IMetadataResultName,
+    result: IChangeMetadataResult,
     badge: IMetadataResultBadge,
     chart: ILineChartOptions
 }
@@ -70,33 +56,10 @@ export interface IChangeMetadataChartSeries {
 }
 
 
+
+
 // Separated Candlesticks
 export interface ISeparatedCandlesticks {
     head: ICandlestick[],
     tail: ICandlestick[],
-}
-
-
-
-
-
-
-/* Prediction Probability */
-
-
-export interface IProbabilityMetadata { 
-    result: IMetadataResultName,
-    badge: IMetadataResultBadge,
-    upProbability: number,
-    downProbability: number,
-    features: IProbabilityMetadataFeature[]
-}
-
-
-
-export type IFeatureType = "regression"|"rsi"|"stoch"|"aroon"|"stc"|"mfi";
-export interface IProbabilityMetadataFeature {
-    value: number,  // Can be a prediction result (1, 0, -1) or a normalized TA value
-    type: IFeatureType,
-    model?: IModel
 }

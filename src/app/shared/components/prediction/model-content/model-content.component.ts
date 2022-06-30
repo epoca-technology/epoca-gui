@@ -5,7 +5,8 @@ import {
 	IModelTypeName, 
 	IArimaModelConfig, 
 	IRegressionModelConfig,
-	IClassificationModelConfig
+	IClassificationModelConfig,
+	IConsensusModelConfig
 } from '../../../../core';
 import { NavService } from '../../../../services';
 import { IModelContentComponent } from './interfaces';
@@ -26,6 +27,7 @@ export class ModelContentComponent implements OnInit, IModelContentComponent {
 	public arima_models?: IArimaModelConfig[];
 	public regression_models?: IRegressionModelConfig[];
 	public classification_models?: IClassificationModelConfig[];
+	public consensus_model?: IConsensusModelConfig;
 
     constructor(
 		private _prediction: PredictionService,
@@ -40,6 +42,7 @@ export class ModelContentComponent implements OnInit, IModelContentComponent {
 		this.arima_models = this.model.arima_models;
 		this.regression_models = this.model.regression_models;
 		this.classification_models = this.model.classification_models;
+		this.consensus_model = this.model.consensus_model;
     }
 
 }

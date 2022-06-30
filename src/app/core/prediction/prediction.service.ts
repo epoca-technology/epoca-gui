@@ -39,7 +39,13 @@ export class PredictionService implements IPredictionService {
 	 */
 	public getModelTypeName(model: IModel): IModelTypeName {
 		// Check if it is an ArimaModel
-		if (model.arima_models && model.arima_models.length == 1) {
+		if (
+			model.arima_models && 
+			model.arima_models.length == 1 && 
+			!model.regression_models &&
+			!model.classification_models &&
+			!model.consensus_model
+		) {
 			return 'ArimaModel';
 		}
 
@@ -47,14 +53,30 @@ export class PredictionService implements IPredictionService {
 		else if (
 			!model.arima_models && 
 			model.regression_models && 
-			model.regression_models.length == 1
+			model.regression_models.length == 1 &&
+			!model.classification_models &&
+			!model.consensus_model
 		) {
 			return 'RegressionModel';
 		}
 
 		// Check if it is a ClassificationModel
-		else if (model.classification_models && model.classification_models.length == 1) {
+		else if (
+			!model.arima_models && 
+			!model.regression_models && 
+			model.classification_models && 
+			model.classification_models.length == 1 &&
+			!model.consensus_model
+		) {
 			return 'ClassificationModel';
+		}
+
+		// Check if it is a ConsensusModel
+		else if (
+			(model.arima_models || model.regression_models || model.classification_models) &&
+			model.consensus_model
+		) {
+			return 'ConsensusModel';
 		}
 
 		// Otherwise, crash the program

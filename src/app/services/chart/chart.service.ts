@@ -360,7 +360,7 @@ export class ChartService implements IChartService {
 			dataLabels: config.dataLabels ? config.dataLabels: {enabled: false},
 			stroke: config.stroke ? config.stroke: {curve: "straight"},
 			grid: config.grid ? config.grid: {row: { opacity: 0.5 }},
-			xaxis: config.xaxis ? config.xaxis: {labels: { show: false } },
+			xaxis: config.xaxis ? config.xaxis: {labels: { show: false }, axisTicks: {show: false} },
 			yaxis: yaxis || {},
 			annotations: config.annotations ? config.annotations: {},
 			colors: colors ? colors: []
