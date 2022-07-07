@@ -24,7 +24,7 @@ export class RegressionTrainingEvaluationService implements IRegressionTrainingE
 	private readonly minAccuracy: number = 40;
 
 	// The maximum percentage difference allowed for predictions vs outcomes
-	private readonly maxPredictionDifference: number = 30;
+	private readonly maxPredictionDifference: number = 35;
 
 	// Evaluation Template
 	private evaluationTemplate: IGeneralRegressionEvaluation = {
@@ -38,7 +38,7 @@ export class RegressionTrainingEvaluationService implements IRegressionTrainingE
 				description: "Evaluates the median of the points collected in order to determine which models managed to sustain overtime.",
 				state: "",
 				points: 0,
-				max_points: 18,
+				max_points: 22,
 				state_class: "error"
 			},
 			{
@@ -68,7 +68,7 @@ export class RegressionTrainingEvaluationService implements IRegressionTrainingE
 				In the case of accuracy, the bigger the value the better.",
 				state: "",
 				points: 0,
-				max_points: 54,
+				max_points: 50,
 				state_class: "error"
 			},
 			{

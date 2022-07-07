@@ -1,6 +1,6 @@
-# PLUTUS GUI
+# EPOCA GUI
 
-Plutus GUI is an application designed to interact with Plutus' Core API through HTTP Requests.
+Epoca GUI is an application designed to interact with the Core API through HTTP Requests.
 
 
 ## Requirements
