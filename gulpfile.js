@@ -53,16 +53,16 @@ task('preBuildProd', function(cb) {
 *
 * We only saw this error in Safari/IOS, other OS/Browsers seem to be functioning normally.
 * */
-/*function removeFirebaseStorageFromSWOnFetch() {
-    return src(['./dist/ngsw-worker.js'])
+function removeFirebaseStorageFromSWOnFetch(env) {
+    return src(['./dist/gui-' + env + '/ngsw-worker.js'])
         .pipe(replace(
             'onFetch(event) {',
             `onFetch(event) {
             if (event.request.url.indexOf('firebasestorage.googleapis.com') !== -1) { return; }`
             )
         )
-        .pipe(dest('./dist/'));
-}*/
+        .pipe(dest('./dist/gui-' + env));
+}
 
 
 
@@ -73,7 +73,11 @@ task('preBuildProd', function(cb) {
 
 
 /* POST-BUILD TASK */
-/*task('postBuild', function(cb) {
-    removeFirebaseStorageFromSWOnFetch();
+task('postBuildDev', function(cb) {
+    removeFirebaseStorageFromSWOnFetch('development');
     cb();
-});*/
+});
+task('postBuildProd', function(cb) {
+    removeFirebaseStorageFromSWOnFetch('production');
+    cb();
+});

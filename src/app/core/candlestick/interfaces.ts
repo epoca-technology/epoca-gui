@@ -1,3 +1,4 @@
+import { IBackgroundTaskInfo } from "../background-task";
 
 
 
@@ -5,10 +6,16 @@ export interface ICandlestickService {
     // Properties
     predictionCandlestickInterval: number,
 
-    // Retriever
-    getForPeriod(start: number, end: number, intervalMinutes?: number): Promise<ICandlestick[]>
+    // Candlesticks General Endpoints
+    getForPeriod(start: number, end: number, intervalMinutes?: number): Promise<ICandlestick[]>,
 
+    // Prediction Candlesticks File Endpoints
+    getPredictionFileTask(): Promise<IBackgroundTaskInfo>,
+    generatePredictionCandlesticksFile(otp: string): Promise<IBackgroundTaskInfo>,
 
+    // Candlesticks Bundle File Endpoints
+    getBundleFileTask(): Promise<IBackgroundTaskInfo>,
+    generateCandlesticksBundleFile(otp: string): Promise<IBackgroundTaskInfo>
 }
 
 
@@ -24,6 +31,4 @@ export interface ICandlestick {
     l: number,                  // Low Price
     c: number,                  // Close Price
     v: number,                  // Volume (USDT)
-    tbv: number,                // Taker Buy Volume (USDT)
-    nt: number,                 // Number of Trades
 }

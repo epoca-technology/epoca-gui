@@ -3,8 +3,8 @@ import * as moment from 'moment';
 import {MatDialog} from '@angular/material/dialog';
 import { CandlestickService, ICandlestick, UtilsService } from '../../../core';
 import { AppService, ChartService, ICandlestickChartOptions, NavService, SnackbarService } from '../../../services';
+import { CandlestickFilesDialogComponent } from './candlestick-files-dialog/candlestick-files-dialog.component';
 import { CandlesticksConfigDialogComponent } from './candlesticks-config-dialog/candlesticks-config-dialog.component';
-import { CandlestickSpreadsheetsDialogComponent } from './candlestick-spreadsheets-dialog/candlestick-spreadsheets-dialog.component';
 import { CandlestickDialogComponent } from '../../../shared/components/candlestick';
 import { ICandlesticksComponent, ICandlesticksConfig} from './interfaces';
 
@@ -169,8 +169,8 @@ export class CandlesticksComponent implements OnInit, ICandlesticksComponent {
      * Displays the candlestick spreadsheets dialog.
      * @returns void
      */
-    public displaySpreadsheets(): void {
-        this.dialog.open(CandlestickSpreadsheetsDialogComponent, {
+    public displayCandlestickFiles(): void {
+        this.dialog.open(CandlestickFilesDialogComponent, {
 			disableClose: true,
 			hasBackdrop: this._app.layout.value != 'mobile', // Mobile optimization
 			panelClass: 'small-dialog'

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { ICandlestick } from './interfaces';
 import { ApiService } from '../api';
-import { ICandlestickService } from './interfaces';
+import { IBackgroundTaskInfo } from '../background-task';
+import { ICandlestick, ICandlestickService } from './interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +19,9 @@ export class CandlestickService implements ICandlestickService {
 
 
 
+
+
+	/* Candlesticks General Endpoints */
 
 
 
@@ -47,5 +50,62 @@ export class CandlestickService implements ICandlestickService {
 
 
 
-    
+
+
+	/* Prediction Candlesticks File Endpoints */
+
+
+
+	/**
+	 * Retrieves the prediction candlesticks' file's task.
+	 * @returns Promise<IBackgroundTaskInfo>
+	 */
+	 public getPredictionFileTask(): Promise<IBackgroundTaskInfo> {
+		return this._api.request('get','candlestick/getPredictionFileTask', {}, true);
+	}
+
+
+
+
+    /**
+     * Creates the background task that will manage the building and uploading
+	 * of the prediction candlesticks file.
+     * @returns Promise<IBackgroundTaskInfo>
+     */
+     public generatePredictionCandlesticksFile(otp: string): Promise<IBackgroundTaskInfo> { 
+        return this._api.request('post','candlestick/generatePredictionCandlesticksFile', {}, true, otp);
+    }
+
+
+
+
+
+
+
+
+	/* Candlesticks Bundle File Endpoints */
+
+
+
+
+	/**
+	 * Retrieves the candlesticks bundle file's task.
+	 * @returns Promise<IBackgroundTaskInfo>
+	 */
+	 public getBundleFileTask(): Promise<IBackgroundTaskInfo> {
+		return this._api.request('get','candlestick/getBundleFileTask', {}, true);
+	}
+
+
+
+
+    /**
+     * Creates the background task that will manage the building and uploading
+	 * of the candlesticks bundle file.
+     * @returns Promise<IBackgroundTaskInfo>
+     */
+     public generateCandlesticksBundleFile(otp: string): Promise<IBackgroundTaskInfo> { 
+        return this._api.request('post','candlestick/generateCandlesticksBundleFile', {}, true, otp);
+    }
+
 }

@@ -22,7 +22,8 @@ export class FileService implements IFileService{
     // Paths
     private readonly path: IPath = {
         dbBackups: 'db_backups',
-        candlestickSpreadsheets: 'candlestick_spreadsheets'
+        predictionCandlesticks: 'prediction_candlesticks',
+        candlestickBundles: 'candlesticks_bundle'
     }
 
     constructor() { }
@@ -72,7 +73,7 @@ export class FileService implements IFileService{
 
 
 
-    /* Candlestick Spreadsheets */
+    /* Prediction Candlestick Files */
 
 
 
@@ -80,11 +81,11 @@ export class FileService implements IFileService{
 
 
     /**
-     * Retrieves a list of all the spreadsheet files currently stored.
+     * Retrieves a list of all the prediction candlestick files currently stored.
      * @returns Promise<IDownloadedFile[]>
      */
-    public async listCandlestickSpreadsheets(): Promise<IDownloadedFile[]> {
-        return this.getDownloadedFiles(this.path.candlestickSpreadsheets);
+    public async listPredictionCandlestickFiles(): Promise<IDownloadedFile[]> {
+        return this.getDownloadedFiles(this.path.predictionCandlesticks);
     }
 
 
@@ -94,12 +95,12 @@ export class FileService implements IFileService{
 
 
     /**
-     * Retrieves the download URL for a specific Candlestick Spreadsheet.
+     * Retrieves the download URL for a specific Prediction Candlesticks file.
      * @param backupName 
      * @returns Promise<string>
      */
-    public getCandlestickSpreadsheetDownloadURL(fileName: string): Promise<string> {
-        return this.getDownloadURL(this.path.candlestickSpreadsheets, fileName);
+    public getPredictionCandlestickDownloadURL(fileName: string): Promise<string> {
+        return this.getDownloadURL(this.path.predictionCandlesticks, fileName);
     }
 
 
@@ -108,6 +109,40 @@ export class FileService implements IFileService{
 
 
 
+
+
+
+
+
+    /* Candlestick Bundle Files */
+
+
+
+
+
+
+    /**
+     * Retrieves a list of all the candlestick bundle files currently stored.
+     * @returns Promise<IDownloadedFile[]>
+     */
+    public async listCandlestickBundleFiles(): Promise<IDownloadedFile[]> {
+        return this.getDownloadedFiles(this.path.candlestickBundles);
+    }
+
+
+
+
+    
+
+
+    /**
+     * Retrieves the download URL for a specific Candlestick Bundle File
+     * @param backupName 
+     * @returns Promise<string>
+     */
+    public getCandlestickBundleDownloadURL(fileName: string): Promise<string> {
+        return this.getDownloadURL(this.path.candlestickBundles, fileName);
+    }
 
 
 

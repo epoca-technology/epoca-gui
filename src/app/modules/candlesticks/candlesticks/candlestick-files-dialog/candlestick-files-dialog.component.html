@@ -1,0 +1,105 @@
+<mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <button mat-icon-button class="show-on-mobile" [disabled]="!loaded || submitting" (click)="close()"><mat-icon>arrow_back</mat-icon></button>
+        <span class="truncate">Candlestick Files</span>
+        <span fxFlex></span>
+        <app-refresh-button [disabled]="!loaded || submitting" (refresh)="downloadFiles()"></app-refresh-button>
+        <button mat-icon-button class="show-on-desktop" [disabled]="!loaded || submitting" (click)="close()"><mat-icon>close</mat-icon></button>
+    </div>
+</mat-toolbar>
+<div mat-dialog-content>
+    <!-- Loader -->
+    <div *ngIf="!loaded">
+        <div class="loader show-on-desktop"><div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div></div>
+        <div class="section-loader show-on-mobile"><div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div></div>
+    </div>
+
+    <!-- Container -->
+    <div *ngIf="loaded && candlestickBundleTask && predictionCandlestickTask" class="fadeIn padding">
+        <!-- Bundle File Background Task-->
+        <app-background-task [task]="candlestickBundleTask" (refresh)="populateTask(false)"></app-background-task>
+        <div *ngIf="candlestickBundleTask.state != 'idle'" class="divider"></div>
+
+        <!-- Prediction File Background Task-->
+        <app-background-task [task]="predictionCandlestickTask" (refresh)="populateTask(true)"></app-background-task>
+        <div *ngIf="predictionCandlestickTask.state != 'idle'" class="divider"></div>
+        
+        <!-- Bundle Files -->
+        <div>
+            <!-- Heading -->
+            <div fxLayout="row" fxLayoutAlign="start center">
+                <h4>Bundle</h4>
+                <span fxFlex></span>
+                <button mat-icon-button [disabled]="submitting || candlestickBundleTask.state == 'running' || predictionCandlestickTask.state == 'running'" (click)="generateFile(false)"><mat-icon>add_circle</mat-icon></button>
+            </div>
+
+            <!-- Files -->
+            <p *ngIf="!candlestickBundleFiles.length" class="no-data-found">No data was found</p>
+            <div *ngIf="candlestickBundleFiles.length" class="files-container">
+                <div *ngFor="let file of candlestickBundleFiles; last as isLast">
+                    <div class="row" fxLayout="row" fxLayoutAlign="start center">
+                        <div>
+                            <p>{{file.name}}</p>
+                            <p>{{file.creation | date: 'medium'}}</p>
+                        </div>
+                        <span fxFlex></span>
+                        <button mat-raised-button color="primary" [matMenuTriggerFor]="menu" [disabled]="submitting">
+                            {{file.size | filesize}}
+                        </button>
+                        <mat-menu #menu="matMenu">
+                            <button mat-menu-item (click)="copyDownloadLink(file.name, false)">
+                                <mat-icon>content_copy</mat-icon>
+                                <span>Copy Download URL</span>
+                            </button>
+                            <button mat-menu-item (click)="downloadFile(file.name, false)">
+                                <mat-icon>file_download</mat-icon>
+                                <span>Download File</span>
+                            </button>
+                        </mat-menu>
+                    </div>
+                    <div class="divider" *ngIf="!isLast"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Prediction Files -->
+        <div>
+            <!-- Heading -->
+            <div fxLayout="row" fxLayoutAlign="start center">
+                <h4>Prediction</h4>
+                <span fxFlex></span>
+                <button mat-icon-button [disabled]="submitting || candlestickBundleTask.state == 'running' || predictionCandlestickTask.state == 'running'" (click)="generateFile(true)"><mat-icon>add_circle</mat-icon></button>
+            </div>
+
+            <!-- Files -->
+            <p *ngIf="!predictionCandlestickFiles.length" class="no-data-found">No data was found</p>
+            <div *ngIf="predictionCandlestickFiles.length" class="files-container">
+                <div *ngFor="let file of predictionCandlestickFiles; last as isLast">
+                    <div class="row" fxLayout="row" fxLayoutAlign="start center">
+                        <div>
+                            <p>{{file.name}}</p>
+                            <p>{{file.creation | date: 'medium'}}</p>
+                        </div>
+                        <span fxFlex></span>
+                        <button mat-raised-button color="primary" [matMenuTriggerFor]="menu" [disabled]="submitting">
+                            {{file.size | filesize}}
+                        </button>
+                        <mat-menu #menu="matMenu">
+                            <button mat-menu-item (click)="copyDownloadLink(file.name, true)">
+                                <mat-icon>content_copy</mat-icon>
+                                <span>Copy Download URL</span>
+                            </button>
+                            <button mat-menu-item (click)="downloadFile(file.name, true)">
+                                <mat-icon>file_download</mat-icon>
+                                <span>Download File</span>
+                            </button>
+                        </mat-menu>
+                    </div>
+                    <div class="divider" *ngIf="!isLast"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

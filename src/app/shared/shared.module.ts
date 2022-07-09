@@ -86,6 +86,7 @@ import { KerasModelDialogComponent } from './components/prediction/keras-model-d
 import { RefreshButtonComponent } from './components/refresh-button/refresh-button.component';
 import { TooltipDialogComponent } from './components/tooltip-dialog/tooltip-dialog.component';
 import { RegressionElementComponent } from './components/prediction/regression-element/regression-element.component';
+import { BackgroundTaskComponent } from './components/background-task/background-task.component';
 
 
 
@@ -123,6 +124,7 @@ import { RegressionElementComponent } from './components/prediction/regression-e
         ArimaModelContentComponent,
         RegressionModelContentComponent,
         ClassificationModelContentComponent,
+        BackgroundTaskComponent,
 	],
 	imports: [
 		CommonModule,
@@ -260,6 +262,7 @@ import { RegressionElementComponent } from './components/prediction/regression-e
 		ModelContentComponent,
 		ClassificationElementComponent,
 		RegressionElementComponent,
+		BackgroundTaskComponent,
 	]
 })
 export class SharedModule { }

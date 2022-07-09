@@ -1,0 +1,21 @@
+<div class="task" *ngIf="t && t.state != 'idle'">
+    <!-- Header -->
+    <div layout="row" fxLayoutAlign="start start">
+        <div>
+            <h5>{{t.name}}</h5>
+            <p class="light-text" *ngIf="t.running_ts">{{t.running_ts | date:'medium'}}</p>
+            <p class="light-text" *ngIf="!t.running_ts">N / A</p>
+        </div>
+        <span fxFlex></span>
+
+        <!-- State -->
+        <mat-icon class="success-color" *ngIf="t.state == 'completed'">add_task</mat-icon>
+        <mat-icon class="error-color" *ngIf="t.state == 'errored'">error</mat-icon>
+        <mat-spinner *ngIf="t.state == 'running'" diameter="30"></mat-spinner>
+    </div>
+
+    <!-- State Description -->
+    <p *ngIf="t.state == 'running'">{{t.stateDescription}}</p>
+    <p *ngIf="t.state == 'completed'">{{t.stateDescription}} ({{t.completed_ts | date:'medium'}})</p>
+    <p *ngIf="t.state == 'errored'" class="error-color">{{t.stateDescription}} ({{t.errored_ts | date:'medium'}})</p>
+</div>

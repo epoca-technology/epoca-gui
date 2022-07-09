@@ -7,9 +7,13 @@ export interface IFileService {
     listDatabaseBackups(): Promise<IDownloadedFile[]>,
     getDatabaseBackupDownloadURL(backupName: string): Promise<string>,
 
-    // Candlestick Spreadsheets
-    listCandlestickSpreadsheets(): Promise<IDownloadedFile[]>,
-    getCandlestickSpreadsheetDownloadURL(fileName: string): Promise<string>,
+    // Prediction Candlestick Files
+    listPredictionCandlestickFiles(): Promise<IDownloadedFile[]>,
+    getPredictionCandlestickDownloadURL(fileName: string): Promise<string>,
+
+    // Candlestick Bundle Files
+    listCandlestickBundleFiles(): Promise<IDownloadedFile[]>,
+    getCandlestickBundleDownloadURL(fileName: string): Promise<string>,
 
     // File Input Reader
     readJSONFiles(event: any): Promise<any[]>
@@ -20,7 +24,8 @@ export interface IFileService {
 // The path in which each element lives in Firebase Storage
 export interface IPath {
     dbBackups: string,
-    candlestickSpreadsheets: string
+    predictionCandlesticks: string,
+    candlestickBundles: string,
 }
 
 

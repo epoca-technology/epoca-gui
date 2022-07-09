@@ -8,10 +8,10 @@
       "build": "ng build",
       "watch": "ng build --watch --configuration development",
       "test": "ng test",
-      "serve-development": "gulp preBuildDev && ng serve --configuration development",
-      "serve-production": "gulp preBuildProd && ng serve --configuration production",
-      "build-development": "gulp preBuildDev && ng build --configuration development",
-      "build-production": "gulp preBuildProd && node --max_old_space_size=4096 ./node_modules/@angular/cli/bin/ng build --configuration production"
+      "serve-development": "node ./node_modules/gulp/bin/gulp.js preBuildDev && node ./node_modules/@angular/cli/bin/ng serve --configuration development",
+      "serve-production": "node ./node_modules/gulp/bin/gulp.js preBuildProd && node ./node_modules/@angular/cli/bin/ng serve --configuration production",
+      "build-development": "node ./node_modules/gulp/bin/gulp.js preBuildDev && node ./node_modules/@angular/cli/bin/ng build --configuration development && node ./node_modules/gulp/bin/gulp.js postBuildDev",
+      "build-production": "node ./node_modules/gulp/bin/gulp.js preBuildProd && node --max_old_space_size=4096 ./node_modules/@angular/cli/bin/ng build --configuration production && node ./node_modules/gulp/bin/gulp.js postBuildProd"
     },
     "private": true,
     "dependencies": {

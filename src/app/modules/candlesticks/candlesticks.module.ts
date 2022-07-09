@@ -10,14 +10,14 @@ import {SharedModule} from "../../shared";
 // Components
 import { CandlesticksComponent } from './candlesticks/candlesticks.component';
 import { CandlesticksConfigDialogComponent } from './candlesticks/candlesticks-config-dialog/candlesticks-config-dialog.component';
-import { CandlestickSpreadsheetsDialogComponent } from './candlesticks/candlestick-spreadsheets-dialog/candlestick-spreadsheets-dialog.component';
+import { CandlestickFilesDialogComponent } from './candlesticks/candlestick-files-dialog/candlestick-files-dialog.component';
 
 
 @NgModule({
   declarations: [
       CandlesticksComponent,
       CandlesticksConfigDialogComponent,
-      CandlestickSpreadsheetsDialogComponent
+      CandlestickFilesDialogComponent
   ],
   imports: [
       CommonModule,
