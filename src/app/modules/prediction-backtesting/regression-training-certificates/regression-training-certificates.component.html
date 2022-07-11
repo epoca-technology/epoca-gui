@@ -392,6 +392,11 @@
                                 <mat-tab><ng-template mat-tab-label><mat-icon svgIcon="wand_magic_sparkles" class="wand-icon"></mat-icon>&nbsp;Positions</ng-template></mat-tab>
                                 <mat-tab><ng-template mat-tab-label><mat-icon>format_list_numbered</mat-icon>&nbsp;Epochs</ng-template></mat-tab>
                             </mat-tab-group>
+
+                            <!-- Early Stopping -->
+                            <p *ngIf="cert.regression_evaluation.early_stopping" class="early-stopping">
+                                <mat-icon>bug_report</mat-icon> {{cert.regression_evaluation.early_stopping}}
+                            </p>
     
                             <!-- Summary -->
                             <div *ngIf="activeTabIndex == 0" class="summary-content fadeIn">

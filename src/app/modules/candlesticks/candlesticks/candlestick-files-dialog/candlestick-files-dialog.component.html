@@ -30,7 +30,10 @@
             <div fxLayout="row" fxLayoutAlign="start center">
                 <h4>Bundle</h4>
                 <span fxFlex></span>
-                <button mat-icon-button [disabled]="submitting || candlestickBundleTask.state == 'running' || predictionCandlestickTask.state == 'running'" (click)="generateFile(false)"><mat-icon>add_circle</mat-icon></button>
+                <button mat-icon-button [disabled]="submitting || candlestickBundleTask.state == 'running' || predictionCandlestickTask.state == 'running'" 
+                    (click)="generateFile(false)">
+                    <mat-icon>add</mat-icon>
+                </button>
             </div>
 
             <!-- Files -->
@@ -67,10 +70,13 @@
         <!-- Prediction Files -->
         <div>
             <!-- Heading -->
-            <div fxLayout="row" fxLayoutAlign="start center">
+            <div fxLayout="row" fxLayoutAlign="center center">
                 <h4>Prediction</h4>
                 <span fxFlex></span>
-                <button mat-icon-button [disabled]="submitting || candlestickBundleTask.state == 'running' || predictionCandlestickTask.state == 'running'" (click)="generateFile(true)"><mat-icon>add_circle</mat-icon></button>
+                <button mat-icon-button [disabled]="submitting || candlestickBundleTask.state == 'running' || predictionCandlestickTask.state == 'running'" 
+                    (click)="generateFile(true)">
+                    <mat-icon>add</mat-icon>
+                </button>
             </div>
 
             <!-- Files -->
