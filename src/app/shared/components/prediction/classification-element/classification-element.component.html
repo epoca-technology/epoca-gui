@@ -5,7 +5,7 @@
         [{{config.features_num}}] >
     </p>
     <p class="formula clickable" role="button" 
-        matTooltip="KerasClassificationModel" 
+        [matTooltip]="config.id" 
         (click)="_nav.displayKerasModelDialog(config.id, config.description, config.summary)">
         &nbsp;{{config.id | stringOverview: _app.layout.value == 'desktop' ? 16: 12: true}}
     </p>

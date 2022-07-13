@@ -1,6 +1,7 @@
 // Expose the Core Interfaces
 export * from './core-interfaces/arima';
 export * from './core-interfaces/backtest';
+export * from './core-interfaces/classification_training_data';
 export * from './core-interfaces/classification';
 export * from './core-interfaces/interpreter';
 export * from './core-interfaces/keras-models';

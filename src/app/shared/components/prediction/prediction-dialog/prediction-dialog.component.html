@@ -84,16 +84,25 @@
                     <span fxFlex></span>
 
                     <!-- Prediction Probabilities Badge -->
-                    <div [ngClass]="md.probabilities.badge" 
-                        matTooltip="Probabilities of the price increasing or decreasing.">
-                        <mat-icon *ngIf="md.probabilities.result == 'long'">trending_up</mat-icon>
-                        <mat-icon *ngIf="md.probabilities.result == 'short'">trending_down</mat-icon>
-                        <mat-icon *ngIf="md.probabilities.result == 'neutral'">trending_flat</mat-icon>
+                    <div *ngIf="md.probabilities.result == 'long'" 
+                        [ngClass]="md.probabilities.badge" 
+                        matTooltip="Probability of a price increase.">
+                        <mat-icon>trending_up</mat-icon> {{md.probabilities.upProbability}}%
+                    </div>
+                    <div *ngIf="md.probabilities.result == 'short'" 
+                        [ngClass]="md.probabilities.badge" 
+                        matTooltip="Probability of a price decrease.">
+                        <mat-icon>trending_down</mat-icon> {{md.probabilities.downProbability}}%
+                    </div>
+                    <div *ngIf="md.probabilities.result == 'neutral'" 
+                        [ngClass]="md.probabilities.badge" 
+                        matTooltip="Probabilities of a price increase or decrease.">
+                        <mat-icon>trending_flat</mat-icon> 50%
                     </div>
                 </div>
 
                 <!-- Probabilities Chart -->
-                <div class="probabilities mat-elevation-z2">
+                <!--<div class="probabilities mat-elevation-z2">
                     <div fxLayout="row" fxLayoutAlign="center center">
                         <div [fxFlex]="md.probabilities.upProbability" class="up-probability" matTooltip="Increase Probability">
                             {{md.probabilities.upProbability}}%
@@ -102,7 +111,7 @@
                             {{md.probabilities.downProbability}}%
                         </div>
                     </div>
-                </div>
+                </div>-->
 
                 <!-- Features -->
                 <div class="features">

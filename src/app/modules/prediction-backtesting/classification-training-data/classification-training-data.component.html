@@ -64,7 +64,10 @@
                     <!-- General Information -->
                     <div class="desktop-card">
                         <div fxLayout="row" fxLayoutAlign="start center">
-                            <h3 class="truncate">General Information</h3>
+                            <div>
+                                <h3 class="truncate" style="margin:0">General Information</h3>
+                                <p matTooltip="The time in which the training data was created." class="light-text">{{_td.creation | date:'medium'}}</p>
+                            </div>
                             <span fxFlex></span>
                             <div class="square-badge" 
                                 matTooltip="Steps: The number of prediction candlesticks it will skip for every position when building
@@ -81,23 +84,16 @@
                         <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
                             <p class="light-text truncate">ID</p>
                             <span fxFlex></span>
-                            <p class="clickable" (click)="_clipboard.copy(_td.id)">{{_td.id | stringOverview: 6}}</p>
+                            <p class="clickable" [matTooltip]="_td.id" (click)="_clipboard.copy(_td.id)">{{_td.id | stringOverview: 10}}</p>
                         </div>
 
                         <!-- Regression Selection ID -->
-                        <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+                        <div class="margin-top" fxLayout="row" fxLayoutAlign="start start">
                             <p class="light-text truncate">Regr. Selection</p>
                             <span fxFlex></span>
-                            <p class="clickable" (click)="_clipboard.copy(_td.regression_selection_id)">
-                                {{_td.regression_selection_id | stringOverview: 6}}
+                            <p class="clickable" [matTooltip]="_td.regression_selection_id" (click)="_clipboard.copy(_td.regression_selection_id)">
+                                {{_td.regression_selection_id | stringOverview: 10}}
                             </p>
-                        </div>
-
-                        <!-- Creation -->
-                        <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
-                            <p class="light-text truncate">Creation</p>
-                            <span fxFlex></span>
-                            <p matTooltip="The time in which the training data process was completed.">{{_td.creation | date:'medium'}}</p>
                         </div>
 
                         <!-- Start -->

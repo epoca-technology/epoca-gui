@@ -12,6 +12,7 @@ import {ConfirmationDialogComponent, IConfirmationDialogData} from "../../shared
 import {DataDialogComponent, IDataDialogData} from "../../shared/components/data-dialog";
 import {DialogMenuComponent, IDialogMenuData, IDialogMenuItem} from "../../shared/components/dialog-menu";
 import { ITooltipData, TooltipDialogComponent } from '../../shared/components/tooltip-dialog';
+import { ModelSelectionDialogComponent } from '../../shared/components/prediction/model-selection-dialog';
 import {
 	IKerasModelDialogData, 
 	KerasModelDialogComponent, 
@@ -297,6 +298,26 @@ export class NavService implements INavService {
 			}
 		});
 	}
+
+
+
+
+
+
+	
+	
+	/*
+	* Opens the dialog that contains the selected models
+	* @returns MatDialogRef<any>
+	* */
+	public displayModelSelectionDialog(): MatDialogRef<any> {
+		return this.dialog.open(ModelSelectionDialogComponent, {
+			hasBackdrop: this._app.layout.value != 'mobile', // Mobile optimization
+			panelClass: 'medium-dialog',
+			data: {}
+		});
+	}
+
 
 	
 	

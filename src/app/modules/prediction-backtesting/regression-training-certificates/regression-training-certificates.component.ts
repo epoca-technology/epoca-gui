@@ -20,6 +20,7 @@ import {
 	ILayout, 
 	ILineChartOptions, 
 	IPieChartOptions, 
+	ModelSelectionService, 
 	NavService, 
 	SnackbarService,
 } from '../../../services';
@@ -103,6 +104,7 @@ export class RegressionTrainingCertificatesComponent implements OnInit, OnDestro
 		private _chart: ChartService,
 		private _utils: UtilsService,
 		public _training: RegressionTrainingService,
+		public _selection: ModelSelectionService,
 		private dialog: MatDialog,
 	) { }
 
@@ -114,6 +116,7 @@ export class RegressionTrainingCertificatesComponent implements OnInit, OnDestro
 
 	ngOnDestroy(): void {
 		if (this.layoutSub) this.layoutSub.unsubscribe();
+		this._selection.reset();
 	}
 
 

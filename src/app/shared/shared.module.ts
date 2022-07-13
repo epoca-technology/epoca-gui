@@ -87,6 +87,7 @@ import { RefreshButtonComponent } from './components/refresh-button/refresh-butt
 import { TooltipDialogComponent } from './components/tooltip-dialog/tooltip-dialog.component';
 import { RegressionElementComponent } from './components/prediction/regression-element/regression-element.component';
 import { BackgroundTaskComponent } from './components/background-task/background-task.component';
+import { ModelSelectionDialogComponent } from './components/prediction/model-selection-dialog/model-selection-dialog.component';
 
 
 
@@ -125,6 +126,7 @@ import { BackgroundTaskComponent } from './components/background-task/background
         RegressionModelContentComponent,
         ClassificationModelContentComponent,
         BackgroundTaskComponent,
+        ModelSelectionDialogComponent,
 	],
 	imports: [
 		CommonModule,

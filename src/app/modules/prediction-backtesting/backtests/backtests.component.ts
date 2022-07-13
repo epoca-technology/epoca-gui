@@ -14,6 +14,7 @@ import {
 	IChartRange, 
 	ILayout, 
 	ILineChartOptions, 
+	ModelSelectionService, 
 	NavService, 
 	SnackbarService,
 } from '../../../services';
@@ -88,6 +89,7 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 		private _utils: UtilsService,
 		public _backtest: BacktestService,
 		private _prediction: PredictionService,
+		public _selection: ModelSelectionService,
 		private dialog: MatDialog,
 	) { }
 
@@ -102,6 +104,7 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 	ngOnDestroy(): void {
 		if (this.layoutSub) this.layoutSub.unsubscribe();
 		this._backtest.resetBacktestResults();
+		this._selection.reset();
 	}
 
 

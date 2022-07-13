@@ -40,6 +40,7 @@ export interface INavService {
 	displayModelListDialog(models: IModel[]): MatDialogRef<any>,
 	displayKerasModelDialog(id: string, description: string, kerasModel: IKerasModelSummary): MatDialogRef<any>,
 	displayPredictionDialog(model: IModel, prediction: IPrediction): MatDialogRef<any>,
+	displayModelSelectionDialog(): MatDialogRef<any>,
 	
 	// Bottom Sheets
 	displayBottomSheetMenu(data: IBottomSheetMenuItem[]): MatBottomSheetRef<any>,

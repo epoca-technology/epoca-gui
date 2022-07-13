@@ -54,6 +54,17 @@
                 <span class="truncate show-on-desktop">Backtests</span>
                 <span fxFlex></span>
                 <button mat-icon-button 
+                        matTooltip="Selected Models" 
+                        *ngIf="initialized && _backtest.modelIDs.length > 1" 
+                        [disabled]="!_selection.selectedList.length"
+                        (click)="_nav.displayModelSelectionDialog()">
+                        <mat-icon 
+                            [matBadge]="_selection.selectedList.length > 9 ? '9+': _selection.selectedList.length" 
+                            matBadgeSize="small"
+                            matBadgePosition="after"
+                            matBadgeOverlap="false">checklist</mat-icon>
+                </button>
+                <button mat-icon-button 
                         matTooltip="Clear Backtest Results"
                         (click)="resetResults()"
                         class="show-on-desktop"
@@ -603,6 +614,29 @@
                                 </div>
                             </div>
 
+
+
+                            <!-- Model Selection Fab -->
+                            <div *ngIf="!_selection.selected[modelID] && _backtest.modelIDs.length > 1" class="model-selection-fab">
+                                <button mat-fab color="primary" class="show-on-desktop" matTooltip="Select Model"
+                                    (click)="_selection.select(modelID, _backtest.performances[modelID].points)">
+                                    <mat-icon>add_task</mat-icon>
+                                </button>
+                                <button mat-mini-fab color="primary" class="show-on-mobile" matTooltip="Select Model"
+                                    (click)="_selection.select(modelID, _backtest.performances[modelID].points)">
+                                    <mat-icon>add_task</mat-icon>
+                                </button>
+                            </div>
+                            <div *ngIf="_selection.selected[modelID] && _backtest.modelIDs.length > 1" class="model-selection-fab">
+                                <button mat-fab color="warn" class="show-on-desktop" matTooltip="Unselect Model" 
+                                    (click)="_selection.unselect(modelID)">
+                                    <mat-icon>remove</mat-icon>
+                                </button>
+                                <button mat-mini-fab color="warn" class="show-on-mobile" matTooltip="Unselect Model"
+                                     (click)="_selection.unselect(modelID)">
+                                    <mat-icon>remove</mat-icon>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>

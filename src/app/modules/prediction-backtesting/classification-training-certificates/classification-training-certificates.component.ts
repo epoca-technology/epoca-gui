@@ -20,6 +20,7 @@ import {
 	ILayout, 
 	ILineChartOptions, 
 	IPieChartOptions, 
+	ModelSelectionService, 
 	NavService, 
 	SnackbarService,
 } from '../../../services';
@@ -133,6 +134,7 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 		private _chart: ChartService,
 		private _utils: UtilsService,
 		public _training: ClassificationTrainingService,
+		public _selection: ModelSelectionService,
 		private dialog: MatDialog,
 	) { }
 
@@ -144,6 +146,7 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 
 	ngOnDestroy(): void {
 		if (this.layoutSub) this.layoutSub.unsubscribe();
+		this._selection.reset();
 	}
 
 
