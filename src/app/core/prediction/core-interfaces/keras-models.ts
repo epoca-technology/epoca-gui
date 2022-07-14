@@ -10,6 +10,27 @@
 /* Configuration */
 
 
+// Optimizer Functions
+export type IKerasOptimizer = "adam"|"rmsprop";
+
+
+// Loss Functions
+export type IKerasLoss = "mean_absolute_error"|"mean_squared_error"|"categorical_crossentropy"|"binary_crossentropy";
+export type IKerasRegressionLoss = "mean_absolute_error"|"mean_squared_error";
+export type IKerasClassificationLoss = "categorical_crossentropy"|"binary_crossentropy";
+
+
+// Metric Functions
+export type IKerasMetric = "mean_absolute_error"|"mean_squared_error"|"categorical_accuracy"|"binary_accuracy";
+export type IKerasRegressionMetric = "mean_absolute_error"|"mean_squared_error";
+export type IKerasClassificationMetric = "categorical_accuracy"|"binary_accuracy";
+
+
+// Activation Functions
+export type IKerasActivation = "relu"|"tanh";
+
+
+
 
 /**
  * Keras Model Configuration
@@ -26,7 +47,7 @@ export interface IKerasModelConfig {
     dropout_rates?: number[],
 
     // Activations
-    activations?: string[],
+    activations?: IKerasActivation[],
 
     // Filters
     filters?: number[],
@@ -67,6 +88,8 @@ export interface IKerasModelConfig {
       */
     features_num?: number,
 }
+
+
 
 
 
@@ -146,13 +169,17 @@ export interface IKerasModelTrainingHistory {
 
 
 
+// Optimizer Name
+export type IKerasOptimizerName = "Adam"|"RMSprop";
+
+
 /**
  * Model Optimizer Config
  * The optimizer configuration used when the model was compiled. Keep in mind that
  * all these values are stringified to ensure compatibility with the JSON file format.
  */
 export interface IKerasModelOptimizerConfig {
-    name: string,
+    name: IKerasOptimizerName,
     learning_rate: string,
     decay?: string,
     beta_1?: string,
@@ -167,18 +194,22 @@ export interface IKerasModelOptimizerConfig {
 
 
 
+
+
 /**
  * Model Loss Config
  * The loss configuration used when the model was compiled. Keep in mind that
  * all these values are stringified to ensure compatibility with the JSON file format.
  */
 export interface IKerasModelLossConfig {
-    name: string,
+    name: IKerasLoss,
     reduction?: string,
     from_logits?: string,
     label_smoothing?: string,
     axis?: string,
 }
+
+
 
 
 
@@ -196,6 +227,13 @@ export interface IKerasModelLayer {
 
 
 
+// Model Class Name
+export type IKerasModelClassName = "Sequential";
+
+
+// Metric Names
+export type IKerasMetricName = "loss"|"categorical_accuracy"|"binary_accuracy";
+
 
 
 /**
@@ -204,7 +242,7 @@ export interface IKerasModelLayer {
  */
 export interface IKerasModelSummary {
     // The name of the class used to create the model.
-    model_class: string,
+    model_class: IKerasModelClassName,
 
     // Optimizer Config
     optimizer_config: IKerasModelOptimizerConfig,
@@ -213,7 +251,7 @@ export interface IKerasModelSummary {
     loss_config: IKerasModelLossConfig,
 
     // Metrics
-    metrics: string[],
+    metrics: IKerasMetricName[],
 
     // Input and output shapes
     input_shape: Array<number|null>,

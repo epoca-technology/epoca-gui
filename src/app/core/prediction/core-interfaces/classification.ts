@@ -1,4 +1,11 @@
-import { IKerasModelConfig, IKerasModelTrainingHistory } from "./keras-models";
+import { 
+    IKerasModelConfig, 
+    IKerasModelTrainingHistory, 
+    IKerasOptimizer,
+    IKerasClassificationLoss,
+    IKerasClassificationMetric,
+    IKerasOptimizerName
+} from "./keras-models";
 import { IClassificationConfig } from "./model";
 import { IModelEvaluation } from "./model-evaluation";
 
@@ -31,13 +38,13 @@ export interface IClassificationTrainingConfig {
     description: string,
 
     // The optimizer to be used.
-    optimizer: "adam"|"rmsprop",
+    optimizer: IKerasOptimizer,
 
     // The loss function to be used
-    loss: "categorical_crossentropy"|"binary_crossentropy",
+    loss: IKerasClassificationLoss,
 
     // The metric to be used for meassuring the val_loss
-    metric: "categorical_accuracy"|"binary_accuracy",
+    metric: IKerasClassificationMetric,
 
     // Keras Model Configuration
     keras_model: IKerasModelConfig
@@ -143,13 +150,10 @@ export interface IClassificationTrainingCertificate {
 
 
     /* Training Configuration */
-    optimizer: string,
-    loss: string,
-    metric: string,
-    shuffle_data: boolean,
+    optimizer: IKerasOptimizerName,
+    loss: IKerasClassificationLoss,
+    metric: IKerasClassificationMetric,
     keras_model_config: IKerasModelConfig,
-
-
 
 
     /* Training */

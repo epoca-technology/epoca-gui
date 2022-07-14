@@ -1,5 +1,5 @@
 import { IGeneralEvaluationItem, IGeneralEvaluationStateClass } from "./classification";
-import { IKerasModelConfig, IKerasModelTrainingHistory } from "./keras-models";
+import { IKerasModelConfig, IKerasModelTrainingHistory, IKerasOptimizer, IKerasOptimizerName, IKerasRegressionLoss } from "./keras-models";
 import { IRegressionConfig } from "./model";
 import { IModelEvaluation } from "./model-evaluation";
 
@@ -44,10 +44,10 @@ export interface IRegressionTrainingConfig {
     predictions: number,
 
     // The optimizer to be used.
-    optimizer: "adam"|"rmsprop",
+    optimizer: IKerasOptimizer,
 
     // The loss function to be used
-    loss: "mean_squared_error"|"mean_absolute_error",
+    loss: IKerasRegressionLoss,
 
     // Keras Model Configuration
     keras_model: IKerasModelConfig
@@ -68,9 +68,6 @@ export interface IRegressionTrainingBatch {
     // Start and end time - If none provided, will use all the available data
     start: string|number|null,
     end: string|number|null,
-
-    // If enabled, it will delete the model files once the evaluation is complete
-    hyperparams_mode: boolean,
 
 	// The configurations for the models that will be trained within the batch.
 	models: IRegressionTrainingConfig[]
@@ -133,8 +130,8 @@ export interface IRegressionTrainingCertificate {
     autoregressive: boolean,
     lookback: number,
     predictions: number,
-    optimizer: "adam"|"rmsprop",
-    loss: "mean_squared_error"|"mean_absolute_error",
+    optimizer: IKerasOptimizerName,
+    loss: IKerasRegressionLoss,
     keras_model_config: IKerasModelConfig,
 
 
