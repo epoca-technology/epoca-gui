@@ -289,24 +289,8 @@
                                     </div>
 
 
-                                    <!-- Positions -->
-                                    <div *ngIf="activeTabIndex == 2" fxFlex="70" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
-                                        <apx-chart
-                                            [series]="combPositions.series"
-                                            [chart]="combPositions.chart"
-                                            [plotOptions]="combPositions.plotOptions"
-                                            [xaxis]="combPositions.xaxis"
-                                            [yaxis]="combPositions.yaxis"
-                                            [dataLabels]="combPositions.dataLabels"
-                                            [colors]="combPositions.colors"
-                                            [grid]="combPositions.grid"
-                                            [legend]="{position: 'top'}"
-                                        ></apx-chart>
-                                    </div>
-
-
                                     <!-- Accuracy -->
-                                    <div *ngIf="activeTabIndex == 3" fxFlex="70" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                                    <div *ngIf="activeTabIndex == 2" fxFlex="70" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
                                         <apx-chart
                                             [series]="combAccuracy.series"
                                             [chart]="combAccuracy.chart"
@@ -316,6 +300,22 @@
                                             [dataLabels]="combAccuracy.dataLabels"
                                             [colors]="combAccuracy.colors"
                                             [grid]="combAccuracy.grid"
+                                            [legend]="{position: 'top'}"
+                                        ></apx-chart>
+                                    </div>
+
+
+                                    <!-- Positions -->
+                                    <div *ngIf="activeTabIndex == 3" fxFlex="70" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                                        <apx-chart
+                                            [series]="combPositions.series"
+                                            [chart]="combPositions.chart"
+                                            [plotOptions]="combPositions.plotOptions"
+                                            [xaxis]="combPositions.xaxis"
+                                            [yaxis]="combPositions.yaxis"
+                                            [dataLabels]="combPositions.dataLabels"
+                                            [colors]="combPositions.colors"
+                                            [grid]="combPositions.grid"
                                             [legend]="{position: 'top'}"
                                         ></apx-chart>
                                     </div>

@@ -211,6 +211,7 @@ export class RegressionTrainingCertificatesComponent implements OnInit, OnDestro
 		this.initialized = false;
 		this.initializing = false;
 		this.fileInput.setValue('');
+		this._selection.reset();
 	}
 
 
@@ -569,7 +570,7 @@ export class RegressionTrainingCertificatesComponent implements OnInit, OnDestro
 						id: this.cert!.id,
 						regression_models: [{
 							regression_id: this.cert!.id,
-							interpreter: { long: 1, short: 1},
+							interpreter: { long: 0.5, short: 0.5},
 							regression: this.cert!.regression_config
 						}]
 					},

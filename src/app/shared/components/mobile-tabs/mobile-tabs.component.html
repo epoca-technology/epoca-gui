@@ -7,10 +7,21 @@
             <mat-icon svgIcon="home"></mat-icon>
         </div>
 
-        <!-- Trading Sessions -->
+        <!-- Epochs -->
         <div fxFlex fxLayout="row" fxLayoutAlign="center center"
              class="tab" role="button" matRipple
              [ngClass]="{'active': activeTab == 1}" (click)="navigate(1)">
+            <mat-icon   svgIcon="brain" 
+                        matBadge="4"
+                        matBadgePosition="after"
+                        matBadgeSize="small"
+                        matBadgeOverlap="false"></mat-icon>
+        </div>
+
+        <!-- Trading Sessions -->
+        <div fxFlex fxLayout="row" fxLayoutAlign="center center"
+             class="tab" role="button" matRipple
+             [ngClass]="{'active': activeTab == 2}" (click)="navigate(2)">
             <mat-icon   svgIcon="auto_graph" 
                         matBadge="1"
                         matBadgePosition="after"
@@ -21,20 +32,9 @@
         <!-- Trading Simulations -->
         <div fxFlex fxLayout="row" fxLayoutAlign="center center"
              class="tab" role="button" matRipple
-             [ngClass]="{'active': activeTab == 2}" (click)="navigate(2)">
+             [ngClass]="{'active': activeTab == 3}" (click)="navigate(3)">
             <mat-icon   svgIcon="ssid_chart" 
                         matBadge="7"
-                        matBadgePosition="after"
-                        matBadgeSize="small"
-                        matBadgeOverlap="false"></mat-icon>
-        </div>
-
-        <!-- Forecast Models -->
-        <div fxFlex fxLayout="row" fxLayoutAlign="center center"
-             class="tab" role="button" matRipple
-             [ngClass]="{'active': activeTab == 3}" (click)="navigate(3)">
-            <mat-icon   svgIcon="brain" 
-                        matBadge="4"
                         matBadgePosition="after"
                         matBadgeSize="small"
                         matBadgeOverlap="false"></mat-icon>

@@ -65,10 +65,6 @@ export interface IRegressionTrainingBatch {
 	// Descriptive name to easily identify the batch. Must be compatible with filesystems.
 	name: string,
 
-    // Start and end time - If none provided, will use all the available data
-    start: string|number|null,
-    end: string|number|null,
-
 	// The configurations for the models that will be trained within the batch.
 	models: IRegressionTrainingConfig[]
 }

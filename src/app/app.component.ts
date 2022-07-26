@@ -28,7 +28,7 @@ export class AppComponent implements IAppComponent {
 	public layout: ILayout = this._app.layout.value;
 
     // Submenus
-    public backtestingExpanded: boolean = false;
+    public builderExpanded: boolean = false;
 
     // User
     public uid: string|null|undefined;
@@ -41,7 +41,7 @@ export class AppComponent implements IAppComponent {
     'person','notifications','logo_google','paste','ubuntu','code_branch','hdd','microchip','server','database',
     'hardware_chip', 'ssid_chart', 'brain', 'auto_graph', 'bug_report', 'file_csv', 'file_waveform',
     'wand_magic_sparkles', 'flask', 'flask_vial', 'book', 'graduation_cap', 'microscope', 'file_invoice',
-    'file_signature', 'file_circle_check'];
+    'file_signature', 'file_circle_check', 'pen_ruler'];
 	
 	// Route State
 	public state: IRouteState = this._nav.routeState.value;
@@ -75,7 +75,7 @@ export class AppComponent implements IAppComponent {
 			this.state = s;
 
             // Check if the prediction backtesting submodule should be opened
-            this.backtestingExpanded = s.module == 'predictionBacktesting';
+            this.builderExpanded = s.module == 'predictionBacktesting';
 			
 			// Close the sidenav if opened
 			if (this.sidenavOpened) this.sidenav?.close(); 

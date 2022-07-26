@@ -39,12 +39,6 @@ const routes: Routes = [
 		loadChildren: () => import('./modules/forecast-models/forecast-models.module').then(m => m.ForecastModelsModule),
 	},
 
-	// Prediction Backtesting
-	{
-		path: 'predictionBacktesting',
-		loadChildren: () => import('./modules/prediction-backtesting/prediction-backtesting.module').then(m => m.PredictionBacktestingModule),
-	},
-
 	// Candlesticks
 	{
 		path: 'candlesticks',
@@ -76,6 +70,11 @@ const routes: Routes = [
 	},
 
 
+	// Epoch Builder
+	{
+		path: 'epochBuilder',
+		loadChildren: () => import('./modules/epoch-builder/epoch-builder.module').then(m => m.EpochBuilderModule),
+	},
 
 
 

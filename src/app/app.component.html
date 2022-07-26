@@ -22,6 +22,13 @@
                 </button>
             </mat-list-item>
 
+            <!-- Epochs -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.forecastModels()" [disabled]="state.module == 'forecastModels'">
+                    <mat-icon svgIcon="brain"></mat-icon><span>_ALPHA</span>
+                </button>
+            </mat-list-item>
+
             <!-- Trading Sessions -->
             <mat-list-item>
                 <button mat-button class="left-icon-button" (click)="_nav.tradingSessions()" [disabled]="state.module == 'tradingSessions'">
@@ -33,70 +40,6 @@
             <mat-list-item>
                 <button mat-button class="left-icon-button" (click)="_nav.tradingSimulations()" [disabled]="state.module == 'tradingSimulations'">
                     <mat-icon svgIcon="ssid_chart"></mat-icon><span>Trading Simulations</span>
-                </button>
-            </mat-list-item>
-
-            <!-- Forecast Models -->
-            <mat-list-item>
-                <button mat-button class="left-icon-button" (click)="_nav.forecastModels()" [disabled]="state.module == 'forecastModels'">
-                    <mat-icon svgIcon="brain"></mat-icon><span>Prediction Models</span>
-                </button>
-            </mat-list-item>
-
-            <!-- Prediction Backtesting Sub Menu -->
-            <mat-list-item [ngClass]="{'active-sub-menu': backtestingExpanded}">
-                <button mat-button class="left-icon-button" (click)="backtestingExpanded = !backtestingExpanded">
-                    <div fxLayout="row" fxLayoutAlign="start center">
-                        <mat-icon svgIcon="flask" class="flask-icon"></mat-icon>&nbsp;
-                        <span>Prediction Backtesting</span>
-                        <span fxFlex></span>
-                        <mat-icon>{{backtestingExpanded ? 'arrow_drop_up': 'arrow_drop_down'}}</mat-icon>
-                    </div>
-                </button>
-            </mat-list-item>
-
-            <!-- Backtests -->
-            <mat-list-item *ngIf="backtestingExpanded" class="active-sub-menu">
-                <button mat-button (click)="_nav.backtests()" [disabled]="state.subModule == 'backtests'">
-                    <div fxLayout="row" fxLayoutAlign="start center">
-                        <span>Backtests</span><span fxFlex></span><mat-icon svgIcon="flask_vial"></mat-icon>
-                    </div>
-                </button>
-            </mat-list-item>
-
-            <!-- Regression Selection -->
-            <mat-list-item *ngIf="backtestingExpanded" class="active-sub-menu">
-                <button mat-button (click)="_nav.regressionSelection()" [disabled]="state.subModule == 'regressionSelection'">
-                    <div fxLayout="row" fxLayoutAlign="start center">
-                        <span>Regression Selection</span><span fxFlex></span><mat-icon svgIcon="microscope"></mat-icon>
-                    </div>
-                </button>
-            </mat-list-item>
-
-            <!-- Regression Training Certificates -->
-            <mat-list-item *ngIf="backtestingExpanded" class="active-sub-menu">
-                <button mat-button (click)="_nav.regressionTrainingCertificates()" [disabled]="state.subModule == 'regressionTrainingCertificates'">
-                    <div fxLayout="row" fxLayoutAlign="start center">
-                        <span>Regr. Training Certificates</span><span fxFlex></span><mat-icon svgIcon="graduation_cap"></mat-icon>
-                    </div>
-                </button>
-            </mat-list-item>
-
-            <!-- Classification Training Data -->
-            <mat-list-item *ngIf="backtestingExpanded" class="active-sub-menu">
-                <button mat-button (click)="_nav.classificationTrainingData()" [disabled]="state.subModule == 'classificationTrainingData'">
-                    <div fxLayout="row" fxLayoutAlign="start center">
-                        <span>Class. Training Data</span><span fxFlex></span><mat-icon svgIcon="book"></mat-icon>
-                    </div>
-                </button>
-            </mat-list-item>
-
-            <!-- Classification Training Certificates -->
-            <mat-list-item *ngIf="backtestingExpanded" class="active-sub-menu">
-                <button mat-button (click)="_nav.classificationTrainingCertificates()" [disabled]="state.subModule == 'classificationTrainingCertificates'">
-                    <div fxLayout="row" fxLayoutAlign="start center">
-                        <span>Class. Training Certificates</span><span fxFlex></span><mat-icon svgIcon="graduation_cap"></mat-icon>
-                    </div>
                 </button>
             </mat-list-item>
 
@@ -138,6 +81,64 @@
                 </button>
             </mat-list-item>
 
+            <!-- Epoch Builder Sub Menu -->
+            <mat-list-item [ngClass]="{'active-sub-menu': builderExpanded}">
+                <button mat-button class="left-icon-button" (click)="builderExpanded = !builderExpanded">
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <mat-icon svgIcon="pen_ruler" class="builder-icon"></mat-icon>&nbsp;
+                        <span>Epoch Builder</span>
+                        <span fxFlex></span>
+                        <mat-icon>{{builderExpanded ? 'arrow_drop_up': 'arrow_drop_down'}}</mat-icon>
+                    </div>
+                </button>
+            </mat-list-item>
+
+            <!-- Backtests -->
+            <mat-list-item *ngIf="builderExpanded" class="active-sub-menu">
+                <button mat-button (click)="_nav.backtests()" [disabled]="state.subModule == 'backtests'">
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <span>Backtests</span><span fxFlex></span><mat-icon svgIcon="flask_vial"></mat-icon>
+                    </div>
+                </button>
+            </mat-list-item>
+
+            <!-- Regression Selection -->
+            <mat-list-item *ngIf="builderExpanded" class="active-sub-menu">
+                <button mat-button (click)="_nav.regressionSelection()" [disabled]="state.subModule == 'regressionSelection'">
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <span>Regression Selection</span><span fxFlex></span><mat-icon svgIcon="microscope"></mat-icon>
+                    </div>
+                </button>
+            </mat-list-item>
+
+            <!-- Regression Training Certificates -->
+            <mat-list-item *ngIf="builderExpanded" class="active-sub-menu">
+                <button mat-button (click)="_nav.regressionTrainingCertificates()" [disabled]="state.subModule == 'regressionTrainingCertificates'">
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <span>Regr. Training Certificates</span><span fxFlex></span><mat-icon svgIcon="graduation_cap"></mat-icon>
+                    </div>
+                </button>
+            </mat-list-item>
+
+            <!-- Classification Training Data -->
+            <mat-list-item *ngIf="builderExpanded" class="active-sub-menu">
+                <button mat-button (click)="_nav.classificationTrainingData()" [disabled]="state.subModule == 'classificationTrainingData'">
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <span>Class. Training Data</span><span fxFlex></span><mat-icon svgIcon="book"></mat-icon>
+                    </div>
+                </button>
+            </mat-list-item>
+
+            <!-- Classification Training Certificates -->
+            <mat-list-item *ngIf="builderExpanded" class="active-sub-menu">
+                <button mat-button (click)="_nav.classificationTrainingCertificates()" [disabled]="state.subModule == 'classificationTrainingCertificates'">
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <span>Class. Training Certificates</span><span fxFlex></span><mat-icon svgIcon="graduation_cap"></mat-icon>
+                    </div>
+                </button>
+            </mat-list-item>
+
+
             <!-- PGAdmin -->
             <mat-list-item>
                 <button mat-button class="left-icon-button" (click)="_nav.openPGAdmin()">
@@ -178,6 +179,11 @@
                     <mat-icon svgIcon="home"></mat-icon><span>Dashboard</span>
                 </button>
 
+                <!-- Epochs -->
+                <button mat-button class="left-icon-button" (click)="_nav.forecastModels()" matBadge="4" [disabled]="state.module == 'forecastModels'" *ngIf="uid">
+                    <mat-icon svgIcon="brain"></mat-icon><span>_ALPHA</span>
+                </button>
+
                 <!-- Trading Session -->
                 <button mat-button class="left-icon-button" (click)="_nav.tradingSessions()" matBadge="1" [disabled]="state.module == 'tradingSessions'" *ngIf="uid">
                     <mat-icon svgIcon="auto_graph"></mat-icon><span>Trading Sessions</span>
@@ -186,11 +192,6 @@
                 <!-- Trading Simulations -->
                 <button mat-button class="left-icon-button" (click)="_nav.tradingSimulations()" matBadge="7" [disabled]="state.module == 'tradingSimulations'" *ngIf="uid">
                     <mat-icon svgIcon="ssid_chart"></mat-icon><span>Trading Simulations</span>
-                </button>
-
-                <!-- Prediction Models -->
-                <button mat-button class="left-icon-button" (click)="_nav.forecastModels()" matBadge="4" [disabled]="state.module == 'forecastModels'" *ngIf="uid">
-                    <mat-icon svgIcon="brain"></mat-icon><span>Prediction Models</span>
                 </button>
 
                 <!-- Server -->

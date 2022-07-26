@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { 
 	IModel, 
 	PredictionService, 
-	IModelTypeName, 
+	IModelType, 
 	IArimaModelConfig, 
 	IRegressionModelConfig,
 	IClassificationModelConfig,
@@ -21,7 +21,7 @@ export class ModelContentComponent implements OnInit, IModelContentComponent {
 	@Input() model!: IModel;
 
 	// The name of the type of model
-	public name!: IModelTypeName;
+	public name!: IModelType;
 
 	// Model Lists
 	public arima_models?: IArimaModelConfig[];

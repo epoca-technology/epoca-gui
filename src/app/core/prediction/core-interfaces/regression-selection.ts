@@ -1,4 +1,5 @@
 import { IModel } from "./model";
+import { IPositionExitCombinationID } from "./epoch";
 
 
 
@@ -46,7 +47,7 @@ export interface IModelResult {
  */
 export interface ICombinationResult {
     // Combination
-    combination_id: string
+    combination_id: IPositionExitCombinationID
 
     // The total number of models within the combination (Not just the selected)
     models_num: number

@@ -76,11 +76,11 @@ export class NavService implements INavService {
 	public tradingSessions(): Promise<boolean> { return this.navigate('tradingSessions') }
 	public tradingSimulations(): Promise<boolean> { return this.navigate('tradingSimulations') }
 	public forecastModels(): Promise<boolean> { return this.navigate('forecastModels') }
-	public backtests(): Promise<boolean> { return this.navigate('predictionBacktesting/backtests') }
-	public regressionSelection(): Promise<boolean> { return this.navigate('predictionBacktesting/regressionSelection') }
-	public regressionTrainingCertificates(): Promise<boolean> { return this.navigate('predictionBacktesting/regressionTrainingCertificates') }
-	public classificationTrainingData(): Promise<boolean> { return this.navigate('predictionBacktesting/classificationTrainingData') }
-	public classificationTrainingCertificates(): Promise<boolean> { return this.navigate('predictionBacktesting/classificationTrainingCertificates') }
+	public backtests(): Promise<boolean> { return this.navigate('epochBuilder/backtests') }
+	public regressionSelection(): Promise<boolean> { return this.navigate('epochBuilder/regressionSelection') }
+	public regressionTrainingCertificates(): Promise<boolean> { return this.navigate('epochBuilder/regressionTrainingCertificates') }
+	public classificationTrainingData(): Promise<boolean> { return this.navigate('epochBuilder/classificationTrainingData') }
+	public classificationTrainingCertificates(): Promise<boolean> { return this.navigate('epochBuilder/classificationTrainingCertificates') }
 	public candlesticks(): Promise<boolean> { return this.navigate('candlesticks') }
 	public server(): Promise<boolean> { return this.navigate('server') }
 	public users(): Promise<boolean> { return this.navigate('users') }

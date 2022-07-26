@@ -1,4 +1,4 @@
-import { IModel, IModelTypeName, IBacktest, IBacktestPerformance} from "../../prediction";
+import { IModel, IModelType, IBacktest, IBacktestPerformance} from "../../prediction";
 
 
 
@@ -48,7 +48,7 @@ export interface IModels {
 }
 
 export interface IModelTypeNames {
-    [modelID: string]: IModelTypeName
+    [modelID: string]: IModelType
 }
 
 

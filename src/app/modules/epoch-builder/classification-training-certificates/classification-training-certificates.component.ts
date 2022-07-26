@@ -243,6 +243,7 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 		this.initialized = false;
 		this.initializing = false;
 		this.fileInput.setValue('');
+		this._selection.reset();
 	}
 
 
@@ -674,7 +675,6 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 			});
 		}
 
-
 		// Build the points chart
 		const {colors, values} = this._chart.getModelPointsValues(this.cert!.classification_evaluation.positions)
 		this.classPoints = this._chart.getBarChartOptions({
@@ -732,7 +732,10 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 		const rangePreds: number[] = preds.filter(pred => (pred*100) >= range.min && (pred*100) <= range.max);
 
 		// Calculate the percentage it represents
-		const percentValue: number = <number>this._utils.calculatePercentageOutOfTotal(rangePreds.length, preds.length);
+		let percentValue: number = 0;
+		if (rangePreds.length) {
+			percentValue = <number>this._utils.calculatePercentageOutOfTotal(rangePreds.length, preds.length);
+		}
 
 		// Calculate the intensity
 		const intensity: number = this.getStateIntensity(percentValue);

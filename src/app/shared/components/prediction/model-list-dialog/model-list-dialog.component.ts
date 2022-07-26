@@ -1,6 +1,6 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
-import { IModel, IModelTypeName, PredictionService } from '../../../../core';
+import { IModel, IModelType, PredictionService } from '../../../../core';
 import { SnackbarService } from '../../../../services';
 import { IModelListDialogComponent } from './interfaces';
 
@@ -10,7 +10,7 @@ import { IModelListDialogComponent } from './interfaces';
   styleUrls: ['./model-list-dialog.component.scss']
 })
 export class ModelListDialogComponent implements OnInit, IModelListDialogComponent {
-	public types: {[modelID: string]: IModelTypeName} = {};
+	public types: {[modelID: string]: IModelType} = {};
 	public expanded: {[modelID: string]: boolean} = {};
 
 	constructor(

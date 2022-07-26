@@ -208,6 +208,7 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 		this.modelCharts = {};
 		this.modelPointsRange = {};
 		this.visiblePositions = 15;
+		this._selection.reset();
 	}
 
 

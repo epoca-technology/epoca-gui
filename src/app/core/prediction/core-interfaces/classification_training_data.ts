@@ -73,10 +73,6 @@ export interface ITrainingDataConfig {
     // The description of the Training Data that will be generated.
     description: string,
 
-    // Start and end time - If none provided, will use all the available data
-    start: string|number|null,
-    end: string|number|null,
-
     /**
      * The Prediction Candlestick steps that will be used to generate the data. If 0 is provided
      * the training data will be generated the traditional way.

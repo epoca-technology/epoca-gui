@@ -27,7 +27,7 @@
                         [disabled]="section.id == 'model' && modelID == id" 
                         (click)="activateSection({id: 'model', name: id}, id)">
                         <div fxLayout="row" fxLayoutAlign="start center">
-                            <span class="truncate">{{id}}</span>
+                            <span class="truncate" style="max-width:70%">{{id}}</span>
                             <span fxFlex></span>
                             <div [ngClass]="{
                                 'square-badge': _backtest.performances[id].points == 0,
@@ -115,7 +115,7 @@
                                     [disabled]="section.id == 'model' && modelID == id" 
                                     (click)="activateModel(id)">
                                     <div fxLayout="row" fxLayoutAlign="start center">
-                                        <span class="truncate">{{id}}</span>
+                                        <span class="truncate" style="max-width:70%">{{id}}</span>
                                         <span fxFlex></span>
                                         <div [ngClass]="{
                                             'square-badge': _backtest.performances[id].points == 0,

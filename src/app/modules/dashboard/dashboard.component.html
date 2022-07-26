@@ -22,24 +22,17 @@
                 </button>
             </mat-list-item>
 
+            <!-- Epochs -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.forecastModels()">
+                    <mat-icon svgIcon="brain"></mat-icon><span>_ALPHA</span>
+                </button>
+            </mat-list-item>
+
             <!-- Trading Simulations -->
             <mat-list-item>
                 <button mat-button class="left-icon-button" (click)="_nav.tradingSimulations()">
                     <mat-icon svgIcon="ssid_chart"></mat-icon><span>Trading Simulations</span>
-                </button>
-            </mat-list-item>
-
-            <!-- Forecast Models -->
-            <mat-list-item>
-                <button mat-button class="left-icon-button" (click)="_nav.forecastModels()">
-                    <mat-icon svgIcon="brain"></mat-icon><span>Forecast Models</span>
-                </button>
-            </mat-list-item>
-
-            <!-- Prediction Backtesting -->
-            <mat-list-item>
-                <button mat-button class="left-icon-button" (click)="_nav.backtests()">
-                    <mat-icon>science</mat-icon><span>Prediction Backtesting</span>
                 </button>
             </mat-list-item>
 
@@ -77,6 +70,63 @@
             <mat-list-item>
                 <button mat-button class="left-icon-button" (click)="_nav.ipBlacklist()">
                     <mat-icon>vpn_lock</mat-icon><span>IP Blacklist</span>
+                </button>
+            </mat-list-item>
+
+            <!-- Epoch Builder Sub Menu -->
+            <mat-list-item [ngClass]="{'active-sub-menu': builderExpanded}">
+                <button mat-button class="left-icon-button" (click)="builderExpanded = !builderExpanded">
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <mat-icon svgIcon="pen_ruler" class="builder-icon"></mat-icon>&nbsp;
+                        <span>Epoch Builder</span>
+                        <span fxFlex></span>
+                        <mat-icon>{{builderExpanded ? 'arrow_drop_up': 'arrow_drop_down'}}</mat-icon>
+                    </div>
+                </button>
+            </mat-list-item>
+
+            <!-- Backtests -->
+            <mat-list-item *ngIf="builderExpanded" class="active-sub-menu">
+                <button mat-button (click)="_nav.backtests()">
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <span>Backtests</span><span fxFlex></span><mat-icon svgIcon="flask_vial"></mat-icon>
+                    </div>
+                </button>
+            </mat-list-item>
+
+            <!-- Regression Selection -->
+            <mat-list-item *ngIf="builderExpanded" class="active-sub-menu">
+                <button mat-button (click)="_nav.regressionSelection()">
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <span>Regression Selection</span><span fxFlex></span><mat-icon svgIcon="microscope"></mat-icon>
+                    </div>
+                </button>
+            </mat-list-item>
+
+            <!-- Regression Training Certificates -->
+            <mat-list-item *ngIf="builderExpanded" class="active-sub-menu">
+                <button mat-button (click)="_nav.regressionTrainingCertificates()">
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <span>Regr. Training Certificates</span><span fxFlex></span><mat-icon svgIcon="graduation_cap"></mat-icon>
+                    </div>
+                </button>
+            </mat-list-item>
+
+            <!-- Classification Training Data -->
+            <mat-list-item *ngIf="builderExpanded" class="active-sub-menu">
+                <button mat-button (click)="_nav.classificationTrainingData()">
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <span>Class. Training Data</span><span fxFlex></span><mat-icon svgIcon="book"></mat-icon>
+                    </div>
+                </button>
+            </mat-list-item>
+
+            <!-- Classification Training Certificates -->
+            <mat-list-item *ngIf="builderExpanded" class="active-sub-menu">
+                <button mat-button (click)="_nav.classificationTrainingCertificates()">
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <span>Class. Training Certificates</span><span fxFlex></span><mat-icon svgIcon="graduation_cap"></mat-icon>
+                    </div>
                 </button>
             </mat-list-item>
 

@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 // Routing
-import { PredictionBacktestingRoutingModule } from './prediction-backtesting-routing.module';
+import { EpochBuilderRoutingModule } from './epoch-builder-routing.module';
 
 // Shared Module
 import {SharedModule} from "../../shared";
@@ -17,6 +17,7 @@ import { ClassificationTrainingCertificatesComponent } from './classification-tr
 import { ClassificationTrainingCertificatesConfigDialogComponent } from './classification-training-certificates/classification-training-certificates-config-dialog';
 import { RegressionTrainingCertificatesConfigDialogComponent } from './regression-training-certificates/regression-training-certificates-config-dialog/regression-training-certificates-config-dialog.component';
 
+
 @NgModule({
   declarations: [
     BacktestsComponent,
@@ -30,8 +31,8 @@ import { RegressionTrainingCertificatesConfigDialogComponent } from './regressio
   ],
   imports: [
     CommonModule,
-    PredictionBacktestingRoutingModule,
+    EpochBuilderRoutingModule,
     SharedModule
   ]
 })
-export class PredictionBacktestingModule { }
+export class EpochBuilderModule { }

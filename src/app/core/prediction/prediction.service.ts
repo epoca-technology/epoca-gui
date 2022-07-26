@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IPredictionResultName, IPredictionService, IModelTypeName, IModel } from './interfaces';
+import { IPredictionResultName, IPredictionService, IModelType, IModel } from './interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -35,9 +35,9 @@ export class PredictionService implements IPredictionService {
 	/**
 	 * Given the a model, it will return the type name based on its configuration.
 	 * @param model 
-	 * @returns IModelTypeName
+	 * @returns IModelType
 	 */
-	public getModelTypeName(model: IModel): IModelTypeName {
+	public getModelTypeName(model: IModel): IModelType {
 		// Check if it is an ArimaModel
 		if (
 			model.arima_models && 

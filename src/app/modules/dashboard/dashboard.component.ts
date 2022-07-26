@@ -19,6 +19,9 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 	public layout: ILayout = this._app.layout.value;
 	private layoutSub?: Subscription;
 
+    // Submenus
+    public builderExpanded: boolean = false;
+
     constructor(
         private _app: AppService,
         private _snackbar: SnackbarService,

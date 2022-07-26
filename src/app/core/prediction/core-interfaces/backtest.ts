@@ -96,6 +96,39 @@ import { IModel, IPrediction } from "./model";
  
  /* Backtest */
  
+
+
+
+ /**
+  * Backtest Identifier
+  * In order to automate several processes, Backtest IDs should be recognizable on a
+  * file system level. Eventhough the type appears strict, the system should be able to
+  * handle any string as an ID.
+  */
+export type IBacktestID = 
+// Unit Test
+"unit_test"|
+
+// Arima Backtests
+"arima_1"| "arima_2"| "arima_3"| "arima_4"| "arima_5"| "arima_6"| "arima_7"| "arima_8"| "arima_9"|
+
+// Keras Regression Backtests
+"keras_regression"|
+
+// XGBoost Regression Backtests
+"xgb_regression"|
+
+// Keras Classification Backtests
+"keras_classification"|
+
+// XGBoost Classification Backtests
+"xgb_classification"|
+
+// Final Shortlist - Includes best classification and consensus models
+"final";
+
+
+
  
  
  /**
@@ -105,14 +138,10 @@ import { IModel, IPrediction } from "./model";
   */
  export interface IBacktestConfig {
      // Identification
-     id: string,
+     id: IBacktestID,
  
      // Description of the backtest (purpose)
      description: string,
- 
-     // Start and end time - If none provided, will use all the available data
-     start?: number|string,
-     end?: number|string,
  
      // Postitions Take Profit & Stop Loss
      take_profit: number,

@@ -1094,7 +1094,7 @@
                                                     <div *ngFor="let item of probsHeatmap">
                                                         <mat-grid-tile><p class="y-label">{{item.prob_range}}</p></mat-grid-tile>
                                                         <mat-grid-tile [matTooltip]="item.increase.state_description" 
-                                                                        [ngClass]="item.increase_successful.state_class"></mat-grid-tile>
+                                                                        [ngClass]="item.increase.state_class"></mat-grid-tile>
                                                         <mat-grid-tile [matTooltip]="item.increase_successful.state_description"
                                                                         [ngClass]="item.increase_successful.state_class"></mat-grid-tile>
                                                         <mat-grid-tile [matTooltip]="item.decrease.state_description"

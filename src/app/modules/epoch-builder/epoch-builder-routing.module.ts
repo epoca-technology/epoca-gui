@@ -7,6 +7,7 @@ import { ClassificationTrainingCertificatesComponent } from './classification-tr
 import { ClassificationTrainingDataComponent } from './classification-training-data/classification-training-data.component';
 import { RegressionTrainingCertificatesComponent } from './regression-training-certificates/regression-training-certificates.component';
 
+
 const routes: Routes = [
 	{
 		path: 'backtests',
@@ -35,8 +36,9 @@ const routes: Routes = [
 	},
 ];
 
+
 @NgModule({
-	imports: [RouterModule.forChild(routes)],
-	exports: [RouterModule]
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
 })
-export class PredictionBacktestingRoutingModule { }
+export class EpochBuilderRoutingModule { }
