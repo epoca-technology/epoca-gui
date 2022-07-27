@@ -42,6 +42,9 @@ export class PredictionDialogComponent implements OnInit, IPredictionDialogCompo
 	// Metadata
 	public metadata: IMetadata[] = [];
 
+	// Prediction Outcome
+	public showOutcome: boolean = false;
+	public outcome?: boolean;
 
 	// Load state
 	public loaded: boolean = false;
@@ -88,6 +91,9 @@ export class PredictionDialogComponent implements OnInit, IPredictionDialogCompo
 		this.prediction = this.data.prediction;
 		this.resultName = this._prediction.resultNames[this.prediction.r];
 		this.modelTypeName = this._prediction.getModelTypeName(this.model);
+		this.showOutcome = typeof this.data.outcome == "boolean";
+		if (this.showOutcome) { this.outcome = this.data.outcome }
+
 
 		// Initialize the Metadata
 		try {

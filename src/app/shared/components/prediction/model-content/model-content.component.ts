@@ -8,7 +8,7 @@ import {
 	IClassificationModelConfig,
 	IConsensusModelConfig
 } from '../../../../core';
-import { NavService } from '../../../../services';
+import { ClipboardService, NavService } from '../../../../services';
 import { IModelContentComponent } from './interfaces';
 
 @Component({
@@ -19,6 +19,12 @@ import { IModelContentComponent } from './interfaces';
 export class ModelContentComponent implements OnInit, IModelContentComponent {
 	// Model coming from parent component
 	@Input() model!: IModel;
+
+	// Wether or not to display the header
+	@Input() displayHeader!: boolean;
+
+	// Wether or not to compact the content
+	@Input() compact?: boolean;
 
 	// The name of the type of model
 	public name!: IModelType;
@@ -31,7 +37,8 @@ export class ModelContentComponent implements OnInit, IModelContentComponent {
 
     constructor(
 		private _prediction: PredictionService,
-		public _nav: NavService
+		public _nav: NavService,
+		public _clipboard: ClipboardService
 	) { }
 
     ngOnInit(): void {

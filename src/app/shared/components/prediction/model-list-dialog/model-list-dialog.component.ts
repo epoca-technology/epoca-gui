@@ -1,7 +1,7 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
 import { IModel, IModelType, PredictionService } from '../../../../core';
-import { SnackbarService } from '../../../../services';
+import { AppService, ClipboardService, SnackbarService } from '../../../../services';
 import { IModelListDialogComponent } from './interfaces';
 
 @Component({
@@ -17,6 +17,8 @@ export class ModelListDialogComponent implements OnInit, IModelListDialogCompone
 		public dialogRef: MatDialogRef<ModelListDialogComponent>,
 		private _snackbar: SnackbarService,
 		private _prediction: PredictionService,
+		public _app: AppService,
+		public _clipboard: ClipboardService,
 		@Inject(MAT_DIALOG_DATA) public models: IModel[],
 	) { }
 

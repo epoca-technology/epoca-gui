@@ -224,8 +224,8 @@ export class NavService implements INavService {
 	* */
 	public displayModelDialog(model: IModel): MatDialogRef<any> {
 		return this.dialog.open(ModelDialogComponent, {
-			hasBackdrop: this._app.layout.value != 'mobile', // Mobile optimization
-			panelClass: 'medium-dialog',
+			hasBackdrop: true,
+			panelClass: 'light-dialog',
 			data: model
 		});
 	}
@@ -285,16 +285,19 @@ export class NavService implements INavService {
 	
 	/*
 	* Opens the dialog that contains all information about a prediction.
-	* @param data
+	* @param model
+	* @param prediction
+	* @param outcome?
 	* @returns MatDialogRef<any>
 	* */
-	public displayPredictionDialog(model: IModel, prediction: IPrediction): MatDialogRef<any> {
+	public displayPredictionDialog(model: IModel, prediction: IPrediction, outcome?: boolean): MatDialogRef<any> {
 		return this.dialog.open(PredictionDialogComponent, {
 			hasBackdrop: this._app.layout.value != 'mobile', // Mobile optimization
 			panelClass: 'medium-dialog',
 			data: {
 				model: model,
-				prediction: prediction
+				prediction: prediction,
+				outcome: outcome
 			}
 		});
 	}

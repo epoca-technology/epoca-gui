@@ -84,7 +84,7 @@
                         <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
                             <p class="light-text truncate">ID</p>
                             <span fxFlex></span>
-                            <p class="clickable" [matTooltip]="_td.id" (click)="_clipboard.copy(_td.id)">{{_td.id | stringOverview: 10}}</p>
+                            <p class="clickable" [matTooltip]="_td.id" (click)="_clipboard.copy(_td.id)">{{_td.id | stringOverview: 8}}</p>
                         </div>
 
                         <!-- Regression Selection ID -->
@@ -92,7 +92,7 @@
                             <p class="light-text truncate">Regr. Selection</p>
                             <span fxFlex></span>
                             <p class="clickable" [matTooltip]="_td.regression_selection_id" (click)="_clipboard.copy(_td.regression_selection_id)">
-                                {{_td.regression_selection_id | stringOverview: 10}}
+                                {{_td.regression_selection_id | stringOverview: 8}}
                             </p>
                         </div>
 
@@ -263,17 +263,19 @@
                         <table class="table highlight bordered">
                             <thead>
                                 <tr>
-                                    <th *ngFor="let column_name of _td.training_data.columns">{{column_name}}</th>
+                                    <th *ngFor="let column_name of _td.training_data_features">{{column_name | stringOverview: 8}}</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr *ngFor="let row of visibleRows; index as rowIndex" 
                                     class="clickable" 
                                     (click)="_nav.displayDataDialog('trainingDataRow', row)">
-                                    <td *ngFor="let column_name of _td.training_data.columns; index as columnIndex">
+                                    <td *ngFor="let column_name of _td.training_data_features_and_label; index as columnIndex;">
                                         <!-- Regression Features -->
                                         <div *ngIf="column_name != 'RSI' && column_name != 'STOCH' && column_name != 'AROON' && column_name != 'STC' && column_name != 'MFI' && 
-                                                column_name != 'up' && column_name != 'down'">
+                                                column_name != 'label'">
+                                            <mat-icon *ngIf="row[columnIndex] == 0" class="light-text">trending_flat</mat-icon>
                                             <mat-icon *ngIf="row[columnIndex] == 1" class="success-color">trending_up</mat-icon>
                                             <mat-icon *ngIf="row[columnIndex] == -1" class="error-color">trending_down</mat-icon>
                                         </div>
@@ -284,9 +286,9 @@
                                         </div>
 
                                         <!-- Labels -->
-                                        <div *ngIf="column_name == 'up' || column_name == 'down'">
-                                            <mat-icon *ngIf="row[columnIndex] == 1 && column_name == 'up'" class="success-color">north</mat-icon>
-                                            <mat-icon *ngIf="row[columnIndex] == 1 && column_name == 'down'" class="error-color">south</mat-icon>
+                                        <div *ngIf="column_name == 'label'">
+                                            <mat-icon *ngIf="row[columnIndex] == 1" class="success-color">north</mat-icon>
+                                            <mat-icon *ngIf="row[columnIndex] == 0" class="error-color">south</mat-icon>
                                         </div>
                                     </td>
                                 </tr>

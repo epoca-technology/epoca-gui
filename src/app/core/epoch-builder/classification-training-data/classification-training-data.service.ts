@@ -83,6 +83,10 @@ export class ClassificationTrainingDataService implements IClassificationTrainin
 	 */
 	public training_data!: ICompressedTrainingData;
 
+	// Feature & Label column helpers
+	public training_data_features!: string[];
+	public training_data_features_and_label!: string[];
+
   	constructor(
 		private _file: FileService,
 		private _prediction: PredictionService
@@ -136,6 +140,11 @@ export class ClassificationTrainingDataService implements IClassificationTrainin
 
 		// Decompress the training data
 		this.training_data = file.training_data;
+
+		// Populate the feature columns
+		this.training_data_features = this.training_data.columns.filter((column) => { return column != "up" && column != "down" });
+		this.training_data_features_and_label = this.training_data_features.slice();
+		this.training_data_features_and_label.push("label");
 	}
 
 

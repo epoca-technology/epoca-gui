@@ -27,7 +27,7 @@
                         [disabled]="section.id == 'model' && modelID == id" 
                         (click)="activateSection({id: 'model', name: id}, id)">
                         <div fxLayout="row" fxLayoutAlign="start center">
-                            <span class="truncate" style="max-width:70%">{{id}}</span>
+                            <span class="truncate" style="max-width:80%">{{id | stringOverview: 10}}</span>
                             <span fxFlex></span>
                             <div [ngClass]="{
                                 'square-badge': _backtest.performances[id].points == 0,
@@ -115,7 +115,7 @@
                                     [disabled]="section.id == 'model' && modelID == id" 
                                     (click)="activateModel(id)">
                                     <div fxLayout="row" fxLayoutAlign="start center">
-                                        <span class="truncate" style="max-width:70%">{{id}}</span>
+                                        <span class="truncate" style="max-width:80%">{{id | stringOverview: 10}}</span>
                                         <span fxFlex></span>
                                         <div [ngClass]="{
                                             'square-badge': _backtest.performances[id].points == 0,
@@ -466,16 +466,7 @@
 
                                             <!-- Model -->
                                             <div class="desktop-card">
-                                                <!-- Heading -->
-                                                <div fxLayout="row" fxLayoutAlign="start center">
-                                                    <h4>{{_backtest.modelTypeNames[modelID]}}</h4>
-                                                    <span fxFlex></span>
-                                                </div>
-
-                                                <!-- Content -->
-                                                <div class="margin-top">
-                                                    <app-model-content [model]="_backtest.models[modelID]"></app-model-content>
-                                                </div>
+                                                <app-model-content [model]="_backtest.models[modelID]" [displayHeader]="true"></app-model-content>
                                             </div>
                                         </div>
 

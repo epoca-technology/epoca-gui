@@ -1,8 +1,14 @@
 <mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
     <div fxLayout="row" fxLayoutAlign="center center">
         <button mat-icon-button class="show-on-mobile" (click)="close()"><mat-icon>arrow_back</mat-icon></button>
-        <span class="truncate">{{resultName}} Prediction</span>
+        <span class="truncate">{{resultName}} Prediction</span>&nbsp;
+        <mat-icon *ngIf="showOutcome && outcome">done</mat-icon>
+        <mat-icon *ngIf="showOutcome && !outcome">warning</mat-icon>
         <span fxFlex></span>
+        <button mat-icon-button matTooltip="Display Model" 
+            (click)="_nav.displayModelDialog(model)">
+            <mat-icon svgIcon="brain"></mat-icon>
+        </button>
         <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
     </div>
 </mat-toolbar>
@@ -20,13 +26,6 @@
             <p class="light-text">Time</p>
             <span fxFlex></span>
             <p>{{prediction.t | date:'medium'}}</p>
-        </div>
-
-        <!-- Model Type -->
-        <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
-            <p class="light-text">Model Type</p>
-            <span fxFlex></span>
-            <p class="clickable" (click)="_nav.displayModelDialog(model)">{{modelTypeName}}</p>
         </div>
 
         <!-- Metadata -->

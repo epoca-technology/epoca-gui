@@ -12,7 +12,8 @@ export interface IPredictionDialogComponent {
 // Required Data
 export interface IPredictionDialogComponentData {
     model: IModel,
-    prediction: IPrediction
+    prediction: IPrediction,
+    outcome?: boolean
 }
 
 

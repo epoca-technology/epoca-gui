@@ -41,7 +41,7 @@ export class AppComponent implements IAppComponent {
     'person','notifications','logo_google','paste','ubuntu','code_branch','hdd','microchip','server','database',
     'hardware_chip', 'ssid_chart', 'brain', 'auto_graph', 'bug_report', 'file_csv', 'file_waveform',
     'wand_magic_sparkles', 'flask', 'flask_vial', 'book', 'graduation_cap', 'microscope', 'file_invoice',
-    'file_signature', 'file_circle_check', 'pen_ruler'];
+    'file_signature', 'file_circle_check', 'pen_ruler', 'terminal'];
 	
 	// Route State
 	public state: IRouteState = this._nav.routeState.value;
@@ -75,7 +75,7 @@ export class AppComponent implements IAppComponent {
 			this.state = s;
 
             // Check if the prediction backtesting submodule should be opened
-            this.builderExpanded = s.module == 'predictionBacktesting';
+            this.builderExpanded = s.module == 'epochBuilder';
 			
 			// Close the sidenav if opened
 			if (this.sidenavOpened) this.sidenav?.close(); 

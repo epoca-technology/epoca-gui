@@ -12,22 +12,23 @@ export class StringOverviewPipe implements PipeTransform {
 				const fill: string = "...";
 
 				// Check if the value actually needs to get cut
-				if (value.length <= displayChars + fill.length) {
+				if (value.length <= (displayChars + fill.length)) {
 					return value;
 				} else {
 					// Init the prefix
 					const prefix: string = value.slice(0, displayChars);
 
 					// Include only the head and the fill
-					if (truncateMode) {
-						return `${prefix}${fill}`;
-					} 
+					if (truncateMode) { return `${prefix}${fill}` } 
 					
 					// Include the head and the tail separated by the fill
-					else {
+					else if (value.length > ((displayChars * 2) + fill.length)){
 						const suffix: string = value.slice(value.length - displayChars, value.length);
 						return `${prefix}${fill}${suffix}`;
 					}
+
+					// Otherwise, return the string as received
+					else { return value }
 				}
 			} else {
 				return '';

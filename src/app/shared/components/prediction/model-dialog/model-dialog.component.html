@@ -1,11 +1,16 @@
-<mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
-    <div fxLayout="row" fxLayoutAlign="center center">
-        <button mat-icon-button class="show-on-mobile" (click)="close()"><mat-icon>arrow_back</mat-icon></button>
-        <span class="truncate">{{modelTypeName}}</span>
-        <span fxFlex></span>
-        <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
+<div mat-dialog-content>
+    <div class="model-dialog">
+        <div fxLayout="row" fxLayoutAlign="center start" class="pred-model-header">
+            <img src="assets/img/model_logos/{{modelTypeName}}.png" alt="Model Type">
+            <div>
+                <p [matTooltip]="model.id" 
+                    (click)="_clipboard.copy(model.id)" 
+                    class="clickable">{{model.id | stringOverview: 10}}</p>
+                <p class="model-type">{{modelTypeName}}</p>
+            </div>
+            <span fxFlex></span>
+            <mat-icon (click)="close()" class="clickable" role="button">close</mat-icon>
+        </div>
+        <div><app-model-content [model]="model" [compact]="true"></app-model-content></div>
     </div>
-</mat-toolbar>
-<div mat-dialog-content class="fadeIn">
-    <div class="padding"><app-model-content [model]="model"></app-model-content></div>
 </div>
