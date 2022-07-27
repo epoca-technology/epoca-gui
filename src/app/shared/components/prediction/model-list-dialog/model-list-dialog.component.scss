@@ -2,4 +2,8 @@
 .model-list-dialog {
     padding:10px;
     .divider { margin: 20px 0 20px 0}
+    .pred-model-header { 
+        img { max-width: 18px;margin-right:4px!important;}
+        h5 { font-size:16px!important;margin:0;}
+    }
 }

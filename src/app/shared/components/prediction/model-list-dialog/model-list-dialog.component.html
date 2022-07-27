@@ -12,13 +12,10 @@
             <div>
                 <!-- Model Header -->
                 <div fxLayout="row" fxLayoutAlign="center center" class="pred-model-header">
-                    <img src="assets/img/model_logos/{{types[model.id]}}.png" alt="Model Type">
-                    <div>
-                        <h5 [matTooltip]="model.id" 
-                            (click)="_clipboard.copy(model.id)" 
-                            class="clickable">{{model.id | stringOverview: 10}}</h5>
-                        <p class="model-type">{{types[model.id]}}</p>
-                    </div>
+                    <img src="assets/img/model_logos/{{types[model.id]}}.png" alt="Model Type" [matTooltip]="types[model.id]">
+                    <h5 [matTooltip]="model.id" 
+                        (click)="_clipboard.copy(model.id)" 
+                        class="clickable">{{model.id | stringOverview: 10}}</h5>
                     <span fxFlex></span>
                     <button mat-icon-button 
                         (click)="expanded[model.id] ? expanded[model.id] = false: expanded[model.id] = true">

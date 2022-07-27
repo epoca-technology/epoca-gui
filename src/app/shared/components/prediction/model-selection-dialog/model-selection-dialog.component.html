@@ -1,7 +1,7 @@
 <mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
     <div fxLayout="row" fxLayoutAlign="center center">
         <button mat-icon-button class="show-on-mobile" (click)="close()"><mat-icon>arrow_back</mat-icon></button>
-        <span>Model Selection ({{_selection.selectedList.length}})</span>
+        <span>Selection: {{_selection.selectedList.length}}</span>
         <span fxFlex></span>
         <button mat-icon-button [disabled]="!_selection.selectedList.length" (click)="_selection.copySelectionString()"><mat-icon>content_copy</mat-icon></button>
         <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
