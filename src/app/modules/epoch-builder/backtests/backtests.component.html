@@ -21,7 +21,12 @@
                     <mat-icon>{{sect.icon}}</mat-icon> {{sect.name}}
                 </button>
             </mat-list-item>
-            <div mat-subheader>Models</div>
+            <div mat-subheader>
+                Models&nbsp;
+                <mat-icon *ngIf="order == 'points'" class="order-icon" matTooltip="Ordered by points collected">query_stats</mat-icon>
+                <mat-icon *ngIf="order == 'point_medians'" class="order-icon" matTooltip="Ordered by the median of points collected.">vertical_align_center</mat-icon>
+                <mat-icon *ngIf="order == 'acc'" class="order-icon" matTooltip="Ordered by accuracy">ads_click</mat-icon>
+            </div>
             <mat-list-item *ngFor="let id of _backtest.modelIDs">
                 <button mat-button class="left-icon-button truncate" 
                         [disabled]="section.id == 'model' && modelID == id" 
@@ -29,11 +34,21 @@
                         <div fxLayout="row" fxLayoutAlign="start center">
                             <span class="truncate" style="max-width:80%">{{id | stringOverview: 10}}</span>
                             <span fxFlex></span>
-                            <div [ngClass]="{
-                                'square-badge': _backtest.performances[id].points == 0,
-                                'square-badge-success': _backtest.performances[id].points > 0,
-                                'square-badge-error': _backtest.performances[id].points < 0
-                            }"><span>{{_backtest.performances[id].points | number:'1.2-2'}}</span></div>
+                            <div *ngIf="order == 'points'" 
+                                [ngClass]="{
+                                    'square-badge': _backtest.performances[id].points == 0,
+                                    'square-badge-success': _backtest.performances[id].points > 0,
+                                    'square-badge-error': _backtest.performances[id].points < 0
+                                }"><span>{{_backtest.performances[id].points | number:'1.2-2'}}</span></div>
+                            <div *ngIf="order == 'point_medians'" 
+                                [ngClass]="{
+                                    'square-badge': _backtest.performances[id].points_median == 0,
+                                    'square-badge-success': _backtest.performances[id].points_median > 0,
+                                    'square-badge-error': _backtest.performances[id].points_median < 0
+                                }"><span>{{_backtest.performances[id].points_median | number:'1.2-2'}}</span></div>
+                            <div *ngIf="order == 'acc'" class="square-badge">
+                                <span>{{_backtest.performances[id].general_acc | number:'1.2-2'}}%</span>
+                            </div>
                         </div>
                 </button>
             </mat-list-item>
@@ -109,7 +124,12 @@
                                 <mat-icon>{{sect.icon}}</mat-icon> {{sect.name}}
                             </button>
                         </mat-list-item>
-                        <div mat-subheader>Models</div>
+                        <div mat-subheader>
+                            Models&nbsp;
+                            <mat-icon *ngIf="order == 'points'" class="order-icon" matTooltip="Ordered by points collected">query_stats</mat-icon>
+                            <mat-icon *ngIf="order == 'point_medians'" class="order-icon" matTooltip="Ordered by the median of points collected.">vertical_align_center</mat-icon>
+                            <mat-icon *ngIf="order == 'acc'" class="order-icon" matTooltip="Ordered by accuracy">ads_click</mat-icon>
+                        </div>
                         <mat-list-item *ngFor="let id of _backtest.modelIDs">
                             <button mat-button class="left-icon-button truncate" 
                                     [disabled]="section.id == 'model' && modelID == id" 
@@ -117,11 +137,21 @@
                                     <div fxLayout="row" fxLayoutAlign="start center">
                                         <span class="truncate" style="max-width:80%">{{id | stringOverview: 10}}</span>
                                         <span fxFlex></span>
-                                        <div [ngClass]="{
-                                            'square-badge': _backtest.performances[id].points == 0,
-                                            'square-badge-success': _backtest.performances[id].points > 0,
-                                            'square-badge-error': _backtest.performances[id].points < 0
-                                        }"><span>{{_backtest.performances[id].points | number:'1.2-2'}}</span></div>
+                                        <div *ngIf="order == 'points'" 
+                                            [ngClass]="{
+                                                'square-badge': _backtest.performances[id].points == 0,
+                                                'square-badge-success': _backtest.performances[id].points > 0,
+                                                'square-badge-error': _backtest.performances[id].points < 0
+                                            }"><span>{{_backtest.performances[id].points | number:'1.2-2'}}</span></div>
+                                        <div *ngIf="order == 'point_medians'" 
+                                            [ngClass]="{
+                                                'square-badge': _backtest.performances[id].points_median == 0,
+                                                'square-badge-success': _backtest.performances[id].points_median > 0,
+                                                'square-badge-error': _backtest.performances[id].points_median < 0
+                                            }"><span>{{_backtest.performances[id].points_median | number:'1.2-2'}}</span></div>
+                                        <div *ngIf="order == 'acc'" class="square-badge">
+                                            <span>{{_backtest.performances[id].general_acc | number:'1.2-2'}}%</span>
+                                        </div>
                                     </div>
                             </button>
                         </mat-list-item>
@@ -144,7 +174,7 @@
                                 <!-- Distribution -->
                                 <div class="desktop-card">
                                     <div fxLayout="row" fxLayoutAlign="center center">
-                                        <h3 class="show-on-desktop">Points Accumulated</h3>
+                                        <h4 class="show-on-desktop">Points Accumulated</h4>
                                         <span class="show-on-desktop" fxFlex></span>
                                         <div class="square-badge-success clickable" role="button"
                                             (click)="activateModel(_backtest.pointsMD.max.id)" 
@@ -176,7 +206,7 @@
                                 <!-- Lines - Only if there 40 models or less -->
                                 <div *ngIf="_backtest.modelIDs.length <= 40" class="desktop-card">
                                     <div fxLayout="row" fxLayoutAlign="center center">
-                                        <h3 class="show-on-desktop">Points Accumulation History</h3>
+                                        <h4 class="show-on-desktop">Points Accumulation History</h4>
                                         <span class="show-on-desktop" fxFlex></span>
                                         <div class="square-badge-success clickable" role="button"
                                             (click)="activateModel(_backtest.pointsHistoryMD.max.id)" 
@@ -204,11 +234,43 @@
                             </div>
 
                             <div *ngIf="section.id != 'points'" fxFlex="65" fxFlex.xs="100" fxflex.sm="100">
+                                <!-- Points Median -->
+                                <div *ngIf="section.id == 'points_median' && pointsMedianChart">
+                                    <div class="desktop-card">
+                                        <div fxLayout="row" fxLayoutAlign="center center">
+                                            <h4 class="show-on-desktop">Point Medians</h4>
+                                            <span class="show-on-desktop" fxFlex></span>
+                                            <div class="square-badge-success clickable" role="button" 
+                                                matTooltip="Best Points Median: {{_backtest.pointsMedianMD.max.id}}"
+                                                (click)="activateModel(_backtest.pointsMedianMD.max.id)">
+                                                Best: {{_backtest.pointsMedianMD.max.value}}
+                                            </div>
+                                            <div class="square-badge-error clickable" role="button" 
+                                                matTooltip="Worst Points Median: {{_backtest.pointsMedianMD.min.id}}"
+                                                (click)="activateModel(_backtest.pointsMedianMD.min.id)">
+                                                Worst: {{_backtest.pointsMedianMD.min.value}}
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <apx-chart
+                                                [series]="pointsMedianChart.series"
+                                                [chart]="pointsMedianChart.chart"
+                                                [plotOptions]="pointsMedianChart.plotOptions"
+                                                [xaxis]="pointsMedianChart.xaxis"
+                                                [dataLabels]="pointsMedianChart.dataLabels"
+                                                [colors]="pointsMedianChart.colors"
+                                                [grid]="pointsMedianChart.grid"
+                                                [legend]="{show: false}"
+                                            ></apx-chart>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <!-- Accuracy Section -->
                                 <div *ngIf="section.id == 'accuracy' && accuracyChart">
                                     <div class="desktop-card">
                                         <div fxLayout="row" fxLayoutAlign="center center">
-                                            <h3 class="show-on-desktop">Accuracy</h3>
+                                            <h4 class="show-on-desktop">Accuracy</h4>
                                             <span class="show-on-desktop" fxFlex></span>
                                             <button mat-icon-button 
                                                     [disabled]="viewBest" 
@@ -275,7 +337,7 @@
                                 <div *ngIf="section.id == 'positions' && positionsChart">
                                     <div class="desktop-card">
                                         <div fxLayout="row" fxLayoutAlign="center center">
-                                            <h3 class="show-on-desktop">Positions</h3>
+                                            <h4 class="show-on-desktop">Positions</h4>
                                             <span class="show-on-desktop" fxFlex></span>
                                             <button mat-icon-button 
                                                     [disabled]="viewBest" 
@@ -332,39 +394,6 @@
                                                 [colors]="positionsChart.colors"
                                                 [grid]="positionsChart.grid"
                                                 [legend]="{position: 'top'}"
-                                            ></apx-chart>
-                                        </div>
-                                    </div>
-                                </div>
-
-
-                                <!-- Duration Section -->
-                                <div *ngIf="section.id == 'duration' && durationChart">
-                                    <div class="desktop-card">
-                                        <div fxLayout="row" fxLayoutAlign="center center">
-                                            <h3 class="show-on-desktop">Backtest Duration</h3>
-                                            <span class="show-on-desktop" fxFlex></span>
-                                            <div class="square-badge clickable" role="button"
-                                                (click)="activateModel(_backtest.durationMD.min.id)" 
-                                                matTooltip="{{_backtest.durationMD.min.id}}">
-                                                Fastest: {{_backtest.durationMD.min.value}} mins
-                                            </div>
-                                            <div class="square-badge clickable" role="button" style="margin-left:5px;"
-                                                (click)="activateModel(_backtest.durationMD.max.id)" 
-                                                matTooltip="{{_backtest.durationMD.max.id}}">
-                                                Slowest: {{_backtest.durationMD.max.value}}
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <apx-chart
-                                                [series]="durationChart.series"
-                                                [chart]="durationChart.chart"
-                                                [plotOptions]="durationChart.plotOptions"
-                                                [xaxis]="durationChart.xaxis"
-                                                [dataLabels]="durationChart.dataLabels"
-                                                [colors]="durationChart.colors"
-                                                [grid]="durationChart.grid"
-                                                [legend]="{show: false}"
                                             ></apx-chart>
                                         </div>
                                     </div>
@@ -451,15 +480,6 @@
                                                          {{_backtest.backtests[modelID].idle_minutes_on_position_close}} mins
                                                     </p>
                                                 </div>
-
-                                                <!-- Model's Backtest Duration -->
-                                                <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
-                                                    <p class="light-text truncate">Model Backtest Duration</p>
-                                                    <span fxFlex></span>
-                                                    <p matTooltip="The number of minutes it took the model to complete the backtest.">
-                                                        {{_backtest.backtests[modelID].model_duration}} mins
-                                                    </p>
-                                               </div>
                                             </div>
 
                                             <div class="divider"></div>
@@ -468,38 +488,7 @@
                                             <div class="desktop-card">
                                                 <app-model-content [model]="_backtest.models[modelID]" [displayHeader]="true"></app-model-content>
                                             </div>
-                                        </div>
 
-                                        <span fxFlex></span>
-
-                                        <!-- Chart Cards-->
-                                        <div fxFlex="57" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
-                                            <!-- Divider for mobile-->
-                                            <div class="divider"></div>
-
-                                            <!-- Points -->
-                                            <div class="desktop-card points-card">
-                                                <div fxLayout="row" fxLayoutAlign="start center">
-                                                    <h4>Points</h4>
-                                                    <span fxFlex></span>
-                                                    <div class="square-badge show-on-desktop">High: {{modelPointsRange[modelID].max}}</div>
-                                                    <div class="square-badge show-on-desktop">Low: {{modelPointsRange[modelID].min}}</div>
-                                                    <div class="square-badge">Final: {{_backtest.performances[modelID].points}}</div>
-                                                </div>
-                                                <div class="points-chart">
-                                                    <apx-chart
-                                                        [series]="modelCharts[modelID].points.series"
-                                                        [chart]="modelCharts[modelID].points.chart"
-                                                        [plotOptions]="modelCharts[modelID].points.plotOptions"
-                                                        [xaxis]="modelCharts[modelID].points.xaxis"
-                                                        [dataLabels]="modelCharts[modelID].points.dataLabels"
-                                                        [colors]="modelCharts[modelID].points.colors"
-                                                        [grid]="modelCharts[modelID].points.grid"
-                                                        [legend]="{show: false}"
-                                                        [yaxis]="modelCharts[modelID].points.yaxis"
-                                                    ></apx-chart>
-                                                </div>
-                                            </div>
                                             <div class="divider"></div>
 
                                             <!-- Accuracy -->
@@ -523,28 +512,88 @@
                                                     [grid]="modelCharts[modelID].accuracy.grid"
                                                 ></apx-chart>
                                             </div>
+                                        </div>
+
+                                        <span fxFlex></span>
+
+                                        <!-- Chart Cards-->
+                                        <div fxFlex="57" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                                            <!-- Divider for mobile-->
                                             <div class="divider"></div>
 
-                                            <!-- Positions -->
-                                            <div class="desktop-card">
+                                            <!-- Points -->
+                                            <div class="desktop-card points-card">
                                                 <div fxLayout="row" fxLayoutAlign="start center">
-                                                    <h4 class="show-on-desktop">Positions</h4>
-                                                    <h4 class="show-on-mobile">Pos.</h4>
+                                                    <h4>Points</h4>
                                                     <span fxFlex></span>
-                                                    <div class="square-badge-success">{{_backtest.performances[modelID].long_num}}</div>
-                                                    <div class="square-badge-error">{{_backtest.performances[modelID].short_num}}</div>
-                                                    <div class="square-badge">{{_backtest.performances[modelID].positions.length}}</div>
+                                                    <div class="square-badge">Median: {{_backtest.performances[modelID].points_median}}</div>
+                                                    <div class="square-badge">Final: {{_backtest.performances[modelID].points}}</div>
                                                 </div>
-                                                <apx-chart
-                                                    [series]="modelCharts[modelID].positions.series"
-                                                    [chart]="modelCharts[modelID].positions.chart"
-                                                    [plotOptions]="modelCharts[modelID].positions.plotOptions"
-                                                    [xaxis]="modelCharts[modelID].positions.xaxis"
-                                                    [yaxis]="modelCharts[modelID].positions.yaxis"
-                                                    [dataLabels]="modelCharts[modelID].positions.dataLabels"
-                                                    [colors]="modelCharts[modelID].positions.colors"
-                                                    [grid]="modelCharts[modelID].positions.grid"
-                                                ></apx-chart>
+                                                <div class="points-chart">
+                                                    <apx-chart
+                                                        [series]="modelCharts[modelID].points.series"
+                                                        [chart]="modelCharts[modelID].points.chart"
+                                                        [plotOptions]="modelCharts[modelID].points.plotOptions"
+                                                        [xaxis]="modelCharts[modelID].points.xaxis"
+                                                        [dataLabels]="modelCharts[modelID].points.dataLabels"
+                                                        [colors]="modelCharts[modelID].points.colors"
+                                                        [grid]="modelCharts[modelID].points.grid"
+                                                        [legend]="{show: false}"
+                                                        [yaxis]="modelCharts[modelID].points.yaxis"
+                                                    ></apx-chart>
+                                                </div>
+                                            </div>
+                                            <div class="divider"></div>
+
+                                            <!-- Positions & Outcomes -->
+                                            <div class="positions-and-outcomes">
+                                                <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" class="full-width">
+                                                    <!-- Positions -->
+                                                    <div fxFlex="49">
+                                                        <div class="desktop-card">
+                                                            <div fxLayout="row" fxLayoutAlign="start center">
+                                                                <h4 class="show-on-desktop">Positions</h4>
+                                                                <h4 class="show-on-mobile">Pos.</h4>
+                                                                <span fxFlex></span>
+                                                                <div class="square-badge-success">{{_backtest.performances[modelID].long_num}}</div>
+                                                                <div class="square-badge-error">{{_backtest.performances[modelID].short_num}}</div>
+                                                                <div class="square-badge">{{_backtest.performances[modelID].positions.length}}</div>
+                                                            </div>
+                                                            <apx-chart
+                                                                [series]="modelCharts[modelID].positions.series"
+                                                                [chart]="modelCharts[modelID].positions.chart"
+                                                                [labels]="modelCharts[modelID].positions.labels"
+                                                                [colors]="modelCharts[modelID].positions.colors"
+                                                                [legend]="modelCharts[modelID].positions.legend"
+                                                                [responsive]="modelCharts[modelID].positions.responsive"
+                                                            ></apx-chart>
+                                                        </div>
+                                                    </div>
+                                                    <span fxFlex></span>
+                                                    <div class="divider"></div>
+                                                    
+                                                    <!-- Outcomes -->
+                                                    <div fxFlex="49">
+                                                        <div class="desktop-card">
+                                                            <div fxLayout="row" fxLayoutAlign="start center">
+                                                                <h4 class="show-on-desktop">Outcomes</h4>
+                                                                <h4 class="show-on-mobile">Out.</h4>
+                                                                <span fxFlex></span>
+                                                                <div class="square-badge-success">{{_backtest.performances[modelID].long_outcome_num}}</div>
+                                                                <div class="square-badge-error">{{_backtest.performances[modelID].short_outcome_num}}</div>
+                                                                <div class="square-badge">{{_backtest.performances[modelID].positions.length}}</div>
+                                                            </div>
+                                                            <apx-chart
+                                                                [series]="modelCharts[modelID].outcomes.series"
+                                                                [chart]="modelCharts[modelID].outcomes.chart"
+                                                                [labels]="modelCharts[modelID].outcomes.labels"
+                                                                [colors]="modelCharts[modelID].outcomes.colors"
+                                                                [legend]="modelCharts[modelID].outcomes.legend"
+                                                                [responsive]="modelCharts[modelID].outcomes.responsive"
+                                                            ></apx-chart>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

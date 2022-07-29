@@ -5,7 +5,7 @@ import {MatDialog} from '@angular/material/dialog';
 import { ApexAxisChartSeries } from 'ng-apexcharts';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
-import { IBacktestPosition, IModel, BacktestService, PredictionService, UtilsService } from '../../../core';
+import { IBacktestPosition, IModel, BacktestService, PredictionService, UtilsService, IBacktestOrder } from '../../../core';
 import { 
 	AppService, 
 	ChartService, 
@@ -20,6 +20,7 @@ import {
 } from '../../../services';
 import { BacktestPositionDialogComponent } from './backtest-position-dialog';
 import { IModelCharts, IBacktestsComponent, ISection } from './interfaces';
+import { BacktestConfigDialogComponent, IConfigResponse } from './backtest-config-dialog';
 
 @Component({
   selector: 'app-backtests',
@@ -42,12 +43,15 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 	public initialized: boolean = false;
 	public initializing: boolean = false;
 
+	// Backtests Order
+	public order: IBacktestOrder = "points";
+
 	// Sections
 	public readonly generalSections: ISection[] = [
 		{id: 'points', name: 'Points', icon: 'query_stats'},
+		{id: 'points_median', name: 'Points Median', icon: 'vertical_align_center'},
 		{id: 'accuracy', name: 'Accuracy', icon: 'ads_click'},
-		{id: 'positions', name: 'Positions', icon: 'format_list_numbered'},
-		{id: 'duration', name: 'Backtest Duration', icon: 'timer' },
+		{id: 'positions', name: 'Positions', icon: 'format_list_numbered'}
 	]
 	public modelID?: string = undefined;
 	public section: ISection = this.generalSections[0];
@@ -62,15 +66,15 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 	// Points
 	public pointsDistChart?: IBarChartOptions;
 	public pointsLineChart?: ILineChartOptions;
+	
+	// Points Median
+	public pointsMedianChart?: IBarChartOptions;
 
 	// Accuracy
 	public accuracyChart?: IBarChartOptions;
 
 	// Positions
 	public positionsChart?: IBarChartOptions;
-
-	// Duration
-	public durationChart?: IBarChartOptions;
 
 	// Model Charts
 	public modelCharts: {[modelID: string]: IModelCharts} = {};
@@ -134,30 +138,49 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 		// Abort the bottom sheet if there are no files
 		if (!event || !event.target || !event.target.files || !event.target.files.length) return;
 
-		// Display the bottom sheet and handle the action
-		this._nav.displayDialogMenu('Backtested Models', [
-			{icon: 'format_list_numbered', title: 'View all', response: 10000},
-			{icon: 'leaderboard', title: 'View top 5', response: 5},
-			{icon: 'leaderboard', title: 'View top 10', response: 10},
-			{icon: 'leaderboard', title: 'View top 20', response: 20},
-			{icon: 'leaderboard', title: 'View top 40', response: 40},
-			{icon: 'leaderboard', title: 'View top 60', response: 60},
-			{icon: 'leaderboard', title: 'View top 100', response: 100},
-			{icon: 'leaderboard', title: 'View top 150', response: 150},
-			{icon: 'leaderboard', title: 'View top 200', response: 200},
-		]).afterClosed().subscribe(async (response: any) => {
-			if (typeof response == "number") {
-				// Attempt to initiaze the backtests
+
+		// Open the configuration dialog
+		this.dialog.open(BacktestConfigDialogComponent, {
+			hasBackdrop: this._app.layout.value != 'mobile', // Mobile optimization
+			panelClass: 'small-dialog',
+			disableClose: true
+		}).afterClosed().subscribe(async (response: IConfigResponse|undefined) => {
+			if (response) {
+				// Attempt to initiaze the certificates
 				try {
 					// Pass the files to the service
-					await this._backtest.init(event, response);
+					await this._backtest.init(event, response.order, response.limit);
+
+					// Set the order
+					this.order = response.order;
 
 					// Activate default section
-					await this.activateSection(this.generalSections[0]);
+
+					// If it is 1 model, navigate straight to it
+					if (this._backtest.modelIDs.length == 1) {
+						// Navigate to the certificate
+						this.activateModel(this._backtest.modelIDs[0])
+					} 
+					
+					// Otherwise, activate the section based on the order
+					else { 
+						// Navigate to the selected evaluation
+						if (this.order == "points") {
+							await this.activateSection(this.generalSections[0]);
+						} else if (this.order == "point_medians") {
+							await this.activateSection(this.generalSections[1]);
+						} else {
+							await this.activateSection(this.generalSections[2]);
+						}
+					}
+
+					// Allow a small delay
+					await this._utils.asyncDelay(0.5);
 
 					// Mark the backtest as initialized
 					this.initialized = true;
 				} catch (e) {
+					this.fileInput.setValue('');
 					this._snackbar.error(e)
 				}
 			} else {
@@ -201,14 +224,13 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 		this.loaded = false;
 		this.viewBest = true;
 		this.pointsDistChart = undefined;
+		this.pointsMedianChart = undefined;
 		this.pointsLineChart = undefined;
 		this.accuracyChart = undefined;
 		this.positionsChart = undefined;
-		this.durationChart = undefined;
 		this.modelCharts = {};
 		this.modelPointsRange = {};
 		this.visiblePositions = 15;
-		this._selection.reset();
 	}
 
 
@@ -313,14 +335,14 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 		// Points
 		if (this.section.id == 'points' && (!this.pointsDistChart || !this.pointsLineChart)) { this.initPointsSection() }
 
+		// Points Median
+		else if (this.section.id == 'points_median' && !this.pointsMedianChart) { this.initPointsMedianSection() }
+
 		// Accuracy
 		else if (this.section.id == 'accuracy' && !this.accuracyChart) { this.initAccuracySection() }
 
 		// Positions
 		else if (this.section.id == 'positions' && !this.positionsChart) { this.initPositionsSection() }
-
-		// Duration
-		else if (this.section.id == 'duration' && !this.durationChart) { this.initDurationSection() }
 
 		// Model
 		else if (this.section.id == 'model' && this.modelID && !this.modelCharts[this.modelID]) { this.initModelCharts() }
@@ -374,6 +396,30 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 
 
 
+
+
+	// Initializes the points median section.
+	private initPointsMedianSection(): void {
+		// Init the chart data
+		let dist: ApexAxisChartSeries = [{name: 'Points Median',data: []}];
+
+		// Iterate over each model building the data
+		for (let i = 0; i < this._backtest.modelIDs.length; i++) {
+			dist[0].data.push(<any>this._backtest.performances[this._backtest.modelIDs[i]].points_median || 0);
+		}
+
+		// Create a copy of the instance to handle chart click events
+		const self = this;
+
+		// Build the dist chart options
+		this.pointsMedianChart = this._chart.getBarChartOptions({series: dist}, this._backtest.modelIDs, this.getBarChartHeight(), true);
+		this.pointsMedianChart.chart.events = {click: function(e, cc, c) {setTimeout(() => {self.activateModelByIndex(c.dataPointIndex)}, 100)}}
+	}
+
+
+
+
+
 	// Initializes the general accuracy section.
 	private initAccuracySection(): void {
 		// Init the chart data
@@ -422,22 +468,6 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 
 
 
-	// Initializes the general durations section
-	private initDurationSection(): void {
-		// Init the chart data
-		let series: ApexAxisChartSeries = [{name: 'Minutes', data: []}];
-
-		// Iterate over each model building the data
-		for (let id of this._backtest.modelIDs) {series[0].data.push(<any>this._backtest.backtests[id].model_duration)}
-
-		// Build the chart options
-		const self = this;
-		this.durationChart = this._chart.getBarChartOptions({series: series}, this._backtest.modelIDs, this.getBarChartHeight(), true);
-		this.durationChart.chart.events = {click: function(e, cc, c) {setTimeout(() => { self.activateModelByIndex(c.dataPointIndex) }, 100)}}
-	}
-
-
-
 
 	// Initializes the charts for a model
 	private initModelCharts(): void {
@@ -470,15 +500,22 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 				colors: [this._chart.upwardColor, this._chart.downwardColor, '#000000'],
 				yaxis: {labels: {show: false}}
 			}, [this.modelID!], 150),
-			positions: this._chart.getBarChartOptions({
+			positions: this._chart.getPieChartOptions({
 				series: [
-					{name:'Longs',data:[this._backtest.performances[this.modelID!].long_num]},
-					{name:'Shorts',data:[this._backtest.performances[this.modelID!].short_num]},
-					{name:'Total',data:[this._backtest.performances[this.modelID!].positions.length]}
+					this._backtest.performances[this.modelID!].long_num || 0, 
+					this._backtest.performances[this.modelID!].short_num || 0
 				],
-				colors: [this._chart.upwardColor, this._chart.downwardColor, '#000000'],
-				yaxis: {labels: {show: false}}
-			}, [this.modelID!], 150)
+				colors: [this._chart.upwardColor, this._chart.downwardColor],
+				legend: {show: false}
+			}, ["Longs", "Shorts"], 280),
+			outcomes: this._chart.getPieChartOptions({
+				series: [
+					this._backtest.performances[this.modelID!].long_outcome_num || 0, 
+					this._backtest.performances[this.modelID!].short_outcome_num || 0
+				],
+				colors: [this._chart.upwardColor, this._chart.downwardColor],
+				legend: {show: false}
+			}, ["Longs", "Shorts"], 280)
 		}
 	}
 
@@ -587,6 +624,7 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 		// PERFORMANCE
 		sum += `PERFORMANCE:\n`;
 		sum += `Points: ${this._backtest.performances[model.id].points}\n`;
+		sum += `Points Median: ${this._backtest.performances[model.id].points_median}\n`;
 		sum += `Accuracy:\n`;
 		sum += `- General: ${this._backtest.performances[model.id].general_acc}%\n`;
 		sum += `- Long: ${this._backtest.performances[model.id].long_acc}%\n`;

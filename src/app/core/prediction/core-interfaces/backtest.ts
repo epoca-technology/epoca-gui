@@ -72,8 +72,9 @@ import { IModel, IPrediction } from "./model";
   */
  export interface IBacktestPerformance {
      // Points
-     points: number,         // Total Points Accumulated
-     points_hist: number[],  // Historical fluctuation of points
+     points: number,           // Total Points Accumulated
+     points_hist: number[],    // Historical fluctuation of points
+     points_median: number,  // The median of the points collected during the backtest
  
      // Positions List
      positions: IBacktestPosition[],
@@ -81,6 +82,10 @@ import { IModel, IPrediction } from "./model";
      // Counts
      long_num: number,
      short_num: number,
+
+     // Outcome Counts
+     long_outcome_num: number,
+     short_outcome_num: number,
  
      // Accuracy
      long_acc: number,

@@ -1,5 +1,5 @@
 import { IBacktestPosition } from "../../../core";
-import { IBarChartOptions } from "../../../services";
+import { IBarChartOptions, IPieChartOptions } from "../../../services";
 
 
 // Service
@@ -25,7 +25,7 @@ export interface IBacktestsComponent {
 
 
 // View Sections
-export type ISectionID = 'points'|'accuracy'|'positions'|'duration'|'model';
+export type ISectionID = 'points'|'points_median'|'accuracy'|'positions'|'model';
 export interface ISection {
     id: ISectionID,
     name: string,
@@ -38,5 +38,6 @@ export interface ISection {
 export interface IModelCharts {
     points: IBarChartOptions,
     accuracy: IBarChartOptions,
-    positions: IBarChartOptions,
+    positions: IPieChartOptions,
+    outcomes: IPieChartOptions,
 }

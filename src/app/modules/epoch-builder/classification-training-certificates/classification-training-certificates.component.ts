@@ -83,6 +83,7 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 	}
 	public section: ISection = this.generalSections[0];
 	public cert?: IClassificationTrainingCertificate;
+	public model?: IModel;
 	public activeClassTabIndex: number = 0;
 	public activeTabIndex: number = 0;
 
@@ -205,7 +206,7 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 						// Navigate to the selected evaluation
 						if (this.order == "general_points") {
 							await this.navigate('general_evaluations');
-						} else if (this.order == "class_eval_acc" || this.order == "class_eval_points") {
+						} else if (this.order == "class_eval_points") {
 							await this.navigate('class_evaluations');
 						} else {
 							await this.navigate('evaluations');
@@ -243,7 +244,6 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 		this.initialized = false;
 		this.initializing = false;
 		this.fileInput.setValue('');
-		this._selection.reset();
 	}
 
 
@@ -281,6 +281,7 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 		if (sectionID != 'certificate') {
 			this.section = this.generalSections[this.generalSectionIndex[sectionID]];
 			this.cert = undefined;
+			this.model = undefined;
 			this.activeClassTabIndex = 0;
 			this.activeTabIndex = 0;
 			this.activeGeneralEvaluationCategory = undefined;
@@ -291,6 +292,14 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 		// Navigate to a certificate
 		else if (sectionID == 'certificate' && typeof certIndex == "number") {
 			this.cert = this._training.certificates[certIndex];
+			this.model = {
+				id: this.cert.id,
+				classification_models: [{
+					classification_id: this.cert.id,
+					interpreter: { min_probability: 0.6},
+					classification: this.cert.classification_config
+				}]
+			}
 			this.buildCertificateCharts();
 			this.section = {id: "certificate", name: this.cert.id};
 		}
@@ -679,7 +688,7 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 		const {colors, values} = this._chart.getModelPointsValues(this.cert!.classification_evaluation.positions)
 		this.classPoints = this._chart.getBarChartOptions({
 			series: [{name: this.cert!.id,data: values}],
-			chart: {height: 293, type: 'bar',animations: { enabled: false}, toolbar: {show: true,tools: {download: false}}},
+			chart: {height: 350, type: 'bar',animations: { enabled: false}, toolbar: {show: true,tools: {download: false}}},
 			plotOptions: {bar: {borderRadius: 0, horizontal: false, distributed: true,}},
 			colors: colors,
 			grid: {show: true},
@@ -785,14 +794,7 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 			hasBackdrop: this._app.layout.value != 'mobile', // Mobile optimization
 			panelClass: 'small-dialog',
 				data: {
-					model: <IModel>{
-						id: this.cert!.id,
-						classification_models: [{
-							classification_id: this.cert!.id,
-							interpreter: { min_probability: 0.6},
-							classification: this.cert!.classification_config
-						}]
-					},
+					model: this.model,
 					position: position
 				}
 		})

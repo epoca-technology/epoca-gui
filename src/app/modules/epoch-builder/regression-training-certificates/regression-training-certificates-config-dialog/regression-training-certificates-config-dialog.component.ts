@@ -18,15 +18,9 @@ export class RegressionTrainingCertificatesConfigDialogComponent implements IReg
 			icon: "query_stats"
 		},
 		{
-			id: "reg_eval_acc", 
-			name: "Regr. Evaluation Accuracy", 
-			description: "Certificates will be ordered by the general accuracy achieved during the Regression Evaluation.",
-			icon: "rule"
-		},
-		{
 			id: "reg_eval_points", 
 			name: "Regr. Evaluation Points", 
-			description: "Certificates will be ordered by the points received during the Regression Evaluation.",
+			description: "Certificates will be ordered by the point medians received during the Regression Evaluation.",
 			icon: "attach_money"
 		}
 	]

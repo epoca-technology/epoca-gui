@@ -18,12 +18,12 @@ export interface IBacktestService {
     // General Section Metadata Properties
     pointsMD: IPointsMetadata,
     pointsHistoryMD: IPointsHistoryMetadata,
+    pointsMedianMD: IPointsMedianMetadata,
     accuracyMD: IAccuracyMetadata,
     positionsMD: IPositionsMetadata,
-    durationMD: IDurationMetadata,
 
     // Initialization
-    init(event: any): Promise<void>,
+    init(event: any, order: IBacktestOrder, limit?: number): Promise<void>,
     resetBacktestResults(): void,
 }
 
@@ -85,6 +85,8 @@ export interface IPointsMetadata extends IBacktestMetadata { }
 export interface IPointsHistoryMetadata extends IBacktestMetadata { }
 
 
+export interface IPointsMedianMetadata extends IBacktestMetadata { }
+
 
 /* Accuracy */
 
@@ -101,13 +103,18 @@ export interface IPositionsMetadata extends IAccuracyMetadata { }
 
 
 
-/* Duration */
-
-export interface IDurationMetadata extends IBacktestMetadata { }
 
 
 
-
-
+/**
+ * Order Types
+ * Models arent easy to evaluate as there are many factors that 
+ * could determine their efficiency and therefore, when making decisions, 
+ * trained models should be visualized with all 3 orders.
+ * 1) points: backtests are ordered by the points collected.
+ * 2) point_medians: backtests are ordered by the median of the points collected.
+ * 3) acc: backtests are ordered by their general accuracy
+ */
+ export type IBacktestOrder = "points"|"point_medians"|"acc";
 
 

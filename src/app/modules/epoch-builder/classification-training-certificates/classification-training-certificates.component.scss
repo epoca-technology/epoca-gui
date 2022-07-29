@@ -27,7 +27,7 @@
 
 
     .general-sections {
-        h3 {margin:0;}
+        h4 {margin:0;}
         .class_evaluations {
 
         }
@@ -41,10 +41,9 @@
 
 
     .certificate-section {
-        h3 {margin: 0}
         h4 {margin: 0}
         p {margin:0}
-        .early-stopping { margin: 15px 0 0 0; color:var(--error-color); text-align: center;}
+        .early-stopping { margin: 20px 0 0 0; color:var(--error-color); text-align: center;}
         .margin-top { margin-top:20px!important;}
         .summary-content {
             padding:15px;
@@ -63,7 +62,10 @@
                 .categories-content {
                     .divider { margin: 20px 0 20px 0;}
                     .category {
-                        .category-header {padding: 25px 15px 25px 15px;}
+                        .category-header {
+                            padding: 25px 15px 25px 15px;
+                            h5 { font-size:17px!important; }
+                        }
                         .divider { margin:0;}
     
                         .item {
@@ -130,6 +132,12 @@
                 .decrease-intensity-3 { background: #E57373}
                 .decrease-intensity-4 { background: #E53935}
                 .decrease-intensity-5 { background: #B71C1C}
+            }
+
+            .positions-and-outcomes {
+                .desktop-card {
+                    margin:0;
+                }
             }
         }
 

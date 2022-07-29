@@ -8,27 +8,25 @@
 </mat-toolbar>
 <div mat-dialog-content>
     <div class="model-list-dialog">
-        <div *ngFor="let model of models; last as lastModel">
-            <div>
-                <!-- Model Header -->
-                <div fxLayout="row" fxLayoutAlign="center center" class="pred-model-header">
-                    <img src="assets/img/model_logos/{{types[model.id]}}.png" alt="Model Type" [matTooltip]="types[model.id]">
-                    <h5 [matTooltip]="model.id" 
-                        (click)="_clipboard.copy(model.id)" 
-                        class="clickable">{{model.id | stringOverview: 10}}</h5>
-                    <span fxFlex></span>
-                    <button mat-icon-button 
-                        (click)="expanded[model.id] ? expanded[model.id] = false: expanded[model.id] = true">
-                        <mat-icon>{{expanded[model.id] ? 'expand_less': 'expand_more'}}</mat-icon>
-                    </button>
-                </div>
-
-                <!-- Model Content -->
-                <div *ngIf="expanded[model.id]" class="fadeIn">
-                    <app-model-content [model]="model" [compact]="_app.layout.value == 'mobile'"></app-model-content>
-                </div>
+        <div *ngFor="let model of models; last as lastModel" class="model-item">
+            <!-- Model Header -->
+            <div fxLayout="row" fxLayoutAlign="center center" class="pred-model-header">
+                <img src="assets/img/model_logos/{{types[model.id]}}.png" alt="Model Type" [matTooltip]="types[model.id]">
+                <h5 [matTooltip]="model.id" 
+                    (click)="_clipboard.copy(model.id)" 
+                    class="clickable">{{model.id | stringOverview: 10}}</h5>
+                <span fxFlex></span>
+                <button mat-icon-button 
+                    (click)="expanded[model.id] ? expanded[model.id] = false: expanded[model.id] = true">
+                    <mat-icon>{{expanded[model.id] ? 'expand_less': 'expand_more'}}</mat-icon>
+                </button>
             </div>
-            <div class="divider" *ngIf="!lastModel"></div>
+
+            <!-- Model Content -->
+            <div *ngIf="expanded[model.id]" class="fadeIn">
+                <app-model-content [model]="model" [compact]="_app.layout.value == 'mobile'"></app-model-content>
+                <div *ngIf="!lastModel" class="divider"></div>
+            </div> 
         </div>
     </div>
 </div>

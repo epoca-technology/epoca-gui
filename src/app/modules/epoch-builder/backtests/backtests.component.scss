@@ -7,6 +7,8 @@
 .square-badge-error { margin-left:5px!important;}
 
 
+.order-icon { color: var(--light-text-color); font-size:17px;padding-top:7px;}
+
 .badges-title {
     margin: 0 0 0 5px;
     font-size:13px;
@@ -48,7 +50,7 @@
     padding:15px;
 
     
-    h3 {margin:0;padding:0}
+    h4 {margin:0;padding:0}
 
 
 }
@@ -67,6 +69,12 @@
     .points-card {
         .points-chart{
             margin-top:5px;
+        }
+    }
+
+    .positions-and-outcomes {
+        .desktop-card {
+            margin:0;
         }
     }
 }

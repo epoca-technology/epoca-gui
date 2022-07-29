@@ -19,15 +19,9 @@ export class ClassificationTrainingCertificatesConfigDialogComponent implements 
 			icon: "query_stats"
 		},
 		{
-			id: "class_eval_acc", 
-			name: "Class. Evaluation Accuracy", 
-			description: "Certificates will be ordered by the general accuracy achieved during the Classification Evaluation.",
-			icon: "rule"
-		},
-		{
 			id: "class_eval_points", 
 			name: "Class. Evaluation Points", 
-			description: "Certificates will be ordered by the points received during the Classification Evaluation.",
+			description: "Certificates will be ordered by the point medians received during the Classification Evaluation.",
 			icon: "attach_money"
 		},
 		{

@@ -27,7 +27,7 @@
 
 
     .general-sections {
-        h3 {margin:0;}
+        h4 {margin:0;}
         .reg_evaluations {
 
         }
@@ -38,10 +38,9 @@
 
 
     .certificate-section {
-        h3 {margin: 0}
         h4 {margin: 0}
         p {margin:0}
-        .early-stopping { margin: 15px 0 0 0; color:var(--error-color); text-align: center;}
+        .early-stopping { margin: 20px 0 0 0; color:var(--error-color); text-align: center;}
         .margin-top { margin-top:20px!important;}
         .summary-content {
             padding:15px;
@@ -73,8 +72,13 @@
 
             .predicted-trends-container {
                 padding:0px!important;
-                h3 {padding:15px;}
+                h4 {padding:15px 0 15px 15px;}
+            }
 
+            .positions-and-outcomes {
+                .desktop-card {
+                    margin:0;
+                }
             }
         }
 
@@ -111,6 +115,7 @@
 @media only screen and (max-width: 959px) {
     .general-header { padding: 0px!important;}
     .item {padding:10px 0px 10px 0px!important;}
+    .predicted-trends-container {h4 {padding:15px 0 15px 0px!important;}}
 }
 
 

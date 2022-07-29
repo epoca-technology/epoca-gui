@@ -1,0 +1,26 @@
+
+
+.component-container {
+    .divider {margin: 0!important;}
+    .order {
+        .order-content{
+            padding:15px;
+            h5 { margin: 0}
+            p { margin:0 }
+        }
+        .inactive-order { opacity: 0.3;}
+
+        .qty-container {
+            margin-bottom:15px;
+            .square-badge {
+                color:inherit;
+                background-color: #E0E0E0;
+                font-weight: 500;
+                min-width:40px;
+            }
+            .square-badge:hover { background-color: #BDBDBD; }
+        }
+    }
+    .order:first-child {margin-top:0px!important;}
+    .order:last-child {margin-bottom:0px!important;}
+}

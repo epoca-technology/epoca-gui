@@ -24,7 +24,6 @@
             <div mat-subheader>
                 Certificates&nbsp;
                 <mat-icon *ngIf="order == 'general_points'" class="order-icon" matTooltip="Ordered by General Points">query_stats</mat-icon>
-                <mat-icon *ngIf="order == 'class_eval_acc'" class="order-icon" matTooltip="Ordered by Classification Evaluation Accuracy">rule</mat-icon>
                 <mat-icon *ngIf="order == 'class_eval_points'" class="order-icon" matTooltip="Ordered by Classification Evaluation Points">attach_money</mat-icon>
                 <mat-icon *ngIf="order == 'test_ds_acc'" class="order-icon" matTooltip="Ordered by Test Dataset Evaluation Accuracy">playlist_add_check</mat-icon>
             </div>
@@ -38,7 +37,6 @@
                             <div *ngIf="order == 'general_points'" 
                                 [ngClass]="certificate.general.state_class" 
                                 class="square-badge"><span>{{certificate.general.points | number: '1.2-2'}}</span></div>
-                            <div *ngIf="order == 'class_eval_acc'" class="square-badge"><span>{{certificate.classification_evaluation.acc | number: '1.2-2'}}%</span></div>
                             <div *ngIf="order == 'class_eval_points'"
                                 [ngClass]="{
                                     'square-badge': certificate.classification_evaluation.points_median == 0,
@@ -129,7 +127,6 @@
                         <div mat-subheader>
                             Certificates&nbsp;
                             <mat-icon *ngIf="order == 'general_points'" class="order-icon" matTooltip="Ordered by General Points">query_stats</mat-icon>
-                            <mat-icon *ngIf="order == 'class_eval_acc'" class="order-icon" matTooltip="Ordered by Classification Evaluation Accuracy">rule</mat-icon>
                             <mat-icon *ngIf="order == 'class_eval_points'" class="order-icon" matTooltip="Ordered by Classification Evaluation Points">attach_money</mat-icon>
                             <mat-icon *ngIf="order == 'test_ds_acc'" class="order-icon" matTooltip="Ordered by Test Dataset Evaluation Accuracy">playlist_add_check</mat-icon>
                         </div>
@@ -143,7 +140,6 @@
                                         <div *ngIf="order == 'general_points'" 
                                         [ngClass]="certificate.general.state_class" 
                                         class="square-badge"><span>{{certificate.general.points | number: '1.2-2'}}</span></div>
-                                        <div *ngIf="order == 'class_eval_acc'" class="square-badge"><span>{{certificate.classification_evaluation.acc | number: '1.2-2'}}%</span></div>
                                         <div *ngIf="order == 'class_eval_points'"
                                             [ngClass]="{
                                                 'square-badge': certificate.classification_evaluation.points_median == 0,
@@ -180,7 +176,7 @@
                                     <div fxFlex="60" fxFlex.xs="100" fxFlex.sm="100">
                                         <div class="desktop-card">
                                             <div fxLayout="row" fxLayoutAlign="center center" class="badged-header">
-                                                <h3 class="show-on-desktop">General Evaluations</h3>
+                                                <h4 class="show-on-desktop">General Evaluations</h4>
                                                 <span class="show-on-desktop" fxFlex></span>
                                                 <div class="square-badge clickable" role="button"
                                                     (click)="navigate('certificate', _training.pointsMetadata.best.index)"
@@ -216,18 +212,18 @@
                                 <!-- Tabs Navigation-->
                                 <mat-tab-group *ngIf="layout == 'mobile'" 
                                             [selectedIndex]="activeClassTabIndex" (selectedIndexChange)="activeClassTabIndex = $event"
-                                            class="mat-elevation-z3" backgroundColor="primary">
+                                            mat-stretch-tabs class="mat-elevation-z3" backgroundColor="primary">
+                                            <mat-tab><ng-template mat-tab-label><mat-icon>attach_money</mat-icon></ng-template></mat-tab>
                                     <mat-tab><ng-template mat-tab-label><mat-icon>ads_click</mat-icon></ng-template></mat-tab>
-                                    <mat-tab><ng-template mat-tab-label><mat-icon>attach_money</mat-icon></ng-template></mat-tab>
                                     <mat-tab><ng-template mat-tab-label><mat-icon svgIcon="wand_magic_sparkles" class="wand-icon"></mat-icon></ng-template></mat-tab>
                                     <mat-tab><ng-template mat-tab-label><mat-icon>trending_up</mat-icon></ng-template></mat-tab>
                                     <mat-tab><ng-template mat-tab-label><mat-icon>trending_down</mat-icon></ng-template></mat-tab>
                                 </mat-tab-group>
                                 <mat-tab-group *ngIf="layout == 'desktop'"  
                                                 [selectedIndex]="activeClassTabIndex" (selectedIndexChange)="activeClassTabIndex = $event" 
-                                                mat-align-tabs="center">
-                                    <mat-tab><ng-template mat-tab-label><mat-icon>ads_click</mat-icon>&nbsp;Accuracies</ng-template></mat-tab>            
-                                    <mat-tab><ng-template mat-tab-label><mat-icon>attach_money</mat-icon>&nbsp;Points</ng-template></mat-tab>               
+                                                mat-align-tabs="center">        
+                                    <mat-tab><ng-template mat-tab-label><mat-icon>attach_money</mat-icon>&nbsp;Point Medians</ng-template></mat-tab>   
+                                    <mat-tab><ng-template mat-tab-label><mat-icon>ads_click</mat-icon>&nbsp;Accuracies</ng-template></mat-tab>                
                                     <mat-tab><ng-template mat-tab-label><mat-icon svgIcon="wand_magic_sparkles" class="wand-icon"></mat-icon>&nbsp;Predictions</ng-template></mat-tab>         
                                     <mat-tab><ng-template mat-tab-label><mat-icon>trending_up</mat-icon>&nbsp;Increase Probs.</ng-template></mat-tab>            
                                     <mat-tab><ng-template mat-tab-label><mat-icon>trending_down</mat-icon>&nbsp;Decrease Probs.</ng-template></mat-tab>            
@@ -236,13 +232,49 @@
                                 <!-- General Classification Content-->
                                 <div class="padding">
 
-                                    <!-- Accuracies-->
+                                    <!-- Points-->
                                     <div *ngIf="activeClassTabIndex == 0">
                                         <div fxLayout="row" fxLayoutAlign="center center">
                                             <div fxFlex="60" fxFlex.xs="100" fxFlex.sm="100">
                                                 <div class="desktop-card">
                                                     <div fxLayout="row" fxLayoutAlign="center center" class="badged-header">
-                                                        <h3 class="show-on-desktop">Accuracies</h3>
+                                                        <h4 class="show-on-desktop">Point Medians</h4>
+                                                        <span class="show-on-desktop" fxFlex></span>
+                                                        <div class="square-badge clickable" role="button"
+                                                            (click)="navigate('certificate', _training.classPointsMetadata.best.index)"
+                                                            matTooltip="Best Points: {{_training.classPointsMetadata.best.id}}">
+                                                            Best: {{_training.classPointsMetadata.best.value | number: '1.2-3'}}
+                                                        </div>
+                                                        <div class="square-badge clickable lowest" role="button"
+                                                            (click)="navigate('certificate', _training.classPointsMetadata.worst.index)"
+                                                            matTooltip="Worst Points: {{_training.classPointsMetadata.worst.id}}">
+                                                            Worst: {{_training.classPointsMetadata.worst.value | number: '1.0-2'}}
+                                                        </div>
+                                                    </div>
+                                                    <div class="margin-top">
+                                                        <apx-chart
+                                                            [series]="classGeneralPoints.series"
+                                                            [chart]="classGeneralPoints.chart"
+                                                            [plotOptions]="classGeneralPoints.plotOptions"
+                                                            [xaxis]="classGeneralPoints.xaxis"
+                                                            [yaxis]="classGeneralPoints.yaxis"
+                                                            [dataLabels]="classGeneralPoints.dataLabels"
+                                                            [colors]="classGeneralPoints.colors"
+                                                            [grid]="classGeneralPoints.grid"
+                                                        ></apx-chart>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Accuracies-->
+                                    <div *ngIf="activeClassTabIndex == 1">
+                                        <div fxLayout="row" fxLayoutAlign="center center">
+                                            <div fxFlex="60" fxFlex.xs="100" fxFlex.sm="100">
+                                                <div class="desktop-card">
+                                                    <div fxLayout="row" fxLayoutAlign="center center" class="badged-header">
+                                                        <h4 class="show-on-desktop">Accuracies</h4>
                                                         <span class="show-on-desktop" fxFlex></span>
                                                         <div class="square-badge clickable" role="button"
                                                             (click)="navigate('certificate', _training.accuraciesMetadata.best.index)"
@@ -274,50 +306,13 @@
                                     </div>
 
 
-                                    <!-- Points-->
-                                    <div *ngIf="activeClassTabIndex == 1">
-                                        <div fxLayout="row" fxLayoutAlign="center center">
-                                            <div fxFlex="60" fxFlex.xs="100" fxFlex.sm="100">
-                                                <div class="desktop-card">
-                                                    <div fxLayout="row" fxLayoutAlign="center center" class="badged-header">
-                                                        <h3 class="show-on-desktop">Points</h3>
-                                                        <span class="show-on-desktop" fxFlex></span>
-                                                        <div class="square-badge clickable" role="button"
-                                                            (click)="navigate('certificate', _training.classPointsMetadata.best.index)"
-                                                            matTooltip="Best Points: {{_training.classPointsMetadata.best.id}}">
-                                                            Best: {{_training.classPointsMetadata.best.value | number: '1.2-3'}}
-                                                        </div>
-                                                        <div class="square-badge clickable lowest" role="button"
-                                                            (click)="navigate('certificate', _training.classPointsMetadata.worst.index)"
-                                                            matTooltip="Worst Points: {{_training.classPointsMetadata.worst.id}}">
-                                                            Worst: {{_training.classPointsMetadata.worst.value | number: '1.0-2'}}
-                                                        </div>
-                                                    </div>
-                                                    <div class="margin-top">
-                                                        <apx-chart
-                                                            [series]="classGeneralPoints.series"
-                                                            [chart]="classGeneralPoints.chart"
-                                                            [plotOptions]="classGeneralPoints.plotOptions"
-                                                            [xaxis]="classGeneralPoints.xaxis"
-                                                            [yaxis]="classGeneralPoints.yaxis"
-                                                            [dataLabels]="classGeneralPoints.dataLabels"
-                                                            [colors]="classGeneralPoints.colors"
-                                                            [grid]="classGeneralPoints.grid"
-                                                        ></apx-chart>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-
                                     <!-- Predictions -->
                                     <div *ngIf="activeClassTabIndex == 2">
                                         <div fxLayout="row" fxLayoutAlign="center center">
                                             <div fxFlex="60" fxFlex.xs="100" fxFlex.sm="100">
                                                 <div class="desktop-card">
                                                     <div fxLayout="row" fxLayoutAlign="center center" class="badged-header">
-                                                        <h3 class="show-on-desktop">Predictions</h3>
+                                                        <h4 class="show-on-desktop">Predictions</h4>
                                                         <span class="show-on-desktop" fxFlex></span>
                                                         <div class="square-badge clickable" role="button"
                                                             (click)="navigate('certificate', _training.predictionsMetadata.highest.index)"
@@ -354,7 +349,7 @@
                                             <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
                                                 <div class="desktop-card">
                                                     <div fxLayout="row" fxLayoutAlign="center center" class="badged-header">
-                                                        <h3 class="truncate">{{layout == 'desktop' ? 'Increase Probabilities': 'Incr. Prob.'}}</h3>
+                                                        <h4 class="truncate">{{layout == 'desktop' ? 'Increase Probabilities': 'Incr. Prob.'}}</h4>
                                                         <span fxFlex></span>
                                                         <div class="square-badge-success clickable" role="button"
                                                             (click)="navigate('certificate', _training.increaseProbsMetadata.highest.index)"
@@ -388,7 +383,7 @@
                                             <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
                                                 <div class="desktop-card">
                                                     <div fxLayout="row" fxLayoutAlign="center center" class="badged-header">
-                                                        <h3 class="truncate">{{layout == 'desktop' ? 'Successful Increase Probabilities': 'Succ. Incr. Prob.'}}</h3>
+                                                        <h4 class="truncate">{{layout == 'desktop' ? 'Successful Increase Probabilities': 'Succ. Incr. Prob.'}}</h4>
                                                         <span fxFlex></span>
                                                         <div class="square-badge-success clickable" role="button"
                                                             (click)="navigate('certificate', _training.successfulIncreaseProbsMetadata.highest.index)"
@@ -425,7 +420,7 @@
                                             <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
                                                 <div class="desktop-card">
                                                     <div fxLayout="row" fxLayoutAlign="center center" class="badged-header">
-                                                        <h3 class="truncate">{{layout == 'desktop' ? 'Decrease Probabilities': 'Decr. Prob.'}}</h3>
+                                                        <h4 class="truncate">{{layout == 'desktop' ? 'Decrease Probabilities': 'Decr. Prob.'}}</h4>
                                                         <span fxFlex></span>
                                                         <div class="square-badge-error clickable" role="button"
                                                             (click)="navigate('certificate', _training.decreaseProbsMetadata.highest.index)"
@@ -459,7 +454,7 @@
                                             <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
                                                 <div class="desktop-card">
                                                     <div fxLayout="row" fxLayoutAlign="center center" class="badged-header">
-                                                        <h3 class="truncate">{{layout == 'desktop' ? 'Successful Decrease Probabilities': 'Succ. Incr. Prob.'}}</h3>
+                                                        <h4 class="truncate">{{layout == 'desktop' ? 'Successful Decrease Probabilities': 'Succ. Incr. Prob.'}}</h4>
                                                         <span fxFlex></span>
                                                         <div class="square-badge-error clickable" role="button"
                                                             (click)="navigate('certificate', _training.successfulDecreaseProbsMetadata.highest.index)"
@@ -498,7 +493,7 @@
                                     <div fxFlex="60" fxFlex.xs="100" fxFlex.sm="100">
                                         <div class="desktop-card">
                                             <div fxLayout="row" fxLayoutAlign="center center" class="badged-header">
-                                                <h3 class="show-on-desktop">Test DS Evaluations</h3>
+                                                <h4 class="show-on-desktop">Test DS Evaluations</h4>
                                                 <span class="show-on-desktop" fxFlex></span>
                                                 <div class="square-badge-success clickable" role="button"
                                                     (click)="navigate('certificate', _training.testDSMetadata.best.index)"
@@ -535,7 +530,7 @@
                                     <div fxFlex="60" fxFlex.xs="100" fxFlex.sm="100">
                                         <div class="desktop-card">
                                             <div fxLayout="row" fxLayoutAlign="center center" class="badged-header">
-                                                <h3 class="show-on-desktop">Epochs</h3>
+                                                <h4 class="show-on-desktop">Epochs</h4>
                                                 <span class="show-on-desktop" fxFlex></span>
                                                 <div class="square-badge clickable" role="button"
                                                     (click)="navigate('certificate', _training.epochsMetadata.highest.index)"
@@ -568,7 +563,7 @@
     
                         <!-- Certificate Section -->
                         <div class="certificate-section" 
-                            *ngIf="section.id == 'certificate' && cert && testDSEvaluation && testDSLoss && testDSAccuracy && 
+                            *ngIf="section.id == 'certificate' && cert && model && testDSEvaluation && testDSLoss && testDSAccuracy && 
                             classAccuracy && classPoints && classPrediction && classOutcome">
                             <!-- Tabs Navigation-->
                             <mat-tab-group *ngIf="layout == 'mobile'" 
@@ -603,7 +598,7 @@
                                         <!-- Training Certificate -->
                                         <div class="desktop-card">
                                             <div class="certificate-header badged-header" fxLayout="row" fxLayoutAlign="start center">
-                                                <h3 class="truncate">{{layout == 'desktop' ? "Certificate": "Cert."}}</h3>
+                                                <h4 class="truncate">{{layout == 'desktop' ? "Certificate": "Cert."}}</h4>
                                                 <span fxFlex></span>
                                                 <div class="square-badge clickable" role="button" 
                                                     matTooltip="Test Dataset Evaluation Accuracy" 
@@ -664,7 +659,7 @@
                                         <!-- Training Data -->
                                         <div class="desktop-card">
                                             <div fxLayout="row" fxLayoutAlign="start start">
-                                                <h3 class="truncate">Training Data</h3>
+                                                <h4 class="truncate">Training Data</h4>
                                                 <span fxFlex></span>
                                                 <div class="square-badge" 
                                                     matTooltip="Steps: The number of prediction candlesticks it will skip for every position when building
@@ -758,7 +753,7 @@
                                         <div class="desktop-card">
                                             <!-- Header -->
                                             <div class="badged-header general-header" fxLayout="row" fxLayoutAlign="start center">
-                                                <h3 class="truncate">General Evaluation</h3>
+                                                <h4 class="truncate">General Evaluation</h4>
                                                 <span fxFlex></span>
                                                 <div class="square-badge"
                                                     [ngClass]="cert.general.state_class"
@@ -775,7 +770,7 @@
                                                     <div class="category-header fake-button" role="button"
                                                         (click)="activeGeneralEvaluationCategory = activeGeneralEvaluationCategory == catIndex ? undefined: catIndex">
                                                         <div fxLayout="row" fxLayoutAlign="start center" >
-                                                            <h4 class="truncate">{{cat.name}}</h4>
+                                                            <h5 class="truncate">{{cat.name}}</h5>
                                                             <span fxFlex></span>
                                                             <div class="square-badge square-badge-category"
                                                                 [ngClass]="cat.state_class"
@@ -823,7 +818,7 @@
                                         <!-- Training Certificate -->
                                         <div class="desktop-card">
                                             <div class="certificate-header" fxLayout="row" fxLayoutAlign="start center">
-                                                <h3 class="truncate">Training</h3>
+                                                <h4 class="truncate">Training</h4>
                                                 <span fxFlex></span>
                                                 <div class="square-badge clickable" role="button" 
                                                 matTooltip="The number of epochs the training process went through before being stopped by the EarlyStopping Callback."
@@ -890,7 +885,7 @@
                                         <!-- Test Dataset Evaluation -->
                                         <div class="desktop-card">
                                             <div class="badged-header" fxLayout="row" fxLayoutAlign="start center">
-                                                <h3 class="truncate">{{layout == 'desktop' ? 'Test Dataset Evaluation': 'T. DS Eval'}}</h3>
+                                                <h4 class="truncate">{{layout == 'desktop' ? 'Test Dataset Evaluation': 'T. DS Eval'}}</h4>
                                                 <span fxFlex></span>
                                                 <div class="square-badge-error" matTooltip="Test Dataset Evaluation Loss">
                                                     {{cert.test_evaluation[0] | number: '1.2-3'}}
@@ -921,7 +916,7 @@
                                         <!-- Loss -->
                                         <div class="desktop-card">
                                             <div class="loss-header badged-header" fxLayout="row" fxLayoutAlign="start center">
-                                                <h3 class="truncate">{{layout == 'desktop' ? 'Training & Validation Loss': 'Loss'}}</h3>
+                                                <h4 class="truncate">{{layout == 'desktop' ? 'Training & Validation Loss': 'Loss'}}</h4>
                                                 <span fxFlex></span>
                                                 <div class="square-badge loss" matTooltip="Final Train Loss">
                                                     {{cert.training_history.loss[cert.training_history.loss.length - 1] | number: '1.2-3'}}
@@ -946,7 +941,7 @@
                                         <!-- Accuracy -->
                                         <div class="desktop-card">
                                             <div class="accuracy-header badged-header" fxLayout="row" fxLayoutAlign="start center">
-                                                <h3 class="truncate">{{layout == 'desktop' ? 'Training & Validation Accuracy': 'Accuracy'}}</h3>
+                                                <h4 class="truncate">{{layout == 'desktop' ? 'Training & Validation Accuracy': 'Accuracy'}}</h4>
                                                 <span fxFlex></span>
                                                 <div *ngIf="cert.training_history.categorical_accuracy" class="square-badge accuracy" matTooltip="Final Train Accuracy">
                                                     {{cert.training_history.categorical_accuracy[cert.training_history.categorical_accuracy.length - 1] | number: '1.2-3'}}
@@ -981,9 +976,17 @@
                                 <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" fxLayoutalign="center start">
                                     <!-- Class. Accuracy -->
                                     <div fxFlex="40" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+
+                                        <!-- Model -->
+                                        <div class="desktop-card">
+                                            <app-model-content [model]="model" [displayHeader]="true"></app-model-content>
+                                        </div>
+
+                                        <div class="divider show-on-mobile"></div>
+
                                         <div class="desktop-card">
                                             <div class="badged-header" fxLayout="row" fxLayoutAlign="start center">
-                                                <h3 class="truncate">{{layout == 'desktop' ? 'Accuracy': 'Acc.'}}</h3>
+                                                <h4 class="truncate">{{layout == 'desktop' ? 'Accuracy': 'Acc.'}}</h4>
                                                 <span fxFlex></span>
                                                 <div class="square-badge-success" matTooltip="Classification Evaluation Increase Accuracy">
                                                     {{cert.classification_evaluation.increase_acc | number: '1.2-2'}}%
@@ -1013,7 +1016,7 @@
 
                                         <div class="desktop-card">
                                             <div class="badged-header" fxLayout="row" fxLayoutAlign="center center">
-                                                <h3>{{layout == 'desktop' ? 'Probabilities': 'Probs.'}}</h3>
+                                                <h4>{{layout == 'desktop' ? 'Probabilities': 'Probs.'}}</h4>
                                                 <span fxFlex></span>
                                                 <button mat-icon-button 
                                                         [disabled]="activeProb == 0" 
@@ -1090,7 +1093,7 @@
                                                 </button>
                                             </div>
                                             <div class="heat-map">
-                                                <mat-grid-list cols="5" [rowHeight]="layout == 'desktop' ? '45px': '30px'">
+                                                <mat-grid-list cols="5" [rowHeight]="layout == 'desktop' ? '40px': '30px'">
                                                     <div *ngFor="let item of probsHeatmap">
                                                         <mat-grid-tile><p class="y-label">{{item.prob_range}}</p></mat-grid-tile>
                                                         <mat-grid-tile [matTooltip]="item.increase.state_description" 
@@ -1124,7 +1127,7 @@
                                         <!-- Positions Chart -->
                                         <div class="desktop-card">
                                             <div class="badged-header" fxLayout="row" fxLayoutAlign="start center">
-                                                <h3 class="truncate">{{layout == "desktop" ? "Positions History": "Pos. Hist."}}</h3>
+                                                <h4 class="truncate">Points</h4>
                                                 <span fxFlex></span>
                                                 <div class="square-badge" 
                                                     matTooltip="Median of the points collected during the Classification Evaluation">
@@ -1154,12 +1157,12 @@
 
                                         <div class="divider show-on-mobile"></div>
 
-                                        <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" class="full-width">
+                                        <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" class="full-width positions-and-outcomes">
                                             <!-- Predictions -->
                                             <div fxFlex="49">
                                                 <div class="desktop-card">
                                                     <div class="badged-header" fxLayout="row" fxLayoutAlign="start center">
-                                                        <h3 class="truncate">{{layout == 'desktop' ? 'Predictions': 'Preds.'}}</h3>
+                                                        <h4 class="truncate">{{layout == 'desktop' ? 'Predictions': 'Preds.'}}</h4>
                                                         <span fxFlex></span>
                                                         <div class="square-badge-success" 
                                                             matTooltip="The number of increase predictions generated by the Classification.">
@@ -1195,7 +1198,7 @@
                                             <div fxFlex="49">
                                                 <div class="desktop-card">
                                                     <div class="badged-header" fxLayout="row" fxLayoutAlign="start center">
-                                                        <h3 class="truncate">{{layout == 'desktop' ? 'Outcomes': 'Outs.'}}</h3>
+                                                        <h4 class="truncate">{{layout == 'desktop' ? 'Outcomes': 'Outs.'}}</h4>
                                                         <span fxFlex></span>
                                                         <div class="square-badge-success" 
                                                             matTooltip="The number of increase outcomes during the evaluation.">

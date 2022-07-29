@@ -72,6 +72,7 @@ export class RegressionTrainingCertificatesComponent implements OnInit, OnDestro
 	}
 	public section: ISection = this.generalSections[0];
 	public cert?: IRegressionTrainingCertificate;
+	public model?: IModel;
 	public activeRegTabIndex: number = 0;
 	public activeTabIndex: number = 0;
 
@@ -175,7 +176,7 @@ export class RegressionTrainingCertificatesComponent implements OnInit, OnDestro
 						// Navigate to the selected evaluation
 						if (this.order == "general_points") {
 							await this.navigate('general_evaluations');
-						} else if (this.order == "reg_eval_acc" || this.order == "reg_eval_points") {
+						} else if (this.order == "reg_eval_points") {
 							await this.navigate('reg_evaluations');
 						}
 					}
@@ -211,7 +212,6 @@ export class RegressionTrainingCertificatesComponent implements OnInit, OnDestro
 		this.initialized = false;
 		this.initializing = false;
 		this.fileInput.setValue('');
-		this._selection.reset();
 	}
 
 
@@ -249,6 +249,7 @@ export class RegressionTrainingCertificatesComponent implements OnInit, OnDestro
 		if (sectionID != 'certificate') {
 			this.section = this.generalSections[this.generalSectionIndex[sectionID]];
 			this.cert = undefined;
+			this.model = undefined;
 			this.activeRegTabIndex = 0;
 			this.activeTabIndex = 0;
 			this.activeGeneralEvaluationCategory = undefined;
@@ -258,6 +259,14 @@ export class RegressionTrainingCertificatesComponent implements OnInit, OnDestro
 		// Navigate to a certificate
 		else if (sectionID == 'certificate' && typeof certIndex == "number") {
 			this.cert = this._training.certificates[certIndex];
+			this.model = {
+				id: this.cert.id,
+				regression_models: [{
+					regression_id: this.cert.id,
+					interpreter: { long: 0.5, short: 0.5},
+					regression: this.cert.regression_config
+				}]
+			}
 			this.buildCertificateCharts();
 			this.section = {id: "certificate", name: this.cert.id};
 		}
@@ -515,7 +524,7 @@ export class RegressionTrainingCertificatesComponent implements OnInit, OnDestro
 		const {colors, values} = this._chart.getModelPointsValues(this.cert!.regression_evaluation.positions)
 		this.regPoints = this._chart.getBarChartOptions({
 			series: [{name: this.cert!.id,data: values}],
-			chart: {height: 290, type: 'bar',animations: { enabled: false}, toolbar: {show: true,tools: {download: false}}},
+			chart: {height: 303, type: 'bar',animations: { enabled: false}, toolbar: {show: true,tools: {download: false}}},
 			plotOptions: {bar: {borderRadius: 0, horizontal: false, distributed: true,}},
 			colors: colors,
 			grid: {show: true},
@@ -566,14 +575,7 @@ export class RegressionTrainingCertificatesComponent implements OnInit, OnDestro
 			hasBackdrop: this._app.layout.value != 'mobile', // Mobile optimization
 			panelClass: 'small-dialog',
 				data: {
-					model: <IModel>{
-						id: this.cert!.id,
-						regression_models: [{
-							regression_id: this.cert!.id,
-							interpreter: { long: 0.5, short: 0.5},
-							regression: this.cert!.regression_config
-						}]
-					},
+					model: this.model,
 					position: position
 				}
 		})

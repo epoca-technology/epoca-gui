@@ -9,6 +9,7 @@ import {SharedModule} from "../../shared";
 
 // Components
 import { BacktestsComponent } from './backtests/backtests.component';
+import { BacktestConfigDialogComponent } from './backtests/backtest-config-dialog';
 import { BacktestPositionDialogComponent } from './backtests/backtest-position-dialog/backtest-position-dialog.component';
 import { RegressionSelectionComponent } from './regression-selection/regression-selection.component';
 import { RegressionTrainingCertificatesComponent } from './regression-training-certificates/regression-training-certificates.component';
@@ -16,6 +17,7 @@ import { ClassificationTrainingDataComponent } from './classification-training-d
 import { ClassificationTrainingCertificatesComponent } from './classification-training-certificates/classification-training-certificates.component';
 import { ClassificationTrainingCertificatesConfigDialogComponent } from './classification-training-certificates/classification-training-certificates-config-dialog';
 import { RegressionTrainingCertificatesConfigDialogComponent } from './regression-training-certificates/regression-training-certificates-config-dialog/regression-training-certificates-config-dialog.component';
+
 
 
 @NgModule({
@@ -27,7 +29,8 @@ import { RegressionTrainingCertificatesConfigDialogComponent } from './regressio
     RegressionTrainingCertificatesComponent,
     RegressionSelectionComponent,
     ClassificationTrainingCertificatesConfigDialogComponent,
-    RegressionTrainingCertificatesConfigDialogComponent
+    RegressionTrainingCertificatesConfigDialogComponent,
+    BacktestConfigDialogComponent
   ],
   imports: [
     CommonModule,

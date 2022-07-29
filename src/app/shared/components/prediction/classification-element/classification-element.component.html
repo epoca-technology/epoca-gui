@@ -2,7 +2,7 @@
     <p class="clickable" role="button"  
         [ngClass]="{'formula': !compact, 'compact-formula': compact}"
         (click)="_nav.displayModelListDialog(config.models)"
-        matTooltip="Features: The list of ArimaModel|RegressionModel (and other data) that comprise the Classification.">
+        matTooltip="Features: {{featuresDescription}}">
         [{{config.features_num}}] >
     </p>
     <p class="clickable" role="button" 
