@@ -299,13 +299,13 @@ export class FileService implements IFileService{
 				// Resolve the promise after reading file
 				reader.onload = () => {
 					// Make sure the result is a string
-					if (!reader || typeof reader.result != "string") {
+                    if (reader && typeof reader.result == "string") {
+                        // Resolve the parsed file
+                        resolve(JSON.parse(<string>reader.result.replace(/\bNaN\b/g, "0")))
+                    } else {
 						console.error(reader.result);
 						reject('The file reader result is not a valid string that can be parsed.');
-					}
-
-					// Resolve the parsed file
-					resolve(JSON.parse(<string>reader.result))
+                    }
 				};
 
 				// Read the file as a text
