@@ -12,5 +12,6 @@ export interface IKerasModelDialogComponent {
 export interface IKerasModelDialogData {
     id: string,
     description: string,
-    summary: IKerasModelSummary
+    summary: IKerasModelSummary,
+    training_data_id?: string,
 }

@@ -147,7 +147,6 @@ export class ClassificationTrainingCertificatesComponent implements OnInit, OnDe
 
 	ngOnDestroy(): void {
 		if (this.layoutSub) this.layoutSub.unsubscribe();
-		this._selection.reset();
 	}
 
 

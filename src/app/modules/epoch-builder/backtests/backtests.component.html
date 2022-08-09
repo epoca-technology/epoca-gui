@@ -243,12 +243,12 @@
                                             <div class="square-badge-success clickable" role="button" 
                                                 matTooltip="Best Points Median: {{_backtest.pointsMedianMD.max.id}}"
                                                 (click)="activateModel(_backtest.pointsMedianMD.max.id)">
-                                                Best: {{_backtest.pointsMedianMD.max.value}}
+                                                Best: {{_backtest.pointsMedianMD.max.value | number:'1.0-2'}}
                                             </div>
                                             <div class="square-badge-error clickable" role="button" 
                                                 matTooltip="Worst Points Median: {{_backtest.pointsMedianMD.min.id}}"
                                                 (click)="activateModel(_backtest.pointsMedianMD.min.id)">
-                                                Worst: {{_backtest.pointsMedianMD.min.value}}
+                                                Worst: {{_backtest.pointsMedianMD.min.value | number:'1.0-2'}}
                                             </div>
                                         </div>
                                         <div>
@@ -526,8 +526,8 @@
                                                 <div fxLayout="row" fxLayoutAlign="start center">
                                                     <h4>Points</h4>
                                                     <span fxFlex></span>
-                                                    <div class="square-badge">Median: {{_backtest.performances[modelID].points_median}}</div>
-                                                    <div class="square-badge">Final: {{_backtest.performances[modelID].points}}</div>
+                                                    <div class="square-badge">Median: {{_backtest.performances[modelID].points_median | number:'1.0-2'}}</div>
+                                                    <div class="square-badge">Final: {{_backtest.performances[modelID].points | number:'1.0-2'}}</div>
                                                 </div>
                                                 <div class="points-chart">
                                                     <apx-chart

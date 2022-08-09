@@ -108,7 +108,6 @@ export class BacktestsComponent implements OnInit, OnDestroy, IBacktestsComponen
 	ngOnDestroy(): void {
 		if (this.layoutSub) this.layoutSub.unsubscribe();
 		this._backtest.resetBacktestResults();
-		this._selection.reset();
 	}
 
 

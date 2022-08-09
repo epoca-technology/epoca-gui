@@ -60,6 +60,15 @@
                 (click)="_nav.displayDataDialog('Metrics', sum.metrics)">{{sum.metrics[1] || sum.metrics[0]}}</p>
             </div>
 
+            <!-- Classification Training Data - If any -->
+            <div class="margin-top" fxLayout="row" fxLayoutAlign="start center" *ngIf="training_data">
+                <p class="light-text truncate">Training Data</p>
+                <span fxFlex></span>
+                <p class="clickable" role="button"
+                    [matTooltip]="training_data"
+                    (click)="_clipboard.copy(training_data)">{{training_data | stringOverview: 6}}</p>
+            </div>
+
             <!-- Network -->
             <div class="margin-top" fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" fxLayoutAlign="start start">
                 <p class="light-text truncate margin-bottom">Network</p>

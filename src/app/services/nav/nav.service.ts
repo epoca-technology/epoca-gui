@@ -259,16 +259,23 @@ export class NavService implements INavService {
 	* @param id
 	* @param description
 	* @param kerasModel
+	* @param training_data_id?
 	* @returns MatDialogRef<any>
 	* */
-	public displayKerasModelDialog(id: string, description: string, kerasModel: IKerasModelSummary): MatDialogRef<any> {
+	public displayKerasModelDialog(
+		id: string, 
+		description: string, 
+		kerasModel: IKerasModelSummary,
+		training_data_id?: string
+	): MatDialogRef<any> {
 		return this.dialog.open(KerasModelDialogComponent, {
 			hasBackdrop: this._app.layout.value != 'mobile', // Mobile optimization
 			panelClass: 'medium-dialog',
 			data: <IKerasModelDialogData>{
 				id: id,
 				description: description,
-				summary: kerasModel
+				summary: kerasModel,
+				training_data_id: training_data_id
 			}
 		});
 	}

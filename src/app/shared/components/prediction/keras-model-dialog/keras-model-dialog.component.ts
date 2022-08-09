@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
 import { IKerasModelSummary } from '../../../../core';
-import { NavService } from '../../../../services';
+import { ClipboardService, NavService } from '../../../../services';
 import { IKerasModelDialogComponent, IKerasModelDialogData } from './interfaces';
 
 @Component({
@@ -14,6 +14,7 @@ export class KerasModelDialogComponent implements OnInit, IKerasModelDialogCompo
 	public id!: string;
 	public description!: string;
 	public sum!: IKerasModelSummary;
+	public training_data?: string;
 
 	// Tabs
 	public activeIndex: number = 0;
@@ -21,7 +22,8 @@ export class KerasModelDialogComponent implements OnInit, IKerasModelDialogCompo
 	constructor(
 		public dialogRef: MatDialogRef<KerasModelDialogComponent>,
 		@Inject(MAT_DIALOG_DATA) private data: IKerasModelDialogData,
-		public _nav: NavService
+		public _nav: NavService,
+		public _clipboard: ClipboardService
 	) { }
 
 	ngOnInit(): void {
@@ -29,6 +31,7 @@ export class KerasModelDialogComponent implements OnInit, IKerasModelDialogCompo
 		this.id = this.data.id;
 		this.description = this.data.description;
 		this.sum = this.data.summary;
+		this.training_data = this.data.training_data_id;
 	}
 
 

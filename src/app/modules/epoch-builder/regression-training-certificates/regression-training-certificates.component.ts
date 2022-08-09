@@ -117,7 +117,6 @@ export class RegressionTrainingCertificatesComponent implements OnInit, OnDestro
 
 	ngOnDestroy(): void {
 		if (this.layoutSub) this.layoutSub.unsubscribe();
-		this._selection.reset();
 	}
 
 
