@@ -2,12 +2,7 @@ import {Component, Inject, OnInit, ViewChild, ElementRef} from '@angular/core';
 import {AbstractControl, FormControl, FormGroup} from '@angular/forms';
 import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
 import { UtilsService } from '../../../core';
-import {
-    AppService,
-	ClipboardService,
-	SnackbarService,
-	ValidationsService
-} from "../../../services";
+import {AppService, ValidationsService } from "../../../services";
 import {IConfirmationDialogComponent, IConfirmationDialogData} from "./interfaces";
 
 @Component({
@@ -31,11 +26,9 @@ export class ConfirmationDialogComponent implements OnInit, IConfirmationDialogC
 	
 	
 	constructor(
-        private _app: AppService,
+        public _app: AppService,
 		public dialogRef: MatDialogRef<ConfirmationDialogComponent>,
 		private _validations: ValidationsService,
-		private _snackbar: SnackbarService,
-		public _clipboard: ClipboardService,
         private _utils: UtilsService,
 		@Inject(MAT_DIALOG_DATA) private data?: IConfirmationDialogData,
 	) { }
@@ -97,7 +90,7 @@ export class ConfirmationDialogComponent implements OnInit, IConfirmationDialogC
 	public async pasteOTP(): Promise<void> {
 		try {
 			// Retrieve the data
-			const data: string = await this._clipboard.read();
+			const data: string = await this._app.read();
 			
 			// Paste into the access code input
 			this.otp.setValue(data);
@@ -107,7 +100,7 @@ export class ConfirmationDialogComponent implements OnInit, IConfirmationDialogC
 			if (this.otp.valid) this.confirm(this.otp.value);
 		} catch (e) {
 			console.log(e);
-			this._snackbar.error(this._utils.getErrorMessage(e));
+			this._app.error(this._utils.getErrorMessage(e));
 		}
 	}
 	

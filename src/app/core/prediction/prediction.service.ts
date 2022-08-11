@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { IPredictionResultName, IPredictionService, IModelType, IModel } from './interfaces';
+import { IPredictionResultName, IModelType, IModel } from '../epoch-builder';
+import { IPredictionService } from './interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +27,22 @@ export class PredictionService implements IPredictionService {
 
 
 
-	/* Models */
+
+
+	
+
+
+
+
+
+
+
+
+	/* Misc Helpers */
+
+
+
+
 
 
 
@@ -38,45 +54,58 @@ export class PredictionService implements IPredictionService {
 	 * @returns IModelType
 	 */
 	public getModelTypeName(model: IModel): IModelType {
-		// Check if it is an ArimaModel
+		// Check if it is a KerasRegressionModel
 		if (
-			model.arima_models && 
-			model.arima_models.length == 1 && 
-			!model.regression_models &&
-			!model.classification_models &&
-			!model.consensus_model
+			model.keras_regressions && 
+			model.keras_regressions.length == 1 &&
+			!model.xgb_regressions &&
+			!model.xgb_classifications &&
+			!model.consensus
 		) {
-			return 'ArimaModel';
+			return "KerasRegressionModel";
 		}
 
-		// Check if it is a RegressionModel
+		// Check if it is a XGBRegressionModel
 		else if (
-			!model.arima_models && 
-			model.regression_models && 
-			model.regression_models.length == 1 &&
-			!model.classification_models &&
-			!model.consensus_model
+			model.xgb_regressions && 
+			model.xgb_regressions.length == 1 &&
+			!model.keras_regressions &&
+			!model.xgb_classifications &&
+			!model.consensus
 		) {
-			return 'RegressionModel';
+			return "XGBRegressionModel";
 		}
 
-		// Check if it is a ClassificationModel
+		// Check if it is a KerasClassificationModel
 		else if (
-			!model.arima_models && 
-			!model.regression_models && 
-			model.classification_models && 
-			model.classification_models.length == 1 &&
-			!model.consensus_model
+			model.keras_classifications && 
+			model.keras_classifications.length == 1 &&
+			!model.keras_regressions &&
+			!model.xgb_regressions &&
+			!model.xgb_classifications &&
+			!model.consensus
 		) {
-			return 'ClassificationModel';
+			return "KerasClassificationModel";
+		}
+
+		// Check if it is a XGBClassificationModel
+		else if (
+			model.xgb_classifications && 
+			model.xgb_classifications.length == 1 &&
+			!model.keras_regressions &&
+			!model.xgb_regressions &&
+			!model.keras_classifications &&
+			!model.consensus
+		) {
+			return "XGBClassificationModel";
 		}
 
 		// Check if it is a ConsensusModel
 		else if (
-			(model.arima_models || model.regression_models || model.classification_models) &&
-			model.consensus_model
+			(model.keras_regressions || model.xgb_regressions || model.keras_classifications || model.xgb_classifications) &&
+			model.consensus
 		) {
-			return 'ConsensusModel';
+			return "ConsensusModel";
 		}
 
 		// Otherwise, crash the program
@@ -85,10 +114,4 @@ export class PredictionService implements IPredictionService {
 			throw new Error("Could not find the model type name for the provided model.");
 		}
 	}
-
-
-
-
-
-
 }

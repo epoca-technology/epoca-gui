@@ -1,27 +1,26 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild } from "@angular/core";
 import {MatSidenav} from "@angular/material/sidenav";
 import { MatIconRegistry } from "@angular/material/icon";
 import { DomSanitizer } from "@angular/platform-browser";
-import { IAppComponent } from './interfaces';
-import { AuthService, NotificationService } from './core';
+import { IAppComponent } from "./interfaces";
+import { AuthService, NotificationService } from "./core";
 import { 
     AppService, 
     NavService,
     ILayout,
-    IRouteState,
-    SnackbarService
-} from './services';
+    IRouteState
+} from "./services";
 
 
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  selector: "app-root",
+  templateUrl: "./app.component.html",
+  styleUrls: ["./app.component.scss"]
 })
 export class AppComponent implements IAppComponent {
 	// Sidenav Element
-	@ViewChild('rootSidenav') sidenav: MatSidenav|undefined;
+	@ViewChild("rootSidenav") sidenav: MatSidenav|undefined;
 	public sidenavOpened: boolean = false;
 
 	// App Layout
@@ -37,11 +36,11 @@ export class AppComponent implements IAppComponent {
 	public fcmVisible: boolean = false;
 
 	// Custom Icons
-	public readonly customIcons: string[] = ['home', 'wallet', 'format_list_numbered',
-    'person','notifications','logo_google','paste','ubuntu','code_branch','hdd','microchip','server','database',
-    'hardware_chip', 'ssid_chart', 'brain', 'auto_graph', 'bug_report', 'file_csv', 'file_waveform',
-    'wand_magic_sparkles', 'flask', 'flask_vial', 'book', 'graduation_cap', 'microscope', 'file_invoice',
-    'file_signature', 'file_circle_check', 'pen_ruler', 'terminal'];
+	public readonly customIcons: string[] = ["home", "wallet", "format_list_numbered",
+    "person","notifications","logo_google","paste","ubuntu","code_branch","hdd","microchip","server","database",
+    "hardware_chip", "ssid_chart", "brain", "auto_graph", "bug_report", "file_csv", "file_waveform",
+    "wand_magic_sparkles", "flask_vial", "book", "graduation_cap", "microscope", "file_invoice",
+    "file_signature", "file_circle_check", "pen_ruler", "terminal"];
 	
 	// Route State
 	public state: IRouteState = this._nav.routeState.value;
@@ -50,7 +49,6 @@ export class AppComponent implements IAppComponent {
         private _app: AppService,
         public _nav: NavService,
         public _auth: AuthService,
-        private _snackbar: SnackbarService,
         private _notification: NotificationService,
         private matIconRegistry: MatIconRegistry,
 		private domSanitizer: DomSanitizer,
@@ -75,7 +73,7 @@ export class AppComponent implements IAppComponent {
 			this.state = s;
 
             // Check if the prediction backtesting submodule should be opened
-            this.builderExpanded = s.module == 'epochBuilder';
+            this.builderExpanded = s.module == "epochBuilder";
 			
 			// Close the sidenav if opened
 			if (this.sidenavOpened) this.sidenav?.close(); 
@@ -136,8 +134,8 @@ export class AppComponent implements IAppComponent {
 	* */
 	public signOut(): void {
         this._nav.displayConfirmationDialog({
-            title: 'Sign Out',
-            content: '<p class="align-center">If you confirm the action, your session will be destroyed on all your active tabs.</p>'
+            title: "Sign Out",
+            content: "<p class='align-center'>If you confirm the action, your session will be destroyed on all your active tabs.</p>"
         }).afterClosed().subscribe(
             async (confirmed: boolean) => {
                 if (confirmed) {
@@ -147,8 +145,8 @@ export class AppComponent implements IAppComponent {
                         if (this.sidenavOpened) await this.sidenav?.close(); 
                         await this._nav.signIn();
                         await this._auth.signOut();
-                        this._snackbar.success('The session has been destroyed successfully.');
-                    } catch (e) { this._snackbar.error(e) }
+                        this._app.success("The session has been destroyed successfully.");
+                    } catch (e) { this._app.error(e) }
                 }
             }
         );
@@ -195,7 +193,7 @@ export class AppComponent implements IAppComponent {
      */
     public async enableFCM(): Promise<void> {
         this.fcmVisible = false;
-        try { await this._notification.getToken() } catch (e) { this._snackbar.error(e) }
+        try { await this._notification.getToken() } catch (e) { this._app.error(e) }
     }
 
 
@@ -245,7 +243,7 @@ export class AppComponent implements IAppComponent {
 		for (let icon of this.customIcons) {
 			this.matIconRegistry.addSvgIcon(
 				icon,
-				this.domSanitizer.bypassSecurityTrustResourceUrl('../assets/svg/' + icon + '.svg')
+				this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/svg/" + icon + ".svg")
 			)
 		}
 	}

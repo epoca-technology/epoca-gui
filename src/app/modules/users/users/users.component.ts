@@ -4,7 +4,7 @@ import { MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { Subscription } from 'rxjs';
 import { IBottomSheetMenuItem } from '../../../shared/components/bottom-sheet-menu';
 import { IUser, UserService } from '../../../core';
-import { AppService, ClipboardService, ILayout, NavService, SnackbarService, ValidationsService } from '../../../services';
+import { AppService, ILayout, NavService, ValidationsService } from '../../../services';
 import { IUsersComponent, IView } from './interfaces';
 
 @Component({
@@ -54,11 +54,9 @@ export class UsersComponent implements OnInit, OnDestroy, IUsersComponent {
     public loaded = false;
 
     constructor(
-        private _app: AppService,
+        public _app: AppService,
         public _nav: NavService,
         private _user: UserService,
-        private _snackbar: SnackbarService,
-        public _clipboard: ClipboardService,
         private _validations: ValidationsService
     ) { }
 
@@ -69,7 +67,7 @@ export class UsersComponent implements OnInit, OnDestroy, IUsersComponent {
         // Retrieve the users
         try {
             this.users = await this._user.getAll();
-        } catch (e) { this._snackbar.error(e) }
+        } catch (e) { this._app.error(e) }
 
         // Set the loading state
         this.loaded = true;
@@ -241,12 +239,12 @@ export class UsersComponent implements OnInit, OnDestroy, IUsersComponent {
                         this.users = await this._user.createUser(this.email.value, this.authority.value, otp);
 
                         // Notify
-                        this._snackbar.success('The user was created successfully.');
+                        this._app.success('The user was created successfully.');
 
                         // Go to intro
                         this.submitting = false;
                         this.gotoIntro();
-                    } catch(e) { this._snackbar.error(e) }
+                    } catch(e) { this._app.error(e) }
 
                     // Set Submission State
                     this.submitting = false;
@@ -283,12 +281,12 @@ export class UsersComponent implements OnInit, OnDestroy, IUsersComponent {
                         this.users = await this._user.updateEmail(this.activeUser!.uid, this.newEmail.value, otp);
 
                         // Notify
-                        this._snackbar.success('The email was updated successfully.');
+                        this._app.success('The email was updated successfully.');
 
                         // Go to intro
                         this.submitting = false;
                         this.gotoIntro();
-                    } catch(e) { this._snackbar.error(e) }
+                    } catch(e) { this._app.error(e) }
 
                     // Set Submission State
                     this.submitting = false;
@@ -326,8 +324,8 @@ export class UsersComponent implements OnInit, OnDestroy, IUsersComponent {
                         this.users = await this._user.updateOTPSecret(user.uid, otp);
 
                         // Notify
-                        this._snackbar.success('The OTP Secret was updated successfully.');
-                    } catch(e) { this._snackbar.error(e) }
+                        this._app.success('The OTP Secret was updated successfully.');
+                    } catch(e) { this._app.error(e) }
 
                     // Set Submission State
                     this.submitting = false;
@@ -365,12 +363,12 @@ export class UsersComponent implements OnInit, OnDestroy, IUsersComponent {
                         this.users = await this._user.updateAuthority(this.activeUser!.uid, this.newAuthority.value, otp);
 
                         // Notify
-                        this._snackbar.success('The authority was updated successfully.');
+                        this._app.success('The authority was updated successfully.');
 
                         // Go to intro
                         this.submitting = false;
                         this.gotoIntro();
-                    } catch(e) { this._snackbar.error(e) }
+                    } catch(e) { this._app.error(e) }
 
                     // Set Submission State
                     this.submitting = false;
@@ -407,8 +405,8 @@ export class UsersComponent implements OnInit, OnDestroy, IUsersComponent {
                         this.users = await this._user.deleteUser(user.uid, otp);
 
                         // Notify
-                        this._snackbar.success('The user was deleted successfully.');
-                    } catch(e) { this._snackbar.error(e) }
+                        this._app.success('The user was deleted successfully.');
+                    } catch(e) { this._app.error(e) }
 
                     // Set Submission State
                     this.submitting = false;

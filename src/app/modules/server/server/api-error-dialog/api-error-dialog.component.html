@@ -3,8 +3,8 @@
         <button mat-icon-button [disabled]="submitting" class="show-on-mobile" (click)="close()"><mat-icon>arrow_back</mat-icon></button>
         <span>API Error</span>
         <span fxFlex></span>
-        <button *ngIf="error.ip" mat-icon-button [disabled]="submitting" (click)="blacklistIP(error.ip)"><mat-icon>vpn_lock</mat-icon></button>
-        <button mat-icon-button [disabled]="submitting" (click)="downloadError()"><mat-icon>file_download</mat-icon></button>
+        <button *ngIf="error.ip" mat-icon-button [disabled]="submitting" (click)="blacklistIP(error.ip)" matTooltip="Blacklist IP"><mat-icon>vpn_lock</mat-icon></button>
+        <button mat-icon-button [disabled]="submitting" (click)="downloadError()" matTooltip="Download Error"><mat-icon>file_download</mat-icon></button>
         <button mat-icon-button [disabled]="submitting" class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
     </div>
 </mat-toolbar>
@@ -32,7 +32,7 @@
                 <p>{{error.uid}}</p>
             </div>
             <span fxFlex></span>
-            <button mat-icon-button (click)="_clipboard.copy(error.uid)"><mat-icon>content_copy</mat-icon></button>
+            <button mat-icon-button (click)="_app.copy(error.uid)"><mat-icon>content_copy</mat-icon></button>
         </div>
 
         <div fxLayout="row" fxLayoutAlign="start center" *ngIf="error.ip" class="row">
@@ -41,7 +41,7 @@
                 <p>{{error.ip}}</p>
             </div>
             <span fxFlex></span>
-            <button mat-icon-button (click)="_clipboard.copy(error.ip)"><mat-icon>content_copy</mat-icon></button>
+            <button mat-icon-button (click)="_app.copy(error.ip)"><mat-icon>content_copy</mat-icon></button>
         </div>
 
         <div class="row" *ngIf="error.p">

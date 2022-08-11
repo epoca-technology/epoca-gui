@@ -1,10 +1,18 @@
 import {BehaviorSubject} from "rxjs";
 import {MatDialogRef} from "@angular/material/dialog";
 import {MatBottomSheetRef} from "@angular/material/bottom-sheet";
-import { IKerasModelSummary, IModel, IPrediction } from "../../core";
+import { 
+	IKerasClassificationConfig, 
+	IKerasRegressionConfig, 
+	IModel, 
+	IPrediction, 
+	IXGBClassificationConfig, 
+	IXGBRegressionConfig 
+} from "../../core";
 import {IConfirmationDialogData} from "../../shared/components/confirmation-dialog";
 import {IBottomSheetMenuItem} from "../../shared/components/bottom-sheet-menu";
 import { IDialogMenuItem } from "../../shared/components/dialog-menu";
+import { IClassificationFeaturesData } from "../../shared/components/epoch-builder";
 
 
 
@@ -15,21 +23,23 @@ export interface INavService {
 	
 	// App Navigation
     signIn(): Promise<boolean>,
-    updatePassword(): Promise<boolean>,
+	updatePassword(): Promise<boolean>,
+	candlesticks(): Promise<boolean>,
 	dashboard(): Promise<boolean>,
+	backtests(): Promise<boolean>,
+	classificationTrainingData(): Promise<boolean>,
+	kerasClassifications(): Promise<boolean>,
+	kerasRegressions(): Promise<boolean>,
+	regressionSelection(): Promise<boolean>,
+	xgbClassifications(): Promise<boolean>,
+	xgbRegressions(): Promise<boolean>,
+	epochs(): Promise<boolean>,
+	guiVersion(version?: string): Promise<boolean>,
+	ipBlacklist(): Promise<boolean>,
+	server(): Promise<boolean>,
 	tradingSessions(): Promise<boolean>,
 	tradingSimulations(): Promise<boolean>,
-	forecastModels(): Promise<boolean>,
-	backtests(): Promise<boolean>,
-	regressionSelection(): Promise<boolean>,
-	regressionTrainingCertificates(): Promise<boolean>,
-	classificationTrainingData(): Promise<boolean>,
-	classificationTrainingCertificates(): Promise<boolean>,
-	candlesticks(): Promise<boolean>,
-    server(): Promise<boolean>,
-    users(): Promise<boolean>,
-    guiVersion(version?: string): Promise<boolean>,
-    ipBlacklist(): Promise<boolean>,
+	users(): Promise<boolean>,
 	
 	// Dialogs
     displayConfirmationDialog(data?: IConfirmationDialogData): MatDialogRef<any>,
@@ -37,13 +47,9 @@ export interface INavService {
 	displayDialogMenu(title: string, items: IDialogMenuItem[]): MatDialogRef<any>,
 	displayTooltip(title: string, content: string|string[]): MatDialogRef<any>,
 	displayModelDialog(model: IModel): MatDialogRef<any>,
-	displayModelListDialog(models: IModel[]): MatDialogRef<any>,
-	displayKerasModelDialog(
-		id: string, 
-		description: string, 
-		kerasModel: IKerasModelSummary, 
-		training_data_id?: string
-	): MatDialogRef<any>,
+	displayClassificationFeatures(data: IClassificationFeaturesData): MatDialogRef<any>,
+	displayKerasModelDialog(modelConfig: IKerasRegressionConfig|IKerasClassificationConfig): MatDialogRef<any>,
+	displayXGBModelDialog(modelConfig: IXGBRegressionConfig|IXGBClassificationConfig): MatDialogRef<any>,
 	displayPredictionDialog(model: IModel, prediction: IPrediction, outcome?: boolean): MatDialogRef<any>,
 	displayModelSelectionDialog(): MatDialogRef<any>,
 	

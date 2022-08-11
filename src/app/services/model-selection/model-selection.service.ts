@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ClipboardService } from '../clipboard';
-import { SnackbarService } from '../snackbar';
+import { AppService } from '../app';
 import { IModelSelectionService, ISelectedModel } from './interfaces';
 
 @Injectable({
@@ -13,8 +12,7 @@ export class ModelSelectionService implements IModelSelectionService {
 	
 
   	constructor(
-		private _snackbar: SnackbarService,
-		private _clipboard: ClipboardService
+		private _app: AppService
 	) { }
 
 
@@ -37,7 +35,7 @@ export class ModelSelectionService implements IModelSelectionService {
 	public select(id: string, points: number): void {
 		// Make sure the model hasn't been selected already
 		if (this.selected[id]) {
-			this._snackbar.error(`The model ${id} has already been selected.`);
+			this._app.error(`The model ${id} has already been selected.`);
 			return;
 		}
 
@@ -117,7 +115,7 @@ export class ModelSelectionService implements IModelSelectionService {
 			selection += this.selectedList[i].id;
 			if (i < this.selectedList.length - 1) selection += ',';
 		}
-		this._clipboard.copy(selection, false);
-		this._snackbar.success("The model selection string has been placed in the clipboard.")
+		this._app.copy(selection, false);
+		this._app.success("The model selection string has been placed in the clipboard.")
 	}
 }

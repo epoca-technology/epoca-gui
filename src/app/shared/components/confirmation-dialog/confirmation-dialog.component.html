@@ -39,7 +39,7 @@
 
                         <!-- Paste -->
                         <button type="button" mat-icon-button color="primary" tabindex="-1"
-                                *ngIf="_clipboard.canPaste"
+                                *ngIf="_app.canPaste"
                                 (click)="pasteOTP()">
                             <mat-icon svgIcon="paste"></mat-icon>
                         </button>

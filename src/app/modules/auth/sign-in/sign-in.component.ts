@@ -3,7 +3,7 @@ import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/fo
 import { RecaptchaComponent } from 'ng-recaptcha';
 import { Subscription } from 'rxjs';
 import { AuthService, UserService, UtilsService } from '../../../core';
-import { AppService, ILayout, NavService, SnackbarService, ValidationsService } from '../../../services';
+import { AppService, ILayout, NavService, ValidationsService } from '../../../services';
 import { ISignInComponent } from './interfaces';
 
 @Component({
@@ -35,7 +35,6 @@ export class SignInComponent implements OnInit, OnDestroy, ISignInComponent {
 
     constructor(
         private _app: AppService,
-        private _snackbar: SnackbarService,
         public _nav: NavService,
         private _auth: AuthService,
         private _user: UserService,
@@ -104,7 +103,7 @@ export class SignInComponent implements OnInit, OnDestroy, ISignInComponent {
                         this._nav.dashboard();
                     } catch(e) { 
                         // Display the error
-                        this._snackbar.error(e);
+                        this._app.error(e);
 
                         // Reset the reCAPTCHA
                         this.recaptchaEl?.reset();
@@ -132,5 +131,5 @@ export class SignInComponent implements OnInit, OnDestroy, ISignInComponent {
      * @param e 
      * @returns void
      */
-    public onReCAPTCHAError(e: any): void { this._snackbar.error(e) }
+    public onReCAPTCHAError(e: any): void { this._app.error(e) }
 }

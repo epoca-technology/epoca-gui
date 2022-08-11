@@ -76,7 +76,7 @@
                             <p class="light-text">{{activeUser.uid}}</p>
                         </div>
                         <span fxFlex></span>
-                        <button mat-icon-button (click)="_clipboard.copy(activeUser.uid)"><mat-icon>content_copy</mat-icon></button>
+                        <button mat-icon-button (click)="_app.copy(activeUser.uid)"><mat-icon>content_copy</mat-icon></button>
                     </div>
                 </div>
 
@@ -87,7 +87,7 @@
                             <p class="light-text">{{activeUser.email}}</p>
                         </div>
                         <span fxFlex></span>
-                        <button mat-icon-button (click)="_clipboard.copy(activeUser.email)"><mat-icon>content_copy</mat-icon></button>
+                        <button mat-icon-button (click)="_app.copy(activeUser.email)"><mat-icon>content_copy</mat-icon></button>
                     </div>
                 </div>
 
@@ -104,7 +104,7 @@
                             <p class="light-text">{{activeUser.otp_secret}}</p>
                         </div>
                         <span fxFlex></span>
-                        <button mat-icon-button (click)="_clipboard.copy(activeUser.otp_secret)"><mat-icon>content_copy</mat-icon></button>
+                        <button mat-icon-button (click)="_app.copy(activeUser.otp_secret)"><mat-icon>content_copy</mat-icon></button>
                     </div>
                 </div>
 

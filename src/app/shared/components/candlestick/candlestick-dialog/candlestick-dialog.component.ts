@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
 import { ICandlestick } from '../../../../core';
-import { SnackbarService } from '../../../../services';
+import { AppService } from '../../../../services';
 import { ICandlestickDialogComponent } from './interfaces';
 
 @Component({
@@ -14,12 +14,12 @@ export class CandlestickDialogComponent implements ICandlestickDialogComponent, 
 	constructor(
 		public dialogRef: MatDialogRef<CandlestickDialogComponent>,
 		@Inject(MAT_DIALOG_DATA) public candlestick: ICandlestick,
-		private _snackbar: SnackbarService
+		private _app: AppService
 	) { }
 
 	ngOnInit(): void {
 		if (!this.candlestick) {
-			this._snackbar.error('A valid candlestick must be provided.');
+			this._app.error('A valid candlestick must be provided.');
 			setTimeout(() => { this.close() }, 500);
 		}
 	}

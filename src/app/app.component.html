@@ -24,7 +24,7 @@
 
             <!-- Epochs -->
             <mat-list-item>
-                <button mat-button class="left-icon-button" (click)="_nav.forecastModels()" [disabled]="state.module == 'forecastModels'">
+                <button mat-button class="left-icon-button" (click)="_nav.epochs()" [disabled]="state.module == 'epochs'">
                     <mat-icon svgIcon="brain"></mat-icon><span>_ALPHA</span>
                 </button>
             </mat-list-item>
@@ -102,6 +102,28 @@
                 </button>
             </mat-list-item>
 
+            <!-- Keras Regression Training Certificates -->
+            <mat-list-item *ngIf="builderExpanded" class="active-sub-menu">
+                <button mat-button (click)="_nav.kerasRegressions()" [disabled]="state.subModule == 'kerasRegressions'">
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <span>Keras Regressions</span>
+                        <span fxFlex></span>
+                        <img src="assets/img/model_logos/KerasRegressionModel.png" alt="Model Logo" class="small-model-logo">
+                    </div>
+                </button>
+            </mat-list-item>
+
+            <!-- XGB Regression Training Certificates -->
+            <mat-list-item *ngIf="builderExpanded" class="active-sub-menu">
+                <button mat-button (click)="_nav.xgbRegressions()" [disabled]="state.subModule == 'xgbRegressions'">
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <span>XGBoost Regressions</span>
+                        <span fxFlex></span>
+                        <img src="assets/img/model_logos/XGBRegressionModel.png" alt="Model Logo" class="small-model-logo">
+                    </div>
+                </button>
+            </mat-list-item>
+
             <!-- Regression Selection -->
             <mat-list-item *ngIf="builderExpanded" class="active-sub-menu">
                 <button mat-button (click)="_nav.regressionSelection()" [disabled]="state.subModule == 'regressionSelection'">
@@ -111,29 +133,33 @@
                 </button>
             </mat-list-item>
 
-            <!-- Regression Training Certificates -->
-            <mat-list-item *ngIf="builderExpanded" class="active-sub-menu">
-                <button mat-button (click)="_nav.regressionTrainingCertificates()" [disabled]="state.subModule == 'regressionTrainingCertificates'">
-                    <div fxLayout="row" fxLayoutAlign="start center">
-                        <span>Regr. Training Certificates</span><span fxFlex></span><mat-icon svgIcon="graduation_cap"></mat-icon>
-                    </div>
-                </button>
-            </mat-list-item>
-
             <!-- Classification Training Data -->
             <mat-list-item *ngIf="builderExpanded" class="active-sub-menu">
                 <button mat-button (click)="_nav.classificationTrainingData()" [disabled]="state.subModule == 'classificationTrainingData'">
                     <div fxLayout="row" fxLayoutAlign="start center">
-                        <span>Class. Training Data</span><span fxFlex></span><mat-icon svgIcon="book"></mat-icon>
+                        <span>Classification Training Data</span><span fxFlex></span><mat-icon svgIcon="book"></mat-icon>
                     </div>
                 </button>
             </mat-list-item>
 
-            <!-- Classification Training Certificates -->
+            <!-- Keras Classification Training Certificates -->
             <mat-list-item *ngIf="builderExpanded" class="active-sub-menu">
-                <button mat-button (click)="_nav.classificationTrainingCertificates()" [disabled]="state.subModule == 'classificationTrainingCertificates'">
+                <button mat-button (click)="_nav.kerasClassifications()" [disabled]="state.subModule == 'kerasClassifications'">
                     <div fxLayout="row" fxLayoutAlign="start center">
-                        <span>Class. Training Certificates</span><span fxFlex></span><mat-icon svgIcon="graduation_cap"></mat-icon>
+                        <span>Keras Classifications</span>
+                        <span fxFlex></span>
+                        <img src="assets/img/model_logos/KerasClassificationModel.png" alt="Model Logo" class="small-model-logo">
+                    </div>
+                </button>
+            </mat-list-item>
+
+            <!-- XGB Classification Training Certificates -->
+            <mat-list-item *ngIf="builderExpanded" class="active-sub-menu">
+                <button mat-button (click)="_nav.xgbClassifications()" [disabled]="state.subModule == 'xgbClassifications'">
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <span>XGBoost Classifications</span>
+                        <span fxFlex></span>
+                        <img src="assets/img/model_logos/XGBClassificationModel.png" alt="Model Logo" class="small-model-logo">
                     </div>
                 </button>
             </mat-list-item>
@@ -180,7 +206,7 @@
                 </button>
 
                 <!-- Epochs -->
-                <button mat-button class="left-icon-button" (click)="_nav.forecastModels()" matBadge="4" [disabled]="state.module == 'forecastModels'" *ngIf="uid">
+                <button mat-button class="left-icon-button" (click)="_nav.epochs()" matBadge="4" [disabled]="state.module == 'epochs'" *ngIf="uid">
                     <mat-icon svgIcon="brain"></mat-icon><span>_ALPHA</span>
                 </button>
 

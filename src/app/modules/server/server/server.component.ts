@@ -18,7 +18,7 @@ import {
     IDatabaseSummaryTable,
     IDownloadedFile
 } from '../../../core';
-import { AppService, AudioService, ClipboardService, ILayout, NavService, SnackbarService } from '../../../services';
+import { AppService, ILayout, NavService } from '../../../services';
 import { AlarmsConfigDialogComponent } from './alarms-config-dialog/alarms-config-dialog.component';
 import { ApiErrorDialogComponent } from './api-error-dialog/api-error-dialog.component';
 import { ISection, ISectionID, IServerComponent, IState, IStates, IServerIssues } from './interfaces';
@@ -113,18 +113,15 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
     public loaded = false;
 
     constructor(
-        private _app: AppService,
+        public _app: AppService,
         private _server: ServerService,
         private _utils: UtilsService,
-        private _snackbar: SnackbarService,
         public _nav: NavService,
         public _api: ApiService,
         private dialog: MatDialog,
-        private _audio: AudioService,
         private _apiError: ApiErrorService,
         private _db: DatabaseManagementService,
-        private _file: FileService,
-        public _clipboard: ClipboardService
+        private _file: FileService
     ) { }
 
 
@@ -133,7 +130,7 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
         this.layoutSub = this._app.layout.subscribe((nl: ILayout) => this.layout = nl);
 
         // Retrieve the server data
-        try { this.serverData = await this._server.getServerData() } catch (e) { this._snackbar.error(e)}
+        try { this.serverData = await this._server.getServerData() } catch (e) { this._app.error(e)}
 
         // Retrieve the API Errors
         try { 
@@ -148,7 +145,7 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
                     this.activeErrorIndex += 1;
                 }
             }, 5000); // Change every 5 seconds
-        } catch (e) { this._snackbar.error(e)}
+        } catch (e) { this._app.error(e)}
 
         // Set meta data
         this.onDataChanges();
@@ -247,11 +244,11 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
                 this.serverIssues.resourcesCommunicationError = undefined;
             } catch (e) { 
                 const err: string = this._utils.getErrorMessage(e);
-                this._snackbar.error(err);
+                this._app.error(err);
                 this.serverIssues.resourcesCommunicationError = err;
             }
         } else {
-            try { this.serverData = await this._server.getServerData() } catch (e) { this._snackbar.error(e)}
+            try { this.serverData = await this._server.getServerData() } catch (e) { this._app.error(e)}
         }
 
         // Update meta data
@@ -454,8 +451,8 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
                                         this.serverData!.resources.alarms = newConfig;
 
                                         // Notify
-                                        this._snackbar.success('The alarms configuration has been updated succesfully.');
-                                    } catch(e) { this._snackbar.error(e) }
+                                        this._app.success('The alarms configuration has been updated succesfully.');
+                                    } catch(e) { this._app.error(e) }
                 
                                     // Set Submission State
                                     this.submitting = false;
@@ -466,7 +463,7 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
                 }
             );
          } else {
-             this._snackbar.error('The alarms config cannot be updated as the server data didnt load correctly.');
+             this._app.error('The alarms config cannot be updated as the server data didnt load correctly.');
          }
     }
 
@@ -499,7 +496,7 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
             this.serverIssues.errorsCommunicationError = undefined;
         } catch (e) { 
             const err: string = this._utils.getErrorMessage(e);
-            this._snackbar.error(err);
+            this._app.error(err);
             this.serverIssues.errorsCommunicationError = err;
         }
 
@@ -535,7 +532,7 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
                     try {
                         // Register the IP and refresh the list
                         this.apiErrors = await this._apiError.deleteAll(otp);
-                    } catch(e) { this._snackbar.error(e) }
+                    } catch(e) { this._app.error(e) }
 
                     // Set Submission State
                     this.submitting = false;
@@ -605,7 +602,7 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
                 // Sort both lists
                 this.tables.sort((a, b) => (a.name > b.name) ? 1 : -1);
                 this.testTables.sort((a, b) => (a.name > b.name) ? 1 : -1);
-            } catch (e) { this._snackbar.error(e) }
+            } catch (e) { this._app.error(e) }
         }
 
 
@@ -633,7 +630,7 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
         // Download the files
         try {
             this.files = await this._file.listDatabaseBackups();
-        } catch (e) { this._snackbar.error(e) }
+        } catch (e) { this._app.error(e) }
 
         // Set Submission State
         this.filesDownloaded = true;
@@ -669,7 +666,7 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
                         // Retrieve the url and open it in a new tab
                         const url: string = await this._file.getDatabaseBackupDownloadURL(name);
                         this._nav.openUrl(url);
-                    } catch(e) { this._snackbar.error(e) }
+                    } catch(e) { this._app.error(e) }
 
                     // Set Submission State
                     this.submitting = false;
@@ -708,14 +705,14 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
             // Make sure that it hasn't been played in the last minute
             const oneMinuteAgo: number = moment().subtract(1, "minute").valueOf();
             if (this.outageLastPlayed < oneMinuteAgo) {
-                this._audio.playOutage();
+                this._app.playOutage();
                 this.outageLastPlayed = ts;
             }
         } 
 
         // Otherwise, play it and record the time
         else {
-            this._audio.playOutage();
+            this._app.playOutage();
             this.outageLastPlayed = ts;
         }
     }

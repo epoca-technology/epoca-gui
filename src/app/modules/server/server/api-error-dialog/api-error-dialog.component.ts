@@ -3,7 +3,7 @@ import { DOCUMENT } from '@angular/common';
 import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { IApiError, IpBlacklistService } from '../../../../core';
-import { ClipboardService, NavService, SnackbarService } from '../../../../services';
+import { AppService, NavService } from '../../../../services';
 import { IApiErrorDialogComponent } from './interfaces';
 
 @Component({
@@ -27,8 +27,7 @@ export class ApiErrorDialogComponent implements OnInit, IApiErrorDialogComponent
         @Inject(MAT_DIALOG_DATA) public error: IApiError,
 		private domSanitizer: DomSanitizer,
         @Inject(DOCUMENT) private document: Document,
-        public _clipboard: ClipboardService,
-        private _snackbar: SnackbarService,
+        public _app: AppService,
         private _blacklist: IpBlacklistService,
 		private _nav: NavService
 	) { }
@@ -66,8 +65,8 @@ export class ApiErrorDialogComponent implements OnInit, IApiErrorDialogComponent
                         await this._blacklist.registerIP(ip, undefined, otp);
 
                         // Notify
-                        this._snackbar.success('The IP was blacklisted successfully.');
-                    } catch(e) { this._snackbar.error(e) }
+                        this._app.success('The IP was blacklisted successfully.');
+                    } catch(e) { this._app.error(e) }
 
                     // Set Submission State
                     this.submitting = false;

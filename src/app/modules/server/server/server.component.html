@@ -444,7 +444,7 @@
                                                                 {{file.size | filesize}}
                                                             </button>
                                                             <mat-menu #menu="matMenu">
-                                                                <button mat-menu-item (click)="_clipboard.copy(file.name)">
+                                                                <button mat-menu-item (click)="_app.copy(file.name)">
                                                                     <mat-icon>content_copy</mat-icon>
                                                                     <span>Copy Backup Name</span>
                                                                 </button>

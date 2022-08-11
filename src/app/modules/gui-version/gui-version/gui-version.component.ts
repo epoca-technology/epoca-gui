@@ -4,7 +4,7 @@ import {ActivatedRoute} from "@angular/router";
 import {AbstractControl, FormControl, FormGroup} from '@angular/forms';
 import { IGuiVersionComponent } from './interfaces';
 import { GuiVersionService } from '../../../core';
-import { AppService, NavService, SnackbarService, ValidationsService } from '../../../services';
+import { AppService, NavService, ValidationsService } from '../../../services';
 
 @Component({
   selector: 'app-gui-version',
@@ -36,7 +36,6 @@ export class GuiVersionComponent implements OnInit, IGuiVersionComponent {
 		private route: ActivatedRoute,
 		private swUpdate: SwUpdate,
         private _version: GuiVersionService,
-        private _snackbar: SnackbarService,
         public _nav: NavService,
         private _validations: ValidationsService
     ) { }
@@ -53,7 +52,7 @@ export class GuiVersionComponent implements OnInit, IGuiVersionComponent {
         if (typeof this.currentVersion != "string") {
             try {
                 this.currentVersion = await this._version.get();
-            } catch (e) { this._snackbar.error(e) }
+            } catch (e) { this._app.error(e) }
         }
 
         // Check if there is a missmatch
@@ -151,7 +150,7 @@ export class GuiVersionComponent implements OnInit, IGuiVersionComponent {
                         this.currentVersion = this.version.value;
 
                         // Notify
-                        this._snackbar.success('The new version has been saved successfully.');
+                        this._app.success('The new version has been saved successfully.');
 
                         // Check if there is a missmatch
                         this.versionMissmatch = this._app.version != this.currentVersion;
@@ -159,7 +158,7 @@ export class GuiVersionComponent implements OnInit, IGuiVersionComponent {
                         // Disable edit mode
                         this.updating = false;
                         setTimeout(() => { this.edit = false });
-                    } catch(e) { this._snackbar.error(e) }
+                    } catch(e) { this._app.error(e) }
 
                     // Set Submission State
                     this.updating = false;

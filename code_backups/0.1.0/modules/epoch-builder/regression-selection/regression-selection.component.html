@@ -1,0 +1,330 @@
+<!-- Section Container -->
+<mat-drawer-container class="section-container component-container">
+
+    <!-- Main Sidenav -->
+    <mat-drawer #regressionSelectionSidenav [(opened)]="regressionSelectionSidenavOpened" *ngIf="initialized"
+                class="sidenav" position="start" mode="over" autoFocus="false">
+        <!-- Menu Heading Toolbar -->
+        <mat-toolbar color="primary">
+            <div fxLayout="row" fxLayoutAlign="start center">
+                <button mat-icon-button (click)="regressionSelectionSidenav?.toggle()"><mat-icon>arrow_back</mat-icon></button>
+                <span class="truncate">Regression Selection</span>
+                <span fxFlex></span>
+            </div>
+        </mat-toolbar>
+
+        <!-- Menu Content -->
+        <mat-list>
+            <div mat-subheader>General</div>
+            <mat-list-item>
+                <button mat-button class="left-icon-button" [disabled]="section == 'summary'" (click)="navigate('summary')">
+                    <mat-icon>dashboard</mat-icon> Summary
+                </button>
+            </mat-list-item>
+            <div mat-subheader>Combinations</div>
+            <mat-list-item *ngFor="let combination of _rs.results; index as combIndex">
+                <button mat-button class="left-icon-button truncate" 
+                        [disabled]="section == 'combination' && activeComb == combIndex" 
+                        (click)="navigate('combination', combIndex)">
+                        <div fxLayout="row" fxLayoutAlign="start center">
+                            <span class="truncate">{{combination.combination_id}}</span>
+                            <span fxFlex></span>
+                            <div [ngClass]="{
+                                'square-badge': combination.points_mean == 0,
+                                'square-badge-success': combination.points_mean > 0,
+                                'square-badge-error': combination.points_mean < 0
+                            }"><span>{{combination.points_mean | number: '1.2-2'}}</span></div>
+                        </div>
+                </button>
+            </mat-list-item>
+        </mat-list>
+    </mat-drawer>
+
+
+    <!-- Section Content -->
+    <mat-drawer-content id="content-header">
+        <!-- Content Header -->
+        <mat-toolbar class="secondary-header">
+            <div fxLayout="row" fxLayoutAlign="center center">
+                <button mat-icon-button (click)="_nav.dashboard()" class="show-on-mobile" *ngIf="!initialized"><mat-icon>arrow_back</mat-icon></button>
+                <button mat-icon-button (click)="reset()" class="show-on-mobile" *ngIf="initialized"><mat-icon>arrow_back</mat-icon></button>
+                <button mat-icon-button (click)="regressionSelectionSidenav?.toggle()" *ngIf="initialized" class="show-on-mobile"><mat-icon>menu</mat-icon></button>
+                <span class="truncate show-on-mobile" *ngIf="!initialized">Regression Selection</span>
+                <span class="truncate show-on-mobile" *ngIf="initialized && section == 'summary'">Summary</span>
+                <span class="truncate show-on-mobile" *ngIf="initialized && section == 'combination'">{{_rs.results[activeComb].combination_id}}</span>
+                <span class="truncate show-on-desktop">Regression Selection</span>
+                <span fxFlex></span>
+                <button mat-icon-button 
+                        matTooltip="Clear Regression Selection"
+                        (click)="reset()"
+                        class="show-on-desktop"
+                        *ngIf="initialized"><mat-icon>close</mat-icon></button>
+            </div>
+        </mat-toolbar>
+
+
+
+        <!-- Uninitialized Content -->
+        <div *ngIf="!initialized" class="fadeIn">
+            <div fxLayout="row" fxLayoutAlign="center center" class="file-init-container">
+                <!-- Button -->
+                <label for="certificatesFile" class="file-label" role="button" matRipple *ngIf="!initializing">
+                    <div fxLayout="row" fxLayoutAlign="start center" matRipple role="button" tabindex="0">
+                        <mat-icon svgIcon="file_circle_check"></mat-icon>&nbsp;
+                        <p>Select Regr. Selection</p>
+                    </div>
+                </label>
+
+                <!-- Input -->
+                <form [formGroup]="fileInputForm">
+                    <input id="certificatesFile" type="file" accept="application/json" 
+                            formControlName="fileInput" (change)="fileChanged($event)"/>
+                </form>
+
+                <!-- Initializing Loader-->
+                <h3 *ngIf="initializing" class="fadeIn">Initializing...</h3>
+            </div>
+        </div>
+
+
+
+        <!-- Initialized Content -->
+        <div *ngIf="initialized" class="fadeIn">
+            <div fxLayout="row">
+                <div *ngIf="layout == 'desktop'" class="desktop-sidenav">
+                    <mat-list>
+                        <div mat-subheader>General</div>
+                        <mat-list-item>
+                            <button mat-button class="left-icon-button" [disabled]="section == 'summary'" (click)="navigate('summary')">
+                                <mat-icon>dashboard</mat-icon> Summary
+                            </button>
+                        </mat-list-item>
+                        <div mat-subheader>Combinations</div>
+                        <mat-list-item *ngFor="let combination of _rs.results; index as combIndex">
+                            <button mat-button class="left-icon-button truncate" 
+                                    [disabled]="section == 'combination' && activeComb == combIndex" 
+                                    (click)="navigate('combination', combIndex)">
+                                    <div fxLayout="row" fxLayoutAlign="start center">
+                                        <span class="truncate">{{combination.combination_id}}</span>
+                                        <span fxFlex></span>
+                                        <div [ngClass]="{
+                                            'square-badge': combination.points_mean == 0,
+                                            'square-badge-success': combination.points_mean > 0,
+                                            'square-badge-error': combination.points_mean < 0
+                                        }"><span>{{combination.points_mean | number: '1.2-2'}}</span></div>
+                                    </div>
+                            </button>
+                        </mat-list-item>
+                    </mat-list>
+                </div>
+                <div fxFlex>
+                    <!-- Loader -->
+                    <div *ngIf="!loaded" class="loader">
+                        <div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div>
+                    </div>
+
+                    <!-- Sections -->
+                    <div *ngIf="loaded" class="fadeIn">
+                        <!-- General Sections -->
+                        <div class="general-sections" *ngIf="section != 'combination'">
+                            <!-- Evaluations-->
+                            <div *ngIf="section == 'summary' && models && pointsMean">
+                                <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column">
+                                    <!-- Informational Cards-->
+                                    <div fxFlex="44" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                                        <!-- Regression Selection -->
+                                        <div class="desktop-card">
+                                            <h3 class="truncate">Regression Selection</h3>
+
+                                            <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+                                                <p class="light-text truncate">ID</p>
+                                                <span fxFlex></span>
+                                                <p class="clickable" (click)="_clipboard.copy(_rs.id)">{{_rs.id | stringOverview: 10}}</p>
+                                            </div>
+
+                                            <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+                                                <p class="light-text">Start</p>
+                                                <span fxFlex></span>
+                                                <p matTooltip="The start time of the backtests.">{{_rs.start | date:'medium'}}</p>
+                                            </div>
+
+                                            <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+                                                <p class="light-text">End</p>
+                                                <span fxFlex></span>
+                                                <p matTooltip="The end time of the backtests.">{{_rs.end | date:'medium'}}</p>
+                                            </div>
+
+                                            <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+                                                <p class="light-text">Selection Size</p>
+                                                <span fxFlex></span>
+                                                <p matTooltip="The number of models that were selected by combination.">{{_rs.models_limit}}</p>
+                                            </div>
+
+                                            <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+                                                <p class="light-text">Combinations</p>
+                                                <span fxFlex></span>
+                                                <p matTooltip="The total number of combinations in the selection.">{{_rs.results.length}}</p>
+                                            </div>
+
+                                            <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+                                                <p class="light-text">Backtests</p>
+                                                <span fxFlex></span>
+                                                <p matTooltip="The total number of backtests for all combinations that were put through the selection process.">
+                                                    {{_rs.models_num}}
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div class="divider show-on-mobile"></div>
+
+                                        <!-- Models Input Pie Chart -->
+                                        <div class="desktop-card">
+                                            <h3>Models by Combination</h3>
+
+                                            <apx-chart
+                                                [series]="models.series"
+                                                [chart]="models.chart"
+                                                [labels]="models.labels"
+                                                [colors]="models.colors"
+                                                [legend]="models.legend"
+                                                [responsive]="models.responsive"
+                                            ></apx-chart>
+                                        </div>
+                                    </div>
+
+                                    <span fxFlex></span>
+                                    <div class="divider show-on-mobile"></div>
+
+                                    <!-- Points Mean -->
+                                    <div fxFlex="54" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                                        <div class="desktop-card">
+                                            <h3 class="truncate">Points Mean by Combination</h3>
+                                            <apx-chart
+                                                [series]="pointsMean.series"
+                                                [chart]="pointsMean.chart"
+                                                [plotOptions]="pointsMean.plotOptions"
+                                                [xaxis]="pointsMean.xaxis"
+                                                [yaxis]="pointsMean.yaxis"
+                                                [dataLabels]="pointsMean.dataLabels"
+                                                [colors]="pointsMean.colors"
+                                                [grid]="pointsMean.grid"
+                                                [legend]="{show: false}"
+                                            ></apx-chart>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+
+                        <!-- Combination Section -->
+                        <div class="combination-section" *ngIf="section == 'combination' && combPoints && combPointsHist && combPositions && combAccuracy">
+                            <!-- Tabs Navigation-->
+                            <mat-tab-group *ngIf="layout == 'mobile'" 
+                                        [selectedIndex]="activeTabIndex" (selectedIndexChange)="activeTabIndex = $event"
+                                        mat-stretch-tabs class="mat-elevation-z3" backgroundColor="primary">
+                                <mat-tab><ng-template mat-tab-label><mat-icon>attach_money</mat-icon></ng-template></mat-tab>
+                                <mat-tab><ng-template mat-tab-label><mat-icon>query_stats</mat-icon></ng-template></mat-tab>
+                                <mat-tab><ng-template mat-tab-label><mat-icon>ads_click</mat-icon></ng-template></mat-tab>
+                                <mat-tab><ng-template mat-tab-label><mat-icon svgIcon="wand_magic_sparkles" class="wand-icon"></mat-icon></ng-template></mat-tab>
+                            </mat-tab-group>
+                            <mat-tab-group *ngIf="layout == 'desktop'"  
+                                            [selectedIndex]="activeTabIndex" (selectedIndexChange)="activeTabIndex = $event" 
+                                            mat-align-tabs="center">
+                                <mat-tab><ng-template mat-tab-label><mat-icon>attach_money</mat-icon>&nbsp;Points</ng-template></mat-tab>
+                                <mat-tab><ng-template mat-tab-label><mat-icon>query_stats</mat-icon>&nbsp;Points History</ng-template></mat-tab>
+                                <mat-tab><ng-template mat-tab-label><mat-icon>ads_click</mat-icon>&nbsp;Accuracy</ng-template></mat-tab>
+                                <mat-tab><ng-template mat-tab-label><mat-icon svgIcon="wand_magic_sparkles" class="wand-icon"></mat-icon>&nbsp;Positions</ng-template></mat-tab>
+                            </mat-tab-group>
+
+
+                            <!-- Combination Content -->
+                            <div class="combination-content">
+                                <div fxLayout="row" fxLayoutAlign="center center">
+
+                                    <!-- Points -->
+                                    <div *ngIf="activeTabIndex == 0" fxFlex="70" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                                        <apx-chart
+                                            [series]="combPoints.series"
+                                            [chart]="combPoints.chart"
+                                            [plotOptions]="combPoints.plotOptions"
+                                            [xaxis]="combPoints.xaxis"
+                                            [yaxis]="combPoints.yaxis"
+                                            [dataLabels]="combPoints.dataLabels"
+                                            [colors]="combPoints.colors"
+                                            [grid]="combPoints.grid"
+                                            [legend]="{show: false}"
+                                        ></apx-chart>
+                                    </div>
+
+
+                                    <!-- Points Hist. -->
+                                    <div *ngIf="activeTabIndex == 1" fxFlex class="full-width">
+                                        <mat-grid-list [cols]="layout == 'desktop' ? 3: 1" rowHeight="300" gutterSize="40px">
+                                            <mat-grid-tile *ngFor="let item of combPointsHist; index as modelIndex" class="hist-item">
+                                                <div class="item-container">
+                                                    <div fxLayout="row" fxLayoutAlign="start center">
+                                                        <h3 class="truncate">{{item.modelID}}</h3>
+                                                        <span fxFlex></span>
+                                                        <div class="square-badge clickable" role="button" 
+                                                            (click)="displayActiveCombinationModel(modelIndex)"
+                                                            matTooltip="The median points at the end of the period.">
+                                                            Median: {{item.pointsMedian| number}}
+                                                        </div>
+                                                    </div>
+                                                    <apx-chart
+                                                        [series]="item.chart.series"
+                                                        [chart]="item.chart.chart"
+                                                        [xaxis]="item.chart.xaxis"
+                                                        [dataLabels]="item.chart.dataLabels"
+                                                        [grid]="item.chart.grid"
+                                                        [stroke]="item.chart.stroke"
+                                                        [yaxis]="item.chart.yaxis"
+                                                    ></apx-chart>
+                                                </div>
+                                            </mat-grid-tile>
+                                        </mat-grid-list>
+                                    </div>
+
+
+                                    <!-- Accuracy -->
+                                    <div *ngIf="activeTabIndex == 2" fxFlex="70" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                                        <apx-chart
+                                            [series]="combAccuracy.series"
+                                            [chart]="combAccuracy.chart"
+                                            [plotOptions]="combAccuracy.plotOptions"
+                                            [xaxis]="combAccuracy.xaxis"
+                                            [yaxis]="combAccuracy.yaxis"
+                                            [dataLabels]="combAccuracy.dataLabels"
+                                            [colors]="combAccuracy.colors"
+                                            [grid]="combAccuracy.grid"
+                                            [legend]="{position: 'top'}"
+                                        ></apx-chart>
+                                    </div>
+
+
+                                    <!-- Positions -->
+                                    <div *ngIf="activeTabIndex == 3" fxFlex="70" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                                        <apx-chart
+                                            [series]="combPositions.series"
+                                            [chart]="combPositions.chart"
+                                            [plotOptions]="combPositions.plotOptions"
+                                            [xaxis]="combPositions.xaxis"
+                                            [yaxis]="combPositions.yaxis"
+                                            [dataLabels]="combPositions.dataLabels"
+                                            [colors]="combPositions.colors"
+                                            [grid]="combPositions.grid"
+                                            [legend]="{position: 'top'}"
+                                        ></apx-chart>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </mat-drawer-content>
+</mat-drawer-container>

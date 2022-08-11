@@ -3,7 +3,7 @@ import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/fo
 import { RecaptchaComponent } from 'ng-recaptcha';
 import { Subscription } from 'rxjs';
 import { UserService } from '../../../core';
-import { AppService, ILayout, NavService, SnackbarService, ValidationsService } from '../../../services';
+import { AppService, ILayout, NavService, ValidationsService } from '../../../services';
 import { IUpdatePasswordComponent } from './interfaces';
 
 @Component({
@@ -36,7 +36,6 @@ export class UpdatePasswordComponent implements OnInit, OnDestroy, IUpdatePasswo
 
     constructor(
         private _app: AppService,
-        private _snackbar: SnackbarService,
         public _nav: NavService,
         private _user: UserService,
         private _validations: ValidationsService
@@ -97,11 +96,11 @@ export class UpdatePasswordComponent implements OnInit, OnDestroy, IUpdatePasswo
                         );
 
                         // Redirect the user to the sign in page
-                        this._snackbar.success('Your password has been updated successfully.');
+                        this._app.success('Your password has been updated successfully.');
                         this._nav.signIn();
                     } catch(e) { 
                         // Display the error
-                        this._snackbar.error(e);
+                        this._app.error(e);
 
                         // Reset the reCAPTCHA
                         this.recaptchaEl?.reset();
@@ -129,7 +128,7 @@ export class UpdatePasswordComponent implements OnInit, OnDestroy, IUpdatePasswo
      * @param e 
      * @returns void
      */
-    public onReCAPTCHAError(e: any): void { this._snackbar.error(e) }
+    public onReCAPTCHAError(e: any): void { this._app.error(e) }
 
 
 

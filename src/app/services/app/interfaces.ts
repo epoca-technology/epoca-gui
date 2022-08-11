@@ -1,13 +1,31 @@
+import {MatSnackBarRef, TextOnlySnackBar} from "@angular/material/snack-bar";
 import {BehaviorSubject} from "rxjs";
 
 
 export interface IAppService {
-	// Layout
+	// Properties
 	layout: BehaviorSubject<ILayout>,
-
-    // Version
     version: string,
+    outageAudioInitialized: boolean,
+    canPaste: boolean,
+
+
+    // Snackbars
+    success(message: string, action: boolean): MatSnackBarRef<TextOnlySnackBar>,
+	info(message: string, action: boolean): MatSnackBarRef<TextOnlySnackBar>,
+	error(error: any, action: boolean): MatSnackBarRef<TextOnlySnackBar>,
+
+    // Clipboard
+    copy(content: string, notify: boolean): void,
+    read(): Promise<string>,
+
+    // Audio
+    playOutage(): Promise<void>,
 }
+
+
+
+
 
 
 // Layout

@@ -66,25 +66,52 @@ import { StringOverviewPipe } from './pipes/string-overview/string-overview.pipe
 
 
 
+/* Shared Components */
 
-// Shared Components
-import { BottomSheetMenuComponent } from './components/bottom-sheet-menu';
-import { CandlestickDialogComponent, CandlestickBodyComponent} from './components/candlestick';
-import { ConfirmationDialogComponent } from './components/confirmation-dialog';
-import { DataDialogComponent } from './components/data-dialog/data-dialog.component';
-import { DialogMenuComponent } from './components/dialog-menu/dialog-menu.component';
-import { MobileTabsComponent } from './components/mobile-tabs/mobile-tabs.component';
-import { ModelDialogComponent } from './components/prediction/model-dialog/model-dialog.component';
-import { ModelListDialogComponent } from './components/prediction/model-list-dialog/model-list-dialog.component';
-import { ModelContentComponent } from './components/prediction/model-content/model-content.component';
-import { PredictionDialogComponent } from './components/prediction/prediction-dialog/prediction-dialog.component';
-import { ClassificationElementComponent } from './components/prediction/classification-element/classification-element.component';
-import { KerasModelDialogComponent } from './components/prediction/keras-model-dialog/keras-model-dialog.component';
-import { RefreshButtonComponent } from './components/refresh-button/refresh-button.component';
-import { TooltipDialogComponent } from './components/tooltip-dialog/tooltip-dialog.component';
-import { RegressionElementComponent } from './components/prediction/regression-element/regression-element.component';
+// Background Task
 import { BackgroundTaskComponent } from './components/background-task/background-task.component';
-import { ModelSelectionDialogComponent } from './components/prediction/model-selection-dialog/model-selection-dialog.component';
+
+// Bottom Sheet Menu
+import { BottomSheetMenuComponent } from './components/bottom-sheet-menu';
+
+// Candlestick
+import { CandlestickDialogComponent, CandlestickBodyComponent} from './components/candlestick';
+
+// Confirmation Dialog
+import { ConfirmationDialogComponent } from './components/confirmation-dialog';
+
+// Data Dialog
+import { DataDialogComponent } from './components/data-dialog/data-dialog.component';
+
+// Dialog Menu
+import { DialogMenuComponent } from './components/dialog-menu/dialog-menu.component';
+
+// Epoch Builder
+import {
+	ClassificationFeaturesContentComponent,
+	ClassificationFeaturesDialogComponent,
+	KerasClassificationElementComponent,
+	KerasModelDialogComponent,
+	KerasRegressionElementComponent,
+	ModelContentComponent,
+	ModelDialogComponent,
+	ModelSelectionDialogComponent,
+	PredictionDialogComponent,
+	XgbClassificationElementComponent,
+	XgbModelDialogComponent,
+	XgbRegressionElementComponent
+} from "./components/epoch-builder"
+
+// Mobile Tabs
+import { MobileTabsComponent } from './components/mobile-tabs/mobile-tabs.component';
+
+// Refresh Button
+import { RefreshButtonComponent } from './components/refresh-button/refresh-button.component';
+
+// Tooltip Dialog
+import { TooltipDialogComponent } from './components/tooltip-dialog/tooltip-dialog.component';
+
+
 
 
 
@@ -102,25 +129,49 @@ import { ModelSelectionDialogComponent } from './components/prediction/model-sel
 		SecondToFormatPipe,
 		StringOverviewPipe,
 
-		// Shared Components
+		/* Shared Components */
+
+		// Background Task
+		BackgroundTaskComponent,
+
+		// Bottom Sheet Menu
 		BottomSheetMenuComponent,
-        ConfirmationDialogComponent,
+
+		// Candlestick
         CandlestickDialogComponent,
         CandlestickBodyComponent,
-        RefreshButtonComponent,
-        MobileTabsComponent,
-        ModelDialogComponent,
-        ModelListDialogComponent,
-        ModelContentComponent,
-        PredictionDialogComponent,
-		ClassificationElementComponent,
-        KerasModelDialogComponent,
+
+		// Confirmation Dialog
+        ConfirmationDialogComponent,
+
+		// Data Dialog
         DataDialogComponent,
+
+		// Dialog Menu
         DialogMenuComponent,
-        TooltipDialogComponent,
-        RegressionElementComponent,
-        BackgroundTaskComponent,
-        ModelSelectionDialogComponent,
+
+		// Epoch Builder
+		ClassificationFeaturesContentComponent,
+		ClassificationFeaturesDialogComponent,
+		KerasClassificationElementComponent,
+		KerasModelDialogComponent,
+		KerasRegressionElementComponent,
+		ModelContentComponent,
+		ModelDialogComponent,
+		ModelSelectionDialogComponent,
+		PredictionDialogComponent,
+		XgbClassificationElementComponent,
+		XgbModelDialogComponent,
+		XgbRegressionElementComponent,
+
+		// Mobile Tabs
+		MobileTabsComponent,
+
+		// Refresh Button
+		RefreshButtonComponent,
+
+		// Tooltip Dialog
+		TooltipDialogComponent,
 	],
 	imports: [
 		CommonModule,
@@ -251,14 +302,27 @@ import { ModelSelectionDialogComponent } from './components/prediction/model-sel
 		SecondToFormatPipe,
 		StringOverviewPipe,
 		
-		// Shared Components
-        CandlestickBodyComponent,
-        RefreshButtonComponent,
-        MobileTabsComponent,
-		ModelContentComponent,
-		ClassificationElementComponent,
-		RegressionElementComponent,
+		/* Shared Components */
+
+		// Background Task
 		BackgroundTaskComponent,
+
+		// Candlestick
+        CandlestickBodyComponent,
+
+		// Epoch Builder
+		ClassificationFeaturesContentComponent,
+		KerasClassificationElementComponent,
+		KerasRegressionElementComponent,
+		ModelContentComponent,	
+		XgbClassificationElementComponent,
+		XgbRegressionElementComponent,
+
+		// Mobile Tabs
+        MobileTabsComponent,
+
+		// Regresh Button
+        RefreshButtonComponent,
 	]
 })
 export class SharedModule { }

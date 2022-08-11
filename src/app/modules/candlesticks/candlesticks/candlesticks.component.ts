@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import * as moment from 'moment';
 import {MatDialog} from '@angular/material/dialog';
-import { CandlestickService, ICandlestick, UtilsService } from '../../../core';
-import { AppService, ChartService, ICandlestickChartOptions, NavService, SnackbarService } from '../../../services';
+import { CandlestickService, ICandlestick } from '../../../core';
+import { AppService, ChartService, ICandlestickChartOptions, NavService } from '../../../services';
 import { CandlestickFilesDialogComponent } from './candlestick-files-dialog/candlestick-files-dialog.component';
 import { CandlesticksConfigDialogComponent } from './candlesticks-config-dialog/candlesticks-config-dialog.component';
 import { CandlestickDialogComponent } from '../../../shared/components/candlestick';
@@ -30,8 +30,6 @@ export class CandlesticksComponent implements OnInit, ICandlesticksComponent {
     constructor(
         public _nav: NavService,
         private _candlestick: CandlestickService,
-        private _snackbar: SnackbarService,
-        private _utils: UtilsService,
         private _chart: ChartService,
         private dialog: MatDialog,
         private _app: AppService
@@ -76,7 +74,7 @@ export class CandlesticksComponent implements OnInit, ICandlesticksComponent {
             }
 		} catch (e) {
 			console.log(e);
-			this._snackbar.error(this._utils.getErrorMessage(e));
+			this._app.error(e);
 		}
 
 		// Update loaded state

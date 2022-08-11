@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {MatDialogRef} from "@angular/material/dialog";
 import { CandlestickService, FileService, IBackgroundTaskInfo, IDownloadedFile } from '../../../../core';
-import { ClipboardService, SnackbarService, NavService } from '../../../../services';
+import { AppService, NavService } from '../../../../services';
 import {ICandlestickFilesDialogComponent} from "./interfaces"
 
 
@@ -30,8 +30,7 @@ export class CandlestickFilesDialogComponent implements OnInit, ICandlestickFile
 		private dialogRef: MatDialogRef<CandlestickFilesDialogComponent>,
 		private _file: FileService,
 		private _candlestick: CandlestickService,
-		private _clipboard: ClipboardService,
-		private _snackbar: SnackbarService,
+		private _app: AppService,
 		private _nav: NavService
     ) { }
 
@@ -90,7 +89,7 @@ export class CandlestickFilesDialogComponent implements OnInit, ICandlestickFile
 				}
 				this.candlestickBundleTask = task;
 			}
-		} catch (e) { this._snackbar.error(e) }
+		} catch (e) { this._app.error(e) }
 	}
 
 
@@ -112,7 +111,7 @@ export class CandlestickFilesDialogComponent implements OnInit, ICandlestickFile
 			} else {
 				this.candlestickBundleFiles = await this._file.listCandlestickBundleFiles();
 			}
-		} catch (e) { this._snackbar.error(e) }
+		} catch (e) { this._app.error(e) }
 	}
 
 
@@ -137,8 +136,8 @@ export class CandlestickFilesDialogComponent implements OnInit, ICandlestickFile
 			const url: string = await this.getDownloadUrl(fileName, prediction);
 
 			// Copy it on Clipboard
-			this._clipboard.copy(url);
-		} catch (e) { this._snackbar.error(e) }
+			this._app.copy(url);
+		} catch (e) { this._app.error(e) }
 		this.submitting = false;
 	}
 
@@ -163,7 +162,7 @@ export class CandlestickFilesDialogComponent implements OnInit, ICandlestickFile
 
 			// Open it on the browser for download
 			this._nav.openUrl(url)
-		} catch (e) { this._snackbar.error(e) }
+		} catch (e) { this._app.error(e) }
 		this.submitting = false;
 	}
 
@@ -223,7 +222,7 @@ export class CandlestickFilesDialogComponent implements OnInit, ICandlestickFile
 						} else {
 							this.candlestickBundleTask = await this._candlestick.generateCandlesticksBundleFile(otp);
 						}
-                    } catch(e) { this._snackbar.error(e) }
+                    } catch(e) { this._app.error(e) }
 
                     // Set Submission State
                     this.submitting = false;

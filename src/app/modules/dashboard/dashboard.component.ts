@@ -2,7 +2,7 @@ import {Component, OnInit, OnDestroy, ViewChild} from '@angular/core';
 import {MatSidenav} from "@angular/material/sidenav";
 import { IDashboardComponent } from './interfaces';
 import {Subscription} from "rxjs";
-import { AppService, ILayout, NavService, SnackbarService } from '../../services';
+import { AppService, ILayout, NavService } from '../../services';
 import { environment } from '../../../environments/environment';
 
 @Component({
@@ -24,7 +24,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
     constructor(
         private _app: AppService,
-        private _snackbar: SnackbarService,
         public _nav: NavService
     ) { }
 

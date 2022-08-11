@@ -1,37 +1,50 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { AuthGuard } from '../../services';
-import { BacktestsComponent } from './backtests/backtests.component';
-import { RegressionSelectionComponent } from './regression-selection/regression-selection.component';
-import { ClassificationTrainingCertificatesComponent } from './classification-training-certificates/classification-training-certificates.component';
-import { ClassificationTrainingDataComponent } from './classification-training-data/classification-training-data.component';
-import { RegressionTrainingCertificatesComponent } from './regression-training-certificates/regression-training-certificates.component';
+import { NgModule } from "@angular/core";
+import { RouterModule, Routes } from "@angular/router";
+import { AuthGuard } from "../../services";
+import { BacktestsComponent } from "./backtests/backtests.component";
+import { ClassificationTrainingDataComponent } from "./classification-training-data/classification-training-data.component";
+import { KerasClassificationsComponent } from "./keras-classifications/keras-classifications.component";
+import { KerasRegressionsComponent } from "./keras-regressions/keras-regressions.component";
+import { RegressionSelectionComponent } from "./regression-selection/regression-selection.component";
+import { XgbClassificationsComponent } from "./xgb-classifications/xgb-classifications.component";
+import { XgbRegressionsComponent } from "./xgb-regressions/xgb-regressions.component";
+
 
 
 const routes: Routes = [
 	{
-		path: 'backtests',
+		path: "backtests",
 		component: BacktestsComponent,
 		canActivate: [AuthGuard]
 	},
 	{
-		path: 'regressionSelection',
-		component: RegressionSelectionComponent,
-		canActivate: [AuthGuard]
-	},
-	{
-		path: 'regressionTrainingCertificates',
-		component: RegressionTrainingCertificatesComponent,
-		canActivate: [AuthGuard]
-	},
-	{
-		path: 'classificationTrainingData',
+		path: "classificationTrainingData",
 		component: ClassificationTrainingDataComponent,
 		canActivate: [AuthGuard]
 	},
 	{
-		path: 'classificationTrainingCertificates',
-		component: ClassificationTrainingCertificatesComponent,
+		path: "kerasClassifications",
+		component: KerasClassificationsComponent,
+		canActivate: [AuthGuard]
+	},
+	{
+		path: "kerasRegressions",
+		component: KerasRegressionsComponent,
+		canActivate: [AuthGuard]
+	},
+	{
+		path: "regressionSelection",
+		component: RegressionSelectionComponent,
+		canActivate: [AuthGuard]
+	},
+	{
+		path: "xgbClassifications",
+		component: XgbClassificationsComponent,
+		canActivate: [AuthGuard]
+	},
+	{
+		path: "xgbRegressions",
+		component: XgbRegressionsComponent,
 		canActivate: [AuthGuard]
 	},
 ];

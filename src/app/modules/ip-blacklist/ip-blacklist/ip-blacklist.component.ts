@@ -3,7 +3,7 @@ import {AbstractControl, FormControl, FormGroup} from '@angular/forms';
 import { MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { Subscription } from 'rxjs';
 import { IIPBlacklistRecord, IpBlacklistService, } from '../../../core';
-import { AppService, ClipboardService, ILayout, NavService, SnackbarService, ValidationsService } from '../../../services';
+import { AppService, ILayout, NavService, ValidationsService } from '../../../services';
 import { IIpBlacklistComponent, IView } from './interfaces';
 
 @Component({
@@ -45,8 +45,6 @@ export class IpBlacklistComponent implements OnInit, OnDestroy, IIpBlacklistComp
         private _app: AppService,
         public _nav: NavService,
         private _blacklist: IpBlacklistService,
-        private _snackbar: SnackbarService,
-        public _clipboard: ClipboardService,
         private _validations: ValidationsService
     ) { }
 
@@ -57,7 +55,7 @@ export class IpBlacklistComponent implements OnInit, OnDestroy, IIpBlacklistComp
         // Retrieve the users
         try {
             this.list = await this._blacklist.getAll();
-        } catch (e) { this._snackbar.error(e) }
+        } catch (e) { this._app.error(e) }
 
         // Set the loading state
         this.loaded = true;
@@ -205,12 +203,12 @@ export class IpBlacklistComponent implements OnInit, OnDestroy, IIpBlacklistComp
                         );
 
                         // Notify
-                        this._snackbar.success('The IP was blacklisted successfully.');
+                        this._app.success('The IP was blacklisted successfully.');
 
                         // Go to intro
                         this.submitting = false;
                         this.gotoIntro();
-                    } catch(e) { this._snackbar.error(e) }
+                    } catch(e) { this._app.error(e) }
 
                     // Set Submission State
                     this.submitting = false;
@@ -251,12 +249,12 @@ export class IpBlacklistComponent implements OnInit, OnDestroy, IIpBlacklistComp
                         );
 
                         // Notify
-                        this._snackbar.success('The notes were updated successfully.');
+                        this._app.success('The notes were updated successfully.');
 
                         // Go to intro
                         this.submitting = false;
                         this.gotoIntro();
-                    } catch(e) { this._snackbar.error(e) }
+                    } catch(e) { this._app.error(e) }
 
                     // Set Submission State
                     this.submitting = false;
@@ -293,12 +291,12 @@ export class IpBlacklistComponent implements OnInit, OnDestroy, IIpBlacklistComp
                         this.list = await this._blacklist.unregisterIP(ip, otp);
 
                         // Notify
-                        this._snackbar.success('The IP was unregistered successfully.');
+                        this._app.success('The IP was unregistered successfully.');
 
                         // Go to intro
                         this.submitting = false;
                         this.gotoIntro();
-                    } catch(e) { this._snackbar.error(e) }
+                    } catch(e) { this._app.error(e) }
 
                     // Set Submission State
                     this.submitting = false;

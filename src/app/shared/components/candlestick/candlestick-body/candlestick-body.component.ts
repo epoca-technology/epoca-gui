@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ICandlestick } from '../../../../core';
-import { SnackbarService } from '../../../../services';
+import { AppService } from '../../../../services';
 
 @Component({
   selector: 'app-candlestick-body',
@@ -12,12 +12,12 @@ export class CandlestickBodyComponent implements OnInit {
 	@Input() candlestick!: ICandlestick;
 
 	constructor(
-		private _snackbar: SnackbarService
+		private _app: AppService
 	) { }
 
 	ngOnInit(): void {
 		if (!this.candlestick) {
-			this._snackbar.error('The candlestick must be provided in order to be able to view the body.');
+			this._app.error('The candlestick must be provided in order to be able to view the body.');
 		}
 	}
 }

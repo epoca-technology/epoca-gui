@@ -1,68 +1,95 @@
 // Core
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from "@angular/core";
+import { BrowserModule } from "@angular/platform-browser";
 
 // Root routing
-import { AppRoutingModule } from './app-routing.module';
+import { AppRoutingModule } from "./app-routing.module";
 
 // Browser Animations
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 // HTTP Module
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule } from "@angular/common/http";
 
 // Service Worker
-import { ServiceWorkerModule } from '@angular/service-worker';
+import { ServiceWorkerModule } from "@angular/service-worker";
 
 // Big Number
-import {BigNumber} from 'bignumber.js';
+import {BigNumber} from "bignumber.js";
 BigNumber.config({ ROUNDING_MODE: BigNumber.ROUND_DOWN, EXPONENTIAL_AT: 32 });
 
 // Environment
-import { environment } from '../environments/environment';
+import { environment } from "../environments/environment";
 
 // Initialize Firebase
-import {initializeApp} from 'firebase/app';
+import {initializeApp} from "firebase/app";
 initializeApp(environment.firebaseConfig.credentials);
 
 
 // Core
 import {
+	// API
     ApiService,
+
+	// API Error
     ApiErrorService,
+
+	// Auth
     AuthService,
     UserService,
+
+	// Candlestick
     CandlestickService,
+
+	// Database
     DatabaseService,
     DatabaseManagementService,
-    ExternalRequestService,
-    FileService,
-	GuiVersionService,
-	IpBlacklistService,
-	NotificationService,
-	PredictionService,
+
+	// Epoch Builder
 	BacktestService,
-	RegressionSelectionService,
-	ClassificationTrainingService,
 	ClassificationTrainingDataService,
-	RegressionTrainingEvaluationService,
-	RegressionTrainingService,
+	EpochBuilderEvaluationService,
+	EpochBuilderMetadataService,
+	KerasClassificationService,
+	KerasRegressionService,
+	RegressionSelectionService,
+	XgbClassificationService,
+	XgbRegressionService,
+
+	// External Request
+    ExternalRequestService,
+
+	// File
+    FileService,
+
+	// GUI Version
+	GuiVersionService,
+
+	// IP Blacklist
+	IpBlacklistService,
+
+	// Notification
+	NotificationService,
+
+	// Prediction
+	PredictionService,
+
+	// Server
 	ServerService,
-	UtilsService,
-} from './core';
+
+	// Utils
+	UtilsService
+} from "./core";
 
 
 // Services
 import {
 	AppService,
-    AudioService,
 	ChartService,
-	ClipboardService,
 	ModelSelectionService,
 	NavService,
-	SnackbarService,
 	ValidationsService,
-} from './services';
+} from "./services";
 
 
 // Shared Module
@@ -70,11 +97,11 @@ import {SharedModule} from "./shared";
 
 
 // Pre-Loaded Components
-import { DashboardComponent } from './modules/dashboard/dashboard.component';
+import { DashboardComponent } from "./modules/dashboard/dashboard.component";
 
 
 // Core Components
-import { AppComponent } from './app.component';
+import { AppComponent } from "./app.component";
 
 
 
@@ -97,49 +124,77 @@ import { AppComponent } from './app.component';
 		HttpClientModule,
 
 		// Service Worker
-		ServiceWorkerModule.register('firebase-messaging-sw.js', {
+		ServiceWorkerModule.register("firebase-messaging-sw.js", {
 			enabled: true, // environment.production
 			// Register the ServiceWorker as soon as the app is stable
 			// or after 30 seconds (whichever comes first).
-			registrationStrategy: 'registerImmediately'
+			registrationStrategy: "registerImmediately"
 		}),
 
 		// Shared Module
 		SharedModule,
 	],
 	providers: [
-        // Core
-        ApiService,
-        ApiErrorService,
-        AuthService,
-        UserService,
-        CandlestickService,
-        DatabaseService,
-        DatabaseManagementService,
-        ExternalRequestService,
-        FileService,
-        GuiVersionService,
-        IpBlacklistService,
-        NotificationService,
-		PredictionService,
+		/* Core */
+
+		// API
+		ApiService,
+
+		// API Error
+		ApiErrorService,
+
+		// Auth
+		AuthService,
+		UserService,
+
+		// Candlestick
+		CandlestickService,
+
+		// Database
+		DatabaseService,
+		DatabaseManagementService,
+
+		// Epoch Builder
 		BacktestService,
-		ClassificationTrainingService,
 		ClassificationTrainingDataService,
+		EpochBuilderEvaluationService,
+		EpochBuilderMetadataService,
+		KerasClassificationService,
+		KerasRegressionService,
 		RegressionSelectionService,
-		RegressionTrainingEvaluationService,
-		RegressionTrainingService,
-        ServerService,
-        UtilsService,
+		XgbClassificationService,
+		XgbRegressionService,
+
+		// External Request
+		ExternalRequestService,
+
+		// File
+		FileService,
+
+		// GUI Version
+		GuiVersionService,
+
+		// IP Blacklist
+		IpBlacklistService,
+
+		// Notification
+		NotificationService,
+
+		// Prediction
+		PredictionService,
+
+		// Server
+		ServerService,
+
+		// Utils
+		UtilsService,
 
 
-		// Services 
+		/* Services */ 
 		AppService,
-        AudioService,
         ChartService,
-		ClipboardService,
 		ModelSelectionService,
 		NavService,
-		SnackbarService,
 		ValidationsService,
 	],
 	bootstrap: [AppComponent]

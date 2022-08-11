@@ -21,6 +21,12 @@ const routes: Routes = [
 		loadChildren: () => import('./modules/auth/auth.module').then(m => m.AuthModule),
 	},
 
+	// Epochs
+	{
+		path: 'epochs',
+		loadChildren: () => import('./modules/epochs/epochs.module').then(m => m.EpochsModule),
+	},
+
 	// Trading Sessions
 	{
 		path: 'tradingSessions',
@@ -31,12 +37,6 @@ const routes: Routes = [
 	{
 		path: 'tradingSimulations',
 		loadChildren: () => import('./modules/trading-simulations/trading-simulations.module').then(m => m.TradingSimulationsModule),
-	},
-
-	// Forecast Models
-	{
-		path: 'forecastModels',
-		loadChildren: () => import('./modules/forecast-models/forecast-models.module').then(m => m.ForecastModelsModule),
 	},
 
 	// Candlesticks

@@ -1,26 +1,34 @@
-import {Inject, Injectable} from '@angular/core';
-import {Router, NavigationStart, NavigationEnd} from '@angular/router';
+import {Inject, Injectable} from "@angular/core";
+import {Router, NavigationStart, NavigationEnd} from "@angular/router";
 import {DOCUMENT} from "@angular/common";
-import {MatDialog, MatDialogRef} from '@angular/material/dialog';
-import {MatBottomSheet, MatBottomSheetRef} from '@angular/material/bottom-sheet';
+import {MatDialog, MatDialogRef} from "@angular/material/dialog";
+import {MatBottomSheet, MatBottomSheetRef} from "@angular/material/bottom-sheet";
 import {BehaviorSubject, Observable} from "rxjs";
-import {filter} from 'rxjs/operators';
-import { environment } from '../../../environments/environment';
-import { IKerasModelSummary, IModel, IPrediction } from '../../core';
+import {filter} from "rxjs/operators";
+import { environment } from "../../../environments/environment";
+import { 
+	IModel, 
+	IPrediction,
+	IKerasClassificationConfig, 
+	IKerasRegressionConfig, 
+	IXGBClassificationConfig,
+	IXGBRegressionConfig
+} from "../../core";
 import {AppService} from "../app";
+import {BottomSheetMenuComponent, IBottomSheetMenuItem} from "../../shared/components/bottom-sheet-menu";
 import {ConfirmationDialogComponent, IConfirmationDialogData} from "../../shared/components/confirmation-dialog";
 import {DataDialogComponent, IDataDialogData} from "../../shared/components/data-dialog";
 import {DialogMenuComponent, IDialogMenuData, IDialogMenuItem} from "../../shared/components/dialog-menu";
-import { ITooltipData, TooltipDialogComponent } from '../../shared/components/tooltip-dialog';
-import { ModelSelectionDialogComponent } from '../../shared/components/prediction/model-selection-dialog';
+import { ITooltipData, TooltipDialogComponent } from "../../shared/components/tooltip-dialog";
 import {
-	IKerasModelDialogData, 
-	KerasModelDialogComponent, 
-	ModelDialogComponent, 
-	ModelListDialogComponent,
-	PredictionDialogComponent
-} from "../../shared/components/prediction";
-import {BottomSheetMenuComponent, IBottomSheetMenuItem} from "../../shared/components/bottom-sheet-menu";
+	ModelSelectionDialogComponent,
+	KerasModelDialogComponent,
+	XgbModelDialogComponent,
+	ModelDialogComponent,
+	PredictionDialogComponent,
+	IClassificationFeaturesData,
+	ClassificationFeaturesDialogComponent,
+} from "../../shared/components/epoch-builder";
 import {INavService, IRouteState, IRouteStateData} from "./interfaces";
 
 
@@ -29,7 +37,7 @@ import {INavService, IRouteState, IRouteStateData} from "./interfaces";
 
 
 @Injectable({
-	providedIn: 'root'
+	providedIn: "root"
 })
 export class NavService implements INavService {
 	// Route Event Listeners
@@ -70,31 +78,54 @@ export class NavService implements INavService {
 
 
 	/* App Navigation */
-	public signIn(): Promise<boolean> { return this.navigate('auth/signIn') }
-	public updatePassword(): Promise<boolean> { return this.navigate('auth/updatePassword') }
-	public dashboard(): Promise<boolean> { return this.navigate('dashboard') }
-	public tradingSessions(): Promise<boolean> { return this.navigate('tradingSessions') }
-	public tradingSimulations(): Promise<boolean> { return this.navigate('tradingSimulations') }
-	public forecastModels(): Promise<boolean> { return this.navigate('forecastModels') }
-	public backtests(): Promise<boolean> { return this.navigate('epochBuilder/backtests') }
-	public regressionSelection(): Promise<boolean> { return this.navigate('epochBuilder/regressionSelection') }
-	public regressionTrainingCertificates(): Promise<boolean> { return this.navigate('epochBuilder/regressionTrainingCertificates') }
-	public classificationTrainingData(): Promise<boolean> { return this.navigate('epochBuilder/classificationTrainingData') }
-	public classificationTrainingCertificates(): Promise<boolean> { return this.navigate('epochBuilder/classificationTrainingCertificates') }
-	public candlesticks(): Promise<boolean> { return this.navigate('candlesticks') }
-	public server(): Promise<boolean> { return this.navigate('server') }
-	public users(): Promise<boolean> { return this.navigate('users') }
+
+	// Auth
+	public signIn(): Promise<boolean> { return this.navigate("auth/signIn") }
+	public updatePassword(): Promise<boolean> { return this.navigate("auth/updatePassword") }
+
+	// Candlesticks
+	public candlesticks(): Promise<boolean> { return this.navigate("candlesticks") }
+
+	// Dashboard
+	public dashboard(): Promise<boolean> { return this.navigate("dashboard") }
+
+	// Epoch Builder
+	public backtests(): Promise<boolean> { return this.navigate("epochBuilder/backtests") }
+	public classificationTrainingData(): Promise<boolean> { return this.navigate("epochBuilder/classificationTrainingData") }
+	public kerasClassifications(): Promise<boolean> { return this.navigate("epochBuilder/kerasClassifications") }
+	public kerasRegressions(): Promise<boolean> { return this.navigate("epochBuilder/kerasRegressions") }
+	public regressionSelection(): Promise<boolean> { return this.navigate("epochBuilder/regressionSelection") }
+	public xgbClassifications(): Promise<boolean> { return this.navigate("epochBuilder/xgbClassifications") }
+	public xgbRegressions(): Promise<boolean> { return this.navigate("epochBuilder/xgbRegressions") }
+
+	// Epochs
+	public epochs(): Promise<boolean> { return this.navigate("epochs") }
+
+	// GUI Version
 	public guiVersion(version?: string): Promise<boolean> { 
         if (typeof version == "string") {
             return this.navigate(`guiVersion/${version}`);
         } else {
-            return this.navigate('guiVersion');
+            return this.navigate("guiVersion");
         }
     }
-	public ipBlacklist(): Promise<boolean> { return this.navigate('ipBlacklist') }
+
+	// IP Blacklist
+	public ipBlacklist(): Promise<boolean> { return this.navigate("ipBlacklist") }
+
+	// Server
+	public server(): Promise<boolean> { return this.navigate("server") }
+
+	// Trading Sessions
+	public tradingSessions(): Promise<boolean> { return this.navigate("tradingSessions") }
+
+	// Trading Simulations
+	public tradingSimulations(): Promise<boolean> { return this.navigate("tradingSimulations") }
+
+	// Users
+	public users(): Promise<boolean> { return this.navigate("users") }
 
 
-	
 	
 	
 	
@@ -138,8 +169,8 @@ export class NavService implements INavService {
 	public displayConfirmationDialog(data?: IConfirmationDialogData): MatDialogRef<any> {
 		return this.dialog.open(ConfirmationDialogComponent, {
 			disableClose: true,
-			hasBackdrop: this._app.layout.value != 'mobile', // Mobile optimization
-			panelClass: 'small-dialog',
+			hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
+			panelClass: "small-dialog",
 			data: data
 		});
 	}
@@ -156,8 +187,8 @@ export class NavService implements INavService {
 	public displayDataDialog(name: string, value: any): MatDialogRef<any> {
 		return this.dialog.open(DataDialogComponent, {
 			disableClose: false,
-			hasBackdrop: this._app.layout.value != 'mobile', // Mobile optimization
-			panelClass: 'large-dialog',
+			hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
+			panelClass: "large-dialog",
 			data: <IDataDialogData> {
 				name: name,
 				value: value
@@ -179,14 +210,16 @@ export class NavService implements INavService {
 	public displayDialogMenu(title: string, items: IDialogMenuItem[]): MatDialogRef<any> {
 		return this.dialog.open(DialogMenuComponent, {
 			disableClose: true,
-			hasBackdrop: this._app.layout.value != 'mobile', // Mobile optimization
-			panelClass: 'small-dialog',
+			hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
+			panelClass: "small-dialog",
 			data: <IDialogMenuData> {
 				title: title,
 				items: items
 			}
 		});
 	}
+
+
 
 
 
@@ -201,7 +234,7 @@ export class NavService implements INavService {
 		return this.dialog.open(TooltipDialogComponent, {
 			disableClose: false,
 			hasBackdrop: true,
-			panelClass: 'light-dialog',
+			panelClass: "light-dialog",
 			data: <ITooltipData> {
 				title: title,
 				content: content
@@ -225,7 +258,7 @@ export class NavService implements INavService {
 	public displayModelDialog(model: IModel): MatDialogRef<any> {
 		return this.dialog.open(ModelDialogComponent, {
 			hasBackdrop: true,
-			panelClass: 'light-dialog',
+			panelClass: "light-dialog",
 			data: model
 		});
 	}
@@ -233,20 +266,24 @@ export class NavService implements INavService {
 	
 
 
+
+
 	
 	
 	/*
-	* Opens the dialog that contains all information about a list of models.
-	* @param model
+	* Opens the dialog that contains the features that belong to a classification.
+	* @param data
 	* @returns MatDialogRef<any>
 	* */
-	public displayModelListDialog(models: IModel[]): MatDialogRef<any> {
-		return this.dialog.open(ModelListDialogComponent, {
-			hasBackdrop: this._app.layout.value != 'mobile', // Mobile optimization
-			panelClass: 'medium-dialog',
-			data: models
+	public displayClassificationFeatures(data: IClassificationFeaturesData): MatDialogRef<any> {
+		return this.dialog.open(ClassificationFeaturesDialogComponent, {
+			hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
+			panelClass: "medium-dialog",
+			data: data
 		});
 	}
+
+
 
 
 
@@ -256,33 +293,37 @@ export class NavService implements INavService {
 
 	/*
 	* Opens the dialog that contains all information about a keras model.
-	* @param id
-	* @param description
-	* @param kerasModel
-	* @param training_data_id?
+	* @param modelConfig
 	* @returns MatDialogRef<any>
 	* */
-	public displayKerasModelDialog(
-		id: string, 
-		description: string, 
-		kerasModel: IKerasModelSummary,
-		training_data_id?: string
-	): MatDialogRef<any> {
+	public displayKerasModelDialog(modelConfig: IKerasRegressionConfig|IKerasClassificationConfig): MatDialogRef<any> {
 		return this.dialog.open(KerasModelDialogComponent, {
-			hasBackdrop: this._app.layout.value != 'mobile', // Mobile optimization
-			panelClass: 'medium-dialog',
-			data: <IKerasModelDialogData>{
-				id: id,
-				description: description,
-				summary: kerasModel,
-				training_data_id: training_data_id
-			}
+			hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
+			panelClass: "medium-dialog",
+			data: modelConfig
 		});
 	}
 
 
 
 	
+
+
+
+
+	/*
+	* Opens the dialog that contains all information about a xgboost model.
+	* @param modelConfig
+	* @returns MatDialogRef<any>
+	* */
+	public displayXGBModelDialog(modelConfig: IXGBRegressionConfig|IXGBClassificationConfig): MatDialogRef<any> {
+		return this.dialog.open(XgbModelDialogComponent, {
+			hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
+			panelClass: "medium-dialog",
+			data: modelConfig
+		});
+	}
+
 	
 
 	
@@ -299,8 +340,8 @@ export class NavService implements INavService {
 	* */
 	public displayPredictionDialog(model: IModel, prediction: IPrediction, outcome?: boolean): MatDialogRef<any> {
 		return this.dialog.open(PredictionDialogComponent, {
-			hasBackdrop: this._app.layout.value != 'mobile', // Mobile optimization
-			panelClass: 'medium-dialog',
+			hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
+			panelClass: "medium-dialog",
 			data: {
 				model: model,
 				prediction: prediction,
@@ -322,8 +363,8 @@ export class NavService implements INavService {
 	* */
 	public displayModelSelectionDialog(): MatDialogRef<any> {
 		return this.dialog.open(ModelSelectionDialogComponent, {
-			hasBackdrop: this._app.layout.value != 'mobile', // Mobile optimization
-			panelClass: 'medium-dialog',
+			hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
+			panelClass: "medium-dialog",
 			data: {}
 		});
 	}
@@ -354,7 +395,7 @@ export class NavService implements INavService {
 	* */
 	public displayBottomSheetMenu(items: IBottomSheetMenuItem[]): MatBottomSheetRef<any> {
 		return this.bottomSheet.open(BottomSheetMenuComponent, {
-			panelClass: 'bottom-sheet-container',
+			panelClass: "bottom-sheet-container",
 			data: items
 		});
 	}
@@ -480,7 +521,7 @@ export class NavService implements INavService {
 		// Build the data accordingly
 		if (typeof url == "string" && url.length) {
 			// Split the url in chunks
-			let urlChunks: string[] = url.split('/');
+			let urlChunks: string[] = url.split("/");
 			
 			// Remove white spaces
 			urlChunks = urlChunks.filter(item => item.length !== 0);
@@ -562,13 +603,13 @@ export class NavService implements INavService {
 	public scrollTop(container?: string): void {
 		try {
 			// Retrieve the element
-			const el: HTMLElement|null = this.document.querySelector(container || '.mat-drawer-content');
+			const el: HTMLElement|null = this.document.querySelector(container || ".mat-drawer-content");
 			
 			// If the element was found - scroll
 			if (el) {
 				el.scrollTop = 0
 			} else {
-				console.log('Error during scrollTop. Could not find the container element.');
+				console.log("Error during scrollTop. Could not find the container element.");
 			}
 		} catch (e) { console.log(e) }
 	}
