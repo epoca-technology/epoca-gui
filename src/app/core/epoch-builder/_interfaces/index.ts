@@ -2,6 +2,7 @@
 export * from './backtest';
 export * from './classification_training_data';
 export * from './discovery';
+export * from './epoch_builder_evaluation';
 export * from './epoch';
 export * from './interpreter';
 export * from './keras_classification';

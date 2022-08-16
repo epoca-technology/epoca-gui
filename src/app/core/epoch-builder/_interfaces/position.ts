@@ -78,6 +78,7 @@ import { IPrediction } from "./prediction";
      positions: IEpochBuilderPosition[],
  
      // Counts
+     neutral_num: number,
      long_num: number,
      short_num: number,
 

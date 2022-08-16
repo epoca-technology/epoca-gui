@@ -1,6 +1,6 @@
 import { IDiscoveryPayload } from "./discovery";
 import { IXGBRegressionConfig } from "./model";
-import { IModelEvaluation } from "./model_evaluation";
+
 
 
 
@@ -156,9 +156,6 @@ export interface IXGBRegressionTrainingCertificate {
 
     // Regression Discovery
     discovery: IDiscoveryPayload,
-
-    // Regression Post-Training Evaluation
-    regression_evaluation: IModelEvaluation,
 
     // The configuration of the Regression
     regression_config: IXGBRegressionConfig,

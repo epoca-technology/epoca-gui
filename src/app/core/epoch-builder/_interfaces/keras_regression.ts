@@ -8,7 +8,6 @@ import {
     IKerasRegressionMetric
 } from "./keras_models";
 import { IKerasRegressionConfig } from "./model";
-import { IModelEvaluation } from "./model_evaluation";
 
 
 
@@ -183,9 +182,6 @@ export interface IKerasRegressionTrainingCertificate {
     // Regression Discovery
     discovery: IDiscoveryPayload,
 
-    // Regression Post-Training Evaluation
-    regression_evaluation: IModelEvaluation,
-
     // The configuration of the Regression
     regression_config: IKerasRegressionConfig,
 
@@ -193,36 +189,3 @@ export interface IKerasRegressionTrainingCertificate {
     /* General Evaluation - @TODO: PENDING UPGRADE */
     general: any // Only exists in the GUI
 }
-
-
-
-
-
-
-
-
-
-
-/* General Evaluation */
-
-
-
-
-/**
- * General Evaluation (GUI)
- * This evaluation is performed on each certificate when they are extracted 
- * from the JSON files.
- */
- /*export interface IGeneralRegressionEvaluation {
-    // Total points collected by all the items and categories
-    points: number,
-
-    // The maximum number of points that can be collected within the evaluation
-    max_points: number,
-
-    // State Class
-    state_class: IGeneralEvaluationStateClass,
-    
-    // List of items
-    items: IGeneralEvaluationItem[]
-}*/

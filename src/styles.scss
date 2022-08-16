@@ -730,7 +730,8 @@ form .mat-checkbox-inner-container{
 
 
 /* Icons */
-.builder-icon{max-width: 21px;margin-left:1px;}
+.compass-drafting { max-width:22px;}
+.brain-circuit-icon{max-width: 22px;}
 .wand-icon { max-width: 21px;}
 
 
@@ -801,6 +802,31 @@ form .mat-checkbox-inner-container{
 .small-model-logo { max-width:25px;}
 .medium-model-logo { max-width:40px;}
 .large-model-logo { max-width:50px;}
+
+
+
+
+
+
+
+
+/* Epoch Builder Specific */
+
+
+
+// Epoch Builder Evaluation States
+.ebe-optimal { background-color: #004D40!important; }
+.ebe-decent { background-color: #009688!important; }
+.ebe-neutral { background-color: #9E9E9E!important; }
+.ebe-warning { background-color: #F57C00!important; }
+.ebe-error { background-color: #B71C1C!important; }
+
+
+
+
+
+
+
 
 
 

@@ -39,8 +39,8 @@ export class AppComponent implements IAppComponent {
 	public readonly customIcons: string[] = ["home", "wallet", "format_list_numbered",
     "person","notifications","logo_google","paste","ubuntu","code_branch","hdd","microchip","server","database",
     "hardware_chip", "ssid_chart", "brain", "auto_graph", "bug_report", "file_csv", "file_waveform",
-    "wand_magic_sparkles", "flask_vial", "book", "graduation_cap", "microscope", "file_invoice",
-    "file_signature", "file_circle_check", "pen_ruler", "terminal"];
+    "wand_magic_sparkles", "flask_vial", "book", "microscope", "file_invoice",
+    "file_signature", "file_circle_check", "compass_drafting", "terminal"];
 	
 	// Route State
 	public state: IRouteState = this._nav.routeState.value;
