@@ -10,6 +10,7 @@ import { IClassificationConfig, IModel } from "./model";
 import { ITrainingDataSummary } from "./classification_training_data";
 import { IModelEvaluation } from "./model_evaluation";
 import { IDiscoveryPayload } from "./discovery";
+import { IEpochBuilderEvaluation } from "./epoch_builder_evaluation";
 
 
 
@@ -154,6 +155,18 @@ export interface IKerasClassificationTrainingCertificate {
     classification_config: IClassificationConfig,
 
 
-    /* Epoch Builder Evaluation - UPGRADE @TODO */
-    eb_evaluation: any // Only exists in the GUI
+    /**
+     * GUI Properties
+     * The following properties only exist in the GUI as they are populated
+     * when certificates are loaded.
+     */
+
+    // This property is populated if the Process Early Stopping was invoked
+    early_stopping?: string,
+
+    // Epoch Builder Evaluation
+    ebe: IEpochBuilderEvaluation,
+
+    // The value that will be used to order the certificates
+    orderValue: number
 }

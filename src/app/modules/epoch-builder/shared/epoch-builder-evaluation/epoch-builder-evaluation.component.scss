@@ -1,0 +1,66 @@
+.component-container {
+    .evaluation {
+        // Desktop Card
+        .desktop-card { padding:0px; }
+
+        // Main Header
+        .main-header { padding: 15px;}
+
+
+
+        // Categories Content
+        .categories-content {
+            .divider { margin: 20px 0 20px 0;}
+            .category {
+                .divider { margin:0;}
+
+                .category-header {
+                    padding: 25px 15px 25px 15px;
+                    h5 { font-size:17px!important; }
+                }
+
+                // Category Square Badge
+                .square-badge-category { 
+                    padding:4px 6px 4px 6px!important;
+                    min-width: 25px;
+                    font-weight: 600;
+                    width: auto;
+                    font-size:10.5px!important;
+                }
+
+                // Items
+                .item {
+                    padding:10px 15px 10px 25px;
+                    .square-badge, .square-badge-success, .square-badge-error { 
+                        padding:3px 5px 3px 5px;
+                        min-width: 25px;
+                        font-weight: 600;
+                        font-size:9.5px!important;
+                        max-height:18px;
+                        width: auto;
+                        .mat-icon { vertical-align: middle!important; }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+
+/* Responsiveness */
+
+
+/* mobile: sm & xs */
+@media only screen and (max-width: 959px) {
+    .main-header { padding: 0px!important;}
+    .category-header {padding: 25px 0px 25px 0px!important;}
+    .item {padding:10px 0px 10px 0px!important;}
+}
+
+
+
+/* desktop: md */
+@media only screen and (min-width: 960px) {
+
+}

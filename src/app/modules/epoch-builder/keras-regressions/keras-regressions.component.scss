@@ -1,0 +1,40 @@
+
+.component-container {
+
+    // Order Icon
+    .order-icon { color: var(--light-text-color); font-size:17px;padding-top:7px;}
+
+    // Desktop Sidenav
+    .desktop-sidenav {
+        width: 300px;
+        button {text-align: left;width: 100%;}
+    }
+
+    // Content Container
+    .content-container {
+        h4{ margin:0;}
+
+
+    }
+}
+
+
+
+
+
+
+
+/* Responsiveness */
+
+
+/* mobile: sm & xs */
+@media only screen and (max-width: 959px) {
+    .divider { margin: 25px 0 25px 0;}
+}
+
+
+
+/* desktop: md */
+@media only screen and (min-width: 960px) {
+    
+}

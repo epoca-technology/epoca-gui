@@ -192,3 +192,18 @@ export interface IEpochBuilderEvaluationItemResult {
 
 // The CSS Class that represents the state of an item, category or the evaluation itself
 export type IEpochBuilderEvaluationStateClass = "ebe-error"|"ebe-warning"|"ebe-neutral"|"ebe-decent"|"ebe-optimal";
+
+
+
+
+// Evaluation Descriptions
+export interface IEpochBuilderEvaluationDescriptions {
+    lossImprovement: string,
+    lossVsValLoss: string,
+    accuracyImprovement: string,
+    accuracyVsValAccuracy: string,
+    accuracy: string,
+    points: string,
+    predictionNeutrality: string,
+    predictionsVsOutcomes: string
+}

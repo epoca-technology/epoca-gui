@@ -1,0 +1,173 @@
+<div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" fxLayoutAlign="start start" class="full-width">
+    <div fxFlex="55" fxFlex.xs="100" fxFlex.sm="100">
+        <!-- Optimizer & Learning Rate-->
+        <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" fxLayoutAlign="start start" class="full-width">
+            <!-- Optimizer-->
+            <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100">
+                <div class="desktop-card">
+                    <h4>Optimizer</h4>
+                    <div>
+                        <apx-chart
+                            [series]="optimizer.series"
+                            [chart]="optimizer.chart"
+                            [plotOptions]="optimizer.plotOptions"
+                            [xaxis]="optimizer.xaxis"
+                            [yaxis]="optimizer.yaxis"
+                            [dataLabels]="optimizer.dataLabels"
+                            [colors]="optimizer.colors"
+                            [grid]="optimizer.grid"
+                            [legend]="{show: true, position: 'bottom'}"
+                        ></apx-chart>
+                    </div>
+                </div>
+            </div>
+
+            <span fxFlex></span>
+
+            <div class="divider show-on-mobile"></div>
+
+            <!-- Learning Rate -->
+            <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100">
+                <div class="desktop-card">
+                    <h4>Learning Rate</h4>
+                    <div>
+                        <apx-chart
+                            [series]="learningRate.series"
+                            [chart]="learningRate.chart"
+                            [plotOptions]="learningRate.plotOptions"
+                            [xaxis]="learningRate.xaxis"
+                            [yaxis]="learningRate.yaxis"
+                            [dataLabels]="learningRate.dataLabels"
+                            [colors]="learningRate.colors"
+                            [grid]="learningRate.grid"
+                            [legend]="{show: true, position: 'bottom'}"
+                        ></apx-chart>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="divider show-on-mobile"></div>
+
+
+        <!-- Loss & Network Type-->
+        <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" fxLayoutAlign="start start" class="full-width">
+            <!-- Loss-->
+            <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100">
+                <div class="desktop-card">
+                    <h4>Loss</h4>
+                    <div>
+                        <apx-chart
+                            [series]="loss.series"
+                            [chart]="loss.chart"
+                            [plotOptions]="loss.plotOptions"
+                            [xaxis]="loss.xaxis"
+                            [yaxis]="loss.yaxis"
+                            [dataLabels]="loss.dataLabels"
+                            [colors]="loss.colors"
+                            [grid]="loss.grid"
+                            [legend]="{show: true, position: 'bottom'}"
+                        ></apx-chart>
+                    </div>
+                </div>
+            </div>
+
+            <span fxFlex></span>
+
+            <div class="divider show-on-mobile"></div>
+
+            <!-- Network Type -->
+            <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100">
+                <div class="desktop-card">
+                    <h4>Network Type</h4>
+                    <div>
+                        <apx-chart
+                            [series]="networkType.series"
+                            [chart]="networkType.chart"
+                            [plotOptions]="networkType.plotOptions"
+                            [xaxis]="networkType.xaxis"
+                            [yaxis]="networkType.yaxis"
+                            [dataLabels]="networkType.dataLabels"
+                            [colors]="networkType.colors"
+                            [grid]="networkType.grid"
+                            [legend]="{show: true, position: 'bottom'}"
+                        ></apx-chart>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="divider show-on-mobile"></div>
+
+
+        <!-- Network Series & Regression Type -->
+        <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" fxLayoutAlign="start start" class="full-width">
+            <!-- Network Series-->
+            <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100">
+                <div class="desktop-card">
+                    <h4>Network Series</h4>
+                    <div>
+                        <apx-chart
+                            [series]="networkSeries.series"
+                            [chart]="networkSeries.chart"
+                            [plotOptions]="networkSeries.plotOptions"
+                            [xaxis]="networkSeries.xaxis"
+                            [yaxis]="networkSeries.yaxis"
+                            [dataLabels]="networkSeries.dataLabels"
+                            [colors]="networkSeries.colors"
+                            [grid]="networkSeries.grid"
+                            [legend]="{show: true, position: 'bottom'}"
+                        ></apx-chart>
+                    </div>
+                </div>
+            </div>
+
+            <span fxFlex></span>
+
+            <div class="divider show-on-mobile"></div>
+
+            <!-- Regression Type -->
+            <div *ngIf="regressionType" fxFlex="48" fxFlex.xs="100" fxFlex.sm="100">
+                <div class="desktop-card">
+                    <h4>Regression Type</h4>
+                    <div>
+                        <apx-chart
+                            [series]="regressionType.series"
+                            [chart]="regressionType.chart"
+                            [plotOptions]="regressionType.plotOptions"
+                            [xaxis]="regressionType.xaxis"
+                            [yaxis]="regressionType.yaxis"
+                            [dataLabels]="regressionType.dataLabels"
+                            [colors]="regressionType.colors"
+                            [grid]="regressionType.grid"
+                            [legend]="{show: true, position: 'bottom'}"
+                        ></apx-chart>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <span fxFlex></span>
+
+    <div class="divider show-on-mobile"></div>
+
+    <div fxFlex="43" fxFlex.xs="100" fxFlex.sm="100">
+        <div class="desktop-card">
+            <h4>Network Capacity</h4>
+            <div>
+                <apx-chart
+                    [series]="networkCapacity.series"
+                    [chart]="networkCapacity.chart"
+                    [plotOptions]="networkCapacity.plotOptions"
+                    [xaxis]="networkCapacity.xaxis"
+                    [yaxis]="networkCapacity.yaxis"
+                    [dataLabels]="networkCapacity.dataLabels"
+                    [colors]="networkCapacity.colors"
+                    [grid]="networkCapacity.grid"
+                    [legend]="{show: false}"
+                ></apx-chart>
+            </div>
+        </div>
+    </div>
+</div>

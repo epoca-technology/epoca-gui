@@ -3,8 +3,8 @@
 
 // Class
 export interface IEpochBuilderMetadataService {
-    update(mdKey: string, modelID: string, value: number): void,
-    getMetadata(): IEpochBuilderMetadataOutput
+    update(mdKey: string, index: number, modelID: string, value: number): void,
+    getMetadata(): any
 }
 
 
@@ -13,6 +13,7 @@ export interface IEpochBuilderMetadataService {
 
 // A metadata item that can indicate the highest or lowest value of anything
 export interface IEpochBuilderMetadataItem {
+    index: number,
     id: string,
     value: number
 }

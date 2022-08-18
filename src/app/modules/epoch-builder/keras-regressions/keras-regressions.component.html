@@ -1,1 +1,364 @@
-<p>keras-regressions works!</p>
+<!-- Section Container -->
+<mat-drawer-container class="section-container component-container">
+
+    <!-- Main Sidenav -->
+    <mat-drawer #krSidenav [(opened)]="krSidenavOpened" *ngIf="initialized" class="sidenav" position="start" mode="over" autoFocus="false">
+        <!-- Menu Heading Toolbar -->
+        <mat-toolbar color="primary">
+            <div fxLayout="row" fxLayoutAlign="start center">
+                <button mat-icon-button (click)="krSidenav?.toggle()"><mat-icon>arrow_back</mat-icon></button>
+                <span class="truncate">Keras Regressions</span>
+                <span fxFlex></span>
+            </div>
+        </mat-toolbar>
+            
+        <!-- Menu Content -->
+        <mat-list>
+            <div mat-subheader>General</div>
+            <mat-list-item *ngFor="let view of views">
+                <button mat-button class="left-icon-button" [disabled]="activeView == view.id" (click)="navigate(view.id)">
+                    <mat-icon *ngIf="!view.svg">{{view.icon}}</mat-icon> 
+                    <mat-icon *ngIf="view.svg" [svgIcon]="view.icon"></mat-icon> 
+                    {{view.name}}
+                </button>
+            </mat-list-item>
+            <div mat-subheader>
+                Regressions&nbsp;
+                <mat-icon *ngIf="order == 'ebe_points'" class="order-icon" matTooltip="Ordered by EBE Points">query_stats</mat-icon>
+                <mat-icon *ngIf="order == 'discovery_accuracy'" class="order-icon" matTooltip="Ordered by Discovery Accuracy">ads_click</mat-icon>
+            </div>
+            <mat-list-item *ngFor="let certificate of _kr.certificates; index as certIndex">
+                <button mat-button class="left-icon-button truncate" 
+                        [disabled]="activeView == 'certificate' && cert && certificate.id == cert.id" 
+                        (click)="navigate('certificate', certIndex)">
+                        <div fxLayout="row" fxLayoutAlign="start center">
+                            <span class="truncate" style="max-width: 70%;">{{certificate.id}}</span>
+                            <span fxFlex></span>
+                            <div *ngIf="order == 'ebe_points'" 
+                                [ngClass]="certificate.ebe.state_class" 
+                                class="square-badge"><span>{{certificate.ebe.points | number: '1.2-2'}}</span></div>
+                            <div *ngIf="order == 'discovery_accuracy'"
+                                [ngClass]="{
+                                    'square-badge-neutral': certificate.discovery.accuracy >= 50 && certificate.discovery.accuracy < 55,
+                                    'square-badge-success': certificate.discovery.accuracy >= 55,
+                                    'square-badge-error': certificate.discovery.accuracy < 50
+                                }">
+                                <span>{{certificate.discovery.accuracy | number: '1.2-2'}}%</span>
+                            </div>
+                        </div>
+                </button>
+            </mat-list-item>
+        </mat-list>
+    </mat-drawer>
+
+
+    <!-- Section Content -->
+    <mat-drawer-content id="content-header">
+        <!-- Content Header -->
+        <mat-toolbar class="secondary-header">
+            <div fxLayout="row" fxLayoutAlign="center center">
+                <button mat-icon-button (click)="_nav.dashboard()" class="show-on-mobile" *ngIf="!initialized"><mat-icon>arrow_back</mat-icon></button>
+                <button mat-icon-button (click)="reset()" class="show-on-mobile" *ngIf="initialized && _kr.certificates && _kr.certificates.length >= 1"><mat-icon>arrow_back</mat-icon></button>
+                <button mat-icon-button (click)="krSidenav?.toggle()" *ngIf="initialized" class="show-on-mobile"><mat-icon>menu</mat-icon></button>
+                <span class="truncate show-on-mobile" *ngIf="!initialized">Keras Regressions</span>
+                <span class="truncate show-on-mobile" *ngIf="initialized">{{activeView == 'certificate' ? cert!.id: viewNames[activeView]}}</span>
+                <span class="truncate show-on-desktop">Keras Regressions</span>
+                <span fxFlex></span>
+                <button mat-icon-button 
+                        matTooltip="Selected Models" 
+                        *ngIf="initialized && _kr.certificates.length > 1" 
+                        [disabled]="!_selection.selectedList.length"
+                        (click)="_nav.displayModelSelectionDialog()">
+                        <mat-icon 
+                            [matBadge]="_selection.selectedList.length > 9 ? '9+': _selection.selectedList.length" 
+                            matBadgeSize="small"
+                            matBadgePosition="after"
+                            matBadgeOverlap="false">checklist</mat-icon>
+                </button>
+                <button mat-icon-button 
+                        matTooltip="Clear Training Certificates"
+                        (click)="reset()"
+                        class="show-on-desktop"
+                        style="margin-left:5px;"
+                        *ngIf="initialized"><mat-icon>close</mat-icon></button>
+            </div>
+        </mat-toolbar>
+
+
+        <!-- Uninitialized Content -->
+        <div *ngIf="!initialized" class="fadeIn">
+            <div fxLayout="row" fxLayoutAlign="center center" class="file-init-container">
+                <!-- Button -->
+                <label for="certificatesFile" class="file-label" role="button" matRipple *ngIf="!initializing">
+                    <div fxLayout="row" fxLayoutAlign="start center" matRipple role="button" tabindex="0">
+                        <mat-icon svgIcon="file_signature"></mat-icon>&nbsp;<p>Select Certificates</p>
+                    </div>
+                </label>
+
+                <!-- Input -->
+                <form [formGroup]="fileInputForm">
+                    <input id="certificatesFile" type="file" accept="application/json" formControlName="fileInput" (change)="fileChanged($event)" multiple/>
+                </form>
+
+                <!-- Initializing Loader-->
+                <h3 *ngIf="initializing" class="fadeIn">Initializing...</h3>
+            </div>
+        </div>
+
+        <!-- Initialized Content -->
+        <div *ngIf="initialized" class="fadeIn">
+            <!-- Main Container -->
+            <div fxLayout="row" fxLayoutAlign="start start">
+                <!-- Desktop Sidenav -->
+                <div *ngIf="layout == 'desktop'" class="desktop-sidenav">
+                    <mat-list>
+                        <div mat-subheader>General</div>
+                        <mat-list-item *ngFor="let view of views">
+                            <button mat-button class="left-icon-button" [disabled]="activeView == view.id" (click)="navigate(view.id)">
+                                <mat-icon *ngIf="!view.svg">{{view.icon}}</mat-icon> 
+                                <mat-icon *ngIf="view.svg" [svgIcon]="view.icon"></mat-icon> 
+                                {{view.name}}
+                            </button>
+                        </mat-list-item>
+                        <div mat-subheader>
+                            Regressions&nbsp;
+                            <mat-icon *ngIf="order == 'ebe_points'" class="order-icon" matTooltip="Ordered by EBE Points">query_stats</mat-icon>
+                            <mat-icon *ngIf="order == 'discovery_accuracy'" class="order-icon" matTooltip="Ordered by Discovery Accuracy">ads_click</mat-icon>
+                        </div>
+                        <mat-list-item *ngFor="let certificate of _kr.certificates; index as certIndex">
+                            <button mat-button class="left-icon-button truncate" 
+                                    [disabled]="activeView == 'certificate' && cert && certificate.id == cert.id" 
+                                    (click)="navigate('certificate', certIndex)">
+                                    <div fxLayout="row" fxLayoutAlign="start center">
+                                        <span class="truncate" style="max-width: 70%;">{{certificate.id}}</span>
+                                        <span fxFlex></span>
+                                        <div *ngIf="order == 'ebe_points'" 
+                                            [ngClass]="certificate.ebe.state_class" 
+                                            class="square-badge"><span>{{certificate.ebe.points | number: '1.2-2'}}</span></div>
+                                        <div *ngIf="order == 'discovery_accuracy'"
+                                            [ngClass]="{
+                                                'square-badge-neutral': certificate.discovery.accuracy >= 50 && certificate.discovery.accuracy < 55,
+                                                'square-badge-success': certificate.discovery.accuracy >= 55,
+                                                'square-badge-error': certificate.discovery.accuracy < 50
+                                            }">
+                                            <span>{{certificate.discovery.accuracy | number: '1.2-2'}}%</span>
+                                        </div>
+                                    </div>
+                            </button>
+                        </mat-list-item>
+                    </mat-list>
+                </div>
+
+
+                <!-- Content -->
+                <div fxFlex>
+                    <!-- Loader -->
+                    <div *ngIf="!loaded" class="loader">
+                        <div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div>
+                    </div>
+
+                    <!-- Loaded Content -->
+                    <div *ngIf="loaded" class="content-container fadeIn">
+
+                        <!-- Epoch Builder Evaluation Points -->
+                        <div *ngIf="activeView == 'ebe_points'" class="padding">
+                            <div fxLayout="row" fxLayoutAlign="center center">
+                                <div fxFlex="60" fxFlex.xs="100" fxFlex.sm="100">
+                                    <app-ebe-points-bar-chart [items]="_kr.certificates" [md]="_kr.md" (activateModel)="navigate('certificate', $event)"></app-ebe-points-bar-chart>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Single Shot Test Datasets -->
+                        <div *ngIf="activeView == 'single_shot_test_datasets' && singleShotTestDatasetsView" class="padding">
+                            <!-- No data found-->
+                            <div *ngIf="!singleShotTestDatasetsView.mean_absolute_error || !singleShotTestDatasetsView.mean_squared_error" 
+                                 class="align-center margin-top-x4">
+                                <p class="light-text">No single shot regressions were found</p>
+                            </div>
+
+                            <!-- Data -->
+                            <div *ngIf="singleShotTestDatasetsView.mean_absolute_error && singleShotTestDatasetsView.mean_squared_error" 
+                                fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" fxLayoutAlign="start start">
+                                <span fxFlex class="show-on-desktop"></span>
+
+                                <!-- Mean Absolute Error -->
+                                <div fxFlex="46" class="full-width">
+                                    <div class="desktop-card">
+                                        <div fxLayout="row" fxLayoutAlign="center center" class="badged-header">
+                                            <h4 class="show-on-desktop">Mean Absolute Error</h4>
+                                            <span class="show-on-desktop" fxFlex></span>
+                                            <div class="square-badge-error clickable" role="button"
+                                                (click)="navigate('certificate', _kr.md.singleShotMAE.lowest.index)"
+                                                matTooltip="Lowest MAE: {{_kr.md.singleShotMAE.lowest.id}}">
+                                                Best: {{_kr.md.singleShotMAE.lowest.value | number: '1.0-5'}}
+                                            </div>
+                                            <div class="square-badge-error clickable worst-value" role="button"
+                                                (click)="navigate('certificate', _kr.md.singleShotMAE.highest.index)"
+                                                matTooltip="Highest MAE: {{_kr.md.singleShotMAE.highest.id}}">
+                                                Worst: {{_kr.md.singleShotMAE.highest.value | number: '1.0-5'}}
+                                            </div>
+                                        </div>
+                                        <apx-chart
+                                            [series]="singleShotTestDatasetsView.mean_absolute_error.series"
+                                            [chart]="singleShotTestDatasetsView.mean_absolute_error.chart"
+                                            [plotOptions]="singleShotTestDatasetsView.mean_absolute_error.plotOptions"
+                                            [xaxis]="singleShotTestDatasetsView.mean_absolute_error.xaxis"
+                                            [yaxis]="singleShotTestDatasetsView.mean_absolute_error.yaxis"
+                                            [dataLabels]="singleShotTestDatasetsView.mean_absolute_error.dataLabels"
+                                            [colors]="singleShotTestDatasetsView.mean_absolute_error.colors"
+                                            [grid]="singleShotTestDatasetsView.mean_absolute_error.grid"
+                                        ></apx-chart>
+                                    </div>
+                                </div>
+
+                                <span fxFlex class="show-on-desktop"></span>
+
+                                <div class="divider show-on-mobile"></div>
+
+
+                                <!-- Mean Squared Error -->
+                                <div fxFlex="46" class="full-width">
+                                    <div class="desktop-card">
+                                        <div fxLayout="row" fxLayoutAlign="center center" class="badged-header">
+                                            <h4 class="show-on-desktop">Mean Squared Error</h4>
+                                            <span class="show-on-desktop" fxFlex></span>
+                                            <div class="square-badge-error clickable" role="button"
+                                                (click)="navigate('certificate', _kr.md.singleShotMSE.lowest.index)"
+                                                matTooltip="Lowest MSE: {{_kr.md.singleShotMSE.lowest.id}}">
+                                                Best: {{_kr.md.singleShotMSE.lowest.value | number: '1.0-5'}}
+                                            </div>
+                                            <div class="square-badge-error clickable worst-value" role="button"
+                                                (click)="navigate('certificate', _kr.md.singleShotMSE.highest.index)"
+                                                matTooltip="Highest MSE: {{_kr.md.singleShotMSE.highest.id}}">
+                                                Worst: {{_kr.md.singleShotMSE.highest.value | number: '1.0-5'}}
+                                            </div>
+                                        </div>
+                                        <apx-chart
+                                            [series]="singleShotTestDatasetsView.mean_squared_error.series"
+                                            [chart]="singleShotTestDatasetsView.mean_squared_error.chart"
+                                            [plotOptions]="singleShotTestDatasetsView.mean_squared_error.plotOptions"
+                                            [xaxis]="singleShotTestDatasetsView.mean_squared_error.xaxis"
+                                            [yaxis]="singleShotTestDatasetsView.mean_squared_error.yaxis"
+                                            [dataLabels]="singleShotTestDatasetsView.mean_squared_error.dataLabels"
+                                            [colors]="singleShotTestDatasetsView.mean_squared_error.colors"
+                                            [grid]="singleShotTestDatasetsView.mean_squared_error.grid"
+                                        ></apx-chart>
+                                    </div>
+                                </div>
+
+                                <span fxFlex class="show-on-desktop"></span>
+                            </div>
+                        </div>
+
+                        <!-- Autoregressive Test Datasets -->
+                        <div *ngIf="activeView == 'autoregressive_test_datasets' && autoregressiveTestDatasetsView" class="padding">
+                            <!-- No data found-->
+                            <div *ngIf="!autoregressiveTestDatasetsView.mean_absolute_error || !autoregressiveTestDatasetsView.mean_squared_error" 
+                                 class="align-center margin-top-x4">
+                                <p class="light-text">No autoregressive regressions were found</p>
+                            </div>
+
+                            <!-- Data -->
+                            <div *ngIf="autoregressiveTestDatasetsView.mean_absolute_error && autoregressiveTestDatasetsView.mean_squared_error" 
+                                fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" fxLayoutAlign="start start">
+                                <span fxFlex class="show-on-desktop"></span>
+
+                                <!-- Mean Absolute Error -->
+                                <div fxFlex="46" class="full-width">
+                                    <div class="desktop-card">
+                                        <div fxLayout="row" fxLayoutAlign="center center" class="badged-header">
+                                            <h4 class="show-on-desktop">Mean Absolute Error</h4>
+                                            <span class="show-on-desktop" fxFlex></span>
+                                            <div class="square-badge-error clickable" role="button"
+                                                (click)="navigate('certificate', _kr.md.autoregressiveMAE.lowest.index)"
+                                                matTooltip="Lowest MAE: {{_kr.md.autoregressiveMAE.lowest.id}}">
+                                                Best: {{_kr.md.autoregressiveMAE.lowest.value | number: '1.0-5'}}
+                                            </div>
+                                            <div class="square-badge-error clickable worst-value" role="button"
+                                                (click)="navigate('certificate', _kr.md.autoregressiveMAE.highest.index)"
+                                                matTooltip="Highest MAE: {{_kr.md.autoregressiveMAE.highest.id}}">
+                                                Worst: {{_kr.md.autoregressiveMAE.highest.value | number: '1.0-5'}}
+                                            </div>
+                                        </div>
+                                        <apx-chart
+                                            [series]="autoregressiveTestDatasetsView.mean_absolute_error.series"
+                                            [chart]="autoregressiveTestDatasetsView.mean_absolute_error.chart"
+                                            [plotOptions]="autoregressiveTestDatasetsView.mean_absolute_error.plotOptions"
+                                            [xaxis]="autoregressiveTestDatasetsView.mean_absolute_error.xaxis"
+                                            [yaxis]="autoregressiveTestDatasetsView.mean_absolute_error.yaxis"
+                                            [dataLabels]="autoregressiveTestDatasetsView.mean_absolute_error.dataLabels"
+                                            [colors]="autoregressiveTestDatasetsView.mean_absolute_error.colors"
+                                            [grid]="autoregressiveTestDatasetsView.mean_absolute_error.grid"
+                                        ></apx-chart>
+                                    </div>
+                                </div>
+
+                                <span fxFlex class="show-on-desktop"></span>
+
+                                <div class="divider show-on-mobile"></div>
+
+
+                                <!-- Mean Squared Error -->
+                                <div fxFlex="46" class="full-width">
+                                    <div class="desktop-card">
+                                        <div fxLayout="row" fxLayoutAlign="center center" class="badged-header">
+                                            <h4 class="show-on-desktop">Mean Squared Error</h4>
+                                            <span class="show-on-desktop" fxFlex></span>
+                                            <div class="square-badge-error clickable" role="button"
+                                                (click)="navigate('certificate', _kr.md.autoregressiveMSE.lowest.index)"
+                                                matTooltip="Lowest MSE: {{_kr.md.autoregressiveMSE.lowest.id}}">
+                                                Best: {{_kr.md.autoregressiveMSE.lowest.value | number: '1.0-5'}}
+                                            </div>
+                                            <div class="square-badge-error clickable worst-value" role="button"
+                                                (click)="navigate('certificate', _kr.md.autoregressiveMSE.highest.index)"
+                                                matTooltip="Highest MSE: {{_kr.md.autoregressiveMSE.highest.id}}">
+                                                Worst: {{_kr.md.autoregressiveMSE.highest.value | number: '1.0-5'}}
+                                            </div>
+                                        </div>
+                                        <apx-chart
+                                            [series]="autoregressiveTestDatasetsView.mean_squared_error.series"
+                                            [chart]="autoregressiveTestDatasetsView.mean_squared_error.chart"
+                                            [plotOptions]="autoregressiveTestDatasetsView.mean_squared_error.plotOptions"
+                                            [xaxis]="autoregressiveTestDatasetsView.mean_squared_error.xaxis"
+                                            [yaxis]="autoregressiveTestDatasetsView.mean_squared_error.yaxis"
+                                            [dataLabels]="autoregressiveTestDatasetsView.mean_squared_error.dataLabels"
+                                            [colors]="autoregressiveTestDatasetsView.mean_squared_error.colors"
+                                            [grid]="autoregressiveTestDatasetsView.mean_squared_error.grid"
+                                        ></apx-chart>
+                                    </div>
+                                </div>
+
+                                <span fxFlex class="show-on-desktop"></span>
+                            </div>
+                        </div>
+
+                        <!-- Discovery Payload Records Section -->
+                        <div *ngIf="activeView == 'discovery' && discoveryPayloadRecords">
+                            <app-discovery-payload-records-view [items]="discoveryPayloadRecords" [md]="_kr.md" (activateModel)="navigate('certificate', $event)"></app-discovery-payload-records-view>
+                        </div>
+
+                        <!-- Hyperparams -->
+                        <div *ngIf="activeView == 'hyperparams'" class="padding">
+                            <app-keras-hyperparams-view [certs]="_kr.certificates"></app-keras-hyperparams-view>
+                        </div>
+
+                        <!-- Epochs -->
+                        <div *ngIf="activeView == 'epochs'" class="padding">
+                            <div fxLayout="row" fxLayoutAlign="center center">
+                                <div fxFlex="60" fxFlex.xs="100" fxFlex.sm="100">
+                                    <app-keras-training-epochs-bar-chart [items]="_kr.certificates" [md]="_kr.md" (activateModel)="navigate('certificate', $event)"></app-keras-training-epochs-bar-chart>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Certificate -->
+                        <div *ngIf="activeView == 'certificate' && certificateView && cert">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </mat-drawer-content>
+</mat-drawer-container>

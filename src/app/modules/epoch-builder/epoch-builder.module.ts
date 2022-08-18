@@ -16,10 +16,19 @@ import { RegressionSelectionComponent } from "./regression-selection/regression-
 import { XgbClassificationsComponent } from "./xgb-classifications/xgb-classifications.component";
 import { XgbRegressionsComponent } from "./xgb-regressions/xgb-regressions.component";
 
+// Shared Components
+import { DiscoveryPayloadRecordsViewComponent } from './shared/discovery-payload-records-view/discovery-payload-records-view.component';
+import { EbePointsBarChartComponent } from './shared/ebe-points-bar-chart/ebe-points-bar-chart.component';
+import { EpochBuilderConfigDialogComponent } from './shared/epoch-builder-config-dialog';
+import { EpochBuilderEvaluationComponent } from './shared/epoch-builder-evaluation';
+import { KerasTrainingEpochsBarChartComponent } from './shared/keras-training-epochs-bar-chart/keras-training-epochs-bar-chart.component';
+import { KerasHyperparamsViewComponent } from './shared/keras-hyperparams-view/keras-hyperparams-view.component';
+
 
 
 @NgModule({
   declarations: [
+    // Components
     BacktestsComponent,
     ClassificationTrainingDataComponent,
     KerasClassificationsComponent,
@@ -27,6 +36,15 @@ import { XgbRegressionsComponent } from "./xgb-regressions/xgb-regressions.compo
     RegressionSelectionComponent,
     XgbClassificationsComponent,
     XgbRegressionsComponent,
+
+    // Shared Components
+    DiscoveryPayloadRecordsViewComponent,
+    EbePointsBarChartComponent,
+    EpochBuilderConfigDialogComponent,
+    EpochBuilderEvaluationComponent,
+    KerasTrainingEpochsBarChartComponent,
+    DiscoveryPayloadRecordsViewComponent,
+    KerasHyperparamsViewComponent,
   ],
   imports: [
     CommonModule,

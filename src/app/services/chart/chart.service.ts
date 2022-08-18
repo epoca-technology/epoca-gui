@@ -570,6 +570,8 @@ export class ChartService implements IChartService {
 				height = height * 1.4;
 			} else if (itemsPerCategory == 3) {
 				height = height * 2.3;
+			} else if (itemsPerCategory == 4) {
+				height = height * 2.8;
 			}
 		}
 

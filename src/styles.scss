@@ -262,13 +262,6 @@ ul li ul, ol li ul { padding: 0 0 0 15px;}
 
 
 // Badges
-/*.square-badge .mat-badge-content { 
-	border-radius: 5px;
-	min-width: 20px;
-	max-width: none!important;
-	width: auto;
-	padding:0 5px 0 5px;
-}*/
 .square-badge { 
 	padding:5px 5px 5px 5px;
 	color:#FFFFFF;
@@ -316,6 +309,13 @@ ul li ul, ol li ul { padding: 0 0 0 15px;}
 		}
 	}
 }
+
+
+
+.badged-header {
+	.square-badge, .square-badge-error, .square-badge-success{ margin-left:5px;}
+}
+
 
 
 
@@ -746,16 +746,6 @@ form .mat-checkbox-inner-container{
 
 
 
-
-
-/* File Init Container - Predition Backtesting */
-.file-init-container {height:650px}
-
-
-
-
-
-
 /* Model Selection Fab */
 .model-selection-fab { position: fixed; bottom: 30px; right:30px; }
 
@@ -813,13 +803,21 @@ form .mat-checkbox-inner-container{
 /* Epoch Builder Specific */
 
 
+/* File Init Container */
+.file-init-container {height:650px}
 
-// Epoch Builder Evaluation States
+
+
+// EBE States
 .ebe-optimal { background-color: #004D40!important; }
 .ebe-decent { background-color: #009688!important; }
 .ebe-neutral { background-color: #9E9E9E!important; }
 .ebe-warning { background-color: #F57C00!important; }
 .ebe-error { background-color: #B71C1C!important; }
+
+// Worst Values
+.worst-value {opacity: 0.7;}
+
 
 
 
@@ -908,7 +906,7 @@ form .mat-checkbox-inner-container{
 	.formula{letter-spacing: normal!important;}
 
 
-	/* File Init Container - Predition Backtesting */
+	/* Epoch Builder */
 	.file-init-container {height:300px}
 }
 

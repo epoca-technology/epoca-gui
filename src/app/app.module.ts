@@ -85,6 +85,7 @@ import {
 import {
 	AppService,
 	ChartService,
+	EpochBuilderViewService,
 	ModelSelectionService,
 	NavService,
 	ValidationsService,
@@ -191,6 +192,7 @@ import { AppComponent } from "./app.component";
 		/* Services */ 
 		AppService,
         ChartService,
+		EpochBuilderViewService,
 		ModelSelectionService,
 		NavService,
 		ValidationsService,

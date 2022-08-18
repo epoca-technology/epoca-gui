@@ -1,0 +1,97 @@
+<div class="component-container">
+    <div class="evaluation">
+        <div class="desktop-card">
+            <!-- Single Category Evaluation -->
+            <div *ngIf="evaluation.categories.length == 1">
+                <!-- Header -->
+                <div class="badged-header main-header" fxLayout="row" fxLayoutAlign="start center">
+                    <h4 class="truncate">{{evaluation.categories[0].name}}</h4>
+                    <span fxFlex></span>
+                    <div class="square-badge"
+                        [ngClass]="evaluation.categories[0].state_class"
+                        matTooltip="Total points collected during {{evaluation.categories[0].name}}.">
+                        {{evaluation.categories[0].points | number: '1.0-2'}} / {{evaluation.categories[0].max_points | number: '1.0-2'}}
+                    </div>
+                </div>
+
+                <!-- Items -->
+                <div class="categories-content">
+                    <div class="category">
+                        <div *ngFor="let item of evaluation.categories[0].items; last as lastItem" 
+                            class="item clickable" role="button" 
+                            (click)="_nav.displayTooltip(item.name, item.description)">
+                            <div fxLayout="row" fxLayoutAlign="start start">
+                                <div fxFlex="80" fxFlex.xs="70" fxFlex.sm="70">
+                                    <p class="truncate light-text ts-m"><strong>{{item.name}}</strong></p>
+                                    <p class="light-text ts-s">{{item.state}}</p>
+                                </div>
+                                <span fxFlex></span>
+                                <div [ngClass]="item.state_class" class="square-badge">
+                                    {{item.points | number: '1.0-2'}} / {{item.max_points | number: '1.0-2'}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Multi Category Evaluation -->
+            <div *ngIf="evaluation.categories.length > 1">
+                <!-- Header -->
+                <div class="badged-header main-header" fxLayout="row" fxLayoutAlign="start center">
+                    <h4 class="truncate">Epoch Builder Evaluation</h4>
+                    <span fxFlex></span>
+                    <div class="square-badge"
+                        [ngClass]="evaluation.state_class"
+                        matTooltip="Total points collected during EBE.">
+                        {{evaluation.points | number: '1.0-2'}} / {{evaluation.max_points | number: '1.0-2'}}
+                    </div>
+                </div>
+
+                <!-- Categories -->
+                <div class="categories-content">
+                    <div *ngFor="let cat of evaluation.categories; last as lastCat; index as catIndex" 
+                        class="category">
+                        <!-- Header -->
+                        <div class="category-header fake-button" role="button"
+                            (click)="active = active == catIndex ? undefined: catIndex">
+                            <div fxLayout="row" fxLayoutAlign="start center" >
+                                <h5 class="truncate">{{cat.name}}</h5>
+                                <span fxFlex></span>
+                                <div class="square-badge square-badge-category"
+                                    [ngClass]="cat.state_class"
+                                    matTooltip="Total points collected during {{cat.name}}.">
+                                    {{cat.points | number: '1.0-2'}} / {{cat.max_points | number: '1.0-2'}}
+                                </div>
+                            </div>
+            
+                            <!-- Description -->
+                            <p class="light-text">{{cat.description}}</p>
+                        </div>
+            
+                        <!-- Items -->
+                        <div *ngIf="active == catIndex" class="fadeIn">
+                            <div *ngFor="let item of cat.items; last as lastItem" 
+                                class="item clickable" role="button" 
+                                (click)="_nav.displayTooltip(item.name, item.description)">
+                                <div fxLayout="row" fxLayoutAlign="start start">
+                                    <div fxFlex="80" fxFlex.xs="70" fxFlex.sm="70">
+                                        <p class="truncate light-text ts-m"><strong>{{item.name}}</strong></p>
+                                        <p class="light-text ts-s">{{item.state}}</p>
+                                    </div>
+                                    <span fxFlex></span>
+                                    <div [ngClass]="item.state_class" class="square-badge">
+                                        {{item.points | number: '1.0-2'}} / {{item.max_points | number: '1.0-2'}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+            
+                        <div *ngIf="!lastCat" class="divider"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

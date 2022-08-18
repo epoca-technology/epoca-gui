@@ -23,22 +23,23 @@ export class EpochBuilderMetadataService implements IEpochBuilderMetadataService
 	 * Checks if a given value is higher or lower than the one stored,
 	 * if so, it replaces the current value.
 	 * @param mdKey 
+	 * @param index 
 	 * @param modelID 
 	 * @param value 
 	 */
-	public update(mdKey: string, modelID: string, value: number): void {
+	public update(mdKey: string, index: number, modelID: string, value: number): void {
 		// Check if the key has already been set
 		if (this.md[mdKey]) {
 			// Check if the value is greater than the existing one
-			if (value > this.md[mdKey].highest.value) this.md[mdKey].highest = { id: modelID, value: value };
+			if (value > this.md[mdKey].highest.value) this.md[mdKey].highest = { index: index, id: modelID, value: value };
 
 			// Check if the value is smaller than the existing one
-			if (value < this.md[mdKey].lowest.value) this.md[mdKey].lowest = { id: modelID, value: value };
+			if (value < this.md[mdKey].lowest.value) this.md[mdKey].lowest = { index: index, id: modelID, value: value };
 		}
 
 		// Otherwise, set the provided values
 		else {
-			this.md[mdKey] = { highest: { id: modelID, value: value }, lowest: { id: modelID, value: value }}
+			this.md[mdKey] = { highest: { index: index, id: modelID, value: value }, lowest: { index: index, id: modelID, value: value }}
 		}
 	}
 
@@ -50,7 +51,7 @@ export class EpochBuilderMetadataService implements IEpochBuilderMetadataService
 
 	/**
 	 * Returns the metadata that has been put together.
-	 * @returns IEpochBuilderMetadataOutput
+	 * @returns any
 	 */
-	public getMetadata(): IEpochBuilderMetadataOutput { return this.md }
+	public getMetadata(): any { return this.md }
 }

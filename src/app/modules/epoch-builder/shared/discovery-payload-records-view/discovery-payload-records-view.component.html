@@ -1,0 +1,314 @@
+<!-- Tabs Navigation-->
+<mat-tab-group *ngIf="layout == 'mobile'" 
+            [selectedIndex]="activeDiscoveryTab" (selectedIndexChange)="activeDiscoveryTab = $event"
+            mat-stretch-tabs class="mat-elevation-z3" backgroundColor="primary">
+    <mat-tab><ng-template mat-tab-label><mat-icon>ads_click</mat-icon></ng-template></mat-tab>
+    <mat-tab><ng-template mat-tab-label><mat-icon svgIcon="wand_magic_sparkles" class="wand-icon"></mat-icon></ng-template></mat-tab>
+    <mat-tab><ng-template mat-tab-label><mat-icon>auto_graph</mat-icon></ng-template></mat-tab>
+    <mat-tab><ng-template mat-tab-label><mat-icon>multiline_chart</mat-icon></ng-template></mat-tab>
+</mat-tab-group>
+<mat-tab-group *ngIf="layout == 'desktop'"  
+                [selectedIndex]="activeDiscoveryTab" (selectedIndexChange)="activeDiscoveryTab = $event" 
+                mat-align-tabs="center">
+    <mat-tab><ng-template mat-tab-label><mat-icon>ads_click</mat-icon>&nbsp;Accuracy</ng-template></mat-tab>
+    <mat-tab><ng-template mat-tab-label><mat-icon svgIcon="wand_magic_sparkles" class="wand-icon"></mat-icon>&nbsp;Predictions</ng-template></mat-tab>
+    <mat-tab><ng-template mat-tab-label><mat-icon>auto_graph</mat-icon>&nbsp;Successful Predictions</ng-template></mat-tab>
+    <mat-tab><ng-template mat-tab-label><mat-icon>multiline_chart</mat-icon>&nbsp;Prediction Ranges</ng-template></mat-tab>
+</mat-tab-group>
+
+<!-- Content -->
+<div class="padding">
+    <!-- Accuracy -->
+    <div *ngIf="activeDiscoveryTab == 0" fxLayout="row" fxLayoutAlign="center center">
+        <div fxFlex="60" fxFlex.xs="100" fxFlex.sm="100">
+            <div class="desktop-card">
+                <div fxLayout="row" fxLayoutAlign="center center" class="badged-header">
+                    <h4 class="show-on-desktop">Accuracy</h4>
+                    <span class="show-on-desktop" fxFlex></span>
+                    <button mat-icon-button 
+                        [disabled]="activeDiscoveryAccuracyBadge == 0" 
+                        (click)="activeDiscoveryAccuracyBadge = activeDiscoveryAccuracyBadge - 1">
+                        <mat-icon>arrow_left</mat-icon>
+                    </button>
+                    <!-- General Accuracy -->
+                    <div *ngIf="activeDiscoveryAccuracyBadge == 0" class="square-badge clickable" role="button"
+                        (click)="_activateModel(md.discoveryAccuracy.highest.id)"
+                        matTooltip="Highest Accuracy: {{md.discoveryAccuracy.highest.id}}">
+                        Best: {{md.discoveryAccuracy.highest.value | number: '1.0-2'}}%
+                    </div>
+                    <div *ngIf="activeDiscoveryAccuracyBadge == 0" class="square-badge clickable worst-value" role="button"
+                        (click)="_activateModel(md.discoveryAccuracy.lowest.id)"
+                        matTooltip="Lowest Accuracy: {{md.discoveryAccuracy.lowest.id}}">
+                        Worst: {{md.discoveryAccuracy.lowest.value | number: '1.0-2'}}%
+                    </div>
+                    <!-- Increase Accuracy -->
+                    <div *ngIf="activeDiscoveryAccuracyBadge == 1" class="square-badge-success clickable" role="button"
+                        (click)="_activateModel(md.discoveryIncreaseAccuracy.highest.id)"
+                        matTooltip="Highest Increase Accuracy: {{md.discoveryIncreaseAccuracy.highest.id}}">
+                        Best: {{md.discoveryIncreaseAccuracy.highest.value | number: '1.0-2'}}%
+                    </div>
+                    <div *ngIf="activeDiscoveryAccuracyBadge == 1" class="square-badge-success clickable worst-value" role="button"
+                        (click)="_activateModel(md.discoveryIncreaseAccuracy.lowest.id)"
+                        matTooltip="Lowest Increase Accuracy: {{md.discoveryIncreaseAccuracy.lowest.id}}">
+                        Worst: {{md.discoveryIncreaseAccuracy.lowest.value | number: '1.0-2'}}%
+                    </div>
+                    <!-- Decrease Accuracy -->
+                    <div *ngIf="activeDiscoveryAccuracyBadge == 2" class="square-badge-error clickable" role="button"
+                        (click)="_activateModel(md.discoveryDecreaseAccuracy.highest.id)"
+                        matTooltip="Highest Decrease Accuracy: {{md.discoveryDecreaseAccuracy.highest.id}}">
+                        Best: {{md.discoveryDecreaseAccuracy.highest.value | number: '1.0-2'}}%
+                    </div>
+                    <div *ngIf="activeDiscoveryAccuracyBadge == 2" class="square-badge-error clickable worst-value" role="button"
+                        (click)="_activateModel(md.discoveryDecreaseAccuracy.lowest.id)"
+                        matTooltip="Lowest Decrease Accuracy: {{md.discoveryDecreaseAccuracy.lowest.id}}">
+                        Worst: {{md.discoveryDecreaseAccuracy.lowest.value | number: '1.0-2'}}%
+                    </div>
+                    <button mat-icon-button 
+                            [disabled]="activeDiscoveryAccuracyBadge == 2" 
+                            (click)="activeDiscoveryAccuracyBadge = activeDiscoveryAccuracyBadge + 1">
+                            <mat-icon>arrow_right</mat-icon>
+                    </button>
+                </div>
+                <div class="margin-top">
+                    <apx-chart
+                        [series]="discoveryView.accuracy.series"
+                        [chart]="discoveryView.accuracy.chart"
+                        [plotOptions]="discoveryView.accuracy.plotOptions"
+                        [xaxis]="discoveryView.accuracy.xaxis"
+                        [yaxis]="discoveryView.accuracy.yaxis"
+                        [dataLabels]="discoveryView.accuracy.dataLabels"
+                        [colors]="discoveryView.accuracy.colors"
+                        [grid]="discoveryView.accuracy.grid"
+                        [legend]="{position: 'top'}"
+                    ></apx-chart>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Predictions -->
+    <div *ngIf="activeDiscoveryTab == 1" fxLayout="row" fxLayoutAlign="center center">
+        <div fxFlex="60" fxFlex.xs="100" fxFlex.sm="100">
+            <div class="desktop-card">
+                <div fxLayout="row" fxLayoutAlign="center center" class="badged-header">
+                    <h4 class="show-on-desktop">Predictions</h4>
+                    <span class="show-on-desktop" fxFlex></span>
+                    <button mat-icon-button 
+                        [disabled]="activeDiscoveryPredictionsBadge == 0" 
+                        (click)="activeDiscoveryPredictionsBadge = activeDiscoveryPredictionsBadge - 1">
+                        <mat-icon>arrow_left</mat-icon>
+                    </button>
+                    <!-- General Predictions -->
+                    <div *ngIf="activeDiscoveryPredictionsBadge == 0" class="square-badge clickable" role="button"
+                        (click)="_activateModel(md.discoveryPredictions.highest.id)"
+                        matTooltip="Highest # of predictions: {{md.discoveryPredictions.highest.id}}">
+                        High: {{md.discoveryPredictions.highest.value}}
+                    </div>
+                    <div *ngIf="activeDiscoveryPredictionsBadge == 0" class="square-badge clickable worst-value" role="button"
+                        (click)="_activateModel(md.discoveryPredictions.lowest.id)"
+                        matTooltip="Lowest # of predictions: {{md.discoveryPredictions.lowest.id}}">
+                        Low: {{md.discoveryPredictions.lowest.value}}
+                    </div>
+                    <!-- Neutral Predictions -->
+                    <div *ngIf="activeDiscoveryPredictionsBadge == 1" class="square-badge-neutral clickable" role="button"
+                        (click)="_activateModel(md.discoveryNeutralPredictions.highest.id)"
+                        matTooltip="Highest # of neutral predictions: {{md.discoveryNeutralPredictions.highest.id}}">
+                        High: {{md.discoveryNeutralPredictions.highest.value}}
+                    </div>
+                    <div *ngIf="activeDiscoveryPredictionsBadge == 1" class="square-badge-neutral clickable worst-value" role="button"
+                        (click)="_activateModel(md.discoveryNeutralPredictions.lowest.id)"
+                        matTooltip="Lowest # of neutral predictions: {{md.discoveryNeutralPredictions.lowest.id}}">
+                        Low: {{md.discoveryNeutralPredictions.lowest.value}}
+                    </div>
+                    <!-- Increase Predictions -->
+                    <div *ngIf="activeDiscoveryPredictionsBadge == 2" class="square-badge-success clickable" role="button"
+                        (click)="_activateModel(md.discoveryIncreasePredictions.highest.id)"
+                        matTooltip="Highest # of increase predictions: {{md.discoveryIncreasePredictions.highest.id}}">
+                        High: {{md.discoveryIncreasePredictions.highest.value}}
+                    </div>
+                    <div *ngIf="activeDiscoveryPredictionsBadge == 2" class="square-badge-success clickable worst-value" role="button"
+                        (click)="_activateModel(md.discoveryIncreasePredictions.lowest.id)"
+                        matTooltip="Lowest # of increase predictions: {{md.discoveryIncreasePredictions.lowest.id}}">
+                        Low: {{md.discoveryIncreasePredictions.lowest.value}}
+                    </div>
+                    <!-- Decrease Predictions -->
+                    <div *ngIf="activeDiscoveryPredictionsBadge == 3" class="square-badge-error clickable" role="button"
+                        (click)="_activateModel(md.discoveryDecreasePredictions.highest.id)"
+                        matTooltip="Highest # of decrease predictions: {{md.discoveryDecreasePredictions.highest.id}}">
+                        High: {{md.discoveryDecreasePredictions.highest.value}}
+                    </div>
+                    <div *ngIf="activeDiscoveryPredictionsBadge == 3" class="square-badge-error clickable worst-value" role="button"
+                        (click)="_activateModel(md.discoveryDecreasePredictions.lowest.id)"
+                        matTooltip="Lowest # of decrease predictions: {{md.discoveryDecreasePredictions.lowest.id}}">
+                        Low: {{md.discoveryDecreasePredictions.lowest.value}}
+                    </div>
+                    <button mat-icon-button 
+                            [disabled]="activeDiscoveryPredictionsBadge == 3" 
+                            (click)="activeDiscoveryPredictionsBadge = activeDiscoveryPredictionsBadge + 1">
+                            <mat-icon>arrow_right</mat-icon>
+                    </button>
+                </div>
+                <div class="margin-top">
+                    <apx-chart
+                        [series]="discoveryView.predictions.series"
+                        [chart]="discoveryView.predictions.chart"
+                        [plotOptions]="discoveryView.predictions.plotOptions"
+                        [xaxis]="discoveryView.predictions.xaxis"
+                        [yaxis]="discoveryView.predictions.yaxis"
+                        [dataLabels]="discoveryView.predictions.dataLabels"
+                        [colors]="discoveryView.predictions.colors"
+                        [grid]="discoveryView.predictions.grid"
+                        [legend]="{position: 'top'}"
+                    ></apx-chart>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Successful Predictions -->
+    <div *ngIf="activeDiscoveryTab == 2" fxLayout="row" fxLayoutAlign="center center">
+        <div fxFlex="60" fxFlex.xs="100" fxFlex.sm="100">
+            <div class="desktop-card">
+                <div fxLayout="row" fxLayoutAlign="center center" class="badged-header">
+                    <h4 class="show-on-desktop">Successful Predictions</h4>
+                    <span class="show-on-desktop" fxFlex></span>
+                    <button mat-icon-button 
+                        [disabled]="activeDiscoverySuccessfulPredictionsBadge == 0" 
+                        (click)="activeDiscoverySuccessfulPredictionsBadge = activeDiscoverySuccessfulPredictionsBadge - 1">
+                        <mat-icon>arrow_left</mat-icon>
+                    </button>
+                    <!-- Successful Mean -->
+                    <div *ngIf="activeDiscoverySuccessfulPredictionsBadge == 0" class="square-badge clickable" role="button"
+                        (click)="_activateModel(md.discoverySuccessfulMean.highest.id)"
+                        matTooltip="Highest Successful Mean: {{md.discoverySuccessfulMean.highest.id}}">
+                        High: {{md.discoverySuccessfulMean.highest.value}}%
+                    </div>
+                    <div *ngIf="activeDiscoverySuccessfulPredictionsBadge == 0" class="square-badge clickable worst-value" role="button"
+                        (click)="_activateModel(md.discoverySuccessfulMean.lowest.id)"
+                        matTooltip="Lowest Successful Mean: {{md.discoverySuccessfulMean.lowest.id}}">
+                        Low: {{md.discoverySuccessfulMean.lowest.value}}%
+                    </div>
+                    <!-- Increase Successful Mean -->
+                    <div *ngIf="activeDiscoverySuccessfulPredictionsBadge == 1" class="square-badge-success clickable" role="button"
+                        (click)="_activateModel(md.discoverySuccessfulIncreaseMean.highest.id)"
+                        matTooltip="Highest Increase Successful Mean: {{md.discoverySuccessfulIncreaseMean.highest.id}}">
+                        High: {{md.discoverySuccessfulIncreaseMean.highest.value}}%
+                    </div>
+                    <div *ngIf="activeDiscoverySuccessfulPredictionsBadge == 1" class="square-badge-success clickable worst-value" role="button"
+                        (click)="_activateModel(md.discoverySuccessfulIncreaseMean.lowest.id)"
+                        matTooltip="Lowest Increase Successful Mean: {{md.discoverySuccessfulIncreaseMean.lowest.id}}">
+                        Low: {{md.discoverySuccessfulIncreaseMean.lowest.value}}%
+                    </div>
+                    <!-- Decrease Predictions -->
+                    <div *ngIf="activeDiscoverySuccessfulPredictionsBadge == 2" class="square-badge-error clickable" role="button"
+                        (click)="_activateModel(md.discoverySuccessfulDecreaseMean.highest.id)"
+                        matTooltip="Highest Decrease Successful Mean: {{md.discoverySuccessfulDecreaseMean.highest.id}}">
+                        High: {{md.discoverySuccessfulDecreaseMean.highest.value}}%
+                    </div>
+                    <div *ngIf="activeDiscoverySuccessfulPredictionsBadge == 2" class="square-badge-error clickable worst-value" role="button"
+                        (click)="_activateModel(md.discoverySuccessfulDecreaseMean.lowest.id)"
+                        matTooltip="Lowest Decrease Successful Mean: {{md.discoverySuccessfulDecreaseMean.lowest.id}}">
+                        Low: {{md.discoverySuccessfulDecreaseMean.lowest.value}}%
+                    </div>
+                    <button mat-icon-button 
+                            [disabled]="activeDiscoverySuccessfulPredictionsBadge == 2" 
+                            (click)="activeDiscoverySuccessfulPredictionsBadge = activeDiscoverySuccessfulPredictionsBadge + 1">
+                            <mat-icon>arrow_right</mat-icon>
+                    </button>
+                </div>
+                <div class="margin-top">
+                    <apx-chart
+                        [series]="discoveryView.successfulPredictions.series"
+                        [chart]="discoveryView.successfulPredictions.chart"
+                        [plotOptions]="discoveryView.successfulPredictions.plotOptions"
+                        [xaxis]="discoveryView.successfulPredictions.xaxis"
+                        [yaxis]="discoveryView.successfulPredictions.yaxis"
+                        [dataLabels]="discoveryView.successfulPredictions.dataLabels"
+                        [colors]="discoveryView.successfulPredictions.colors"
+                        [grid]="discoveryView.successfulPredictions.grid"
+                        [legend]="{position: 'top'}"
+                    ></apx-chart>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Prediction Ranges -->
+    <div *ngIf="activeDiscoveryTab == 3" 
+        fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" fxLayoutAlign="start start">
+            <span fxFlex class="show-on-desktop"></span>
+
+            <!-- Increase Prediction Range -->
+            <div fxFlex="46" class="full-width">
+                <div class="desktop-card">
+                    <div fxLayout="row" fxLayoutAlign="center center" class="badged-header">
+                        <h4 class="show-on-desktop">Increase Predictions</h4>
+                        <span class="show-on-desktop" fxFlex></span>
+                        <div class="square-badge-success clickable" role="button"
+                            (click)="_activateModel(md.discoveryIncreaseMean.highest.id)"
+                            matTooltip="Highest Discovery Increase Mean: {{md.discoveryIncreaseMean.highest.id}}">
+                            High: {{md.discoveryIncreaseMean.highest.value | number: '1.0-2'}}%
+                        </div>
+                        <div class="square-badge-success clickable worst-value" role="button"
+                            (click)="_activateModel(md.discoveryIncreaseMean.lowest.id)"
+                            matTooltip="Lowest Discovery Increase Mean: {{md.discoveryIncreaseMean.lowest.id}}">
+                            Low: {{md.discoveryIncreaseMean.lowest.value | number: '1.0-2'}}%
+                        </div>
+                    </div>
+                    <div class="margin-top">
+                        <apx-chart
+                            [series]="discoveryView.increasePredictionRanges.series"
+                            [chart]="discoveryView.increasePredictionRanges.chart"
+                            [plotOptions]="discoveryView.increasePredictionRanges.plotOptions"
+                            [xaxis]="discoveryView.increasePredictionRanges.xaxis"
+                            [yaxis]="discoveryView.increasePredictionRanges.yaxis"
+                            [dataLabels]="discoveryView.increasePredictionRanges.dataLabels"
+                            [colors]="discoveryView.increasePredictionRanges.colors"
+                            [grid]="discoveryView.increasePredictionRanges.grid"
+                            [legend]="{position: 'top'}"
+                        ></apx-chart>
+                    </div>
+                </div>
+            </div>
+
+            <span fxFlex class="show-on-desktop"></span>
+
+            <div class="divider show-on-mobile"></div>
+
+            <!-- Decrease Prediction Range -->
+            <div fxFlex="46" class="full-width">
+                <div class="desktop-card">
+                    <div fxLayout="row" fxLayoutAlign="center center" class="badged-header">
+                        <h4 class="show-on-desktop">Decrease Predictions</h4>
+                        <span class="show-on-desktop" fxFlex></span>
+                        <div class="square-badge-error clickable" role="button"
+                            (click)="_activateModel(md.discoveryDecreaseMean.highest.id)"
+                            matTooltip="Highest Discovery Decrease Mean: {{md.discoveryDecreaseMean.highest.id}}">
+                            High: {{md.discoveryDecreaseMean.highest.value | number: '1.0-2'}}%
+                        </div>
+                        <div class="square-badge-error clickable worst-value" role="button"
+                            (click)="_activateModel(md.discoveryDecreaseMean.lowest.id)"
+                            matTooltip="Lowest Discovery Decrease Mean: {{md.discoveryDecreaseMean.lowest.id}}">
+                            Low: {{md.discoveryDecreaseMean.lowest.value | number: '1.0-2'}}%
+                        </div>
+                    </div>
+                    <div class="margin-top">
+                        <apx-chart
+                            [series]="discoveryView.decreasePredictionRanges.series"
+                            [chart]="discoveryView.decreasePredictionRanges.chart"
+                            [plotOptions]="discoveryView.decreasePredictionRanges.plotOptions"
+                            [xaxis]="discoveryView.decreasePredictionRanges.xaxis"
+                            [yaxis]="discoveryView.decreasePredictionRanges.yaxis"
+                            [dataLabels]="discoveryView.decreasePredictionRanges.dataLabels"
+                            [colors]="discoveryView.decreasePredictionRanges.colors"
+                            [grid]="discoveryView.decreasePredictionRanges.grid"
+                            [legend]="{position: 'top'}"
+                        ></apx-chart>
+                    </div>
+                </div>
+            </div>
+
+            <span fxFlex class="show-on-desktop"></span>
+    </div>
+</div>

@@ -1,0 +1,26 @@
+<div class="desktop-card">
+    <div fxLayout="row" fxLayoutAlign="center center" class="badged-header">
+        <h4 class="show-on-desktop">Training Epochs</h4>
+        <span class="show-on-desktop" fxFlex></span>
+        <div class="square-badge clickable" role="button"
+            (click)="_activateModel(md.epochs.highest.id)"
+            matTooltip="Highest # of Epochs: {{md.epochs.highest.id}}">
+            Highest: {{md.epochs.highest.value}}
+        </div>
+        <div class="square-badge clickable worst-value" role="button"
+            (click)="_activateModel(md.epochs.lowest.index)"
+            matTooltip="Lowest # of Epochs: {{md.epochs.lowest.id}}">
+            Lowest: {{md.epochs.lowest.value}}
+        </div>
+    </div>
+    <apx-chart
+        [series]="epochsView.epochs.series"
+        [chart]="epochsView.epochs.chart"
+        [plotOptions]="epochsView.epochs.plotOptions"
+        [xaxis]="epochsView.epochs.xaxis"
+        [yaxis]="epochsView.epochs.yaxis"
+        [dataLabels]="epochsView.epochs.dataLabels"
+        [colors]="epochsView.epochs.colors"
+        [grid]="epochsView.epochs.grid"
+    ></apx-chart>
+</div>

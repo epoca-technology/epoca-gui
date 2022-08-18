@@ -8,6 +8,7 @@ import {
     IKerasRegressionMetric
 } from "./keras_models";
 import { IKerasRegressionConfig } from "./model";
+import { IEpochBuilderEvaluation } from "./epoch_builder_evaluation";
 
 
 
@@ -186,6 +187,18 @@ export interface IKerasRegressionTrainingCertificate {
     regression_config: IKerasRegressionConfig,
 
 
-    /* General Evaluation - @TODO: PENDING UPGRADE */
-    general: any // Only exists in the GUI
+    /**
+     * GUI Properties
+     * The following properties only exist in the GUI as they are populated
+     * when certificates are loaded.
+     */
+
+    // This property is populated if the Process Early Stopping was invoked
+    early_stopping?: string,
+
+    // Epoch Builder Evaluation
+    ebe: IEpochBuilderEvaluation,
+
+    // The value that will be used to order the certificates
+    orderValue: number
 }
