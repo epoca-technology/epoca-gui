@@ -1,1 +1,23 @@
-<p>model-selection-dialog works!</p>
+<mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <button mat-icon-button class="show-on-mobile" (click)="close()"><mat-icon>arrow_back</mat-icon></button>
+        <span>Selection: {{_selection.selectedList.length}}</span>
+        <span fxFlex></span>
+        <button mat-icon-button [disabled]="!_selection.selectedList.length" (click)="_selection.copySelectionString()" matTooltip="Copy Model IDs"><mat-icon>content_copy</mat-icon></button>
+        <button mat-icon-button [disabled]="!_selection.selectedList.length" (click)="_selection.reset()" matTooltip="Clear Selection"><mat-icon>refresh</mat-icon></button>
+        <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
+    </div>
+</mat-toolbar>
+<div mat-dialog-content>
+    <!-- Container -->
+    <div class="component">
+        <div *ngFor="let model of _selection.selectedList; last as lastModel">
+            <div class="model-item" fxLayout="row" fxLayoutAlign="start center">
+                <p class="clickable truncate" style="max-width:75%" (click)="_app.copy(model.id)">{{model.id}}</p>
+                <span fxFlex></span>
+                <div class="square-badge">{{model.points | number:'1.0-2'}}</div>
+            </div>
+            <div class="divider" *ngIf="!lastModel"></div>
+        </div>
+    </div>
+</div>

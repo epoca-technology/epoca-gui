@@ -1,6 +1,6 @@
 import { Component, Input, Output, OnInit, OnDestroy, EventEmitter } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { IKerasRegressionMetadata, IKerasRegressionTrainingCertificate } from '../../../../core';
+import { IKerasRegressionMetadata } from '../../../../core';
 import { AppService, ChartService, IBarChartOptions, ILayout } from '../../../../services';
 import { IDiscoveryPayloadRecordsViewComponent, IDiscoveryPayloadRecord } from './interfaces';
 

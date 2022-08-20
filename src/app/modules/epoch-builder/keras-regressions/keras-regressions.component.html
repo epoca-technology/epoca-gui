@@ -354,7 +354,315 @@
 
                         <!-- Certificate -->
                         <div *ngIf="activeView == 'certificate' && certificateView && cert">
+                            <!-- Tabs Navigation-->
+                            <mat-tab-group *ngIf="layout == 'mobile'" 
+                                        [selectedIndex]="activeCertTabIndex" (selectedIndexChange)="activeCertTabIndex = $event"
+                                        mat-stretch-tabs class="mat-elevation-z3" backgroundColor="primary">
+                                <mat-tab><ng-template mat-tab-label><mat-icon>feed</mat-icon></ng-template></mat-tab>
+                                <mat-tab><ng-template mat-tab-label><mat-icon>cast_for_education</mat-icon></ng-template></mat-tab>
+                                <mat-tab><ng-template mat-tab-label><mat-icon>tune</mat-icon></ng-template></mat-tab>
+                                <mat-tab><ng-template mat-tab-label><mat-icon>format_list_numbered</mat-icon></ng-template></mat-tab>
+                            </mat-tab-group>
+                            <mat-tab-group *ngIf="layout == 'desktop'"  
+                                            [selectedIndex]="activeCertTabIndex" (selectedIndexChange)="activeCertTabIndex = $event" 
+                                            mat-align-tabs="center">
+                                <mat-tab><ng-template mat-tab-label><mat-icon>feed</mat-icon>&nbsp;Summary</ng-template></mat-tab>
+                                <mat-tab><ng-template mat-tab-label><mat-icon>cast_for_education</mat-icon>&nbsp;Training</ng-template></mat-tab>
+                                <mat-tab><ng-template mat-tab-label><mat-icon>tune</mat-icon>&nbsp;Discovery</ng-template></mat-tab>
+                                <mat-tab><ng-template mat-tab-label><mat-icon>format_list_numbered</mat-icon>&nbsp;Epochs</ng-template></mat-tab>
+                            </mat-tab-group>
 
+                            <!-- Cert Content-->
+                            <div class="padding">
+                                
+                                <!-- Summary -->
+                                <div *ngIf="activeCertTabIndex == 0">
+                                    <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column">
+                                        <!-- Informational Cards-->
+                                        <div fxFlex="44" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                                            <!-- Training Certificate -->
+                                            <div class="desktop-card">
+                                                <!-- Header -->
+                                                <div fxLayout="row" fxLayoutAlign="start start">
+                                                    <div>
+                                                        <h4>Certificate</h4>
+                                                        <p class="light-text ts-xs clickable" 
+                                                            (click)="_app.copy(cert.id)" 
+                                                            [matTooltip]="cert.id">
+                                                            {{cert.id | stringOverview: layout == "desktop" ? 16: 12}}
+                                                        </p>
+                                                    </div>
+                                                    <span fxFlex></span>
+                                                    <div [ngClass]="{
+                                                            'square-badge-neutral': cert.discovery.accuracy >= 50 && cert.discovery.accuracy < 55,
+                                                            'square-badge-success': cert.discovery.accuracy >= 55,
+                                                            'square-badge-error': cert.discovery.accuracy < 50
+                                                        }" 
+                                                        matTooltip="Discovery Accuracy" 
+                                                        class="clickable" (click)="activeCertTabIndex = 2">
+                                                        {{cert.discovery.accuracy | number: '1.0-2'}}%
+                                                    </div>
+                                                </div>
+
+                                                <!-- Content -->
+                                                <div>
+                                                    <!-- Regression -->
+                                                    <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+                                                        <p class="light-text">{{layout == "desktop" ? "Regression": "Regr."}}</p>
+                                                        <span fxFlex></span>
+                                                        <app-keras-regression-element [config]="cert.regression_config"></app-keras-regression-element>
+                                                    </div>
+
+                                                    <!-- Keras Model Configuration -->
+                                                    <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+                                                        <p class="light-text truncate">Keras Model</p>
+                                                        <span fxFlex></span>
+                                                        <p class="clickable" role="button" 
+                                                            matTooltip="Configuration used to build the Keras Regression Model"
+                                                            (click)="_nav.displayDataDialog('KerasModelConfiguration', cert.keras_model_config)">
+                                                            {{cert.keras_model_config.name}}
+                                                        </p>
+                                                    </div>
+
+                                                    <!-- Optimizer -->
+                                                    <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+                                                        <p class="light-text truncate">Optimizer</p>
+                                                        <span fxFlex></span>
+                                                        <p matTooltip="Optimizer(learning_rate)">{{cert.optimizer}}({{cert.learning_rate}})</p>
+                                                    </div>
+
+                                                    <!-- Loss -->
+                                                    <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+                                                        <p class="light-text">Loss</p>
+                                                        <span fxFlex></span>
+                                                        <p>{{cert.loss}}</p>
+                                                    </div>
+
+                                                    <!-- Metric -->
+                                                    <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+                                                        <p class="light-text">Metric</p>
+                                                        <span fxFlex></span>
+                                                        <p>{{cert.metric}}</p>
+                                                    </div>
+
+                                                    <!-- Training -->
+                                                    <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
+                                                        <p class="light-text">Training</p>
+                                                        <span fxFlex></span>
+                                                        <div class="align-right" 
+                                                            matTooltip="The beggining and the end of the training process.">
+                                                            <p class="ts-m">{{cert.training_start | date: 'medium'}}</p>
+                                                            <p class="ts-m">{{cert.training_end | date: 'medium'}}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="divider show-on-mobile"></div>
+
+                                            <!-- Training Data Details -->
+                                            <app-regression-training-dataset [cert]="cert"></app-regression-training-dataset>
+                                        </div>
+
+                                        <span fxFlex></span>
+                                        <div class="divider show-on-mobile"></div>
+
+                                        <!-- EBE -->
+                                        <div fxFlex="54" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                                            <app-epoch-builder-evaluation [evaluation]="cert.ebe"></app-epoch-builder-evaluation>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Training -->
+                                <div *ngIf="activeCertTabIndex == 1">
+                                    <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column">
+                                        <!-- Hyperparameters -->
+                                        <div fxFlex="40" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                                            <div class="desktop-card">
+                                                <!-- Header -->
+                                                <div fxLayout="row" fxLayoutAlign="start start">
+                                                    <h4>Hyperparams</h4>
+                                                    <span fxFlex></span>
+                                                    <div class="square-badge clickable" 
+                                                        matTooltip="The total number of training epochs the model went through."
+                                                        (click)="activeCertTabIndex = 3">
+                                                        Epochs: {{cert.training_history.loss.length}}
+                                                    </div>
+                                                </div>
+
+                                                <!-- Content -->
+                                                <div>
+                                                    <!-- Regression -->
+                                                    <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+                                                        <p class="light-text">{{layout == "desktop" ? "Regression": "Regr."}}</p>
+                                                        <span fxFlex></span>
+                                                        <app-keras-regression-element [config]="cert.regression_config"></app-keras-regression-element>
+                                                    </div>
+
+                                                    <!-- Keras Model Configuration -->
+                                                    <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+                                                        <p class="light-text truncate">Keras Model</p>
+                                                        <span fxFlex></span>
+                                                        <p class="clickable" role="button" 
+                                                            matTooltip="Configuration used to build the Keras Regression Model"
+                                                            (click)="_nav.displayDataDialog('KerasModelConfiguration', cert.keras_model_config)">
+                                                            {{cert.keras_model_config.name}}
+                                                        </p>
+                                                    </div>
+
+                                                    <!-- Optimizer -->
+                                                    <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+                                                        <p class="light-text truncate">Optimizer</p>
+                                                        <span fxFlex></span>
+                                                        <p matTooltip="Optimizer(learning_rate)">{{cert.optimizer}}({{cert.learning_rate}})</p>
+                                                    </div>
+
+                                                    <!-- Loss -->
+                                                    <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+                                                        <p class="light-text">Loss</p>
+                                                        <span fxFlex></span>
+                                                        <p>{{cert.loss}}</p>
+                                                    </div>
+
+                                                    <!-- Metric -->
+                                                    <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+                                                        <p class="light-text">Metric</p>
+                                                        <span fxFlex></span>
+                                                        <p>{{cert.metric}}</p>
+                                                    </div>
+
+                                                    <!-- Units - If any -->
+                                                    <div *ngIf="cert.keras_model_config.units" 
+                                                        fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+                                                        <p class="light-text">Units</p>
+                                                        <span fxFlex></span>
+                                                        <p>{{cert.keras_model_config.units}}</p>
+                                                    </div>
+
+                                                    <!-- Filters - If any -->
+                                                    <div *ngIf="cert.keras_model_config.filters" 
+                                                        fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+                                                        <p class="light-text">Filters</p>
+                                                        <span fxFlex></span>
+                                                        <p>{{cert.keras_model_config.filters}}</p>
+                                                    </div>
+
+                                                    <!-- Kernel Sizes - If any -->
+                                                    <div *ngIf="cert.keras_model_config.kernel_sizes" 
+                                                        fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+                                                        <p class="light-text">Kernel Sizes</p>
+                                                        <span fxFlex></span>
+                                                        <p>{{cert.keras_model_config.kernel_sizes}}</p>
+                                                    </div>
+
+                                                    <!-- Pool Sizes - If any -->
+                                                    <div *ngIf="cert.keras_model_config.pool_sizes" 
+                                                        fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+                                                        <p class="light-text">Pool Sizes</p>
+                                                        <span fxFlex></span>
+                                                        <p>{{cert.keras_model_config.pool_sizes}}</p>
+                                                    </div>
+
+                                                    <!-- Dropout Rates - If any -->
+                                                    <div *ngIf="cert.keras_model_config.dropout_rates" 
+                                                        fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+                                                        <p class="light-text">Dropout Rates</p>
+                                                        <span fxFlex></span>
+                                                        <p>{{cert.keras_model_config.dropout_rates}}</p>
+                                                    </div>
+
+                                                    <!-- Activations - If any -->
+                                                    <div *ngIf="cert.keras_model_config.activations" 
+                                                        fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+                                                        <p class="light-text">Activations</p>
+                                                        <span fxFlex></span>
+                                                        <p>{{cert.keras_model_config.activations}}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="divider show-on-mobile"></div>
+
+                                            <!-- Test Dataset -->
+                                            <div class="desktop-card">
+                                                <h4>Test Dataset Evaluation</h4>
+    
+                                                <!-- Loss -->
+                                                <div fxLayout="row" fxLayoutAlign="center center" class="margin-top">
+                                                    <p class="light-text">{{cert.loss}}</p>
+                                                    <span fxFlex></span>
+                                                    <span class="square-badge-error" 
+                                                        matTooltip="Loss received in the Test Dataset Evaluation">
+                                                        {{cert.test_evaluation[0] | number: '1.0-6'}}
+                                                    </span>
+                                                </div>
+    
+                                                <!-- Loss Metric -->
+                                                <div fxLayout="row" fxLayoutAlign="center center" class="margin-top">
+                                                    <p class="light-text">{{cert.metric}}</p>
+                                                    <span fxFlex></span>
+                                                    <span class="square-badge-error"
+                                                    matTooltip="Loss Metric received in the Test Dataset Evaluation">
+                                                    {{cert.test_evaluation[1] | number: '1.0-6'}}
+                                                </span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <span fxFlex></span>
+                                        <div class="divider show-on-mobile"></div>
+
+                                        <div fxFlex="58" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                                            <!-- Loss -->
+                                            <div>
+                                                <app-learning-curve [curveConfig]="certificateView.lossCurve"></app-learning-curve>
+                                            </div>
+
+                                            <div class="divider show-on-mobile"></div>
+
+                                            <!-- Loss Metric -->
+                                            <div>
+                                                <app-learning-curve [curveConfig]="certificateView.lossMetricCurve"></app-learning-curve>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Discovery -->
+                                <div *ngIf="activeCertTabIndex == 2">
+                                    <app-discovery-payload-view [id]="cert.id" [discovery]="cert.discovery"></app-discovery-payload-view>
+                                </div>
+
+                                <!-- Epochs -->
+                                <div *ngIf="activeCertTabIndex == 3">
+                                    <app-keras-training-epochs-table [hist]="cert.training_history"></app-keras-training-epochs-table>
+                                </div>
+                            </div>
+
+
+
+                            <!-- Model Selection Fab -->
+                            <div *ngIf="!_selection.selected[cert.id] && _kr.certificates.length > 1" class="model-selection-fab">
+                                <button mat-fab color="primary" class="show-on-desktop" matTooltip="Select Model"
+                                    (click)="_selection.select(cert.id, cert.ebe.points)">
+                                    <mat-icon>add_task</mat-icon>
+                                </button>
+                                <button mat-mini-fab color="primary" class="show-on-mobile" matTooltip="Select Model"
+                                    (click)="_selection.select(cert.id, cert.ebe.points)">
+                                    <mat-icon>add_task</mat-icon>
+                                </button>
+                            </div>
+                            <div *ngIf="_selection.selected[cert.id] && _kr.certificates.length > 1" class="model-selection-fab">
+                                <button mat-fab color="warn" class="show-on-desktop" matTooltip="Unselect Model" 
+                                    (click)="_selection.unselect(cert.id)">
+                                    <mat-icon>remove</mat-icon>
+                                </button>
+                                <button mat-mini-fab color="warn" class="show-on-mobile" matTooltip="Unselect Model"
+                                     (click)="_selection.unselect(cert.id)">
+                                    <mat-icon>remove</mat-icon>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -13,7 +13,7 @@ export class EpochBuilderEvaluationComponent implements OnInit, IEpochBuilderEva
 	@Input() evaluation!: IEpochBuilderEvaluation;
 
 	// Active Category
-	public active?: number;
+	public active?: number = 0;
 
 	constructor(
 		public _nav: NavService

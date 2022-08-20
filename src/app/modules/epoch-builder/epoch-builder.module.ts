@@ -23,6 +23,10 @@ import { EpochBuilderConfigDialogComponent } from './shared/epoch-builder-config
 import { EpochBuilderEvaluationComponent } from './shared/epoch-builder-evaluation';
 import { KerasTrainingEpochsBarChartComponent } from './shared/keras-training-epochs-bar-chart/keras-training-epochs-bar-chart.component';
 import { KerasHyperparamsViewComponent } from './shared/keras-hyperparams-view/keras-hyperparams-view.component';
+import { KerasTrainingEpochsTableComponent } from './shared/keras-training-epochs-table/keras-training-epochs-table.component';
+import { LearningCurveComponent } from './shared/learning-curve/learning-curve.component';
+import { RegressionTrainingDatasetComponent } from './shared/regression-training-dataset/regression-training-dataset.component';
+import { DiscoveryPayloadViewComponent } from './shared/discovery-payload-view/discovery-payload-view.component';
 
 
 
@@ -45,6 +49,10 @@ import { KerasHyperparamsViewComponent } from './shared/keras-hyperparams-view/k
     KerasTrainingEpochsBarChartComponent,
     DiscoveryPayloadRecordsViewComponent,
     KerasHyperparamsViewComponent,
+    KerasTrainingEpochsTableComponent,
+    LearningCurveComponent,
+    RegressionTrainingDatasetComponent,
+    DiscoveryPayloadViewComponent,
   ],
   imports: [
     CommonModule,

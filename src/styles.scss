@@ -818,9 +818,17 @@ form .mat-checkbox-inner-container{
 // Worst Values
 .worst-value {opacity: 0.7;}
 
+// Learning Curves
+.train-loss-bg { background-color: #E57373!important; }
+.val-loss-bg { background-color: #B71C1C!important; }
+.train-acc-bg { background-color: #4DB6AC!important; }
+.val-acc-bg { background-color: #004D40!important; }
 
-
-
+// Discovery Prediction Insights
+.increase_insight { color: #4DB6AC!important; .mat-icon { color: #4DB6AC!important; } }
+.successful_increase_insight { color: #004D40!important; .mat-icon { color: #004D40!important; } }
+.decrease_insight { color: #E57373!important; .mat-icon { color: #E57373!important; } }
+.successful_decrease_insight { color: #B71C1C!important; .mat-icon { color: #B71C1C!important; } }
 
 
 

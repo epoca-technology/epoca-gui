@@ -433,7 +433,7 @@ export class ChartService implements IChartService {
 	   return {
 		   series: config.series!,
 		   chart: config.chart ? config.chart: defaultChart,
-		   xaxis: config.xaxis ? config.xaxis: {labels: { show: false } },
+		   xaxis: config.xaxis ? config.xaxis: {labels: { show: false }, axisTicks: {show: false} },
 		   yaxis: yaxis || {},
 		   dataLabels: config.dataLabels ? config.dataLabels: {enabled: false}
 	   }

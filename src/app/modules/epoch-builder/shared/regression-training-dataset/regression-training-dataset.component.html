@@ -1,0 +1,87 @@
+<div class="desktop-card">
+    <!-- Header -->
+    <h4>Dataset Summary</h4>
+
+    <!-- Content -->
+    <div>
+        <!-- Date Range -->
+        <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+            <p class="light-text">Date Range</p>
+            <span fxFlex></span>
+            <div matTooltip="The Epoch's range." class="align-right">
+                <p class="ts-m">{{cert.training_data_start | date: 'medium'}}</p>
+                <p class="ts-m">{{cert.training_data_end | date: 'medium'}}</p>
+            </div>
+        </div>
+
+        <!-- Train Size -->
+        <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+            <p class="light-text truncate">Train Size</p>
+            <span fxFlex></span>
+            <p matTooltip="The number of items in the train dataset.">{{cert.train_size | number}}</p>
+        </div>
+
+        <!-- Test Size -->
+        <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+            <p class="light-text truncate">Test Size</p>
+            <span fxFlex></span>
+            <p matTooltip="The number of items in the test dataset.">{{cert.test_size | number}}</p>
+        </div>
+
+        <!-- Dataset Size -->
+        <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+            <p class="light-text">Total Size</p>
+            <span fxFlex></span>
+            <p matTooltip="Total number of items in the dataset.">{{cert.training_data_summary.count | number}}</p>
+        </div>
+
+        <!-- Mean -->
+        <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+            <p class="light-text">Mean</p>
+            <span fxFlex></span>
+            <p matTooltip="The mean of the dataset values.">{{cert.training_data_summary.mean | number: '1.0-5'}}</p>
+        </div>
+
+        <!-- STD -->
+        <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+            <p class="light-text">STD</p>
+            <span fxFlex></span>
+            <p matTooltip="The standard deviation of the dataset values.">{{cert.training_data_summary.std | number: '1.0-5'}}</p>
+        </div>
+
+        <!-- Min -->
+        <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+            <p class="light-text">Min</p>
+            <span fxFlex></span>
+            <p matTooltip="The lowest value in the dataset.">{{cert.training_data_summary.min | number: '1.0-5'}}</p>
+        </div>
+
+        <!-- 25% -->
+        <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+            <p class="light-text">25%</p>
+            <span fxFlex></span>
+            <p>{{cert.training_data_summary["25%"] | number: '1.0-5'}}</p>
+        </div>
+
+        <!-- 50% -->
+        <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+            <p class="light-text">50%</p>
+            <span fxFlex></span>
+            <p>{{cert.training_data_summary["50%"] | number: '1.0-5'}}</p>
+        </div>
+
+        <!-- 75% -->
+        <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+            <p class="light-text">75%</p>
+            <span fxFlex></span>
+            <p>{{cert.training_data_summary["75%"] | number: '1.0-5'}}</p>
+        </div>
+
+        <!-- Max -->
+        <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+            <p class="light-text">Max</p>
+            <span fxFlex></span>
+            <p matTooltip="The highest value in the dataset.">{{cert.training_data_summary.max | number: '1.0-5'}}</p>
+        </div>
+    </div>
+</div>

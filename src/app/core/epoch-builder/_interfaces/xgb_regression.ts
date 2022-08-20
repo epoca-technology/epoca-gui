@@ -1,5 +1,6 @@
 import { IDiscoveryPayload } from "./discovery";
 import { IXGBRegressionConfig } from "./model";
+import { IRegressionDatasetSummary } from "./regression_training_data";
 
 
 
@@ -92,25 +93,6 @@ export interface IXGBRegressionDiscoveryInitConfig {
 
 
 /**
- * Training Data Summary
- * A summary issued by Pandas regarding the data used to train and evaluate the model.
- */
-export interface IXGBRegressionTrainingDataSummaryItem {
-	"count": number,
-	"mean": number,
-	"std": number,
-	"min": number,
-	"25%": number,
-	"50%": number,
-	"75%": number,
-	"max": number
-}
-
-
-
-
-
-/**
  * Regression Training Certificate
  * Once the training, saving and evaluation completes, a certificate containing all the
  * data is saved and issued for batching.
@@ -132,7 +114,7 @@ export interface IXGBRegressionTrainingCertificate {
     test_size: number,      // Number of rows in the test dataset
 
     // Data Summary - Description extracted directly from the normalized dataframe
-    training_data_summary: IXGBRegressionTrainingDataSummaryItem,
+    training_data_summary: IRegressionDatasetSummary,
 
 
     /* Training Configuration */

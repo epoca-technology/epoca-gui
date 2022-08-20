@@ -89,11 +89,18 @@ export interface ICompressedTrainingData {
  * A summary extracted from the DataFrame holding all the features and labels.
  */
 export interface ITrainingDataDatasetSummary {
-    [featureOrLabel: string]: {
-        [summaryName: string]: number
-    }
+    [featureOrLabel: string]: ITrainingDataDatasetFeatureSummary
 }
-
+ export interface ITrainingDataDatasetFeatureSummary {
+	"count": number,
+	"mean": number,
+	"std": number,
+	"min": number,
+	"25%": number,
+	"50%": number,
+	"75%": number,
+	"max": number
+}
 
 
 

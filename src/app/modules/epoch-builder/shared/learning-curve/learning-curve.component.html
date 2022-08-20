@@ -1,0 +1,25 @@
+<div class="desktop-card">
+    <div class="badged-header" fxLayout="row" fxLayoutAlign="start center">
+        <h4 class="truncate">{{curveConfig.name}}</h4>
+        <span fxFlex></span>
+        <div class="square-badge" 
+            [ngClass]="{'train-loss-bg': curveConfig.type == 'loss', 'train-acc-bg': curveConfig.type == 'accuracy'}" 
+            matTooltip="Final Train Value">
+            {{finalTrain | number: '1.0-5'}}
+        </div>
+        <div class="square-badge" 
+            [ngClass]="{'val-loss-bg': curveConfig.type == 'loss', 'val-acc-bg': curveConfig.type == 'accuracy'}" 
+            matTooltip="Final Validation Value">
+            {{finalVal | number: '1.0-5'}}
+        </div>
+    </div>
+    <apx-chart
+        [series]="curveChart.series"
+        [chart]="curveChart.chart"
+        [xaxis]="curveChart.xaxis"
+        [dataLabels]="curveChart.dataLabels"
+        [grid]="curveChart.grid"
+        [stroke]="curveChart.stroke"
+        [yaxis]="curveChart.yaxis"
+    ></apx-chart>
+</div>

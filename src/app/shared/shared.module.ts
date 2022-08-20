@@ -90,6 +90,7 @@ import { DialogMenuComponent } from './components/dialog-menu/dialog-menu.compon
 import {
 	ClassificationFeaturesContentComponent,
 	ClassificationFeaturesDialogComponent,
+	DiscoveryContentComponent,
 	KerasClassificationElementComponent,
 	KerasModelDialogComponent,
 	KerasRegressionElementComponent,
@@ -172,6 +173,7 @@ import { TooltipDialogComponent } from './components/tooltip-dialog/tooltip-dial
 
 		// Tooltip Dialog
 		TooltipDialogComponent,
+   DiscoveryContentComponent,
 	],
 	imports: [
 		CommonModule,
@@ -312,6 +314,7 @@ import { TooltipDialogComponent } from './components/tooltip-dialog/tooltip-dial
 
 		// Epoch Builder
 		ClassificationFeaturesContentComponent,
+		DiscoveryContentComponent,
 		KerasClassificationElementComponent,
 		KerasRegressionElementComponent,
 		ModelContentComponent,	

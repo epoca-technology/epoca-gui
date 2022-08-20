@@ -13,6 +13,7 @@ export * from './model';
 export * from './position';
 export * from './prediction';
 export * from './regression_selection';
+export * from './regression_training_data';
 export * from './xgb_classification';
 export * from './xgb_models';
 export * from './xgb_regression';

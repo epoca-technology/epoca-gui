@@ -1,0 +1,26 @@
+<!-- Table -->
+<div class="data-container" [ngClass]="{'mat-elevation-z3' : layout == 'desktop'}">
+    <table class="highlight bordered">
+        <thead>
+            <tr>
+                <th></th>
+                <th>loss</th>
+                <th>{{metricName}}</th>
+                <th>val_loss</th>
+                <th>val_{{metricName}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let row of hist.loss; index as rowIndex">
+                <td><p class="light-text">{{rowIndex+1}}</p></td>
+                <td><p>{{hist.loss[rowIndex]}}</p></td>
+                <td><p>{{hist[metricName]![rowIndex]}}</p></td>
+                <td><p>{{hist.val_loss[rowIndex]}}</p></td>
+                <td *ngIf="metricName == 'mean_absolute_error'"><p>{{hist["val_mean_absolute_error"]![rowIndex]}}</p></td>
+                <td *ngIf="metricName == 'mean_squared_error'"><p>{{hist["val_mean_squared_error"]![rowIndex]}}</p></td>
+                <td *ngIf="metricName == 'categorical_accuracy'"><p>{{hist["val_categorical_accuracy"]![rowIndex]}}</p></td>
+                <td *ngIf="metricName == 'binary_accuracy'"><p>{{hist["val_binary_accuracy"]![rowIndex]}}</p></td>
+            </tr>
+        </tbody>
+    </table>
+</div>

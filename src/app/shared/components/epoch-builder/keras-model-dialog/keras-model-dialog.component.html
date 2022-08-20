@@ -1,1 +1,144 @@
-<p>keras-model-dialog works!</p>
+<mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <button mat-icon-button class="show-on-mobile" (click)="close()"><mat-icon>arrow_back</mat-icon></button>
+        <span class="truncate">{{model.id}}</span>
+        <span fxFlex></span>
+        <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
+    </div>
+</mat-toolbar>
+<div mat-dialog-content>
+    <div class="model-content">
+        <!-- Tabs Navigation-->
+        <mat-tab-group [selectedIndex]="activeIndex" 
+            (selectedIndexChange)="activeIndex = $event" 
+            mat-align-tabs="center" 
+            mat-stretch-tabs 
+            backgroundColor="primary">
+            <mat-tab><ng-template mat-tab-label><mat-icon>feed</mat-icon><span class="show-on-desktop">&nbsp;Summary</span></ng-template></mat-tab>
+            <mat-tab><ng-template mat-tab-label><mat-icon>tune</mat-icon><span class="show-on-desktop">&nbsp;Discovery</span></ng-template></mat-tab>
+            <mat-tab><ng-template mat-tab-label><mat-icon>layers</mat-icon><span class="show-on-desktop">&nbsp;Layers</span></ng-template></mat-tab>
+        </mat-tab-group>
+
+        <!-- Summary -->
+        <div *ngIf="activeIndex == 0" class="tab-content padding fadeIn">
+            <!-- Description -->
+            <p class="align-center">{{model.description}}</p>
+
+            <!-- Class -->
+            <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+                <p class="light-text">Class</p>
+                <span fxFlex></span>
+                <p>{{model.summary.model_class}}</p>
+            </div>
+
+            <!-- Shape -->
+            <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+                <p class="light-text truncate">Shape</p>
+                <span fxFlex></span>
+                <p matTooltip="Input -> Output">({{model.summary.input_shape}}) -> ({{model.summary.output_shape}})</p>
+            </div>
+
+            <!-- Optimizer -->
+            <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+                <p class="light-text truncate">Optimizer</p>
+                <span fxFlex></span>
+                <p class="clickable" role="button" 
+                    (click)="_nav.displayDataDialog('Optimizer', model.summary.optimizer_config)">
+                    {{model.summary.optimizer_config.name}}
+                </p>
+            </div>
+
+            <!-- Loss -->
+            <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+                <p class="light-text truncate">Loss</p>
+                <span fxFlex></span>
+                <p class="clickable" role="button"
+                (click)="_nav.displayDataDialog('Loss', model.summary.loss_config)">{{model.summary.loss_config.name}}</p>
+            </div>
+
+            <!-- Metric -->
+            <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+                <p class="light-text truncate">Metric</p>
+                <span fxFlex></span>
+                <p class="clickable" role="button"
+                (click)="_nav.displayDataDialog('Metrics', model.summary.metrics)">{{model.summary.metrics[1] || model.summary.metrics[0]}}</p>
+            </div>
+
+            <!-- Regression Specific Values -->
+            <div *ngIf="isRegression">
+                <!-- Regression Type -->
+                <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+                    <p class="light-text truncate">Regression Type</p>
+                    <span fxFlex></span>
+                    <p>{{model.autoregressive ? "Autoregressive": "Single Shot"}}</p>
+                </div>
+            </div>
+
+            <!-- Classification Specific Values -->
+            <div *ngIf="!isRegression">
+                <!-- Training Data -->
+                <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+                    <p class="light-text truncate">Training Data</p>
+                    <span fxFlex></span>
+                    <p class="clickable" role="button"
+                        [matTooltip]="model.training_data_id"
+                        (click)="_app.copy(model.training_data_id)">{{model.training_data_id | stringOverview: 6}}</p>
+                </div>
+
+                <!-- Price Change Requirement  -->
+                <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+                    <p class="light-text truncate">Price Change Requirement</p>
+                    <span fxFlex></span>
+                    <p class="clickable" role="button"
+                        matTooltip="The price percentage change that was used to train the Classification.">
+                        {{model.price_change_requirement | number: '1.0-2'}}%
+                    </p>
+                </div>
+            </div>
+            
+
+            <!-- Network -->
+            <div class="margin-top" fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" fxLayoutAlign="start start">
+                <p class="light-text truncate margin-bottom">Network</p>
+                <span fxFlex></span>
+                <div class="formula">
+                    <p *ngFor="let l of model.summary.layers" class="smt">{{l.name}}({{l.input_shape}}) > ({{l.output_shape}})</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Discovery -->
+        <div *ngIf="activeIndex == 1" class="tab-content fadeIn padding">
+            <app-discovery-content [discovery]="model.discovery"></app-discovery-content>
+        </div>
+
+        <!-- Layers -->
+        <div *ngIf="activeIndex == 2" class="tab-content fadeIn">
+            <table class="highlight">
+                <thead>
+                    <tr>
+                        <th>Layer</th>
+                        <th class="show-on-desktop">Inp. Shape</th>
+                        <th>Out. Shape</th>
+                        <th>Params</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let l of model.summary.layers">
+                        <td>{{l.name}}</td>
+                        <td class="show-on-desktop">{{l.input_shape}}</td>
+                        <td>{{l.output_shape}}</td>
+                        <td [ngClass]="{'success-color': l.trainable && l.params > 0, 'light-text': !l.trainable || l.params  == 0}">
+                            {{l.params | number}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="params_result">
+                <p><strong>Total Params:</strong> {{model.summary.total_params | number}}</p>
+                <p><strong>Trainable Params:</strong> {{model.summary.trainable_params | number}}</p>
+                <p><strong>Non-Trainable Params:</strong> {{model.summary.non_trainable_params | number}}</p>
+            </div>
+        </div>
+    </div>
+</div>

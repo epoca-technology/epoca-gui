@@ -25,7 +25,8 @@ import {
 	EpochBuilderConfigDialogComponent, 
 	IDiscoveryPayloadRecord, 
 	IEpochBuilderConfigDialog, 
-	IEpochBuilderConfigDialogResponse 
+	IEpochBuilderConfigDialogResponse, 
+	ILearningCurve
 } from "../shared";
 import { IKerasRegressionsComponent, IViewID, IView } from "./interfaces";
 
@@ -88,16 +89,20 @@ export class KerasRegressionsComponent implements OnInit, OnDestroy, IKerasRegre
 	public discoveryPayloadRecords?: IDiscoveryPayloadRecord[];
 
 	// Certificate View
-	public certificateView?: any;
+	public certificateView?: {
+		// Training
+		lossCurve: ILearningCurve,
+		lossMetricCurve: ILearningCurve,
+	};
 	public cert?: IKerasRegressionTrainingCertificate;
-
+	public activeCertTabIndex: number = 0;
 
 	// Loading state - Just for certificates
 	public loaded: boolean = false;
 
 	constructor(
 		public _nav: NavService,
-		private _app: AppService,
+		public _app: AppService,
 		private _chart: ChartService,
 		private _utils: UtilsService,
 		public _kr: KerasRegressionService,
@@ -221,6 +226,7 @@ export class KerasRegressionsComponent implements OnInit, OnDestroy, IKerasRegre
 		this.discoveryPayloadRecords = undefined;
 		this.certificateView = undefined;
 		this.cert = undefined;
+		this.activeCertTabIndex = 0;
 	}
 
 
@@ -429,7 +435,21 @@ export class KerasRegressionsComponent implements OnInit, OnDestroy, IKerasRegre
 		// Populate the active certificate
 		this.cert = this._kr.certificates[certIndex];
 
-		//
+		// Finally, build the view
+		this.certificateView = {
+			lossCurve: {
+				name: this.cert.loss == "mean_absolute_error" ? "Mean Absolute Error": "Mean Squared Error",
+				type: "loss",
+				train: this.cert.training_history.loss,
+				val: this.cert.training_history.val_loss
+			},
+			lossMetricCurve: {
+				name: this.cert.loss == "mean_absolute_error" ? "Mean Squared Error": "Mean Absolute Error",
+				type: "loss",
+				train: <number[]>this.cert.training_history.mean_absolute_error || <number[]>this.cert.training_history.mean_squared_error,
+				val: <number[]>this.cert.training_history.val_mean_absolute_error || <number[]>this.cert.training_history.val_mean_squared_error,
+			},
+		};
 	}
 
 

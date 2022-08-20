@@ -1,4 +1,5 @@
 export * from "./classification-features";
+export * from "./discovery-content";
 export * from "./keras-classification-element";
 export * from "./keras-model-dialog";
 export * from "./keras-regression-element";

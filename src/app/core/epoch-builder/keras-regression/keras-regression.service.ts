@@ -215,7 +215,7 @@ export class KerasRegressionService implements IKerasRegressionService {
 						evaluationParams: {
 							firstLoss: c.training_history.loss[0],
 							lastLoss: c.training_history.loss[c.training_history.loss.length - 1],
-							maxPoints: 2
+							maxPoints: 1
 						}
 					},
 					{
@@ -225,7 +225,7 @@ export class KerasRegressionService implements IKerasRegressionService {
 						evaluationParams: {
 							firstLoss: c.training_history.val_loss[0],
 							lastLoss: c.training_history.val_loss[c.training_history.val_loss.length - 1],
-							maxPoints: 2
+							maxPoints: 1
 						}
 					},
 					{
@@ -235,7 +235,7 @@ export class KerasRegressionService implements IKerasRegressionService {
 						evaluationParams: {
 							finalLoss: c.training_history.loss[c.training_history.loss.length - 1],
 							finalValLoss: c.training_history.val_loss[c.training_history.val_loss.length - 1],
-							maxPoints: 2
+							maxPoints: 1
 						}
 					},
 					{
@@ -245,7 +245,7 @@ export class KerasRegressionService implements IKerasRegressionService {
 						evaluationParams: {
 							firstLoss: metricLoss[0],
 							lastLoss: metricLoss[metricLoss.length - 1],
-							maxPoints: 2
+							maxPoints: 1
 						}
 					},
 					{
@@ -255,7 +255,7 @@ export class KerasRegressionService implements IKerasRegressionService {
 						evaluationParams: {
 							firstLoss: metricValLoss[0],
 							lastLoss: metricValLoss[metricValLoss.length - 1],
-							maxPoints: 2
+							maxPoints: 1
 						}
 					},
 					{
@@ -265,7 +265,7 @@ export class KerasRegressionService implements IKerasRegressionService {
 						evaluationParams: {
 							finalLoss: metricLoss[metricLoss.length - 1],
 							finalValLoss: metricValLoss[metricValLoss.length - 1],
-							maxPoints: 2
+							maxPoints: 1
 						}
 					}
 				]
@@ -280,7 +280,7 @@ export class KerasRegressionService implements IKerasRegressionService {
 						evaluationFunction: "evaluateAccuracy",
 						evaluationParams: {
 							accuracy: c.discovery.increase_accuracy,
-							maxPoints: 5
+							maxPoints: 3
 						}
 					},
 					{
@@ -289,7 +289,7 @@ export class KerasRegressionService implements IKerasRegressionService {
 						evaluationFunction: "evaluateAccuracy",
 						evaluationParams: {
 							accuracy: c.discovery.decrease_accuracy,
-							maxPoints: 5
+							maxPoints: 3
 						}
 					},
 					{
@@ -298,7 +298,7 @@ export class KerasRegressionService implements IKerasRegressionService {
 						evaluationFunction: "evaluateAccuracy",
 						evaluationParams: {
 							accuracy: c.discovery.accuracy,
-							maxPoints: 50
+							maxPoints: 56
 						}
 					},
 					{
@@ -308,7 +308,7 @@ export class KerasRegressionService implements IKerasRegressionService {
 						evaluationParams: {
 							neutral: c.discovery.neutral_num,
 							nonNeutral: c.discovery.increase_num + c.discovery.decrease_num,
-							maxPoints: 10
+							maxPoints: 16
 						}
 					},
 					{
@@ -318,7 +318,7 @@ export class KerasRegressionService implements IKerasRegressionService {
 						evaluationParams: {
 							predictions: c.discovery.increase_num,
 							outcomes: c.discovery.increase_outcome_num,
-							maxPoints: 9
+							maxPoints: 8
 						}
 					},
 					{
@@ -328,7 +328,7 @@ export class KerasRegressionService implements IKerasRegressionService {
 						evaluationParams: {
 							predictions: c.discovery.decrease_num,
 							outcomes: c.discovery.decrease_outcome_num,
-							maxPoints: 9
+							maxPoints: 8
 						}
 					}
 				]
@@ -374,6 +374,7 @@ export class KerasRegressionService implements IKerasRegressionService {
 		if (typeof certificate.learning_rate != "number") throw new Error(`The provided learning_rate (${certificate.learning_rate}) is invalid.`);
 		if (typeof certificate.optimizer != "string") throw new Error(`The provided optimizer (${certificate.optimizer}) is invalid.`);
 		if (typeof certificate.loss != "string") throw new Error(`The provided loss (${certificate.loss}) is invalid.`);
+		if (typeof certificate.metric != "string") throw new Error(`The provided metric (${certificate.metric}) is invalid.`);
 		if (!certificate.keras_model_config || typeof certificate.keras_model_config != "object") {
 			console.log(certificate.keras_model_config);
 			throw new Error(`The provided keras_model_config is invalid.`);

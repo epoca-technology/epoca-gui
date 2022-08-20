@@ -40,7 +40,8 @@
             <div *ngIf="evaluation.categories.length > 1">
                 <!-- Header -->
                 <div class="badged-header main-header" fxLayout="row" fxLayoutAlign="start center">
-                    <h4 class="truncate">Epoch Builder Evaluation</h4>
+                    <h4 class="truncate show-on-desktop">Epoch Builder Evaluation</h4>
+                    <h4 class="show-on-mobile">EBE</h4>
                     <span fxFlex></span>
                     <div class="square-badge"
                         [ngClass]="evaluation.state_class"

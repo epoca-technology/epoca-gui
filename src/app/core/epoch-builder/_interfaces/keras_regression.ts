@@ -9,6 +9,7 @@ import {
 } from "./keras_models";
 import { IKerasRegressionConfig } from "./model";
 import { IEpochBuilderEvaluation } from "./epoch_builder_evaluation";
+import { IRegressionDatasetSummary } from "./regression_training_data";
 
 
 
@@ -113,24 +114,6 @@ export interface IKerasRegressionDiscoveryInitConfig {
 
 
 
-/**
- * Training Data Summary
- * A summary issued by Pandas regarding the data used to train and evaluate the model.
- */
-export interface IKerasRegressionTrainingDataSummaryItem {
-	"count": number,
-	"mean": number,
-	"std": number,
-	"min": number,
-	"25%": number,
-	"50%": number,
-	"75%": number,
-	"max": number
-}
-
-
-
-
 
 /**
  * Regression Training Certificate
@@ -154,7 +137,7 @@ export interface IKerasRegressionTrainingCertificate {
     test_size: number,      // Number of rows in the test dataset
 
     // Data Summary - Description extracted directly from the normalized dataframe
-    training_data_summary: IKerasRegressionTrainingDataSummaryItem,
+    training_data_summary: IRegressionDatasetSummary,
 
 
     /* Training Configuration */
