@@ -26,10 +26,10 @@ export class EpochBuilderEvaluationService implements IEpochBuilderEvaluationSer
 	private readonly bestAccuracy: number = 70;
 
 	// The absolute maximum percentage difference allowed for predictions vs outcomes
-	private readonly maximumPredictionVsOutcomeDifference: number = 50;
+	private readonly maximumPredictionVsOutcomeDifference: number = 30;
 
 	// The absolute maximum percentage difference allowed for non neutral vs neutral predictions
-	private readonly maximumPredictionNeutralityDifference: number = 50;
+	private readonly maximumPredictionNeutralityDifference: number = 30;
 
 	// The maximum distance between the train and val accuracy
 	private readonly maximumAccuracyVsValAccuracyDifference: number = 3;
