@@ -10,7 +10,7 @@ export interface IKerasRegressionService {
     certificates: IKerasRegressionTrainingCertificate[],
     md: IKerasRegressionMetadata,
     
-    // Initializer
+    // Initialization
     init(event: any|string, order: IKerasRegressionsOrder, limit: number): Promise<void>,
     reset(): void
 }

@@ -36,6 +36,7 @@ export class KerasHyperparamsViewComponent implements OnInit, OnDestroy, IKerasH
 	private learningRateCounter: IKerasHyperparamsCounter = {
 		"-1": 0,
 		"0.001": 0,
+		"0.0001": 0,
 		"Unknown": 0
 	};
 
@@ -57,8 +58,10 @@ export class KerasHyperparamsViewComponent implements OnInit, OnDestroy, IKerasH
 	private networkTypeCounter: IKerasHyperparamsCounter = {
 		"DNN": 0,
 		"CNN": 0,
+		"CNN_MP": 0,
 		"LSTM": 0,
 		"CLSTM": 0,
+		"CLSTM_MP": 0,
 		"Unknown": 0
 	};
 
@@ -141,9 +144,11 @@ export class KerasHyperparamsViewComponent implements OnInit, OnDestroy, IKerasH
 
 			// Update the network type
 			if (cert.id.includes("DNN")) { this.networkTypeCounter["DNN"] += 1 }
+			else if (cert.id.includes("CNN") && cert.id.includes("_MP_")) { this.networkTypeCounter["CNN_MP"] += 1 }
 			else if (cert.id.includes("CNN")) { this.networkTypeCounter["CNN"] += 1 }
-			else if (cert.id.includes("LSTM")) { this.networkTypeCounter["LSTM"] += 1 }
+			else if (cert.id.includes("CLSTM") && cert.id.includes("_MP_")) { this.networkTypeCounter["CLSTM_MP"] += 1 }
 			else if (cert.id.includes("CLSTM")) { this.networkTypeCounter["CLSTM"] += 1 }
+			else if (cert.id.includes("LSTM")) { this.networkTypeCounter["LSTM"] += 1 }
 			else { this.networkTypeCounter["Unknown"] += 1 }
 
 			// Update the network series
@@ -190,9 +195,10 @@ export class KerasHyperparamsViewComponent implements OnInit, OnDestroy, IKerasH
 				series: [
 					{ name: "-1", data: [ this.learningRateCounter["-1"] ] },
 					{ name: "0.001", data: [ this.learningRateCounter["0.001"]  ] },
+					{ name: "0.0001", data: [ this.learningRateCounter["0.0001"]  ] },
 					{ name: "Unknown", data: [ this.learningRateCounter["Unknown"]  ] }
 				], 
-				colors: [ "#0D47A1", "#1976D2", "#9E9E9E" ],
+				colors: [ "#0D47A1", "#1976D2", "#2196F3", "#9E9E9E" ],
 				xaxis: {categories: [ "Learning Rate" ], labels: {show: false}},
 				yaxis: {labels: {show: false}},
 				plotOptions: { bar: { horizontal: false, borderRadius: 4, columnWidth: "25%"}},
@@ -224,11 +230,13 @@ export class KerasHyperparamsViewComponent implements OnInit, OnDestroy, IKerasH
 				series: [
 					{ name: "DNN", data: [ this.networkTypeCounter["DNN"] ] },
 					{ name: "CNN", data: [ this.networkTypeCounter["CNN"] ] },
+					{ name: "CNN_MP", data: [ this.networkTypeCounter["CNN_MP"] ] },
 					{ name: "LSTM", data: [ this.networkTypeCounter["LSTM"] ] },
 					{ name: "CLSTM", data: [ this.networkTypeCounter["CLSTM"] ] },
+					{ name: "CLSTM_MP", data: [ this.networkTypeCounter["CLSTM_MP"] ] },
 					{ name: "Unknown", data: [ this.networkTypeCounter["Unknown"] ] }
 				], 
-				colors: [ "#004D40", "#00796B", "#009688", "#4DB6AC", "#9E9E9E" ],
+				colors: [ "#004D40", "#00695C", "#00796B", "#00897B", "#009688", "#26A69A", "#9E9E9E" ],
 				xaxis: {categories: [ "Network Type" ], labels: {show: false}},
 				yaxis: {labels: {show: false}},
 				plotOptions: { bar: { horizontal: false, borderRadius: 4, columnWidth: "40%"}},

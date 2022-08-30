@@ -27,6 +27,7 @@ import { KerasTrainingEpochsTableComponent } from './shared/keras-training-epoch
 import { LearningCurveComponent } from './shared/learning-curve/learning-curve.component';
 import { RegressionTrainingDatasetComponent } from './shared/regression-training-dataset/regression-training-dataset.component';
 import { DiscoveryPayloadViewComponent } from './shared/discovery-payload-view/discovery-payload-view.component';
+import { ClassificationSelectionComponent } from './classification-selection/classification-selection.component';
 
 
 
@@ -53,6 +54,7 @@ import { DiscoveryPayloadViewComponent } from './shared/discovery-payload-view/d
     LearningCurveComponent,
     RegressionTrainingDatasetComponent,
     DiscoveryPayloadViewComponent,
+    ClassificationSelectionComponent,
   ],
   imports: [
     CommonModule,

@@ -435,14 +435,7 @@
                                                     <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
                                                         <p class="light-text">Loss</p>
                                                         <span fxFlex></span>
-                                                        <p>{{cert.loss}}</p>
-                                                    </div>
-
-                                                    <!-- Metric -->
-                                                    <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
-                                                        <p class="light-text">Metric</p>
-                                                        <span fxFlex></span>
-                                                        <p>{{cert.metric}}</p>
+                                                        <p matTooltip="Metric: {{cert.metric}}">{{cert.loss}}</p>
                                                     </div>
 
                                                     <!-- Training -->
@@ -631,7 +624,7 @@
 
                                 <!-- Discovery -->
                                 <div *ngIf="activeCertTabIndex == 2">
-                                    <app-discovery-payload-view [id]="cert.id" [discovery]="cert.discovery"></app-discovery-payload-view>
+                                    <app-discovery-payload-view [model]="model!" [discovery]="cert.discovery"></app-discovery-payload-view>
                                 </div>
 
                                 <!-- Epochs -->

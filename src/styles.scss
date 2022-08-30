@@ -119,7 +119,15 @@ div {min-width: 0;}
 .margin-bottom-x2 { margin-bottom:30px!important;}
 .margin-bottom-x3 { margin-bottom:45px!important;}
 
+// Margin Left
+.no-margin-left { margin-left:0px!important;}
+.margin-left { margin-left:7px!important;}
+.margin-left-x2 { margin-left:15px!important;}
 
+// Margin Right
+.no-margin-right { margin-right:0px!important;}
+.margin-right { margin-right:7px!important;}
+.margin-right-x2 { margin-right:15px!important;}
 
 
 
@@ -831,7 +839,9 @@ form .mat-checkbox-inner-container{
 .successful_decrease_insight { color: #B71C1C!important; .mat-icon { color: #B71C1C!important; } }
 
 
-
+// Model Logo
+.model-logo-xs { max-width: 20px; }
+.model-logo-xl { max-width: 46px; }
 
 
 

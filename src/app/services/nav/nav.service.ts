@@ -97,6 +97,7 @@ export class NavService implements INavService {
 	public regressionSelection(): Promise<boolean> { return this.navigate("epochBuilder/regressionSelection") }
 	public xgbClassifications(): Promise<boolean> { return this.navigate("epochBuilder/xgbClassifications") }
 	public xgbRegressions(): Promise<boolean> { return this.navigate("epochBuilder/xgbRegressions") }
+	public classificationSelection(): Promise<boolean> { return this.navigate("epochBuilder/classificationSelection") }
 
 	// Epochs
 	public epochs(): Promise<boolean> { return this.navigate("epochs") }

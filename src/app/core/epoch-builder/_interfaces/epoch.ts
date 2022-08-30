@@ -87,5 +87,8 @@ export interface IEpochConfig {
     idle_minutes_on_position_close: number,
 
     // The identifier of the classification training data for unit tests
-    classification_training_data_id_ut: string
+    classification_training_data_id_ut: string,
+
+    // The identifier of the selected classification training data
+    classification_training_data_id: string
 }

@@ -33,6 +33,7 @@ export interface INavService {
 	regressionSelection(): Promise<boolean>,
 	xgbClassifications(): Promise<boolean>,
 	xgbRegressions(): Promise<boolean>,
+	classificationSelection(): Promise<boolean>,
 	epochs(): Promise<boolean>,
 	guiVersion(version?: string): Promise<boolean>,
 	ipBlacklist(): Promise<boolean>,

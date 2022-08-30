@@ -1,6 +1,6 @@
 import { Component, Input, Output, OnInit, OnDestroy, EventEmitter } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { IKerasRegressionMetadata } from '../../../../core';
+import { IKerasRegressionMetadata, IRegressionSelectionMetadata } from '../../../../core';
 import { AppService, ChartService, IBarChartOptions, ILayout } from '../../../../services';
 import { IDiscoveryPayloadRecordsViewComponent, IDiscoveryPayloadRecord } from './interfaces';
 
@@ -20,7 +20,7 @@ export class DiscoveryPayloadRecordsViewComponent implements OnInit, OnDestroy, 
     @Input() items!: IDiscoveryPayloadRecord[];
 
 	// Metadata
-	@Input() md!: IKerasRegressionMetadata;
+	@Input() md!: IKerasRegressionMetadata|IRegressionSelectionMetadata;
 
 	// Discovery View
 	public discoveryView!: {

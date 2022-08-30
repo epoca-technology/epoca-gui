@@ -363,7 +363,7 @@ export class EpochBuilderEvaluationService implements IEpochBuilderEvaluationSer
 		// Finally, return the results
 		return { 
 			points: points, 
-			state: `The accuracy is ${realAccuracy}%.`, 
+			state: `${realAccuracy}% the generated predictions were successful.`, 
 			state_class: this.getStateClass(points, p.maxPoints) 
 		}
 	}

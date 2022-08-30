@@ -133,7 +133,7 @@ export class KerasRegressionService implements IKerasRegressionService {
 	): Promise<IKerasRegressionTrainingCertificate[]> {
 		// If it is a string, retrieve the certificate from the db
 		if (typeof event == "string") {
-			throw new Error("Keras Regression Training Certificates Init from db not implemented yet.")
+			throw new Error("Keras Regression Training Certificates Init from db has not been implemented yet.")
 		}
 
 		// Extract the data from a JSON File

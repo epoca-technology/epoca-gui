@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { MatSidenav } from '@angular/material/sidenav';
 import {MatDialog} from '@angular/material/dialog';
-import { ApexAxisChartSeries } from 'ng-apexcharts';
 import { Subscription } from 'rxjs';
 import { 
 	UtilsService, 
@@ -16,8 +15,6 @@ import {
 	ChartService, 
 	IBarChartOptions, 
 	ILayout, 
-	ILineChartOptions, 
-	IPieChartOptions, 
 	ModelSelectionService, 
 	NavService, 
 } from '../../../services';
@@ -95,6 +92,7 @@ export class KerasRegressionsComponent implements OnInit, OnDestroy, IKerasRegre
 		lossMetricCurve: ILearningCurve,
 	};
 	public cert?: IKerasRegressionTrainingCertificate;
+	public model?: IModel;
 	public activeCertTabIndex: number = 0;
 
 	// Loading state - Just for certificates
@@ -182,9 +180,6 @@ export class KerasRegressionsComponent implements OnInit, OnDestroy, IKerasRegre
 
 					// If there is only 1 certificate, navigate straight to it
 					if (this._kr.certificates.length == 1) { await this.navigate("certificate", 0) } 
-
-					// If it is ordered by Discovery Accuracy, activate that section
-					else if (this.order == "discovery_accuracy") { await this.navigate("discovery") }
 					
 					// Otherwise, navigate to the ebe points
 					else { await this.navigate("ebe_points") }
@@ -435,6 +430,19 @@ export class KerasRegressionsComponent implements OnInit, OnDestroy, IKerasRegre
 		// Populate the active certificate
 		this.cert = this._kr.certificates[certIndex];
 
+		// Build the model
+		this.model = {
+			id: this.cert.id,
+			keras_regressions: [{
+				regression_id: this.cert.id,
+				regression: this.cert.regression_config,
+				interpreter: {
+					min_increase_change: this.cert.regression_config.discovery.increase_successful_mean,
+					min_decrease_change: this.cert.regression_config.discovery.decrease_successful_mean,
+				}
+			}]
+		}
+
 		// Finally, build the view
 		this.certificateView = {
 			lossCurve: {
@@ -481,24 +489,5 @@ export class KerasRegressionsComponent implements OnInit, OnDestroy, IKerasRegre
 			typeof certificatesLength == "number" ? certificatesLength: this._kr.certificates.length, 
 			itemsPerCategory
 		);
-	}
-
-
-
-
-
-
-	/**
-	 * Retrieves the click event for a chart that will activate a certificate
-	 * based on its index.
-	 * @returns any
-	 */
-	private getActivateCertificateChartClickEvent(): any {
-		const self = this;
-		return {
-			click: function(e: any, cc: any, c: any) {
-				if (c.dataPointIndex >= 0) setTimeout(() => {self.navigate("certificate", c.dataPointIndex)}, 300)
-			}
-		}
 	}
 }

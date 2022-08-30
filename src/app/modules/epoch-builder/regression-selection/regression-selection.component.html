@@ -1,1 +1,206 @@
-<p>regression-selection works!</p>
+<!-- Section Container -->
+<mat-drawer-container class="section-container component-container">
+
+    <!-- Main Sidenav -->
+    <mat-drawer #rsSidenav [(opened)]="rsSidenavOpened" *ngIf="initialized" class="sidenav" position="start" mode="over" autoFocus="false">
+        <!-- Menu Heading Toolbar -->
+        <mat-toolbar color="primary">
+            <div fxLayout="row" fxLayoutAlign="start center">
+                <button mat-icon-button (click)="rsSidenav?.toggle()"><mat-icon>arrow_back</mat-icon></button>
+                <span class="truncate">Regression Selection</span>
+                <span fxFlex></span>
+            </div>
+        </mat-toolbar>
+            
+        <!-- Menu Content -->
+        <mat-list>
+            <div mat-subheader>General</div>
+            <mat-list-item *ngFor="let view of views">
+                <button mat-button class="left-icon-button" [disabled]="activeView == view.id" (click)="navigate(view.id)">
+                    <mat-icon *ngIf="!view.svg">{{view.icon}}</mat-icon> 
+                    <mat-icon *ngIf="view.svg" [svgIcon]="view.icon"></mat-icon> 
+                    {{view.name}}
+                </button>
+            </mat-list-item>
+            <div mat-subheader>Regressions</div>
+            <mat-list-item *ngFor="let selection of _rs.selection; index as selectionIndex">
+                <button mat-button class="left-icon-button truncate" 
+                        [disabled]="activeView == 'regression' && regression && selection.id == regression.id" 
+                        (click)="navigate('regression', selectionIndex)">
+                        <div fxLayout="row" fxLayoutAlign="start center">
+                            <span class="truncate" style="max-width: 70%;">{{selection.id}}</span>
+                            <span fxFlex></span>
+                            <div [ngClass]="{
+                                    'square-badge-neutral': selection.discovery.accuracy >= 50 && selection.discovery.accuracy < 55,
+                                    'square-badge-success': selection.discovery.accuracy >= 55,
+                                    'square-badge-error': selection.discovery.accuracy < 50
+                                }">
+                                <span>{{selection.discovery.accuracy | number: '1.2-2'}}%</span>
+                            </div>
+                        </div>
+                </button>
+            </mat-list-item>
+        </mat-list>
+    </mat-drawer>
+
+
+    <!-- Section Content -->
+    <mat-drawer-content id="content-header">
+        <!-- Content Header -->
+        <mat-toolbar class="secondary-header">
+            <div fxLayout="row" fxLayoutAlign="center center">
+                <button mat-icon-button (click)="_nav.dashboard()" class="show-on-mobile" *ngIf="!initialized"><mat-icon>arrow_back</mat-icon></button>
+                <button mat-icon-button (click)="reset()" class="show-on-mobile" *ngIf="initialized && _rs.selection && _rs.selection.length >= 1"><mat-icon>arrow_back</mat-icon></button>
+                <button mat-icon-button (click)="rsSidenav?.toggle()" *ngIf="initialized" class="show-on-mobile"><mat-icon>menu</mat-icon></button>
+                <span class="truncate show-on-mobile" *ngIf="!initialized">Regression Selection</span>
+                <span class="truncate show-on-mobile" *ngIf="initialized">{{activeView == 'regression' ? regression!.id: viewNames[activeView]}}</span>
+                <span class="truncate show-on-desktop">Regression Selection</span>
+                <span fxFlex></span>
+                <button mat-icon-button 
+                        matTooltip="Clear Regression Selection"
+                        (click)="reset()"
+                        class="show-on-desktop"
+                        style="margin-left:5px;"
+                        *ngIf="initialized"><mat-icon>close</mat-icon></button>
+            </div>
+        </mat-toolbar>
+
+
+        <!-- Uninitialized Content -->
+        <div *ngIf="!initialized" class="fadeIn">
+            <div fxLayout="row" fxLayoutAlign="center center" class="file-init-container">
+                <!-- Button -->
+                <label for="certificatesFile" class="file-label" role="button" matRipple *ngIf="!initializing">
+                    <div fxLayout="row" fxLayoutAlign="start center" matRipple role="button" tabindex="0">
+                        <mat-icon svgIcon="file_circle_check"></mat-icon>&nbsp;<p>Select Regr. Selection</p>
+                    </div>
+                </label>
+
+                <!-- Input -->
+                <form [formGroup]="fileInputForm">
+                    <input id="certificatesFile" type="file" accept="application/json" formControlName="fileInput" (change)="fileChanged($event)"/>
+                </form>
+
+                <!-- Initializing Loader-->
+                <h3 *ngIf="initializing" class="fadeIn">Initializing...</h3>
+            </div>
+        </div>
+
+        <!-- Initialized Content -->
+        <div *ngIf="initialized" class="fadeIn">
+            <!-- Main Container -->
+            <div fxLayout="row" fxLayoutAlign="start start">
+                <!-- Desktop Sidenav -->
+                <div *ngIf="layout == 'desktop'" class="desktop-sidenav">
+                    <mat-list>
+                        <div mat-subheader>General</div>
+                        <mat-list-item *ngFor="let view of views">
+                            <button mat-button class="left-icon-button" [disabled]="activeView == view.id" (click)="navigate(view.id)">
+                                <mat-icon *ngIf="!view.svg">{{view.icon}}</mat-icon> 
+                                <mat-icon *ngIf="view.svg" [svgIcon]="view.icon"></mat-icon> 
+                                {{view.name}}
+                            </button>
+                        </mat-list-item>
+                        <div mat-subheader>Regressions</div>
+                        <mat-list-item *ngFor="let selection of _rs.selection; index as selectionIndex">
+                            <button mat-button class="left-icon-button truncate" 
+                                    [disabled]="activeView == 'regression' && regression && selection.id == regression.id" 
+                                    (click)="navigate('regression', selectionIndex)">
+                                    <div fxLayout="row" fxLayoutAlign="start center">
+                                        <span class="truncate" style="max-width: 70%;">{{selection.id}}</span>
+                                        <span fxFlex></span>
+                                        <div [ngClass]="{
+                                                'square-badge-neutral': selection.discovery.accuracy >= 50 && selection.discovery.accuracy < 55,
+                                                'square-badge-success': selection.discovery.accuracy >= 55,
+                                                'square-badge-error': selection.discovery.accuracy < 50
+                                            }">
+                                            <span>{{selection.discovery.accuracy | number: '1.2-2'}}%</span>
+                                        </div>
+                                    </div>
+                            </button>
+                        </mat-list-item>
+                    </mat-list>
+                </div>
+
+
+                <!-- Content -->
+                <div fxFlex>
+                    <!-- Loader -->
+                    <div *ngIf="!loaded" class="loader">
+                        <div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div>
+                    </div>
+
+                    <!-- Loaded Content -->
+                    <div *ngIf="loaded" class="content-container fadeIn">
+
+                        <!-- Selection -->
+                        <div *ngIf="activeView == 'selection'" class="padding">
+                            <div fxLayout="row" fxLayoutAlign="center center">
+                                <div fxFlex="60" fxFlex.xs="100" fxFlex.sm="100">
+                                    <div class="desktop-card">
+                                        <!-- Header -->
+                                        <div fxLayout="row" fxLayoutAlign="start start">
+                                            <div>
+                                                <h3><span [matBadge]="_rs.selection.length" matBadgeOverlap="false">Selection</span></h3>
+                                                <p class="light-text ts-xs clickable"
+                                                    (click)="_app.copy(_rs.id)" 
+                                                    matTooltip="Created on {{_rs.creation | date: 'medium'}}">
+                                                    <span class="show-on-desktop">{{_rs.id}}</span>
+                                                    <span class="show-on-mobile">{{_rs.id | stringOverview: 10}}</span>
+                                                </p>
+                                            </div>
+                                            <span fxFlex></span>
+                                            <div class="square-badge price_change_mean" 
+                                                matTooltip="The mean of all the selected regressions' discoveries successful_mean. This 
+                                                value will be used to generate the classification training data and trade in general.">
+                                                <p>{{_rs.price_change_mean | number: '1.0-2'}}%</p>
+                                            </div>
+                                        </div>
+
+                                        <!-- Regressions -->
+                                        <div class="margin-top" *ngFor="let reg of _rs.selection">
+                                            <div fxLayout="row" fxLayoutAlign="start center">
+                                                <img src="assets/img/model_logos/{{_rs.modelTypes[reg.id]}}.png" alt="Model Type" class="model-logo-xs margin-right">
+                                                <app-keras-regression-element 
+                                                    *ngIf="reg.model.keras_regressions" 
+                                                    [config]="reg.model.keras_regressions[0].regression"></app-keras-regression-element>
+                                                <!--<app-xgb-regression-element 
+                                                    *ngIf="reg.model.xgb_regressions" 
+                                                    [config]="reg.model.xgb_regressions[0].regression"></app-xgb-regression-element>-->
+                                                <span fxFlex></span>
+                                                <div class="square-badge-success margin-right show-on-desktop"
+                                                    matTooltip="The mean of all the successful increase predictions generated by the model during the Discovery Process.">
+                                                    {{reg.discovery.increase_successful_mean| number: '1.2-2'}}%
+                                                </div>
+                                                <div class="square-badge-error margin-right show-on-desktop" 
+                                                    matTooltip="The mean of all the successful decrease predictions generated by the model during the Discovery Process.">
+                                                    {{reg.discovery.decrease_successful_mean | number: '1.2-2'}}%
+                                                </div>
+                                                <div class="square-badge" 
+                                                    matTooltip="The mean of all the successful increase & decrease predictions generated by the model during the Discovery Process.">
+                                                    <span class="show-on-desktop">{{reg.discovery.successful_mean | number: '1.2-2'}}%</span>
+                                                    <span class="show-on-mobile">{{reg.discovery.successful_mean | number: '1.0-1'}}%</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Discovery Payload Records Section -->
+                        <div *ngIf="activeView == 'discovery'">
+                            <app-discovery-payload-records-view [items]="_rs.selection" [md]="_rs.md" (activateModel)="navigate('regression', $event)"></app-discovery-payload-records-view>
+                        </div>
+
+
+                        <!-- Regression Discovery -->
+                        <div *ngIf="activeView == 'regression' && regression" class="padding">
+                            <app-discovery-payload-view [model]="regression.model" [discovery]="regression.discovery"></app-discovery-payload-view>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </mat-drawer-content>
+</mat-drawer-container>

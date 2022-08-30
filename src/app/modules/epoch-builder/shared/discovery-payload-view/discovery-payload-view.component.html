@@ -1,6 +1,30 @@
 <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column">
 
     <div fxFlex="40" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+        <!-- Model -->
+        <div class="desktop-card">
+            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutAlign.xs="center center" fxLayoutAlign.sm="center center">
+                <img src="assets/img/model_logos/{{modelType}}.png" alt="Model Type" class="model-logo-xl">
+                <div class="margin-left">
+                    <h5 style="margin-bottom:5px;">{{modelType}}</h5>
+                    <app-keras-regression-element 
+                        *ngIf="model.keras_regressions" 
+                        [config]="model.keras_regressions[0].regression"></app-keras-regression-element>
+                    <!--<app-keras-classification-element 
+                        *ngIf="model.keras_classifications" 
+                        [config]="model.keras_classifications[0].classification"></app-keras-classification-element>-->
+                    <!--<app-xgb-regression-element 
+                        *ngIf="model.xgb_regressions" 
+                        [config]="model.xgb_regressions[0].regression"></app-xgb-regression-element>-->
+                    <!--<app-xgb-classification-element 
+                        *ngIf="model.xgb_classifications" 
+                        [config]="model.xgb_classifications[0].classification"></app-xgb-classification-element>-->
+                </div>
+            </div>
+        </div>
+
+        <div class="divider show-on-mobile"></div>
+
         <!-- Accuracy -->
         <div class="desktop-card">
             <div class="badged-header" fxLayout="row" fxLayoutAlign="start center">

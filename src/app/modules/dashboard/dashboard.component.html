@@ -85,15 +85,6 @@
                 </button>
             </mat-list-item>
 
-            <!-- Backtests -->
-            <mat-list-item *ngIf="builderExpanded" class="active-sub-menu">
-                <button mat-button (click)="_nav.backtests()">
-                    <div fxLayout="row" fxLayoutAlign="start center">
-                        <span>Backtests</span><span fxFlex></span><mat-icon svgIcon="flask_vial"></mat-icon>
-                    </div>
-                </button>
-            </mat-list-item>
-
             <!-- Keras Regression Training Certificates -->
             <mat-list-item *ngIf="builderExpanded" class="active-sub-menu">
                 <button mat-button (click)="_nav.kerasRegressions()">
@@ -155,6 +146,24 @@
                     </div>
                 </button>
             </mat-list-item>-->
+
+            <!-- Classification Selection -->
+            <mat-list-item *ngIf="builderExpanded" class="active-sub-menu">
+                <button mat-button (click)="_nav.classificationSelection()">
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <span>Classification Selection</span><span fxFlex></span><mat-icon svgIcon="microscope"></mat-icon>
+                    </div>
+                </button>
+            </mat-list-item>
+
+            <!-- Backtests -->
+            <mat-list-item *ngIf="builderExpanded" class="active-sub-menu">
+                <button mat-button (click)="_nav.backtests()">
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <span>Backtests</span><span fxFlex></span><mat-icon svgIcon="flask_vial"></mat-icon>
+                    </div>
+                </button>
+            </mat-list-item>
 
             <!-- PGAdmin -->
             <mat-list-item>

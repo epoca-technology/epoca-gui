@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { IDiscoveryPayload } from '../../../../core';
+import { IDiscoveryPayload, IModel, IModelType, PredictionService } from '../../../../core';
 import { AppService, ChartService, IBarChartOptions, ILayout, IPieChartOptions, IScatterChartOptions } from '../../../../services';
 import { IDiscoveryPayloadViewComponent, IPredictionInsight } from "./interfaces";
 
@@ -14,11 +14,14 @@ export class DiscoveryPayloadViewComponent implements OnInit, OnDestroy, IDiscov
 	public layout: ILayout = this._app.layout.value;
 	private layoutSub?: Subscription;
 	
-	// The ID of the model
-	@Input() id!: string;
+	// The model's configuration
+	@Input() model!: IModel;
 
 	// Discovery Payload
 	@Input() discovery!: IDiscoveryPayload;
+
+	// The type of the model
+	public modelType!: IModelType;
 
 	// Accuracy
 	public accuracyChart!: IBarChartOptions;
@@ -40,11 +43,15 @@ export class DiscoveryPayloadViewComponent implements OnInit, OnDestroy, IDiscov
 	constructor(
 		private _app: AppService,
 		private _chart: ChartService,
+		private _prediction: PredictionService
 	) { }
 
 	ngOnInit(): void {
 		// Subscribe to the layout
 		this.layoutSub = this._app.layout.subscribe((nl: ILayout) => this.layout = nl);
+
+		// Initialize the type of model
+		this.modelType = this._prediction.getModelTypeName(this.model);
 
 		// Init the accuracy chart
 		this.accuracyChart = this._chart.getBarChartOptions(
@@ -55,10 +62,10 @@ export class DiscoveryPayloadViewComponent implements OnInit, OnDestroy, IDiscov
 					{name: "General Acc.%", data: [this.discovery.accuracy]}
 				], 
 				colors: [this._chart.upwardColor, this._chart.downwardColor, "#000000"],
-				xaxis: {categories: [this.id], labels: {show: false}},
+				xaxis: {categories: [this.model.id], labels: {show: false}},
 				yaxis: {labels: {show: false}},
 			}, 
-			[this.id], 
+			[this.model.id], 
 			130
 		);
 
