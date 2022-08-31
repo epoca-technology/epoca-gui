@@ -125,7 +125,7 @@ export class RegressionSelectionService implements IRegressionSelectionService {
 	 * @returns Promise<IRegressionSelectionFile>
 	 */
 	 private async getFile(event: any|string): Promise<IRegressionSelectionFile> {
-		// If it is a string, retrieve the certificate from the db
+		// If it is a string, retrieve the data from the db
 		if (typeof event == "string") {
 			throw new Error("Regression Selection Init from db has not been implemented yet.")
 		}

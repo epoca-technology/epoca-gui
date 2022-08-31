@@ -83,10 +83,10 @@ div {min-width: 0;}
 
 
 /* Alignment Helpers */
-.align-left { text-align: left }
-.align-center { text-align: center }
-.align-right { text-align: right }
-.align-none { text-align: none }
+.align-left { text-align: left!important; }
+.align-center { text-align: center!important; }
+.align-right { text-align: right!important; }
+.align-none { text-align: none!important; }
 
 
 

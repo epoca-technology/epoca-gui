@@ -104,9 +104,9 @@ export class RegressionSelectionComponent implements OnInit, OnDestroy, IRegress
 			await this._rs.init(event);
 
 			// Navigate to the selection
-			await this.navigate("selection")
+			await this.navigate("selection");
 
-			// Mark the backtest as initialized
+			// Mark the component as initialized
 			this.initialized = true;
 		} catch (e) {
 			this.fileInput.setValue('');

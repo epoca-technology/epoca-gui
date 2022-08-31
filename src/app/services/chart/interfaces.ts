@@ -71,7 +71,8 @@ export interface IChartService {
 		categoriesNum: number,
 		itemsPerCategory?: number,
 		maxHeight?: number
-	): number
+	): number,
+	getRandomColor(): string
 }
 
 

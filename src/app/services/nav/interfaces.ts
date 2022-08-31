@@ -12,7 +12,7 @@ import {
 import {IConfirmationDialogData} from "../../shared/components/confirmation-dialog";
 import {IBottomSheetMenuItem} from "../../shared/components/bottom-sheet-menu";
 import { IDialogMenuItem } from "../../shared/components/dialog-menu";
-import { IClassificationFeaturesData } from "../../shared/components/epoch-builder";
+import { IClassificationFeaturesConfig } from "../../shared/components/epoch-builder";
 
 
 
@@ -48,7 +48,7 @@ export interface INavService {
 	displayDialogMenu(title: string, items: IDialogMenuItem[]): MatDialogRef<any>,
 	displayTooltip(title: string, content: string|string[]): MatDialogRef<any>,
 	displayModelDialog(model: IModel): MatDialogRef<any>,
-	displayClassificationFeatures(data: IClassificationFeaturesData): MatDialogRef<any>,
+	displayClassificationFeatures(data: IClassificationFeaturesConfig|IClassificationFeaturesConfig|IKerasClassificationConfig|IXGBClassificationConfig): MatDialogRef<any>,
 	displayKerasModelDialog(modelConfig: IKerasRegressionConfig|IKerasClassificationConfig): MatDialogRef<any>,
 	displayXGBModelDialog(modelConfig: IXGBRegressionConfig|IXGBClassificationConfig): MatDialogRef<any>,
 	displayPredictionDialog(model: IModel, prediction: IPrediction, outcome?: boolean): MatDialogRef<any>,

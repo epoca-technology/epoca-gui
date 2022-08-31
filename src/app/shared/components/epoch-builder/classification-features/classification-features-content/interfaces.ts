@@ -11,7 +11,7 @@ export interface IClassificationFeaturesContentComponent {
 
 
 
-export interface IClassificationFeaturesData {
+export interface IClassificationFeaturesConfig {
     features_num: number,
     regressions: IModel[],
     include_rsi: boolean,

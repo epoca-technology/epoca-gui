@@ -1,1 +1,349 @@
-<p>classification-training-data works!</p>
+<!-- Secondary Header -->
+<mat-toolbar class="secondary-header">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <button mat-icon-button (click)="_nav.dashboard()" class="show-on-mobile" *ngIf="!initialized"><mat-icon>arrow_back</mat-icon></button>
+        <button mat-icon-button (click)="reset()" class="show-on-mobile" *ngIf="initialized"><mat-icon>arrow_back</mat-icon></button>
+        <span class="truncate">Classification Training Data</span>
+        <span fxFlex></span>
+        <button mat-icon-button 
+                matTooltip="Clear Training Data"
+                (click)="reset()"
+                class="show-on-desktop"
+                style="margin-left:5px;"
+                *ngIf="initialized"><mat-icon>close</mat-icon></button>
+    </div>
+</mat-toolbar>
+
+<!-- Content -->
+<div class="component-container fadeIn">
+    <!-- Uninitialized Content -->
+    <div *ngIf="!initialized" class="fadeIn">
+        <div fxLayout="row" fxLayoutAlign="center center" class="file-init-container">
+            <!-- Button -->
+            <label for="certificatesFile" class="file-label" role="button" matRipple *ngIf="!initializing">
+                <div fxLayout="row" fxLayoutAlign="start center" matRipple role="button" tabindex="0">
+                    <mat-icon svgIcon="file_invoice"></mat-icon>&nbsp;<p>Select Training Data</p>
+                </div>
+            </label>
+
+            <!-- Input -->
+            <form [formGroup]="fileInputForm">
+                <input id="certificatesFile" type="file" accept="application/json" formControlName="fileInput" (change)="fileChanged($event)"/>
+            </form>
+
+            <!-- Initializing Loader-->
+            <h3 *ngIf="initializing" class="fadeIn">Initializing...</h3>
+        </div>
+    </div>
+
+    <!-- Initialized Content -->
+    <div *ngIf="initialized" class="fadeIn">
+        <!-- Tabs Navigation-->
+        <mat-tab-group [selectedIndex]="activeTab" (selectedIndexChange)="tabChanged($event)" 
+            mat-stretch-tabs class="mat-elevation-z3" backgroundColor="primary">
+            <mat-tab><ng-template mat-tab-label><mat-icon>feed</mat-icon><span class="show-on-desktop">&nbsp;General</span></ng-template></mat-tab>
+            <mat-tab><ng-template mat-tab-label><mat-icon>receipt_long</mat-icon><span class="show-on-desktop">&nbsp;Dataset Summary</span></ng-template></mat-tab>
+            <mat-tab><ng-template mat-tab-label><mat-icon>stacked_line_chart</mat-icon><span class="show-on-desktop">&nbsp;Dataset Insights</span></ng-template></mat-tab>
+            <mat-tab><ng-template mat-tab-label><mat-icon>toc</mat-icon><span class="show-on-desktop">&nbsp;Dataset</span></ng-template></mat-tab>
+        </mat-tab-group>
+        
+        <!-- Content -->
+        <div class="content-container">
+
+            <!-- Summary -->
+            <div *ngIf="activeTab == 0">
+                <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" fxLayoutAlign="center start" class="full-width">
+                    <span fxFlex></span>
+                    
+                    <!-- General Info -->
+                    <div fxFlex="30" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                        <div class="desktop-card">
+                            <!-- Header -->
+                            <div fxLayout="row" fxLayoutAlign="start start">
+                                <div>
+                                    <h4>Training Data</h4>
+                                    <p class="light-text ts-s show-on-desktop clickable" (click)="_app.copy(_td.id)" matTooltip="The identifier of the training data.">{{_td.id}}</p>
+                                    <p class="light-text ts-xs show-on-mobile clickable" (click)="_app.copy(_td.id)">{{_td.id | stringOverview: 10}}</p>
+                                </div>
+                                <span fxFlex></span>
+                                <div class="square-badge" 
+                                    matTooltip="Steps: The number of prediction candlesticks it will skip for every position when building
+                                    the data regardless of how long a position takes to be closed.">
+                                    Steps: {{_td.steps}}
+                                </div>
+                            </div>
+
+                            <!-- Content -->
+                            <div>
+                                <!-- Description -->
+                                <p class="ts-m" style="margin-top:10px;">{{_td.description}}</p>
+
+                                <!-- Creation Date Range -->
+                                <div class="margin-top" fxLayout="row" fxLayoutAlign="start start">
+                                    <p class="light-text truncate">Creation</p>
+                                    <span fxFlex></span>
+                                    <div matTooltip="The date range in which the training data was created.">
+                                        <p class="ts-m">{{_td.creationStart | date: 'medium'}}</p>
+                                        <p class="ts-m">{{_td.creationEnd | date: 'medium'}}</p>
+                                    </div>
+                                </div>
+
+                                <!-- Regression Selection ID -->
+                                <div class="margin-top" fxLayout="row" fxLayoutAlign="start start">
+                                    <p class="light-text truncate">Regr. Selection</p>
+                                    <span fxFlex></span>
+                                    <p class="clickable" [matTooltip]="_td.regressionSelectionID" (click)="_app.copy(_td.regressionSelectionID)">
+                                        {{_td.regressionSelectionID | stringOverview: 8}}
+                                    </p>
+                                </div>
+
+                                <!-- Data Date Range -->
+                                <div class="margin-top" fxLayout="row" fxLayoutAlign="start start">
+                                    <p class="light-text truncate">Data Range</p>
+                                    <span fxFlex></span>
+                                    <div matTooltip="The date range covered by the training data.">
+                                        <p class="ts-m">{{_td.start | date: 'medium'}}</p>
+                                        <p class="ts-m">{{_td.end | date: 'medium'}}</p>
+                                    </div>
+                                </div>
+
+                                <!-- Data Shape -->
+                                <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+                                    <p class="light-text truncate">Shape</p>
+                                    <span fxFlex></span>
+                                    <p matTooltip="Dataset (Rows, Columns)">({{_td.trainingData.rows.length}}, {{_td.trainingData.columns.length}})</p>
+                                </div>
+
+                                <!-- Price Change Requirement -->
+                                <div class="margin-top" fxLayout="row" fxLayoutAlign="start start">
+                                    <p class="light-text truncate">Price Change</p>
+                                    <span fxFlex></span>
+                                    <div class="square-badge" 
+                                        matTooltip="The price change requirement in order to determine an 'up' or 'down' outcome.">
+                                        {{_td.priceChangeRequirement | number: '1.0-2'}}%
+                                    </div>
+                                </div>
+
+
+                                <!-- Classification Preview -->
+                                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutAlign.xs="center center" fxLayoutAlign.sm="center center" class="margin-top">
+                                    <p class="light-text">Preview</p>
+                                    <span fxFlex></span>
+                                    <div fxLayout="row" fxLayoutAlign="start center">
+                                        <p class="formula clickable" role="button" 
+                                            (click)="_nav.displayClassificationFeatures(featuresConfig)"
+                                            matTooltip="Features: The list of Regressions (and/or other pieces of data)
+                                            that comprise the Classification.">
+                                            [{{_td.featuresNum}}] ->
+                                        </p>
+                                        <p class="formula" matTooltip="KerasClassification|XGBClassification">
+                                            &nbsp;ClassificationModel
+                                        </p>
+                                        <p class="formula" 
+                                            matTooltip="Labels: The probabilities for an up or down price action to take place.">
+                                            &nbsp;-> [2]
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <!-- Outcomes-->
+                                <div class="margin-top" fxLayout="row" fxLayoutAlign="start start">
+                                    <p class="light-text truncate">Outcomes</p>
+                                    <span fxFlex></span>
+                                    <div class="square-badge-success margin-right" matTooltip="The number of times the price went up during the dataset creation.">{{_td.increaseOutcomeNum | number}}</div>
+                                    <div class="square-badge-error margin-right" matTooltip="The number of times the price went down during the dataset creation.">{{_td.decreaseOutcomeNum | number}}</div>
+                                    <div class="square-badge" matTooltip="The total number of rows in the dataset.">{{_td.increaseOutcomeNum + _td.decreaseOutcomeNum| number}}</div>
+                                </div>
+                                <div>
+                                    <apx-chart
+                                        [series]="outcomes.series"
+                                        [chart]="outcomes.chart"
+                                        [plotOptions]="outcomes.plotOptions"
+                                        [xaxis]="outcomes.xaxis"
+                                        [yaxis]="outcomes.yaxis"
+                                        [dataLabels]="outcomes.dataLabels"
+                                        [colors]="outcomes.colors"
+                                        [grid]="outcomes.grid"
+                                    ></apx-chart>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <span fxFlex></span>
+
+                    <div class="divider show-on-mobile"></div>
+
+
+                    <!-- Features -->
+                    <div fxFlex="30" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                        <div class="desktop-card">
+                            <!-- Header -->
+                            <div fxLayout="row" fxLayoutAlign="start start">
+                                <h4>Features</h4>
+                                <span fxFlex></span>
+                                <div class="square-badge" 
+                                    matTooltip="The total number of features that will be used as input in order to generate predictions.">
+                                    {{_td.featuresNum}}
+                                </div>
+                            </div>
+
+                            <!-- Content -->
+                            <div class="margin-top">
+                                <app-classification-features-content [config]="featuresConfig"></app-classification-features-content>
+                            </div>
+                        </div>
+                    </div>
+
+                    <span fxFlex></span>
+                </div>
+            </div>
+
+            <!-- Dataset Summary -->
+            <div *ngIf="activeTab == 1">
+                <div fxLayout="row" fxLayoutAlign="center start">
+                    <div fxFlex="60" fxFlex.xs="100" fxFlex.sm="100">
+                        <div class="desktop-card no-padding">
+                            <div class="data-container">
+                                <table class="table highlight bordered">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <!-- <th>Count</th> -->
+                                            <th>Mean</th>
+                                            <th>STD</th>
+                                            <th>Min</th>
+                                            <th>25%</th>
+                                            <th>50%</th>
+                                            <th>75%</th>
+                                            <th>Max</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let column of _td.trainingData.columns">
+                                            <td class="feature-name truncate"><strong>{{column}}</strong></td>
+                                            <!-- <td class="light-text">{{_td.datasetSummary[column].count | number}}</td> -->
+                                            <td>{{_td.datasetSummary[column].mean | number}}</td>
+                                            <td>{{_td.datasetSummary[column].std | number}}</td>
+                                            <td>{{_td.datasetSummary[column].min | number}}</td>
+                                            <td>{{_td.datasetSummary[column]["25%"] | number}}</td>
+                                            <td>{{_td.datasetSummary[column]["50%"] | number}}</td>
+                                            <td>{{_td.datasetSummary[column]["75%"] | number}}</td>
+                                            <td>{{_td.datasetSummary[column].max | number}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dataset Insights -->
+            <div *ngIf="activeTab == 2">
+                <!-- Chart -->
+                <div class="desktop-card">
+                    <!-- Loader -->
+                    <div *ngIf="chartLoading" class="chart-loader"><h4>Loading...</h4></div>
+
+                    <!-- Chart -->
+                    <div [ngClass]="{'chart-loading': chartLoading}">
+                        <apx-chart #chart
+                            [series]="insight.series"
+                            [chart]="insight.chart"
+                            [yaxis]="insight.yaxis"
+                            [xaxis]="insight.xaxis"
+                            [stroke]="insight.stroke"
+                            [legend]="{show: false}"
+                        ></apx-chart>
+                    </div>
+
+                    <!-- Features -->
+                    <div class="align-center">
+                        <span *ngFor="let feature of _td.trainingDataFeatures; index as featureIndex" 
+                            (click)="toggleInsightFeature(feature)"
+                            class="insight-legend clickable" role="button" 
+                            [ngClass]="{'hidden-insight': !visibleFeatures[feature]}">
+                            <div class="badge" 
+                                [ngStyle]="{'background': featureColors[featureIndex]}"></div> 
+                            {{feature | stringOverview: 12: true}}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Paginator -->
+                <div class="margin-top" 
+                    fxLayout="row" 
+                    fxLayoutAlign="end center" 
+                    fxLayoutAlign.xs="center center" 
+                    fxLayoutAlign.sm="center center">
+                    <p class="light-text ts-s">{{insightRowsStart}} - {{insightRowsEnd}} of {{_td.trainingData.rows.length}}</p>
+                    <button mat-icon-button (click)="insightGotoStart()" [disabled]="insightRowsStart == 0"><mat-icon>first_page</mat-icon></button>
+                    <button mat-icon-button (click)="insightGoBackward()" [disabled]="insightRowsStart == 0"><mat-icon>navigate_before</mat-icon></button>
+                    <button mat-icon-button (click)="insightGoForward()" [disabled]="insightRowsEnd == _td.trainingData.rows.length"><mat-icon>navigate_next</mat-icon></button>
+                    <button mat-icon-button (click)="insightGotoEnd()" [disabled]="insightRowsEnd == _td.trainingData.rows.length"><mat-icon>last_page</mat-icon></button>
+                </div>
+            </div>
+
+            <!-- Dataset -->
+            <div *ngIf="activeTab == 3">
+                <!-- Table -->
+                <div class="desktop-card no-padding">
+                    <div class="data-container">
+                        <table class="table highlight bordered">
+                            <thead>
+                                <tr>
+                                    <th *ngFor="let column_name of _td.trainingDataFeatures">{{column_name | stringOverview: 12: true}}</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let row of dsVisibleRows; index as rowIndex" 
+                                    class="clickable" 
+                                    (click)="_nav.displayDataDialog('trainingDataRow', row)">
+                                    <td *ngFor="let column_name of _td.trainingDataFeaturesAndLabel; index as columnIndex;">
+                                        <!-- Regression Features -->
+                                        <div *ngIf="column_name != 'RSI' && column_name != 'AROON' && column_name != 'label'" matTooltip="{{row[columnIndex]}}">
+                                            <mat-icon *ngIf="row[columnIndex] == 0" class="light-text">trending_flat</mat-icon>
+                                            <mat-icon *ngIf="row[columnIndex] > 0" class="success-color">trending_up</mat-icon>
+                                            <mat-icon *ngIf="row[columnIndex] < 0" class="error-color">trending_down</mat-icon>
+                                        </div>
+    
+                                        <!-- TA Features -->
+                                        <div *ngIf="column_name == 'RSI' || column_name == 'AROON'">
+                                            <p [ngClass]="{
+                                                'success-color': row[columnIndex] > 0,
+                                                'error-color': row[columnIndex] < 0,
+                                                'neutral-color': row[columnIndex] == 0
+                                            }">{{row[columnIndex] | number: '1.0-2'}}</p>
+                                        </div>
+    
+                                        <!-- Labels -->
+                                        <div *ngIf="column_name == 'label'">
+                                            <mat-icon *ngIf="row[columnIndex] == 1" class="success-color">north</mat-icon>
+                                            <mat-icon *ngIf="row[columnIndex] == 0" class="error-color">south</mat-icon>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Paginator -->
+                <div class="margin-top" 
+                    fxLayout="row" 
+                    fxLayoutAlign="end center" 
+                    fxLayoutAlign.xs="center center" 
+                    fxLayoutAlign.sm="center center">
+                    <p class="light-text ts-s">{{dsRowsStart}} - {{dsRowsEnd}} of {{_td.trainingData.rows.length}}</p>
+                    <button mat-icon-button (click)="dsGotoStart()" [disabled]="dsRowsStart == 0"><mat-icon>first_page</mat-icon></button>
+                    <button mat-icon-button (click)="dsGoBackward()" [disabled]="dsRowsStart == 0"><mat-icon>navigate_before</mat-icon></button>
+                    <button mat-icon-button (click)="dsGoForward()" [disabled]="dsRowsEnd == _td.trainingData.rows.length"><mat-icon>navigate_next</mat-icon></button>
+                    <button mat-icon-button (click)="dsGotoEnd()" [disabled]="dsRowsEnd == _td.trainingData.rows.length"><mat-icon>last_page</mat-icon></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

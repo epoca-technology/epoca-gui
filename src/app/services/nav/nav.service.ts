@@ -26,7 +26,7 @@ import {
 	XgbModelDialogComponent,
 	ModelDialogComponent,
 	PredictionDialogComponent,
-	IClassificationFeaturesData,
+	IClassificationFeaturesConfig,
 	ClassificationFeaturesDialogComponent,
 } from "../../shared/components/epoch-builder";
 import {INavService, IRouteState, IRouteStateData} from "./interfaces";
@@ -276,10 +276,12 @@ export class NavService implements INavService {
 	* @param data
 	* @returns MatDialogRef<any>
 	* */
-	public displayClassificationFeatures(data: IClassificationFeaturesData): MatDialogRef<any> {
+	public displayClassificationFeatures(
+		data: IClassificationFeaturesConfig|IKerasClassificationConfig|IXGBClassificationConfig
+	): MatDialogRef<any> {
 		return this.dialog.open(ClassificationFeaturesDialogComponent, {
 			hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
-			panelClass: "medium-dialog",
+			panelClass: "small-dialog",
 			data: data
 		});
 	}
