@@ -269,6 +269,12 @@
                                 [ngStyle]="{'background': featureColors[featureIndex]}"></div> 
                             {{feature | stringOverview: 12: true}}
                         </span>
+                        <span (click)="toggleAllInsightFeatures()"
+                            class="insight-legend clickable" role="button">
+                            <div class="badge" 
+                                [ngStyle]="{'background': '#000000'}"></div> 
+                            Toggle All
+                        </span>
                     </div>
                 </div>
 
@@ -303,20 +309,15 @@
                                     class="clickable" 
                                     (click)="_nav.displayDataDialog('trainingDataRow', row)">
                                     <td *ngFor="let column_name of _td.trainingDataFeaturesAndLabel; index as columnIndex;">
-                                        <!-- Regression Features -->
-                                        <div *ngIf="column_name != 'RSI' && column_name != 'AROON' && column_name != 'label'" matTooltip="{{row[columnIndex]}}">
-                                            <mat-icon *ngIf="row[columnIndex] == 0" class="light-text">trending_flat</mat-icon>
-                                            <mat-icon *ngIf="row[columnIndex] > 0" class="success-color">trending_up</mat-icon>
-                                            <mat-icon *ngIf="row[columnIndex] < 0" class="error-color">trending_down</mat-icon>
-                                        </div>
-    
-                                        <!-- TA Features -->
-                                        <div *ngIf="column_name == 'RSI' || column_name == 'AROON'">
+                                        <!-- Features -->
+                                        <div *ngIf="column_name != 'label'" matTooltip="{{row[columnIndex]}}">
                                             <p [ngClass]="{
                                                 'success-color': row[columnIndex] > 0,
                                                 'error-color': row[columnIndex] < 0,
-                                                'neutral-color': row[columnIndex] == 0
-                                            }">{{row[columnIndex] | number: '1.0-2'}}</p>
+                                                'light-text': row[columnIndex] == 0,
+                                                'weak-feature': row[columnIndex] >= -0.2 && row[columnIndex] <= 0.2,
+                                                'strong-feature': row[columnIndex] <= -0.5 || row[columnIndex] >= 0.5
+                                            }">{{row[columnIndex] | number: '1.0-3'}}</p>
                                         </div>
     
                                         <!-- Labels -->

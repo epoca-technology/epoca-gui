@@ -24,6 +24,8 @@
             </mat-list-item>
             <div mat-subheader>
                 Regressions&nbsp;
+                <mat-icon *ngIf="order == 'mae'" class="order-icon" matTooltip="Ordered by Mean Absolute Error">trending_down</mat-icon>
+                <mat-icon *ngIf="order == 'mse'" class="order-icon" matTooltip="Ordered by Mean Squared Error">trending_down</mat-icon>
                 <mat-icon *ngIf="order == 'ebe_points'" class="order-icon" matTooltip="Ordered by EBE Points">query_stats</mat-icon>
                 <mat-icon *ngIf="order == 'discovery_accuracy'" class="order-icon" matTooltip="Ordered by Discovery Accuracy">ads_click</mat-icon>
             </div>
@@ -34,6 +36,16 @@
                         <div fxLayout="row" fxLayoutAlign="start center">
                             <span class="truncate" style="max-width: 70%;">{{certificate.id}}</span>
                             <span fxFlex></span>
+                            <div *ngIf="order == 'mae'" 
+                                class="square-badge-error">
+                                <span *ngIf="certificate.loss == 'mean_absolute_error'">{{certificate.test_evaluation[0] | number: '0.0-6'}}</span>
+                                <span *ngIf="certificate.loss == 'mean_squared_error'">{{certificate.test_evaluation[1] | number: '0.0-6'}}</span>
+                            </div>
+                            <div *ngIf="order == 'mse'" 
+                                class="square-badge-error">
+                                <span *ngIf="certificate.loss == 'mean_absolute_error'">{{certificate.test_evaluation[1] | number: '0.0-6'}}</span>
+                                <span *ngIf="certificate.loss == 'mean_squared_error'">{{certificate.test_evaluation[0] | number: '0.0-6'}}</span>
+                            </div>
                             <div *ngIf="order == 'ebe_points'" 
                                 [ngClass]="certificate.ebe.state_class" 
                                 class="square-badge"><span>{{certificate.ebe.points | number: '1.2-2'}}</span></div>
@@ -122,6 +134,8 @@
                         </mat-list-item>
                         <div mat-subheader>
                             Regressions&nbsp;
+                            <mat-icon *ngIf="order == 'mae'" class="order-icon" matTooltip="Ordered by Mean Absolute Error">trending_down</mat-icon>
+                            <mat-icon *ngIf="order == 'mse'" class="order-icon" matTooltip="Ordered by Mean Squared Error">trending_down</mat-icon>
                             <mat-icon *ngIf="order == 'ebe_points'" class="order-icon" matTooltip="Ordered by EBE Points">query_stats</mat-icon>
                             <mat-icon *ngIf="order == 'discovery_accuracy'" class="order-icon" matTooltip="Ordered by Discovery Accuracy">ads_click</mat-icon>
                         </div>
@@ -132,6 +146,16 @@
                                     <div fxLayout="row" fxLayoutAlign="start center">
                                         <span class="truncate" style="max-width: 70%;">{{certificate.id}}</span>
                                         <span fxFlex></span>
+                                        <div *ngIf="order == 'mae'" 
+                                            class="square-badge-error">
+                                            <span *ngIf="certificate.loss == 'mean_absolute_error'">{{certificate.test_evaluation[0] | number: '0.0-6'}}</span>
+                                            <span *ngIf="certificate.loss == 'mean_squared_error'">{{certificate.test_evaluation[1] | number: '0.0-6'}}</span>
+                                        </div>
+                                        <div *ngIf="order == 'mse'" 
+                                            class="square-badge-error">
+                                            <span *ngIf="certificate.loss == 'mean_absolute_error'">{{certificate.test_evaluation[1] | number: '0.0-6'}}</span>
+                                            <span *ngIf="certificate.loss == 'mean_squared_error'">{{certificate.test_evaluation[0] | number: '0.0-6'}}</span>
+                                        </div>
                                         <div *ngIf="order == 'ebe_points'" 
                                             [ngClass]="certificate.ebe.state_class" 
                                             class="square-badge"><span>{{certificate.ebe.points | number: '1.2-2'}}</span></div>

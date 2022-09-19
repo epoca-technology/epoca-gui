@@ -22,7 +22,7 @@ export class EpochBuilderEvaluationService implements IEpochBuilderEvaluationSer
 	private readonly bestPoints: number = 25;
 
 	// The minimum accuracy percentage allowed
-	private readonly worstAccuracy: number = 50;
+	private readonly worstAccuracy: number = 45;
 	private readonly bestAccuracy: number = 70;
 
 	// The absolute maximum percentage difference allowed for predictions vs outcomes

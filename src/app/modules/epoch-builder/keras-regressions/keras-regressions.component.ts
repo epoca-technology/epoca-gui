@@ -161,6 +161,24 @@ export class KerasRegressionsComponent implements OnInit, OnDestroy, IKerasRegre
 						icon: "query_stats"
 					},
 					{
+						id: "mae",
+						name: "Mean Absolute Error",
+						description: "Certificates will be ordered by the mean absolute error received in the test dataset evaluation.",
+						icon: "trending_down"
+					},
+					{
+						id: "mse",
+						name: "Mean Squared Error",
+						description: "Certificates will be ordered by the mean squared error received in the test dataset evaluation.",
+						icon: "trending_down"
+					},
+					{
+						id: "discovery_points",
+						name: "Discovery Points",
+						description: "Certificates will be ordered by the accuracy obtained during the regression discovery process.",
+						icon: "ads_click"
+					},
+					{
 						id: "discovery_accuracy",
 						name: "Discovery Accuracy",
 						description: "Certificates will be ordered by the accuracy obtained during the regression discovery process.",

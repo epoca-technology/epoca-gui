@@ -20,6 +20,7 @@ export interface IClassificationTrainingDataComponent {
     insightGoForward(): void,
     insightGoBackward(): void,
     insightGotoEnd(): void,
-    toggleInsightFeature(feature: string): void
+    toggleInsightFeature(feature: string): void,
+    toggleAllInsightFeatures(): void
 
 }

@@ -166,15 +166,29 @@ export class KerasRegressionService implements IKerasRegressionService {
 			}
 
 			// Filter the records that don't have any order value points (Outliars)
-			certificates = certificates.filter((c) => c.orderValue > 0)
+
+			/**
+			 * DEPRECATION OF AUTOREGRESSIVE MODELS
+			 * Remove the following line once the autoregressive regressions have been fully
+			 * deprecated.
+			 *  && !c.autoregressive
+			 */
+			certificates = certificates.filter((c) => c.orderValue > 0 && !c.autoregressive)
 
 			// Make sure that at least 1 certificate remains in the list
 			if (!certificates.length) {
 				throw new Error("All the Keras Regression Certificates were filtered due to poor performance.");
 			}
 
-			// Order the certificates descendingly
-			certificates.sort((a, b) => (a.orderValue < b.orderValue) ? 1 : -1);
+			// Order the values ascendingly if it is a loss
+			if (order == "mae" || order == "mse") {
+				certificates.sort((a, b) => (a.orderValue > b.orderValue) ? 1 : -1);
+			} 
+
+			// Otherwise, order the certificates descendingly
+			else {
+				certificates.sort((a, b) => (a.orderValue < b.orderValue) ? 1 : -1);
+			}
 
 			// Apply the slice and return the final list that will be used
 			return certificates.slice(0, limit)
@@ -205,6 +219,69 @@ export class KerasRegressionService implements IKerasRegressionService {
 		// Return the evaluation build
 		return this._evaluation.evaluate([
 			{
+				name: "Discovery",
+				description: "Analyzes the Model's prediction performance based on the discovery payload.",
+				items: [
+					{
+						name: "Increase Accuracy",
+						description: this._evaluation.desc.accuracy,
+						evaluationFunction: "evaluateAccuracy",
+						evaluationParams: {
+							accuracy: c.discovery.increase_accuracy,
+							maxPoints: 4.5
+						}
+					},
+					{
+						name: "Decrease Accuracy",
+						description: this._evaluation.desc.accuracy,
+						evaluationFunction: "evaluateAccuracy",
+						evaluationParams: {
+							accuracy: c.discovery.decrease_accuracy,
+							maxPoints: 4.5
+						}
+					},
+					{
+						name: "Accuracy",
+						description: this._evaluation.desc.accuracy,
+						evaluationFunction: "evaluateAccuracy",
+						evaluationParams: {
+							accuracy: c.discovery.accuracy,
+							maxPoints: 60
+						}
+					},
+					{
+						name: "Prediction Neutrality",
+						description: this._evaluation.desc.predictionNeutrality,
+						evaluationFunction: "evaluatePredictionNeutrality",
+						evaluationParams: {
+							neutral: c.discovery.neutral_num,
+							nonNeutral: c.discovery.increase_num + c.discovery.decrease_num,
+							maxPoints: 16.5
+						}
+					},
+					{
+						name: "Increase Predictions vs Outcomes",
+						description: this._evaluation.desc.predictionsVsOutcomes,
+						evaluationFunction: "evaluatePredictionsVsOutcomes",
+						evaluationParams: {
+							predictions: c.discovery.increase_num,
+							outcomes: c.discovery.increase_outcome_num,
+							maxPoints: 5
+						}
+					},
+					{
+						name: "Decrease Predictions vs Outcomes",
+						description: this._evaluation.desc.predictionsVsOutcomes,
+						evaluationFunction: "evaluatePredictionsVsOutcomes",
+						evaluationParams: {
+							predictions: c.discovery.decrease_num,
+							outcomes: c.discovery.decrease_outcome_num,
+							maxPoints: 5
+						}
+					}
+				]
+			},
+			{
 				name: "Training",
 				description: "Analyzes the Model's training performance based on the losses.",
 				items: [
@@ -215,7 +292,7 @@ export class KerasRegressionService implements IKerasRegressionService {
 						evaluationParams: {
 							firstLoss: c.training_history.loss[0],
 							lastLoss: c.training_history.loss[c.training_history.loss.length - 1],
-							maxPoints: 1
+							maxPoints: 0.75
 						}
 					},
 					{
@@ -225,7 +302,7 @@ export class KerasRegressionService implements IKerasRegressionService {
 						evaluationParams: {
 							firstLoss: c.training_history.val_loss[0],
 							lastLoss: c.training_history.val_loss[c.training_history.val_loss.length - 1],
-							maxPoints: 1
+							maxPoints: 0.75
 						}
 					},
 					{
@@ -235,7 +312,7 @@ export class KerasRegressionService implements IKerasRegressionService {
 						evaluationParams: {
 							finalLoss: c.training_history.loss[c.training_history.loss.length - 1],
 							finalValLoss: c.training_history.val_loss[c.training_history.val_loss.length - 1],
-							maxPoints: 1
+							maxPoints: 0.75
 						}
 					},
 					{
@@ -245,7 +322,7 @@ export class KerasRegressionService implements IKerasRegressionService {
 						evaluationParams: {
 							firstLoss: metricLoss[0],
 							lastLoss: metricLoss[metricLoss.length - 1],
-							maxPoints: 1
+							maxPoints: 0.75
 						}
 					},
 					{
@@ -255,7 +332,7 @@ export class KerasRegressionService implements IKerasRegressionService {
 						evaluationParams: {
 							firstLoss: metricValLoss[0],
 							lastLoss: metricValLoss[metricValLoss.length - 1],
-							maxPoints: 1
+							maxPoints: 0.75
 						}
 					},
 					{
@@ -265,70 +342,7 @@ export class KerasRegressionService implements IKerasRegressionService {
 						evaluationParams: {
 							finalLoss: metricLoss[metricLoss.length - 1],
 							finalValLoss: metricValLoss[metricValLoss.length - 1],
-							maxPoints: 1
-						}
-					}
-				]
-			},
-			{
-				name: "Discovery",
-				description: "Analyzes the Model's prediction performance based on the discovery payload.",
-				items: [
-					{
-						name: "Increase Accuracy",
-						description: this._evaluation.desc.accuracy,
-						evaluationFunction: "evaluateAccuracy",
-						evaluationParams: {
-							accuracy: c.discovery.increase_accuracy,
-							maxPoints: 3
-						}
-					},
-					{
-						name: "Decrease Accuracy",
-						description: this._evaluation.desc.accuracy,
-						evaluationFunction: "evaluateAccuracy",
-						evaluationParams: {
-							accuracy: c.discovery.decrease_accuracy,
-							maxPoints: 3
-						}
-					},
-					{
-						name: "Accuracy",
-						description: this._evaluation.desc.accuracy,
-						evaluationFunction: "evaluateAccuracy",
-						evaluationParams: {
-							accuracy: c.discovery.accuracy,
-							maxPoints: 56
-						}
-					},
-					{
-						name: "Prediction Neutrality",
-						description: this._evaluation.desc.predictionNeutrality,
-						evaluationFunction: "evaluatePredictionNeutrality",
-						evaluationParams: {
-							neutral: c.discovery.neutral_num,
-							nonNeutral: c.discovery.increase_num + c.discovery.decrease_num,
-							maxPoints: 16
-						}
-					},
-					{
-						name: "Increase Predictions vs Outcomes",
-						description: this._evaluation.desc.predictionsVsOutcomes,
-						evaluationFunction: "evaluatePredictionsVsOutcomes",
-						evaluationParams: {
-							predictions: c.discovery.increase_num,
-							outcomes: c.discovery.increase_outcome_num,
-							maxPoints: 8
-						}
-					},
-					{
-						name: "Decrease Predictions vs Outcomes",
-						description: this._evaluation.desc.predictionsVsOutcomes,
-						evaluationFunction: "evaluatePredictionsVsOutcomes",
-						evaluationParams: {
-							predictions: c.discovery.decrease_num,
-							outcomes: c.discovery.decrease_outcome_num,
-							maxPoints: 8
+							maxPoints: 0.75
 						}
 					}
 				]
@@ -427,7 +441,9 @@ export class KerasRegressionService implements IKerasRegressionService {
 		// Make sure the model did not stop early
 		if (typeof cert.early_stopping != "string") {
 			// Return the order value according to the type of order
-			if (order == "ebe_points") { return cert.ebe.points }
+			if (order == "mae") { return cert.loss == "mean_absolute_error" ? cert.test_evaluation[0]: cert.test_evaluation[1]}
+			else if (order == "mse") { return cert.loss == "mean_squared_error" ? cert.test_evaluation[0]: cert.test_evaluation[1]}
+			else if (order == "ebe_points") { return cert.ebe.points }
 			else if (order == "discovery_accuracy") { return cert.discovery.accuracy }
 			else { throw new Error(`The Keras Regression Order ${order} is incompatible.`)}
 		} else { return 0 }

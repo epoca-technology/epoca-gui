@@ -51,7 +51,7 @@ export class ClassificationTrainingDataComponent implements OnInit, OnDestroy, I
 	// Dataset Insights Visible Rows
 	public visibleFeatures: {[featureName: string]: boolean} = {};
 	public featureColors: string[] = [];
-	public insightRowsPerPage: number = 150;
+	public insightRowsPerPage: number = 100;
 	public insightRowsStart: number = 0;
 	public insightRowsEnd: number = 0;
 	public insight!: ILineChartOptions;
@@ -387,6 +387,15 @@ export class ClassificationTrainingDataComponent implements OnInit, OnDestroy, I
 			this.visibleFeatures[feature] = true;
 			this.chart?.showSeries(feature);
 		}
+	}
+
+
+
+	/**
+	 * Toggles all insight features.
+	 */
+	 public toggleAllInsightFeatures(): void {
+		for (let feature of this._td.trainingDataFeatures) { this.toggleInsightFeature(feature) }
 	}
 
 

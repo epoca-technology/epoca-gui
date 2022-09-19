@@ -29,7 +29,7 @@ export interface IKerasRegressionService {
  * 2) discovery_accuracy: certificates are ordered by the accuracy obtained
  * during the discovery.
  */
-export type IKerasRegressionsOrder = "ebe_points"|"discovery_accuracy";
+export type IKerasRegressionsOrder = "mae"|"mse"|"ebe_points"|"discovery_accuracy";
 
 
 
