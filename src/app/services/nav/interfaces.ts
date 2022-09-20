@@ -2,17 +2,13 @@ import {BehaviorSubject} from "rxjs";
 import {MatDialogRef} from "@angular/material/dialog";
 import {MatBottomSheetRef} from "@angular/material/bottom-sheet";
 import { 
-	IKerasClassificationConfig, 
-	IKerasRegressionConfig, 
-	IModel, 
-	IPrediction, 
-	IXGBClassificationConfig, 
-	IXGBRegressionConfig 
+	IRegressionConfig, 
+	IPrediction,
+	IPredictionModelConfig,
 } from "../../core";
 import {IConfirmationDialogData} from "../../shared/components/confirmation-dialog";
 import {IBottomSheetMenuItem} from "../../shared/components/bottom-sheet-menu";
 import { IDialogMenuItem } from "../../shared/components/dialog-menu";
-import { IClassificationFeaturesConfig } from "../../shared/components/epoch-builder";
 
 
 
@@ -26,14 +22,7 @@ export interface INavService {
 	updatePassword(): Promise<boolean>,
 	candlesticks(): Promise<boolean>,
 	dashboard(): Promise<boolean>,
-	backtests(): Promise<boolean>,
-	classificationTrainingData(): Promise<boolean>,
-	kerasClassifications(): Promise<boolean>,
-	kerasRegressions(): Promise<boolean>,
-	regressionSelection(): Promise<boolean>,
-	xgbClassifications(): Promise<boolean>,
-	xgbRegressions(): Promise<boolean>,
-	classificationSelection(): Promise<boolean>,
+	regressions(): Promise<boolean>,
 	epochs(): Promise<boolean>,
 	guiVersion(version?: string): Promise<boolean>,
 	ipBlacklist(): Promise<boolean>,
@@ -47,11 +36,7 @@ export interface INavService {
 	displayDataDialog(name: string, value: any): MatDialogRef<any>,
 	displayDialogMenu(title: string, items: IDialogMenuItem[]): MatDialogRef<any>,
 	displayTooltip(title: string, content: string|string[]): MatDialogRef<any>,
-	displayModelDialog(model: IModel): MatDialogRef<any>,
-	displayClassificationFeatures(data: IClassificationFeaturesConfig|IClassificationFeaturesConfig|IKerasClassificationConfig|IXGBClassificationConfig): MatDialogRef<any>,
-	displayKerasModelDialog(modelConfig: IKerasRegressionConfig|IKerasClassificationConfig): MatDialogRef<any>,
-	displayXGBModelDialog(modelConfig: IXGBRegressionConfig|IXGBClassificationConfig): MatDialogRef<any>,
-	displayPredictionDialog(model: IModel, prediction: IPrediction, outcome?: boolean): MatDialogRef<any>,
+	displayKerasModelDialog(modelConfig: IRegressionConfig): MatDialogRef<any>,
 	displayModelSelectionDialog(): MatDialogRef<any>,
 	
 	// Bottom Sheets

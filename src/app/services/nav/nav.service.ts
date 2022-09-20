@@ -7,12 +7,9 @@ import {BehaviorSubject, Observable} from "rxjs";
 import {filter} from "rxjs/operators";
 import { environment } from "../../../environments/environment";
 import { 
-	IModel, 
+	IPredictionModelConfig, 
 	IPrediction,
-	IKerasClassificationConfig, 
-	IKerasRegressionConfig, 
-	IXGBClassificationConfig,
-	IXGBRegressionConfig
+	IRegressionConfig, 
 } from "../../core";
 import {AppService} from "../app";
 import {BottomSheetMenuComponent, IBottomSheetMenuItem} from "../../shared/components/bottom-sheet-menu";
@@ -23,11 +20,6 @@ import { ITooltipData, TooltipDialogComponent } from "../../shared/components/to
 import {
 	ModelSelectionDialogComponent,
 	KerasModelDialogComponent,
-	XgbModelDialogComponent,
-	ModelDialogComponent,
-	PredictionDialogComponent,
-	IClassificationFeaturesConfig,
-	ClassificationFeaturesDialogComponent,
 } from "../../shared/components/epoch-builder";
 import {INavService, IRouteState, IRouteStateData} from "./interfaces";
 
@@ -90,14 +82,7 @@ export class NavService implements INavService {
 	public dashboard(): Promise<boolean> { return this.navigate("dashboard") }
 
 	// Epoch Builder
-	public backtests(): Promise<boolean> { return this.navigate("epochBuilder/backtests") }
-	public classificationTrainingData(): Promise<boolean> { return this.navigate("epochBuilder/classificationTrainingData") }
-	public kerasClassifications(): Promise<boolean> { return this.navigate("epochBuilder/kerasClassifications") }
-	public kerasRegressions(): Promise<boolean> { return this.navigate("epochBuilder/kerasRegressions") }
-	public regressionSelection(): Promise<boolean> { return this.navigate("epochBuilder/regressionSelection") }
-	public xgbClassifications(): Promise<boolean> { return this.navigate("epochBuilder/xgbClassifications") }
-	public xgbRegressions(): Promise<boolean> { return this.navigate("epochBuilder/xgbRegressions") }
-	public classificationSelection(): Promise<boolean> { return this.navigate("epochBuilder/classificationSelection") }
+	public regressions(): Promise<boolean> { return this.navigate("epochBuilder/regressions") }
 
 	// Epochs
 	public epochs(): Promise<boolean> { return this.navigate("epochs") }
@@ -249,48 +234,6 @@ export class NavService implements INavService {
 	
 
 
-	
-	
-	/*
-	* Opens the dialog that contains all information about a model.
-	* @param model
-	* @returns MatDialogRef<any>
-	* */
-	public displayModelDialog(model: IModel): MatDialogRef<any> {
-		return this.dialog.open(ModelDialogComponent, {
-			hasBackdrop: true,
-			panelClass: "light-dialog",
-			data: model
-		});
-	}
-
-	
-
-
-
-
-	
-	
-	/*
-	* Opens the dialog that contains the features that belong to a classification.
-	* @param data
-	* @returns MatDialogRef<any>
-	* */
-	public displayClassificationFeatures(
-		data: IClassificationFeaturesConfig|IKerasClassificationConfig|IXGBClassificationConfig
-	): MatDialogRef<any> {
-		return this.dialog.open(ClassificationFeaturesDialogComponent, {
-			hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
-			panelClass: "small-dialog",
-			data: data
-		});
-	}
-
-
-
-
-
-
 
 
 
@@ -299,7 +242,7 @@ export class NavService implements INavService {
 	* @param modelConfig
 	* @returns MatDialogRef<any>
 	* */
-	public displayKerasModelDialog(modelConfig: IKerasRegressionConfig|IKerasClassificationConfig): MatDialogRef<any> {
+	public displayKerasModelDialog(modelConfig: IRegressionConfig): MatDialogRef<any> {
 		return this.dialog.open(KerasModelDialogComponent, {
 			hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
 			panelClass: "medium-dialog",
@@ -310,51 +253,6 @@ export class NavService implements INavService {
 
 
 	
-
-
-
-
-	/*
-	* Opens the dialog that contains all information about a xgboost model.
-	* @param modelConfig
-	* @returns MatDialogRef<any>
-	* */
-	public displayXGBModelDialog(modelConfig: IXGBRegressionConfig|IXGBClassificationConfig): MatDialogRef<any> {
-		return this.dialog.open(XgbModelDialogComponent, {
-			hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
-			panelClass: "medium-dialog",
-			data: modelConfig
-		});
-	}
-
-	
-
-	
-
-
-	
-	
-	/*
-	* Opens the dialog that contains all information about a prediction.
-	* @param model
-	* @param prediction
-	* @param outcome?
-	* @returns MatDialogRef<any>
-	* */
-	public displayPredictionDialog(model: IModel, prediction: IPrediction, outcome?: boolean): MatDialogRef<any> {
-		return this.dialog.open(PredictionDialogComponent, {
-			hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
-			panelClass: "medium-dialog",
-			data: {
-				model: model,
-				prediction: prediction,
-				outcome: outcome
-			}
-		});
-	}
-
-
-
 
 
 

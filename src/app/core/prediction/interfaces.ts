@@ -1,5 +1,5 @@
 // Import component required interfaces
-import { IPredictionResultName, IModel, IModelType } from "../epoch-builder";
+import { IPredictionResultName } from "../epoch-builder";
 
 
 
@@ -13,9 +13,6 @@ export interface IPredictionService {
     
 
 
-
-    // Models
-    getModelTypeName(model: IModel): IModelType,
 }
 
 

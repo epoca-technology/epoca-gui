@@ -1,5 +1,5 @@
 import { Component, Input, Output, OnInit, EventEmitter } from '@angular/core';
-import { IKerasRegressionMetadata, IKerasRegressionTrainingCertificate } from '../../../../core';
+import { IRegressionMetadata, IRegressionTrainingCertificate } from '../../../../core';
 import { ChartService, IBarChartOptions } from '../../../../services';
 import { IKerasTrainingEpochsBarChartComponent } from './interfaces';
 
@@ -13,10 +13,10 @@ import { IKerasTrainingEpochsBarChartComponent } from './interfaces';
 export class KerasTrainingEpochsBarChartComponent implements OnInit, IKerasTrainingEpochsBarChartComponent {
     // Certificates, Backtests or anything
 	private ids: string[] = [];
-    @Input() items!: IKerasRegressionTrainingCertificate[];
+    @Input() items!: IRegressionTrainingCertificate[];
 
 	// Metadata
-	@Input() md!: IKerasRegressionMetadata;
+	@Input() md!: IRegressionMetadata;
 
 	// Epochs View
 	public epochsView!: {

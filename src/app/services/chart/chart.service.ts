@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as moment from 'moment';
 import { ApexAnnotations, ApexChart, ApexPlotOptions, ApexYAxis, ApexAxisChartSeries, ApexXAxis } from 'ng-apexcharts';
-import { IEpochBuilderPosition, ICandlestick, UtilsService } from '../../core';
+import { ICandlestick, UtilsService } from '../../core';
 import { AppService, ILayout } from '../app';
 import { 
 	IApexCandlestick, 
@@ -526,7 +526,7 @@ export class ChartService implements IChartService {
 	 * @param positions
 	 * @returns {colors: string[], values: number[]}
 	 */
-	 public getModelPointsValues(positions: IEpochBuilderPosition[]): {colors: string[], values: number[]} {
+	/*public getModelPointsValues(positions: IEpochBuilderPosition[]): {colors: string[], values: number[]} {
 		let colors: string[] = ['#000000'];
 		let values: number[] = [0];
 		for (let i = 0; i < positions.length; i++) {
@@ -538,7 +538,7 @@ export class ChartService implements IChartService {
 			values.push(positions[i].pts)
 		}
 		return {colors: colors, values: values};
-	}
+	}*/
 
 
 

@@ -15,7 +15,6 @@
             mat-stretch-tabs 
             backgroundColor="primary">
             <mat-tab><ng-template mat-tab-label><mat-icon>feed</mat-icon><span class="show-on-desktop">&nbsp;Summary</span></ng-template></mat-tab>
-            <mat-tab><ng-template mat-tab-label><mat-icon>tune</mat-icon><span class="show-on-desktop">&nbsp;Discovery</span></ng-template></mat-tab>
             <mat-tab><ng-template mat-tab-label><mat-icon>layers</mat-icon><span class="show-on-desktop">&nbsp;Layers</span></ng-template></mat-tab>
         </mat-tab-group>
 
@@ -63,38 +62,6 @@
                 <p class="clickable" role="button"
                 (click)="_nav.displayDataDialog('Metrics', model.summary.metrics)">{{model.summary.metrics[1] || model.summary.metrics[0]}}</p>
             </div>
-
-            <!-- Regression Specific Values -->
-            <div *ngIf="isRegression">
-                <!-- Regression Type -->
-                <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
-                    <p class="light-text truncate">Regression Type</p>
-                    <span fxFlex></span>
-                    <p>{{model.autoregressive ? "Autoregressive": "Single Shot"}}</p>
-                </div>
-            </div>
-
-            <!-- Classification Specific Values -->
-            <div *ngIf="!isRegression">
-                <!-- Training Data -->
-                <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
-                    <p class="light-text truncate">Training Data</p>
-                    <span fxFlex></span>
-                    <p class="clickable" role="button"
-                        [matTooltip]="model.training_data_id"
-                        (click)="_app.copy(model.training_data_id)">{{model.training_data_id | stringOverview: 6}}</p>
-                </div>
-
-                <!-- Price Change Requirement  -->
-                <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
-                    <p class="light-text truncate">Price Change Requirement</p>
-                    <span fxFlex></span>
-                    <p class="clickable" role="button"
-                        matTooltip="The price percentage change that was used to train the Classification.">
-                        {{model.price_change_requirement | number: '1.0-2'}}%
-                    </p>
-                </div>
-            </div>
             
 
             <!-- Network -->
@@ -107,13 +74,12 @@
             </div>
         </div>
 
-        <!-- Discovery -->
-        <div *ngIf="activeIndex == 1" class="tab-content fadeIn padding">
-            <app-discovery-content [discovery]="model.discovery"></app-discovery-content>
-        </div>
+
+
+
 
         <!-- Layers -->
-        <div *ngIf="activeIndex == 2" class="tab-content fadeIn">
+        <div *ngIf="activeIndex == 1" class="tab-content fadeIn">
             <table class="highlight">
                 <thead>
                     <tr>

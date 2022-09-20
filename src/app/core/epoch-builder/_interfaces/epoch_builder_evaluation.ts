@@ -132,11 +132,9 @@ export interface IEpochBuilderEvaluationItemConfig {
 export type IEpochBuilderEvaluationFunction = 
 "evaluateLossImprovement"|
 "evaluateLossVsValLoss"|
-"evaluateAccuracyImprovement"|
-"evaluateAccuracyVsValAccuracy"|
+"evaluateTestDatasetLoss"|
 "evaluatePoints"|
 "evaluateAccuracy"|
-"evaluatePredictionNeutrality"|
 "evaluatePredictionsVsOutcomes";
 
 
@@ -154,23 +152,16 @@ export interface IEpochBuilderEvaluationFunctionParams {
     finalLoss?: number,
     finalValLoss?: number,
 
-    // evaluateAccuracyImprovement
-    firstAccuracy?: number,
-    lastAccuracy?: number,
-
-    // evaluateAccuracyVsValAccuracy
-    finalAccuracy?: number,
-    finalValAccuracy?: number,
+    // evaluateTestDatasetLoss
+    meanAbsoluteError?: number,
+    meanSquaredError?: number,
 
     // evaluatePoints
     receivedPoints?: number,
+    maxReceivablePoints?: number,
 
     // evaluateAccuracy
     accuracy?: number,
-
-    // evaluatePredictionNeutrality
-    neutral?: number,
-    nonNeutral?: number,
 
     // evaluatePredictionsVsOutcomes
     predictions?: number,
@@ -200,10 +191,8 @@ export type IEpochBuilderEvaluationStateClass = "ebe-error"|"ebe-warning"|"ebe-n
 export interface IEpochBuilderEvaluationDescriptions {
     lossImprovement: string,
     lossVsValLoss: string,
-    accuracyImprovement: string,
-    accuracyVsValAccuracy: string,
+    testDatasetLoss: string,
     accuracy: string,
     points: string,
-    predictionNeutrality: string,
     predictionsVsOutcomes: string
 }

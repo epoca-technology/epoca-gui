@@ -18,8 +18,6 @@
                 <td><p>{{hist.val_loss[rowIndex]}}</p></td>
                 <td *ngIf="metricName == 'mean_absolute_error'"><p>{{hist["val_mean_absolute_error"]![rowIndex]}}</p></td>
                 <td *ngIf="metricName == 'mean_squared_error'"><p>{{hist["val_mean_squared_error"]![rowIndex]}}</p></td>
-                <td *ngIf="metricName == 'categorical_accuracy'"><p>{{hist["val_categorical_accuracy"]![rowIndex]}}</p></td>
-                <td *ngIf="metricName == 'binary_accuracy'"><p>{{hist["val_binary_accuracy"]![rowIndex]}}</p></td>
             </tr>
         </tbody>
     </table>

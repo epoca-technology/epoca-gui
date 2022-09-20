@@ -29,8 +29,6 @@ export class KerasTrainingEpochsTableComponent implements OnInit, OnDestroy {
 		// Init the metric name
 		if (this.hist.mean_absolute_error) { this.metricName = "mean_absolute_error" }
 		else if (this.hist.mean_squared_error) { this.metricName = "mean_squared_error" }
-		else if (this.hist.categorical_accuracy) { this.metricName = "categorical_accuracy" }
-		else if (this.hist.binary_accuracy) { this.metricName = "binary_accuracy" }
 	}
 
 	ngOnDestroy(): void {

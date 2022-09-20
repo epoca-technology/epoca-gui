@@ -46,14 +46,8 @@ import {
     DatabaseManagementService,
 
 	// Epoch Builder
-	BacktestService,
-	ClassificationTrainingDataService,
 	EpochBuilderEvaluationService,
-	KerasClassificationService,
-	KerasRegressionService,
-	RegressionSelectionService,
-	XgbClassificationService,
-	XgbRegressionService,
+	RegressionService,
 
 	// External Request
     ExternalRequestService,
@@ -85,7 +79,6 @@ import {
 import {
 	AppService,
 	ChartService,
-	EpochBuilderViewService,
 	ModelSelectionService,
 	NavService,
 	ValidationsService,
@@ -155,14 +148,8 @@ import { AppComponent } from "./app.component";
 		DatabaseManagementService,
 
 		// Epoch Builder
-		BacktestService,
-		ClassificationTrainingDataService,
 		EpochBuilderEvaluationService,
-		KerasClassificationService,
-		KerasRegressionService,
-		RegressionSelectionService,
-		XgbClassificationService,
-		XgbRegressionService,
+		RegressionService,
 
 		// External Request
 		ExternalRequestService,
@@ -192,7 +179,6 @@ import { AppComponent } from "./app.component";
 		/* Services */ 
 		AppService,
         ChartService,
-		EpochBuilderViewService,
 		ModelSelectionService,
 		NavService,
 		ValidationsService,

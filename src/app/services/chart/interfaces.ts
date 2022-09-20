@@ -1,4 +1,4 @@
-import { IEpochBuilderPosition, ICandlestick } from "../../core";
+import { ICandlestick } from "../../core";
 import {
 	ApexAxisChartSeries,
 	ApexChart,
@@ -64,7 +64,7 @@ export interface IChartService {
 	): IPieChartOptions,
 
 	// Misc Helpers
-	getModelPointsValues(positions: IEpochBuilderPosition[]): {colors: string[], values: number[]},
+	//getModelPointsValues(positions: IEpochBuilderPosition[]): {colors: string[], values: number[]},
 	calculateChartHeight(
 		baseHeight: number,
 		increment: number,

@@ -1,0 +1,23 @@
+h4, h5 { margin: 0}
+p {margin:0;}
+
+
+
+// Discovery Prediction Insights
+.increase_insight { color: #004D40!important; .mat-icon { color: #004D40!important; } }
+.decrease_insight { color: #B71C1C!important; .mat-icon { color: #B71C1C!important; } }
+
+
+.discovery-details {
+    .pred-header{ width: 75%!important; }
+}
+
+
+
+/* mobile: sm & xs */
+@media only screen and (max-width: 959px) {
+
+    .discovery-details {
+        .pred-header{ width: 60%!important; }
+    }
+}

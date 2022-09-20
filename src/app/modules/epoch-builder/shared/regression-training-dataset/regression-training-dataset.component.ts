@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { IKerasRegressionTrainingCertificate, IXGBRegressionTrainingCertificate } from 'src/app/core';
+import { IRegressionTrainingCertificate } from 'src/app/core';
 
 @Component({
   selector: 'app-regression-training-dataset',
@@ -7,7 +7,7 @@ import { IKerasRegressionTrainingCertificate, IXGBRegressionTrainingCertificate 
   styleUrls: ['./regression-training-dataset.component.scss']
 })
 export class RegressionTrainingDatasetComponent implements OnInit {
-	@Input() cert!: IKerasRegressionTrainingCertificate|IXGBRegressionTrainingCertificate;
+	@Input() cert!: IRegressionTrainingCertificate;
 	
 	constructor() { }
 

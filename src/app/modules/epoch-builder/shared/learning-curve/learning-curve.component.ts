@@ -52,8 +52,8 @@ export class LearningCurveComponent implements OnInit, ILearningCurveComponent {
 						color: this.curveConfig.type == "loss" ? this.colors.valLoss: this.colors.valAcc 
 					}
 				],
-				stroke: {curve: "straight", dashArray: [0, 5]}
-			}, 320, true
+				stroke: {curve: "straight", width: [3, 3]}
+			}, 400, true
 		);
 
 		// Init the final values

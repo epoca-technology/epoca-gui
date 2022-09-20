@@ -1,5 +1,5 @@
 import { Component, Input, Output, OnInit, EventEmitter } from '@angular/core';
-import { IKerasRegressionMetadata, IKerasRegressionTrainingCertificate } from '../../../../core';
+import { IRegressionMetadata, IRegressionTrainingCertificate } from '../../../../core';
 import { ChartService, IBarChartOptions } from '../../../../services';
 import { IEBEpointsBarChartComponent } from './interfaces';
 
@@ -11,10 +11,10 @@ import { IEBEpointsBarChartComponent } from './interfaces';
 export class EbePointsBarChartComponent implements OnInit, IEBEpointsBarChartComponent {
     // Certificates, Backtests or anything
 	private ids: string[] = [];
-    @Input() items!: IKerasRegressionTrainingCertificate[];
+    @Input() items!: IRegressionTrainingCertificate[];
 
 	// Metadata
-	@Input() md!: IKerasRegressionMetadata;
+	@Input() md!: IRegressionMetadata;
 
 	// EBE Points View
 	public ebePointsView!: {

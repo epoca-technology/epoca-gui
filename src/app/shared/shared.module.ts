@@ -88,19 +88,9 @@ import { DialogMenuComponent } from './components/dialog-menu/dialog-menu.compon
 
 // Epoch Builder
 import {
-	ClassificationFeaturesContentComponent,
-	ClassificationFeaturesDialogComponent,
-	DiscoveryContentComponent,
-	KerasClassificationElementComponent,
 	KerasModelDialogComponent,
-	KerasRegressionElementComponent,
-	ModelContentComponent,
-	ModelDialogComponent,
+	RegressionElementComponent,
 	ModelSelectionDialogComponent,
-	PredictionDialogComponent,
-	XgbClassificationElementComponent,
-	XgbModelDialogComponent,
-	XgbRegressionElementComponent
 } from "./components/epoch-builder"
 
 // Mobile Tabs
@@ -152,18 +142,9 @@ import { TooltipDialogComponent } from './components/tooltip-dialog/tooltip-dial
         DialogMenuComponent,
 
 		// Epoch Builder
-		ClassificationFeaturesContentComponent,
-		ClassificationFeaturesDialogComponent,
-		KerasClassificationElementComponent,
 		KerasModelDialogComponent,
-		KerasRegressionElementComponent,
-		ModelContentComponent,
-		ModelDialogComponent,
+		RegressionElementComponent,
 		ModelSelectionDialogComponent,
-		PredictionDialogComponent,
-		XgbClassificationElementComponent,
-		XgbModelDialogComponent,
-		XgbRegressionElementComponent,
 
 		// Mobile Tabs
 		MobileTabsComponent,
@@ -173,7 +154,6 @@ import { TooltipDialogComponent } from './components/tooltip-dialog/tooltip-dial
 
 		// Tooltip Dialog
 		TooltipDialogComponent,
-   DiscoveryContentComponent,
 	],
 	imports: [
 		CommonModule,
@@ -313,13 +293,7 @@ import { TooltipDialogComponent } from './components/tooltip-dialog/tooltip-dial
         CandlestickBodyComponent,
 
 		// Epoch Builder
-		ClassificationFeaturesContentComponent,
-		DiscoveryContentComponent,
-		KerasClassificationElementComponent,
-		KerasRegressionElementComponent,
-		ModelContentComponent,	
-		XgbClassificationElementComponent,
-		XgbRegressionElementComponent,
+		RegressionElementComponent,
 
 		// Mobile Tabs
         MobileTabsComponent,
