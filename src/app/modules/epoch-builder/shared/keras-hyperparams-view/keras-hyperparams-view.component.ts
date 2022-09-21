@@ -149,7 +149,7 @@ export class KerasHyperparamsViewComponent implements OnInit, OnDestroy, IKerasH
 					{ name: "RMSprop", data: [ this.optimizerCounter["RMSprop"] ] },
 					{ name: "Unknown", data: [ this.optimizerCounter["Unknown"] ] }
 				], 
-				colors: [ "#311B92", "#512DA8", "#9E9E9E" ],
+				colors: [ "#13853e", "#21de6a", "#9E9E9E" ],
 				xaxis: {categories: [ "Optimizer" ], labels: {show: false}},
 				yaxis: {labels: {show: false}},
 				plotOptions: { bar: { horizontal: false, borderRadius: 4, columnWidth: "25%"}},
@@ -168,7 +168,7 @@ export class KerasHyperparamsViewComponent implements OnInit, OnDestroy, IKerasH
 					{ name: "0.0001", data: [ this.learningRateCounter["0.0001"]  ] },
 					{ name: "Unknown", data: [ this.learningRateCounter["Unknown"]  ] }
 				], 
-				colors: [ "#0D47A1", "#1976D2", "#2196F3", "#64B5F6", "#9E9E9E" ],
+				colors: [ "#0e5178", "#408cb8", "#13a1f2", "#9E9E9E" ],
 				xaxis: {categories: [ "Learning Rate" ], labels: {show: false}},
 				yaxis: {labels: {show: false}},
 				plotOptions: { bar: { horizontal: false, borderRadius: 4, columnWidth: "25%"}},
@@ -184,12 +184,32 @@ export class KerasHyperparamsViewComponent implements OnInit, OnDestroy, IKerasH
 		this.loss = this._chart.getBarChartOptions(
 			{
 				series: lossSeries, 
-				colors: [ "#B71C1C", "#D32F2F", "#9E9E9E" ],
+				colors: [ "#B71C1C", "#EF5350", "#9E9E9E" ],
 				xaxis: {categories: [ "Loss" ], labels: {show: false}},
 				yaxis: {labels: {show: false}},
 				plotOptions: { bar: { horizontal: false, borderRadius: 4, columnWidth: "25%"}},
 			}, 
 			[ "Loss" ], 
+			this.gridChartHeight
+		);
+
+
+		// Build the network series hyperparams
+		this.networkSeries = this._chart.getBarChartOptions(
+			{
+				series: [
+					{ name: "S2", data: [ this.networkSeriesCounter["S2"] ] },
+					{ name: "S3", data: [ this.networkSeriesCounter["S3"] ] },
+					{ name: "S4", data: [ this.networkSeriesCounter["S4"] ] },
+					{ name: "S5", data: [ this.networkSeriesCounter["S5"] ] },
+					{ name: "Unknown", data: [ this.networkSeriesCounter["Unknown"] ] }
+				], 
+				colors: [ "#6e4c0e", "#876c3a", "#a36e0b", "#e39b14", "#9E9E9E" ],
+				xaxis: {categories: [ "Network Series" ], labels: {show: false}},
+				yaxis: {labels: {show: false}},
+				plotOptions: { bar: { horizontal: false, borderRadius: 4, columnWidth: "40%"}},
+			}, 
+			[ "Network Series" ], 
 			this.gridChartHeight
 		)
 
@@ -206,34 +226,14 @@ export class KerasHyperparamsViewComponent implements OnInit, OnDestroy, IKerasH
 					{ name: "CLSTM_MP", data: [ this.networkTypeCounter["CLSTM_MP"] ] },
 					{ name: "Unknown", data: [ this.networkTypeCounter["Unknown"] ] }
 				], 
-				colors: [ "#004D40", "#00695C", "#00796B", "#00897B", "#009688", "#26A69A", "#9E9E9E" ],
+				colors: [ "#2f0f63", "#5c3c91", "#4b0bb3", "#7b40db", "#6207f5", "#CE93D8", "#9E9E9E" ],
 				xaxis: {categories: [ "Network Type" ], labels: {show: false}},
 				yaxis: {labels: {show: false}},
 				plotOptions: { bar: { horizontal: false, borderRadius: 4, columnWidth: "20%"}},
 			}, 
 			[ "Network Type" ], 
 			180
-		)
-
-
-		// Build the network series hyperparams
-		this.networkSeries = this._chart.getBarChartOptions(
-			{
-				series: [
-					{ name: "S2", data: [ this.networkSeriesCounter["S2"] ] },
-					{ name: "S3", data: [ this.networkSeriesCounter["S3"] ] },
-					{ name: "S4", data: [ this.networkSeriesCounter["S4"] ] },
-					{ name: "S5", data: [ this.networkSeriesCounter["S5"] ] },
-					{ name: "Unknown", data: [ this.networkSeriesCounter["Unknown"] ] }
-				], 
-				colors: [ "#1B5E20", "#388E3C", "#4CAF50", "#81C784", "#9E9E9E" ],
-				xaxis: {categories: [ "Network Series" ], labels: {show: false}},
-				yaxis: {labels: {show: false}},
-				plotOptions: { bar: { horizontal: false, borderRadius: 4, columnWidth: "40%"}},
-			}, 
-			[ "Network Series" ], 
-			this.gridChartHeight
-		)
+		);
 
 		// Build the network capacity hyperparams
 		let capacityIDs: string[] = [];

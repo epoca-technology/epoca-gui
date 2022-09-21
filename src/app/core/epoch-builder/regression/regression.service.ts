@@ -205,7 +205,7 @@ export class RegressionService implements IKerasRegressionService {
 						evaluationFunction: "evaluateTestDatasetLoss",
 						evaluationParams: {
 							meanAbsoluteError: c.test_ds_evaluation.mean_absolute_error,
-							maxPoints: 26
+							maxPoints: 30
 						}
 					},
 					{
@@ -214,7 +214,7 @@ export class RegressionService implements IKerasRegressionService {
 						evaluationFunction: "evaluateTestDatasetLoss",
 						evaluationParams: {
 							meanSquaredError: c.test_ds_evaluation.mean_squared_error,
-							maxPoints: 26
+							maxPoints: 30
 						}
 					}
 				]
@@ -232,7 +232,7 @@ export class RegressionService implements IKerasRegressionService {
 							maxReceivablePoints: Math.floor(
 								(c.discovery.increase_outcome_num + c.discovery.decrease_outcome_num - c.discovery.neutral_outcome_num) * 0.5
 							),
-							maxPoints: 18
+							maxPoints: 15
 						}
 					},
 					{
@@ -241,7 +241,7 @@ export class RegressionService implements IKerasRegressionService {
 						evaluationFunction: "evaluateAccuracy",
 						evaluationParams: {
 							accuracy: c.discovery.increase_accuracy,
-							maxPoints: 2
+							maxPoints: 1.5
 						}
 					},
 					{
@@ -250,7 +250,7 @@ export class RegressionService implements IKerasRegressionService {
 						evaluationFunction: "evaluateAccuracy",
 						evaluationParams: {
 							accuracy: c.discovery.decrease_accuracy,
-							maxPoints: 2
+							maxPoints: 1.5
 						}
 					},
 					{
@@ -269,7 +269,7 @@ export class RegressionService implements IKerasRegressionService {
 						evaluationParams: {
 							predictions: c.discovery.increase_num,
 							outcomes: c.discovery.increase_outcome_num,
-							maxPoints: 2.5
+							maxPoints: 2.75
 						}
 					},
 					{
@@ -279,7 +279,7 @@ export class RegressionService implements IKerasRegressionService {
 						evaluationParams: {
 							predictions: c.discovery.decrease_num,
 							outcomes: c.discovery.decrease_outcome_num,
-							maxPoints: 2.5
+							maxPoints: 2.75
 						}
 					}
 				]
@@ -295,7 +295,7 @@ export class RegressionService implements IKerasRegressionService {
 						evaluationParams: {
 							firstLoss: c.training_history.loss[0],
 							lastLoss: c.training_history.loss[c.training_history.loss.length - 1],
-							maxPoints: 1
+							maxPoints: 0.25
 						}
 					},
 					{
@@ -305,7 +305,7 @@ export class RegressionService implements IKerasRegressionService {
 						evaluationParams: {
 							firstLoss: c.training_history.val_loss[0],
 							lastLoss: c.training_history.val_loss[c.training_history.val_loss.length - 1],
-							maxPoints: 1
+							maxPoints: 0.25
 						}
 					},
 					{
@@ -315,7 +315,7 @@ export class RegressionService implements IKerasRegressionService {
 						evaluationParams: {
 							finalLoss: c.training_history.loss[c.training_history.loss.length - 1],
 							finalValLoss: c.training_history.val_loss[c.training_history.val_loss.length - 1],
-							maxPoints: 1
+							maxPoints: 0.25
 						}
 					},
 					{
@@ -325,7 +325,7 @@ export class RegressionService implements IKerasRegressionService {
 						evaluationParams: {
 							firstLoss: metricLoss[0],
 							lastLoss: metricLoss[metricLoss.length - 1],
-							maxPoints: 1
+							maxPoints: 0.25
 						}
 					},
 					{
@@ -335,7 +335,7 @@ export class RegressionService implements IKerasRegressionService {
 						evaluationParams: {
 							firstLoss: metricValLoss[0],
 							lastLoss: metricValLoss[metricValLoss.length - 1],
-							maxPoints: 1
+							maxPoints: 0.25
 						}
 					},
 					{
@@ -345,7 +345,7 @@ export class RegressionService implements IKerasRegressionService {
 						evaluationParams: {
 							finalLoss: metricLoss[metricLoss.length - 1],
 							finalValLoss: metricValLoss[metricValLoss.length - 1],
-							maxPoints: 1
+							maxPoints: 0.25
 						}
 					}
 				]
