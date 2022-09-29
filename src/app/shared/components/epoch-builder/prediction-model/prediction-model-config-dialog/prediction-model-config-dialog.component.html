@@ -1,0 +1,56 @@
+<mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <button mat-icon-button class="show-on-mobile" (click)="close()"><mat-icon>arrow_back</mat-icon></button>
+        <span class="truncate">{{model.id}}</span>
+        <span fxFlex></span>
+        <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
+    </div>
+</mat-toolbar>
+<div mat-dialog-content>
+    <div class="model-content">
+        <!-- Price Change Requirement -->
+        <div fxLayout="row" fxLayoutAlign="start center">
+            <p class="light-text">Target</p>
+            <span fxFlex></span>
+            <p class="formula" 
+                matTooltip="The price change requirement that was used to tune the model. This value can also be interpreted as the model's target.">
+                <span class="success-color"><mat-icon>north_east</mat-icon> {{model.price_change_requirement}}%</span>&nbsp;&nbsp;<span class="error-color"><mat-icon>south_east</mat-icon> {{model.price_change_requirement}}%</span>
+            </p>
+        </div>
+
+        <!-- Min Sum Function -->
+        <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+            <p class="light-text truncate">Min. Sum Function</p>
+            <span fxFlex></span>
+            <p class="formula" 
+                matTooltip="The function to be used in order to determine the minimum sums required by the interpreter">
+                {{model.min_sum_function}}
+            </p>
+        </div>
+
+        <!-- Interpreter -->
+        <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+            <p class="light-text truncate">Interpreter</p>
+            <span fxFlex></span>
+            <p class="formula" 
+                matTooltip="SUM(min_increase_sum, min_decrease_sum): The minimum features sum required in order to generate a non-neutral prediction.">
+                SUM(<span class="success-color"><mat-icon>trending_up</mat-icon> {{model.min_increase_sum | number: '1.0-2'}}</span>, <span class="error-color"><mat-icon>trending_down</mat-icon> {{model.min_decrease_sum | number: '1.0-2'}}</span>)
+            </p>
+        </div>
+
+        <!-- Min Sum Function -->
+        <div class="margin-top" fxLayout="row" fxLayoutAlign="start start">
+            <p class="light-text truncate show-on-desktop">Regressions ({{model.regressions.length}})</p>
+            <p class="light-text truncate show-on-mobile">Reg.</p>
+            <span fxFlex></span>
+            <div class="regressions-container">
+                <div *ngFor="let regr of model.regressions">
+                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutAlign.xs="center center" fxLayoutAlign.sm="center center" class="regression">
+                        <img src="assets/img/model_logos/Regression.png" alt="Model Type" class="model-logo-xs">
+                        <app-regression-element [config]="regr"></app-regression-element>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

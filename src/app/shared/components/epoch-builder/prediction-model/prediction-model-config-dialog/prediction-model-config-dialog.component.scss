@@ -1,0 +1,39 @@
+
+
+.model-content {
+    padding:15px;
+    p {margin:0;}
+
+    .margin-top {margin-top:25px!important;}
+    .smt{ margin-top:10px}
+    .smt{ margin-top:7px}
+
+    .regressions-container {
+        .regression { 
+            margin: 10px 0 10px 0;
+            img { margin-right:3px;}
+        }
+        .regression:first-child { margin: 0 0 10px 0!important;}
+        .regression:last-child { margin: 10px 0 0 0}
+    }
+}
+
+
+
+
+
+
+/* Responsiveness */
+
+
+/* mobile: sm & xs */
+@media only screen and (max-width: 959px) {
+
+}
+
+
+
+/* desktop: md */
+@media only screen and (min-width: 960px) {
+
+}

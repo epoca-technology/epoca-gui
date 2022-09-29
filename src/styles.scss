@@ -773,7 +773,7 @@ form .mat-checkbox-inner-container{
 /* Model Content */
 .pred-model-header {
 	margin: 0;
-	h5 { margin:0!important; padding:0;font-size:17px!important;}
+	h5 { margin:0!important; padding:0;font-size:17px!important;max-width:80%}
 	p { margin:0; }
 	.model-type { color: var(--light-text-color); font-size:13px!important; }
 	img { max-width:40px; margin-right:7px;}
@@ -833,6 +833,10 @@ form .mat-checkbox-inner-container{
 .val-acc-bg { background-color: #004D40!important; }
 
 
+
+// Discovery Prediction Insights
+.increase_insight { color: #004D40!important; .mat-icon { color: #004D40!important; } }
+.decrease_insight { color: #B71C1C!important; .mat-icon { color: #B71C1C!important; } }
 
 
 // Model Logo

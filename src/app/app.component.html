@@ -104,6 +104,17 @@
                 </button>
             </mat-list-item>
 
+            <!-- Prediction Model Certificates -->
+            <mat-list-item *ngIf="builderExpanded" class="active-sub-menu">
+                <button mat-button (click)="_nav.predictionModels()" [disabled]="state.subModule == 'predictionModels'">
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <span>Prediction Models</span>
+                        <span fxFlex></span>
+                        <img src="assets/img/model_logos/PredictionModel.png" alt="Model Logo" class="small-model-logo">
+                    </div>
+                </button>
+            </mat-list-item>
+
 
 
             <!-- PGAdmin -->

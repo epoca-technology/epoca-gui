@@ -91,6 +91,10 @@ import {
 	KerasModelDialogComponent,
 	RegressionElementComponent,
 	ModelSelectionDialogComponent,
+	PredictionModelConfigDialogComponent,
+	PredictionModelElementComponent,
+	PredictionModelContentComponent,
+	PredictionDialogComponent
 } from "./components/epoch-builder"
 
 // Mobile Tabs
@@ -101,6 +105,7 @@ import { RefreshButtonComponent } from './components/refresh-button/refresh-butt
 
 // Tooltip Dialog
 import { TooltipDialogComponent } from './components/tooltip-dialog/tooltip-dialog.component';
+
 
 
 
@@ -145,6 +150,10 @@ import { TooltipDialogComponent } from './components/tooltip-dialog/tooltip-dial
 		KerasModelDialogComponent,
 		RegressionElementComponent,
 		ModelSelectionDialogComponent,
+		PredictionModelContentComponent,
+		PredictionModelConfigDialogComponent,
+		PredictionModelElementComponent,
+		PredictionDialogComponent,
 
 		// Mobile Tabs
 		MobileTabsComponent,
@@ -294,6 +303,8 @@ import { TooltipDialogComponent } from './components/tooltip-dialog/tooltip-dial
 
 		// Epoch Builder
 		RegressionElementComponent,
+		PredictionModelElementComponent,
+		PredictionModelContentComponent,
 
 		// Mobile Tabs
         MobileTabsComponent,

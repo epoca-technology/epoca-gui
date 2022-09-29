@@ -20,6 +20,9 @@ import { ITooltipData, TooltipDialogComponent } from "../../shared/components/to
 import {
 	ModelSelectionDialogComponent,
 	KerasModelDialogComponent,
+	PredictionModelConfigDialogComponent,
+	PredictionDialogComponent,
+	IPredictionDialogData
 } from "../../shared/components/epoch-builder";
 import {INavService, IRouteState, IRouteStateData} from "./interfaces";
 
@@ -83,6 +86,7 @@ export class NavService implements INavService {
 
 	// Epoch Builder
 	public regressions(): Promise<boolean> { return this.navigate("epochBuilder/regressions") }
+	public predictionModels(): Promise<boolean> { return this.navigate("epochBuilder/predictionModels") }
 
 	// Epochs
 	public epochs(): Promise<boolean> { return this.navigate("epochs") }
@@ -276,6 +280,45 @@ export class NavService implements INavService {
 
 
 
+
+
+	/*
+	* Opens the dialog that contains all information about a prediction model.
+	* @param modelConfig
+	* @returns MatDialogRef<any>
+	* */
+	public displayPredictionModelConfigDialog(modelConfig: IPredictionModelConfig): MatDialogRef<any> {
+		return this.dialog.open(PredictionModelConfigDialogComponent, {
+			hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
+			panelClass: "medium-dialog",
+			data: modelConfig
+		});
+	}
+
+
+
+
+
+
+
+	/*
+	* Opens the dialog that contains all information about a prediction.
+	* @param model
+	* @param pred
+	* @param outcome?
+	* @returns MatDialogRef<any>
+	* */
+	public displayPredictionDialog(model: IPredictionModelConfig, pred: IPrediction, outcome?: boolean): MatDialogRef<any> {
+		return this.dialog.open(PredictionDialogComponent, {
+			hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
+			panelClass: "medium-dialog",
+			data: <IPredictionDialogData> {
+				model: model,
+				prediction: pred,
+				outcome: outcome
+			}
+		});
+	}
 
 	
 	

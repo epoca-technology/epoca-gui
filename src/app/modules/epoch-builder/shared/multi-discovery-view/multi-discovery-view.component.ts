@@ -1,6 +1,6 @@
 import { Component, Input, Output, OnInit, OnDestroy, EventEmitter } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { IRegressionMetadata } from '../../../../core';
+import { IPredictionModelMetadata, IRegressionMetadata } from '../../../../core';
 import { AppService, ChartService, IBarChartOptions, ILayout } from '../../../../services';
 import { IMultiDiscoveryViewComponent, IDiscoveryRecord } from './interfaces';
 
@@ -20,7 +20,7 @@ export class MultiDiscoveryViewComponent implements OnInit, OnDestroy, IMultiDis
     @Input() items!: IDiscoveryRecord[];
 
 	// Metadata
-	@Input() md!: IRegressionMetadata;
+	@Input() md!: IRegressionMetadata|IPredictionModelMetadata;
 
 	// Discovery View
 	public discoveryView!: {

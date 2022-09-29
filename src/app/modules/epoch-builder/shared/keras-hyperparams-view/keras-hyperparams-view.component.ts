@@ -120,9 +120,9 @@ export class KerasHyperparamsViewComponent implements OnInit, OnDestroy, IKerasH
 			else { this.lossCounter["Unknown"] += 1 }
 
 			// Update the network type
-			if (cert.id.includes("DNN")) { this.networkTypeCounter["DNN"] += 1 }
-			else if (cert.id.includes("CDNN_MP")) { this.networkTypeCounter["CDNN_MP"] += 1 }
+			if (cert.id.includes("CDNN_MP")) { this.networkTypeCounter["CDNN_MP"] += 1 }
 			else if (cert.id.includes("CDNN")) { this.networkTypeCounter["CDNN"] += 1 }
+			else if (cert.id.includes("DNN")) { this.networkTypeCounter["DNN"] += 1 }
 			else if (cert.id.includes("CLSTM_MP")) { this.networkTypeCounter["CLSTM_MP"] += 1 }
 			else if (cert.id.includes("CLSTM")) { this.networkTypeCounter["CLSTM"] += 1 }
 			else if (cert.id.includes("LSTM")) { this.networkTypeCounter["LSTM"] += 1 }

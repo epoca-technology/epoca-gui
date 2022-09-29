@@ -47,6 +47,7 @@ import {
 
 	// Epoch Builder
 	EpochBuilderEvaluationService,
+	PredictionModelService,
 	RegressionService,
 
 	// External Request
@@ -149,6 +150,7 @@ import { AppComponent } from "./app.component";
 
 		// Epoch Builder
 		EpochBuilderEvaluationService,
+		PredictionModelService,
 		RegressionService,
 
 		// External Request

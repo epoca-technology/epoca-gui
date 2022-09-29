@@ -1,5 +1,27 @@
 <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" fxLayoutAlign="start start" class="full-width">
     <div fxFlex="55" fxFlex.xs="100" fxFlex.sm="100">
+        <!-- Network Type -->
+        <div class="full-width">
+            <div class="desktop-card">
+                <h4>Network Type</h4>
+                <div>
+                    <apx-chart
+                        [series]="networkType.series"
+                        [chart]="networkType.chart"
+                        [plotOptions]="networkType.plotOptions"
+                        [xaxis]="networkType.xaxis"
+                        [yaxis]="networkType.yaxis"
+                        [dataLabels]="networkType.dataLabels"
+                        [colors]="networkType.colors"
+                        [grid]="networkType.grid"
+                        [legend]="{show: true, position: 'bottom'}"
+                    ></apx-chart>
+                </div>
+            </div>
+        </div>
+
+        <div class="divider show-on-mobile"></div>
+
         <!-- Optimizer & Learning Rate-->
         <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" fxLayoutAlign="start start" class="full-width">
             <!-- Optimizer-->
@@ -103,26 +125,6 @@
     <div class="divider show-on-mobile"></div>
 
     <div fxFlex="43" fxFlex.xs="100" fxFlex.sm="100">
-        <!-- Network Type -->
-        <div class="desktop-card">
-            <h4>Network Type</h4>
-            <div>
-                <apx-chart
-                    [series]="networkType.series"
-                    [chart]="networkType.chart"
-                    [plotOptions]="networkType.plotOptions"
-                    [xaxis]="networkType.xaxis"
-                    [yaxis]="networkType.yaxis"
-                    [dataLabels]="networkType.dataLabels"
-                    [colors]="networkType.colors"
-                    [grid]="networkType.grid"
-                    [legend]="{show: true, position: 'bottom'}"
-                ></apx-chart>
-            </div>
-        </div>
-
-        <div class="divider show-on-mobile"></div>
-
         <!-- Network Capacity -->
         <div class="desktop-card">
             <h4>Network Capacity</h4>

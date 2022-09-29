@@ -132,7 +132,7 @@ export class DiscoveryViewComponent implements OnInit, OnDestroy, IDiscoveryView
 		this.activeInsight = this.predictionInsights[index];
 
 		// Retrieve the list of predictions
-		const preds: number[] = this.getPredictions();
+		const preds: number[] = this.getPredictions().map((p) => <number>this._utils.outputNumber(p));
 
 		// Build the chart
 		this.predictionInsightChart = this._chart.getLineChartOptions(

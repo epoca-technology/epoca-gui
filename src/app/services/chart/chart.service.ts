@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as moment from 'moment';
 import { ApexAnnotations, ApexChart, ApexPlotOptions, ApexYAxis, ApexAxisChartSeries, ApexXAxis } from 'ng-apexcharts';
-import { ICandlestick, UtilsService } from '../../core';
+import { IBacktestPosition, ICandlestick, UtilsService } from '../../core';
 import { AppService, ILayout } from '../app';
 import { 
 	IApexCandlestick, 
@@ -409,7 +409,8 @@ export class ChartService implements IChartService {
 		config: Partial<IScatterChartOptions>, 
 		height?: number, 
 		disableNiceScale?: boolean, 
-		range?: IChartRange
+		range?: IChartRange,
+		colors?: string[]
    ): IScatterChartOptions {
 	   // Init the default chart
 	   let defaultChart: ApexChart = {height: 600, type: 'scatter',animations: { enabled: false}, toolbar: {show: false}, zoom: {enabled: false}};
@@ -435,7 +436,8 @@ export class ChartService implements IChartService {
 		   chart: config.chart ? config.chart: defaultChart,
 		   xaxis: config.xaxis ? config.xaxis: {labels: { show: false }, axisTicks: {show: false} },
 		   yaxis: yaxis || {},
-		   dataLabels: config.dataLabels ? config.dataLabels: {enabled: false}
+		   dataLabels: config.dataLabels ? config.dataLabels: {enabled: false},
+		   colors: colors || []
 	   }
    }
 
@@ -526,19 +528,20 @@ export class ChartService implements IChartService {
 	 * @param positions
 	 * @returns {colors: string[], values: number[]}
 	 */
-	/*public getModelPointsValues(positions: IEpochBuilderPosition[]): {colors: string[], values: number[]} {
-		let colors: string[] = ['#000000'];
-		let values: number[] = [0];
+	public getModelBalanceHistoryData(positions: IBacktestPosition[]): {colors: string[], values: number[]} {
+		let colors: string[] = [];
+		let values: number[] = [];
 		for (let i = 0; i < positions.length; i++) {
 			if (positions[i].t == 1) { 
 				colors.push(this.upwardColor);
 			} else { 
 				colors.push(this.downwardColor);
 			}
-			values.push(positions[i].pts)
+			values.push(<number>this._utils.outputNumber(positions[i].b))
 		}
 		return {colors: colors, values: values};
-	}*/
+	}
+
 
 
 

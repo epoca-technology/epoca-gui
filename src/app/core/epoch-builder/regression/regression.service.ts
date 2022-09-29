@@ -3,7 +3,7 @@ import { FileService } from '../../file';
 import { EpochBuilderEvaluationService } from '../epoch-builder-evaluation';
 import { EpochBuilderMetadataService, IEpochBuilderMetadataService } from '../epoch-builder-metadata';
 import { IRegressionTrainingCertificate, IEpochBuilderEvaluation } from '../_interfaces';
-import { IKerasRegressionService, IRegressionMetadata, IRegressionsOrder } from './interfaces';
+import { IRegressionService, IRegressionMetadata, IRegressionsOrder } from './interfaces';
 
 
 
@@ -12,7 +12,7 @@ import { IKerasRegressionService, IRegressionMetadata, IRegressionsOrder } from 
 @Injectable({
   providedIn: 'root'
 })
-export class RegressionService implements IKerasRegressionService {
+export class RegressionService implements IRegressionService {
 	// The list of certificate ids
 	public ids!: string[];
 	
@@ -119,7 +119,7 @@ export class RegressionService implements IKerasRegressionService {
 	 * @param event 
 	 * @param order
 	 * @param limit
-	 * @returns Promise<IKerasRegressionTrainingCertificate[]>
+	 * @returns Promise<IRegressionTrainingCertificate[]>
 	 */
 	 private async getCertificates(
 		event: any|string, 
@@ -205,7 +205,7 @@ export class RegressionService implements IKerasRegressionService {
 						evaluationFunction: "evaluateTestDatasetLoss",
 						evaluationParams: {
 							meanAbsoluteError: c.test_ds_evaluation.mean_absolute_error,
-							maxPoints: 30
+							maxPoints: 35
 						}
 					},
 					{
@@ -214,7 +214,7 @@ export class RegressionService implements IKerasRegressionService {
 						evaluationFunction: "evaluateTestDatasetLoss",
 						evaluationParams: {
 							meanSquaredError: c.test_ds_evaluation.mean_squared_error,
-							maxPoints: 30
+							maxPoints: 35
 						}
 					}
 				]
@@ -232,7 +232,7 @@ export class RegressionService implements IKerasRegressionService {
 							maxReceivablePoints: Math.floor(
 								(c.discovery.increase_outcome_num + c.discovery.decrease_outcome_num - c.discovery.neutral_outcome_num) * 0.5
 							),
-							maxPoints: 15
+							maxPoints: 13.5
 						}
 					},
 					{
@@ -241,7 +241,7 @@ export class RegressionService implements IKerasRegressionService {
 						evaluationFunction: "evaluateAccuracy",
 						evaluationParams: {
 							accuracy: c.discovery.increase_accuracy,
-							maxPoints: 1.5
+							maxPoints: 1
 						}
 					},
 					{
@@ -250,7 +250,7 @@ export class RegressionService implements IKerasRegressionService {
 						evaluationFunction: "evaluateAccuracy",
 						evaluationParams: {
 							accuracy: c.discovery.decrease_accuracy,
-							maxPoints: 1.5
+							maxPoints: 1
 						}
 					},
 					{
@@ -259,7 +259,7 @@ export class RegressionService implements IKerasRegressionService {
 						evaluationFunction: "evaluateAccuracy",
 						evaluationParams: {
 							accuracy: c.discovery.accuracy,
-							maxPoints: 15
+							maxPoints: 10
 						}
 					},
 					{
@@ -269,7 +269,7 @@ export class RegressionService implements IKerasRegressionService {
 						evaluationParams: {
 							predictions: c.discovery.increase_num,
 							outcomes: c.discovery.increase_outcome_num,
-							maxPoints: 2.75
+							maxPoints: 1.5
 						}
 					},
 					{
@@ -279,7 +279,7 @@ export class RegressionService implements IKerasRegressionService {
 						evaluationParams: {
 							predictions: c.discovery.decrease_num,
 							outcomes: c.discovery.decrease_outcome_num,
-							maxPoints: 2.75
+							maxPoints: 1.5
 						}
 					}
 				]

@@ -1,6 +1,6 @@
-<div class="badged-header padding" fxLayout="row" fxLayoutAlign="start center">
-    <h4 class="truncate">{{curveConfig.name}}</h4>
-    <span fxFlex></span>
+<div class="badged-header padding" fxLayout="row" fxLayoutAlign="center center">
+    <h4 class="truncate show-on-desktop">{{curveConfig.name}}</h4>
+    <span fxFlex class="show-on-desktop"></span>
     <div class="square-badge" 
         [ngClass]="{'train-loss-bg': curveConfig.type == 'loss', 'train-acc-bg': curveConfig.type == 'accuracy'}" 
         matTooltip="Final Train Value">

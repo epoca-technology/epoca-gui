@@ -8,7 +8,7 @@
                 <div class="margin-left">
                     <h5 style="margin-bottom:5px;">{{modelName}}</h5>
                     <app-regression-element *ngIf="modelName == 'Regression'" [config]="modelConfig"></app-regression-element>
-                    <!--<app-prediction-model-element *ngIf="modelName == 'PredictionModel'" [config]="modelConfig"></app-prediction-model-element>-->
+                    <app-prediction-model-element *ngIf="modelName == 'PredictionModel'" [config]="modelConfig"></app-prediction-model-element>
                 </div>
             </div>
         </div>

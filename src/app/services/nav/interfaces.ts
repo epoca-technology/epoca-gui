@@ -23,6 +23,7 @@ export interface INavService {
 	candlesticks(): Promise<boolean>,
 	dashboard(): Promise<boolean>,
 	regressions(): Promise<boolean>,
+	predictionModels(): Promise<boolean>,
 	epochs(): Promise<boolean>,
 	guiVersion(version?: string): Promise<boolean>,
 	ipBlacklist(): Promise<boolean>,
@@ -38,6 +39,8 @@ export interface INavService {
 	displayTooltip(title: string, content: string|string[]): MatDialogRef<any>,
 	displayKerasModelDialog(modelConfig: IRegressionConfig): MatDialogRef<any>,
 	displayModelSelectionDialog(): MatDialogRef<any>,
+	displayPredictionModelConfigDialog(modelConfig: IPredictionModelConfig): MatDialogRef<any>
+	displayPredictionDialog(model: IPredictionModelConfig, pred: IPrediction, outcome?: boolean): MatDialogRef<any>
 	
 	// Bottom Sheets
 	displayBottomSheetMenu(data: IBottomSheetMenuItem[]): MatBottomSheetRef<any>,

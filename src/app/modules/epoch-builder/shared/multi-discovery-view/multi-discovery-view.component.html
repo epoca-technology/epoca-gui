@@ -182,23 +182,23 @@
                     <div *ngIf="activeDiscoverySuccessfulPredictionsBadge == 0" class="square-badge-success clickable" role="button"
                         (click)="_activateModel(md.discoverySuccessfulIncreaseMean.highest.id)"
                         matTooltip="Highest Increase Successful Mean: {{md.discoverySuccessfulIncreaseMean.highest.id}}">
-                        High: {{md.discoverySuccessfulIncreaseMean.highest.value}}%
+                        High: {{md.discoverySuccessfulIncreaseMean.highest.value | number: '1.0-2'}}
                     </div>
                     <div *ngIf="activeDiscoverySuccessfulPredictionsBadge == 0" class="square-badge-success clickable worst-value" role="button"
                         (click)="_activateModel(md.discoverySuccessfulIncreaseMean.lowest.id)"
                         matTooltip="Lowest Increase Successful Mean: {{md.discoverySuccessfulIncreaseMean.lowest.id}}">
-                        Low: {{md.discoverySuccessfulIncreaseMean.lowest.value}}%
+                        Low: {{md.discoverySuccessfulIncreaseMean.lowest.value | number: '1.0-2'}}
                     </div>
-                    <!-- Decrease Predictions -->
+                    <!-- Decrease Successful Mean -->
                     <div *ngIf="activeDiscoverySuccessfulPredictionsBadge == 1" class="square-badge-error clickable" role="button"
                         (click)="_activateModel(md.discoverySuccessfulDecreaseMean.highest.id)"
                         matTooltip="Highest Decrease Successful Mean: {{md.discoverySuccessfulDecreaseMean.highest.id}}">
-                        High: {{md.discoverySuccessfulDecreaseMean.highest.value}}%
+                        High: {{md.discoverySuccessfulDecreaseMean.highest.value | number: '1.0-2'}}
                     </div>
                     <div *ngIf="activeDiscoverySuccessfulPredictionsBadge == 1" class="square-badge-error clickable worst-value" role="button"
                         (click)="_activateModel(md.discoverySuccessfulDecreaseMean.lowest.id)"
                         matTooltip="Lowest Decrease Successful Mean: {{md.discoverySuccessfulDecreaseMean.lowest.id}}">
-                        Low: {{md.discoverySuccessfulDecreaseMean.lowest.value}}%
+                        Low: {{md.discoverySuccessfulDecreaseMean.lowest.value | number: '1.0-2'}}
                     </div>
                     <button mat-icon-button 
                             [disabled]="activeDiscoverySuccessfulPredictionsBadge == 1" 
@@ -237,12 +237,12 @@
                         <div class="square-badge-success clickable" role="button"
                             (click)="_activateModel(md.discoveryIncreaseMean.highest.id)"
                             matTooltip="Highest Discovery Increase Mean: {{md.discoveryIncreaseMean.highest.id}}">
-                            High: {{md.discoveryIncreaseMean.highest.value | number: '1.0-2'}}%
+                            High: {{md.discoveryIncreaseMean.highest.value | number: '1.0-2'}}
                         </div>
                         <div class="square-badge-success clickable worst-value" role="button"
                             (click)="_activateModel(md.discoveryIncreaseMean.lowest.id)"
                             matTooltip="Lowest Discovery Increase Mean: {{md.discoveryIncreaseMean.lowest.id}}">
-                            Low: {{md.discoveryIncreaseMean.lowest.value | number: '1.0-2'}}%
+                            Low: {{md.discoveryIncreaseMean.lowest.value | number: '1.0-2'}}
                         </div>
                     </div>
                     <div class="margin-top">
@@ -274,12 +274,12 @@
                         <div class="square-badge-error clickable" role="button"
                             (click)="_activateModel(md.discoveryDecreaseMean.highest.id)"
                             matTooltip="Highest Discovery Decrease Mean: {{md.discoveryDecreaseMean.highest.id}}">
-                            High: {{md.discoveryDecreaseMean.highest.value | number: '1.0-2'}}%
+                            High: {{md.discoveryDecreaseMean.highest.value | number: '1.0-2'}}
                         </div>
                         <div class="square-badge-error clickable worst-value" role="button"
                             (click)="_activateModel(md.discoveryDecreaseMean.lowest.id)"
                             matTooltip="Lowest Discovery Decrease Mean: {{md.discoveryDecreaseMean.lowest.id}}">
-                            Low: {{md.discoveryDecreaseMean.lowest.value | number: '1.0-2'}}%
+                            Low: {{md.discoveryDecreaseMean.lowest.value | number: '1.0-2'}}
                         </div>
                     </div>
                     <div class="margin-top">

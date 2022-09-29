@@ -4,7 +4,7 @@ import { IEpochBuilderMetadata } from "../epoch-builder-metadata";
 
 
 // Service
-export interface IKerasRegressionService {
+export interface IRegressionService {
     // Properties
     ids: string[],
     certificates: IRegressionTrainingCertificate[],

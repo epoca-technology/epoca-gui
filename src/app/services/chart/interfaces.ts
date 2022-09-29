@@ -1,4 +1,4 @@
-import { ICandlestick } from "../../core";
+import { IBacktestPosition, ICandlestick } from "../../core";
 import {
 	ApexAxisChartSeries,
 	ApexChart,
@@ -53,7 +53,8 @@ export interface IChartService {
 		config: Partial<IScatterChartOptions>, 
 		height?: number, 
 		disableNiceScale?: boolean, 
-		range?: IChartRange
+		range?: IChartRange,
+		colors?: string[]
    ): IScatterChartOptions,
 
 	// Pie Chart
@@ -64,7 +65,7 @@ export interface IChartService {
 	): IPieChartOptions,
 
 	// Misc Helpers
-	//getModelPointsValues(positions: IEpochBuilderPosition[]): {colors: string[], values: number[]},
+	getModelBalanceHistoryData(positions: IBacktestPosition[]): {colors: string[], values: number[]},
 	calculateChartHeight(
 		baseHeight: number,
 		increment: number,
@@ -155,6 +156,7 @@ export type IScatterChartOptions = {
 	xaxis: ApexXAxis;
 	yaxis: ApexYAxis;
 	dataLabels: ApexDataLabels;
+	colors: string[];
 };
 
 

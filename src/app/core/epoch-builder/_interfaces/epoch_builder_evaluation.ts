@@ -135,7 +135,8 @@ export type IEpochBuilderEvaluationFunction =
 "evaluateTestDatasetLoss"|
 "evaluatePoints"|
 "evaluateAccuracy"|
-"evaluatePredictionsVsOutcomes";
+"evaluatePredictionsVsOutcomes"|
+"evaluateProfit";
 
 
 
@@ -165,7 +166,11 @@ export interface IEpochBuilderEvaluationFunctionParams {
 
     // evaluatePredictionsVsOutcomes
     predictions?: number,
-    outcomes?: number
+    outcomes?: number,
+
+    // evaluateProfit
+    receivedProfit?: number,
+    optimalProfit?: number
 }
 
 
@@ -194,5 +199,6 @@ export interface IEpochBuilderEvaluationDescriptions {
     testDatasetLoss: string,
     accuracy: string,
     points: string,
-    predictionsVsOutcomes: string
+    predictionsVsOutcomes: string,
+    profit: string,
 }

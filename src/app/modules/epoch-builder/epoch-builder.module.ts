@@ -9,6 +9,7 @@ import {SharedModule} from "../../shared";
 
 // Components
 import { RegressionsComponent } from './regressions/regressions.component';
+import { PredictionModelsComponent } from './prediction-models/prediction-models.component';
 
 // Shared Components
 import { EbePointsBarChartComponent } from './shared/ebe-points-bar-chart/ebe-points-bar-chart.component';
@@ -21,6 +22,7 @@ import { LearningCurveComponent } from './shared/learning-curve/learning-curve.c
 import { RegressionTrainingDatasetComponent } from './shared/regression-training-dataset/regression-training-dataset.component';
 import { DiscoveryViewComponent } from './shared/discovery-view/discovery-view.component';
 import { MultiDiscoveryViewComponent } from './shared/multi-discovery-view/multi-discovery-view.component';
+import { PredictionModelBacktestPositionDialogComponent } from './prediction-models/prediction-model-backtest-position-dialog';
 
 
 
@@ -28,6 +30,7 @@ import { MultiDiscoveryViewComponent } from './shared/multi-discovery-view/multi
   declarations: [
     // Components
     RegressionsComponent,
+    PredictionModelsComponent,
 
     // Shared Components
     EbePointsBarChartComponent,
@@ -40,6 +43,7 @@ import { MultiDiscoveryViewComponent } from './shared/multi-discovery-view/multi
     RegressionTrainingDatasetComponent,
     DiscoveryViewComponent,
     MultiDiscoveryViewComponent,
+    PredictionModelBacktestPositionDialogComponent,
   ],
   imports: [
     CommonModule,

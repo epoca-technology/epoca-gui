@@ -1,0 +1,929 @@
+<!-- Section Container -->
+<mat-drawer-container class="section-container component-container">
+
+    <!-- Main Sidenav -->
+    <mat-drawer #pmSidenav [(opened)]="pmSidenavOpened" *ngIf="initialized" class="sidenav" position="start" mode="over" autoFocus="false">
+        <!-- Menu Heading Toolbar -->
+        <mat-toolbar color="primary">
+            <div fxLayout="row" fxLayoutAlign="start center">
+                <button mat-icon-button (click)="pmSidenav?.toggle()"><mat-icon>arrow_back</mat-icon></button>
+                <span class="truncate">Prediction Models</span>
+                <span fxFlex></span>
+            </div>
+        </mat-toolbar>
+            
+        <!-- Menu Content -->
+        <mat-list>
+            <div mat-subheader>General</div>
+            <mat-list-item *ngFor="let view of views">
+                <button mat-button class="left-icon-button" [disabled]="activeView == view.id" (click)="navigate(view.id)">
+                    <mat-icon *ngIf="!view.svg">{{view.icon}}</mat-icon> 
+                    <mat-icon *ngIf="view.svg" [svgIcon]="view.icon"></mat-icon> 
+                    {{view.name}}
+                </button>
+            </mat-list-item>
+            <div mat-subheader>
+                Models&nbsp;
+                <mat-icon *ngIf="order == 'ebe_points'" class="order-icon" matTooltip="Ordered by EBE Points">query_stats</mat-icon>
+                <mat-icon *ngIf="order == 'backtest_profit'" class="order-icon" matTooltip="Ordered by Backtest Profit">price_check</mat-icon>
+                <mat-icon *ngIf="order == 'backtest_accuracy'" class="order-icon" matTooltip="Ordered by Backtest Accuracy">ads_click</mat-icon>
+                <mat-icon *ngIf="order == 'discovery_points'" class="order-icon" matTooltip="Ordered by Discovery Points">timeline</mat-icon>
+                <mat-icon *ngIf="order == 'discovery_accuracy'" class="order-icon" matTooltip="Ordered by Discovery Accuracy">ads_click</mat-icon>
+            </div>
+            <mat-list-item *ngFor="let certificate of _pm.certificates; index as certIndex">
+                <button mat-button class="left-icon-button truncate" 
+                        [disabled]="activeView == 'certificate' && cert && certificate.id == cert.id" 
+                        (click)="navigate('certificate', certIndex)">
+                        <div fxLayout="row" fxLayoutAlign="start center">
+                            <span class="truncate" style="max-width: 70%;">{{certificate.id}}</span>
+                            <span fxFlex></span>
+                            <div *ngIf="order == 'ebe_points'" 
+                                [ngClass]="certificate.ebe.state_class" 
+                                class="square-badge"><span>{{certificate.ebe.points | number: '1.2-2'}}</span></div>
+                            <div *ngIf="order == 'backtest_profit'" 
+                                class="square-badge-success">
+                                <span>{{certificate.backtest.profit | currency}}</span>
+                            </div>
+                            <div *ngIf="order == 'backtest_accuracy'"
+                                [ngClass]="{
+                                    'square-badge-success': certificate.backtest.accuracy >= 55,
+                                    'square-badge-neutral': certificate.backtest.accuracy > 50 && certificate.backtest.accuracy < 55,
+                                    'square-badge-error': certificate.backtest.accuracy <= 50
+                                }">
+                                <span>{{certificate.backtest.accuracy | number: '1.2-2'}}%</span>
+                            </div>
+                            <div *ngIf="order == 'discovery_points'"
+                                [ngClass]="{
+                                    'square-badge-success': certificate.discovery.points > 0,
+                                    'square-badge-error': certificate.discovery.points < 0
+                                }">
+                                <span>{{certificate.discovery.points | number: '1.2-2'}}</span>
+                            </div>
+                            <div *ngIf="order == 'discovery_accuracy'"
+                                [ngClass]="{
+                                    'square-badge-success': certificate.discovery.accuracy >= 55,
+                                    'square-badge-neutral': certificate.discovery.accuracy > 50 && certificate.discovery.accuracy < 55,
+                                    'square-badge-error': certificate.discovery.accuracy <= 50
+                                }">
+                                <span>{{certificate.discovery.accuracy | number: '1.2-2'}}%</span>
+                            </div>
+                        </div>
+                </button>
+            </mat-list-item>
+        </mat-list>
+    </mat-drawer>
+
+
+    <!-- Section Content -->
+    <mat-drawer-content id="content-header">
+        <!-- Content Header -->
+        <mat-toolbar class="secondary-header">
+            <div fxLayout="row" fxLayoutAlign="center center">
+                <button mat-icon-button (click)="_nav.dashboard()" class="show-on-mobile" *ngIf="!initialized"><mat-icon>arrow_back</mat-icon></button>
+                <button mat-icon-button (click)="reset()" class="show-on-mobile" *ngIf="initialized && _pm.certificates && _pm.certificates.length >= 1"><mat-icon>arrow_back</mat-icon></button>
+                <button mat-icon-button (click)="pmSidenav?.toggle()" *ngIf="initialized" class="show-on-mobile"><mat-icon>menu</mat-icon></button>
+                <span class="truncate show-on-mobile" *ngIf="!initialized">Prediction Models</span>
+                <span class="truncate show-on-mobile" *ngIf="initialized">{{activeView == 'certificate' ? cert!.id: viewNames[activeView]}}</span>
+                <span class="truncate show-on-desktop">Prediction Models</span>
+                <span fxFlex></span>
+                <button mat-icon-button 
+                        matTooltip="Selected Models" 
+                        *ngIf="initialized && _pm.certificates.length > 1" 
+                        [disabled]="!_selection.selectedList.length"
+                        (click)="_nav.displayModelSelectionDialog()">
+                        <mat-icon 
+                            [matBadge]="_selection.selectedList.length > 9 ? '9+': _selection.selectedList.length" 
+                            matBadgeSize="small"
+                            matBadgePosition="after"
+                            matBadgeOverlap="false">checklist</mat-icon>
+                </button>
+                <button mat-icon-button 
+                        matTooltip="Clear Certificates"
+                        (click)="reset()"
+                        class="show-on-desktop"
+                        style="margin-left:5px;"
+                        *ngIf="initialized"><mat-icon>close</mat-icon></button>
+            </div>
+        </mat-toolbar>
+
+
+        <!-- Uninitialized Content -->
+        <div *ngIf="!initialized" class="fadeIn">
+            <div fxLayout="row" fxLayoutAlign="center center" class="file-init-container">
+                <!-- Button -->
+                <label for="certificatesFile" class="file-label" role="button" matRipple *ngIf="!initializing">
+                    <div fxLayout="row" fxLayoutAlign="start center" matRipple role="button" tabindex="0">
+                        <mat-icon svgIcon="file_signature"></mat-icon>&nbsp;<p>Select Certificates</p>
+                    </div>
+                </label>
+
+                <!-- Input -->
+                <form [formGroup]="fileInputForm">
+                    <input id="certificatesFile" type="file" accept="application/json" formControlName="fileInput" (change)="fileChanged($event)"/>
+                </form>
+
+                <!-- Initializing Loader-->
+                <h3 *ngIf="initializing" class="fadeIn">Initializing...</h3>
+            </div>
+        </div>
+
+        <!-- Initialized Content -->
+        <div *ngIf="initialized" class="fadeIn">
+            <!-- Main Container -->
+            <div fxLayout="row" fxLayoutAlign="start start">
+                <!-- Desktop Sidenav -->
+                <div *ngIf="layout == 'desktop'" class="desktop-sidenav">
+                    <mat-list>
+                        <div mat-subheader>General</div>
+                        <mat-list-item *ngFor="let view of views">
+                            <button mat-button class="left-icon-button" [disabled]="activeView == view.id" (click)="navigate(view.id)">
+                                <mat-icon *ngIf="!view.svg">{{view.icon}}</mat-icon> 
+                                <mat-icon *ngIf="view.svg" [svgIcon]="view.icon"></mat-icon> 
+                                {{view.name}}
+                            </button>
+                        </mat-list-item>
+                        <div mat-subheader>
+                            Models&nbsp;
+                            <mat-icon *ngIf="order == 'ebe_points'" class="order-icon" matTooltip="Ordered by EBE Points">query_stats</mat-icon>
+                            <mat-icon *ngIf="order == 'backtest_profit'" class="order-icon" matTooltip="Ordered by Backtest Profit">price_check</mat-icon>
+                            <mat-icon *ngIf="order == 'backtest_accuracy'" class="order-icon" matTooltip="Ordered by Backtest Accuracy">ads_click</mat-icon>
+                            <mat-icon *ngIf="order == 'discovery_points'" class="order-icon" matTooltip="Ordered by Discovery Points">timeline</mat-icon>
+                            <mat-icon *ngIf="order == 'discovery_accuracy'" class="order-icon" matTooltip="Ordered by Discovery Accuracy">ads_click</mat-icon>
+                        </div>
+                        <mat-list-item *ngFor="let certificate of _pm.certificates; index as certIndex">
+                            <button mat-button class="left-icon-button truncate" 
+                                    [disabled]="activeView == 'certificate' && cert && certificate.id == cert.id" 
+                                    (click)="navigate('certificate', certIndex)">
+                                    <div fxLayout="row" fxLayoutAlign="start center">
+                                        <span class="truncate" style="max-width: 70%;">{{certificate.id}}</span>
+                                        <span fxFlex></span>
+                                        <div *ngIf="order == 'ebe_points'" 
+                                            [ngClass]="certificate.ebe.state_class" 
+                                            class="square-badge"><span>{{certificate.ebe.points | number: '1.2-2'}}</span></div>
+                                        <div *ngIf="order == 'backtest_profit'" 
+                                            class="square-badge-success">
+                                            <span>{{certificate.backtest.profit | currency}}</span>
+                                        </div>
+                                        <div *ngIf="order == 'backtest_accuracy'"
+                                            [ngClass]="{
+                                                'square-badge-success': certificate.backtest.accuracy >= 55,
+                                                'square-badge-neutral': certificate.backtest.accuracy > 50 && certificate.backtest.accuracy < 55,
+                                                'square-badge-error': certificate.backtest.accuracy <= 50
+                                            }">
+                                            <span>{{certificate.backtest.accuracy | number: '1.2-2'}}%</span>
+                                        </div>
+                                        <div *ngIf="order == 'discovery_points'"
+                                            [ngClass]="{
+                                                'square-badge-success': certificate.discovery.points > 0,
+                                                'square-badge-error': certificate.discovery.points < 0
+                                            }">
+                                            <span>{{certificate.discovery.points | number: '1.2-2'}}</span>
+                                        </div>
+                                        <div *ngIf="order == 'discovery_accuracy'"
+                                            [ngClass]="{
+                                                'square-badge-success': certificate.discovery.accuracy >= 55,
+                                                'square-badge-neutral': certificate.discovery.accuracy > 50 && certificate.discovery.accuracy < 55,
+                                                'square-badge-error': certificate.discovery.accuracy <= 50
+                                            }">
+                                            <span>{{certificate.discovery.accuracy | number: '1.2-2'}}%</span>
+                                        </div>
+                                    </div>
+                            </button>
+                        </mat-list-item>
+                    </mat-list>
+                </div>
+
+
+                <!-- Content -->
+                <div fxFlex>
+                    <!-- Loader -->
+                    <div *ngIf="!loaded" class="loader">
+                        <div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div>
+                    </div>
+
+                    <!-- Loaded Content -->
+                    <div *ngIf="loaded" class="content-container fadeIn">
+
+                        <!-- Epoch Builder Evaluation Points -->
+                        <div *ngIf="activeView == 'ebe_points'" class="padding">
+                            <div fxLayout="row" fxLayoutAlign="center center">
+                                <div fxFlex="60" fxFlex.xs="100" fxFlex.sm="100">
+                                    <app-ebe-points-bar-chart [items]="_pm.certificates" [md]="_pm.md" (activateModel)="navigate('certificate', $event)"></app-ebe-points-bar-chart>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Backtest -->
+                        <div *ngIf="activeView == 'backtest' && backtestView">
+                            <!-- Tabs Navigation-->
+                            <mat-tab-group *ngIf="layout == 'mobile'" 
+                                        [selectedIndex]="activeBacktestTabIndex" (selectedIndexChange)="activeBacktestTabIndex = $event"
+                                        mat-stretch-tabs class="mat-elevation-z3" backgroundColor="primary">
+                                <mat-tab><ng-template mat-tab-label><mat-icon>price_check</mat-icon></ng-template></mat-tab>
+                                <mat-tab><ng-template mat-tab-label><mat-icon>timeline</mat-icon></ng-template></mat-tab>
+                                <mat-tab><ng-template mat-tab-label><mat-icon>ads_click</mat-icon></ng-template></mat-tab>
+                                <mat-tab><ng-template mat-tab-label><mat-icon svgIcon="wand_magic_sparkles" class="wand-icon"></mat-icon></ng-template></mat-tab>
+                                <mat-tab><ng-template mat-tab-label><mat-icon>money_off</mat-icon></ng-template></mat-tab>
+                            </mat-tab-group>
+                            <mat-tab-group *ngIf="layout == 'desktop'"  
+                                            [selectedIndex]="activeBacktestTabIndex" (selectedIndexChange)="activeBacktestTabIndex = $event" 
+                                            mat-align-tabs="center">
+                                <mat-tab><ng-template mat-tab-label><mat-icon>price_check</mat-icon>&nbsp;Profit</ng-template></mat-tab>
+                                <mat-tab><ng-template mat-tab-label><mat-icon>timeline</mat-icon>&nbsp;Balance History</ng-template></mat-tab>
+                                <mat-tab><ng-template mat-tab-label><mat-icon>ads_click</mat-icon>&nbsp;Accuracy</ng-template></mat-tab>
+                                <mat-tab><ng-template mat-tab-label><mat-icon svgIcon="wand_magic_sparkles" class="wand-icon"></mat-icon>&nbsp;Positions</ng-template></mat-tab>
+                                <mat-tab><ng-template mat-tab-label><mat-icon>money_off</mat-icon>&nbsp;Fees</ng-template></mat-tab>
+                            </mat-tab-group>
+
+                            <!-- Content -->
+                            <div class="padding">
+                                <!-- Profit -->
+                                <div *ngIf="activeBacktestTabIndex == 0" fxLayout="row" fxLayoutAlign="center center">
+                                    <div fxFlex="60" fxFlex.xs="100" fxFlex.sm="100">
+                                        <div class="desktop-card">
+                                            <div fxLayout="row" fxLayoutAlign="center center" class="badged-header">
+                                                <h4 class="show-on-desktop">Profit</h4>
+                                                <span class="show-on-desktop" fxFlex></span>
+                                                <div *ngIf="activeBacktestBadge == 0" class="square-badge clickable" role="button"
+                                                    (click)="navigate('certificate', _pm.md.backtestProfit.highest.id)"
+                                                    matTooltip="Highest Profit: {{_pm.md.backtestProfit.highest.id}}">
+                                                    High: {{_pm.md.backtestProfit.highest.value | currency}}
+                                                </div>
+                                                <div *ngIf="activeBacktestBadge == 0" class="square-badge clickable worst-value" role="button"
+                                                    (click)="navigate('certificate', _pm.md.backtestProfit.lowest.id)"
+                                                    matTooltip="Lowest Profit: {{_pm.md.backtestProfit.lowest.id}}">
+                                                    Low: {{_pm.md.backtestProfit.lowest.value | currency}}
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <apx-chart
+                                                    [series]="backtestView.profit!.series"
+                                                    [chart]="backtestView.profit!.chart"
+                                                    [plotOptions]="backtestView.profit!.plotOptions"
+                                                    [xaxis]="backtestView.profit!.xaxis"
+                                                    [yaxis]="backtestView.profit!.yaxis"
+                                                    [dataLabels]="backtestView.profit!.dataLabels"
+                                                    [colors]="backtestView.profit!.colors"
+                                                    [grid]="backtestView.profit!.grid"
+                                                    [legend]="{show: false}"
+                                                ></apx-chart>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Profit History -->
+                                <div *ngIf="activeBacktestTabIndex == 1" fxLayout="row" fxLayoutAlign="center center">
+                                    <div fxFlex="95" fxFlex.xs="100" fxFlex.sm="100">
+                                        <div>
+                                            <apx-chart
+                                                [series]="backtestView.balanceHist!.series"
+                                                [chart]="backtestView.balanceHist!.chart"
+                                                [xaxis]="backtestView.balanceHist!.xaxis"
+                                                [dataLabels]="backtestView.balanceHist!.dataLabels"
+                                                [grid]="backtestView.balanceHist!.grid"
+                                                [stroke]="backtestView.balanceHist!.stroke"
+                                                [yaxis]="backtestView.balanceHist!.yaxis"
+                                            ></apx-chart>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Accuracy -->
+                                <div *ngIf="activeBacktestTabIndex == 2" fxLayout="row" fxLayoutAlign="center center">
+                                    <div fxFlex="60" fxFlex.xs="100" fxFlex.sm="100">
+                                        <div class="desktop-card">
+                                            <div fxLayout="row" fxLayoutAlign="center center" class="badged-header">
+                                                <h4 class="show-on-desktop">Accuracy</h4>
+                                                <span class="show-on-desktop" fxFlex></span>
+                                                <button mat-icon-button 
+                                                    [disabled]="activeBacktestBadge == 0" 
+                                                    (click)="activeBacktestBadge = activeBacktestBadge - 1">
+                                                    <mat-icon>arrow_left</mat-icon>
+                                                </button>
+                                                <!-- General Accuracy -->
+                                                <div *ngIf="activeBacktestBadge == 0" class="square-badge clickable" role="button"
+                                                    (click)="navigate('certificate', _pm.md.backtestAccuracy.highest.id)"
+                                                    matTooltip="Highest Accuracy: {{_pm.md.backtestAccuracy.highest.id}}">
+                                                    Best: {{_pm.md.backtestAccuracy.highest.value | number: '1.0-2'}}%
+                                                </div>
+                                                <div *ngIf="activeBacktestBadge == 0" class="square-badge clickable worst-value" role="button"
+                                                    (click)="navigate('certificate', _pm.md.backtestAccuracy.lowest.id)"
+                                                    matTooltip="Lowest Accuracy: {{_pm.md.backtestAccuracy.lowest.id}}">
+                                                    Worst: {{_pm.md.backtestAccuracy.lowest.value | number: '1.0-2'}}%
+                                                </div>
+                                                <!-- Increase Accuracy -->
+                                                <div *ngIf="activeBacktestBadge == 1" class="square-badge-success clickable" role="button"
+                                                    (click)="navigate('certificate', _pm.md.backtestIncreaseAccuracy.highest.id)"
+                                                    matTooltip="Highest Increase Accuracy: {{_pm.md.backtestIncreaseAccuracy.highest.id}}">
+                                                    Best: {{_pm.md.backtestIncreaseAccuracy.highest.value | number: '1.0-2'}}%
+                                                </div>
+                                                <div *ngIf="activeBacktestBadge == 1" class="square-badge-success clickable worst-value" role="button"
+                                                    (click)="navigate('certificate', _pm.md.backtestIncreaseAccuracy.lowest.id)"
+                                                    matTooltip="Lowest Increase Accuracy: {{_pm.md.backtestIncreaseAccuracy.lowest.id}}">
+                                                    Worst: {{_pm.md.backtestIncreaseAccuracy.lowest.value | number: '1.0-2'}}%
+                                                </div>
+                                                <!-- Decrease Accuracy -->
+                                                <div *ngIf="activeBacktestBadge == 2" class="square-badge-error clickable" role="button"
+                                                    (click)="navigate('certificate', _pm.md.backtestDecreaseAccuracy.highest.id)"
+                                                    matTooltip="Highest Decrease Accuracy: {{_pm.md.backtestDecreaseAccuracy.highest.id}}">
+                                                    Best: {{_pm.md.backtestDecreaseAccuracy.highest.value | number: '1.0-2'}}%
+                                                </div>
+                                                <div *ngIf="activeBacktestBadge == 2" class="square-badge-error clickable worst-value" role="button"
+                                                    (click)="navigate('certificate', _pm.md.backtestDecreaseAccuracy.lowest.id)"
+                                                    matTooltip="Lowest Decrease Accuracy: {{_pm.md.backtestDecreaseAccuracy.lowest.id}}">
+                                                    Worst: {{_pm.md.backtestDecreaseAccuracy.lowest.value | number: '1.0-2'}}%
+                                                </div>
+                                                <button mat-icon-button 
+                                                        [disabled]="activeBacktestBadge >= 2" 
+                                                        (click)="activeBacktestBadge = activeBacktestBadge + 1">
+                                                        <mat-icon>arrow_right</mat-icon>
+                                                </button>
+                                            </div>
+                                            <div class="margin-top">
+                                                <apx-chart
+                                                    [series]="backtestView.accuracy!.series"
+                                                    [chart]="backtestView.accuracy!.chart"
+                                                    [plotOptions]="backtestView.accuracy!.plotOptions"
+                                                    [xaxis]="backtestView.accuracy!.xaxis"
+                                                    [yaxis]="backtestView.accuracy!.yaxis"
+                                                    [dataLabels]="backtestView.accuracy!.dataLabels"
+                                                    [colors]="backtestView.accuracy!.colors"
+                                                    [grid]="backtestView.accuracy!.grid"
+                                                    [legend]="{position: 'top'}"
+                                                ></apx-chart>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Positions -->
+                                <div *ngIf="activeBacktestTabIndex == 3" fxLayout="row" fxLayoutAlign="center center">
+                                    <div fxFlex="60" fxFlex.xs="100" fxFlex.sm="100">
+                                        <div class="desktop-card">
+                                            <div fxLayout="row" fxLayoutAlign="center center" class="badged-header">
+                                                <h4 class="show-on-desktop">Positions</h4>
+                                                <span class="show-on-desktop" fxFlex></span>
+                                                <button mat-icon-button 
+                                                    [disabled]="activeBacktestBadge == 0" 
+                                                    (click)="activeBacktestBadge = activeBacktestBadge - 1">
+                                                    <mat-icon>arrow_left</mat-icon>
+                                                </button>
+                                                <!-- General -->
+                                                <div *ngIf="activeBacktestBadge == 0" class="square-badge clickable" role="button"
+                                                    (click)="navigate('certificate', _pm.md.backtestPositions.highest.id)"
+                                                    matTooltip="Highest Positions: {{_pm.md.backtestPositions.highest.id}}">
+                                                    High: {{_pm.md.backtestPositions.highest.value | number}}
+                                                </div>
+                                                <div *ngIf="activeBacktestBadge == 0" class="square-badge clickable worst-value" role="button"
+                                                    (click)="navigate('certificate', _pm.md.backtestPositions.lowest.id)"
+                                                    matTooltip="Lowest Positions: {{_pm.md.backtestPositions.lowest.id}}">
+                                                    Low: {{_pm.md.backtestPositions.lowest.value | number}}
+                                                </div>
+                                                <!-- Increase Positions -->
+                                                <div *ngIf="activeBacktestBadge == 1" class="square-badge-success clickable" role="button"
+                                                    (click)="navigate('certificate', _pm.md.backtestIncreasePositions.highest.id)"
+                                                    matTooltip="Highest Increase Positions: {{_pm.md.backtestIncreasePositions.highest.id}}">
+                                                    High: {{_pm.md.backtestIncreasePositions.highest.value}}
+                                                </div>
+                                                <div *ngIf="activeBacktestBadge == 1" class="square-badge-success clickable worst-value" role="button"
+                                                    (click)="navigate('certificate', _pm.md.backtestIncreasePositions.lowest.id)"
+                                                    matTooltip="Lowest Increase Positions: {{_pm.md.backtestIncreasePositions.lowest.id}}">
+                                                    Low: {{_pm.md.backtestIncreasePositions.lowest.value}}
+                                                </div>
+                                                <!-- Decrease Positions -->
+                                                <div *ngIf="activeBacktestBadge == 2" class="square-badge-error clickable" role="button"
+                                                    (click)="navigate('certificate', _pm.md.backtestDecreasePositions.highest.id)"
+                                                    matTooltip="Highest Decrease Positions: {{_pm.md.backtestDecreasePositions.highest.id}}">
+                                                    High: {{_pm.md.backtestDecreasePositions.highest.value}}
+                                                </div>
+                                                <div *ngIf="activeBacktestBadge == 2" class="square-badge-error clickable worst-value" role="button"
+                                                    (click)="navigate('certificate', _pm.md.backtestDecreasePositions.lowest.id)"
+                                                    matTooltip="Lowest Decrease Positions: {{_pm.md.backtestDecreasePositions.lowest.id}}">
+                                                    Low: {{_pm.md.backtestDecreasePositions.lowest.value}}
+                                                </div>
+                                                <button mat-icon-button 
+                                                        [disabled]="activeBacktestBadge >= 2" 
+                                                        (click)="activeBacktestBadge = activeBacktestBadge + 1">
+                                                        <mat-icon>arrow_right</mat-icon>
+                                                </button>
+                                            </div>
+                                            <div class="margin-top">
+                                                <apx-chart
+                                                    [series]="backtestView.position!.series"
+                                                    [chart]="backtestView.position!.chart"
+                                                    [plotOptions]="backtestView.position!.plotOptions"
+                                                    [xaxis]="backtestView.position!.xaxis"
+                                                    [yaxis]="backtestView.position!.yaxis"
+                                                    [dataLabels]="backtestView.position!.dataLabels"
+                                                    [colors]="backtestView.position!.colors"
+                                                    [grid]="backtestView.position!.grid"
+                                                    [legend]="{position: 'top'}"
+                                                ></apx-chart>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Fees -->
+                                <div *ngIf="activeBacktestTabIndex == 4" fxLayout="row" fxLayoutAlign="center center">
+                                    <div fxFlex="60" fxFlex.xs="100" fxFlex.sm="100">
+                                        <div class="desktop-card">
+                                            <div fxLayout="row" fxLayoutAlign="center center" class="badged-header">
+                                                <h4 class="show-on-desktop">Fees</h4>
+                                                <span class="show-on-desktop" fxFlex></span>
+                                                <div *ngIf="activeBacktestBadge == 0" class="square-badge clickable" role="button"
+                                                    (click)="navigate('certificate', _pm.md.backtestFee.highest.id)"
+                                                    matTooltip="Highest Fees: {{_pm.md.backtestFee.highest.id}}">
+                                                    High: {{_pm.md.backtestFee.highest.value | currency}}
+                                                </div>
+                                                <div *ngIf="activeBacktestBadge == 0" class="square-badge clickable worst-value" role="button"
+                                                    (click)="navigate('certificate', _pm.md.backtestFee.lowest.id)"
+                                                    matTooltip="Lowest Fees: {{_pm.md.backtestFee.lowest.id}}">
+                                                    Low: {{_pm.md.backtestFee.lowest.value | currency}}
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <apx-chart
+                                                    [series]="backtestView.fee!.series"
+                                                    [chart]="backtestView.fee!.chart"
+                                                    [plotOptions]="backtestView.fee!.plotOptions"
+                                                    [xaxis]="backtestView.fee!.xaxis"
+                                                    [yaxis]="backtestView.fee!.yaxis"
+                                                    [dataLabels]="backtestView.fee!.dataLabels"
+                                                    [colors]="backtestView.fee!.colors"
+                                                    [grid]="backtestView.fee!.grid"
+                                                ></apx-chart>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Discovery Payload Records Section -->
+                        <div *ngIf="activeView == 'discovery' && discoveryPayloadRecords">
+                            <app-multi-discovery-view [items]="discoveryPayloadRecords" [md]="_pm.md" (activateModel)="navigate('certificate', $event)"></app-multi-discovery-view>
+                        </div>
+
+                        <!-- Certificate -->
+                        <div *ngIf="activeView == 'certificate' && certificateView && cert">
+                            <!-- Tabs Navigation-->
+                            <mat-tab-group *ngIf="layout == 'mobile'" 
+                                        [selectedIndex]="activeCertTabIndex" (selectedIndexChange)="activeCertTabIndex = $event"
+                                        mat-stretch-tabs class="mat-elevation-z3" backgroundColor="primary">
+                                <mat-tab><ng-template mat-tab-label><mat-icon>feed</mat-icon></ng-template></mat-tab>
+                                <mat-tab><ng-template mat-tab-label><mat-icon>tune</mat-icon></ng-template></mat-tab>
+                                <mat-tab><ng-template mat-tab-label><mat-icon>price_check</mat-icon></ng-template></mat-tab>
+                                <mat-tab><ng-template mat-tab-label><mat-icon>format_list_numbered</mat-icon></ng-template></mat-tab>
+                            </mat-tab-group>
+                            <mat-tab-group *ngIf="layout == 'desktop'"  
+                                            [selectedIndex]="activeCertTabIndex" (selectedIndexChange)="activeCertTabIndex = $event" 
+                                            mat-align-tabs="center">
+                                <mat-tab><ng-template mat-tab-label><mat-icon>feed</mat-icon>&nbsp;Summary</ng-template></mat-tab>
+                                <mat-tab><ng-template mat-tab-label><mat-icon>tune</mat-icon>&nbsp;Discovery</ng-template></mat-tab>
+                                <mat-tab><ng-template mat-tab-label><mat-icon>price_check</mat-icon>&nbsp;Backtest</ng-template></mat-tab>
+                                <mat-tab><ng-template mat-tab-label><mat-icon>format_list_numbered</mat-icon>&nbsp;Positions</ng-template></mat-tab>
+                            </mat-tab-group>
+
+                            <!-- Cert Content-->
+                            <div class="certificate-content">
+                                
+                                <!-- Summary -->
+                                <div *ngIf="activeCertTabIndex == 0">
+                                    <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column">
+                                        <!-- Informational Cards-->
+                                        <div fxFlex="44" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                                            <!-- Certificate  Info -->
+                                            <div class="desktop-card">
+                                                <!-- Header -->
+                                                <div fxLayout="row" fxLayoutAlign="start start">
+                                                    <div>
+                                                        <h4>Certificate</h4>
+                                                        <p class="light-text ts-s" 
+                                                            matTooltip="The date in which the prediction model was built.">
+                                                            {{cert.creation | date: 'medium'}}
+                                                        </p>
+                                                    </div>
+                                                    <span fxFlex></span>
+                                                    <div [ngClass]="{
+                                                            'square-badge-neutral': cert.backtest.accuracy >= 50 && cert.backtest.accuracy < 55,
+                                                            'square-badge-success': cert.backtest.accuracy >= 55,
+                                                            'square-badge-error': cert.backtest.accuracy < 50
+                                                        }" 
+                                                        matTooltip="Backtest Accuracy" 
+                                                        class="clickable" (click)="activeCertTabIndex = 2">
+                                                        {{cert.backtest.accuracy | number: '1.0-2'}}%
+                                                    </div>
+                                                </div>
+
+                                                <!-- Content -->
+                                                <div>
+                                                    <!-- Model -->
+                                                    <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+                                                        <p class="light-text truncate">Model</p>
+                                                        <span fxFlex></span>
+                                                        <app-prediction-model-element [config]="cert.model"></app-prediction-model-element>
+                                                    </div>
+
+                                                    <!-- Initial Balance -->
+                                                    <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+                                                        <p class="light-text truncate">Initial Balance</p>
+                                                        <span fxFlex></span>
+                                                        <p>{{cert.backtest.initial_balance| currency}}</p>
+                                                    </div>
+
+                                                    <!-- Final Balance -->
+                                                    <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+                                                        <p class="light-text truncate">Final Balance</p>
+                                                        <span fxFlex></span>
+                                                        <p><strong>{{cert.backtest.final_balance| currency}}</strong></p>
+                                                    </div>
+
+                                                    <!-- Profit -->
+                                                    <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+                                                        <p class="light-text truncate">Net Profit</p>
+                                                        <span fxFlex></span>
+                                                        <p class="success-color"><strong>{{cert.backtest.profit| currency}}</strong></p>
+                                                    </div>
+
+                                                    <!-- Date Range -->
+                                                    <div class="margin-top" fxLayout="row" fxLayoutAlign="start start">
+                                                        <p class="light-text truncate">Range</p>
+                                                        <span fxFlex></span>
+                                                        <div matTooltip="The date range covered in the test dataset.">
+                                                            <p class="ts-m">{{cert.test_ds_start | date: 'medium'}}</p>
+                                                            <p class="ts-m">{{cert.test_ds_end | date: 'medium'}}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <span fxFlex></span>
+                                        <div class="divider show-on-mobile"></div>
+
+                                        <!-- EBE -->
+                                        <div fxFlex="54" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                                            <app-epoch-builder-evaluation [evaluation]="cert.ebe"></app-epoch-builder-evaluation>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Discovery -->
+                                <div *ngIf="activeCertTabIndex == 1">
+                                    <app-discovery-view [modelConfig]="cert.model" [discovery]="cert.discovery"></app-discovery-view>
+                                </div>
+
+                                <!-- Backtest -->
+                                <div *ngIf="activeCertTabIndex == 2">
+                                    <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" fxLayoutalign="center start">
+                                        
+                                        <div fxFlex="40" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                                            <!-- Model Card-->
+                                            <div class="desktop-card">
+                                                <div class="square-badge-success" style="float:right" matTooltip="Profit">
+                                                    {{cert.backtest.profit| currency}}
+                                                </div>
+                                                <app-prediction-model-content [model]="cert.model"></app-prediction-model-content>
+                                            </div>
+
+                                            <div class="divider show-on-mobile"></div>
+
+                                            <!-- Accuracy-->
+                                            <div class="desktop-card">
+                                                <div class="badged-header" fxLayout="row" fxLayoutAlign="start center">
+                                                    <h4 class="truncate">{{layout == 'desktop' ? 'Accuracy': 'Acc.'}}</h4>
+                                                    <span fxFlex></span>
+                                                    <div class="square-badge-success" matTooltip="Long Accuracy">
+                                                        {{cert.backtest.increase_accuracy| number: '1.0-2'}}%
+                                                    </div>
+                                                    <div class="square-badge-error" matTooltip="Short Accuracy">
+                                                        {{cert.backtest.decrease_accuracy| number: '1.0-2'}}%
+                                                    </div>
+                                                    <div class="square-badge" matTooltip="Accuracy">
+                                                        {{cert.backtest.accuracy| number: '1.0-2'}}%
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <apx-chart
+                                                        [series]="certificateView.accuracy.series"
+                                                        [chart]="certificateView.accuracy.chart"
+                                                        [plotOptions]="certificateView.accuracy.plotOptions"
+                                                        [xaxis]="certificateView.accuracy.xaxis"
+                                                        [yaxis]="certificateView.accuracy.yaxis"
+                                                        [dataLabels]="certificateView.accuracy.dataLabels"
+                                                        [colors]="certificateView.accuracy.colors"
+                                                        [grid]="certificateView.accuracy.grid"
+                                                    ></apx-chart>
+                                                </div>
+                                            </div>
+
+                                            <div class="divider show-on-mobile"></div>
+
+                                            <!-- Backtest Info -->
+                                            <div class="desktop-card">
+                                                <!-- Header -->
+                                                <h4>Backtest</h4>
+
+                                                <!-- Content -->
+                                                <div>
+                                                    <!-- Idle on position close -->
+                                                    <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+                                                        <p class="light-text truncate">Idle</p>
+                                                        <span fxFlex></span>
+                                                        <p matTooltip="The model will remain idle for {{cert.backtest.idle_minutes_on_position_close}} minutes 
+                                                        on position close.">
+                                                            {{cert.backtest.idle_minutes_on_position_close}} mins
+                                                        </p>
+                                                    </div>
+
+                                                    <!-- Initial Balance -->
+                                                    <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+                                                        <p class="light-text truncate">Initial Balance</p>
+                                                        <span fxFlex></span>
+                                                        <p>{{cert.backtest.initial_balance| currency}}</p>
+                                                    </div>
+
+                                                    <!-- Position Size -->
+                                                    <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+                                                        <p class="light-text truncate">Position Size</p>
+                                                        <span fxFlex></span>
+                                                        <p matTooltip="The amount of money that will be traded on each position.">{{cert.backtest.position_size| currency}}</p>
+                                                    </div>
+
+                                                    <!-- Equity Size -->
+                                                    <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+                                                        <p class="light-text truncate">Equity Size (x{{cert.backtest.leverage}})</p>
+                                                        <span fxFlex></span>
+                                                        <p matTooltip="The amount of money that will actually be traded based on the leverage. 
+                                                        Equity Size = Position Size * Leverage. It is also important to note the fees are calculated based
+                                                        on the equity size and not the position size.">
+                                                            {{cert.backtest.position_size * cert.backtest.leverage | currency}}
+                                                        </p>
+                                                    </div>
+
+                                                    <!-- Gross Profit -->
+                                                    <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+                                                        <p class="light-text truncate">Gross Profit</p>
+                                                        <span fxFlex></span>
+                                                        <p class="success-color">{{cert.backtest.profit + cert.backtest.fees | currency}}</p>
+                                                    </div>
+
+                                                    <!-- Fees -->
+                                                    <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+                                                        <p class="light-text truncate">Fees ({{cert.backtest.exchange_fee}}%)</p>
+                                                        <span fxFlex></span>
+                                                        <p class="error-color" 
+                                                            matTooltip="The fees charged for the exchange service. The fees are charged on position open and close. 
+                                                            Moreover, they are based on the equity size.">
+                                                            {{cert.backtest.fees| currency}}
+                                                        </p>
+                                                    </div>
+
+                                                    <!-- Profit -->
+                                                    <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+                                                        <p class="light-text truncate">Net Profit</p>
+                                                        <span fxFlex></span>
+                                                        <p class="success-color"><strong>{{cert.backtest.profit| currency}}</strong></p>
+                                                    </div>
+
+                                                    <!-- Final Balance -->
+                                                    <div class="margin-top" fxLayout="row" fxLayoutAlign="start center">
+                                                        <p class="light-text truncate">Final Balance</p>
+                                                        <span fxFlex></span>
+                                                        <p><strong>{{cert.backtest.final_balance| currency}}</strong></p>
+                                                    </div>
+
+                                                    <!-- Date Range -->
+                                                    <div class="margin-top" fxLayout="row" fxLayoutAlign="start start">
+                                                        <p class="light-text truncate">Range</p>
+                                                        <span fxFlex></span>
+                                                        <div matTooltip="The date range covered in the test dataset.">
+                                                            <p class="ts-m">{{cert.test_ds_start | date: 'medium'}}</p>
+                                                            <p class="ts-m">{{cert.test_ds_end | date: 'medium'}}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <span fxFlex class="show-on-desktop"></span>
+                                        <div class="divider show-on-mobile"></div>
+                                        
+                                        <div fxFlex="58" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                                            <!-- Balance History-->
+                                            <div class="desktop-card">
+                                                <div fxLayout="row" fxLayoutAlign="start center">
+                                                    <h4 class="truncate">{{layout == 'desktop' ? 'Balance History': 'Hist.'}}</h4>
+                                                    <span fxFlex></span>
+                                                    <div class="square-badge" matTooltip="Initial Balance -> Final Balance">
+                                                        {{cert.backtest.initial_balance | currency}} -> {{cert.backtest.final_balance | currency}}
+                                                    </div>
+                                                </div>
+                                                <div class="margin-top">
+                                                    <apx-chart
+                                                        [series]="certificateView.balanceHist.series"
+                                                        [chart]="certificateView.balanceHist.chart"
+                                                        [plotOptions]="certificateView.balanceHist.plotOptions"
+                                                        [xaxis]="certificateView.balanceHist.xaxis"
+                                                        [dataLabels]="certificateView.balanceHist.dataLabels"
+                                                        [colors]="certificateView.balanceHist.colors"
+                                                        [grid]="certificateView.balanceHist.grid"
+                                                        [legend]="{show: false}"
+                                                        [yaxis]="certificateView.balanceHist.yaxis"
+                                                    ></apx-chart>
+                                                </div>
+                                            </div>
+
+
+                                            <div class="divider show-on-mobile"></div>
+
+
+
+                                            <!-- Prediction Insights-->
+                                            <div class="margin-top">
+                                                <div class="desktop-card">
+                                                    <!-- Header -->
+                                                    <div fxLayout="row" fxLayoutAlign="start center">
+                                                        <h4>{{layout == 'desktop' ? 'Prediction Insights': 'Insights'}}</h4>
+                                                        <span fxFlex></span>
+                                                        <button *ngIf="!insightsVisible" mat-button (click)="insightsVisible = true">View</button>
+                                                    </div>
+    
+                                                    <!-- Prediction Insights -->
+                                                    <div *ngIf="insightsVisible">
+                                                        <apx-chart
+                                                            [series]="certificateView.predictionInsight.series"
+                                                            [chart]="certificateView.predictionInsight.chart"
+                                                            [xaxis]="certificateView.predictionInsight.xaxis"
+                                                            [yaxis]="certificateView.predictionInsight.yaxis"
+                                                        ></apx-chart>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="divider show-on-mobile"></div>
+
+                                            <!-- Positions vs Outcomes -->
+                                            <div>
+                                                <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" class="full-width">
+                                                    <!-- Positions-->
+                                                    <div fxFlex="49" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                                                        <div class="desktop-card no-margin">
+                                                            <div class="badged-header" fxLayout="row" fxLayoutAlign="start center">
+                                                                <h4 class="truncate">{{layout == 'desktop' ? 'Positions': 'Pos.'}}</h4>
+                                                                <span fxFlex></span>
+                                                                <div class="square-badge-success" 
+                                                                    matTooltip="The number of increase positions executed by the Model.">
+                                                                    {{cert.backtest.increase_num | number}}
+                                                                </div>
+                                                                <div class="square-badge-error" 
+                                                                    matTooltip="The number of decrease positions executed by the Model.">
+                                                                    {{cert.backtest.decrease_num | number}}
+                                                                </div>
+                                                                <div class="square-badge" 
+                                                                    matTooltip="The number of non-neutral positions executed by the Model.">
+                                                                    {{cert.backtest.increase_num + cert.backtest.decrease_num | number}}
+                                                                </div>
+                                                            </div>
+    
+                                                            <div>
+                                                                <apx-chart
+                                                                    [series]="certificateView.positions.series"
+                                                                    [chart]="certificateView.positions.chart"
+                                                                    [labels]="certificateView.positions.labels"
+                                                                    [colors]="certificateView.positions.colors"
+                                                                    [legend]="certificateView.positions.legend"
+                                                                    [responsive]="certificateView.positions.responsive"
+                                                                ></apx-chart>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+    
+                                                    <span fxFlex></span>
+                                                    <div class="divider show-on-mobile"></div>
+    
+    
+                                                    <!-- Outcomes-->
+                                                    <div fxFlex="49" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                                                        <div class="desktop-card no-margin">
+                                                            <div class="badged-header" fxLayout="row" fxLayoutAlign="start center">
+                                                                <h4 class="truncate">{{layout == 'desktop' ? 'Outcomes': 'Outs.'}}</h4>
+                                                                <span fxFlex></span>
+                                                                <div class="square-badge-success" 
+                                                                    matTooltip="The number of increase outcomes during the backtest.">
+                                                                    {{cert.backtest.increase_outcome_num | number}}
+                                                                </div>
+                                                                <div class="square-badge-error" 
+                                                                    matTooltip="The number of decrease outcomes during the backtest.">
+                                                                    {{cert.backtest.decrease_outcome_num | number}}
+                                                                </div>
+                                                                <div class="square-badge" 
+                                                                    matTooltip="The total number outcomes during the backtest.">
+                                                                    {{cert.backtest.increase_outcome_num + cert.backtest.decrease_outcome_num | number}}
+                                                                </div>
+                                                            </div>
+    
+                                                            <div>
+                                                                <apx-chart
+                                                                    [series]="certificateView.outcomes.series"
+                                                                    [chart]="certificateView.outcomes.chart"
+                                                                    [labels]="certificateView.outcomes.labels"
+                                                                    [colors]="certificateView.outcomes.colors"
+                                                                    [legend]="certificateView.outcomes.legend"
+                                                                    [responsive]="certificateView.outcomes.responsive"
+                                                                ></apx-chart>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <!-- Positions -->
+                                <div *ngIf="activeCertTabIndex == 3">
+                                    <div fxLayout="row" fxLayoutAlign="center center">
+                                        <div fxFlex="60" fxFlex.xs="100" fxFlex.sm="100">
+                                            <!-- Positions Table -->
+                                            <div class="desktop-card no-padding">
+                                                <table class="bordered highlight">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>#</th>
+                                                            <th>Open</th>
+                                                            <th *ngIf="layout == 'desktop'">Close</th>
+                                                            <th>Type</th>
+                                                            <th>Balance</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr *ngFor="let p of cert.backtest.positions; let i = index" 
+                                                            (click)="displayPosition(p)" class="clickable" role="button">
+                                                            <td *ngIf="(i+1) <= visiblePositions">
+                                                                <p class="light-text">{{i+1}}</p>
+                                                            </td>
+                                                            <td *ngIf="(i+1) <= visiblePositions">
+                                                                <p class="show-on-mobile">{{p.ot | date:'short'}}</p>
+                                                                <p class="show-on-desktop">{{p.ot | date:'medium'}}</p>
+                                                            </td>
+                                                            <td *ngIf="(i+1) <= visiblePositions && layout == 'desktop'">
+                                                                <p>{{p.ct | date:'medium'}}</p>
+                                                            </td>
+                                                            <td *ngIf="(i+1) <= visiblePositions">
+                                                                <p [ngClass]="{'success-color': p.t == 1, 'error-color': p.t == -1}">
+                                                                    {{p.t == 1 ? 'Long': 'Short'}}
+                                                                </p>
+                                                            </td>
+                                                            <td *ngIf="(i+1) <= visiblePositions" class="align-right">
+                                                                <p [ngClass]="{'success-color': p.o, 'error-color': !p.o}">
+                                                                    <strong>{{p.b | currency}}</strong>
+                                                                </p>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                            <!-- Paginator -->
+                                            <div *ngIf="visiblePositions <= cert.backtest.positions.length" class="paginator">
+                                                <button mat-button (click)="visiblePositions=visiblePositions+15">View More</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <!-- Model Selection Fab -->
+                            <div *ngIf="!_selection.selected[cert.id] && _pm.certificates.length > 1" class="model-selection-fab">
+                                <button mat-fab color="primary" class="show-on-desktop" matTooltip="Select Model"
+                                    (click)="_selection.select(cert.id, cert.ebe.points)">
+                                    <mat-icon>add_task</mat-icon>
+                                </button>
+                                <button mat-mini-fab color="primary" class="show-on-mobile" matTooltip="Select Model"
+                                    (click)="_selection.select(cert.id, cert.ebe.points)">
+                                    <mat-icon>add_task</mat-icon>
+                                </button>
+                            </div>
+                            <div *ngIf="_selection.selected[cert.id] && _pm.certificates.length > 1" class="model-selection-fab">
+                                <button mat-fab color="warn" class="show-on-desktop" matTooltip="Unselect Model" 
+                                    (click)="_selection.unselect(cert.id)">
+                                    <mat-icon>remove</mat-icon>
+                                </button>
+                                <button mat-mini-fab color="warn" class="show-on-mobile" matTooltip="Unselect Model"
+                                     (click)="_selection.unselect(cert.id)">
+                                    <mat-icon>remove</mat-icon>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </mat-drawer-content>
+</mat-drawer-container>

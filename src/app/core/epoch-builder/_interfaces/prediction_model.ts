@@ -1,9 +1,54 @@
-
-
+import { IRegressionConfig } from "./regression";
+import { IDiscovery } from "./discovery";
+import { IEpochBuilderEvaluation } from "./epoch_builder_evaluation";
 
 
 
 /* Prediction Model Types at _types/prediction_model_types.py */
+
+
+
+
+
+/* Configuration */
+
+
+/**
+ * Min Sum Function
+ * The prediction model's discovery calculates the means and the medians of the 
+ * successful predictions which then will be used to trade. For instance, If the 
+ * mean function is selected, the model will make use of the discovery's 
+ * increase_successful_mean and the decrease_successful_mean as the minimum sums
+ * in order to generate non-neutral predictions.
+ */
+export type IMinSumFunction = "mean"|"median";
+
+
+
+
+
+/**
+ * Regressions Per Model
+ * The number of regressions that are placed in the prediction model.
+ */
+export type IRegressionsPerModel = 4|8|16;
+
+
+
+
+
+/**
+ * Minified Configuration
+ * The minified configuration is used in order to narrow down the variations and
+ * identify which models lead to profitability.
+ */
+export interface IPredictionModelMinifiedConfig {
+    pcr: number,            // Price Change Requirement
+    msf: IMinSumFunction,   // Min Sum Function
+    ri: string[]            // Regression IDs
+}
+
+
 
 
 
@@ -51,11 +96,83 @@
 
 
 
-
- /* Interpreter */
-
+ /* Backtest */
 
 
+
+
+// Types of positions
+export type IBacktestPositionType = 1|-1;
+
+
+
+
+
+/**
+ * Backtest Position
+ * When a position is closed, it is saved in a list that can be reviewed in the GUI when
+ * the backtest completes.
+ */
+export interface IBacktestPosition {
+    // Type of position: 1 = long, -1 = short
+    t: IBacktestPositionType,
+
+    // Prediction Dict
+    p: IPrediction,
+
+    // Position Times
+    ot: number,    // Open Timestamp
+    ct: number,    // Close Timestamp - Populated when the position is closed
+
+    // Position Prices
+    op: number,   // Open Price
+    tpp: number,  // Take Profit Price
+    slp: number,  // Stop Loss Price
+
+    // Close Price: This property is populated when a position is closed. It will
+    // take value of the Take Profit Price or Stop Loss Price depending on the outcome.
+    cp: number, 
+    
+    // The outcome is populated once the position is closed. True for successful and False
+    // for unsuccessful
+    o: boolean,
+
+    // Balance when the position is closed
+    b: number
+}
+
+
+
+
+
+
+/**
+ * Backtest Performance
+ * A dict containing all the information about the backtest executed on a model.
+ */
+export interface IBacktestPerformance {
+    // General
+    position_size: number,
+    initial_balance: number,
+    final_balance: number,
+    profit: number,
+    fees: number,
+    leverage: number,
+    exchange_fee: number,
+    idle_minutes_on_position_close: number,
+
+    // Positions
+    positions: IBacktestPosition[],
+    increase_num: number,
+    decrease_num: number,
+    increase_outcome_num: number,
+    decrease_outcome_num: number,
+
+    // Accuracy
+    increase_accuracy: number,
+    decrease_accuracy: number,
+    accuracy: number,
+}
 
 
 
@@ -67,7 +184,79 @@
  /* Prediction Model */
 
 
- export interface IPredictionModelConfig {
+
+
+/**
+ * Prediction Model Configuration
+ * The configuration of the prediction model that is built for each profitable
+ * model config. This dict is exported and used to initialize the Model in the
+ * Prediction API.
+ */
+export interface IPredictionModelConfig {
     // Identity of the Model.
     id: string,
- }
+
+    // The price percentage change target
+    price_change_requirement: number,
+
+    // Sum function used to determine the min increase and decrease sums
+    min_sum_function: IMinSumFunction
+
+    // The minimum increase and decrease sums required to generate non-neutral predictions
+    min_increase_sum: number,
+    min_decrease_sum: number,
+
+    // The list of regressions in the model
+    regressions: IRegressionConfig[]
+}
+
+
+
+
+
+
+
+/* Certificate */
+
+
+
+/**
+ * Prediction Model Certificate
+ * Once the profitable model configs are built, a certificate is issued
+ * for each one of them.
+ */
+export interface IPredictionModelCertificate {
+    // Identity of the Model.
+    id: string,
+
+    // The date in which the model was created
+    creation: number,
+
+    // The date range from the epoch that was used to build the prediction models
+    test_ds_start: number,
+    test_ds_end: number,
+
+    // The configuration of the model
+    model: IPredictionModelConfig,
+
+    // The discovery of the model
+    discovery: IDiscovery,
+
+    // The backtest performance of the model
+    backtest: IBacktestPerformance,
+
+
+
+
+    /**
+     * GUI Properties
+     * The following properties only exist in the GUI as they are populated
+     * when certificates are loaded.
+     */
+
+    // Epoch Builder Evaluation
+    ebe: IEpochBuilderEvaluation,
+
+    // The value that will be used to order the certificates
+    orderValue: number
+}
