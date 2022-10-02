@@ -87,15 +87,11 @@
                 <span class="truncate show-on-desktop">Prediction Models</span>
                 <span fxFlex></span>
                 <button mat-icon-button 
-                        matTooltip="Selected Models" 
-                        *ngIf="initialized && _pm.certificates.length > 1" 
-                        [disabled]="!_selection.selectedList.length"
-                        (click)="_nav.displayModelSelectionDialog()">
-                        <mat-icon 
-                            [matBadge]="_selection.selectedList.length > 9 ? '9+': _selection.selectedList.length" 
-                            matBadgeSize="small"
-                            matBadgePosition="after"
-                            matBadgeOverlap="false">checklist</mat-icon>
+                        matTooltip="Copy active model to clipboard." 
+                        *ngIf="initialized && activeView == 'certificate' && cert" 
+                        [disabled]="!loaded"
+                        (click)="_app.copy(cert.id)">
+                        <mat-icon>content_copy</mat-icon>
                 </button>
                 <button mat-icon-button 
                         matTooltip="Clear Certificates"
@@ -464,6 +460,99 @@
                         <!-- Discovery Payload Records Section -->
                         <div *ngIf="activeView == 'discovery' && discoveryPayloadRecords">
                             <app-multi-discovery-view [items]="discoveryPayloadRecords" [md]="_pm.md" (activateModel)="navigate('certificate', $event)"></app-multi-discovery-view>
+                        </div>
+
+                        <!-- Hyperparams -->
+                        <div *ngIf="activeView == 'hyperparams' && hyperparamsView" class="padding">
+                            <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" fxLayoutAlign="start start" class="full-width">
+                                <span fxFlex></span>
+
+                                <div fxFlex="35" fxFlex.xs="100" fxFlex.sm="100">
+                                    <!-- Price Change Requirement -->
+                                    <div class="desktop-card">
+                                        <h4>Price Change Requirement</h4>
+                                        <div>
+                                            <apx-chart
+                                                [series]="hyperparamsView.priceChangeRequirement.series"
+                                                [chart]="hyperparamsView.priceChangeRequirement.chart"
+                                                [plotOptions]="hyperparamsView.priceChangeRequirement.plotOptions"
+                                                [xaxis]="hyperparamsView.priceChangeRequirement.xaxis"
+                                                [yaxis]="hyperparamsView.priceChangeRequirement.yaxis"
+                                                [dataLabels]="hyperparamsView.priceChangeRequirement.dataLabels"
+                                                [colors]="hyperparamsView.priceChangeRequirement.colors"
+                                                [grid]="hyperparamsView.priceChangeRequirement.grid"
+                                                [legend]="{show: true, position: 'bottom'}"
+                                            ></apx-chart>
+                                        </div>
+                                    </div>
+
+                                    <div class="divider show-on-mobile"></div>
+
+
+                                    <!-- Min Sum Function -->
+                                    <div class="desktop-card">
+                                        <h4>Min Sum Function</h4>
+                                        <div>
+                                            <apx-chart
+                                                [series]="hyperparamsView.minSumFunction.series"
+                                                [chart]="hyperparamsView.minSumFunction.chart"
+                                                [plotOptions]="hyperparamsView.minSumFunction.plotOptions"
+                                                [xaxis]="hyperparamsView.minSumFunction.xaxis"
+                                                [yaxis]="hyperparamsView.minSumFunction.yaxis"
+                                                [dataLabels]="hyperparamsView.minSumFunction.dataLabels"
+                                                [colors]="hyperparamsView.minSumFunction.colors"
+                                                [grid]="hyperparamsView.minSumFunction.grid"
+                                                [legend]="{show: true, position: 'bottom'}"
+                                            ></apx-chart>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <span fxFlex></span>
+                                <div class="divider show-on-mobile"></div>
+
+                                <div fxFlex="35" fxFlex.xs="100" fxFlex.sm="100">
+                                    <!-- Min Sum Adjustment Factor -->
+                                    <div class="desktop-card">
+                                        <h4>Min Sum Adjustment Factor</h4>
+                                        <div>
+                                            <apx-chart
+                                                [series]="hyperparamsView.minSumAdjustmentFactor.series"
+                                                [chart]="hyperparamsView.minSumAdjustmentFactor.chart"
+                                                [plotOptions]="hyperparamsView.minSumAdjustmentFactor.plotOptions"
+                                                [xaxis]="hyperparamsView.minSumAdjustmentFactor.xaxis"
+                                                [yaxis]="hyperparamsView.minSumAdjustmentFactor.yaxis"
+                                                [dataLabels]="hyperparamsView.minSumAdjustmentFactor.dataLabels"
+                                                [colors]="hyperparamsView.minSumAdjustmentFactor.colors"
+                                                [grid]="hyperparamsView.minSumAdjustmentFactor.grid"
+                                                [legend]="{show: true, position: 'bottom'}"
+                                            ></apx-chart>
+                                        </div>
+                                    </div>
+
+                                    <div class="divider show-on-mobile"></div>
+
+                                    <!-- Regressions per Model -->
+                                    <div class="desktop-card">
+                                        <h4>Regressions per Model</h4>
+                                        <div>
+                                            <apx-chart
+                                                [series]="hyperparamsView.regressionsPerModel.series"
+                                                [chart]="hyperparamsView.regressionsPerModel.chart"
+                                                [plotOptions]="hyperparamsView.regressionsPerModel.plotOptions"
+                                                [xaxis]="hyperparamsView.regressionsPerModel.xaxis"
+                                                [yaxis]="hyperparamsView.regressionsPerModel.yaxis"
+                                                [dataLabels]="hyperparamsView.regressionsPerModel.dataLabels"
+                                                [colors]="hyperparamsView.regressionsPerModel.colors"
+                                                [grid]="hyperparamsView.regressionsPerModel.grid"
+                                                [legend]="{show: true, position: 'bottom'}"
+                                            ></apx-chart>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <span fxFlex></span>
+                            </div>
                         </div>
 
                         <!-- Certificate -->
@@ -895,30 +984,6 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-
-
-
-                            <!-- Model Selection Fab -->
-                            <div *ngIf="!_selection.selected[cert.id] && _pm.certificates.length > 1" class="model-selection-fab">
-                                <button mat-fab color="primary" class="show-on-desktop" matTooltip="Select Model"
-                                    (click)="_selection.select(cert.id, cert.ebe.points)">
-                                    <mat-icon>add_task</mat-icon>
-                                </button>
-                                <button mat-mini-fab color="primary" class="show-on-mobile" matTooltip="Select Model"
-                                    (click)="_selection.select(cert.id, cert.ebe.points)">
-                                    <mat-icon>add_task</mat-icon>
-                                </button>
-                            </div>
-                            <div *ngIf="_selection.selected[cert.id] && _pm.certificates.length > 1" class="model-selection-fab">
-                                <button mat-fab color="warn" class="show-on-desktop" matTooltip="Unselect Model" 
-                                    (click)="_selection.unselect(cert.id)">
-                                    <mat-icon>remove</mat-icon>
-                                </button>
-                                <button mat-mini-fab color="warn" class="show-on-mobile" matTooltip="Unselect Model"
-                                     (click)="_selection.unselect(cert.id)">
-                                    <mat-icon>remove</mat-icon>
-                                </button>
                             </div>
                         </div>
                     </div>

@@ -19,7 +19,7 @@ export interface IPredictionModelsComponent {
 
 
 // Views
-export type IViewID = "ebe_points"|"backtest"|"discovery"|"certificate";
+export type IViewID = "ebe_points"|"backtest"|"discovery"|"hyperparams"|"certificate";
 export interface IView {
     id: IViewID,
     name: string,

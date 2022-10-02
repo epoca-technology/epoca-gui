@@ -75,6 +75,9 @@ export class PredictionModelService implements IPredictionModelService {
 			// Update the backtest fees
 			metadata.update("backtestFee", i, this.certificates[i].id, this.certificates[i].backtest.fees);
 
+			// Update the discovery points
+			metadata.update("discoveryPoints", i, this.certificates[i].id, this.certificates[i].discovery.points);
+
 			// Update the Discovery Accuracy
 			metadata.update("discoveryIncreaseAccuracy", i, this.certificates[i].id, this.certificates[i].discovery.increase_accuracy);
 			metadata.update("discoveryDecreaseAccuracy", i, this.certificates[i].id, this.certificates[i].discovery.decrease_accuracy);
@@ -205,8 +208,8 @@ export class PredictionModelService implements IPredictionModelService {
 						evaluationFunction: "evaluateProfit",
 						evaluationParams: {
 							receivedProfit: c.backtest.profit,
-							optimalProfit: c.backtest.position_size * 1.7,
-							maxPoints: 60
+							optimalProfit: c.backtest.position_size * 2.5,
+							maxPoints: 65
 						}
 					},
 					{
@@ -233,7 +236,7 @@ export class PredictionModelService implements IPredictionModelService {
 						evaluationFunction: "evaluateAccuracy",
 						evaluationParams: {
 							accuracy: c.backtest.accuracy,
-							maxPoints: 15
+							maxPoints: 25
 						}
 					},
 					{
@@ -269,7 +272,7 @@ export class PredictionModelService implements IPredictionModelService {
 						evaluationParams: {
 							receivedPoints: c.discovery.points,
 							maxReceivablePoints: 100,
-							maxPoints: 5
+							maxPoints: 1
 						}
 					},
 					{
@@ -278,7 +281,7 @@ export class PredictionModelService implements IPredictionModelService {
 						evaluationFunction: "evaluateAccuracy",
 						evaluationParams: {
 							accuracy: c.discovery.increase_accuracy,
-							maxPoints: 1.5
+							maxPoints: 0.5
 						}
 					},
 					{
@@ -287,7 +290,7 @@ export class PredictionModelService implements IPredictionModelService {
 						evaluationFunction: "evaluateAccuracy",
 						evaluationParams: {
 							accuracy: c.discovery.decrease_accuracy,
-							maxPoints: 1.5
+							maxPoints: 0.5
 						}
 					},
 					{
@@ -296,7 +299,7 @@ export class PredictionModelService implements IPredictionModelService {
 						evaluationFunction: "evaluateAccuracy",
 						evaluationParams: {
 							accuracy: c.discovery.accuracy,
-							maxPoints: 10
+							maxPoints: 2
 						}
 					},
 					{
@@ -306,7 +309,7 @@ export class PredictionModelService implements IPredictionModelService {
 						evaluationParams: {
 							predictions: c.discovery.increase_num,
 							outcomes: c.discovery.increase_outcome_num,
-							maxPoints: 1
+							maxPoints: 0.5
 						}
 					},
 					{
@@ -316,7 +319,7 @@ export class PredictionModelService implements IPredictionModelService {
 						evaluationParams: {
 							predictions: c.discovery.decrease_num,
 							outcomes: c.discovery.decrease_outcome_num,
-							maxPoints: 1
+							maxPoints: 0.5
 						}
 					}
 				]

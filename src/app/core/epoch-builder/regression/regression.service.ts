@@ -63,6 +63,9 @@ export class RegressionService implements IRegressionService {
 			metadata.update("testDatasetMAE", i, this.certificates[i].id, this.certificates[i].test_ds_evaluation.mean_absolute_error);
 			metadata.update("testDatasetMSE", i, this.certificates[i].id, this.certificates[i].test_ds_evaluation.mean_squared_error);
 
+			// Update the discovery points
+			metadata.update("discoveryPoints", i, this.certificates[i].id, this.certificates[i].discovery.points);
+
 			// Update the Discovery Accuracy
 			metadata.update("discoveryIncreaseAccuracy", i, this.certificates[i].id, this.certificates[i].discovery.increase_accuracy);
 			metadata.update("discoveryDecreaseAccuracy", i, this.certificates[i].id, this.certificates[i].discovery.decrease_accuracy);

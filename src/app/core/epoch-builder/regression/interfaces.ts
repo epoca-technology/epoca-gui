@@ -55,6 +55,9 @@ export interface IRegressionMetadata {
     testDatasetMAE: IEpochBuilderMetadata,
     testDatasetMSE: IEpochBuilderMetadata,
 
+    // Discovery Points
+    discoveryPoints: IEpochBuilderMetadata,
+
     // Discovery Accuracy
     discoveryIncreaseAccuracy: IEpochBuilderMetadata,
     discoveryDecreaseAccuracy: IEpochBuilderMetadata,

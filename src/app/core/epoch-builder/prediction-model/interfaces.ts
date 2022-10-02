@@ -67,6 +67,9 @@ export interface IPredictionModelMetadata {
     // Backtest Fees
     backtestFee: IEpochBuilderMetadata,
 
+    // Discovery Points
+    discoveryPoints: IEpochBuilderMetadata,
+
     // Discovery Accuracy
     discoveryIncreaseAccuracy: IEpochBuilderMetadata,
     discoveryDecreaseAccuracy: IEpochBuilderMetadata,

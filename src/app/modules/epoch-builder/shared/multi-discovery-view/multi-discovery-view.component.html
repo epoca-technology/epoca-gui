@@ -2,6 +2,7 @@
 <mat-tab-group *ngIf="layout == 'mobile'" 
             [selectedIndex]="activeDiscoveryTab" (selectedIndexChange)="activeDiscoveryTab = $event"
             mat-stretch-tabs class="mat-elevation-z3" backgroundColor="primary">
+    <mat-tab><ng-template mat-tab-label><mat-icon>leaderboard</mat-icon></ng-template></mat-tab>
     <mat-tab><ng-template mat-tab-label><mat-icon>ads_click</mat-icon></ng-template></mat-tab>
     <mat-tab><ng-template mat-tab-label><mat-icon svgIcon="wand_magic_sparkles" class="wand-icon"></mat-icon></ng-template></mat-tab>
     <mat-tab><ng-template mat-tab-label><mat-icon>auto_graph</mat-icon></ng-template></mat-tab>
@@ -10,6 +11,7 @@
 <mat-tab-group *ngIf="layout == 'desktop'"  
                 [selectedIndex]="activeDiscoveryTab" (selectedIndexChange)="activeDiscoveryTab = $event" 
                 mat-align-tabs="center">
+    <mat-tab><ng-template mat-tab-label><mat-icon>leaderboard</mat-icon>&nbsp;Points</ng-template></mat-tab>
     <mat-tab><ng-template mat-tab-label><mat-icon>ads_click</mat-icon>&nbsp;Accuracy</ng-template></mat-tab>
     <mat-tab><ng-template mat-tab-label><mat-icon svgIcon="wand_magic_sparkles" class="wand-icon"></mat-icon>&nbsp;Predictions</ng-template></mat-tab>
     <mat-tab><ng-template mat-tab-label><mat-icon>auto_graph</mat-icon>&nbsp;Successful Predictions</ng-template></mat-tab>
@@ -18,8 +20,43 @@
 
 <!-- Content -->
 <div class="padding">
-    <!-- Accuracy -->
+    <!-- Points -->
     <div *ngIf="activeDiscoveryTab == 0" fxLayout="row" fxLayoutAlign="center center">
+        <div fxFlex="60" fxFlex.xs="100" fxFlex.sm="100">
+            <div class="desktop-card">
+                <div fxLayout="row" fxLayoutAlign="center center" class="badged-header">
+                    <h4 class="show-on-desktop">Points</h4>
+                    <span class="show-on-desktop" fxFlex></span>
+                    <div class="square-badge clickable" role="button"
+                        (click)="_activateModel(md.discoveryPoints.highest.id)"
+                        matTooltip="Highest Points: {{md.discoveryPoints.highest.id}}">
+                        Best: {{md.discoveryPoints.highest.value | number: '1.0-2'}}
+                    </div>
+                    <div class="square-badge clickable worst-value" role="button"
+                        (click)="_activateModel(md.discoveryPoints.lowest.id)"
+                        matTooltip="Lowest Points: {{md.discoveryPoints.lowest.id}}">
+                        Worst: {{md.discoveryPoints.lowest.value | number: '1.0-2'}}
+                    </div>
+                </div>
+                <div class="margin-top">
+                    <apx-chart
+                        [series]="discoveryView.points.series"
+                        [chart]="discoveryView.points.chart"
+                        [plotOptions]="discoveryView.points.plotOptions"
+                        [xaxis]="discoveryView.points.xaxis"
+                        [yaxis]="discoveryView.points.yaxis"
+                        [dataLabels]="discoveryView.points.dataLabels"
+                        [colors]="discoveryView.points.colors"
+                        [grid]="discoveryView.points.grid"
+                    ></apx-chart>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Accuracy -->
+    <div *ngIf="activeDiscoveryTab == 1" fxLayout="row" fxLayoutAlign="center center">
         <div fxFlex="60" fxFlex.xs="100" fxFlex.sm="100">
             <div class="desktop-card">
                 <div fxLayout="row" fxLayoutAlign="center center" class="badged-header">
@@ -88,7 +125,7 @@
 
 
     <!-- Predictions -->
-    <div *ngIf="activeDiscoveryTab == 1" fxLayout="row" fxLayoutAlign="center center">
+    <div *ngIf="activeDiscoveryTab == 2" fxLayout="row" fxLayoutAlign="center center">
         <div fxFlex="60" fxFlex.xs="100" fxFlex.sm="100">
             <div class="desktop-card">
                 <div fxLayout="row" fxLayoutAlign="center center" class="badged-header">
@@ -167,7 +204,7 @@
     </div>
 
     <!-- Successful Predictions -->
-    <div *ngIf="activeDiscoveryTab == 2" fxLayout="row" fxLayoutAlign="center center">
+    <div *ngIf="activeDiscoveryTab == 3" fxLayout="row" fxLayoutAlign="center center">
         <div fxFlex="60" fxFlex.xs="100" fxFlex.sm="100">
             <div class="desktop-card">
                 <div fxLayout="row" fxLayoutAlign="center center" class="badged-header">
@@ -224,7 +261,7 @@
     </div>
 
     <!-- Prediction Ranges -->
-    <div *ngIf="activeDiscoveryTab == 3" 
+    <div *ngIf="activeDiscoveryTab == 4" 
         fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" fxLayoutAlign="start start">
             <span fxFlex class="show-on-desktop"></span>
 

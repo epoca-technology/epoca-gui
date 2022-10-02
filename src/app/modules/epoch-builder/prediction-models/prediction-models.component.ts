@@ -18,7 +18,6 @@ import {
 	ILineChartOptions, 
 	IPieChartOptions, 
 	IScatterChartOptions, 
-	ModelSelectionService, 
 	NavService, 
 } from '../../../services';
 import { 
@@ -62,11 +61,13 @@ export class PredictionModelsComponent implements OnInit, OnDestroy, IPrediction
 		{id: "ebe_points", name: "EBE Points", icon: "query_stats"},
 		{id: "backtest", name: "Backtest", icon: "price_check"},
 		{id: "discovery", name: "Discovery", icon: "tune"},
+		{id: "hyperparams", name: "Hyperparams", icon: "settings_suggest"}
 	]
 	public readonly viewNames = {
 		ebe_points: "EBE Points",
 		backtest: "Backtest",
-		discovery: "Discovery"
+		discovery: "Discovery",
+		hyperparams: "Hyperparams"
 	}
 	public activeView: IViewID = "ebe_points";
 
@@ -83,6 +84,15 @@ export class PredictionModelsComponent implements OnInit, OnDestroy, IPrediction
 
 	// Discovery View
 	public discoveryPayloadRecords?: IDiscoveryRecord[];
+
+	// Hyperparams View
+	public hyperparamsView?: {
+		priceChangeRequirement: IBarChartOptions,
+		minSumFunction: IBarChartOptions,
+		minSumAdjustmentFactor: IBarChartOptions,
+		regressionsPerModel: IBarChartOptions
+	}
+	private readonly gridChartHeight: number = 230;
 
 	// Certificate View
 	public certificateView?: {
@@ -106,7 +116,6 @@ export class PredictionModelsComponent implements OnInit, OnDestroy, IPrediction
 		private _chart: ChartService,
 		private _utils: UtilsService,
 		public _pm: PredictionModelService,
-		public _selection: ModelSelectionService,
 		private dialog: MatDialog,
 	) { }
 
@@ -238,6 +247,7 @@ export class PredictionModelsComponent implements OnInit, OnDestroy, IPrediction
 		this.activeBacktestTabIndex = 0;
 		this.activeBacktestBadge = 0;
 		this.discoveryPayloadRecords = undefined;
+		this.hyperparamsView = undefined;
 		this.certificateView = undefined;
 		this.cert = undefined;
 		this.activeCertTabIndex = 0;
@@ -290,6 +300,9 @@ export class PredictionModelsComponent implements OnInit, OnDestroy, IPrediction
 		// Navigate to the Discovery View
 		else if (this.activeView == "discovery" && !this.discoveryPayloadRecords) { this.buildDiscoveryView() }
 
+		// Navigate to the Hyperparams View
+		else if (this.activeView == "hyperparams" && !this.hyperparamsView) { this.buildHyperparamsView() }
+
 		// Navigate to a certificate
 		else if (this.activeView == "certificate" && (typeof certIndexOrID == "number" || typeof certIndexOrID == "string")) { this.buildCertificatesView(certIndexOrID) }
 
@@ -319,7 +332,7 @@ export class PredictionModelsComponent implements OnInit, OnDestroy, IPrediction
 	/**
 	 * Builds the EBE Points View.
 	 */
-	 private buildEBEPointsView(): void { /* Builds in the subcomponent */ }
+	private buildEBEPointsView(): void { /* Builds in the subcomponent */ }
 
 
 
@@ -328,7 +341,7 @@ export class PredictionModelsComponent implements OnInit, OnDestroy, IPrediction
 	 /**
 	  * Builds the backtest evaluations view
 	  */
-	 private buildBacktestView(): void {
+	private buildBacktestView(): void {
 		// Init values
 		let profit: number[] = [];
 		let balanceHist: ApexAxisChartSeries = [];
@@ -370,13 +383,12 @@ export class PredictionModelsComponent implements OnInit, OnDestroy, IPrediction
 		// Populate the view
 		this.backtestView = {
 			profit: this._chart.getBarChartOptions(
-				{series: [{name: "Profit", data: profit,}]}, 
+				{series: [{name: "Profit", data: profit, color: "#000000"}]}, 
 				this._pm.ids, 
-				this._chart.calculateChartHeight(110, 20, this._pm.ids.length, 1),
-				true
+				this._chart.calculateChartHeight(110, 20, this._pm.ids.length, 1)
 			),
 			balanceHist: this._chart.getLineChartOptions(
-				{ series: balanceHist, stroke: {width: 5, curve: "straight"} }, 
+				{ series: balanceHist, stroke: {width: 3, curve: "straight"} }, 
 				600, 
 				true,
 				undefined,
@@ -451,22 +463,135 @@ export class PredictionModelsComponent implements OnInit, OnDestroy, IPrediction
 	 /**
 	  * Builds the Discovery View as well as all the sub views.
 	  */
-	 private buildDiscoveryView(): void {
+	private buildDiscoveryView(): void {
 		 // Build the discovery payload records
 		 this.discoveryPayloadRecords = this._pm.certificates.map((c) => { return { id: c.id, discovery: c.discovery } })
  
 		 /* The view itself is built in the subcomponent */
 	 }
  
+
+
  
  
  
  
  
 	 /**
+	  * Builds the Hyperparams View.
+	  */
+	private buildHyperparamsView(): void {
+		// Init the counters
+		let priceChangeRequirementCount: {[paramKey: string]: number} = { "2.5": 0, "3": 0, "3.5": 0,"4": 0, "Unknown": 0};
+		let minSumFunctionCount: {[paramKey: string]: number} = { "mean": 0, "median": 0, "Unknown": 0 };
+		let minSumAdjustmentFactorCount: {[paramKey: string]: number} = { "2": 0, "2.5": 0, "Unknown": 0 };
+		let regressionsPerModelCount: {[paramKey: string]: number} = { "4": 0, "8": 0, "16": 0, "Unknown": 0 };
+
+		// Iterate over each certificate and populate the counters
+		for (let cert of this._pm.certificates) {
+			// Update the price change requirement
+			if (typeof priceChangeRequirementCount[String(cert.model.price_change_requirement)] == "number") {
+				priceChangeRequirementCount[String(cert.model.price_change_requirement)] += 1
+			}
+			else { priceChangeRequirementCount["Unknown"] += 1 }
+
+			// Update the min sum function
+			if (typeof minSumFunctionCount[cert.model.min_sum_function] == "number") { 
+				minSumFunctionCount[cert.model.min_sum_function] += 1 
+			}
+			else { minSumFunctionCount["Unknown"] += 1 }
+
+			// Update the min sum adjustment factor
+			if (typeof minSumAdjustmentFactorCount[String(cert.model.min_sum_adjustment_factor)] == "number") {
+				minSumAdjustmentFactorCount[String(cert.model.min_sum_adjustment_factor)] += 1
+			}
+			else { minSumAdjustmentFactorCount["Unknown"] += 1 }
+
+			// Update the regressions per model
+			if (typeof regressionsPerModelCount[String(cert.model.regressions.length)] == "number") {
+				regressionsPerModelCount[String(cert.model.regressions.length)] += 1
+			}
+			else { minSumAdjustmentFactorCount["Unknown"] += 1 }
+		}
+
+		// Finally, build the hyperparam charts
+		this.hyperparamsView = {
+			priceChangeRequirement: this._chart.getBarChartOptions(
+				{
+					series: [
+						{ name: "2.5%", data: [ priceChangeRequirementCount["2.5"] ] },
+						{ name: "3%", data: [ priceChangeRequirementCount["3"] ] },
+						{ name: "3.5%", data: [ priceChangeRequirementCount["3.5"] ] },
+						{ name: "4%", data: [ priceChangeRequirementCount["4"] ] },
+						{ name: "Unknown", data: [ priceChangeRequirementCount["Unknown"] ] }
+					], 
+					colors: [ "#045724", "#388a58", "#5fde90", "#0cf79d", "#9E9E9E" ],
+					xaxis: {categories: [ "Price Change Requirement" ], labels: {show: false}},
+					yaxis: {labels: {show: false}},
+					plotOptions: { bar: { horizontal: false, borderRadius: 4, columnWidth: "25%"}},
+				}, 
+				[ "Price Change Requirement" ], 
+				this.gridChartHeight
+			),
+			minSumFunction: this._chart.getBarChartOptions(
+				{
+					series: [
+						{ name: "mean", data: [ minSumFunctionCount["mean"] ] },
+						{ name: "median", data: [ minSumFunctionCount["median"] ] },
+						{ name: "Unknown", data: [ minSumFunctionCount["Unknown"] ] }
+					], 
+					colors: [ "#880E4F", "#E91E63", "#9E9E9E" ],
+					xaxis: {categories: [ "Min Sum Function" ], labels: {show: false}},
+					yaxis: {labels: {show: false}},
+					plotOptions: { bar: { horizontal: false, borderRadius: 4, columnWidth: "15%"}},
+				}, 
+				[ "Min Sum Function" ], 
+				this.gridChartHeight
+			),
+			minSumAdjustmentFactor: this._chart.getBarChartOptions(
+				{
+					series: [
+						{ name: "x2", data: [ minSumAdjustmentFactorCount["2"] ] },
+						{ name: "x2.5", data: [ minSumAdjustmentFactorCount["2.5"] ] },
+						{ name: "Unknown", data: [ minSumAdjustmentFactorCount["Unknown"] ] }
+					], 
+					colors: [ "#01579B", "#03A9F4", "#9E9E9E" ],
+					xaxis: {categories: [ "Min Sum Adjustment Factor" ], labels: {show: false}},
+					yaxis: {labels: {show: false}},
+					plotOptions: { bar: { horizontal: false, borderRadius: 4, columnWidth: "15%"}},
+				}, 
+				[ "Min Sum Adjustment Factor" ], 
+				this.gridChartHeight
+			),
+			regressionsPerModel: this._chart.getBarChartOptions(
+				{
+					series: [
+						{ name: "4", data: [ regressionsPerModelCount["4"] ] },
+						{ name: "8", data: [ regressionsPerModelCount["8"] ] },
+						{ name: "16", data: [ regressionsPerModelCount["16"] ] },
+						{ name: "Unknown", data: [ regressionsPerModelCount["Unknown"] ] }
+					], 
+					colors: [ "#2a0652", "#6a4196", "#9434fa", "#9E9E9E" ],
+					xaxis: {categories: [ "Regressions per Model" ], labels: {show: false}},
+					yaxis: {labels: {show: false}},
+					plotOptions: { bar: { horizontal: false, borderRadius: 4, columnWidth: "20%"}},
+				}, 
+				[ "Regressions per Model" ], 
+				this.gridChartHeight
+			)
+		}
+	}
+
+ 
+ 
+ 
+
+ 
+ 
+	 /**
 	  * Builds the Certificate View as well as the sub views.
 	  */
-	 private buildCertificatesView(certIndexOrID: number|string): void {
+	private buildCertificatesView(certIndexOrID: number|string): void {
 		 // Init the certificate index
 		 const certIndex: number = typeof certIndexOrID == "number" ? certIndexOrID: this._pm.ids.indexOf(certIndexOrID);
  

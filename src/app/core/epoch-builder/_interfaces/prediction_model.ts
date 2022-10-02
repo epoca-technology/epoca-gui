@@ -45,6 +45,7 @@ export type IRegressionsPerModel = 4|8|16;
 export interface IPredictionModelMinifiedConfig {
     pcr: number,            // Price Change Requirement
     msf: IMinSumFunction,   // Min Sum Function
+    msaf: number,           // Min Sum Adjustment Factor
     ri: string[]            // Regression IDs
 }
 
@@ -200,7 +201,10 @@ export interface IPredictionModelConfig {
     price_change_requirement: number,
 
     // Sum function used to determine the min increase and decrease sums
-    min_sum_function: IMinSumFunction
+    min_sum_function: IMinSumFunction,
+
+    // The factor that is used to adjust the min sums
+    min_sum_adjustment_factor: number,
 
     // The minimum increase and decrease sums required to generate non-neutral predictions
     min_increase_sum: number,

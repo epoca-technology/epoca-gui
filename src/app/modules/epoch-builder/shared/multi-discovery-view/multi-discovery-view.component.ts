@@ -24,6 +24,7 @@ export class MultiDiscoveryViewComponent implements OnInit, OnDestroy, IMultiDis
 
 	// Discovery View
 	public discoveryView!: {
+		points: IBarChartOptions,
 		accuracy: IBarChartOptions,
 		predictions: IBarChartOptions,
 		successfulPredictions: IBarChartOptions,
@@ -48,6 +49,9 @@ export class MultiDiscoveryViewComponent implements OnInit, OnDestroy, IMultiDis
 	ngOnInit(): void {
 		// Subscribe to the layout
 		this.layoutSub = this._app.layout.subscribe((nl: ILayout) => this.layout = nl);
+
+		// Init point values
+		let points: number[] = [];
 
 		// Init accuracy values
 		let increaseAccuracy: number[] = [];
@@ -79,6 +83,9 @@ export class MultiDiscoveryViewComponent implements OnInit, OnDestroy, IMultiDis
 			// Append the IDs
 			this.ids.push(r.id);
 
+			// Append the points
+			points.push(r.discovery.points);
+
 			// Append the accuracies
 			increaseAccuracy.push(r.discovery.increase_accuracy);
 			decreaseAccuracy.push(r.discovery.decrease_accuracy);
@@ -107,6 +114,11 @@ export class MultiDiscoveryViewComponent implements OnInit, OnDestroy, IMultiDis
 
 		// Build the view
 		this.discoveryView = {
+			points: this._chart.getBarChartOptions(
+				{series: [{name:'Discovery Points', data: points, color: "#000000"}]}, 
+				this.ids, 
+				this._chart.calculateChartHeight(110, 20, this.ids.length, 1)
+			),
 			accuracy: this._chart.getBarChartOptions(
 				{
 					series: [
@@ -171,6 +183,11 @@ export class MultiDiscoveryViewComponent implements OnInit, OnDestroy, IMultiDis
 
 		// Finally, Attach the click events
 		const self = this;
+		this.discoveryView.points.chart.events = {
+			click: function(e: any, cc: any, c: any) {
+				if (c.dataPointIndex >= 0) setTimeout(() => {self._activateModel(c.dataPointIndex)}, 300)
+			}
+		}
 		this.discoveryView.accuracy.chart.events = {
 			click: function(e: any, cc: any, c: any) {
 				if (c.dataPointIndex >= 0) setTimeout(() => {self._activateModel(c.dataPointIndex)}, 300)
