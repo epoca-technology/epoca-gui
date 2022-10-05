@@ -837,11 +837,10 @@
                                                     <div fxLayout="row" fxLayoutAlign="start center">
                                                         <h4>{{layout == 'desktop' ? 'Prediction Insights': 'Insights'}}</h4>
                                                         <span fxFlex></span>
-                                                        <button *ngIf="!insightsVisible" mat-button (click)="insightsVisible = true">View</button>
                                                     </div>
     
                                                     <!-- Prediction Insights -->
-                                                    <div *ngIf="insightsVisible">
+                                                    <div>
                                                         <apx-chart
                                                             [series]="certificateView.predictionInsight.series"
                                                             [chart]="certificateView.predictionInsight.chart"

@@ -104,7 +104,6 @@ export class PredictionModelsComponent implements OnInit, OnDestroy, IPrediction
 	};
 	public cert?: IPredictionModelCertificate;
 	public activeCertTabIndex: number = 0;
-	public insightsVisible: boolean = false;
 	public visiblePositions: number = 15;
 
 	// Loading state - Just for certificates
@@ -251,7 +250,6 @@ export class PredictionModelsComponent implements OnInit, OnDestroy, IPrediction
 		this.certificateView = undefined;
 		this.cert = undefined;
 		this.activeCertTabIndex = 0;
-		this.insightsVisible = false;
 		this.visiblePositions = 15;
 	}
 
@@ -603,7 +601,7 @@ export class PredictionModelsComponent implements OnInit, OnDestroy, IPrediction
 		 const minBalance: number = this._utils.getMin(values);
 		 const maxBalance: number = this._utils.getMax(values);
  
-		 // Finally, build the view
+		 // Build the view
 		 this.certificateView = {
 			accuracy: this._chart.getBarChartOptions(
 				{
@@ -638,7 +636,7 @@ export class PredictionModelsComponent implements OnInit, OnDestroy, IPrediction
 				{ 
 					series: [{name: "Prediction", data: this.getPredictionInsightsData()}],
 				},
-				350,
+				300,
 			),
 			positions: this._chart.getPieChartOptions(
 				{
@@ -659,6 +657,27 @@ export class PredictionModelsComponent implements OnInit, OnDestroy, IPrediction
 				280
 			),
 		};
+
+		// Finally, Attach the click events
+		const self = this;
+		this.certificateView.balanceHist!.chart.events = {
+			click: function(e: any, cc: any, c: any) {
+				if (c.dataPointIndex >= 0 && self.cert!.backtest.positions[c.dataPointIndex]) {
+					self.displayPosition(self.cert!.backtest.positions[c.dataPointIndex])
+				}
+			}
+		}
+		this.certificateView.predictionInsight!.chart.events = {
+			click: function(e: any, cc: any, c: any) {
+				if (c.dataPointIndex >= 0 && self.cert!.backtest.positions[c.dataPointIndex]) {
+					self._nav.displayPredictionDialog(
+						self.cert!.model, 
+						self.cert!.backtest.positions[c.dataPointIndex].p!,
+						self.cert!.backtest.positions[c.dataPointIndex].o,
+					)
+				}
+			}
+		}
 	 }
 
 
