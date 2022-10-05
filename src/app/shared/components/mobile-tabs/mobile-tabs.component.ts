@@ -51,10 +51,10 @@ export class MobileTabsComponent implements OnInit, OnDestroy, IMobileTabsCompon
 				this._nav.predictions();
 				break;
 			case 3:
-				this._nav.tradingSessions();
+				this._nav.tradingSimulations();
 				break;
 			case 4:
-				this._nav.tradingSimulations();
+				this._nav.tradingSessions();
 				break;
 		}
 	}
@@ -89,10 +89,10 @@ export class MobileTabsComponent implements OnInit, OnDestroy, IMobileTabsCompon
 			case 'predictions':
 				this.activeTab = 2;
 				break;
-			case 'tradingSessions':
+			case 'tradingSimulations':
 				this.activeTab = 3;
 				break;
-			case 'tradingSimulations':
+			case 'tradingSessions':
 				this.activeTab = 4;
 				break;
 			default:

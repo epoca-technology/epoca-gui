@@ -15,13 +15,6 @@
 
         <!-- Menu Content -->
         <mat-list>
-            <!-- Trading Sessions -->
-            <mat-list-item>
-                <button mat-button class="left-icon-button" (click)="_nav.tradingSessions()">
-                    <mat-icon svgIcon="auto_graph"></mat-icon><span>Trading Sessions</span>
-                </button>
-            </mat-list-item>
-
             <!-- Epochs -->
             <mat-list-item>
                 <button mat-button class="left-icon-button" (click)="_nav.epochs()">
@@ -40,6 +33,13 @@
             <mat-list-item>
                 <button mat-button class="left-icon-button" (click)="_nav.tradingSimulations()">
                     <mat-icon svgIcon="ssid_chart"></mat-icon><span>Trading Simulations</span>
+                </button>
+            </mat-list-item>
+
+            <!-- Trading Sessions -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.tradingSessions()">
+                    <mat-icon svgIcon="auto_graph"></mat-icon><span>Trading Sessions</span>
                 </button>
             </mat-list-item>
 
