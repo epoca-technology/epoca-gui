@@ -240,12 +240,12 @@
                                             <div fxLayout="row" fxLayoutAlign="center center" class="badged-header">
                                                 <h4 class="show-on-desktop">Profit</h4>
                                                 <span class="show-on-desktop" fxFlex></span>
-                                                <div *ngIf="activeBacktestBadge == 0" class="square-badge clickable" role="button"
+                                                <div class="square-badge clickable" role="button"
                                                     (click)="navigate('certificate', _pm.md.backtestProfit.highest.id)"
                                                     matTooltip="Highest Profit: {{_pm.md.backtestProfit.highest.id}}">
                                                     High: {{_pm.md.backtestProfit.highest.value | currency}}
                                                 </div>
-                                                <div *ngIf="activeBacktestBadge == 0" class="square-badge clickable worst-value" role="button"
+                                                <div class="square-badge clickable worst-value" role="button"
                                                     (click)="navigate('certificate', _pm.md.backtestProfit.lowest.id)"
                                                     matTooltip="Lowest Profit: {{_pm.md.backtestProfit.lowest.id}}">
                                                     Low: {{_pm.md.backtestProfit.lowest.value | currency}}
@@ -428,12 +428,12 @@
                                             <div fxLayout="row" fxLayoutAlign="center center" class="badged-header">
                                                 <h4 class="show-on-desktop">Fees</h4>
                                                 <span class="show-on-desktop" fxFlex></span>
-                                                <div *ngIf="activeBacktestBadge == 0" class="square-badge clickable" role="button"
+                                                <div class="square-badge clickable" role="button"
                                                     (click)="navigate('certificate', _pm.md.backtestFee.highest.id)"
                                                     matTooltip="Highest Fees: {{_pm.md.backtestFee.highest.id}}">
                                                     High: {{_pm.md.backtestFee.highest.value | currency}}
                                                 </div>
-                                                <div *ngIf="activeBacktestBadge == 0" class="square-badge clickable worst-value" role="button"
+                                                <div class="square-badge clickable worst-value" role="button"
                                                     (click)="navigate('certificate', _pm.md.backtestFee.lowest.id)"
                                                     matTooltip="Lowest Fees: {{_pm.md.backtestFee.lowest.id}}">
                                                     Low: {{_pm.md.backtestFee.lowest.value | currency}}

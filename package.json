@@ -1,7 +1,7 @@
 {
     "name": "gui-development",
     "version": "1.0.0",
-    "description": "Epoca is an automated trading system based on machine learning, designed to operate on Bitcoin perpetual future contracts.",
+    "description": "Epoca is a pattern finding technology designed to trade Futures Contracts through Bitcoin Exchanges.",
     "scripts": {
       "ng": "ng",
       "start": "ng serve",

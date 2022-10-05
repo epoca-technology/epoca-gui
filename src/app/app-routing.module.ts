@@ -27,6 +27,12 @@ const routes: Routes = [
 		loadChildren: () => import('./modules/epochs/epochs.module').then(m => m.EpochsModule),
 	},
 
+	// Predictions
+	{
+		path: 'predictions',
+		loadChildren: () => import('./modules/predictions/predictions.module').then(m => m.PredictionsModule),
+	},
+
 	// Trading Sessions
 	{
 		path: 'tradingSessions',

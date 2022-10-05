@@ -25,6 +25,7 @@ export interface INavService {
 	regressions(): Promise<boolean>,
 	predictionModels(): Promise<boolean>,
 	epochs(): Promise<boolean>,
+	predictions(): Promise<boolean>,
 	guiVersion(version?: string): Promise<boolean>,
 	ipBlacklist(): Promise<boolean>,
 	server(): Promise<boolean>,

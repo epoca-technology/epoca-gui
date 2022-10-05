@@ -91,6 +91,9 @@ export class NavService implements INavService {
 	// Epochs
 	public epochs(): Promise<boolean> { return this.navigate("epochs") }
 
+	// Predictions
+	public predictions(): Promise<boolean> { return this.navigate("predictions") }
+
 	// GUI Version
 	public guiVersion(version?: string): Promise<boolean> { 
         if (typeof version == "string") {
