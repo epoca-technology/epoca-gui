@@ -45,6 +45,9 @@ import {
     DatabaseService,
     DatabaseManagementService,
 
+	// Epoch
+	EpochService,
+
 	// Epoch Builder
 	EpochBuilderEvaluationService,
 	PredictionModelService,
@@ -61,6 +64,9 @@ import {
 
 	// IP Blacklist
 	IpBlacklistService,
+
+	// Local Database
+	LocalDatabaseService,
 
 	// Notification
 	NotificationService,
@@ -148,6 +154,9 @@ import { AppComponent } from "./app.component";
 		DatabaseService,
 		DatabaseManagementService,
 
+		// Epoch
+		EpochService,
+
 		// Epoch Builder
 		EpochBuilderEvaluationService,
 		PredictionModelService,
@@ -164,6 +173,9 @@ import { AppComponent } from "./app.component";
 
 		// IP Blacklist
 		IpBlacklistService,
+
+		// Local Database
+		LocalDatabaseService,
 
 		// Notification
 		NotificationService,

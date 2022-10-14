@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
-import { ApiService } from '../api';
-import { IBackgroundTaskInfo } from '../background-task';
-import { ICandlestick, ICandlestickService } from './interfaces';
+import { Injectable } from "@angular/core";
+import { ApiService } from "../api";
+import { IBackgroundTaskInfo } from "../background-task";
+import { ICandlestick, ICandlestickService } from "./interfaces";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export class CandlestickService implements ICandlestickService {
 
@@ -38,7 +38,7 @@ export class CandlestickService implements ICandlestickService {
 
 		// Send the request to the API
 		return this._api.request(
-            'get','candlestick/getForPeriod', 
+            "get","candlestick/getForPeriod", 
             {
                 start: start,
                 end: end,
@@ -57,11 +57,11 @@ export class CandlestickService implements ICandlestickService {
 
 
 	/**
-	 * Retrieves the prediction candlesticks' file's task.
+	 * Retrieves the prediction candlesticks" file"s task.
 	 * @returns Promise<IBackgroundTaskInfo>
 	 */
-	 public getPredictionFileTask(): Promise<IBackgroundTaskInfo> {
-		return this._api.request('get','candlestick/getPredictionFileTask', {}, true);
+	public getPredictionFileTask(): Promise<IBackgroundTaskInfo> {
+		return this._api.request("get","candlestick/getPredictionFileTask", {}, true);
 	}
 
 
@@ -72,8 +72,8 @@ export class CandlestickService implements ICandlestickService {
 	 * of the prediction candlesticks file.
      * @returns Promise<IBackgroundTaskInfo>
      */
-     public generatePredictionCandlesticksFile(otp: string): Promise<IBackgroundTaskInfo> { 
-        return this._api.request('post','candlestick/generatePredictionCandlesticksFile', {}, true, otp);
+    public generatePredictionCandlesticksFile(otp: string): Promise<IBackgroundTaskInfo> { 
+        return this._api.request("post","candlestick/generatePredictionCandlesticksFile", {}, true, otp);
     }
 
 
@@ -89,11 +89,11 @@ export class CandlestickService implements ICandlestickService {
 
 
 	/**
-	 * Retrieves the candlesticks bundle file's task.
+	 * Retrieves the candlesticks bundle file"s task.
 	 * @returns Promise<IBackgroundTaskInfo>
 	 */
-	 public getBundleFileTask(): Promise<IBackgroundTaskInfo> {
-		return this._api.request('get','candlestick/getBundleFileTask', {}, true);
+	public getBundleFileTask(): Promise<IBackgroundTaskInfo> {
+		return this._api.request("get","candlestick/getBundleFileTask", {}, true);
 	}
 
 
@@ -104,8 +104,8 @@ export class CandlestickService implements ICandlestickService {
 	 * of the candlesticks bundle file.
      * @returns Promise<IBackgroundTaskInfo>
      */
-     public generateCandlesticksBundleFile(otp: string): Promise<IBackgroundTaskInfo> { 
-        return this._api.request('post','candlestick/generateCandlesticksBundleFile', {}, true, otp);
+    public generateCandlesticksBundleFile(otp: string): Promise<IBackgroundTaskInfo> { 
+        return this._api.request("post","candlestick/generateCandlesticksBundleFile", {}, true, otp);
     }
 
 }

@@ -1,2 +1,2 @@
-export * from './interfaces';
-export * from './prediction.service';
+export * from "./interfaces";
+export * from "./prediction.service";

@@ -1,0 +1,25 @@
+<!-- Secondary Header -->
+<mat-toolbar class="secondary-header">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <button mat-icon-button class="show-on-mobile" (click)="_nav.dashboard()"><mat-icon>arrow_back</mat-icon></button>
+        <span>Order Book</span>
+        <span fxFlex></span>
+
+    </div>
+</mat-toolbar>
+
+<!-- Loader -->
+<div *ngIf="!loaded" class="section-loader">
+    <div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div>
+</div>
+
+<!-- Content -->
+<div *ngIf="loaded">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <div fxFlex fxFlex.md="35" fxFlex.lg="25" fxFlex.xl="20" class="padding align-center">
+            <div class="desktop-card">
+                <p>@TODO</p>
+            </div>
+        </div>
+    </div>
+</div>

@@ -3,8 +3,8 @@
     <div layout="row" fxLayoutAlign="start start">
         <div>
             <h5>{{t.name}}</h5>
-            <p class="light-text" *ngIf="t.running_ts">{{t.running_ts | date:'medium'}}</p>
-            <p class="light-text" *ngIf="!t.running_ts">N / A</p>
+            <p class="light-text ts-s" *ngIf="t.running_ts">{{t.running_ts | date:'medium'}}</p>
+            <p class="light-text ts-s" *ngIf="!t.running_ts">N / A</p>
         </div>
         <span fxFlex></span>
 
@@ -15,7 +15,9 @@
     </div>
 
     <!-- State Description -->
-    <p *ngIf="t.state == 'running'">{{t.stateDescription}}</p>
-    <p *ngIf="t.state == 'completed'">{{t.stateDescription}} ({{t.completed_ts | date:'medium'}})</p>
-    <p *ngIf="t.state == 'errored'" class="error-color">{{t.stateDescription}} ({{t.errored_ts | date:'medium'}})</p>
+    <div style="margin-top:5px;">
+        <p *ngIf="t.state == 'running'">{{t.stateDescription}}</p>
+        <p *ngIf="t.state == 'completed'">{{t.stateDescription}} ({{t.completed_ts | date:'medium'}})</p>
+        <p *ngIf="t.state == 'errored'" class="error-color">{{t.stateDescription}} ({{t.errored_ts | date:'medium'}})</p>
+    </div>
 </div>

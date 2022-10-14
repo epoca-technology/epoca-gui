@@ -1,12 +1,12 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { DashboardComponent } from './modules/dashboard/dashboard.component';
-import { AuthGuard } from './services/nav/auth.guard';
+import { NgModule } from "@angular/core";
+import { RouterModule, Routes } from "@angular/router";
+import { DashboardComponent } from "./modules/dashboard/dashboard.component";
+import { AuthGuard } from "./services/nav/auth.guard";
 
 const routes: Routes = [
     /* Pre Loaded Components */
 	{
-		path: 'dashboard',
+		path: "dashboard",
 		component: DashboardComponent,
 		canActivate: [AuthGuard]
 	},
@@ -17,86 +17,97 @@ const routes: Routes = [
 
 	// Auth
 	{
-		path: 'auth',
-		loadChildren: () => import('./modules/auth/auth.module').then(m => m.AuthModule),
+		path: "auth",
+		loadChildren: () => import("./modules/auth/auth.module").then(m => m.AuthModule),
 	},
 
 	// Epochs
 	{
-		path: 'epochs',
-		loadChildren: () => import('./modules/epochs/epochs.module').then(m => m.EpochsModule),
+		path: "epochs",
+		loadChildren: () => import("./modules/epochs/epochs.module").then(m => m.EpochsModule),
 	},
 
 	// Predictions
 	{
-		path: 'predictions',
-		loadChildren: () => import('./modules/predictions/predictions.module').then(m => m.PredictionsModule),
+		path: "predictions",
+		loadChildren: () => import("./modules/predictions/predictions.module").then(m => m.PredictionsModule),
 	},
 
 	// Trading Sessions
 	{
-		path: 'tradingSessions',
-		loadChildren: () => import('./modules/trading-sessions/trading-sessions.module').then(m => m.TradingSessionsModule),
+		path: "tradingSessions",
+		loadChildren: () => import("./modules/trading-sessions/trading-sessions.module").then(m => m.TradingSessionsModule),
 	},
 
 	// Trading Simulations
 	{
-		path: 'tradingSimulations',
-		loadChildren: () => import('./modules/trading-simulations/trading-simulations.module').then(m => m.TradingSimulationsModule),
+		path: "tradingSimulations",
+		loadChildren: () => import("./modules/trading-simulations/trading-simulations.module").then(m => m.TradingSimulationsModule),
 	},
 
 	// Candlesticks
 	{
-		path: 'candlesticks',
-		loadChildren: () => import('./modules/candlesticks/candlesticks.module').then(m => m.CandlesticksModule),
+		path: "candlesticks",
+		loadChildren: () => import("./modules/candlesticks/candlesticks.module").then(m => m.CandlesticksModule),
+	},
+
+	// Order Book
+	{
+		path: "orderBook",
+		loadChildren: () => import("./modules/order-book/order-book.module").then(m => m.OrderBookModule),
 	},
 
 	// Server
 	{
-		path: 'server',
-		loadChildren: () => import('./modules/server/server.module').then(m => m.ServerModule),
+		path: "server",
+		loadChildren: () => import("./modules/server/server.module").then(m => m.ServerModule),
 	},
 
 	// Users
 	{
-		path: 'users',
-		loadChildren: () => import('./modules/users/users.module').then(m => m.UsersModule),
+		path: "users",
+		loadChildren: () => import("./modules/users/users.module").then(m => m.UsersModule),
 	},
 
 	// GUI Version
 	{
-		path: 'guiVersion',
-		loadChildren: () => import('./modules/gui-version/gui-version.module').then(m => m.GuiVersionModule),
+		path: "guiVersion",
+		loadChildren: () => import("./modules/gui-version/gui-version.module").then(m => m.GuiVersionModule),
 	},
 
 	// IP Blacklist
 	{
-		path: 'ipBlacklist',
-		loadChildren: () => import('./modules/ip-blacklist/ip-blacklist.module').then(m => m.IpBlacklistModule),
+		path: "ipBlacklist",
+		loadChildren: () => import("./modules/ip-blacklist/ip-blacklist.module").then(m => m.IpBlacklistModule),
 	},
-
 
 	// Epoch Builder
 	{
-		path: 'epochBuilder',
-		loadChildren: () => import('./modules/epoch-builder/epoch-builder.module').then(m => m.EpochBuilderModule),
+		path: "epochBuilder",
+		loadChildren: () => import("./modules/epoch-builder/epoch-builder.module").then(m => m.EpochBuilderModule),
+	},
+
+	// Local Database
+	{
+		path: "localDatabase",
+		loadChildren: () => import("./modules/local-database/local-database.module").then(m => m.LocalDatabaseModule),
 	},
 
 
 
 	/* Empty Path */
 	{
-		path: '',
-		redirectTo: '/dashboard',
-		pathMatch: 'full'
+		path: "",
+		redirectTo: "/dashboard",
+		pathMatch: "full"
 	},
 	
 	
     
 	/* 404 Not Found */
 	{
-        path: '**',
-		redirectTo: '/dashboard'
+        path: "**",
+		redirectTo: "/dashboard"
 	}
 ];
 

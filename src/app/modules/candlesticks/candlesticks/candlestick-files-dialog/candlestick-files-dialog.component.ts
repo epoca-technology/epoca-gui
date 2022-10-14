@@ -20,6 +20,9 @@ export class CandlestickFilesDialogComponent implements OnInit, ICandlestickFile
 	public candlestickBundleTask!: IBackgroundTaskInfo;
 	public candlestickBundleFiles: IDownloadedFile[] = [];
 
+	// Tabs Nav
+	public activeIndex: number = 0;
+
 	// Submission
 	public submitting: boolean = false;
 

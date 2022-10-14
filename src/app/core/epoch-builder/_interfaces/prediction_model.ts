@@ -15,9 +15,9 @@ import { IEpochBuilderEvaluation } from "./epoch_builder_evaluation";
 
 /**
  * Min Sum Function
- * The prediction model's discovery calculates the means and the medians of the 
+ * The prediction model"s discovery calculates the means and the medians of the 
  * successful predictions which then will be used to trade. For instance, If the 
- * mean function is selected, the model will make use of the discovery's 
+ * mean function is selected, the model will make use of the discovery"s 
  * increase_successful_mean and the decrease_successful_mean as the minimum sums
  * in order to generate non-neutral predictions.
  */
@@ -56,6 +56,23 @@ export interface IPredictionModelMinifiedConfig {
 
 
 
+/* Position Type */
+
+
+
+/**
+ * In futures markets, there can only be 2 types of positions:
+ *  1: Long Position
+ * -1: Short Position
+ */
+ export type IPositionType = 1|-1;
+ 
+
+
+
+
+
+
 
 /* Prediction Object */
 
@@ -67,8 +84,8 @@ export interface IPredictionModelMinifiedConfig {
  * 1 (long) or 0 (neutral) or -1 (short)
  */
  export type IPredictionResult = 1|0|-1;
- export type IPredictionResultName = 'Long'|'Short'|'Neutral';
- 
+ export type IPredictionResultName = "Long"|"Short"|"Neutral";
+ export type IPredictionResultIcon = "trending_up"|"trending_down"|"trending_flat"
  
 
  

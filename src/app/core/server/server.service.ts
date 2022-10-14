@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
-import { ApiService } from '../api';
-import { IServerService, IServerData, IServerResources, IAlarmsConfig } from './interfaces';
+import { Injectable } from "@angular/core";
+import { ApiService } from "../api";
+import { IServerService, IServerData, IServerResources, IAlarmsConfig } from "./interfaces";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export class ServerService implements IServerService {
 
@@ -23,8 +23,8 @@ export class ServerService implements IServerService {
      * resources
 	 * @returns Promise<IServerData>
 	 */
-     public getServerData(): Promise<IServerData> {
-		return this._api.request('get','server/getServerData', {}, true);
+    public getServerData(): Promise<IServerData> {
+		return this._api.request("get","server/getServerData", {}, true);
 	}
 
 
@@ -38,8 +38,8 @@ export class ServerService implements IServerService {
 	 * Retrieves the updated server resources
 	 * @returns Promise<IServerResources>
 	 */
-     public getServerResources(): Promise<IServerResources> {
-		return this._api.request('get','server/getServerResources', {}, true);
+    public getServerResources(): Promise<IServerResources> {
+		return this._api.request("get","server/getServerResources", {}, true);
 	}
 
 
@@ -56,7 +56,7 @@ export class ServerService implements IServerService {
 	 * Updates the alarms configuration.
 	 * @returns Promise<void>
 	 */
-     public setAlarmsConfiguration(alarms: IAlarmsConfig, otp: string): Promise<void> {
-		return this._api.request('post','server/setAlarmsConfiguration', alarms, true, otp);
+    public setAlarmsConfiguration(alarms: IAlarmsConfig, otp: string): Promise<void> {
+		return this._api.request("post","server/setAlarmsConfiguration", alarms, true, otp);
 	}
 }

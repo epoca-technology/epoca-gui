@@ -1,12 +1,12 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { IRouteState, NavService } from '../../../services';
-import { IMobileTabsComponent } from './interfaces';
+import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Subscription } from "rxjs";
+import { AppService, IRouteState, NavService } from "../../../services";
+import { IMobileTabsComponent } from "./interfaces";
 
 @Component({
-  selector: 'app-mobile-tabs',
-  templateUrl: './mobile-tabs.component.html',
-  styleUrls: ['./mobile-tabs.component.scss']
+  selector: "app-mobile-tabs",
+  templateUrl: "./mobile-tabs.component.html",
+  styleUrls: ["./mobile-tabs.component.scss"]
 })
 export class MobileTabsComponent implements OnInit, OnDestroy, IMobileTabsComponent {
 	// Route State
@@ -15,6 +15,7 @@ export class MobileTabsComponent implements OnInit, OnDestroy, IMobileTabsCompon
 
 
     constructor(
+		public _app: AppService,
         private _nav: NavService,
     ) { }
 
@@ -80,19 +81,19 @@ export class MobileTabsComponent implements OnInit, OnDestroy, IMobileTabsCompon
 		
 		// Select the tab accordingly
 		switch (ns.module) {
-			case 'dashboard':
+			case "dashboard":
 				this.activeTab = 0;
 				break;
-			case 'epochs':
+			case "epochs":
 				this.activeTab = 1;
 				break;
-			case 'predictions':
+			case "predictions":
 				this.activeTab = 2;
 				break;
-			case 'tradingSimulations':
+			case "tradingSimulations":
 				this.activeTab = 3;
 				break;
-			case 'tradingSessions':
+			case "tradingSessions":
 				this.activeTab = 4;
 				break;
 			default:

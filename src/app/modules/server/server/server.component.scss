@@ -26,13 +26,14 @@
 
 .section {
     padding:15px;
-    h1 {text-align: center;}
+    //h4 {text-align: center;}
 
     .row {
         margin:15px 0 15px 0;
 
         p:first-child { color:var(--light-text-color)}
-        p:last-child { text-overflow: ellipsis;overflow: hidden;white-space: nowrap; }
+        p:last-child { max-width:60%; }
+        //p:last-child { text-overflow: ellipsis;overflow: hidden;white-space: nowrap; }
     }
     .row:last-child {
         margin:15px 0 0 0;
@@ -50,12 +51,12 @@
     padding:15px;
 
     .header {
-        h3{margin:0}
+        h4{margin:0}
         p{margin:0}
     }
 
     .server-issue {
-        h3 { color: var(--error-color)}
+        h4 { color: var(--error-color)}
         p { color: var(--error-color)}
         .square-badge { background: var(--error-color)}
         .server-error { margin: 15px 0 15px 0;}
@@ -98,7 +99,7 @@
 
 // API Error Slider
 .api-error-slider {
-    margin: 25px 0 0 0;
+    margin: 20px 5px 0 5px;
     text-align: center;
     p { color: var(--error-color)}
     p:hover { opacity:0.5}
@@ -126,14 +127,15 @@
 
 // Database
 .database {
-    padding:15px;
 
     .card-container {
         width: 100%;
 
+        p {margin:0}
+        .margin-top{margin-top:25px!important;}
+
         .summary-container {
             div {
-                margin:15px 0 15px 0;
                 p:first-child {font-size:14px;color: var(--light-text-color)}
             }
         }
@@ -142,10 +144,12 @@
         .tables-container {
             width: 100%;
             overflow: auto;
-            p {margin:0}
+            .table-name { text-overflow: ellipsis;overflow: hidden;white-space: nowrap; max-width: 70%;}
         }
 
         .loader {margin-top:100px;}
+
+        .files-container { margin-top:0!important}
     }
 
 
@@ -161,9 +165,9 @@
 @media only screen and (max-width: 959px) {
     .space-badges .square-badge {margin: 5px}
 
-    .card-container { margin: 20px 0 20px 0 }
-    .card-container:first-child { margin: 0 0 20px 0 }
-    .card-container:last-child { margin: 20px 0 0 0 }
+    //.card-container { margin: 20px 0 20px 0 }
+    //.card-container:first-child { margin: 0 0 20px 0 }
+    //.card-container:last-child { margin: 20px 0 0 0 }
 }
 
 

@@ -1,0 +1,52 @@
+<!-- Secondary Header -->
+<mat-toolbar class="secondary-header">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <button mat-icon-button class="show-on-mobile" (click)="_nav.dashboard()"><mat-icon>arrow_back</mat-icon></button>
+        <span>IndexedDB</span>
+        <span fxFlex></span>
+        <button mat-icon-button [disabled]="!loaded || !_localDB.compatible" (click)="deleteDB()"><mat-icon>delete</mat-icon></button>
+    </div>
+</mat-toolbar>
+
+<!-- Loader -->
+<div *ngIf="!loaded" class="section-loader">
+    <div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div>
+</div>
+
+<!-- Content -->
+<div *ngIf="loaded">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <div fxFlex fxFlex.md="45" fxFlex.lg="35" fxFlex.xl="25" class="padding">
+            <div class="desktop-card">
+                <!-- Name -->
+                <div fxLayout="row" fxLayoutAlign="center start">
+                    <h3 matTooltip="Database Name">{{_localDB.dbName}}</h3>
+                    <span fxFlex></span>
+                    <mat-icon *ngIf="_localDB.compatible" class="success-color" matTooltip="Compatible Browser">check_circle</mat-icon>
+                    <mat-icon *ngIf="!_localDB.compatible" class="error-color" matTooltip="Incompatible Browser">error</mat-icon>
+                </div>
+
+                <!-- Initilization Error -->
+                <p *ngIf="!_localDB.compatible" class="error-color margin-top-x2 align-center">{{_localDB.initError}}</p>
+
+                <!-- Tables -->
+                <div *ngIf="_localDB.compatible" class="full-width">
+                    <table class="bordered">
+                        <thead>
+                            <tr>
+                                <th>Table</th>
+                                <th class="align-right">Records</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let table of tables">
+                                <td class="light-text truncate" style="max-width:100px!important;">{{table.name}}</td>
+                                <td class="align-right">{{table.records | number}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

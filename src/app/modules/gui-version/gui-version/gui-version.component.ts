@@ -1,15 +1,15 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
 import {SwUpdate} from "@angular/service-worker";
 import {ActivatedRoute} from "@angular/router";
-import {AbstractControl, FormControl, FormGroup} from '@angular/forms';
-import { IGuiVersionComponent } from './interfaces';
-import { GuiVersionService } from '../../../core';
-import { AppService, NavService, ValidationsService } from '../../../services';
+import {AbstractControl, FormControl, FormGroup} from "@angular/forms";
+import { IGuiVersionComponent } from "./interfaces";
+import { GuiVersionService } from "../../../core";
+import { AppService, NavService, ValidationsService } from "../../../services";
 
 @Component({
-  selector: 'app-gui-version',
-  templateUrl: './gui-version.component.html',
-  styleUrls: ['./gui-version.component.scss']
+  selector: "app-gui-version",
+  templateUrl: "./gui-version.component.html",
+  styleUrls: ["./gui-version.component.scss"]
 })
 export class GuiVersionComponent implements OnInit, IGuiVersionComponent {
     // Input
@@ -22,7 +22,7 @@ export class GuiVersionComponent implements OnInit, IGuiVersionComponent {
     // Edit Mode
     public edit: boolean = false;
     public form: FormGroup = new FormGroup({
-        version: new FormControl('', [ this._validations.guiVersionValid ]),
+        version: new FormControl("", [ this._validations.guiVersionValid ]),
     });
 
     // Load State
@@ -41,12 +41,12 @@ export class GuiVersionComponent implements OnInit, IGuiVersionComponent {
     ) { }
 
     /* Form Getters */
-	get version(): AbstractControl { return <AbstractControl>this.form.get('version') }
+	get version(): AbstractControl { return <AbstractControl>this.form.get("version") }
 
     
     async ngOnInit(): Promise<void> {
         // Check if the current version was provided in the route
-        this.currentVersion = this.route.snapshot.paramMap.get('currentVersion');
+        this.currentVersion = this.route.snapshot.paramMap.get("currentVersion");
         
         // In case it wast, retrieve it
         if (typeof this.currentVersion != "string") {
@@ -90,7 +90,7 @@ export class GuiVersionComponent implements OnInit, IGuiVersionComponent {
 					// Finally, reload
 					this._nav.reloadApp();
 				} else {
-					console.log('swUpdate Not Available.');
+					console.log("swUpdate Not Available.");
 					this._nav.reloadApp();
 				}
 			} catch (e) {
@@ -134,7 +134,7 @@ export class GuiVersionComponent implements OnInit, IGuiVersionComponent {
     public save(): void {
         // Prompt the confirmation dialog
         this._nav.displayConfirmationDialog({
-            title: 'Update GUI Version',
+            title: "Update GUI Version",
             content: `<p class="align-center">Are you sure that you wish to update the current GUI Version to ${this.version.value}?</p>`,
             otpConfirmation: true
         }).afterClosed().subscribe(
@@ -150,7 +150,7 @@ export class GuiVersionComponent implements OnInit, IGuiVersionComponent {
                         this.currentVersion = this.version.value;
 
                         // Notify
-                        this._app.success('The new version has been saved successfully.');
+                        this._app.success("The new version has been saved successfully.");
 
                         // Check if there is a missmatch
                         this.versionMissmatch = this._app.version != this.currentVersion;

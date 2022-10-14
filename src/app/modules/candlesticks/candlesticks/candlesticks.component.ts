@@ -1,20 +1,21 @@
-import { Component, OnInit } from '@angular/core';
-import * as moment from 'moment';
-import {MatDialog} from '@angular/material/dialog';
-import { CandlestickService, ICandlestick } from '../../../core';
-import { AppService, ChartService, ICandlestickChartOptions, NavService } from '../../../services';
-import { CandlestickFilesDialogComponent } from './candlestick-files-dialog/candlestick-files-dialog.component';
-import { CandlesticksConfigDialogComponent } from './candlesticks-config-dialog/candlesticks-config-dialog.component';
-import { CandlestickDialogComponent } from '../../../shared/components/candlestick';
-import { ICandlesticksComponent, ICandlesticksConfig} from './interfaces';
+import { Component, OnDestroy, OnInit } from "@angular/core";
+import {Title} from "@angular/platform-browser";
+import {MatDialog} from "@angular/material/dialog";
+import * as moment from "moment";
+import { CandlestickService, ICandlestick } from "../../../core";
+import { AppService, ChartService, ICandlestickChartOptions, NavService } from "../../../services";
+import { CandlestickFilesDialogComponent } from "./candlestick-files-dialog/candlestick-files-dialog.component";
+import { CandlesticksConfigDialogComponent } from "./candlesticks-config-dialog/candlesticks-config-dialog.component";
+import { CandlestickDialogComponent } from "../../../shared/components/candlestick";
+import { ICandlesticksComponent, ICandlesticksConfig} from "./interfaces";
 
 
 @Component({
-  selector: 'app-candlesticks',
-  templateUrl: './candlesticks.component.html',
-  styleUrls: ['./candlesticks.component.scss']
+  selector: "app-candlesticks",
+  templateUrl: "./candlesticks.component.html",
+  styleUrls: ["./candlesticks.component.scss"]
 })
-export class CandlesticksComponent implements OnInit, ICandlesticksComponent {
+export class CandlesticksComponent implements OnInit, OnDestroy, ICandlesticksComponent {
 	// Config
 	public config: ICandlesticksConfig = this.getDefaultConfig();
 
@@ -32,7 +33,8 @@ export class CandlesticksComponent implements OnInit, ICandlesticksComponent {
         private _candlestick: CandlestickService,
         private _chart: ChartService,
         private dialog: MatDialog,
-        private _app: AppService
+        private _app: AppService,
+        private titleService: Title
     ) { }
 
     ngOnInit(): void {
@@ -40,7 +42,9 @@ export class CandlesticksComponent implements OnInit, ICandlesticksComponent {
     }
 
 
-
+    ngOnDestroy(): void {
+        this.titleService.setTitle("Epoca");
+    }
 
 
 
@@ -71,6 +75,12 @@ export class CandlesticksComponent implements OnInit, ICandlesticksComponent {
                 click: function(event, chartContext, config) {
                     if (self.rawCandlesticks![config.dataPointIndex]) self.displayCandlestickDialog(self.rawCandlesticks![config.dataPointIndex]);
                 }
+            }
+
+            // Set the current price as the title
+            if (this.rawCandlesticks.length) {
+                const p: string = this.rawCandlesticks[this.rawCandlesticks.length - 1].c.toLocaleString(undefined, {minimumFractionDigits: 2});
+                this.titleService.setTitle(`$${p}`);
             }
 		} catch (e) {
 			console.log(e);
@@ -119,8 +129,8 @@ export class CandlesticksComponent implements OnInit, ICandlesticksComponent {
     public updateConfig(): void {
         this.dialog.open(CandlesticksConfigDialogComponent, {
 			disableClose: true,
-			hasBackdrop: this._app.layout.value != 'mobile', // Mobile optimization
-			panelClass: 'small-dialog',
+			hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
+			panelClass: "small-dialog",
             data: this.config
 		}).afterClosed().subscribe(
             (response) => {
@@ -148,7 +158,7 @@ export class CandlesticksComponent implements OnInit, ICandlesticksComponent {
     private getDefaultConfig(): ICandlesticksConfig {
         const currentTS: number = Date.now();
 		return {
-			start: moment(currentTS).subtract(3, 'days').valueOf(),
+			start: moment(currentTS).subtract(80, "hours").valueOf(),
 			end: currentTS,
 			intervalMinutes: 30
 		}
@@ -170,8 +180,8 @@ export class CandlesticksComponent implements OnInit, ICandlesticksComponent {
     public displayCandlestickFiles(): void {
         this.dialog.open(CandlestickFilesDialogComponent, {
 			disableClose: true,
-			hasBackdrop: this._app.layout.value != 'mobile', // Mobile optimization
-			panelClass: 'small-dialog'
+			hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
+			panelClass: "small-dialog"
 		})
     }
 
@@ -192,8 +202,8 @@ export class CandlesticksComponent implements OnInit, ICandlesticksComponent {
 	private displayCandlestickDialog(candlestick: ICandlestick): void {
 		this.dialog.open(CandlestickDialogComponent, {
 			disableClose: false,
-			hasBackdrop: this._app.layout.value != 'mobile', // Mobile optimization
-			panelClass: 'small-dialog',
+			hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
+			panelClass: "small-dialog",
 			data: candlestick
 		});
 	}

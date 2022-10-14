@@ -25,7 +25,7 @@
             <!-- Epochs -->
             <mat-list-item>
                 <button mat-button class="left-icon-button" (click)="_nav.epochs()" [disabled]="state.module == 'epochs'">
-                    <mat-icon svgIcon="brain"></mat-icon><span>_ALPHA</span>
+                    <mat-icon svgIcon="brain"></mat-icon><span>{{_app.epoch.value ? _app.epoch.value.record.id: 'Epochs'}}</span>
                 </button>
             </mat-list-item>
 
@@ -50,11 +50,17 @@
                 </button>
             </mat-list-item>
 
-
             <!-- Candlesticks -->
             <mat-list-item>
                 <button mat-button class="left-icon-button" (click)="_nav.candlesticks()" [disabled]="state.module == 'candlesticks'">
                     <mat-icon>waterfall_chart</mat-icon><span>Candlesticks</span>
+                </button>
+            </mat-list-item>
+
+            <!-- Order Book -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.orderBook()" [disabled]="state.module == 'orderBook'">
+                    <mat-icon>menu_book</mat-icon><span>Order Book</span>
                 </button>
             </mat-list-item>
 
@@ -64,7 +70,6 @@
                     <mat-icon svgIcon="server"></mat-icon><span>Server</span>
                 </button>
             </mat-list-item>
-
 
             <!-- Users -->
             <mat-list-item>
@@ -88,7 +93,9 @@
                 </button>
             </mat-list-item>
 
-            <!-- Epoch Builder Sub Menu -->
+
+
+            <!-- Epoch Builder Menu -->
             <mat-list-item [ngClass]="{'active-sub-menu': builderExpanded}">
                 <button mat-button class="left-icon-button" (click)="builderExpanded = !builderExpanded">
                     <div fxLayout="row" fxLayoutAlign="start center">
@@ -121,6 +128,7 @@
                     </div>
                 </button>
             </mat-list-item>
+            <!-- Epoch Builder Menu -->
 
 
 
@@ -136,6 +144,13 @@
             <mat-list-item>
                 <button mat-button class="left-icon-button" (click)="_nav.openDozzle()">
                     <mat-icon>open_in_new</mat-icon><span>Dozzle</span>
+                </button>
+            </mat-list-item>
+
+            <!-- Local Database -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.localDatabase()" [disabled]="state.module == 'localDatabase'">
+                    <mat-icon svgIcon="database"></mat-icon><span>Local Database</span>
                 </button>
             </mat-list-item>
         </mat-list>
@@ -165,22 +180,47 @@
                 </button>
 
                 <!-- Epochs -->
-                <button mat-button class="left-icon-button" (click)="_nav.epochs()" matBadge="1" [disabled]="state.module == 'epochs'" *ngIf="uid">
-                    <mat-icon svgIcon="brain"></mat-icon><span>_ALPHA</span>
+                <button mat-button 
+                        class="left-icon-button" 
+                        (click)="_nav.epochs()" 
+                        [matBadge]="_app.epoch.value ? _app.epoch.value.positions.length: 0" 
+                        [matBadgeHidden]="!_app.epoch.value" 
+                        [disabled]="state.module == 'epochs'" 
+                        *ngIf="uid">
+                    <mat-icon svgIcon="brain"></mat-icon><span>{{_app.epoch.value ? _app.epoch.value.record.id: 'Epochs'}}</span>
                 </button>
 
                 <!-- Predictions -->
-                <button mat-button class="left-icon-button" (click)="_nav.predictions()" *ngIf="uid" [disabled]="state.module == 'predictions'">
+                <button mat-button 
+                        class="left-icon-button" 
+                        (click)="_nav.predictions()" 
+                        matBadge="0" 
+                        [appMatBadgeIcon]="_app.predictionIcon.value ? _app.predictionIcon.value: ''"
+                        [matBadgeHidden]="!_app.epoch.value || !_app.prediction.value" 
+                        *ngIf="uid" 
+                        [disabled]="state.module == 'predictions'">
                     <mat-icon svgIcon="wand_magic_sparkles"></mat-icon><span>Predictions</span>
                 </button>
 
                 <!-- Trading Simulations -->
-                <button mat-button class="left-icon-button" (click)="_nav.tradingSimulations()" matBadge="3" [disabled]="state.module == 'tradingSimulations'" *ngIf="uid">
+                <button mat-button 
+                        class="left-icon-button" 
+                        (click)="_nav.tradingSimulations()" 
+                        [matBadge]="_app.epoch.value ? _app.simulations.value.length: 0" 
+                        [matBadgeHidden]="!_app.epoch.value" 
+                        [disabled]="state.module == 'tradingSimulations'" 
+                        *ngIf="uid">
                     <mat-icon svgIcon="ssid_chart"></mat-icon><span>Trading Simulations</span>
                 </button>
 
                 <!-- Trading Session -->
-                <button mat-button class="left-icon-button" (click)="_nav.tradingSessions()" matBadge="1" [disabled]="state.module == 'tradingSessions'" *ngIf="uid">
+                <button mat-button 
+                        class="left-icon-button" 
+                        (click)="_nav.tradingSessions()" 
+                        [matBadge]="_app.epoch.value ? 7: 0" 
+                        [matBadgeHidden]="!_app.epoch.value" 
+                        [disabled]="state.module == 'tradingSessions'" 
+                        *ngIf="uid">
                     <mat-icon svgIcon="auto_graph"></mat-icon><span>Trading Sessions</span>
                 </button>
 

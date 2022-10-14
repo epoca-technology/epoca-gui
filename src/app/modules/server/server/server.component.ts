@@ -1,9 +1,9 @@
-import { Component,  OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { MatSidenav } from '@angular/material/sidenav';
-import { Subscription } from 'rxjs';
-import * as moment from 'moment';
-import { environment } from '../../../../environments/environment';
+import { Component,  OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { MatDialog } from "@angular/material/dialog";
+import { MatSidenav } from "@angular/material/sidenav";
+import { Subscription } from "rxjs";
+import * as moment from "moment";
+import { environment } from "../../../../environments/environment";
 import { 
     ApiService, 
     IAlarmsConfig, 
@@ -16,45 +16,50 @@ import {
     FileService, 
     IDatabaseSummary,
     IDatabaseSummaryTable,
-    IDownloadedFile
-} from '../../../core';
-import { AppService, ILayout, NavService } from '../../../services';
-import { AlarmsConfigDialogComponent } from './alarms-config-dialog/alarms-config-dialog.component';
-import { ApiErrorDialogComponent } from './api-error-dialog/api-error-dialog.component';
-import { ISection, ISectionID, IServerComponent, IState, IStates, IServerIssues } from './interfaces';
+    IDownloadedFile,
+    LocalDatabaseService,
+    IUserPreferences
+} from "../../../core";
+import { AppService, ILayout, NavService } from "../../../services";
+import { AlarmsConfigDialogComponent } from "./alarms-config-dialog/alarms-config-dialog.component";
+import { ApiErrorDialogComponent } from "./api-error-dialog/api-error-dialog.component";
+import { ISection, ISectionID, IServerComponent, IState, IStates, IServerIssues } from "./interfaces";
 
 @Component({
-  selector: 'app-server',
-  templateUrl: './server.component.html',
-  styleUrls: ['./server.component.scss']
+  selector: "app-server",
+  templateUrl: "./server.component.html",
+  styleUrls: ["./server.component.scss"]
 })
 export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
     // Server Sidenav Element
-	@ViewChild('serverSidenav') serverSidenav: MatSidenav|undefined;
+	@ViewChild("serverSidenav") serverSidenav: MatSidenav|undefined;
 	public serverSidenavOpened: boolean = false;
 	
 	// Layout
 	public layout: ILayout = this._app.layout.value;
 	private layoutSub?: Subscription;
 
+    // User Preferences
+    public userPreferences!: IUserPreferences;
+
     // Server Data
     public serverData?: IServerData;
 
     // Nav
     public sections: ISection[] = [
-        {id: 'monitoring', name: 'Monitoring', icon: 'leaderboard'},
-        {id: 'api-errors', name: 'API errors', svgIcon: 'bug_report'},
-        {id: 'database', name: 'Database', svgIcon: 'database'},
-        {id: 'file-systems', name: 'File Systems', svgIcon: 'hdd'},
-        {id: 'memory', name: 'Memory', icon: 'memory'},
-        {id: 'cpu', name: 'Central Processing Unit', svgIcon: 'hardware_chip'},
-        {id: 'gpu', name: 'Graphics Processing Unit', svgIcon: 'hardware_chip'},
-        {id: 'os', name: 'Operating System', svgIcon: 'ubuntu'},
-        {id: 'software-versions', name: 'Software Versions', svgIcon: 'code_branch'},
-        {id: 'system', name: 'System', icon: 'personal_video'},
-        {id: 'baseboard', name: 'Baseboard', icon: 'developer_board'},
-        {id: 'bios', name: 'BIOS', icon: 'subtitles'},
-        {id: 'network-interfaces', name: 'Network Interfaces', icon: 'router'}
+        {id: "monitoring", name: "Monitoring", icon: "leaderboard"},
+        {id: "api-errors", name: "API errors", svgIcon: "bug_report"},
+        {id: "database", name: "Database", svgIcon: "database"},
+        {id: "file-systems", name: "File Systems", svgIcon: "hdd"},
+        {id: "memory", name: "Memory", icon: "memory"},
+        {id: "cpu", name: "Central Processing Unit", svgIcon: "hardware_chip"},
+        {id: "gpu", name: "Graphics Processing Unit", svgIcon: "hardware_chip"},
+        {id: "os", name: "Operating System", svgIcon: "ubuntu"},
+        {id: "software-versions", name: "Software Versions", svgIcon: "code_branch"},
+        {id: "system", name: "System", icon: "personal_video"},
+        {id: "baseboard", name: "Baseboard", icon: "developer_board"},
+        {id: "bios", name: "BIOS", icon: "subtitles"},
+        {id: "network-interfaces", name: "Network Interfaces", icon: "router"}
     ];
     public activeSection = this.sections[0];
 
@@ -72,16 +77,16 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
 
     // Badge States
     public states: IStates = {
-        cpuLoad: 'optimal',
-        cpuMaxTemp: 'optimal',
-        cpuMainTemp: 'optimal',
-        cpuChipsetTemp: 'optimal',
+        cpuLoad: "optimal",
+        cpuMaxTemp: "optimal",
+        cpuMainTemp: "optimal",
+        cpuChipsetTemp: "optimal",
         cpuCoresTemp: [],
         cpuSocketsTemp: [],
-        memoryUsage: 'optimal',
-        gpuLoad: 'optimal',
-        gpuTemp: 'optimal',
-        gpuMemoryTemp: 'optimal',
+        memoryUsage: "optimal",
+        gpuLoad: "optimal",
+        gpuTemp: "optimal",
+        gpuMemoryTemp: "optimal",
         fsUsage: []
     }
 
@@ -91,6 +96,7 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
     private errorSliderInterval: any;
 
     /* Database Related */
+    public dbIndex: number = 0;
     // Summary
     public summary?: IDatabaseSummary;
 
@@ -121,7 +127,8 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
         private dialog: MatDialog,
         private _apiError: ApiErrorService,
         private _db: DatabaseManagementService,
-        private _file: FileService
+        private _file: FileService,
+        private _localDB: LocalDatabaseService
     ) { }
 
 
@@ -146,6 +153,9 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
                 }
             }, 5000); // Change every 5 seconds
         } catch (e) { this._app.error(e)}
+
+        // Initialize the user preferences
+        this.userPreferences = await this._localDB.getUserPreferences();
 
         // Set meta data
         this.onDataChanges();
@@ -185,7 +195,7 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
 
 
     /**
-     * Activates a given section. It will also download the section's data
+     * Activates a given section. It will also download the section"s data
      * if applies.
      * @param section 
      * @returns Promise<void>
@@ -201,7 +211,7 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
         this.activeSection = section;
 
         // Load the database if applies
-        if (this.activeSection.id == 'database') await this.loadDatabaseData();
+        if (this.activeSection.id == "database") await this.loadDatabaseData();
 
         // Allow a small delay
         await this._utils.asyncDelay(0.5);
@@ -362,11 +372,11 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
         const difference: number = max - current;
 
         // Handle each case accordingly
-        if (difference <= 10) { return 'error' }
-        else if (difference > 10 && difference <= 20) { return 'warning' }
-        else if (difference > 20 && difference <= 30) { return 'average' }
-        else if (difference > 30 && difference <= 40) { return 'normal' }
-        else { return 'optimal' }
+        if (difference <= 10) { return "error" }
+        else if (difference > 10 && difference <= 20) { return "warning" }
+        else if (difference > 20 && difference <= 30) { return "average" }
+        else if (difference > 30 && difference <= 40) { return "normal" }
+        else { return "optimal" }
     }
 
 
@@ -424,8 +434,8 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
          if (this.serverData) {
             this.dialog.open(AlarmsConfigDialogComponent, {
                 disableClose: true,
-                hasBackdrop: this._app.layout.value != 'mobile', // Mobile optimization
-                panelClass: 'small-dialog',
+                hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
+                panelClass: "small-dialog",
                 data: this.serverData?.resources.alarms
             }).afterClosed().subscribe(
                 async (newConfig: IAlarmsConfig|undefined) => {
@@ -435,8 +445,8 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
 
                         // Prompt the confirmation dialog
                         this._nav.displayConfirmationDialog({
-                            title: 'Update Alarms Configuration',
-                            content: '<p class="align-center">Are you sure that you wish to change the current alarms configuration?</p>',
+                            title: "Update Alarms Configuration",
+                            content: "<p class='align-center'>Are you sure that you wish to change the current alarms configuration?</p>",
                             otpConfirmation: true
                         }).afterClosed().subscribe(
                             async (otp: string|undefined) => {
@@ -451,7 +461,7 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
                                         this.serverData!.resources.alarms = newConfig;
 
                                         // Notify
-                                        this._app.success('The alarms configuration has been updated succesfully.');
+                                        this._app.success("The alarms configuration has been updated succesfully.");
                                     } catch(e) { this._app.error(e) }
                 
                                     // Set Submission State
@@ -463,7 +473,7 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
                 }
             );
          } else {
-             this._app.error('The alarms config cannot be updated as the server data didnt load correctly.');
+             this._app.error("The alarms config cannot be updated as the server data didnt load correctly.");
          }
     }
 
@@ -517,7 +527,7 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
      public deleteAll(): void {
         // Prompt the confirmation dialog
         this._nav.displayConfirmationDialog({
-            title: 'Delete API Errors',
+            title: "Delete API Errors",
             content: `
                 <p class="align-center">
                     Are you sure that you wish to <strong>delete</strong> all API Errors from the database?
@@ -553,8 +563,8 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
     public displayAPIErrorDialog(error: IApiError): void {
         this.dialog.open(ApiErrorDialogComponent, {
             disableClose: true,
-            hasBackdrop: this._app.layout.value != 'mobile', // Mobile optimization
-            panelClass: 'medium-dialog',
+            hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
+            panelClass: "medium-dialog",
             data: error
         })
     }
@@ -579,7 +589,7 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
 
 
     /**
-     * Downloads the Database Data in case it hasn't been already. If so,
+     * Downloads the Database Data in case it hasn"t been already. If so,
      * it resolves right away.
      * @returns Promise<void>
      */
@@ -593,7 +603,7 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
                 // Separate real and test tables
                 for (let t of this.summary.tables) {
                     // Check if it is a test table
-                    if (t.name.includes('test')) { this.testTables.push(t) }
+                    if (t.name.includes("test")) { this.testTables.push(t) }
     
                     // Otherwise, add it to the real table list
                     else { this.tables.push(t) }
@@ -648,7 +658,7 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
     public downloadBackup(name: string): void {
         // Prompt the confirmation dialog
         this._nav.displayConfirmationDialog({
-            title: 'Download Backup',
+            title: "Download Backup",
             content: `
                 <p class="align-center">
                     Are you sure that you wish to download the backup <strong>${name}</strong>?
@@ -693,27 +703,51 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
 
 
     /**
-     * Makes sure the outage audio is only played once per minute.
+     * Enables or disables the sound effects throughout the app.
+     * @returns Promise<void>
+     */
+    public async toggleSoundPreference(): Promise<void> {
+        // If the sound if being disabled, stop it in case it is playing
+        if (this.userPreferences.sound) {
+            this._app.outageAudio.pause();
+            this._app.outageAudio.currentTime = 0;
+        }
+
+        // Update the value and save it
+        this.userPreferences.sound = !this.userPreferences.sound;
+        await this._localDB.saveUserPreferences(this.userPreferences);
+    }
+
+
+
+
+
+
+    /**
+     * Makes sure the outage audio is only played once per minute and 
+     * that the sound preference is enabled.
      * @returns void
      */
     private playOutageAudio(): void {
-        // Init the current time
-        const ts: number = Date.now();
+        if (this.userPreferences.sound) {
+            // Init the current time
+            const ts: number = Date.now();
 
-        // Check if it has already been played
-        if (typeof this.outageLastPlayed == "number") {
-            // Make sure that it hasn't been played in the last minute
-            const oneMinuteAgo: number = moment().subtract(1, "minute").valueOf();
-            if (this.outageLastPlayed < oneMinuteAgo) {
+            // Check if it has already been played
+            if (typeof this.outageLastPlayed == "number") {
+                // Make sure that it hasn"t been played in the last minute
+                const oneMinuteAgo: number = moment().subtract(1, "minute").valueOf();
+                if (this.outageLastPlayed < oneMinuteAgo) {
+                    this._app.playOutage();
+                    this.outageLastPlayed = ts;
+                }
+            } 
+
+            // Otherwise, play it and record the time
+            else {
                 this._app.playOutage();
                 this.outageLastPlayed = ts;
             }
-        } 
-
-        // Otherwise, play it and record the time
-        else {
-            this._app.playOutage();
-            this.outageLastPlayed = ts;
         }
     }
 }

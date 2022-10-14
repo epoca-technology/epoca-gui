@@ -12,7 +12,8 @@
              class="tab" role="button" matRipple
              [ngClass]="{'active': activeTab == 1}" (click)="navigate(1)">
             <mat-icon   svgIcon="brain" 
-                        matBadge="1"
+                        [matBadge]="_app.epoch.value ? _app.epoch.value.positions.length: 0" 
+                        [matBadgeHidden]="!_app.epoch.value" 
                         matBadgePosition="after"
                         matBadgeSize="small"
                         matBadgeOverlap="false"></mat-icon>
@@ -22,7 +23,14 @@
         <div fxFlex fxLayout="row" fxLayoutAlign="center center"
              class="tab" role="button" matRipple
              [ngClass]="{'active': activeTab == 2}" (click)="navigate(2)">
-            <mat-icon svgIcon="wand_magic_sparkles"></mat-icon>
+            <mat-icon   svgIcon="wand_magic_sparkles"
+                        matBadge="0" 
+                        [appMatBadgeIcon]="_app.predictionIcon.value ? _app.predictionIcon.value: ''"
+                        appMatBadgeIconSize="small"
+                        [matBadgeHidden]="!_app.epoch.value || !_app.prediction.value" 
+                        matBadgePosition="after"
+                        matBadgeSize="small"
+                        matBadgeOverlap="false"></mat-icon>
         </div>
 
         <!-- Trading Simulations -->
@@ -30,7 +38,8 @@
              class="tab" role="button" matRipple
              [ngClass]="{'active': activeTab == 3}" (click)="navigate(3)">
             <mat-icon   svgIcon="ssid_chart" 
-                        matBadge="3"
+                        [matBadge]="_app.epoch.value ? _app.simulations.value.length: 0" 
+                        [matBadgeHidden]="!_app.epoch.value" 
                         matBadgePosition="after"
                         matBadgeSize="small"
                         matBadgeOverlap="false"></mat-icon>
@@ -41,7 +50,8 @@
              class="tab" role="button" matRipple
              [ngClass]="{'active': activeTab == 4}" (click)="navigate(4)">
             <mat-icon   svgIcon="auto_graph" 
-                        matBadge="1"
+                        [matBadge]="_app.epoch.value ? 7: 0" 
+                        [matBadgeHidden]="!_app.epoch.value" 
                         matBadgePosition="after"
                         matBadgeSize="small"
                         matBadgeOverlap="false"></mat-icon>

@@ -1,14 +1,14 @@
-import { Injectable } from '@angular/core';
-import { HttpHeaders } from '@angular/common/http';
-import { lastValueFrom } from 'rxjs';
-import { environment } from 'src/environments/environment';
-import { IApiService, IAPIResponse } from './interfaces';
-import { ExternalRequestService, IHeadersConfig, IHTTPMethod } from '../external-request';
-import { AuthService } from '../auth';
-import { UtilsService } from '../utils';
+import { Injectable } from "@angular/core";
+import { HttpHeaders } from "@angular/common/http";
+import { lastValueFrom } from "rxjs";
+import { environment } from "src/environments/environment";
+import { IApiService, IAPIResponse } from "./interfaces";
+import { ExternalRequestService, IHeadersConfig, IHTTPMethod } from "../external-request";
+import { AuthService } from "../auth";
+import { UtilsService } from "../utils";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export class ApiService implements IApiService {
     // API URL
@@ -36,7 +36,7 @@ export class ApiService implements IApiService {
 	
 	/*
 	* Sends a request to the API following requirements
-	* @param method - The method to be used, defaults to 'post'
+	* @param method - The method to be used, defaults to "post"
 	* @param path - path of the url / if http params needed must be specified here
 	* @param body? - params to send
 	* @param requiresAuth?
@@ -54,9 +54,9 @@ export class ApiService implements IApiService {
 	): Promise<any> {
 		// Init values
 		const finalBody: any = body || {};
-        const finalOTP: string = otp || '';
-        let idToken: string = '';
-        let apiSecret: string = '';
+        const finalOTP: string = otp || "";
+        let idToken: string = "";
+        let apiSecret: string = "";
 
         // Check if the request requires auth
         if (requiresAuth) {
@@ -71,10 +71,10 @@ export class ApiService implements IApiService {
 
         // Build the Headers
 		const headersConfig: IHeadersConfig = {
-			'Content-Type': 'application/json',
-            'id-token': idToken,
-            'api-secret': apiSecret,
-            'otp': finalOTP,
+			"Content-Type": "application/json",
+            "id-token": idToken,
+            "api-secret": apiSecret,
+            "otp": finalOTP,
 		};
 		
 		// Build URL
@@ -97,9 +97,9 @@ export class ApiService implements IApiService {
         // If the request was unsuccessful, check if the error can be fixed and try again if so
         else {
             // Init error values
-            const errorMessage: string = apiResponse && apiResponse.error ? apiResponse.error: 'The request received an incomplete API Response object.';
+            const errorMessage: string = apiResponse && apiResponse.error ? apiResponse.error: "The request received an incomplete API Response object.";
 
-            // If it hasn't retried, check if the error can be fixed
+            // If it hasn"t retried, check if the error can be fixed
             if (requiresAuth && !retried) {
                 // Retrieve the error code
                 const code: number = this._utils.getCodeFromApiError(errorMessage);
@@ -114,7 +114,7 @@ export class ApiService implements IApiService {
                     this._auth.idTokenInvalid();
 
                     // Retry the request
-                    console.log('Resending API request as the ID Token was invalid in the original request.');
+                    console.log("Resending API request as the ID Token was invalid in the original request.");
                     return await this.request(method, path, body, requiresAuth, otp, true);
                 }
 
@@ -127,7 +127,7 @@ export class ApiService implements IApiService {
                     this._auth.apiSecretIsInvalid();
 
                     // Retry the request
-                    console.log('Resending API request as the API Secret was invalid in the original request.');
+                    console.log("Resending API request as the API Secret was invalid in the original request.");
                     return await this.request(method, path, body, requiresAuth, otp, true);
                 }
             }

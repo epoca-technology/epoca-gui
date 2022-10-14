@@ -4,106 +4,107 @@
         <span class="truncate">Candlestick Files</span>
         <span fxFlex></span>
         <app-refresh-button [disabled]="!loaded || submitting" (refresh)="downloadFiles()"></app-refresh-button>
+        <button mat-icon-button *ngIf="activeIndex == 0" [disabled]="!loaded || submitting || candlestickBundleTask.state == 'running'" 
+            matTooltip="Generate Candlestick Bundle File" (click)="generateFile(false)">
+            <mat-icon>add</mat-icon>
+        </button>
+        <button mat-icon-button *ngIf="activeIndex == 1" [disabled]="submitting || predictionCandlestickTask.state == 'running'" 
+        matTooltip="Generate Prediction Candlesticks File" (click)="generateFile(true)">
+            <mat-icon>add</mat-icon>
+        </button>
         <button mat-icon-button class="show-on-desktop" [disabled]="!loaded || submitting" (click)="close()"><mat-icon>close</mat-icon></button>
     </div>
 </mat-toolbar>
 <div mat-dialog-content>
-    <!-- Loader -->
-    <div *ngIf="!loaded">
-        <div class="loader show-on-desktop"><div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div></div>
-        <div class="section-loader show-on-mobile"><div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div></div>
-    </div>
-
     <!-- Container -->
-    <div *ngIf="loaded && candlestickBundleTask && predictionCandlestickTask" class="fadeIn padding">
-        <!-- Bundle File Background Task-->
-        <app-background-task [task]="candlestickBundleTask" (refresh)="populateTask(false)"></app-background-task>
-        <div *ngIf="candlestickBundleTask.state != 'idle'" class="divider"></div>
+    <div>
+        <!-- Tabs Navigation-->
+        <mat-tab-group [selectedIndex]="activeIndex" 
+            (selectedIndexChange)="activeIndex = $event" 
+            mat-align-tabs="center" 
+            mat-stretch-tabs 
+            backgroundColor="primary">
+            <mat-tab [disabled]="!loaded || submitting"><ng-template mat-tab-label>Bundle</ng-template></mat-tab>
+            <mat-tab [disabled]="!loaded || submitting"><ng-template mat-tab-label>Prediction</ng-template></mat-tab>
+        </mat-tab-group>
 
-        <!-- Prediction File Background Task-->
-        <app-background-task [task]="predictionCandlestickTask" (refresh)="populateTask(true)"></app-background-task>
-        <div *ngIf="predictionCandlestickTask.state != 'idle'" class="divider"></div>
-        
-        <!-- Bundle Files -->
-        <div>
-            <!-- Heading -->
-            <div fxLayout="row" fxLayoutAlign="start center">
-                <h4>Bundle</h4>
-                <span fxFlex></span>
-                <button mat-icon-button [disabled]="submitting || candlestickBundleTask.state == 'running' || predictionCandlestickTask.state == 'running'" 
-                    (click)="generateFile(false)">
-                    <mat-icon>add</mat-icon>
-                </button>
-            </div>
 
-            <!-- Files -->
-            <p *ngIf="!candlestickBundleFiles.length" class="no-data-found">No data was found</p>
-            <div *ngIf="candlestickBundleFiles.length" class="files-container">
-                <div *ngFor="let file of candlestickBundleFiles; last as isLast">
-                    <div class="row" fxLayout="row" fxLayoutAlign="start center">
-                        <div>
-                            <p>{{file.name}}</p>
-                            <p>{{file.creation | date: 'medium'}}</p>
-                        </div>
-                        <span fxFlex></span>
-                        <button mat-raised-button color="primary" [matMenuTriggerFor]="menu" [disabled]="submitting">
-                            {{file.size | filesize}}
-                        </button>
-                        <mat-menu #menu="matMenu">
-                            <button mat-menu-item (click)="copyDownloadLink(file.name, false)">
-                                <mat-icon>content_copy</mat-icon>
-                                <span>Copy Download URL</span>
-                            </button>
-                            <button mat-menu-item (click)="downloadFile(file.name, false)">
-                                <mat-icon>file_download</mat-icon>
-                                <span>Download File</span>
-                            </button>
-                        </mat-menu>
-                    </div>
-                    <div class="divider" *ngIf="!isLast"></div>
-                </div>
-            </div>
+        <!-- Loader -->
+        <div *ngIf="!loaded">
+            <div class="loader show-on-desktop"><div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div></div>
+            <div class="section-loader show-on-mobile"><div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div></div>
         </div>
 
-        <div class="divider"></div>
+        <!-- Content -->
+        <div *ngIf="loaded && candlestickBundleTask && predictionCandlestickTask" class="padding">
 
-        <!-- Prediction Files -->
-        <div>
-            <!-- Heading -->
-            <div fxLayout="row" fxLayoutAlign="center center">
-                <h4>Prediction</h4>
-                <span fxFlex></span>
-                <button mat-icon-button [disabled]="submitting || candlestickBundleTask.state == 'running' || predictionCandlestickTask.state == 'running'" 
-                    (click)="generateFile(true)">
-                    <mat-icon>add</mat-icon>
-                </button>
+            <!-- Candlestick Bundle Files -->
+            <div *ngIf="activeIndex == 0">
+                <!-- Bundle File Background Task-->
+                <app-background-task [task]="candlestickBundleTask" (refresh)="populateTask(false)"></app-background-task>
+                <div *ngIf="candlestickBundleTask.state != 'idle'" class="divider"></div>
+
+                <!-- Files -->
+                <p *ngIf="!candlestickBundleFiles.length" class="no-data-found">No data was found</p>
+                <div *ngIf="candlestickBundleFiles.length" class="files-container">
+                    <div *ngFor="let file of candlestickBundleFiles; last as isLast">
+                        <div class="row" fxLayout="row" fxLayoutAlign="start center">
+                            <div>
+                                <p>{{file.name}}</p>
+                                <p>{{file.creation | date: 'medium'}}</p>
+                            </div>
+                            <span fxFlex></span>
+                            <button mat-raised-button color="primary" [matMenuTriggerFor]="menu" [disabled]="submitting">
+                                {{file.size | filesize}}
+                            </button>
+                            <mat-menu #menu="matMenu">
+                                <button mat-menu-item (click)="copyDownloadLink(file.name, false)">
+                                    <mat-icon>content_copy</mat-icon>
+                                    <span>Copy Download URL</span>
+                                </button>
+                                <button mat-menu-item (click)="downloadFile(file.name, false)">
+                                    <mat-icon>file_download</mat-icon>
+                                    <span>Download File</span>
+                                </button>
+                            </mat-menu>
+                        </div>
+                        <div class="divider" *ngIf="!isLast"></div>
+                    </div>
+                </div>
             </div>
 
-            <!-- Files -->
-            <p *ngIf="!predictionCandlestickFiles.length" class="no-data-found">No data was found</p>
-            <div *ngIf="predictionCandlestickFiles.length" class="files-container">
-                <div *ngFor="let file of predictionCandlestickFiles; last as isLast">
-                    <div class="row" fxLayout="row" fxLayoutAlign="start center">
-                        <div>
-                            <p>{{file.name}}</p>
-                            <p>{{file.creation | date: 'medium'}}</p>
+            <!-- Prediction Candlestick Files -->
+            <div *ngIf="activeIndex == 1">
+                <!-- Prediction File Background Task-->
+                <app-background-task [task]="predictionCandlestickTask" (refresh)="populateTask(true)"></app-background-task>
+                <div *ngIf="predictionCandlestickTask.state != 'idle'" class="divider"></div>
+
+                <!-- Files -->
+                <p *ngIf="!predictionCandlestickFiles.length" class="no-data-found">No data was found</p>
+                <div *ngIf="predictionCandlestickFiles.length" class="files-container">
+                    <div *ngFor="let file of predictionCandlestickFiles; last as isLast">
+                        <div class="row" fxLayout="row" fxLayoutAlign="start center">
+                            <div>
+                                <p>{{file.name}}</p>
+                                <p>{{file.creation | date: 'medium'}}</p>
+                            </div>
+                            <span fxFlex></span>
+                            <button mat-raised-button color="primary" [matMenuTriggerFor]="menu" [disabled]="submitting">
+                                {{file.size | filesize}}
+                            </button>
+                            <mat-menu #menu="matMenu">
+                                <button mat-menu-item (click)="copyDownloadLink(file.name, true)">
+                                    <mat-icon>content_copy</mat-icon>
+                                    <span>Copy Download URL</span>
+                                </button>
+                                <button mat-menu-item (click)="downloadFile(file.name, true)">
+                                    <mat-icon>file_download</mat-icon>
+                                    <span>Download File</span>
+                                </button>
+                            </mat-menu>
                         </div>
-                        <span fxFlex></span>
-                        <button mat-raised-button color="primary" [matMenuTriggerFor]="menu" [disabled]="submitting">
-                            {{file.size | filesize}}
-                        </button>
-                        <mat-menu #menu="matMenu">
-                            <button mat-menu-item (click)="copyDownloadLink(file.name, true)">
-                                <mat-icon>content_copy</mat-icon>
-                                <span>Copy Download URL</span>
-                            </button>
-                            <button mat-menu-item (click)="downloadFile(file.name, true)">
-                                <mat-icon>file_download</mat-icon>
-                                <span>Download File</span>
-                            </button>
-                        </mat-menu>
+                        <div class="divider" *ngIf="!isLast"></div>
                     </div>
-                    <div class="divider" *ngIf="!isLast"></div>
                 </div>
             </div>
         </div>

@@ -51,16 +51,16 @@ export class AuthService implements IAuthService {
                 this.ngZone.run(() => {
                     if (fbUser && fbUser.uid) { 
                         // Propagate the UID
-                        this.uid.next(fbUser.uid) ;
                         this.user = fbUser;
+                        this.uid.next(fbUser.uid);
 
                         // Initialize the API Secret in case it hasn't been
                         if (!this.apiSecretInitialized) this.initializeAPISecret(); 
                     } 
                     else { 
                         // The user is not authenticated
-                        this.uid.next(null);
                         this.user = null;
+                        this.uid.next(null);
 
                         // Deactivate the API Secret connection if any
                         this.deactivateAPISecret();

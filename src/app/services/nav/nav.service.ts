@@ -78,21 +78,32 @@ export class NavService implements INavService {
 	public signIn(): Promise<boolean> { return this.navigate("auth/signIn") }
 	public updatePassword(): Promise<boolean> { return this.navigate("auth/updatePassword") }
 
-	// Candlesticks
-	public candlesticks(): Promise<boolean> { return this.navigate("candlesticks") }
-
 	// Dashboard
 	public dashboard(): Promise<boolean> { return this.navigate("dashboard") }
-
-	// Epoch Builder
-	public regressions(): Promise<boolean> { return this.navigate("epochBuilder/regressions") }
-	public predictionModels(): Promise<boolean> { return this.navigate("epochBuilder/predictionModels") }
 
 	// Epochs
 	public epochs(): Promise<boolean> { return this.navigate("epochs") }
 
 	// Predictions
 	public predictions(): Promise<boolean> { return this.navigate("predictions") }
+
+	// Trading Simulations
+	public tradingSimulations(): Promise<boolean> { return this.navigate("tradingSimulations") }
+
+	// Trading Sessions
+	public tradingSessions(): Promise<boolean> { return this.navigate("tradingSessions") }
+
+	// Candlesticks
+	public candlesticks(): Promise<boolean> { return this.navigate("candlesticks") }
+
+	// Order Book
+	public orderBook(): Promise<boolean> { return this.navigate("orderBook") }
+
+	// Server
+	public server(): Promise<boolean> { return this.navigate("server") }
+
+	// Users
+	public users(): Promise<boolean> { return this.navigate("users") }
 
 	// GUI Version
 	public guiVersion(version?: string): Promise<boolean> { 
@@ -106,17 +117,12 @@ export class NavService implements INavService {
 	// IP Blacklist
 	public ipBlacklist(): Promise<boolean> { return this.navigate("ipBlacklist") }
 
-	// Server
-	public server(): Promise<boolean> { return this.navigate("server") }
+	// Epoch Builder
+	public regressions(): Promise<boolean> { return this.navigate("epochBuilder/regressions") }
+	public predictionModels(): Promise<boolean> { return this.navigate("epochBuilder/predictionModels") }
 
-	// Trading Sessions
-	public tradingSessions(): Promise<boolean> { return this.navigate("tradingSessions") }
-
-	// Trading Simulations
-	public tradingSimulations(): Promise<boolean> { return this.navigate("tradingSimulations") }
-
-	// Users
-	public users(): Promise<boolean> { return this.navigate("users") }
+	// Local Database
+	public localDatabase(): Promise<boolean> { return this.navigate("localDatabase") }
 
 
 	

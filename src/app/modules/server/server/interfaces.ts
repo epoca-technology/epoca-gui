@@ -17,6 +17,9 @@ export interface IServerComponent {
     // Database
     listBackupFiles(): Promise<void>,
     downloadBackup(name: string): void,
+
+    // Misc Helpers 
+    toggleSoundPreference(): Promise<void>
 }
 
 

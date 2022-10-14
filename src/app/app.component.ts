@@ -46,7 +46,7 @@ export class AppComponent implements IAppComponent {
 	public state: IRouteState = this._nav.routeState.value;
 
     constructor(
-        private _app: AppService,
+        public _app: AppService,
         public _nav: NavService,
         public _auth: AuthService,
         private _notification: NotificationService,
@@ -94,7 +94,7 @@ export class AppComponent implements IAppComponent {
                 // Initialize FCM
                 this.initializeFCM();
 
-                // @TODO
+                // ...
             }
         });
     }
@@ -114,12 +114,10 @@ export class AppComponent implements IAppComponent {
 
 
 	/*
-	* Creates a new instance of Plutus.
+	* Creates a new instance of Epoca.
 	* @returns void
 	* */
-	public createNewInstance(): void {
-        this._nav.openUrl(window.location.href);
-	}
+	public createNewInstance(): void { this._nav.openUrl(window.location.href) }
 
 
 
