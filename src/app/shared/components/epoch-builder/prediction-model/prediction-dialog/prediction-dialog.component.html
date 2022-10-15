@@ -13,7 +13,14 @@
     </div>
 </mat-toolbar>
 <div mat-dialog-content>
-    <div class="prediction">
+    <!-- Loader -->
+    <div *ngIf="!loaded">
+        <div class="loader show-on-desktop"><div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div></div>
+        <div class="section-loader show-on-mobile"><div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div></div>
+    </div>
+
+    <!-- Content -->
+    <div *ngIf="loaded" class="prediction fadeIn">
         <!-- Prediction Time -->
         <div fxLayout="row" fxLayoutAlign="start center">
             <p class="light-text">Time</p>
@@ -25,22 +32,22 @@
         <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
             <p class="light-text">Predicted Trend</p>
             <span fxFlex></span>
-            <div *ngIf="prediction.r == 1" class="square-badge-success"
+            <div *ngIf="prediction.r == 1" class="square-badge-success clickable" role="button" (click)="showFeatures = !showFeatures"
                 matTooltip="{{featuresSum}}">
                 <mat-icon>trending_up</mat-icon> {{featuresSum | number: '1.0-4'}}
             </div>
-            <div *ngIf="prediction.r == -1" class="square-badge-error"
+            <div *ngIf="prediction.r == -1" class="square-badge-error clickable" role="button" (click)="showFeatures = !showFeatures"
                 matTooltip="{{featuresSum}}">
                 <mat-icon>trending_down</mat-icon> {{featuresSum | number: '1.0-4'}}
             </div>
-            <div *ngIf="prediction.r == 0" class="square-badge-neutral"
+            <div *ngIf="prediction.r == 0" class="square-badge-neutral clickable" role="button" (click)="showFeatures = !showFeatures"
                 matTooltip="{{featuresSum}}">
                 <mat-icon>trending_flat</mat-icon> {{featuresSum | number: '1.0-4'}}
             </div>
         </div>
 
         <!-- Features -->
-        <div class="features">
+        <div *ngIf="showFeatures" class="features fadeIn">
             <div *ngFor="let reg of model.regressions; index as regIndex" class="feature">
                 <div class="clickable" role="button"
                     (click)="_nav.displayKerasModelDialog(reg)"
@@ -55,6 +62,21 @@
                     <mat-icon *ngIf="prediction.f[regIndex] == 0">trending_flat</mat-icon>
                     &nbsp;{{prediction.f[regIndex] | number: '1.0-4'}}
                 </div>
+            </div>
+        </div>
+
+        <!-- Prediction Chart-->
+        <div *ngIf="chart" style="margin-top:10px;">
+            <div class="padding" [ngClass]="{'chart-loading': !chartLoaded}">
+                <apx-chart #chartComp
+                    [series]="chart.series!"
+                    [chart]="chart.chart!"
+                    [plotOptions]="chart.plotOptions!"
+                    [xaxis]="chart.xaxis!"
+                    [yaxis]="chart.yaxis!"
+                    [title]="chart.title!"
+                    [annotations]="chart!.annotations!"
+                ></apx-chart>
             </div>
         </div>
     </div>

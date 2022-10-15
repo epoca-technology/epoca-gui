@@ -62,20 +62,29 @@ export class ChartService implements IChartService {
      * @param candlesticks 
      * @param annotations?
      * @param highlightCurrentPrice?
+     * @param disableNiceScale?
      * @returns ICandlestickChartOptions
      */
 	public getCandlestickChartOptions(
 		 candlesticks: ICandlestick[], 
 		 annotations?: ApexAnnotations, 
-		 highlightCurrentPrice?: boolean
+		 highlightCurrentPrice?: boolean,
+		 disableNiceScale?: boolean
 	): ICandlestickChartOptions {
         // Make sure at least 5 candlesticks have been provided
         if (!candlesticks || candlesticks.length < 5) {
             throw new Error('A minimum of 5 candlesticks must be provided in order to render the chart.');
         }
 
-		// Retrieve the range
-		const range: IChartRange = this.getCandlesticksChartRange(candlesticks);
+		// Check if nice scale should be disabled
+		let yaxis: ApexYAxis = { tooltip: { enabled: true }, forceNiceScale: true}
+		if (disableNiceScale) {
+			// Retrieve the range
+			const range: IChartRange = this.getCandlesticksChartRange(candlesticks);
+
+			// Build the y axis
+			yaxis = { tooltip: { enabled: true }, forceNiceScale: false, min: range.min, max: range.max}
+		}
 
 		let self = this;
 
@@ -94,7 +103,7 @@ export class ChartService implements IChartService {
 			),
             title: {text: this.getCandlesticksTitle(candlesticks),align: "left"},
             xaxis: {type: "datetime",tooltip: {enabled: true}, labels: {datetimeUTC: false}}, 
-            yaxis: { tooltip: { enabled: true }, forceNiceScale: false, min: range.min, max: range.max}
+            yaxis: yaxis
         }
     }
 
