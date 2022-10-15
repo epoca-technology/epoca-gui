@@ -7,8 +7,10 @@ export interface IUtilService {
     calculatePercentageOutOfTotal(value: INumber, total: INumber, config?: INumberConfig): INumber,
     outputNumber(value: INumber, config?: INumberConfig): INumber,
     getBigNumber(value: INumber): BigNumber,
-    getMax(values: number[]): number,
-    getMin(values: number[]): number,
+    getMax(values: INumber[]): number,
+    getMin(values: INumber[]): number,
+    getSum(values: INumber[]): number,
+    getMean(values: INumber[]): number,
     formatNumber(value: number, dp?: number): string,
     
     // Error Handling

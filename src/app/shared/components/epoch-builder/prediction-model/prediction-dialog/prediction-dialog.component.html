@@ -66,15 +66,14 @@
         </div>
 
         <!-- Prediction Chart-->
-        <div *ngIf="chart" style="margin-top:10px;">
-            <div class="padding" [ngClass]="{'chart-loading': !chartLoaded}">
+        <div *ngIf="chart" class="chart-container">
+            <div [ngClass]="{'chart-loading': !chartLoaded}">
                 <apx-chart #chartComp
                     [series]="chart.series!"
                     [chart]="chart.chart!"
                     [plotOptions]="chart.plotOptions!"
                     [xaxis]="chart.xaxis!"
                     [yaxis]="chart.yaxis!"
-                    [title]="chart.title!"
                     [annotations]="chart!.annotations!"
                 ></apx-chart>
             </div>

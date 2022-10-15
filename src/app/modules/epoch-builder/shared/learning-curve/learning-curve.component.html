@@ -12,13 +12,13 @@
         {{finalVal | number: '1.0-6'}}
     </div>
 </div>
-<apx-chart
-    [series]="curveChart.series"
-    [chart]="curveChart.chart"
-    [xaxis]="curveChart.xaxis"
-    [dataLabels]="{enabled: false}"
-    [grid]="curveChart.grid"
-    [stroke]="curveChart.stroke"
-    [yaxis]="curveChart.yaxis"
-    [markers]="{size: 0}"
-></apx-chart>
+<div *ngIf="curveChart">
+    <apx-chart
+        [series]="curveChart.series"
+        [chart]="curveChart.chart"
+        [xaxis]="curveChart.xaxis"
+        [grid]="curveChart.grid"
+        [stroke]="curveChart.stroke"
+        [yaxis]="curveChart.yaxis"
+    ></apx-chart>
+</div>

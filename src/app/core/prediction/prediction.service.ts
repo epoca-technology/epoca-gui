@@ -20,7 +20,14 @@ export class PredictionService implements IPredictionService {
 		"1": "trending_up",
 	   "-1": "trending_down",
 		"0": "trending_flat"
-   }
+   	}
+
+	// Prediction Result Image Paths
+	public readonly resultImagePaths: {[result: string]: string} = {
+		"1": "/assets/img/prediction_badges/long.png",
+	   "-1": "/assets/img/prediction_badges/short.png",
+		"0": "/assets/img/prediction_badges/neutral.png"
+   	}
 
 
 

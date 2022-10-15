@@ -34,7 +34,7 @@ export class EpochBuilderEvaluationService implements IEpochBuilderEvaluationSer
 
 	// Best test ds losses
 	private readonly bestMAE: number = 0.0015;
-	private readonly bestMSE: number = 0.000008;
+	private readonly bestMSE: number = 0.000005;
 
 	// Descriptions
 	public readonly desc: IEpochBuilderEvaluationDescriptions = {
@@ -551,6 +551,26 @@ export class EpochBuilderEvaluationService implements IEpochBuilderEvaluationSer
 		else if (lossReceived <= (bestLoss * 2.8)) { points = maxPoints / 1.55 }
 		else if (lossReceived <= (bestLoss * 2.9)) { points = maxPoints / 1.57 }
 		else if (lossReceived <= (bestLoss * 3)) { points = maxPoints / 1.6 }
+		else if (lossReceived <= (bestLoss * 3.1)) { points = maxPoints / 1.62 }
+		else if (lossReceived <= (bestLoss * 3.2)) { points = maxPoints / 1.64 }
+		else if (lossReceived <= (bestLoss * 3.3)) { points = maxPoints / 1.66 }
+		else if (lossReceived <= (bestLoss * 3.4)) { points = maxPoints / 1.68 }
+		else if (lossReceived <= (bestLoss * 3.5)) { points = maxPoints / 1.7 }
+		else if (lossReceived <= (bestLoss * 3.6)) { points = maxPoints / 1.72 }
+		else if (lossReceived <= (bestLoss * 3.7)) { points = maxPoints / 1.74 }
+		else if (lossReceived <= (bestLoss * 3.8)) { points = maxPoints / 1.76 }
+		else if (lossReceived <= (bestLoss * 3.9)) { points = maxPoints / 1.78 }
+		else if (lossReceived <= (bestLoss * 4)) { points = maxPoints / 1.8 }
+		else if (lossReceived <= (bestLoss * 4.1)) { points = maxPoints / 1.82 }
+		else if (lossReceived <= (bestLoss * 4.2)) { points = maxPoints / 1.84 }
+		else if (lossReceived <= (bestLoss * 4.3)) { points = maxPoints / 1.86 }
+		else if (lossReceived <= (bestLoss * 4.4)) { points = maxPoints / 1.88 }
+		else if (lossReceived <= (bestLoss * 4.5)) { points = maxPoints / 1.9 }
+		else if (lossReceived <= (bestLoss * 4.6)) { points = maxPoints / 1.92 }
+		else if (lossReceived <= (bestLoss * 4.7)) { points = maxPoints / 1.94 }
+		else if (lossReceived <= (bestLoss * 4.8)) { points = maxPoints / 1.96 }
+		else if (lossReceived <= (bestLoss * 4.9)) { points = maxPoints / 1.98 }
+		else if (lossReceived <= (bestLoss * 5)) { points = maxPoints / 2 }
 		else { points = 0 }
 
 		

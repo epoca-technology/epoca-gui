@@ -38,7 +38,7 @@ export class LearningCurveComponent implements OnInit, ILearningCurveComponent {
 		const val: number[] = <number[]>this.curveConfig.val.map(val => { return this._utils.outputNumber(val, {dp: 6})});
 
 		// Build the chart
-		this.curveChart = this._chart.getLineChartOptions(
+		let curveChart: ILineChartOptions = this._chart.getLineChartOptions(
 			{
 				series: [
 					{
@@ -52,9 +52,14 @@ export class LearningCurveComponent implements OnInit, ILearningCurveComponent {
 						color: this.curveConfig.type == "loss" ? this.colors.valLoss: this.colors.valAcc 
 					}
 				],
-				stroke: {curve: "straight", width: [3, 3]}
-			}, 400, true
+				stroke: {curve: "straight", width: [2, 2]}
+			}, 
+			400, 
+			true
 		);
+		curveChart.chart.toolbar = {show: true,tools: {selection: true,zoom: true,zoomin: true,zoomout: true,download: false}};
+		curveChart.chart.zoom = {enabled: true, type: "xy"};
+		this.curveChart = curveChart;
 
 		// Init the final values
 		this.finalTrain = train[train.length - 1];

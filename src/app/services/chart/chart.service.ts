@@ -95,6 +95,7 @@ export class ChartService implements IChartService {
 				type: "candlestick",
 				toolbar: {show: true,tools: {selection: true,zoom: true,zoomin: true,zoomout: true,download: false}},
 				animations: {enabled: false},
+				height: 600
             },
 			plotOptions: {candlestick: {colors: {upward: this.upwardColor,downward: this.downwardColor}}},
             annotations: this.getCandlesticksAnnotations(
@@ -203,7 +204,8 @@ export class ChartService implements IChartService {
 		 // Init the annotations
 		 let annotations: ApexAnnotations = {
 			xaxis: data?.xaxis || [],
-			yaxis: data?.yaxis || []
+			yaxis: data?.yaxis || [],
+			points: data?.points || []
 		 }
 
 		 // Check if the current price was provided

@@ -29,16 +29,17 @@ export class PredictionDialogComponent implements OnInit, IPredictionDialogCompo
 
 	// Prediction Result Name
 	public resultName: string;
+	public resultImage: string;
 
 	// Prediction Outcome
 	public showOutcome: boolean = false;
 	public outcome: boolean|undefined;
+	private readonly outcomeCandlesticksRequirement: number = 160;
 
 	// Prediction Features
 	public showFeatures: boolean = false;
 
 	// Prediction Chart
-	private rawCandlesticks: ICandlestick[] = [];
 	@ViewChild("chartComp") chartComp?: ChartComponent;
 	public chart?: Partial<ICandlestickChartOptions>;
 	public chartLoaded: boolean = false;
@@ -63,8 +64,9 @@ export class PredictionDialogComponent implements OnInit, IPredictionDialogCompo
 		this.prediction = this.data.prediction;
 		this.featuresSum = <number>this._utils.outputNumber(BigNumber.sum.apply(null, this.prediction.f), { dp: 6 });
 
-		// Prediction Result Name
+		// Prediction Result Details
 		this.resultName = this._prediction.resultNames[this.prediction.r];
+		this.resultImage = this._prediction.resultImagePaths[this.prediction.r];
 
 		// Outcome
 		this.showOutcome = typeof this.data.outcome == "boolean";
@@ -84,7 +86,7 @@ export class PredictionDialogComponent implements OnInit, IPredictionDialogCompo
 		setTimeout(() => { 
 			this.chartComp!.resetSeries();
 			this.chartLoaded = true;
-		}, 300);
+		}, 750);
     }
 
 
@@ -104,61 +106,185 @@ export class PredictionDialogComponent implements OnInit, IPredictionDialogCompo
 	private async initChart(): Promise<void> {
 		// Firstly, retrieve the candlesticks
 		const { list, active } = await this.getCandlesticks();
-		this.rawCandlesticks = list;
 
-		// Calculate the price targets based on the active candlestick
-		const { takeProfit, stopLoss} = this.calculatePriceTargets(active.c);
+		// Calculate the estimated open price
+		const openPrice: number = this._utils.getMean([active.o, active.h, active.l, active.c]);
 
-		// Init the annotations if it isn't a neutral prediction
-		let annotations: ApexAnnotations = {};
-		if (this.prediction.r != 0) {
-			annotations = {
-				yaxis: [
-					{
-						y: takeProfit,
-						borderColor: this._chart.upwardColor,
-						strokeDashArray: 3,
-						borderWidth: 3,
-						label: {
-							borderColor: this._chart.upwardColor,
-							style: { color: "#FFFFFF", background: this._chart.upwardColor,},
-							text: "Take Profit"
-						}
-					},					
-					{
-						y: stopLoss,
-						borderColor: this._chart.downwardColor,
-						strokeDashArray: 3,
-						borderWidth: 3,
-						label: {
-							borderColor: this._chart.downwardColor,
-							style: { color: '#fff', background: this._chart.downwardColor,},
-							text: "Stop Loss"
-						}
+		// Init the annotations
+		let annotations: ApexAnnotations = {
+			yaxis: [],
+			points: [
+				{
+					x: this.prediction.t,
+					y: openPrice,
+					marker: { size: 0},
+					image: { 
+						path: this.resultImage,
+						width: 18,
+						height: 18,
 					}
-				],
-				xaxis: [
-					{
-						x: this.prediction.t,
-						strokeDashArray: 3,
-						borderWidth: 3,
-						borderColor: "#000000",
-						label: {
-							borderColor: "#000000",
-							style: { color: "#FFFFFF", background: "#000000",},
-							text: `${this.resultName.toUpperCase()}`,
-							offsetY: 270
-						}
-					},		
-				]
+				},		
+			]
+		};
+
+		// Include additional annotations in case it is a non-neutral prediction
+		if (this.prediction.r != 0) {
+			// Calculate the price targets based on the active candlestick
+			const { takeProfit, stopLoss} = this.calculatePriceTargets(openPrice);
+
+			// Include the take profit and stop loss annotations
+			annotations.yaxis = [
+				{
+					y: takeProfit,
+					borderColor: this._chart.upwardColor,
+					strokeDashArray: 3,
+					borderWidth: 3,
+					label: {
+						borderColor: this._chart.upwardColor,
+						style: { color: "#FFFFFF", background: this._chart.upwardColor,},
+						text: "TP",
+						position: "left",
+						offsetX: 10
+					}
+				},					
+				{
+					y: stopLoss,
+					borderColor: this._chart.downwardColor,
+					strokeDashArray: 3,
+					borderWidth: 3,
+					label: {
+						borderColor: this._chart.downwardColor,
+						style: { color: '#fff', background: this._chart.downwardColor,},
+						text: "SL",
+						position: "left",
+						offsetX: 10
+					}
+				}
+			];
+
+			// Include the outcome annotation if applies
+			const { outcome, closeTime, closePrice } = this.getPredictionOutcome(
+				list.slice(this.predictions),
+				takeProfit,
+				stopLoss
+			);
+			if (typeof outcome == "boolean" && typeof closeTime == "number" && typeof closePrice == "number") {
+				const basePath: string = "/assets/img/prediction_badges";
+				annotations.points!.push({
+					x: closeTime,
+					y: closePrice,
+					marker: { size: 0},
+					image: { 
+						path: outcome ? `${basePath}/successful_outcome.png`: `${basePath}/unsuccessful_outcome.png`,
+						width: 18,
+						height: 18,
+					}
+				});
+				this.outcome = outcome;
+				this.showOutcome = true;
 			}
 		}
 
 		// Retrieve the chart options
 		this.chart = this._chart.getCandlestickChartOptions(list, annotations, false, false);
-		this.chart.chart!.toolbar = {show: true,tools: {selection: true,zoom: true,zoomin: true,zoomout: true,download: true}}
-		this.chart.chart!.height = 400;
+		this.chart.chart!.toolbar = {show: true,tools: {selection: true,zoom: true,zoomin: true,zoomout: true,download: false}};
+		this.chart.chart!.zoom = {enabled: true, type: "xy"};
+		this.chart.chart!.height = 370;
 	}
+
+
+
+
+
+
+
+
+
+	/**
+	 * Derives the outcome in case it wasn't provided to the component and
+	 * also attempts to determine when it took place. To do so, it makes use
+	 * of candlesticks that came into existance after the creation of the 
+	 * prediction.
+	 * If an outcome was provided and it differs from the derived one, it will
+	 * ignore it and stick to whatever was provided to the component.
+	 * @param candlesticks 
+	 * @param takeProfit 
+	 * @param stopLoss 
+	 * @returns {outcome: boolean|undefined,closeTime: number|undefined,closePrice: number|undefined}
+	 */
+	private getPredictionOutcome(candlesticks: ICandlestick[], takeProfit: number, stopLoss: number): {
+		outcome: boolean|undefined, 
+		closeTime: number|undefined, 
+		closePrice: number|undefined
+	} {
+		// Init values
+		let deductedOutcome: boolean|undefined = undefined;
+		let closeTime: number|undefined = undefined;
+		let closePrice: number|undefined = undefined;
+
+		// Iterate over the candlesticks until the outcome is determined
+		let i: number = 0;
+		while (i < candlesticks.length && deductedOutcome == undefined) {
+			// Validate a long position
+			if (this.prediction.r == 1) {
+				// Check the stop loss
+				if (candlesticks[i].l <= stopLoss) {
+					deductedOutcome = false;
+					closeTime = candlesticks[i].ct;
+					closePrice = stopLoss;
+				}
+
+				// Check the take profit
+				else if (candlesticks[i].h >= takeProfit) {
+					deductedOutcome = true;
+					closeTime = candlesticks[i].ct;
+					closePrice = takeProfit;
+				}
+			}
+
+			// Validate a short position
+			else {
+				// Check the stop loss
+				if (candlesticks[i].h >= stopLoss) {
+					deductedOutcome = false;
+					closeTime = candlesticks[i].ct;
+					closePrice = stopLoss;
+				}
+
+
+				// Check the take profit
+				else if (candlesticks[i].l <= takeProfit) {
+					deductedOutcome = true;
+					closeTime = candlesticks[i].ct;
+					closePrice = takeProfit;
+				}
+			}
+
+			// Increment the counter
+			i += 1;
+		}
+
+		// If an outcome was provided and it differs from the deducted one, ignore whatever was found
+		if (
+			typeof this.outcome == "boolean" && 
+			typeof deductedOutcome == "boolean" && 
+			this.outcome != deductedOutcome
+		) {
+			deductedOutcome = undefined;
+			closeTime = undefined;
+			closePrice = undefined;
+		}
+
+		// Finally, return the outcome
+		return {
+			outcome: typeof this.outcome == "boolean" ? this.outcome: deductedOutcome,
+			closeTime: closeTime,
+			closePrice: closePrice
+		}
+	}
+
+
+
 
 
 
@@ -198,7 +324,8 @@ export class PredictionDialogComponent implements OnInit, IPredictionDialogCompo
 
 
 	/**
-	 * Retrieves the start of the candlesticks time range.
+	 * Retrieves the start of the candlesticks time range that sufficient to
+	 * give the prediction some context.
 	 * @returns number
 	 */
 	private getCandlestickStartTime(): number {
@@ -211,13 +338,13 @@ export class PredictionDialogComponent implements OnInit, IPredictionDialogCompo
 
 
 	/**
-	 * Retrieves the end of the candlesticks time range based on the metadata
-	 * that has the most prediction prices.
+	 * Retrieves the end of the candlesticks time range that hopefully
+	 * is sufficient in order to identify the prediction's outcome.
 	 * @returns number
 	 */
 	private getCandlestickEndTime(): number {
 		return moment(this.prediction.t)
-				.add(this._candlestick.predictionCandlestickInterval * this.lookback, "minutes")
+				.add(this._candlestick.predictionCandlestickInterval * this.outcomeCandlesticksRequirement, "minutes")
 				.valueOf();
 	}
 

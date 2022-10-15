@@ -208,7 +208,7 @@ export class RegressionService implements IRegressionService {
 						evaluationFunction: "evaluateTestDatasetLoss",
 						evaluationParams: {
 							meanAbsoluteError: c.test_ds_evaluation.mean_absolute_error,
-							maxPoints: 40
+							maxPoints: 45
 						}
 					},
 					{
@@ -217,7 +217,7 @@ export class RegressionService implements IRegressionService {
 						evaluationFunction: "evaluateTestDatasetLoss",
 						evaluationParams: {
 							meanSquaredError: c.test_ds_evaluation.mean_squared_error,
-							maxPoints: 40
+							maxPoints: 45
 						}
 					}
 				]
@@ -235,7 +235,7 @@ export class RegressionService implements IRegressionService {
 							maxReceivablePoints: Math.floor(
 								(c.discovery.increase_outcome_num + c.discovery.decrease_outcome_num - c.discovery.neutral_outcome_num) * 0.5
 							),
-							maxPoints: 7.25
+							maxPoints: 2.5
 						}
 					},
 					{
@@ -262,7 +262,7 @@ export class RegressionService implements IRegressionService {
 						evaluationFunction: "evaluateAccuracy",
 						evaluationParams: {
 							accuracy: c.discovery.accuracy,
-							maxPoints: 7.25
+							maxPoints: 2
 						}
 					},
 					{

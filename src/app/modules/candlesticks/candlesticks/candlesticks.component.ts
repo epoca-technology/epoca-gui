@@ -70,7 +70,9 @@ export class CandlesticksComponent implements OnInit, OnDestroy, ICandlesticksCo
 
             // Retrieve the chart options
             const self = this;
-            this.chartOptions = this._chart.getCandlestickChartOptions(this.rawCandlesticks, undefined, true);
+            this.chartOptions = this._chart.getCandlestickChartOptions(this.rawCandlesticks, undefined, true, true);
+            this.chartOptions.chart!.height = this._app.layout.value == "desktop" ? 600: 350;
+            this.chartOptions.chart!.zoom = {enabled: true, type: "xy"}
             this.chartOptions.chart!.events = {
                 click: function(event, chartContext, config) {
                     if (self.rawCandlesticks![config.dataPointIndex]) self.displayCandlestickDialog(self.rawCandlesticks![config.dataPointIndex]);
