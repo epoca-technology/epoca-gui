@@ -88,7 +88,7 @@
                         [disabled]="!_selection.selectedList.length"
                         (click)="_nav.displayModelSelectionDialog()">
                         <mat-icon 
-                            [matBadge]="_selection.selectedList.length > 9 ? '9+': _selection.selectedList.length" 
+                            [matBadge]="_selection.selectedList.length" 
                             matBadgeSize="small"
                             matBadgePosition="after"
                             matBadgeOverlap="false">checklist</mat-icon>

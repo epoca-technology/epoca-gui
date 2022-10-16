@@ -38,8 +38,8 @@
              class="tab" role="button" matRipple
              [ngClass]="{'active': activeTab == 3}" (click)="navigate(3)">
             <mat-icon   svgIcon="ssid_chart" 
-                        [matBadge]="_app.epoch.value ? _app.simulations.value.length: 0" 
-                        [matBadgeHidden]="!_app.epoch.value" 
+                        [matBadge]="_app.simulations.value ? _app.simulations.value.length: 0" 
+                        [matBadgeHidden]="!_app.epoch.value || !_app.simulations.value" 
                         matBadgePosition="after"
                         matBadgeSize="small"
                         matBadgeOverlap="false"></mat-icon>
@@ -50,8 +50,8 @@
              class="tab" role="button" matRipple
              [ngClass]="{'active': activeTab == 4}" (click)="navigate(4)">
             <mat-icon   svgIcon="auto_graph" 
-                        [matBadge]="_app.epoch.value ? 7: 0" 
-                        [matBadgeHidden]="!_app.epoch.value" 
+                        [matBadge]="_app.session.value ? 7: 0" 
+                        [matBadgeHidden]="!_app.session.value" 
                         matBadgePosition="after"
                         matBadgeSize="small"
                         matBadgeOverlap="false"></mat-icon>

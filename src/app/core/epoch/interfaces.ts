@@ -13,7 +13,7 @@ import {
 export interface IEpochService {
     // Epoch Retriever Endpoints
     getEpochRecord(epochID: string): Promise<IEpochRecord|undefined>,
-    getActiveEpochSummary(): Promise<IEpochSummary|undefined>,
+    //getActiveEpochSummary(): Promise<IEpochSummary|undefined>,
     getEpochSummary(epochID: string): Promise<IEpochSummary>,
     listEpochs(startAt: number, limit: number): Promise<IEpochSummary>,
 

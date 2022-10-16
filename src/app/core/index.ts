@@ -2,6 +2,7 @@ export * from "./api";
 export * from "./api-error";
 export * from "./auth";
 export * from "./background-task";
+export * from "./bulk-data";
 export * from "./candlestick";
 export * from "./common";
 export * from "./database";

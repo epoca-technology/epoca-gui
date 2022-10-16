@@ -11,16 +11,14 @@ export interface IAppService {
     outageAudioInitialized: boolean,
     canPaste: boolean,
 
-    // Refreshable Data
-    epoch: BehaviorSubject<IEpochSummary|undefined>,
-    prediction: BehaviorSubject<IPrediction|undefined>,
-    predictionIcon: BehaviorSubject<IPredictionResultIcon|undefined>,
-    simulations: BehaviorSubject<any[]>,
-    session: BehaviorSubject<object|undefined>,
-    refreshEpoch(): Promise<void>,
-    refreshPrediction(): Promise<void>,
-    refreshSimulations(): Promise<void>,
-    refreshSession(): Promise<void>,
+    // App Bulk
+    serverTime: BehaviorSubject<number|undefined|null>,
+    epoch: BehaviorSubject<IEpochSummary|undefined|null>,
+    prediction: BehaviorSubject<IPrediction|undefined|null>,
+    predictionIcon: BehaviorSubject<IPredictionResultIcon|undefined|null>,
+    simulations: BehaviorSubject<any[]|null>,
+    session: BehaviorSubject<object|undefined|null>,
+    refreshAppBulk(): Promise<void>,
 
     // Snackbars
     success(message: string, action: boolean): MatSnackBarRef<TextOnlySnackBar>,

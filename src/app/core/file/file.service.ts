@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 import { 
     getStorage, 
     FirebaseStorage, 
@@ -9,11 +9,11 @@ import {
     getMetadata, 
     FullMetadata
 } from "firebase/storage";
-import * as moment from 'moment';
-import { IFileService, IPath, IDownloadedFile } from './interfaces';
+import * as moment from "moment";
+import { IFileService, IPath, IDownloadedFile, IFileExtension } from "./interfaces";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export class FileService implements IFileService{
     // Storage Instance
@@ -21,9 +21,10 @@ export class FileService implements IFileService{
 
     // Paths
     private readonly path: IPath = {
-        dbBackups: 'db_backups',
-        predictionCandlesticks: 'prediction_candlesticks',
-        candlestickBundles: 'candlesticks_bundle'
+        dbBackups: "db_backups",
+        predictionCandlesticks: "prediction_candlesticks",
+        candlestickBundles: "candlesticks_bundle",
+        epoch: "epoch"
     }
 
     constructor() { }
@@ -150,12 +151,20 @@ export class FileService implements IFileService{
 
 
 
+    /* Epoch File */
 
 
 
 
 
-    /* File General Helpers */
+
+
+
+
+
+
+
+    /* Cloud File General Helpers */
 
 
 
@@ -244,7 +253,7 @@ export class FileService implements IFileService{
 
 
     /**
-     * Retrieves the File's download URL.
+     * Retrieves the File"s download URL.
      * @param path 
      * @param name 
      * @returns Promise<string>
@@ -263,7 +272,75 @@ export class FileService implements IFileService{
 
 
 
+    /* General File Helpers */
 
+
+
+
+    /**
+     * Removes an extension from a file name. For example: 
+     * _ALPHA.zip -> _ALPHA
+     * @param fileName 
+     * @returns string
+     */
+    public removeExtensionFromFileName(fileName: string): string { return fileName.replace(/\.[^/.]+$/, "")}
+
+
+
+
+
+	
+	
+	/*
+	* Retrieves the file extension from a Blob
+	* @param file
+	* @returns IFileExtension
+	* */
+	private getFileExtension(file: File): IFileExtension {
+		switch (file.type) {
+			case "application/json":
+				return "json";
+			case "application/zip":
+				return "zip";
+			default:
+				throw new Error(`The extension could not be extracted from the file ${file.type}`);
+		}
+	}
+
+
+
+	
+	
+	
+	/*
+	* Retrieves the file extension from its name.
+	* @param fileName
+	* @returns IFileExtension
+	* */
+	private getFileExtensionByName(fileName: string): IFileExtension {
+        // Init the extension
+        const ext: IFileExtension|string = fileName.slice((fileName.lastIndexOf(".") - 1 >>> 0) + 2);
+
+        // Make sure an extension was extracted
+        if (typeof ext != "string" || !ext.length) {
+            throw new Error(`The file extension could be extracted from the file name. Received: ${ext}`);
+        }
+
+        // Finally, return it
+		return <IFileExtension>ext;
+	}
+
+
+
+
+
+
+
+
+
+
+
+    
 
 
 
@@ -286,7 +363,7 @@ export class FileService implements IFileService{
 		// Make sure 1 or more files have been provided
 		if (!event || !event.target || !event.target.files || !event.target.files.length) {
             console.log(event);
-			throw new Error('The FileChange Event does not contain any files.');
+			throw new Error("The FileChange Event does not contain any files.");
 		}
 
 		// Convert the FileList into an array and iterate
@@ -304,7 +381,7 @@ export class FileService implements IFileService{
                         resolve(JSON.parse(<string>reader.result.replace(/\bNaN\b/g, "0")))
                     } else {
 						console.error(reader.result);
-						reject('The file reader result is not a valid string that can be parsed.');
+						reject("The file reader result is not a valid string that can be parsed.");
                     }
 				};
 

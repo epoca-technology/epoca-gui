@@ -47,13 +47,13 @@ export class EpochService implements IEpochService {
 	 * it returns undefined.
 	 * @returns Promise<IEpochSummary|undefined>
 	 */
-	public getActiveEpochSummary(): Promise<IEpochSummary|undefined> {
+	/*public getActiveEpochSummary(): Promise<IEpochSummary|undefined> {
 		return this._api.request(
 			"get","epoch/getActiveEpochSummary", 
 			{}, 
 			true
 		);
-	}
+	}*/
 
 
 

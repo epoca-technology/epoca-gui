@@ -6,11 +6,11 @@ export interface IServerComponent {
     activateSection(section: ISection): Promise<void>,
 
     // Server
-    refreshServerResources(): Promise<void>,
+    refreshServerBulk(): Promise<void>,
     updateConfig(): void,
 
     // API Errors
-    refreshAPIErrors(): Promise<void>,
+    //refreshAPIErrors(): Promise<void>,
     deleteAll(): void,
     displayAPIErrorDialog(error: IApiError): void,
 
@@ -26,8 +26,8 @@ export interface IServerComponent {
 
 
 
-export type ISectionID = 'monitoring'|'api-errors'|'database'|'file-systems'|'memory'|'cpu'|'gpu'|'os'|
-'software-versions'|'system'|'baseboard'|'bios'|'network-interfaces';
+export type ISectionID = "monitoring"|"api-errors"|"database"|"file-systems"|"memory"|"cpu"|"gpu"|"os"|
+"software-versions"|"system"|"baseboard"|"bios"|"network-interfaces";
 
 
 
@@ -54,7 +54,7 @@ export interface IStates {
     fsUsage: IState[]
 }
 
-export type IState = 'optimal'|'normal'|'average'|'warning'|'error';
+export type IState = "optimal"|"normal"|"average"|"warning"|"error";
 
 
 
@@ -66,5 +66,4 @@ export interface IServerIssues {
     resourceUpdateError: boolean,
     hardwareError: boolean,
     resourcesCommunicationError: string|undefined,
-    errorsCommunicationError: string|undefined,
 }

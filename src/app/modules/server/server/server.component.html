@@ -43,14 +43,10 @@
                     <span fxFlex></span>
 
                     <!-- Refreshers-->
-                    <app-refresh-button [ngClass]="{'hidden-refresher': activeSection.id != 'api-errors'}"
+                    <app-refresh-button [ngClass]="{'hidden-refresher': activeSection.id != 'monitoring' && activeSection.id != 'api-errors'}" 
                                         [disabled]="!loaded || submitting" 
-                                        [intervalSeconds]="20" 
-                                        (refresh)="refreshAPIErrors()"></app-refresh-button>
-                    <app-refresh-button [ngClass]="{'hidden-refresher': activeSection.id != 'monitoring'}" 
-                                        [disabled]="!loaded || submitting" 
-                                        [intervalSeconds]="120" 
-                                        (refresh)="refreshServerResources()"></app-refresh-button>
+                                        [intervalSeconds]="30" 
+                                        (refresh)="refreshServerBulk()"></app-refresh-button>
                     <app-refresh-button *ngIf="activeSection.id == 'database' && dbIndex == 3" 
                                         matTooltip="Refresh Database Backup Files"
                                         [disabled]="submitting || !filesDownloaded" 
@@ -194,11 +190,6 @@
                                         <!-- Resources Communication Error -->
                                         <p class="server-error" *ngIf="serverIssues.resourcesCommunicationError">
                                             <mat-icon>error</mat-icon> Resources Communication: {{serverIssues.resourcesCommunicationError}}
-                                        </p>
-
-                                        <!-- API Errors Communication Error -->
-                                        <p class="server-error" *ngIf="serverIssues.errorsCommunicationError">
-                                            <mat-icon>error</mat-icon> API Errors Communication: {{serverIssues.errorsCommunicationError}}
                                         </p>
                                     </div>
                                     <div class="divider"></div>

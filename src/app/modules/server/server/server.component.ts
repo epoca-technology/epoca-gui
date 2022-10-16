@@ -18,12 +18,22 @@ import {
     IDatabaseSummaryTable,
     IDownloadedFile,
     LocalDatabaseService,
-    IUserPreferences
+    IUserPreferences,
+    BulkDataService,
+    IServerDataBulk,
+    IServerResourcesBulk
 } from "../../../core";
 import { AppService, ILayout, NavService } from "../../../services";
 import { AlarmsConfigDialogComponent } from "./alarms-config-dialog/alarms-config-dialog.component";
 import { ApiErrorDialogComponent } from "./api-error-dialog/api-error-dialog.component";
-import { ISection, ISectionID, IServerComponent, IState, IStates, IServerIssues } from "./interfaces";
+import { 
+    ISection, 
+    ISectionID, 
+    IServerComponent, 
+    IState, 
+    IStates, 
+    IServerIssues
+} from "./interfaces";
 
 @Component({
   selector: "app-server",
@@ -71,8 +81,7 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
         timeError: true,
         resourceUpdateError: true,
         hardwareError: true,
-        resourcesCommunicationError: undefined,
-        errorsCommunicationError: undefined
+        resourcesCommunicationError: undefined
     }
 
     // Badge States
@@ -128,7 +137,8 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
         private _apiError: ApiErrorService,
         private _db: DatabaseManagementService,
         private _file: FileService,
-        private _localDB: LocalDatabaseService
+        private _localDB: LocalDatabaseService,
+        private _bulk: BulkDataService
     ) { }
 
 
@@ -136,29 +146,11 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
         // Initialize layout
         this.layoutSub = this._app.layout.subscribe((nl: ILayout) => this.layout = nl);
 
-        // Retrieve the server data
-        try { this.serverData = await this._server.getServerData() } catch (e) { this._app.error(e)}
-
-        // Retrieve the API Errors
-        try { 
-            // Retrieve all the errors
-            this.apiErrors = await this._apiError.getAll();
-
-            // Initialize the error slider interval
-            this.errorSliderInterval = setInterval(() => {
-                if (this.activeErrorIndex >= this.apiErrors.length - 1) {
-                    this.activeErrorIndex = 0;
-                } else {
-                    this.activeErrorIndex += 1;
-                }
-            }, 5000); // Change every 5 seconds
-        } catch (e) { this._app.error(e)}
+        // Initialize the Server Bulk
+        await this.refreshServerBulk();
 
         // Initialize the user preferences
         this.userPreferences = await this._localDB.getUserPreferences();
-
-        // Set meta data
-        this.onDataChanges();
 
         // Set the loading state
         this.loaded = true;
@@ -247,18 +239,38 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
      * Refreshes the server resources data.
      * @returns Promise<void>
      */
-     public async refreshServerResources(): Promise<void> {
+     public async refreshServerBulk(): Promise<void> {
+        // If the server data has been set, update the resources only
         if (this.serverData) {
             try {
-                this.serverData.resources = await this._server.getServerResources();
+                const bulk: IServerResourcesBulk = await this._bulk.getServerResourcesBulk();
+                this.serverData.resources = bulk.serverResources;
+                this.apiErrors = bulk.apiErrors;
                 this.serverIssues.resourcesCommunicationError = undefined;
             } catch (e) { 
-                const err: string = this._utils.getErrorMessage(e);
-                this._app.error(err);
-                this.serverIssues.resourcesCommunicationError = err;
+                this._app.error(e);
+                this.serverIssues.resourcesCommunicationError = this._utils.getErrorMessage(e);
             }
-        } else {
-            try { this.serverData = await this._server.getServerData() } catch (e) { this._app.error(e)}
+        }
+        
+        // Otherwise, update the entire server data object
+        else {
+            try { 
+                const bulk: IServerDataBulk = await this._bulk.getServerDataBulk();
+                this.serverData = bulk.serverData;
+                this.apiErrors = bulk.apiErrors;
+            } catch (e) { this._app.error(e)}
+        }
+
+        // Initialize the error slider interval in case it hasn't been
+        if (!this.errorSliderInterval) {
+            this.errorSliderInterval = setInterval(() => {
+                if (this.activeErrorIndex >= this.apiErrors.length - 1) {
+                    this.activeErrorIndex = 0;
+                } else {
+                    this.activeErrorIndex += 1;
+                }
+            }, 5000); // Change every 5 seconds
         }
 
         // Update meta data
@@ -310,8 +322,7 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
                 this.serverIssues.timeError ||
                 this.serverIssues.resourceUpdateError ||
                 this.serverIssues.hardwareError ||
-                typeof this.serverIssues.resourcesCommunicationError == "string" ||
-                typeof this.serverIssues.errorsCommunicationError == "string";
+                typeof this.serverIssues.resourcesCommunicationError == "string";
 
             // Play the outage if there has been an issue
             if (this.serverIssues.issues) this.playOutageAudio();
@@ -500,7 +511,7 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
      * Refreshes the API Errors.
      * @returns Promise<void>
      */
-     public async refreshAPIErrors(): Promise<void> {
+    /*public async refreshAPIErrors(): Promise<void> {
         try {
             this.apiErrors = await this._apiError.getAll();
             this.serverIssues.errorsCommunicationError = undefined;
@@ -512,7 +523,7 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
 
         // Trigger the server check and handle errors if any
         this.onDataChanges();
-    }
+    }*/
 
 
 
@@ -540,7 +551,7 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
                     // Set Submission State
                     this.submitting = true;
                     try {
-                        // Register the IP and refresh the list
+                        // Delete and API Errors and update the corrent value
                         this.apiErrors = await this._apiError.deleteAll(otp);
                     } catch(e) { this._app.error(e) }
 

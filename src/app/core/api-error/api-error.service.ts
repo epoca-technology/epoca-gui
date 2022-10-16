@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
-import { ApiService } from '../api';
-import { IApiError } from './interfaces';
+import { Injectable } from "@angular/core";
+import { ApiService } from "../api";
+import { IApiError } from "./interfaces";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export class ApiErrorService {
 
@@ -22,7 +22,7 @@ export class ApiErrorService {
      * Retrieves a list of all the existing api errors in the db.
      * @returns Promise<IApiError[]>
      */
-     public getAll(): Promise<IApiError[]> { return this._api.request('get','apiError/getAll', {}, true) }
+    //public getAll(): Promise<IApiError[]> { return this._api.request("get","apiError/getAll", {}, true) }
 
 
 
@@ -43,6 +43,6 @@ export class ApiErrorService {
      * @returns Promise<IApiError[]>
      */
      public deleteAll(otp: string): Promise<IApiError[]> { 
-        return this._api.request('post','apiError/deleteAll', {}, true, otp);
+        return this._api.request("post","apiError/deleteAll", {}, true, otp);
     }
 }

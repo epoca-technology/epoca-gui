@@ -1,4 +1,4 @@
-import { Injectable, NgZone } from '@angular/core';
+import { Injectable, NgZone } from "@angular/core";
 import {
     Auth, 
     initializeAuth, 
@@ -10,14 +10,14 @@ import {
     signOut,
 } from "firebase/auth";
 import { onValue, get, DataSnapshot, child } from "firebase/database";
-import { BehaviorSubject } from 'rxjs';
-import { UtilsService } from '../utils';
-import { DatabaseService } from '../database';
-import { IAuthService, IAuthority } from './interfaces';
+import { BehaviorSubject } from "rxjs";
+import { UtilsService } from "../utils";
+import { DatabaseService } from "../database";
+import { IAuthService, IAuthority } from "./interfaces";
 
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export class AuthService implements IAuthService {
     // Auth Instance
@@ -46,7 +46,7 @@ export class AuthService implements IAuthService {
         // Initialize the uid observable
         this.uid =  new BehaviorSubject<string|null|undefined>(undefined);
 
-        // Listen to auth changes and propagate changes inside of Angular's zone
+        // Listen to auth changes and propagate changes inside of Angular"s zone
         onAuthStateChanged(this.auth, (fbUser: User|null) => {
                 this.ngZone.run(() => {
                     if (fbUser && fbUser.uid) { 
@@ -54,7 +54,7 @@ export class AuthService implements IAuthService {
                         this.user = fbUser;
                         this.uid.next(fbUser.uid);
 
-                        // Initialize the API Secret in case it hasn't been
+                        // Initialize the API Secret in case it hasn"t been
                         if (!this.apiSecretInitialized) this.initializeAPISecret(); 
                     } 
                     else { 
@@ -99,7 +99,7 @@ export class AuthService implements IAuthService {
         // Make sure the provided token is valid
         if (typeof signInToken != "string") {
             console.log(signInToken);
-            throw new Error('The provided sign in token is invalid. Please try again.');
+            throw new Error("The provided sign in token is invalid. Please try again.");
         }
 
         // Attempt to sign in persistently
@@ -151,7 +151,7 @@ export class AuthService implements IAuthService {
 
 
     /**
-     * Attempts to retrieve the user's API Secret from the local property. If this one is not set,
+     * Attempts to retrieve the user"s API Secret from the local property. If this one is not set,
      * it will retrieve it from the Firebase DB.
      * @returns Promise<string>
      */
@@ -190,7 +190,7 @@ export class AuthService implements IAuthService {
     private getRefreshedIDToken(): Promise<string> {
         // Make sure the user is authenticated
         if (!this.user) {
-            throw new Error('Cannot retrieve the ID Token because the firebase user is not set.');
+            throw new Error("Cannot retrieve the ID Token because the firebase user is not set.");
         }
 
         return this.user.getIdToken(true);
@@ -228,7 +228,7 @@ export class AuthService implements IAuthService {
                         this.apiSecretInitialized = true;
                      } else {
                         this.apiSecret = undefined;
-                        console.error('The user does not have an API Secret assigned.');
+                        console.error("The user does not have an API Secret assigned.");
                      }
                 });
             },
@@ -260,7 +260,7 @@ export class AuthService implements IAuthService {
 
 
     /**
-     * Attempts to retrieve the user's API Secret from the local property. If this one is not set,
+     * Attempts to retrieve the user"s API Secret from the local property. If this one is not set,
      * it will retrieve it from the Firebase DB.
      * @returns Promise<string>
      */
@@ -300,7 +300,7 @@ export class AuthService implements IAuthService {
     private async getAPISecretFromFirebase(): Promise<string> {
         // Make sure the user is authenticated
         if (!this.user) {
-            throw new Error('Cannot download the API Secret because the firebase user is not set.');
+            throw new Error("Cannot download the API Secret because the firebase user is not set.");
         }
 
         // Retrieve the secret from the db

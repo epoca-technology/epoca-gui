@@ -38,6 +38,9 @@ import {
     AuthService,
     UserService,
 
+	// Bulk Data
+	BulkDataService,
+
 	// Candlestick
     CandlestickService,
 
@@ -146,6 +149,9 @@ import { AppComponent } from "./app.component";
 		// Auth
 		AuthService,
 		UserService,
+
+		// Bulk Data
+		BulkDataService,
 
 		// Candlestick
 		CandlestickService,

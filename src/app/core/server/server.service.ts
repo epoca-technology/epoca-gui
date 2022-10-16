@@ -23,9 +23,9 @@ export class ServerService implements IServerService {
      * resources
 	 * @returns Promise<IServerData>
 	 */
-    public getServerData(): Promise<IServerData> {
+    /*public getServerData(): Promise<IServerData> {
 		return this._api.request("get","server/getServerData", {}, true);
-	}
+	}*/
 
 
 
@@ -38,9 +38,9 @@ export class ServerService implements IServerService {
 	 * Retrieves the updated server resources
 	 * @returns Promise<IServerResources>
 	 */
-    public getServerResources(): Promise<IServerResources> {
+    /*public getServerResources(): Promise<IServerResources> {
 		return this._api.request("get","server/getServerResources", {}, true);
-	}
+	}*/
 
 
 

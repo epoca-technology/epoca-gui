@@ -14,7 +14,7 @@ export interface IPredictionService {
     resultImagePaths: {[result: string]: string},
     
     // Retrievers
-    getActive(): Promise<IPrediction|undefined>,
+    //getActive(): Promise<IPrediction|undefined>,
     listPredictions(
 		epochID: string,
 		limit: number,

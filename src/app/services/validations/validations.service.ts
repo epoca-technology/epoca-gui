@@ -239,4 +239,40 @@ export class ValidationsService implements IValidationsService{
             return {invalidIPNote: true};
         }
 	}
+
+
+
+
+
+
+	/* Epoch */
+
+
+
+
+    /**
+     * Verifies if a provided Epoch ID is valid.
+     * @param id 
+     * @returns boolean
+     */
+	 public epochIDValid(id: string): boolean {
+        return typeof id == "string" && id.length >= 4 && id.length <= 100 && id[0] == "_";
+    }
+
+
+
+	/*
+	* Verifies if an Epoch ID in a control is valid.
+	* @param control
+	* @returns {invalidID: boolean}|null
+	* */
+	public controlEpochIDValid(control: AbstractControl): {invalidID: boolean}|null {
+        if (control && typeof control.value == "string") {
+            if (this.epochIDValid(control.value)) {
+                return null;
+            } else {  return {invalidID: true} }
+        } else {
+            return {invalidID: true};
+        }
+	}
 }

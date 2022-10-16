@@ -52,9 +52,9 @@ export class PredictionService implements IPredictionService {
 	 * it returns undefined.
 	 * @returns Promise<IPrediction|undefined>
 	 */
-	public getActive(): Promise<IPrediction|undefined> {
+	/*public getActive(): Promise<IPrediction|undefined> {
 		return this._api.request("get","prediction/getActive", {}, true);
-	}
+	}*/
 
 
 
