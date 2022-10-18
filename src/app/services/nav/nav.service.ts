@@ -142,8 +142,20 @@ export class NavService implements INavService {
 	public ipBlacklist(): Promise<boolean> { return this.navigate("ipBlacklist") }
 
 	// Epoch Builder
-	public regressions(): Promise<boolean> { return this.navigate("epochBuilder/regressions") }
-	public predictionModels(): Promise<boolean> { return this.navigate("epochBuilder/predictionModels") }
+	public regressions(certID?: string): Promise<boolean> { 
+        if (typeof certID == "string") {
+            return this.navigate(`epochBuilder/regressions/${certID}`);
+        } else {
+            return this.navigate("epochBuilder/regressions");
+        }
+	}
+	public predictionModels(certID?: string): Promise<boolean> { 
+		if (typeof certID == "string") {
+            return this.navigate(`epochBuilder/predictionModels/${certID}`);
+        } else {
+            return this.navigate("epochBuilder/predictionModels");
+        }
+	}
 
 	// Local Database
 	public localDatabase(): Promise<boolean> { return this.navigate("localDatabase") }
@@ -390,6 +402,19 @@ export class NavService implements INavService {
 
     /* URL Openers */
 	
+
+	// Prediction Model Certificate
+	public openPredictionModelCertificate(modelID: string): void {
+		this.openUrl(`${window.location.origin}/epochBuilder/predictionModels/${modelID}`);
+	}
+
+
+
+
+	// Regression Certificate
+	public openRegressionCertificate(modelID: string): void {
+		this.openUrl(`${window.location.origin}/epochBuilder/regressions/${modelID}`);
+	}
 	
 	
 

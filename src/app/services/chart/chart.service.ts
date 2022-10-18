@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
-import * as moment from 'moment';
-import { ApexAnnotations, ApexChart, ApexPlotOptions, ApexYAxis, ApexAxisChartSeries, ApexXAxis } from 'ng-apexcharts';
-import { IBacktestPosition, ICandlestick, UtilsService } from '../../core';
-import { AppService, ILayout } from '../app';
+import { Injectable } from "@angular/core";
+import * as moment from "moment";
+import { ApexAnnotations, ApexChart, ApexPlotOptions, ApexYAxis, ApexAxisChartSeries, ApexXAxis } from "ng-apexcharts";
+import { IBacktestPosition, ICandlestick, IEpochPositionRecord, UtilsService } from "../../core";
+import { AppService, ILayout } from "../app";
 import { 
 	IApexCandlestick, 
 	IChartService, 
@@ -12,22 +12,22 @@ import {
 	ILineChartOptions, 
 	IScatterChartOptions,
 	IPieChartOptions
-} from './interfaces';
+} from "./interfaces";
 
 
 
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export class ChartService implements IChartService {
 	// Colors
 	public readonly colors: string[] = this.getColors();
 
 	// Event Colors
-	public readonly upwardColor: string = '#00695C';
-	public readonly downwardColor: string = '#B71C1C';
-	public readonly neutralColor: string = '#78909C';
+	public readonly upwardColor: string = "#00695C";
+	public readonly downwardColor: string = "#B71C1C";
+	public readonly neutralColor: string = "#78909C";
 
 
   	constructor(
@@ -73,7 +73,7 @@ export class ChartService implements IChartService {
 	): ICandlestickChartOptions {
         // Make sure at least 5 candlesticks have been provided
         if (!candlesticks || candlesticks.length < 5) {
-            throw new Error('A minimum of 5 candlesticks must be provided in order to render the chart.');
+            throw new Error("A minimum of 5 candlesticks must be provided in order to render the chart.");
         }
 
 		// Check if nice scale should be disabled
@@ -144,11 +144,11 @@ export class ChartService implements IChartService {
      private getCandlesticksTitle(candlesticks: ICandlestick[]): string {
 		// Init values
         const l: ILayout = this._app.layout.value;
-		let title: string = '';
+		let title: string = "";
 
 		if (candlesticks.length) {
-			title += `${moment(candlesticks[0].ot).format(l == 'mobile' ? 'DD/MM/YY': 'DD MMMM YYYY HH:mm')}`;
-			title += ` - ${moment(candlesticks[candlesticks.length - 1].ot).format(l == 'mobile' ? 'DD/MM/YY': 'DD MMMM YYYY HH:mm')}`;
+			title += `${moment(candlesticks[0].ot).format(l == "mobile" ? "DD/MM/YY": "DD MMMM YYYY HH:mm")}`;
+			title += ` - ${moment(candlesticks[candlesticks.length - 1].ot).format(l == "mobile" ? "DD/MM/YY": "DD MMMM YYYY HH:mm")}`;
 		}
 
 		// Return the final title
@@ -213,13 +213,13 @@ export class ChartService implements IChartService {
 			annotations.yaxis?.push({
 				y: currentPrice,
 				strokeDashArray: 0,
-				borderColor: '',
-				fillColor: '',
+				borderColor: "",
+				fillColor: "",
 				label: {
-					borderColor: '#000000',
-					style: { color: '#fff', background: '#000000'},
+					borderColor: "#000000",
+					style: { color: "#fff", background: "#000000"},
 					text: `$${this._utils.formatNumber(currentPrice, 2)}`,
-					position: 'left',
+					position: "left",
 					offsetX: 50
 				}
 			});
@@ -269,7 +269,7 @@ export class ChartService implements IChartService {
 		range?: IChartRange,
 	): IBarChartOptions {
 		// Init the default chart
-		let defaultChart: ApexChart = {height: 600, type: 'bar',animations: { enabled: false}, toolbar: {show: false}};
+		let defaultChart: ApexChart = {height: 600, type: "bar",animations: { enabled: false}, toolbar: {show: false}};
 		if (typeof height == "number") defaultChart.height = height;
 
 		// Init the default plot options
@@ -347,7 +347,7 @@ export class ChartService implements IChartService {
 		 colors?: string[]
 	): ILineChartOptions {
 		// Init the default chart
-		let defaultChart: ApexChart = {height: 600, type: 'line',animations: { enabled: false}, toolbar: {show: false}, zoom: {enabled: false}};
+		let defaultChart: ApexChart = {height: 600, type: "line",animations: { enabled: false}, toolbar: {show: false}, zoom: {enabled: false}};
 		if (typeof height == "number") defaultChart.height = height;
 
 		// Init the yaxis
@@ -424,7 +424,7 @@ export class ChartService implements IChartService {
 		colors?: string[]
    ): IScatterChartOptions {
 	   // Init the default chart
-	   let defaultChart: ApexChart = {height: 600, type: 'scatter',animations: { enabled: false}, toolbar: {show: false}, zoom: {enabled: false}};
+	   let defaultChart: ApexChart = {height: 600, type: "scatter",animations: { enabled: false}, toolbar: {show: false}, zoom: {enabled: false}};
 	   if (typeof height == "number") defaultChart.height = height;
 
 	   // Init the yaxis
@@ -481,7 +481,7 @@ export class ChartService implements IChartService {
 		height?: number
 	): IPieChartOptions {
 		// Init the default chart
-		let defaultChart: ApexChart = {height: 400, type: 'pie',animations: { enabled: false}, toolbar: {show: false}};
+		let defaultChart: ApexChart = {height: 400, type: "pie",animations: { enabled: false}, toolbar: {show: false}};
 		if (typeof height == "number") defaultChart.height = height;
 
 		// Init the colors
@@ -534,7 +534,7 @@ export class ChartService implements IChartService {
 
 
 	/**
-	 * Builds the points bar chart's data based on a series of
+	 * Builds the balance hist bar chart"s data based on a series of
 	 * backtest positions.
 	 * @param positions
 	 * @returns {colors: string[], values: number[]}
@@ -549,6 +549,32 @@ export class ChartService implements IChartService {
 				colors.push(this.downwardColor);
 			}
 			values.push(<number>this._utils.outputNumber(positions[i].b))
+		}
+		return {colors: colors, values: values};
+	}
+
+
+
+
+
+	/**
+	 * Builds the profit hist bar chart"s data based on a series of
+	 * positions.
+	 * @param positions
+	 * @returns {colors: string[], values: number[]}
+	 */
+	public getProfitHistoryData(positions: IEpochPositionRecord[]): {colors: string[], values: number[]} {
+		let colors: string[] = [];
+		let values: number[] = [];
+		let profitAcum: number = 0;
+		for (let i = 0; i < positions.length; i++) {
+			if (positions[i].t == 1) { 
+				colors.push(this.upwardColor);
+			} else { 
+				colors.push(this.downwardColor);
+			}
+			profitAcum = profitAcum + positions[i].p;
+			values.push(<number>this._utils.outputNumber(profitAcum))
 		}
 		return {colors: colors, values: values};
 	}

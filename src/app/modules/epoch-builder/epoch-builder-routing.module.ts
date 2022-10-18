@@ -13,7 +13,17 @@ const routes: Routes = [
 		canActivate: [AuthGuard]
 	},
 	{
+		path: "regressions/:certID",
+		component: RegressionsComponent,
+		canActivate: [AuthGuard]
+	},
+	{
 		path: "predictionModels",
+		component: PredictionModelsComponent,
+		canActivate: [AuthGuard]
+	},
+	{
+		path: "predictionModels/:certID",
 		component: PredictionModelsComponent,
 		canActivate: [AuthGuard]
 	},

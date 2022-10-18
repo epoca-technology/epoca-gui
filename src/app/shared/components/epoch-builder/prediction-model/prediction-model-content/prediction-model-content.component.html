@@ -5,7 +5,7 @@
         <div>
             <h5 [matTooltip]="model.id" 
                 (click)="_app.copy(model.id)" 
-                class="clickable truncate">{{model.id}}</h5>
+                class="clickable truncate">{{epochID ? epochID: model.id}}</h5>
             <p class="model-type">Prediction Model</p>
         </div>
         <span fxFlex></span>

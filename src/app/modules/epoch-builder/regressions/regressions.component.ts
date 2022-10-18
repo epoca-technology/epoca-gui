@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { MatSidenav } from '@angular/material/sidenav';
 import {MatDialog} from '@angular/material/dialog';
@@ -15,7 +16,8 @@ import {
 	IBarChartOptions, 
 	ILayout, 
 	ModelSelectionService, 
-	NavService, 
+	NavService,
+	ValidationsService, 
 } from '../../../services';
 import { 
 	EpochBuilderConfigDialogComponent, 
@@ -44,6 +46,7 @@ export class RegressionsComponent implements OnInit, OnDestroy, IRegressionsComp
     public fileInputForm: FormGroup = new FormGroup({ fileInput: new FormControl('', [ ]) });
 
 	// Initialization
+	public loadingFromDB: boolean = false;
 	public initialized: boolean = false;
 	public initializing: boolean = false;
 
@@ -97,13 +100,23 @@ export class RegressionsComponent implements OnInit, OnDestroy, IRegressionsComp
 		public _kr: RegressionService,
 		public _selection: ModelSelectionService,
 		private dialog: MatDialog,
+        private route: ActivatedRoute,
+		private _validations: ValidationsService
 	) { }
 
 
 
 	ngOnInit(): void {
+		// Init the layout
 		this.layoutSub = this._app.layout.subscribe((nl: ILayout) => this.layout = nl);
+
+        // Check if a Certificate ID was provided from the URL. If so, initialize it right away.
+        const certID: string|null = this.route.snapshot.paramMap.get("certID");
+        if (typeof certID == "string" && this._validations.modelIDValid(certID)) { 
+            this.initWithID(certID);
+        }
 	}
+	
 
 	ngOnDestroy(): void {
 		if (this.layoutSub) this.layoutSub.unsubscribe();
@@ -122,6 +135,39 @@ export class RegressionsComponent implements OnInit, OnDestroy, IRegressionsComp
 
 
 	/* Initialization */
+
+
+
+	/**
+	 * Initializes the certificate from an ID that was passed 
+	 * through the URL.
+	 * @param id 
+	 * @returns Promise<void>
+	 */
+	 private async initWithID(id: string): Promise<void> {
+		// Attempt to initiaze the certificate
+		try {
+			// Set loading state
+			this.loadingFromDB = true;
+
+			// Pass the files to the service
+			await this._kr.init(id, this.order, 1);
+
+			// Navigate straight to the certificate
+			await this.navigate("certificate", 0)
+
+			// Mark the component as initialized
+			this.initialized = true;
+		} catch (e) {
+			this.fileInput.setValue('');
+			this._app.error(e)
+		}
+
+		// Set loading state
+		this.loadingFromDB = false;
+	}
+
+
 
 
 

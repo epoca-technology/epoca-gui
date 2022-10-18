@@ -22,4 +22,5 @@ export interface IValidationsService {
     // Epoch
     epochIDValid(id: string): boolean,
     controlEpochIDValid(control: AbstractControl): {invalidID: boolean}|null,
+    modelIDValid(id: string): boolean,
 }

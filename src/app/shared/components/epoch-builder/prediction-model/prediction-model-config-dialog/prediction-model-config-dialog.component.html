@@ -3,6 +3,7 @@
         <button mat-icon-button class="show-on-mobile" (click)="close()"><mat-icon>arrow_back</mat-icon></button>
         <span class="truncate">{{model.id}}</span>
         <span fxFlex></span>
+        <button mat-icon-button matTooltip="Open Prediction Model Certificate" (click)="_nav.openPredictionModelCertificate(model.id)"><mat-icon>open_in_new</mat-icon></button>
         <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
     </div>
 </mat-toolbar>
@@ -49,15 +50,16 @@
         </div>
 
         <!-- Regressions -->
-        <div class="margin-top" fxLayout="row" fxLayoutAlign="start start">
+        <p class="light-text truncate show-on-mobile margin-top">Regressions</p>
+        <div [ngClass]="{'margin-top': _app.layout.value == 'desktop'}" fxLayout="row" fxLayoutAlign="start start">
             <p class="light-text truncate show-on-desktop">Regressions ({{model.regressions.length}})</p>
-            <p class="light-text truncate show-on-mobile">Reg.</p>
-            <span fxFlex></span>
+            <span fxFlex class="show-on-desktop"></span>
             <div class="regressions-container">
                 <div *ngFor="let regr of model.regressions">
                     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutAlign.xs="center center" fxLayoutAlign.sm="center center" class="regression">
                         <img src="assets/img/model_logos/Regression.png" alt="Model Type" class="model-logo-xs">
                         <app-regression-element [config]="regr"></app-regression-element>
+                        <span fxFlex></span>
                     </div>
                 </div>
             </div>

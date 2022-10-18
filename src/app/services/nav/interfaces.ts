@@ -31,8 +31,8 @@ export interface INavService {
 	users(): Promise<boolean>,
 	guiVersion(version?: string): Promise<boolean>,
 	ipBlacklist(): Promise<boolean>,
-	regressions(): Promise<boolean>,
-	predictionModels(): Promise<boolean>,
+	regressions(certID?: string): Promise<boolean>,
+	predictionModels(certID?: string): Promise<boolean>,
 	localDatabase(): Promise<boolean>,
 	
 	// Dialogs
@@ -49,6 +49,8 @@ export interface INavService {
 	displayBottomSheetMenu(data: IBottomSheetMenuItem[]): MatBottomSheetRef<any>,
 
     // URL Openers
+	openPredictionModelCertificate(modelID: string): void,
+	openRegressionCertificate(modelID: string): void,
     openPGAdmin(): void,
     openDozzle(): void
 	

@@ -104,7 +104,10 @@ export interface IPredictionModelMinifiedConfig {
      t: number,
  
      // The list of predicted features 
-     f: number[]
+     f: number[],
+
+     // The sum of all the predicted features
+     s: number
  }
 
 

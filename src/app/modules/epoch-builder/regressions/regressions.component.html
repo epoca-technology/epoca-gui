@@ -105,7 +105,13 @@
 
         <!-- Uninitialized Content -->
         <div *ngIf="!initialized" class="fadeIn">
-            <div fxLayout="row" fxLayoutAlign="center center" class="file-init-container">
+            <!-- Loader -->
+            <div *ngIf="loadingFromDB" class="section-loader">
+                <div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div>
+            </div>
+
+            <!-- File Input -->
+            <div *ngIf="!loadingFromDB" fxLayout="row" fxLayoutAlign="center center" class="file-init-container">
                 <!-- Button -->
                 <label for="certificatesFile" class="file-label" role="button" matRipple *ngIf="!initializing">
                     <div fxLayout="row" fxLayoutAlign="start center" matRipple role="button" tabindex="0">

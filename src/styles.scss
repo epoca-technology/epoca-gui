@@ -644,6 +644,7 @@ form .large-label p { color:var(--light-text-color);font-size:13px;margin-bottom
 
 
 
+
 form .important-hint { font-size:14px;margin-top:10px;}
 form .fiat-input-button {padding: 0px!important;min-width: 40px;}
 
@@ -662,6 +663,14 @@ form .mat-checkbox-inner-container{
 
 
 
+
+
+
+/* Large File button */
+.large-file-button {padding:10px 10px 10px 10px;margin:0;}
+.large-file-button .mat-icon {margin-right:5px;}
+.large-file-button .title {margin:0;}
+.large-file-button .description {color:var(--light-text-color);font-size:13px;}
 
 
 
@@ -953,8 +962,8 @@ form .mat-checkbox-inner-container{
 	form .actions .secondary-actions p:hover { cursor: pointer}
 	form .file-button:hover{cursor: pointer}
 	form .large-label .mat-icon:hover {cursor: pointer }
-	form .large-file-button:hover { cursor: pointer;background: var(--light-background-color) }
-	form .large-file-button:focus {outline:none;background: var(--light-background-color)}
+	.large-file-button:hover { cursor: pointer;background: var(--light-background-color) }
+	.large-file-button:focus {outline:none;background: var(--light-background-color)}
 
 	// Fake button
 	.fake-button:hover { cursor: pointer!important; background: var(--light-background-color)!important; }

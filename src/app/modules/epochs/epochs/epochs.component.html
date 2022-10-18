@@ -9,24 +9,19 @@
         
         <!-- Epoch Installer -->
         <button mat-button 
-                *ngIf="initialized && !_app.epoch.value" 
-                (click)="install()">
-                {{layout == "desktop" ? "INSTALL EPOCH": "INSTALL"}}
-        </button>
+                *ngIf="initialized && !_app.epoch.value && !epoch" 
+                (click)="install()">INSTALL</button>
 
         <!-- Epoch Uninstaller -->
         <button mat-button 
-                *ngIf="initialized && _app.epoch.value" 
-                matTooltip="Uninstall {{_app.epoch.value.record.id}}"
-                (click)="install()">
-                {{layout == "desktop" ? "UNINSTALL " + _app.epoch.value.record.id: "UNINSTALL"}}
-        </button>
+                *ngIf="initialized && _app.epoch.value && (!epoch || _app.epoch.value.record.id == epoch.record.id)" 
+                (click)="uninstall()">UNINSTALL</button>
     </div>
 </mat-toolbar>
 
 <!-- Content -->
-<div [ngClass]="{'section-content': layout == 'mobile'}">
-    <div class="padding">
+<div [ngClass]="{'section-content': layout == 'mobile'}" class="padding">
+    <div>
         <!-- Epoch Menu -->
         <div *ngIf="initialized && !epoch" fxLayout="row" fxLayoutAlign="center center">
             <div fxFlex="30" fxFlex.xs="100" fxFlex.sm="100">
@@ -43,7 +38,276 @@
 
             <!-- Epoch Content -->
             <div *ngIf="loaded" class="fadeIn">
-                <p>@TODO</p>
+                <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column">
+                    <span fxFlex></span>
+                    <!-- General Info Cards-->
+                    <div fxFlex fxFlex.md="35" fxFlex.lg="30" fxFlex.xl="25" class="full-width">
+                        <!-- Prediction Model -->
+                        <div class="desktop-card">
+                            <mat-icon style="float:right;" 
+                                    class="success-color" 
+                                    matTooltip="Running"
+                                    *ngIf="!epoch.record.uninstalled">toggle_on</mat-icon>
+                            <mat-icon style="float:right;" 
+                                    class="light-text" 
+                                    matTooltip="Not Running"
+                                    *ngIf="epoch.record.uninstalled">toggle_off</mat-icon>
+                            <app-prediction-model-content [model]="epoch.record.model" [epochID]="epoch.record.id"></app-prediction-model-content>
+                        </div>
+
+                        <div class="divider show-on-mobile"></div>
+
+                        <!-- Epoch Installation -->
+                        <div class="desktop-card">
+                            <h4>Configuration</h4>
+
+                            <!-- Installed -->
+                            <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+                                <p class="light-text">Installed</p>
+                                <span fxFlex></span>
+                                <p class="ts-s" 
+                                    matTooltip="The date in which the Epoch was installed.">
+                                    {{epoch.record.installed | date: 'medium'}}
+                                </p>
+                            </div>
+
+                            <!-- Uninstalled -->
+                            <div *ngIf="epoch.record.uninstalled" fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+                                <p class="light-text">Uninstalled</p>
+                                <span fxFlex></span>
+                                <p class="ts-s"
+                                matTooltip="The date in which the Epoch was uninstalled.">
+                                    {{epoch.record.uninstalled | date: 'medium'}}
+                                </p>
+                            </div>
+
+                            <!-- Seed -->
+                            <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+                                <p class="light-text">Seed</p>
+                                <span fxFlex></span>
+                                <p matTooltip="The random seed used to train and evaluate the models.">{{epoch.record.config.seed}}</p>
+                            </div>
+
+                            <!-- SMA Window Size -->
+                            <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+                                <p class="light-text">SMA Window Size</p>
+                                <span fxFlex></span>
+                                <p matTooltip="The window size used to calculate the Simple Moving Average.">{{epoch.record.config.sma_window_size}}</p>
+                            </div>
+
+                            <!-- Train Split -->
+                            <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+                                <p class="light-text">Train Split</p>
+                                <span fxFlex></span>
+                                <p matTooltip="The split applied to the data in order to separate the train and test datasets.">
+                                    {{epoch.record.config.train_split | percent}}
+                                </p>
+                            </div>
+
+                            <!-- Validation Split -->
+                            <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+                                <p class="light-text">Validation Split</p>
+                                <span fxFlex></span>
+                                <p matTooltip="The split applied to the train dataset in order to separate the train and validation datasets.">
+                                    {{epoch.record.config.validation_split | percent}}
+                                </p>
+                            </div>
+
+                            <!-- Epoch Date Range -->
+                            <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
+                                <p class="light-text">Range</p>
+                                <span fxFlex></span>
+                                <div matTooltip="The date range covered by the Epoch.">
+                                    <p class="ts-s">{{epoch.record.config.start | date: 'medium'}}</p>
+                                    <p class="ts-s">{{epoch.record.config.end | date: 'medium'}}</p>
+                                </div>
+                            </div>
+
+                            <!-- Test DS Date Range -->
+                            <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
+                                <p class="light-text">Test DS Range</p>
+                                <span fxFlex></span>
+                                <div matTooltip="The date range covered in the test dataset. This is the range used to train and evaluate models.">
+                                    <p class="ts-s">{{epoch.record.config.test_ds_start | date: 'medium'}}</p>
+                                    <p class="ts-s">{{epoch.record.config.test_ds_end | date: 'medium'}}</p>
+                                </div>
+                            </div>
+
+
+                            <!-- Price SMA Range -->
+                            <div *ngIf="epoch.record.uninstalled" fxLayout="row" fxLayoutAlign="start start" class="margin-top">
+                                <p class="light-text">Price SMA Range</p>
+                                <span fxFlex></span>
+                                <div class="align-right" 
+                                    matTooltip="The highest and lowest price simple moving average present in the Epoch's range.">
+                                    <p>{{epoch.record.config.lowest_price_sma | currency}}</p>
+                                    <p>{{epoch.record.config.highest_price_sma | currency}}</p>
+                                </div>
+                            </div>
+
+                            <!-- Regression -->
+                            <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+                                <p class="light-text">Regression</p>
+                                <span fxFlex></span>
+                                <p class="formula" matTooltip="The anatomy of a Regression Model.">
+                                    [{{epoch.record.config.regression_lookback}}] > MODEL > [{{epoch.record.config.regression_predictions}}]
+                                </p>
+                            </div>
+
+                            <!-- Exchange Fee -->
+                            <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+                                <p class="light-text">Exchange Fee</p>
+                                <span fxFlex></span>
+                                <p matTooltip="The exchange fee used when backtesting prediction models.">
+                                    {{epoch.record.config.exchange_fee}}%
+                                </p>
+                            </div>
+
+                            <!-- Position Size -->
+                            <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+                                <p class="light-text">Position Size</p>
+                                <span fxFlex></span>
+                                <p matTooltip="The position size used when backtesting prediction models.">
+                                    {{epoch.record.config.position_size | currency}}
+                                </p>
+                            </div>
+
+                            <!-- Leverage -->
+                            <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+                                <p class="light-text">Leverage</p>
+                                <span fxFlex></span>
+                                <p matTooltip="The leverage used when backtesting prediction models.">x{{epoch.record.config.leverage}}</p>
+                            </div>
+
+                            <!-- Idle on Position Close -->
+                            <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+                                <p class="light-text">Idle on Position Close</p>
+                                <span fxFlex></span>
+                                <p matTooltip="The idle minutes used when backtesting prediction models.">
+                                    {{epoch.record.config.idle_minutes_on_position_close}} mins
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <span fxFlex></span>
+                    <div class="divider show-on-mobile"></div>
+
+                    <!-- Charts -->
+                    <div fxFlex fxFlex.md="55" fxFlex.lg="50" fxFlex.xl="45" class="full-width">
+                        <!-- Positions -->
+                        <div class="desktop-card">
+                            <div class="badged-header" fxLayout="row" fxLayoutAlign="start center">
+                                <h4 class="truncate">{{layout == 'desktop' ? 'Positions': 'Pos.'}}</h4>
+                                <span fxFlex></span>
+                                <div class="square-badge-success" 
+                                    matTooltip="Long Positions">
+                                    {{epoch.metrics.longs}}
+                                </div>
+                                <div class="square-badge-error" 
+                                    matTooltip="Short Positions">
+                                    {{epoch.metrics.shorts}}
+                                </div>
+                                <div class="square-badge" 
+                                    matTooltip="Positions">
+                                    {{epoch.metrics.longs + epoch.metrics.shorts}}
+                                </div>
+                            </div>
+
+                            <div *ngIf="profitHist" class="margin-top">
+                                <apx-chart
+                                    [series]="profitHist.series"
+                                    [chart]="profitHist.chart"
+                                    [plotOptions]="profitHist.plotOptions"
+                                    [xaxis]="profitHist.xaxis"
+                                    [dataLabels]="profitHist.dataLabels"
+                                    [colors]="profitHist.colors"
+                                    [grid]="profitHist.grid"
+                                    [legend]="{show: false}"
+                                    [yaxis]="profitHist.yaxis"
+                                ></apx-chart>
+                            </div>
+                        </div>
+
+                        <div class="divider show-on-mobile"></div>
+
+                        <!-- Accuracy and Profit -->
+                        <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" class="full-width">
+                            <!-- Accuracy -->
+                            <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                                <div class="desktop-card no-margin">
+                                    <div class="badged-header" fxLayout="row" fxLayoutAlign="start center">
+                                        <h4 class="truncate">{{layout == 'desktop' ? 'Accuracy': 'Acc.'}}</h4>
+                                        <span fxFlex></span>
+                                        <div class="square-badge-success" 
+                                            matTooltip="Long Accuracy">
+                                            {{epoch.metrics.long_accuracy}}%
+                                        </div>
+                                        <div class="square-badge-error" 
+                                            matTooltip="Short Accuracy">
+                                            {{epoch.metrics.short_accuracy}}%
+                                        </div>
+                                        <div class="square-badge" 
+                                            matTooltip="Accuracy">
+                                            {{epoch.metrics.accuracy}}%
+                                        </div>
+                                    </div>
+
+                                    <div *ngIf="accuracy">
+                                        <apx-chart
+                                            [series]="accuracy.series"
+                                            [chart]="accuracy.chart"
+                                            [plotOptions]="accuracy.plotOptions"
+                                            [xaxis]="accuracy.xaxis"
+                                            [yaxis]="accuracy.yaxis"
+                                            [dataLabels]="accuracy.dataLabels"
+                                            [colors]="accuracy.colors"
+                                            [grid]="accuracy.grid"
+                                            [legend]="{show: true, position: 'bottom'}"
+                                        ></apx-chart>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <span fxFlex></span>
+                            <div class="divider show-on-mobile"></div>
+
+
+                            <!-- Profit -->
+                            <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                                <div class="desktop-card no-margin">
+                                    <div class="badged-header" fxLayout="row" fxLayoutAlign="start center">
+                                        <h4 class="truncate">Profit</h4>
+                                        <span fxFlex></span>
+                                        <div class="square-badge-error" 
+                                            matTooltip="Fees">
+                                            {{epoch.metrics.fees | currency}}
+                                        </div>
+                                        <div class="square-badge-success" 
+                                            matTooltip="Net Profit">
+                                            {{epoch.metrics.profit | currency}}
+                                        </div>
+                                    </div>
+
+                                    <div *ngIf="profit">
+                                        <apx-chart
+                                            [series]="profit.series"
+                                            [chart]="profit.chart"
+                                            [plotOptions]="profit.plotOptions"
+                                            [xaxis]="profit.xaxis"
+                                            [yaxis]="profit.yaxis"
+                                            [dataLabels]="profit.dataLabels"
+                                            [colors]="profit.colors"
+                                            [grid]="profit.grid"
+                                            [legend]="{show: true, position: 'bottom'}"
+                                        ></apx-chart>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <span fxFlex></span>
+                </div>
             </div>
         </div>
 

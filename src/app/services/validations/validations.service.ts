@@ -276,4 +276,17 @@ export class ValidationsService implements IValidationsService{
             return {invalidID: true};
         }
 	}
+
+
+	
+
+
+    /**
+     * Verifies if a provided Regression or Prediction Model ID is valid.
+     * @param id 
+     * @returns boolean
+     */
+     public modelIDValid(id: string): boolean {
+        return typeof id == "string" && id.length >= 30 && id.length <= 200;
+    }
 }

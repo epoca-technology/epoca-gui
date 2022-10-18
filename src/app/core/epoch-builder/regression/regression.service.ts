@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FileService } from '../../file';
+import { LocalDatabaseService } from '../../local-database';
 import { EpochBuilderEvaluationService } from '../epoch-builder-evaluation';
 import { EpochBuilderMetadataService, IEpochBuilderMetadataService } from '../epoch-builder-metadata';
 import { IRegressionTrainingCertificate, IEpochBuilderEvaluation } from '../_interfaces';
@@ -25,7 +26,8 @@ export class RegressionService implements IRegressionService {
 
 	constructor(
 		private _file: FileService,
-		private _evaluation: EpochBuilderEvaluationService
+		private _evaluation: EpochBuilderEvaluationService,
+		private _localDB: LocalDatabaseService
 	) { }
 
 
@@ -131,7 +133,15 @@ export class RegressionService implements IRegressionService {
 	): Promise<IRegressionTrainingCertificate[]> {
 		// If it is a string, retrieve the certificate from the db
 		if (typeof event == "string") {
-			throw new Error("Regression Training Certificates Init from db has not been implemented yet.")
+			// Retrieve the cert from the db
+			let cert: IRegressionTrainingCertificate = await this._localDB.getRegressionCertificate(event);
+
+			// Populate EBE Values
+			cert.ebe = this.buildEBE(cert);
+			cert.orderValue = this.getOrderValue(cert, order);
+
+			// Return the cert in a list
+			return [ cert ];
 		}
 
 		// Extract the data from a JSON File

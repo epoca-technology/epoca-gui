@@ -12,6 +12,9 @@ export class PredictionModelContentComponent implements OnInit, IPredictionModel
 	// Model coming from parent component
 	@Input() model!: IPredictionModelConfig;
 
+	// The identifier of the epoch, if provided it will be displayed instead of the model's id
+	@Input() epochID?: string;
+
 	// Wether or not to compact the content
 	@Input() compact?: boolean;
 

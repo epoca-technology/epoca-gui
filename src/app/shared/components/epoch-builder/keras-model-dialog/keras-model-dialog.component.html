@@ -3,6 +3,7 @@
         <button mat-icon-button class="show-on-mobile" (click)="close()"><mat-icon>arrow_back</mat-icon></button>
         <span class="truncate">{{model.id}}</span>
         <span fxFlex></span>
+        <button mat-icon-button matTooltip="Open Prediction Model Certificate" (click)="_nav.openRegressionCertificate(model.id)"><mat-icon>open_in_new</mat-icon></button>
         <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
     </div>
 </mat-toolbar>
