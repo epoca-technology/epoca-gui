@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit, ViewChild } from "@angular/core";
 import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
 import * as moment from "moment";
+import { ApexAnnotations, ChartComponent } from "ng-apexcharts";
 import { 
 	CandlestickService, 
 	ICandlestick, 
@@ -12,7 +13,6 @@ import {
 import { ChartService, ICandlestickChartOptions, NavService } from "../../../../../services";
 import { IPredictionDialogComponent, IPredictionDialogData } from "./interfaces";
 import { BigNumber } from "bignumber.js";
-import { ApexAnnotations, ChartComponent } from "ng-apexcharts";
 
 @Component({
   selector: "app-prediction-dialog",

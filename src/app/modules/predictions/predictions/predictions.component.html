@@ -1,19 +1,105 @@
 <!-- Secondary Header -->
 <mat-toolbar class="secondary-header">
     <div fxLayout="row" fxLayoutAlign="center center">
-        <span>Predictions</span>
+        <button mat-icon-button 
+                *ngIf="epoch"
+                [disabled]="submitting"
+                (click)="initializeEpochData()"><mat-icon>arrow_back</mat-icon></button>
+        <span class="truncate">Predictions</span>
         <span fxFlex></span>
+        
+        <!-- Expander -->
+        <button mat-icon-button 
+                *ngIf="initialized && epoch && loaded && chartView && hasMore" 
+                [disabled]="submitting"
+                matTooltip="Load More Predictions"
+                (click)="loadPredictions()"><mat-icon>aspect_ratio</mat-icon></button>
+        
+        <!-- Chart View -->
+        <button mat-icon-button 
+                *ngIf="initialized && epoch && loaded" 
+                [disabled]="chartView || submitting"
+                matTooltip="Enable Chart View"
+                (click)="chartView = true"><mat-icon>insights</mat-icon></button>
+
+        <!-- Grid View -->
+        <button mat-icon-button 
+                *ngIf="initialized && epoch && loaded" 
+                [disabled]="!chartView || submitting"
+                matTooltip="Enable Grid View"
+                (click)="chartView = false"><mat-icon>grid_view</mat-icon></button>
     </div>
 </mat-toolbar>
 
-<!-- Loader -->
-<div *ngIf="!loaded" class="section-loader">
-    <div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div>
-</div>
-
 <!-- Content -->
-<div *ngIf="loaded" [ngClass]="{'section-content': layout == 'mobile'}">
+<div [ngClass]="{'section-content': layout == 'mobile'}" class="padding">
+    <div>
+        <!-- Epoch Menu -->
+        <div *ngIf="initialized && !epoch" fxLayout="row" fxLayoutAlign="center center">
+            <div fxFlex="30" fxFlex.xs="100" fxFlex.sm="100">
+                <app-epochs-menu (epochID)="initializeEpochData($event)"></app-epochs-menu>
+            </div>
+        </div>
 
+        <!-- Prediction Container -->
+        <div *ngIf="initialized && epoch">
+            <!-- Loader -->
+            <div *ngIf="!loaded" class="section-loader">
+                <div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div>
+            </div>
+
+            <!-- Prediction Content -->
+            <div *ngIf="loaded" class="fadeIn">
+
+                <!-- Prediction Hist -->
+                <div *ngIf="chartView && predictionsHist">
+                    <apx-chart
+                        [series]="predictionsHist.series"
+                        [chart]="predictionsHist.chart"
+                        [dataLabels]="predictionsHist.dataLabels"
+                        [xaxis]="predictionsHist.xaxis"
+                        [yaxis]="predictionsHist.yaxis"
+                        [stroke]="predictionsHist.stroke"
+                        [annotations]="predictionsHist.annotations"
+                    ></apx-chart>
+                </div>
+
+                <!-- Prediction Grid -->
+                <div *ngIf="!chartView">
+                    <mat-grid-list [cols]="gridCols" rowHeight="60" gutterSize="15">
+                        <mat-grid-tile 
+                            *ngFor="let pred of predictions" 
+                            class="prediction-tile mat-elevation-z2 clickable fake-button" matRipple 
+                            (click)="_nav.displayPredictionDialog(epoch.record.model, pred)">
+                            <div class="full-width prediction-tile-inner">
+                                <div fxLayout="row" fxLayoutAlign="start center">
+                                    <div>
+                                        <div fxLayout="row" fxLayoutAlign="start center">
+                                            <img src="{{_prediction.resultImagePaths[pred.r]}}" alt="Model Type" class="model-logo-xs">
+                                            <h5>{{_prediction.resultNames[pred.r]}}</h5>
+                                        </div>
+                                        <p class="light-text ts-xs truncate">{{pred.t | date: 'medium'}}</p>
+                                    </div>
+                                    <span fxFlex></span>
+                                    <div [ngClass]="{
+                                            'square-badge-success': pred.r == 1,
+                                            'square-badge-error': pred.r == -1,
+                                            'square-badge-neutral': pred.r == 0
+                                        }">
+                                        {{pred.s | number: '1.0-2'}}
+                                    </div>
+                                </div>
+
+                            </div>
+                        </mat-grid-tile>
+
+                        <mat-grid-tile *ngIf="hasMore" class="clickable fake-button" role="button" (click)="loadPredictions()">Load More</mat-grid-tile>
+                    </mat-grid-list>
+                </div>
+            </div>
+        </div>
+
+    </div>
 
     <!-- Mobile Tabs -->
     <app-mobile-tabs *ngIf="layout == 'mobile'"></app-mobile-tabs>

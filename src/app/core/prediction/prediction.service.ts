@@ -72,7 +72,7 @@ export class PredictionService implements IPredictionService {
 		endAt: number
 	 ): Promise<IPrediction[]> {
 		return this._api.request(
-			"get","prediction/getActive", 
+			"get","prediction/listPredictions", 
 			{
 				epochID: epochID,
 				limit: limit,
