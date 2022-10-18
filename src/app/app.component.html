@@ -196,7 +196,7 @@
                         (click)="_nav.predictions()" 
                         matBadge="0" 
                         [appMatBadgeIcon]="_app.predictionIcon.value ? _app.predictionIcon.value: ''"
-                        [matBadgeHidden]="!_app.epoch.value || !_app.prediction.value" 
+                        [matBadgeHidden]="!_app.epoch.value || !_app.predictionIcon.value" 
                         *ngIf="uid" 
                         [disabled]="state.module == 'predictions'">
                     <mat-icon svgIcon="wand_magic_sparkles"></mat-icon><span>Predictions</span>
@@ -206,8 +206,8 @@
                 <button mat-button 
                         class="left-icon-button" 
                         (click)="_nav.tradingSimulations()" 
-                        [matBadge]="_app.simulations.value ? _app.simulations.value.length: 0" 
-                        [matBadgeHidden]="!_app.epoch.value || !_app.simulations.value" 
+                        [matBadge]="_app.activeSimulations.value" 
+                        [matBadgeHidden]="!_app.epoch.value" 
                         [disabled]="state.module == 'tradingSimulations'" 
                         *ngIf="uid">
                     <mat-icon svgIcon="ssid_chart"></mat-icon><span>Trading Simulations</span>
@@ -217,8 +217,8 @@
                 <button mat-button 
                         class="left-icon-button" 
                         (click)="_nav.tradingSessions()" 
-                        [matBadge]="_app.session.value ? 7: 0" 
-                        [matBadgeHidden]="!_app.session.value" 
+                        [matBadge]="_app.activeSessionPositions.value" 
+                        [matBadgeHidden]="!_app.epoch.value" 
                         [disabled]="state.module == 'tradingSessions'" 
                         *ngIf="uid">
                     <mat-icon svgIcon="auto_graph"></mat-icon><span>Trading Sessions</span>

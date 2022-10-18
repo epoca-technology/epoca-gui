@@ -107,6 +107,9 @@ import { RefreshButtonComponent } from "./components/refresh-button/refresh-butt
 // Tooltip Dialog
 import { TooltipDialogComponent } from "./components/tooltip-dialog/tooltip-dialog.component";
 
+// Epochs Menu
+import { EpochsMenuComponent } from './components/epochs-menu/epochs-menu.component';
+
 
 
 
@@ -119,6 +122,7 @@ import { TooltipDialogComponent } from "./components/tooltip-dialog/tooltip-dial
 	declarations: [
 		// Directives
 		DisableControlDirective,
+		MatBadgeIconDirective,
 		MatBadgeIconDirective,
 		
 		// Pipes
@@ -165,7 +169,9 @@ import { TooltipDialogComponent } from "./components/tooltip-dialog/tooltip-dial
 
 		// Tooltip Dialog
 		TooltipDialogComponent,
-   MatBadgeIconDirective,
+
+		// Epochs Menu
+   		EpochsMenuComponent,
 	],
 	imports: [
 		CommonModule,
@@ -315,6 +321,9 @@ import { TooltipDialogComponent } from "./components/tooltip-dialog/tooltip-dial
 
 		// Regresh Button
         RefreshButtonComponent,
+
+		// Epochs Menu
+		EpochsMenuComponent,
 	]
 })
 export class SharedModule { }

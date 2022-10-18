@@ -1,19 +1,53 @@
 <!-- Secondary Header -->
 <mat-toolbar class="secondary-header">
     <div fxLayout="row" fxLayoutAlign="center center">
-        <span>_ALPHA</span>
+        <button mat-icon-button 
+                *ngIf="epoch"
+                (click)="initializeEpochData()"><mat-icon>arrow_back</mat-icon></button>
+        <span class="truncate">{{epoch ? epoch.record.id: 'Epochs'}}</span>
         <span fxFlex></span>
+        
+        <!-- Epoch Installer -->
+        <button mat-button 
+                *ngIf="initialized && !_app.epoch.value" 
+                (click)="install()">
+                {{layout == "desktop" ? "INSTALL EPOCH": "INSTALL"}}
+        </button>
+
+        <!-- Epoch Uninstaller -->
+        <button mat-button 
+                *ngIf="initialized && _app.epoch.value" 
+                matTooltip="Uninstall {{_app.epoch.value.record.id}}"
+                (click)="install()">
+                {{layout == "desktop" ? "UNINSTALL " + _app.epoch.value.record.id: "UNINSTALL"}}
+        </button>
     </div>
 </mat-toolbar>
 
-<!-- Loader -->
-<div *ngIf="!loaded" class="section-loader">
-    <div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div>
-</div>
-
 <!-- Content -->
-<div *ngIf="loaded" [ngClass]="{'section-content': layout == 'mobile'}">
+<div [ngClass]="{'section-content': layout == 'mobile'}">
+    <div class="padding">
+        <!-- Epoch Menu -->
+        <div *ngIf="initialized && !epoch" fxLayout="row" fxLayoutAlign="center center">
+            <div fxFlex="30" fxFlex.xs="100" fxFlex.sm="100">
+                <app-epochs-menu (epochID)="initializeEpochData($event)"></app-epochs-menu>
+            </div>
+        </div>
 
+        <!-- Epoch Container -->
+        <div *ngIf="initialized && epoch">
+            <!-- Loader -->
+            <div *ngIf="!loaded" class="section-loader">
+                <div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div>
+            </div>
+
+            <!-- Epoch Content -->
+            <div *ngIf="loaded" class="fadeIn">
+                <p>@TODO</p>
+            </div>
+        </div>
+
+    </div>
 
     <!-- Mobile Tabs -->
     <app-mobile-tabs *ngIf="layout == 'mobile'"></app-mobile-tabs>

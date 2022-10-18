@@ -4,7 +4,7 @@
         <button mat-icon-button class="show-on-mobile" (click)="_nav.dashboard()"><mat-icon>arrow_back</mat-icon></button>
         <span>IndexedDB</span>
         <span fxFlex></span>
-        <button mat-icon-button [disabled]="!loaded || !_localDB.compatible" (click)="deleteDB()"><mat-icon>delete</mat-icon></button>
+        <button mat-icon-button [disabled]="!loaded || !_localDB.initialized" (click)="deleteDB()"><mat-icon>delete</mat-icon></button>
     </div>
 </mat-toolbar>
 
@@ -22,15 +22,15 @@
                 <div fxLayout="row" fxLayoutAlign="center start">
                     <h3 matTooltip="Database Name">{{_localDB.dbName}}</h3>
                     <span fxFlex></span>
-                    <mat-icon *ngIf="_localDB.compatible" class="success-color" matTooltip="Compatible Browser">check_circle</mat-icon>
-                    <mat-icon *ngIf="!_localDB.compatible" class="error-color" matTooltip="Incompatible Browser">error</mat-icon>
+                    <mat-icon *ngIf="_localDB.initialized" class="success-color" matTooltip="Compatible Browser">check_circle</mat-icon>
+                    <mat-icon *ngIf="!_localDB.initialized" class="error-color" matTooltip="Incompatible Browser">error</mat-icon>
                 </div>
 
                 <!-- Initilization Error -->
-                <p *ngIf="!_localDB.compatible" class="error-color margin-top-x2 align-center">{{_localDB.initError}}</p>
+                <p *ngIf="!_localDB.initialized" class="error-color margin-top-x2 align-center">{{_localDB.initError}}</p>
 
                 <!-- Tables -->
-                <div *ngIf="_localDB.compatible" class="full-width">
+                <div *ngIf="_localDB.initialized" class="full-width">
                     <table class="bordered">
                         <thead>
                             <tr>

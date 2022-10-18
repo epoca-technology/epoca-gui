@@ -15,7 +15,7 @@
     </div>
 
     <!-- State Description -->
-    <div style="margin-top:5px;">
+    <div>
         <p *ngIf="t.state == 'running'">{{t.stateDescription}}</p>
         <p *ngIf="t.state == 'completed'">{{t.stateDescription}} ({{t.completed_ts | date:'medium'}})</p>
         <p *ngIf="t.state == 'errored'" class="error-color">{{t.stateDescription}} ({{t.errored_ts | date:'medium'}})</p>

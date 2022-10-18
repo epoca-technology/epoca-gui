@@ -7,15 +7,30 @@ import {
     listAll, 
     ListResult, 
     getMetadata, 
-    FullMetadata
+    FullMetadata,
+    deleteObject,
+    uploadBytesResumable,
+    StorageReference
 } from "firebase/storage";
 import * as moment from "moment";
-import { IFileService, IPath, IDownloadedFile, IFileExtension } from "./interfaces";
+import { Observable } from "rxjs";
+import { UtilsService } from "../utils";
+import { 
+    IFileService, 
+    IPath, 
+    IDownloadedFile, 
+    IFileInput, 
+    IFileFormat, 
+    IUploadedFile
+} from "./interfaces";
+
+
+
 
 @Injectable({
   providedIn: "root"
 })
-export class FileService implements IFileService{
+export class FileService implements IFileService {
     // Storage Instance
     private readonly storage: FirebaseStorage = getStorage();
 
@@ -27,7 +42,9 @@ export class FileService implements IFileService{
         epoch: "epoch"
     }
 
-    constructor() { }
+    constructor(
+        private _utils: UtilsService
+    ) { }
 
 
 
@@ -138,7 +155,7 @@ export class FileService implements IFileService{
 
     /**
      * Retrieves the download URL for a specific Candlestick Bundle File
-     * @param backupName 
+     * @param fileName 
      * @returns Promise<string>
      */
     public getCandlestickBundleDownloadURL(fileName: string): Promise<string> {
@@ -151,7 +168,37 @@ export class FileService implements IFileService{
 
 
 
+
     /* Epoch File */
+
+
+
+
+    /**
+     * Initializes the upload task for an epoch file and returns
+     * the observable that will serve as a medium during the process.
+     * @param file 
+     * @param epochID 
+     * @returns Observable<number|IUploadedFile>
+     */
+    public uploadEpochFile(file: File, epochID: string): Observable<number|IUploadedFile> {
+        return this.uploadCloudFile(file, `${this.path.epoch}/${epochID}.zip`);
+    }
+
+
+
+
+
+    /**
+     * Deletes an Epoch file in a persistant way from the cloud.
+     * Keep in mind this function is safe to invoke.
+     * @param epochID 
+     * @returns Promise<void>
+     */
+    public deleteEpochFile(epochID: string): Promise<void> {
+        return this.deleteCloudFile(`${this.path.epoch}/${epochID}.zip`);
+    }
+
 
 
 
@@ -269,6 +316,180 @@ export class FileService implements IFileService{
 
 
 
+    /* Cloud File Upload */
+
+
+
+
+
+
+	/*
+	* Builds the upload task
+	* for a file to be uploaded to
+	* firebase storage
+	* @param file
+	* @param ref
+	* @returns Observable<number|IUploadedFile>
+	* */
+	private uploadCloudFile(file: File, refString: string): Observable<number|IUploadedFile> {
+        // Init the ref, the task and the name of the file
+        const storageRef: StorageReference = ref(this.storage, refString);
+        const uploadTask = uploadBytesResumable(storageRef, file);
+        
+        // Listen for state changes, errors, and completion of the upload.
+        return new Observable((observer) => {
+            uploadTask.on(
+                // Subscribe to all state changes
+                "state_changed",
+
+                // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+                (snapshot) => {
+					observer.next(Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100) || 0);
+                },
+
+                // Handle any potential errors
+                (e) => { observer.error(e) },
+
+                // When the upload completes, download the URL and complete the observable
+                async () => {
+					// Init values
+					const name: string = uploadTask.snapshot.metadata.name;
+                    let url: string|undefined;
+
+                    // Attempt to download the URL, if there is an error, delete the file prior to completing the observable
+                    try {
+                        try { url = await getDownloadURL(ref(this.storage, refString)) }
+                        catch (e) {
+                            console.log("Error when retrieving the download URL for the uploaded file. Attempting again in a few seconds.", e);
+                            await this._utils.asyncDelay(5);
+                            url = await getDownloadURL(ref(this.storage, refString))
+                        }
+
+                        // Finally, complete the observable with the uploaded file
+                        observer.next({name: name, url: url});
+                        observer.complete();
+                    } catch (e) {
+                        await this.deleteCloudFile(refString);
+                        observer.error(e);
+                    }
+                }
+            );
+        });
+    }
+
+
+
+
+
+
+
+
+
+
+    /**
+     * Deletes a file at a provided ref string in a persistant way.
+     * If it fails after 3 attempts, it resolves. This function
+     * is safe to invoke.
+     * @param refString 
+     * @param count?
+     * @returns Promise<void>
+     */
+    private async deleteCloudFile(refString: string, count?: number): Promise<void> {
+        // Init the count in case it wasn't provided
+        count = typeof count == "number" ? count: 0;
+
+        // Attempt to delete the file
+        try {
+            await deleteObject(ref(this.storage, refString));
+        } catch (e) {
+			if (count >= 3) {
+				console.log('[FileService]: The file could not be deleted after 3 attempts.');
+				console.log(e);
+				return
+			} else {
+				console.log('[FileService]: Error when trying to delete a file. Attempting again in a few seconds.');
+				console.log(e);
+				await this._utils.asyncDelay(5);
+				await this.deleteCloudFile(refString, ++count);
+			}
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+    /* File Input */
+
+
+
+
+
+    /**
+     * Based on a given file change event and configuration, builds
+     * and returns the File Input object.
+     * @param event 
+     * @param acceptedFormats 
+     * @param maxSizeBytes 
+     * @param touched 
+     * @returns IFileInput
+     */
+    public getFile(
+        event: any, 
+        acceptedFormats: IFileFormat[], 
+        maxSizeBytes: number, 
+        touched?: boolean
+    ): IFileInput {
+        // Init the default file
+        let fileInput: IFileInput = {
+            touched: touched == true,
+            file: null,
+            acceptedFormats: acceptedFormats,
+            maxSizeBytes: maxSizeBytes,
+            error: undefined
+        }
+
+		// If it hasnt been touched, return the default file
+		if (!touched) return fileInput;
+
+		// If it isn't pristine, make sure the event was provided
+		if (!event || !event.target || !event.target.files || !event.target.files.length) {
+			console.log(event);
+			fileInput.error = "The provided event did not include any files.";
+			return fileInput;
+		}
+
+		// Extract and validate the file
+		const file: File = event.target.files[0];
+		
+		// Validate the size of the file
+		if (file.size > fileInput.maxSizeBytes) {
+			fileInput.error = `The file size (${file.size}) is superior to the limit (${fileInput.maxSizeBytes}).`
+			return fileInput;
+		}
+
+        // Validate the format
+        if (!fileInput.acceptedFormats.includes(<IFileFormat>file.type)) {
+			fileInput.error = `The format of the file (${file.type}) is not accepted.`
+			return fileInput;
+        }
+
+        // Finally, complete and return the file input
+        fileInput.file = file;
+        return fileInput;
+    }
+
+
+
+
+
+
 
 
 
@@ -277,13 +498,33 @@ export class FileService implements IFileService{
 
 
 
+
+    /**
+     * Given a path, it will extract the file name and then
+     * remove the extension from it if applies
+     * @param fullPath 
+     * @param removeExtension? 
+     * @returns string
+     */
+    public getFileNameFromPath(fullPath: string, removeExtension?: boolean): string {
+        // Extract the file name from the path
+        const fileName = fullPath.replace(/^.*[\\\/]/, '');
+
+        // Return it without the extension
+        return removeExtension ? this.removeExtensionFromFileName(fileName): fileName;
+    }
+
+
+    
+
+
     /**
      * Removes an extension from a file name. For example: 
      * _ALPHA.zip -> _ALPHA
      * @param fileName 
      * @returns string
      */
-    public removeExtensionFromFileName(fileName: string): string { return fileName.replace(/\.[^/.]+$/, "")}
+    private removeExtensionFromFileName(fileName: string): string { return fileName.replace(/\.[^/.]+$/, "")}
 
 
 
@@ -296,7 +537,7 @@ export class FileService implements IFileService{
 	* @param file
 	* @returns IFileExtension
 	* */
-	private getFileExtension(file: File): IFileExtension {
+	/*private getFileExtension(file: File): IFileExtension {
 		switch (file.type) {
 			case "application/json":
 				return "json";
@@ -305,7 +546,7 @@ export class FileService implements IFileService{
 			default:
 				throw new Error(`The extension could not be extracted from the file ${file.type}`);
 		}
-	}
+	}*/
 
 
 
@@ -317,7 +558,7 @@ export class FileService implements IFileService{
 	* @param fileName
 	* @returns IFileExtension
 	* */
-	private getFileExtensionByName(fileName: string): IFileExtension {
+	/*private getFileExtensionByName(fileName: string): IFileExtension {
         // Init the extension
         const ext: IFileExtension|string = fileName.slice((fileName.lastIndexOf(".") - 1 >>> 0) + 2);
 
@@ -328,7 +569,7 @@ export class FileService implements IFileService{
 
         // Finally, return it
 		return <IFileExtension>ext;
-	}
+	}*/
 
 
 
@@ -344,7 +585,7 @@ export class FileService implements IFileService{
 
 
 
-    /* File Input Reader */
+    /* JSON File Input Reader */
 
 
 

@@ -15,7 +15,7 @@ export interface IEpochService {
     getEpochRecord(epochID: string): Promise<IEpochRecord|undefined>,
     //getActiveEpochSummary(): Promise<IEpochSummary|undefined>,
     getEpochSummary(epochID: string): Promise<IEpochSummary>,
-    listEpochs(startAt: number, limit: number): Promise<IEpochSummary>,
+    listEpochs(startAt: number, limit: number): Promise<IEpochListItem[]>,
 
     // Epoch Install Endpoints
     install(epochID: string, otp: string): Promise<IBackgroundTaskInfo>,

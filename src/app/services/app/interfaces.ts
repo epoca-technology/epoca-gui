@@ -17,7 +17,9 @@ export interface IAppService {
     prediction: BehaviorSubject<IPrediction|undefined|null>,
     predictionIcon: BehaviorSubject<IPredictionResultIcon|undefined|null>,
     simulations: BehaviorSubject<any[]|null>,
-    session: BehaviorSubject<object|undefined|null>,
+    activeSimulations: BehaviorSubject<number|null>,
+    sessions: BehaviorSubject<any[]|null>,
+    activeSessionPositions: BehaviorSubject<number|null>,
     refreshAppBulk(): Promise<void>,
 
     // Snackbars
@@ -41,3 +43,12 @@ export interface IAppService {
 // Layout
 export type ILayout = 'mobile'|'desktop';
 export type ILayoutAlias = 'xs'|'sm'|'md'|'lg'|'xl';
+
+
+
+// App Bulk Metadata
+export interface IAppBulkMetadata {
+    predictionIcon: IPredictionResultIcon|undefined,
+    activeSimulations: number,
+    activeSessionPositions: number
+}

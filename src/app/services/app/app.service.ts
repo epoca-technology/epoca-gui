@@ -11,9 +11,10 @@ import {
 	IEpochSummary, 
 	IPrediction, 
 	IPredictionResultIcon, 
+	PredictionService, 
 	UtilsService 
 } from "../../core";
-import {IAppService, ILayout, ILayoutAlias} from "./interfaces";
+import {IAppService, ILayout, ILayoutAlias, IAppBulkMetadata} from "./interfaces";
 
 
 
@@ -57,7 +58,9 @@ export class AppService implements IAppService{
 	public prediction: BehaviorSubject<IPrediction|undefined|null> = new BehaviorSubject<IPrediction|undefined|null>(null);
 	public predictionIcon: BehaviorSubject<IPredictionResultIcon|undefined|null> = new BehaviorSubject<IPredictionResultIcon|undefined|null>(null);
 	public simulations: BehaviorSubject<any[]|null> = new BehaviorSubject<any[]|null>(null);
-	public session: BehaviorSubject<object|undefined|null> = new BehaviorSubject<object|undefined|null>(null);
+	public activeSimulations: BehaviorSubject<number|null> = new BehaviorSubject<number|null>(null);
+	public sessions: BehaviorSubject<any[]|null> = new BehaviorSubject<any[]|null>(null);
+	public activeSessionPositions: BehaviorSubject<number|null> = new BehaviorSubject<number|null>(null);
 
 
 
@@ -69,7 +72,8 @@ export class AppService implements IAppService{
 		private clipboard: Clipboard,
         private _utils: UtilsService,
 		private _auth: AuthService,
-		private _bulk: BulkDataService
+		private _bulk: BulkDataService,
+		private _prediction: PredictionService
 	) {
 		// Initialize the Layout
 		this.layout = new BehaviorSubject<ILayout>(this.getLayout());
@@ -139,15 +143,70 @@ export class AppService implements IAppService{
 	 */
 	public async refreshAppBulk(): Promise<void> {
 		try {
+			// Retrieve the bulk from the API
 			const bulk: IAppBulk = await this._bulk.getAppBulk();
+
+			// Unpack the metadata
+			const metadata: IAppBulkMetadata = this.getAppBulkMetadata(bulk);
+
+			// Broadcast the server's time
 			this.serverTime.next(bulk.serverTime);
+
+			// Broadcast the active epoch summary
 			this.epoch.next(bulk.epoch);
+
+			// Broadcast the active prediction as well as the metadata
 			this.prediction.next(bulk.prediction);
+			this.predictionIcon.next(metadata.predictionIcon);
+
+			// Broadcast the simulations as well as the metadata
 			this.simulations.next(bulk.simulations);
-			this.session.next(bulk.session);
+			this.activeSimulations.next(metadata.activeSimulations);
+
+			// Broadcast the sessions as well as the metadata
+			this.sessions.next(bulk.sessions);
+			this.activeSessionPositions.next(metadata.activeSessionPositions);
 		} catch (e) { console.error(e) }
 	}
 
+
+
+
+
+
+	/**
+	 * Puts together the bulk's metadata that will be broadcasted with the
+	 * main app bulk data.
+	 * @param bulk 
+	 * @returns 
+	 */
+	private getAppBulkMetadata(bulk: IAppBulk): {
+		predictionIcon: IPredictionResultIcon|undefined,
+		activeSimulations: number,
+		activeSessionPositions: number
+	} {
+		// Init values
+		let predictionIcon: IPredictionResultIcon|undefined = undefined;
+		let activeSimulations: number = 0;
+		let activeSessionPositions: number = 0;
+
+		// Populate the active prediction icon
+		if (bulk.prediction) { predictionIcon = this._prediction.resultIconNames[bulk.prediction.r]} 
+		else { predictionIcon = undefined }
+
+		// Calculate the number of active simulations
+		// @TODO
+
+		// Calculate the number of positions in the active session
+		// @TODO
+
+		// Finally, return the packed metadata
+		return {
+			predictionIcon: predictionIcon,
+			activeSimulations: activeSimulations,
+			activeSessionPositions: activeSessionPositions
+		}
+	}
 
 
 
@@ -163,8 +222,11 @@ export class AppService implements IAppService{
 		this.serverTime.next(undefined);
 		this.epoch.next(undefined);
 		this.prediction.next(undefined);
+		this.predictionIcon.next(undefined);
 		this.simulations.next([]);
-		this.session.next(undefined);
+		this.activeSimulations.next(0);
+		this.sessions.next([]);
+		this.activeSessionPositions.next(0);
 	}
 
 

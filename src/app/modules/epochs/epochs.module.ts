@@ -9,11 +9,15 @@ import {SharedModule} from "../../shared";
 
 // Component
 import { EpochsComponent } from './epochs/epochs.component';
+import { InstallEpochComponent } from './epochs/install-epoch';
+import { UninstallEpochComponent } from './epochs/uninstall-epoch';
 
 
 @NgModule({
   declarations: [
-    EpochsComponent
+    EpochsComponent,
+    InstallEpochComponent,
+    UninstallEpochComponent
   ],
   imports: [
     CommonModule,

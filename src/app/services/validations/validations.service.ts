@@ -268,7 +268,8 @@ export class ValidationsService implements IValidationsService{
 	* */
 	public controlEpochIDValid(control: AbstractControl): {invalidID: boolean}|null {
         if (control && typeof control.value == "string") {
-            if (this.epochIDValid(control.value)) {
+			const id: string = control.value;
+            if (typeof id == "string" && id.length >= 4 && id.length <= 100 && id[0] == "_") {
                 return null;
             } else {  return {invalidID: true} }
         } else {

@@ -1,0 +1,34 @@
+
+
+
+p { margin: 0 }
+
+
+.selected-file {width: 100%;max-width: 100%!important;}
+.selected-file p { margin:0;}
+.selected-file .progress {min-width: 40px;text-align: right;margin-right:10px;}
+
+
+
+
+form .large-file-button {padding:10px 10px 10px 10px;margin:0;}
+form .large-file-button .mat-icon {margin-right:5px;}
+form .large-file-button .title {margin:0;}
+form .large-file-button .description {color:var(--light-text-color);font-size:13px;}
+
+
+
+/* Responsiveness */
+
+
+/* mobile: sm & xs */
+@media only screen and (max-width: 959px) {
+    .selected-file .progress {margin-right:0;}
+}
+
+
+
+/* desktop: md */
+@media only screen and (min-width: 960px) {
+
+}

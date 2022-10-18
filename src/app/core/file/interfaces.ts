@@ -1,3 +1,4 @@
+import { Observable } from "rxjs";
 
 
 
@@ -15,11 +16,22 @@ export interface IFileService {
     listCandlestickBundleFiles(): Promise<IDownloadedFile[]>,
     getCandlestickBundleDownloadURL(fileName: string): Promise<string>,
 
-    // General File Helpers
-    removeExtensionFromFileName(fileName: string): string,
-    
+    // Epoch File
+    uploadEpochFile(file: File, epochID: string): Observable<number|IUploadedFile>,
+    deleteEpochFile(epochID: string): Promise<void>,
 
-    // File Input Reader
+    // File Input
+    getFile(
+        event: any, 
+        acceptedFormats: IFileFormat[], 
+        maxSizeBytes: number, 
+        touched?: boolean
+    ): IFileInput,
+
+    // General File Helpers
+    getFileNameFromPath(fullPath: string, removeExtension?: boolean): string,
+
+    // JSON File Input Reader
     readJSONFiles(event: any): Promise<any[]>
 }
 
@@ -51,11 +63,13 @@ export type IFileExtension = "zip"|"json";
 
 
 
+
+
 /* File Upload Related */
 
 
 // Allowed file formats
-export type IFileFormat = "application/zip";
+export type IFileFormat = "application/zip"|"application/json";
 
 
 
@@ -68,3 +82,10 @@ export interface IFileInput {
     error: string|undefined // If present, there was a problem when inputting the file
 }
 
+
+
+// The uploaded file's payload
+export interface IUploadedFile {
+	name: string,
+	url: string
+}

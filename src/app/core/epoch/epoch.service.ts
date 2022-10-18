@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { ApiService } from "../api";
 import { IBackgroundTaskInfo } from "../background-task";
 import { IPredictionModelCertificate, IRegressionTrainingCertificate } from "../epoch-builder";
-import { IEpochRecord, IEpochService, IEpochSummary } from "./interfaces";
+import { IEpochListItem, IEpochRecord, IEpochService, IEpochSummary } from "./interfaces";
 
 @Injectable({
   providedIn: "root"
@@ -86,9 +86,9 @@ export class EpochService implements IEpochService {
 	 * Retrieves the list of epochs based on a given starting point and limit.
 	 * @param startAt
 	 * @param limit
-	 * @returns Promise<IEpochSummary>
+	 * @returns Promise<IEpochListItem[]>
 	 */
-	public listEpochs(startAt: number, limit: number): Promise<IEpochSummary> {
+	public listEpochs(startAt: number, limit: number): Promise<IEpochListItem[]> {
 		return this._api.request(
 			"get","epoch/listEpochs", 
 			{

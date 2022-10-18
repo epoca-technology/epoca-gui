@@ -34,7 +34,7 @@ export class PredictionDialogComponent implements OnInit, IPredictionDialogCompo
 	// Prediction Outcome
 	public showOutcome: boolean = false;
 	public outcome: boolean|undefined;
-	private readonly outcomeCandlesticksRequirement: number = 160;
+	private readonly outcomeCandlesticksRequirement: number = 200;
 
 	// Prediction Features
 	public showFeatures: boolean = false;

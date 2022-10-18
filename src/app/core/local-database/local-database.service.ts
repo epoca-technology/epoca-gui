@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import Dexie from "dexie";
+import { UtilsService } from "../utils";
 import { EpochService, IEpochRecord, IEpochSummary } from "../epoch";
 import { IPredictionModelCertificate, IRegressionTrainingCertificate } from "../epoch-builder";
 import { 
@@ -20,7 +21,7 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 	private db?: Dexie;
 
 	// Database State
-	public compatible?: boolean;
+	public initialized: boolean = false;
 	public initError?: string;
 
 	// Tables
@@ -34,15 +35,8 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 
   	constructor(
 		private _epoch: EpochService,
-	) { 
-		this.initialize()
-			.then(() => { this.compatible = true })
-			.catch(e => {
-				console.log(e);
-				this.compatible = false;
-				this.initError = e.message;
-			});
-	}
+		private _utils: UtilsService
+	) { }
 
 
 
@@ -63,27 +57,36 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 	public async initialize(): Promise<void> {
 		// Make sure indexed db exists in the window
 		if (window && window.indexedDB) {
-			// Initialize DB
-			this.db = new Dexie(this.dbName);
-			this.db.version(1).stores({
-				userPreferences: "++id",
-				epochRecords: "++id, realID",
-				epochSummaries: "++id, realID",
-				predictionModelCertificates: "++id, realID",
-				regressionCertificates: "++id, realID",
-			});
-			
-			// Open the database
-			await this.db.open();
-			
-			// Initialize Tables
-			this.userPreferences = this.db.table("userPreferences");
-			this.epochRecords = this.db.table("epochRecords");
-			this.epochSummaries = this.db.table("epochSummaries");
-			this.predictionModelCertificates = this.db.table("predictionModelCertificates");
-			this.regressionCertificates = this.db.table("regressionCertificates");
+			// Attempt to initialize and open the DB
+			try {
+				// Initialize DB
+				this.db = new Dexie(this.dbName);
+				this.db.version(1).stores({
+					userPreferences: "++id",
+					epochRecords: "++id, realID",
+					epochSummaries: "++id, realID",
+					predictionModelCertificates: "++id, realID",
+					regressionCertificates: "++id, realID",
+				});
+				
+				// Open the database
+				await this.db.open();
+				
+				// Initialize Tables
+				this.userPreferences = this.db.table("userPreferences");
+				this.epochRecords = this.db.table("epochRecords");
+				this.epochSummaries = this.db.table("epochSummaries");
+				this.predictionModelCertificates = this.db.table("predictionModelCertificates");
+				this.regressionCertificates = this.db.table("regressionCertificates");
+
+				// Update the init state
+				this.initialized = true;
+			} catch (e) {
+				console.log(e);
+				this.initError = this._utils.getErrorMessage(e);
+			}
 		} else {
-			throw new Error("The window object does not contain the indexedDB property.");
+			this.initError = "The window object does not contain the indexedDB property.";
 		}
 	} 
 
@@ -100,8 +103,11 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 	* @returns Promise<void>
 	* */
 	public async delete(): Promise<void> {
+		// Attempt to initialize the db in case it hadn't been
+		if (!this.initialized) await this.initialize();
+
 		// If it is not compatible, throw the init error
-		if (!this.compatible) throw new Error(this.initError);
+		if (!this.initialized) throw new Error(this.initError);
 		
 		// Attempt to write
 		await this.db!.delete();
@@ -119,8 +125,11 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 	 * @returns Promise<ILocalTableInfo[]> 
 	 */
 	public async getTablesInfo(): Promise<ILocalTableInfo[]> {
+		// Attempt to initialize the db in case it hadn't been
+		if (!this.initialized) await this.initialize();
+
 		// If it is not compatible, throw the init error
-		if (!this.compatible) throw new Error(this.initError);
+		if (!this.initialized) throw new Error(this.initError);
 
 		return [
 			{ name: "userPreferences", records: await this.userPreferences!.count()},
@@ -149,11 +158,14 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 	 * @returns Promise<IUserPreferences>
 	 */
 	public async getUserPreferences(): Promise<IUserPreferences> {
+		// Attempt to initialize the db in case it hadn't been
+		if (!this.initialized) await this.initialize();
+
 		// Init the default obj
 		const pref: IUserPreferences = { sound: false };
 
 		// If it is not compatible, return the default obj
-		if (!this.compatible) return pref;
+		if (!this.initialized) return pref;
 
 		try {
 			// Read the data and return it if found, otherwise, return the default obj
@@ -174,8 +186,11 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 	 * @returns Promise<void>
 	 */
 	public async saveUserPreferences(pref: IUserPreferences): Promise<void> {
+		// Attempt to initialize the db in case it hadn't been
+		if (!this.initialized) await this.initialize();
+
 		// If it is not compatible, end it
-		if (!this.compatible) return;
+		if (!this.initialized) return;
 		
 		// Attempt to write
 		try {
@@ -200,8 +215,11 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 	 * @returns Promise<IEpochRecord|undefined>
 	 */
 	 public async getEpochRecord(epochID: string): Promise<IEpochRecord|undefined> {
+		// Attempt to initialize the db in case it hadn't been
+		if (!this.initialized) await this.initialize();
+
 		// If it is not compatible, return the original call right away
-		if (!this.compatible) return this._epoch.getEpochRecord(epochID);
+		if (!this.initialized) return this._epoch.getEpochRecord(epochID);
 
 		/**
 		 * Check if the record is currently stored, in the case of an error when interacting
@@ -217,8 +235,8 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 				// Perform the request
 				const record: IEpochRecord|undefined = await this._epoch.getEpochRecord(epochID);
 
-				// Attempt to save it if found
-				if (record) {
+				// Attempt to save it if found and it has been uninstalled
+				if (record && typeof record.uninstalled == "number") {
 					try {
 						await this.epochRecords!.add(<ILocalData> { realID: epochID, data: record });
 					} catch (e) { console.error(e) }
@@ -245,8 +263,11 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 	 * @returns Promise<IEpochSummary>
 	 */
 	public async getEpochSummary(epochID: string): Promise<IEpochSummary> {
+		// Attempt to initialize the db in case it hadn't been
+		if (!this.initialized) await this.initialize();
+
 		// If it is not compatible, return the original call right away
-		if (!this.compatible) return this._epoch.getEpochSummary(epochID);
+		if (!this.initialized) return this._epoch.getEpochSummary(epochID);
 
 		/**
 		 * Check if the record is currently stored, in the case of an error when interacting
@@ -262,10 +283,12 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 				// Perform the request
 				const summary: IEpochSummary = await this._epoch.getEpochSummary(epochID);
 
-				// Attempt to save it
-				try {
-					await this.epochSummaries!.add(<ILocalData> { realID: epochID, data: summary });
-				} catch (e) { console.error(e) }
+				// Attempt to save it if it has been uninstalled
+				if (typeof summary.record.uninstalled == "number") {
+					try {
+						await this.epochSummaries!.add(<ILocalData> { realID: epochID, data: summary });
+					} catch (e) { console.error(e) }
+				}
 
 				// Finally, return it
 				return summary; 
@@ -287,8 +310,11 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 	 * @returns Promise<IPredictionModelCertificate>
 	 */
 	 public async getPredictionModelCertificate(id: string): Promise<IPredictionModelCertificate> {
+		// Attempt to initialize the db in case it hadn't been
+		if (!this.initialized) await this.initialize();
+
 		// If it is not compatible, return the original call right away
-		if (!this.compatible) return this._epoch.getPredictionModelCertificate(id);
+		if (!this.initialized) return this._epoch.getPredictionModelCertificate(id);
 
 		/**
 		 * Check if the record is currently stored, in the case of an error when interacting
@@ -329,8 +355,11 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 	 * @returns Promise<IRegressionTrainingCertificate>
 	 */
 	 public async getRegressionCertificate(id: string): Promise<IRegressionTrainingCertificate> {
+		// Attempt to initialize the db in case it hadn't been
+		if (!this.initialized) await this.initialize();
+
 		// If it is not compatible, return the original call right away
-		if (!this.compatible) return this._epoch.getRegressionCertificate(id);
+		if (!this.initialized) return this._epoch.getRegressionCertificate(id);
 
 		/**
 		 * Check if the record is currently stored, in the case of an error when interacting

@@ -1,11 +1,16 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { AuthGuard } from '../../services';
-import { TradingSimulationsComponent } from './trading-simulations/trading-simulations.component';
+import { NgModule } from "@angular/core";
+import { RouterModule, Routes } from "@angular/router";
+import { AuthGuard } from "../../services";
+import { TradingSimulationsComponent } from "./trading-simulations/trading-simulations.component";
 
 const routes: Routes = [
     {
-		path: '',
+		path: "",
+		component: TradingSimulationsComponent,
+		canActivate: [AuthGuard]
+	},
+    {
+		path: ":epochID",
 		component: TradingSimulationsComponent,
 		canActivate: [AuthGuard]
 	},

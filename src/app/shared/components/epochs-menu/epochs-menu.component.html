@@ -1,0 +1,62 @@
+<div>
+    <!-- Loader -->
+    <div *ngIf="!loaded" class="section-loader">
+        <div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div>
+    </div>
+
+    <!-- Epochs -->
+    <div *ngIf="loaded">
+        <p *ngIf="!epochs.length" class="align-center light-text margin-top-x3">No epochs were found</p>
+        <div *ngIf="epochs.length">
+            <!-- Header -->
+            <div fxLayout="row" fxLayoutAlign="end center" class="full-width" style="min-height:75px;">
+                <h3>Menu</h3>
+                <span fxFlex></span>
+                <div fxFlex="70" fxLayoutAlign="end center">
+                    <button mat-icon-button 
+                            *ngIf="!searchEnabled" 
+                            [disabled]="submitting" (click)="enableSearch()">
+                            <mat-icon>search</mat-icon></button>
+                    <div *ngIf="searchEnabled" class="fadeIn" fxLayout="row" fxLayoutAlign="center center">
+                        <form [formGroup]="form" (ngSubmit)="performSearch()" fxFlex>
+                            <mat-form-field>
+                                <mat-label>Epoch ID</mat-label>
+                                <input type="text"
+                                       matInput
+                                       formControlName="searchQuery"
+                                       autocomplete="off"
+                                       placeholder="e.g. _GENESIS" 
+                                       #searchQueryControl>
+                                       <mat-icon matSuffix (click)="disableSearch()">search_off</mat-icon>
+                            </mat-form-field>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- List -->
+            <div class="margin-top">
+                <div *ngFor="let epoch of epochs; last as lastEpoch">
+                    <div class="desktop-card clickable" role="button" (click)="activateEpoch(epoch.id)">
+                        <div fxLayout="row" fxLayoutAlign="center start">
+                            <div>
+                                <h4>{{epoch.id}}</h4>
+                                <p class="light-text ts-s">{{epoch.installed | date: 'medium'}}</p>
+                            </div>
+                            <span fxFlex></span>
+                            <div class="{{epoch.profit >= 0 ? 'square-badge-success': 'square-badge-error'}}">
+                                {{epoch.profit | currency}}
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="!lastEpoch" class="divider show-on-mobile"></div>
+                </div>
+    
+                <!-- Paginator -->
+                <div *ngIf="hasMore" class="paginator">
+                    <button mat-button (click)="loadEpochs()" [disabled]="submitting">Load More</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

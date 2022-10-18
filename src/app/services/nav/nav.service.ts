@@ -82,16 +82,40 @@ export class NavService implements INavService {
 	public dashboard(): Promise<boolean> { return this.navigate("dashboard") }
 
 	// Epochs
-	public epochs(): Promise<boolean> { return this.navigate("epochs") }
+	public epochs(epochID?: string): Promise<boolean> { 
+		if (typeof epochID == "string") {
+			return this.navigate(`epochs/${epochID}`);
+		} else {
+			return this.navigate("epochs");
+		}
+	}
 
 	// Predictions
-	public predictions(): Promise<boolean> { return this.navigate("predictions") }
+	public predictions(epochID?: string): Promise<boolean> { 
+		if (typeof epochID == "string") {
+			return this.navigate(`predictions/${epochID}`);
+		} else {
+			return this.navigate("predictions");
+		}
+	}
 
 	// Trading Simulations
-	public tradingSimulations(): Promise<boolean> { return this.navigate("tradingSimulations") }
+	public tradingSimulations(epochID?: string): Promise<boolean> { 
+		if (typeof epochID == "string") {
+			return this.navigate(`tradingSimulations/${epochID}`);
+		} else {
+			return this.navigate("tradingSimulations");
+		}
+	}
 
 	// Trading Sessions
-	public tradingSessions(): Promise<boolean> { return this.navigate("tradingSessions") }
+	public tradingSessions(epochID?: string): Promise<boolean> { 
+		if (typeof epochID == "string") {
+			return this.navigate(`tradingSessions/${epochID}`);
+		} else {
+			return this.navigate("tradingSessions");
+		}
+	}
 
 	// Candlesticks
 	public candlesticks(): Promise<boolean> { return this.navigate("candlesticks") }

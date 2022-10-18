@@ -15,12 +15,12 @@ export class BackgroundTaskComponent implements OnInit, OnDestroy, IBackgroundTa
 		this.t = val;
 
 		// If the task is running and the interval has not been initialized, do so.
-		if (this.t.state == "running" && !this.interval) {
+		if (this.t && this.t.state == "running" && !this.interval) {
 			this.initInterval();
 		}
 
 		// If the task has completed or errored, disable the interval
-		if ((this.t.state == "completed" || this.t.state == "errored") && this.interval) {
+		if (this.t &&  (this.t.state == "completed" || this.t.state == "errored") && this.interval) {
 			this.clearInterval();
 		}
 	}
