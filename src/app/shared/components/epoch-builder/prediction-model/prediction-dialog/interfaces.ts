@@ -1,4 +1,4 @@
-import { IPrediction, IPredictionModelConfig } from "src/app/core";
+import { IEpochRecord, IPrediction, IPredictionModelConfig } from "src/app/core";
 
 
 
@@ -11,5 +11,6 @@ export interface IPredictionDialogComponent {
 export interface IPredictionDialogData {
     model: IPredictionModelConfig,
     prediction: IPrediction,
-    outcome?: boolean
+    outcome?: boolean,
+    epoch?: IEpochRecord,
 }

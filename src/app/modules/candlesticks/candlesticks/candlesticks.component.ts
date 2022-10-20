@@ -2,12 +2,13 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import {Title} from "@angular/platform-browser";
 import {MatDialog} from "@angular/material/dialog";
 import * as moment from "moment";
-import { CandlestickService, ICandlestick } from "../../../core";
+import { CandlestickService, ICandlestick, LocalDatabaseService } from "../../../core";
 import { AppService, ChartService, ICandlestickChartOptions, NavService } from "../../../services";
 import { CandlestickFilesDialogComponent } from "./candlestick-files-dialog/candlestick-files-dialog.component";
 import { CandlesticksConfigDialogComponent } from "./candlesticks-config-dialog/candlesticks-config-dialog.component";
 import { CandlestickDialogComponent } from "../../../shared/components/candlestick";
 import { ICandlesticksComponent, ICandlesticksConfig} from "./interfaces";
+import { Subscription } from "rxjs";
 
 
 @Component({
@@ -18,6 +19,10 @@ import { ICandlesticksComponent, ICandlesticksConfig} from "./interfaces";
 export class CandlesticksComponent implements OnInit, OnDestroy, ICandlesticksComponent {
 	// Config
 	public config: ICandlesticksConfig = this.getDefaultConfig();
+
+    // Server Time
+    private serverTime!: number;
+    private serverTimeSub?: Subscription;
 
 	// Raw Candlesticks
 	public rawCandlesticks?: ICandlestick[];
@@ -34,16 +39,23 @@ export class CandlesticksComponent implements OnInit, OnDestroy, ICandlesticksCo
         private _chart: ChartService,
         private dialog: MatDialog,
         private _app: AppService,
-        private titleService: Title
+        private titleService: Title,
+        private _localDB: LocalDatabaseService
     ) { }
 
     ngOnInit(): void {
-        this.buildCandlesticks();
+        this.serverTimeSub = this._app.serverTime.subscribe((newTime: number|null|undefined) => {
+            if (typeof newTime == "number" && newTime > 0) {
+                this.serverTime = newTime;
+                if (!this.rawCandlesticks) this.buildCandlesticks();
+            }
+        });
     }
 
 
     ngOnDestroy(): void {
         this.titleService.setTitle("Epoca");
+        if (this.serverTimeSub) this.serverTimeSub.unsubscribe();
     }
 
 
@@ -62,9 +74,10 @@ export class CandlesticksComponent implements OnInit, OnDestroy, ICandlesticksCo
 			this.loaded = false;
 
 			// Retrieve the raw candlesticks
-			this.rawCandlesticks = await this._candlestick.getForPeriod(
+			this.rawCandlesticks = await this._localDB.getCandlesticksForPeriod(
 				this.config.start, 
 				this.config.end, 
+                this.serverTime,
 				this.config.intervalMinutes
 			);
 

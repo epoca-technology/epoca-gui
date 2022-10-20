@@ -1,5 +1,6 @@
+import { ICandlestick } from "../candlestick";
 import { IEpochRecord, IEpochSummary } from "../epoch";
-import { IPredictionModelCertificate, IRegressionTrainingCertificate } from "../epoch-builder";
+import { IPrediction, IPredictionModelCertificate, IRegressionTrainingCertificate } from "../epoch-builder";
 
 
 
@@ -19,11 +20,32 @@ export interface ILocalDatabaseService {
     getUserPreferences(): Promise<IUserPreferences>,
     saveUserPreferences(pref: IUserPreferences): Promise<void>,
 
-    // Data Caching
+    /* Data Caching */
+
+    // Epoch
     getEpochRecord(epochID: string): Promise<IEpochRecord|undefined>,
     getEpochSummary(epochID: string): Promise<IEpochSummary>,
+
+    // Certificates
     getPredictionModelCertificate(id: string): Promise<IPredictionModelCertificate>,
     getRegressionCertificate(id: string): Promise<IRegressionTrainingCertificate>,
+
+    // Candlesticks
+    getCandlesticksForPeriod(start: number, end: number, serverTime: number, intervalMinutes?: number): Promise<ICandlestick[]>,
+
+    // Predictions
+    listPredictions(
+		epochID: string,
+		startAt: number,
+		endAt: number,
+		limit: number,
+		epochInstalled: number
+	 ): Promise<IPrediction[]>,
+
+    // Starred Predictions
+    starPrediction(pred: IPrediction): Promise<void>,
+    unstarPrediction(pred: IPrediction): Promise<void>,
+    getStarredPredictions(): Promise<IPrediction[]>,
 }
 
 
@@ -67,7 +89,7 @@ export interface ILocalTableInfo {
  */
 export type ILocalData = ILocalDataObject|undefined;
 export interface ILocalDataObject {
-	id: number,
-    realID?: string,
+	id?: number,
+    realID?: string|number,
 	data: any
 }

@@ -209,7 +209,9 @@ export class UtilsService implements IUtilService {
      * @param values 
      * @returns INumber
      */
-    public getMax(values: INumber[]): number { return BigNumber.max.apply(null, values).toNumber() }
+    public getMax(values: INumber[], config?: INumberConfig): INumber { 
+        return this.outputNumber(BigNumber.max.apply(null, values), config);
+    }
 
 
 
@@ -218,9 +220,11 @@ export class UtilsService implements IUtilService {
     /**
      * Given a list of numbers, it will retrieve the one with the lowest value.
      * @param values 
-     * @returns number
+     * @returns INumber
      */
-    public getMin(values: INumber[]): number { return BigNumber.min.apply(null, values).toNumber() }
+    public getMin(values: INumber[], config?: INumberConfig): INumber { 
+        return this.outputNumber(BigNumber.min.apply(null, values), config);
+    }
 
 
 
@@ -230,9 +234,11 @@ export class UtilsService implements IUtilService {
     /**
      * Given a list of numbers, it will calculate the sum of all of them
      * @param values 
-     * @returns number
+     * @returns INumber
      */
-    public getSum(values: INumber[]): number { return BigNumber.sum.apply(null, values).toNumber() }
+    public getSum(values: INumber[], config?: INumberConfig): INumber { 
+        return this.outputNumber(BigNumber.sum.apply(null, values), config);
+    }
 
 
 
@@ -242,10 +248,11 @@ export class UtilsService implements IUtilService {
     /**
      * Given a list of numbers, it will calculate the mean value
      * @param values 
-     * @returns number
+     * @param config?
+     * @returns INumber
      */
-    public getMean(values: INumber[]): number { 
-        return <number>this.outputNumber(new BigNumber(this.getSum(values)).dividedBy(values.length), {dp: 2}) 
+    public getMean(values: INumber[], config?: INumberConfig): INumber { 
+        return this.outputNumber(new BigNumber(this.getSum(values)).dividedBy(values.length), config);
     }
 
 

@@ -10,3 +10,34 @@ h5 { margin: 0; margin-left:4px;}
         padding: 0 10px 0 10px;
     }
 }
+
+
+.unstarred-prediction { opacity: 0.7;}
+
+
+
+
+/* Prediction Loader Fab */
+.prediction-loader-fab { position: fixed; bottom: 30px; right:30px; }
+
+
+
+
+
+
+
+
+/* Responsiveness */
+
+
+/* mobile: sm & xs */
+@media only screen and (max-width: 959px) {
+    .prediction-loader-fab { bottom: 80px!important;}
+}
+
+
+
+/* desktop: md */
+@media only screen and (min-width: 960px) {
+    
+}

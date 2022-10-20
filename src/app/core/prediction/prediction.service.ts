@@ -67,17 +67,17 @@ export class PredictionService implements IPredictionService {
 	 */
 	public listPredictions(
 		epochID: string,
-		limit: number,
 		startAt: number,
-		endAt: number
+		endAt: number,
+		limit: number
 	 ): Promise<IPrediction[]> {
 		return this._api.request(
 			"get","prediction/listPredictions", 
 			{
 				epochID: epochID,
-				limit: limit,
 				startAt: startAt,
 				endAt: endAt,
+				limit: limit,
 			}, 
 			true
 		);

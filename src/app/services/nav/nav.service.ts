@@ -9,7 +9,8 @@ import { environment } from "../../../environments/environment";
 import { 
 	IPredictionModelConfig, 
 	IPrediction,
-	IRegressionConfig, 
+	IRegressionConfig,
+	IEpochRecord, 
 } from "../../core";
 import {AppService} from "../app";
 import {BottomSheetMenuComponent, IBottomSheetMenuItem} from "../../shared/components/bottom-sheet-menu";
@@ -351,16 +352,23 @@ export class NavService implements INavService {
 	* @param model
 	* @param pred
 	* @param outcome?
+	* @param epochID?
 	* @returns MatDialogRef<any>
 	* */
-	public displayPredictionDialog(model: IPredictionModelConfig, pred: IPrediction, outcome?: boolean): MatDialogRef<any> {
+	public displayPredictionDialog(
+		model: IPredictionModelConfig, 
+		pred: IPrediction, 
+		outcome?: boolean, 
+		epoch?: IEpochRecord
+	): MatDialogRef<any> {
 		return this.dialog.open(PredictionDialogComponent, {
 			hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
-			panelClass: "medium-dialog",
+			panelClass: "large-dialog",
 			data: <IPredictionDialogData> {
 				model: model,
 				prediction: pred,
-				outcome: outcome
+				outcome: outcome,
+				epoch: epoch
 			}
 		});
 	}

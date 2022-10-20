@@ -33,7 +33,7 @@ export class LocalDatabaseComponent implements OnInit, ILocalDatabaseComponent {
 		await this._utils.asyncDelay(1);
 
 		// Load the Tables
-		try {this.tables = await this._localDB.getTablesInfo() } catch (e) { this._app.error(e) };
+		await this.loadTables();
 
 		// Update the loading state
 		this.loaded = true;
@@ -61,11 +61,24 @@ export class LocalDatabaseComponent implements OnInit, ILocalDatabaseComponent {
 
 						// Re-initialize it
 						await this._localDB.initialize();
+						await this.loadTables();
 						this.loaded = true;
 						this._app.success("The Indexed Database has been deleted and re-initialized successfully.");
 					} catch (e) { this._app.error(e) }
                 }
             }
         );
+	}
+
+
+
+
+
+	/**
+	 * Loads the general information about the tables that currently
+	 * exist.
+	 */
+	private async loadTables(): Promise<void> {
+		try {this.tables = await this._localDB.getTablesInfo() } catch (e) { this._app.error(e) };
 	}
 }

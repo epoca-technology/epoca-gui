@@ -5,6 +5,7 @@ import {
 	IRegressionConfig, 
 	IPrediction,
 	IPredictionModelConfig,
+	IEpochRecord,
 } from "../../core";
 import {IConfirmationDialogData} from "../../shared/components/confirmation-dialog";
 import {IBottomSheetMenuItem} from "../../shared/components/bottom-sheet-menu";
@@ -43,7 +44,12 @@ export interface INavService {
 	displayKerasModelDialog(modelConfig: IRegressionConfig): MatDialogRef<any>,
 	displayModelSelectionDialog(): MatDialogRef<any>,
 	displayPredictionModelConfigDialog(modelConfig: IPredictionModelConfig): MatDialogRef<any>
-	displayPredictionDialog(model: IPredictionModelConfig, pred: IPrediction, outcome?: boolean): MatDialogRef<any>
+	displayPredictionDialog(
+		model: IPredictionModelConfig, 
+		pred: IPrediction, 
+		outcome?: boolean,
+		epoch?: IEpochRecord
+	): MatDialogRef<any>,
 	
 	// Bottom Sheets
 	displayBottomSheetMenu(data: IBottomSheetMenuItem[]): MatBottomSheetRef<any>,

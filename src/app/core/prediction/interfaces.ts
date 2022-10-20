@@ -16,11 +16,11 @@ export interface IPredictionService {
     // Retrievers
     //getActive(): Promise<IPrediction|undefined>,
     listPredictions(
-		epochID: string,
-		limit: number,
-		startAt: number,
-		endAt: number
-	 ): Promise<IPrediction[]>
+      epochID: string,
+      startAt: number,
+      endAt: number,
+      limit: number
+    ): Promise<IPrediction[]>
 }
 
 

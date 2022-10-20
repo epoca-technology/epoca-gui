@@ -181,8 +181,8 @@ export class ChartService implements IChartService {
 
 		// Return the range
 		return {
-			max: this._utils.getMax(high),
-			min: this._utils.getMin(low)
+			max: <number>this._utils.getMax(high),
+			min: <number>this._utils.getMin(low)
 		}
 	}
 
@@ -396,8 +396,8 @@ export class ChartService implements IChartService {
 
 			// Return the min and the max value
 			return {
-				min: this._utils.getMin(seriesNumbers),
-				max: this._utils.getMax(seriesNumbers)
+				min: <number>this._utils.getMin(seriesNumbers),
+				max: <number>this._utils.getMax(seriesNumbers)
 			}
 	}
 

@@ -643,8 +643,8 @@ export class PredictionModelsComponent implements OnInit, OnDestroy, IPrediction
 
 		 // Retrieve the balance history data
 		 const { colors, values } = this._chart.getModelBalanceHistoryData(this.cert.backtest.positions);
-		 const minBalance: number = this._utils.getMin(values);
-		 const maxBalance: number = this._utils.getMax(values);
+		 const minBalance: number = <number>this._utils.getMin(values);
+		 const maxBalance: number = <number>this._utils.getMax(values);
  
 		 // Build the view
 		 this.certificateView = {

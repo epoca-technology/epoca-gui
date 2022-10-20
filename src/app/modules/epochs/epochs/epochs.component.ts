@@ -60,23 +60,31 @@ export class EpochsComponent implements OnInit, OnDestroy, IEpochsComponent {
         private _utils: UtilsService
     ) { }
 
-    async ngOnInit(): Promise<void> {
+    ngOnInit(): void {
         // Initialize layout
         this.layoutSub = this._app.layout.subscribe((nl: ILayout) => this.layout = nl);
 
-        // Check if an Epoch ID was provided from the URL. If so, initialize it right away.
-        const urlEpochID: string|null = this.route.snapshot.paramMap.get("epochID");
-        if (typeof urlEpochID == "string" && this._validations.epochIDValid(urlEpochID)) { 
-            await this.initializeEpochData(urlEpochID);
-        }
+        /**
+         * Initialize the epoch sub briefly. This subscription is destroyed once the 
+         * epoch data initialization is invoked.
+         */
+        this.epochSub = this._app.epoch.subscribe(async (e: IEpochSummary|undefined|null) => {
+            if (e != null && !this.initialized) {
+                // Check if an Epoch ID was provided from the URL. If so, initialize it right away.
+                const urlEpochID: string|null = this.route.snapshot.paramMap.get("epochID");
+                if (typeof urlEpochID == "string" && this._validations.epochIDValid(urlEpochID)) { 
+                    await this.initializeEpochData(urlEpochID);
+                }
 
-        // Otherwise, check if an active epoch is available
-        else if (this._app.epoch.value){
-            await this.initializeEpochData(this._app.epoch.value.record.id);
-        }
+                // Otherwise, check if an active epoch is available
+                else if (e){
+                    await this.initializeEpochData(e.record.id);
+                }
 
-        // Set the init state
-        this.initialized = true;
+                // Set the init state
+                this.initialized = true;
+            }
+        });
     }
 
 
@@ -147,8 +155,8 @@ export class EpochsComponent implements OnInit, OnDestroy, IEpochsComponent {
         if (this.epoch) {
             // Retrieve the profit history data
             const { colors, values } = this._chart.getProfitHistoryData(this.epoch.positions);
-            const minBalance: number = this._utils.getMin(values);
-            const maxBalance: number = this._utils.getMax(values);
+            const minBalance: number = <number>this._utils.getMin(values);
+            const maxBalance: number = <number>this._utils.getMax(values);
 
             // Build the positions chart
             this.profitHist = this._chart.getBarChartOptions(

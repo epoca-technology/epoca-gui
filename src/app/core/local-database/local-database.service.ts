@@ -1,8 +1,11 @@
 import { Injectable } from "@angular/core";
 import Dexie from "dexie";
+import * as moment from "moment";
 import { UtilsService } from "../utils";
 import { EpochService, IEpochRecord, IEpochSummary } from "../epoch";
-import { IPredictionModelCertificate, IRegressionTrainingCertificate } from "../epoch-builder";
+import { CandlestickService, ICandlestick } from "../candlestick";
+import { PredictionService } from "../prediction";
+import { IPrediction, IPredictionModelCertificate, IRegressionTrainingCertificate } from "../epoch-builder";
 import { 
 	ILocalDatabaseService,
 	ILocalData,
@@ -30,11 +33,16 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 	private epochSummaries?: Dexie.Table;
 	private predictionModelCertificates?: Dexie.Table;
 	private regressionCertificates?: Dexie.Table;
+	private predictionCandlesticks?: Dexie.Table;
+	private predictions?: Dexie.Table;
+	private starredPredictions?: Dexie.Table;
 
 
 
   	constructor(
 		private _epoch: EpochService,
+		private _candlestick: CandlestickService,
+		private _prediction: PredictionService,
 		private _utils: UtilsService
 	) { }
 
@@ -67,6 +75,9 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 					epochSummaries: "++id, realID",
 					predictionModelCertificates: "++id, realID",
 					regressionCertificates: "++id, realID",
+					predictionCandlesticks: "++id, realID",
+					predictions: "++id, realID",
+					starredPredictions: "++id, realID",
 				});
 				
 				// Open the database
@@ -78,6 +89,9 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 				this.epochSummaries = this.db.table("epochSummaries");
 				this.predictionModelCertificates = this.db.table("predictionModelCertificates");
 				this.regressionCertificates = this.db.table("regressionCertificates");
+				this.predictionCandlesticks = this.db.table("predictionCandlesticks");
+				this.predictions = this.db.table("predictions");
+				this.starredPredictions = this.db.table("starredPredictions");
 
 				// Update the init state
 				this.initialized = true;
@@ -137,6 +151,9 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 			{ name: "epochSummaries", records: await this.epochSummaries!.count()},
 			{ name: "predictionModelCertificates", records: await this.predictionModelCertificates!.count()},
 			{ name: "regressionCertificates", records: await this.regressionCertificates!.count()},
+			{ name: "predictionCandlesticks", records: await this.predictionCandlesticks!.count()},
+			{ name: "predictions", records: await this.predictions!.count()},
+			{ name: "starredPredictions", records: await this.starredPredictions!.count()},
 		];
 	}
 
@@ -205,6 +222,20 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 
 
 	/* Data Caching */
+
+
+
+
+
+
+
+
+
+
+	/********************
+	 * Epoch Management *
+	 ********************/
+
 
 
 
@@ -303,6 +334,14 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 
 
 
+	/***************************
+	 * Certificates Management *
+	 ***************************/
+
+
+
+
+
 	/**
 	 * Retrieves, stores and returns a prediction model certificate if the browser 
 	 * is compatible.
@@ -388,5 +427,329 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 			return this._epoch.getRegressionCertificate(id);
 		}
 	}
+
+
+
+
+
+
+	/***************************
+	 * Candlesticks Management *
+	 ***************************/
+
+
+
+
+
+	/**
+	 * Retrieves the candlesticks for a given period. Prior to sending a request
+	 * to the server, it will check if the data is in the db. If not, it will 
+	 * retrieve it and store it.
+	 * @param start 
+	 * @param end 
+	 * @param serverTime 
+	 * @param intervalMinutes?
+	 * @returns Promise<ICandlestick[]>
+	 */
+	public async getCandlesticksForPeriod(start: number, end: number, serverTime: number, intervalMinutes?: number): Promise<ICandlestick[]> {
+		// Attempt to initialize the db in case it hadn't been
+		if (!this.initialized) await this.initialize();
+
+		// If it is not compatible, return the original call right away
+		if (!this.initialized) return this._candlestick.getForPeriod(start, end, intervalMinutes);
+
+		// Make sure the user is interacting with the prediction candlesticks
+		if (typeof intervalMinutes != "number" || intervalMinutes == this._candlestick.predictionCandlestickInterval) {
+			try {
+				// Make sure the beginning of the range exists
+				const firstRecordEnd: number = moment(start).add(30, "minutes").valueOf() - 1;
+				const firstRecord: ILocalData[] = await this.predictionCandlesticks!.where("realID").between(start, firstRecordEnd, true, true).sortBy("realID");
+				if (firstRecord.length) {
+					// Retrieve the head
+					const head: ILocalData[] = await this.predictionCandlesticks!.where("realID").between(start, end, true, true).sortBy("realID");
+
+					// Check if the head contains the entire query. If so, return it right away
+					if (end <= head[head.length - 1]!.data.ct) { 
+						return head.map((localData) => localData!.data); 
+					}
+
+					// Otherwise, complete the records and save them afterwards
+					else {
+						// Retrieve the tail
+						const tail: ICandlestick[] = await this._candlestick.getForPeriod(head[head.length - 1]!.data.ot + 1, end, intervalMinutes);
+
+						// Save it
+						await this.saveCandlesticks(tail, serverTime);
+
+						// Finally, return both, the head and the tail
+						return head.map((localData) => localData!.data).concat(tail);
+					}
+				}
+
+				// Otherwise, fallback to the original request
+				else {
+					// Retrieve the candlesticks
+					const candlesticks: ICandlestick[] = await this._candlestick.getForPeriod(start, end, intervalMinutes);
+					
+					// Save them if any was found
+					if (candlesticks.length) await this.saveCandlesticks(candlesticks, serverTime);
+
+					// Finally, return them
+					return candlesticks;
+				}
+			} catch (e) { 
+				console.log(e);
+				return this._candlestick.getForPeriod(start, end, intervalMinutes);
+			}
+		} 
+
+		// Otherwise, fallback to the original request
+		else { 
+			return this._candlestick.getForPeriod(start, end, intervalMinutes);
+		}
+	}
+
+
+
+
+
+
+	/**
+	 * Given a list of candlesticks, it will check if the candlestick has been 
+	 * finalized and that they don't already exist prior to saving them.
+	 * This function is safe to invoke, if any errors they will just be logged.
+	 * @param candlesticks 
+	 * @param serverTime 
+	 * @returns Promise<void>
+	 */
+	private async saveCandlesticks(candlesticks: ICandlestick[], serverTime: number): Promise<void> {
+		try {
+			// Calculate the minimum close time the candlesticks should have in order to be considered finalized
+			const finalizedTS: number = moment(serverTime).subtract(30, "minutes").valueOf();
+
+			// Init the list of candlesticks that will be saved
+			let saveable: ILocalData[] = [];
+			for (let candle of candlesticks) {
+				// Make sure the candlestick is finalized
+				if (candle.ct <= finalizedTS) {
+					// Make sure the candlestick doesn't already exist
+					const rec: ILocalData|undefined = await this.predictionCandlesticks!.where("realID").equals(candle.ot).first();
+					if (!rec) saveable.push({ realID: candle.ot, data: candle });
+				}
+			}
+
+			// Check if there are candlesticks that should be saved
+			if (saveable.length) await this.predictionCandlesticks!.bulkAdd(saveable);
+		} catch (e) { console.log(e) }
+	}
+
+
+
+
+	
+
+
+
+	/**************************
+	 * Predictions Management *
+	 **************************/
+
+
+
+
+
+	/**
+	 * Retrieves the predictions for a given period. Prior to sending a request
+	 * to the server, it will check if the data is in the db. If not, it will 
+	 * retrieve it and store it.
+	 * @param epochID 
+	 * @param startAt 
+	 * @param endAt 
+	 * @param limit
+	 * @param epochInstalled
+	 * @returns Promise<IPrediction[]>
+	 */
+	public async listPredictions(
+		epochID: string,
+		startAt: number,
+		endAt: number,
+		limit: number,
+		epochInstalled: number
+	 ): Promise<IPrediction[]> {
+		// Attempt to initialize the db in case it hadn't been
+		if (!this.initialized) await this.initialize();
+
+		// If it is not compatible or a limit was provided, return the original call right away
+		if (!this.initialized || limit != 0) return this._prediction.listPredictions(epochID, startAt, endAt, limit);
+
+		// If the start is earlier than the installation of the epoch, replace it
+		if (startAt < epochInstalled) startAt = epochInstalled;
+
+		// Retrieve the predictions safely
+		try {
+			// Make sure the beginning of the range exists
+			const firstRecordEnd: number = moment(startAt).add(1, "minute").valueOf() - 1;
+			const firstRecord: ILocalData[] = await this.predictions!.where("realID").between(startAt, firstRecordEnd, true, true).sortBy("realID");
+			if (firstRecord.length) {
+				// Retrieve the head and reverse it
+				let head: ILocalData[] = await this.predictions!.where("realID").between(startAt, endAt, true, true).sortBy("realID");
+				head.reverse();
+
+				// Check if the head contains the entire query. If so, return it right away
+				if (startAt <= head[head.length - 1]!.data.t) { 
+					console.log("The entire range was retrieved from LOCAL DB!!!");
+					return head.map((localData) => localData!.data); 
+				}
+
+				// Otherwise, complete the records and save them afterwards
+				else {
+					// Retrieve the tail
+					const tail: IPrediction[] = await this._prediction.listPredictions(epochID, head[head.length - 1]!.data.t, endAt, limit);
+					console.log("Retrieved Tail: ", tail);
+					// Save it
+					await this.savePredictions(tail);
+
+					// Finally, return both, the head and the tail
+					return head.map((localData) => localData!.data).concat(tail);
+				}
+			}
+
+			// Otherwise, fallback to the original request
+			else {
+				// Retrieve the predictions
+				const preds: IPrediction[] = await this._prediction.listPredictions(epochID, startAt, endAt, limit);
+				
+				// Save them if any was found
+				if (preds.length) await this.savePredictions(preds);
+
+				// Finally, return them
+				return preds;
+			}
+		} catch (e) { 
+			console.log(e);
+			return this._prediction.listPredictions(epochID, startAt, endAt, limit);
+		}
+	}
+
+
+
+
+
+
+
+
+
+	/**
+	 * Given a list of predictions, it will check if the prediction currently 
+	 * exists prior to saving
+	 * This function is safe to invoke, if any errors they will just be logged.
+	 * @param preds
+	 * @returns Promise<void>
+	 */
+	 private async savePredictions(preds: IPrediction[]): Promise<void> {
+		try {
+			// Init the list of predictions that will be saved
+			let saveable: ILocalData[] = [];
+			for (let pred of preds) {
+				// Make sure the prediction doesn't already exist
+				const rec: ILocalData|undefined = await this.predictions!.where("realID").equals(pred.t).first();
+				if (!rec) saveable.push({ realID: pred.t, data: pred });
+			}
+
+			// Check if there are candlesticks that should be saved
+			if (saveable.length) await this.predictions!.bulkAdd(saveable);
+		} catch (e) { console.log(e) }
+	}
+
+
+
+
+
+
+
+
+
+	/**********************************
+	 * Starred Predictions Management *
+	 **********************************/
+
+
+
+
+	/**
+	 * Adds a prediction to the starred table.
+	 * @param pred 
+	 * @returns Promise<void>
+	 */
+	public async starPrediction(pred: IPrediction): Promise<void> {
+		// Attempt to initialize the db in case it hadn't been
+		if (!this.initialized) await this.initialize();
+
+		// If it is not compatible, return the original call right away
+		if (!this.initialized) return;
+
+		// Save the record safely
+		try {
+			await this.starredPredictions!.add({ realID: pred.t, data: pred });
+		} catch (e) { console.log(e) }
+	}
+
+
+
+
+
+	/**
+	 * Deletes a prediction from the starred table.
+	 * @param pred 
+	 * @returns Promise<void>
+	 */
+	public async unstarPrediction(pred: IPrediction): Promise<void> {
+		// Attempt to initialize the db in case it hadn't been
+		if (!this.initialized) await this.initialize();
+
+		// If it is not compatible, return the original call right away
+		if (!this.initialized) return;
+
+		// Save the record safely
+		try {
+			await this.starredPredictions!.where("realID").equals(pred.t).delete();
+		} catch (e) { console.log(e) }
+	}
+
+
+
+
+
+
+
+	/**
+	 * Retrieves the list of starred predictions.
+	 * @returns Promise<IPrediction[]>
+	 */
+	public async getStarredPredictions(): Promise<IPrediction[]> {
+		// Attempt to initialize the db in case it hadn't been
+		if (!this.initialized) await this.initialize();
+
+		// If it is not compatible, return the original call right away
+		if (!this.initialized) return [];
+
+		try {
+			// Retrieve the predictions
+			const localData: ILocalData[] = await this.starredPredictions!.orderBy("realID").reverse().toArray();
+
+			// Return the list of predictions
+			return localData.map((ld) => ld!.data);
+		} catch (e) {
+			console.log(e);
+			return [];
+		}
+	}
+
+
+
+
+
+
+
 
 }

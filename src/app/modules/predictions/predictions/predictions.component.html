@@ -5,15 +5,8 @@
                 *ngIf="epoch"
                 [disabled]="submitting"
                 (click)="initializeEpochData()"><mat-icon>arrow_back</mat-icon></button>
-        <span class="truncate">Predictions</span>
+        <span class="truncate">{{epoch ? epoch.record.id: 'Predictions'}}</span>
         <span fxFlex></span>
-        
-        <!-- Expander -->
-        <button mat-icon-button 
-                *ngIf="initialized && epoch && loaded && chartView && hasMore" 
-                [disabled]="submitting"
-                matTooltip="Load More Predictions"
-                (click)="loadPredictions()"><mat-icon>aspect_ratio</mat-icon></button>
         
         <!-- Chart View -->
         <button mat-icon-button 
@@ -50,9 +43,39 @@
 
             <!-- Prediction Content -->
             <div *ngIf="loaded" class="fadeIn">
+                <!-- Starred Predictions -->
+                <div *ngIf="starredList.length">
+                    <mat-grid-list [cols]="gridCols" rowHeight="60" gutterSize="15">
+                        <mat-grid-tile 
+                            *ngFor="let pred of starredList"
+                            class="prediction-tile mat-elevation-z2 fake-button">
+                            <div class="full-width prediction-tile-inner">
+                                <div fxLayout="row" fxLayoutAlign="start center">
+                                    <div class="clickable" (click)="_nav.displayPredictionDialog(epoch.record.model, pred, undefined, epoch.record)">
+                                        <div fxLayout="row" fxLayoutAlign="start center">
+                                            <img src="{{_prediction.resultImagePaths[pred.r]}}" alt="Model Type" class="model-logo-xs">
+                                            <h5>{{_prediction.resultNames[pred.r]}}</h5>
+                                        </div>
+                                        <p class="light-text ts-xs truncate">{{pred.t | date: 'medium'}}</p>
+                                    </div>
+                                    <span fxFlex></span>
+                                    <div class="clickable" 
+                                        [ngClass]="{
+                                            'square-badge-success': pred.r == 1,
+                                            'square-badge-error': pred.r == -1,
+                                            'square-badge-neutral': pred.r == 0
+                                        }" matTooltip="{{pred.s}}" 
+                                        (click)="starAction(pred)">
+                                        {{pred.s | number: '1.0-2'}}
+                                    </div>
+                                </div>
+                            </div>
+                        </mat-grid-tile>
+                    </mat-grid-list>
+                </div>
 
                 <!-- Prediction Hist -->
-                <div *ngIf="chartView && predictionsHist">
+                <div *ngIf="chartView && predictionsHist" style="overflow: hidden;">
                     <apx-chart
                         [series]="predictionsHist.series"
                         [chart]="predictionsHist.chart"
@@ -66,39 +89,62 @@
 
                 <!-- Prediction Grid -->
                 <div *ngIf="!chartView">
+                    <div *ngIf="starredList.length" class="divider"></div>
                     <mat-grid-list [cols]="gridCols" rowHeight="60" gutterSize="15">
-                        <mat-grid-tile 
-                            *ngFor="let pred of predictions" 
-                            class="prediction-tile mat-elevation-z2 clickable fake-button" matRipple 
-                            (click)="_nav.displayPredictionDialog(epoch.record.model, pred)">
-                            <div class="full-width prediction-tile-inner">
-                                <div fxLayout="row" fxLayoutAlign="start center">
-                                    <div>
-                                        <div fxLayout="row" fxLayoutAlign="start center">
-                                            <img src="{{_prediction.resultImagePaths[pred.r]}}" alt="Model Type" class="model-logo-xs">
-                                            <h5>{{_prediction.resultNames[pred.r]}}</h5>
+                        <div *ngFor="let pred of predictions; index as predIndex">
+                            <mat-grid-tile 
+                                *ngIf="predIndex < visibleTiles"
+                                class="prediction-tile mat-elevation-z2 fake-button">
+                                <div class="full-width prediction-tile-inner">
+                                    <div fxLayout="row" fxLayoutAlign="start center">
+                                        <div class="clickable" (click)="_nav.displayPredictionDialog(epoch.record.model, pred, undefined, epoch.record)">
+                                            <div fxLayout="row" fxLayoutAlign="start center">
+                                                <img src="{{_prediction.resultImagePaths[pred.r]}}" alt="Model Type" class="model-logo-xs">
+                                                <h5>{{_prediction.resultNames[pred.r]}}</h5>
+                                            </div>
+                                            <p class="light-text ts-xs truncate">{{pred.t | date: 'medium'}}</p>
                                         </div>
-                                        <p class="light-text ts-xs truncate">{{pred.t | date: 'medium'}}</p>
-                                    </div>
-                                    <span fxFlex></span>
-                                    <div [ngClass]="{
-                                            'square-badge-success': pred.r == 1,
-                                            'square-badge-error': pred.r == -1,
-                                            'square-badge-neutral': pred.r == 0
-                                        }">
-                                        {{pred.s | number: '1.0-2'}}
+                                        <span fxFlex></span>
+                                        <div class="clickable" 
+                                            [ngClass]="{
+                                                'square-badge-success': pred.r == 1,
+                                                'square-badge-error': pred.r == -1,
+                                                'square-badge-neutral': pred.r == 0,
+                                                'unstarred-prediction': !starred[pred.t]
+                                            }" matTooltip="{{pred.s}}" 
+                                            (click)="starAction(pred)">
+                                            {{pred.s | number: '1.0-2'}}
+                                        </div>
                                     </div>
                                 </div>
+                            </mat-grid-tile>
+                        </div>
 
-                            </div>
+                        <mat-grid-tile *ngIf="hasMore || visibleTiles < predictions.length" 
+                                    class="clickable fake-button" role="button" 
+                                    (click)="viewMore()">
+                            {{submitting ? 'Loading...': 'View More'}}
                         </mat-grid-tile>
-
-                        <mat-grid-tile *ngIf="hasMore" class="clickable fake-button" role="button" (click)="loadPredictions()">Load More</mat-grid-tile>
                     </mat-grid-list>
                 </div>
             </div>
-        </div>
 
+
+
+            <!-- Load More Fab -->
+            <div *ngIf="hasMore && chartView" class="prediction-loader-fab">
+                <button mat-fab color="primary" class="show-on-desktop" matTooltip="Load More"
+                    [disabled]="submitting"
+                    (click)="loadPredictions()">
+                    <mat-icon>aspect_ratio</mat-icon>
+                </button>
+                <button mat-mini-fab color="primary" class="show-on-mobile" matTooltip="Load More"
+                    [disabled]="submitting"
+                    (click)="loadPredictions()">
+                    <mat-icon>aspect_ratio</mat-icon>
+                </button>
+            </div>
+        </div>
     </div>
 
     <!-- Mobile Tabs -->
