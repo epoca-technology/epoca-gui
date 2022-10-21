@@ -1,6 +1,8 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import {Title} from "@angular/platform-browser";
+import { MatBottomSheetRef } from "@angular/material/bottom-sheet";
+import { MatDialog } from "@angular/material/dialog";
 import { Subscription } from "rxjs";
 import { ApexAnnotations } from "ng-apexcharts";
 import * as moment from "moment";
@@ -9,8 +11,7 @@ import {
     IPrediction, 
     IPredictionCandlestick, 
     LocalDatabaseService, 
-    PredictionService, 
-    UtilsService 
+    PredictionService
 } from "../../../core";
 import { 
     AppService, 
@@ -22,7 +23,7 @@ import {
     ValidationsService 
 } from "../../../services";
 import { IPredictionsComponent, IView } from "./interfaces";
-import { MatBottomSheetRef } from "@angular/material/bottom-sheet";
+import { EpochPredictionCandlestickDialogComponent, IPredictionCandlestickDialogData } from "./epoch-prediction-candlestick-dialog";
 
 @Component({
   selector: "app-predictions",
@@ -80,9 +81,9 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
         private route: ActivatedRoute,
         private _localDB: LocalDatabaseService,
         private _chart: ChartService,
-        private _utils: UtilsService,
         private titleService: Title,
-        public _prediction: PredictionService
+        public _prediction: PredictionService,
+        private dialog: MatDialog,
     ) { }
 
     async ngOnInit(): Promise<void> {
@@ -325,24 +326,6 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
                             style: { color: "#fff", background: this._chart.downwardColor}
                         }
                     }
-                ],
-                points: [
-                    {
-                        x: this.predictions[0].t,
-                        y: this.predictions[0].s,
-                        marker: {
-                            size: 0,
-                        },
-                        label: {
-                            borderColor: this.predictions[0].s > 0 ? this._chart.upwardColor: this._chart.downwardColor,
-                            style: { 
-                                color: "#fff", 
-                                background: this.predictions[0].s > 0 ? this._chart.upwardColor: this._chart.downwardColor
-                            },
-                            text: String(this.predictions[0].s),
-                            offsetX: -30
-                        }
-                    }
                 ]
             };
             this.candlesticksChart = this._chart.getCandlestickChartOptions(
@@ -352,8 +335,14 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
                 false, 
                 //{min: minValue, max: maxValue}
             );
+            this.candlesticksChart.chart!.height = this.layout == "desktop" ? 600: 350;
             this.candlesticksChart.chart!.zoom = {enabled: true, type: "xy"};
-            // @TODO: Click
+            const self = this;
+            this.candlesticksChart.chart!.events = {
+                click: function(event, chartContext, config) {
+                    if (self.candlesticks![config.dataPointIndex]) self.displayPredictionCandlestick(self.candlesticks![config.dataPointIndex]);
+                }
+            }
         } catch(e) { this._app.error(e) } 
     }
 
@@ -694,5 +683,33 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
 
         // Finally, sort the list
         this.starredList.sort((a, b) => (a.t > b.t) ? -1 : 1)
+    }
+
+
+
+
+
+
+
+
+    /* Prediction Candlestick */
+
+
+
+
+    /**
+     * Displays the prediction candlestick dialog.
+     * @param candlestick 
+     */
+    private displayPredictionCandlestick(candlestick: IPredictionCandlestick): void {
+        this.dialog.open(EpochPredictionCandlestickDialogComponent, {
+			disableClose: false,
+			hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
+			panelClass: "small-dialog",
+            data: <IPredictionCandlestickDialogData> {
+                candlestick: candlestick,
+                epoch: this.epoch!.record
+            }
+		})
     }
 }

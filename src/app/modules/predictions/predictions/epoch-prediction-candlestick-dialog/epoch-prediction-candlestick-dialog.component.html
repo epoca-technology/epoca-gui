@@ -1,0 +1,110 @@
+<mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <button mat-icon-button class="show-on-mobile" (click)="close()"><mat-icon>arrow_back</mat-icon></button>
+        <span class="truncate">Prediction Candlestick</span>&nbsp;
+        <span fxFlex></span>
+        <button mat-icon-button matTooltip="Display Model" 
+            (click)="_nav.displayPredictionModelConfigDialog(epoch.model)">
+            <mat-icon svgIcon="brain"></mat-icon>
+        </button>
+        <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
+    </div>
+</mat-toolbar>
+<div mat-dialog-content>
+    <div>
+        <!-- Tabs Navigation-->
+        <mat-tab-group [selectedIndex]="activeTab" 
+            (selectedIndexChange)="tabChanged($event)" 
+            mat-align-tabs="center" 
+            mat-stretch-tabs 
+            backgroundColor="primary">
+            <mat-tab [disabled]="loadingPreds"><ng-template mat-tab-label><mat-icon>candlestick_chart</mat-icon><span class="show-on-desktop">&nbsp;Candlestick</span></ng-template></mat-tab>
+            <mat-tab [disabled]="loadingPreds"><ng-template mat-tab-label><mat-icon svgIcon="wand_magic_sparkles"></mat-icon><span class="show-on-desktop">&nbsp;Predictions</span></ng-template></mat-tab>
+        </mat-tab-group>
+
+        <!-- Content -->
+        <div>
+
+            <!-- Candlestick -->
+            <div *ngIf="activeTab == 0" class="fadeIn" class="padding">
+                <div class="row" fxLayout="row" fxLayoutAlign="start center">
+                    <p>Open Time</p>
+                    <span fxFlex></span>
+                    <p>{{candlestick.ot | date: 'medium'}}</p>
+                </div>
+                <div class="row" fxLayout="row" fxLayoutAlign="start center">
+                    <p>Close Time</p>
+                    <span fxFlex></span>
+                    <p>{{candlestick.ct | date: 'medium'}}</p>
+                </div>
+                <div class="row" fxLayout="row" fxLayoutAlign="start center">
+                    <p>Open</p>
+                    <span fxFlex></span>
+                    <p>{{candlestick.o | number: '1.0-6'}}</p>
+                </div>
+                <div class="row" fxLayout="row" fxLayoutAlign="start center">
+                    <p>High</p>
+                    <span fxFlex></span>
+                    <p>{{candlestick.h | number: '1.0-6'}}</p>
+                </div>
+                <div class="row" fxLayout="row" fxLayoutAlign="start center">
+                    <p>Low</p>
+                    <span fxFlex></span>
+                    <p>{{candlestick.l | number: '1.0-6'}}</p>
+                </div>
+                <div class="row" fxLayout="row" fxLayoutAlign="start center">
+                    <p>Close</p>
+                    <span fxFlex></span>
+                    <p>{{candlestick.c | number: '1.0-6'}}</p>
+                </div>
+                <div class="row" fxLayout="row" fxLayoutAlign="start center">
+                    <p>Sum Mean</p>
+                    <span fxFlex></span>
+                    <p>{{candlestick.sm | number: '1.0-6'}}</p>
+                </div>
+            </div>
+
+
+            <!-- Predictions -->
+            <div *ngIf="activeTab == 1" class="fadeIn">
+                <!-- Loader -->
+                <div *ngIf="loadingPreds">
+                    <div class="loader show-on-desktop"><div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div></div>
+                    <div class="section-loader show-on-mobile"><div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div></div>
+                </div>
+
+                <!-- Content -->
+                <div *ngIf="!loadingPreds" class="fadeIn">
+                    <!-- No predictions where found -->
+                    <div *ngIf="!preds.length" style="margin:45px;text-align:center"><p class="light-text">No records were found</p></div>
+
+                    <!-- Predictions -->
+                    <div *ngIf="preds.length">
+                        <div *ngFor="let pred of preds; last as lastPred">
+                            <div class="pred fake-button clickable" (click)="displayPrediction(pred)" matRipple>
+                                <div fxLayout="row" fxLayoutAlign="start center">
+                                    <div>
+                                        <div fxLayout="row" fxLayoutAlign="start center">
+                                            <img src="{{_prediction.resultImagePaths[pred.r]}}" alt="Model Type" class="model-logo-xs">
+                                            <h5>{{_prediction.resultNames[pred.r]}}</h5>
+                                        </div>
+                                        <p class="light-text ts-xs truncate">{{pred.t | date: 'medium'}}</p>
+                                    </div>
+                                    <span fxFlex></span>
+                                    <div [ngClass]="{
+                                            'square-badge-success': pred.r == 1,
+                                            'square-badge-error': pred.r == -1,
+                                            'square-badge-neutral': pred.r == 0
+                                        }" matTooltip="{{pred.s}}">
+                                        {{pred.s | number: '1.0-6'}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div *ngIf="!lastPred" class="divider"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

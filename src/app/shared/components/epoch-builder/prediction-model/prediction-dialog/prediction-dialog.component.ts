@@ -8,6 +8,7 @@ import {
 	ICandlestick, 
 	IEpochRecord, 
 	IPrediction, 
+	IPredictionCandlestick, 
 	IPredictionModelConfig, 
 	LocalDatabaseService, 
 	PredictionService, 
@@ -221,11 +222,12 @@ export class PredictionDialogComponent implements OnInit, IPredictionDialogCompo
 		if (this.epoch) {
 			try {
 				// Retrieve the predictions within the range
-				const preds: IPrediction[] = await this._localDB.listPredictions(
+				const preds: IPredictionCandlestick[] = await this._localDB.listPredictionCandlesticks(
 					this.epoch.id, 
 					moment(active.ot).subtract(this._candlestick.predictionCandlestickInterval, "minutes").valueOf(), 
 					end,
-					this.epoch.installed
+					this.epoch.installed,
+					<number>this._app.serverTime.value
 				);
 
 				// Build the bars data
@@ -271,7 +273,10 @@ export class PredictionDialogComponent implements OnInit, IPredictionDialogCompo
 	 * @param preds 
 	 * @returns {values: number[], colors: string[]}
 	 */
-	private buildPredictionBarsData(candlesticks: ICandlestick[], preds: IPrediction[]): {values: {x: number, y: number}[], colors: string[]} {
+	private buildPredictionBarsData(
+		candlesticks: ICandlestick[], 
+		preds: IPredictionCandlestick[]
+	): {values: {x: number, y: number}[], colors: string[]} {
 		// Init values
 		let values: {x: number, y: number}[] = [];
 		let colors: string[] = [];
@@ -279,12 +284,12 @@ export class PredictionDialogComponent implements OnInit, IPredictionDialogCompo
 		// Iterate over each candlestick and group the preds
 		for (let candle of candlesticks) {
 			// Group the predictions within the candlestick
-			const predsInCandle: IPrediction[] = preds.filter((p) => candle.ot >= p.t  && p.t <= candle.ct);
+			const predsInCandle: IPredictionCandlestick[] = preds.filter((p) => candle.ot >= p.ot  && p.ot <= candle.ct);
 
 			// Make sure there are predictions in the candle
 			if (predsInCandle.length) {
 				// Calculate the mean of the sums within the group
-				const sumsMean: number = <number>this._utils.getMean(predsInCandle.map((p) => p.s), {dp: 6});
+				const sumsMean: number = <number>this._utils.getMean(predsInCandle.map((p) => p.sm), {dp: 6});
 
 				// Append the values
 				values.push({x: candle.ot, y: sumsMean});
