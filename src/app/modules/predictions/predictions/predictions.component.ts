@@ -228,7 +228,7 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
      */
     public async activateView(view: IView): Promise<void> {
         if (view == "line" || view == "grid") { this.view = view }
-        else { return this.activateCandlesticks(14) }
+        else { return this.activateCandlesticks(7) }
     }
 
 
@@ -337,7 +337,7 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
                 this.candlesticks, 
                 annotations, 
                 false, 
-                false, 
+                true, 
                 //{min: minValue, max: maxValue}
             );
             this.candlesticksChart.chart!.height = this.layout == "desktop" ? 600: 350;
@@ -536,9 +536,10 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
                         x: this.predictions[0].t,
                         y: this.predictions[0].s,
                         marker: {
-                          size: 6,
+                          size: 5,
                           strokeColor: this.predictions[0].s > 0 ? this._chart.upwardColor: this._chart.downwardColor,
-                          shape: "square" // circle|square
+                          strokeWidth: 5,
+                          shape: "circle" // circle|square
                         },
                         label: {
                             borderColor: this.predictions[0].s > 0 ? this._chart.upwardColor: this._chart.downwardColor,

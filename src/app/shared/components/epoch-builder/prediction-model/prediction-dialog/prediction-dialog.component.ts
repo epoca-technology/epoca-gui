@@ -225,7 +225,7 @@ export class PredictionDialogComponent implements OnInit, IPredictionDialogCompo
 				const preds: IPredictionCandlestick[] = await this._localDB.listPredictionCandlesticks(
 					this.epoch.id, 
 					moment(active.ot).subtract(this._candlestick.predictionCandlestickInterval, "minutes").valueOf(), 
-					end,
+					moment(end).add(30, "minutes").valueOf(),
 					this.epoch.installed,
 					<number>this._app.serverTime.value
 				);
@@ -289,7 +289,7 @@ export class PredictionDialogComponent implements OnInit, IPredictionDialogCompo
 			// Make sure there are predictions in the candle
 			if (predsInCandle.length) {
 				// Calculate the mean of the sums within the group
-				const sumsMean: number = <number>this._utils.getMean(predsInCandle.map((p) => p.sm), {dp: 6});
+				const sumsMean: number = predsInCandle[predsInCandle.length - 1].sm;
 
 				// Append the values
 				values.push({x: candle.ot, y: sumsMean});

@@ -529,7 +529,7 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 	private async saveCandlesticks(candlesticks: ICandlestick[], serverTime: number): Promise<void> {
 		try {
 			// Calculate the minimum close time the candlesticks should have in order to be considered finalized
-			const finalizedTS: number = moment(serverTime).subtract(30, "minutes").valueOf();
+			const finalizedTS: number = moment(serverTime).subtract(2, "hours").valueOf();
 
 			// Init the list of candlesticks that will be saved
 			let saveable: ILocalData[] = [];
@@ -858,7 +858,7 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 	private async savePredictionCandlesticks(candlesticks: IPredictionCandlestick[], serverTime: number): Promise<void> {
 		try {
 			// Calculate the minimum close time the candlesticks should have in order to be considered finalized
-			const finalizedTS: number = moment(serverTime).subtract(30, "minutes").valueOf();
+			const finalizedTS: number = moment(serverTime).subtract(2, "hours").valueOf();
 
 			// Init the list of candlesticks that will be saved
 			let saveable: ILocalData[] = [];
