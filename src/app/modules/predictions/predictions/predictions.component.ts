@@ -308,23 +308,28 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
                         borderColor: this._chart.upwardColor,
                         fillColor: this._chart.upwardColor,
                         strokeDashArray: 3,
-                        borderWidth: 3,
-                        label: {
-                            borderColor: this._chart.upwardColor,
-                            style: { color: "#FFFFFF", background: this._chart.upwardColor}
-                        }
-                    },					
+                        borderWidth: 0
+                    },
+                    {
+                        y: 0.000001,
+                        y2: this.epoch!.record.model.min_increase_sum,
+                        borderColor: "#B2DFDB",
+                        fillColor: "#B2DFDB",
+                        strokeDashArray: 0
+                    },
                     {
                         y: this.epoch!.record.model.min_decrease_sum,
                         y2: minValue,
                         borderColor: this._chart.downwardColor,
                         fillColor: this._chart.downwardColor,
-                        strokeDashArray: 3,
-                        borderWidth: 3,
-                        label: {
-                            borderColor: this._chart.downwardColor,
-                            style: { color: "#fff", background: this._chart.downwardColor}
-                        }
+                        strokeDashArray: 0
+                    },
+                    {
+                        y: -0.000001,
+                        y2: this.epoch!.record.model.min_decrease_sum,
+                        borderColor: "#FFCDD2",
+                        fillColor: "#FFCDD2",
+                        strokeDashArray: 0
                     }
                 ]
             };
@@ -502,24 +507,28 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
                         y2: maxValue,
                         borderColor: this._chart.upwardColor,
                         fillColor: this._chart.upwardColor,
-                        strokeDashArray: 3,
-                        borderWidth: 3,
-                        label: {
-                            borderColor: this._chart.upwardColor,
-                            style: { color: "#FFFFFF", background: this._chart.upwardColor}
-                        }
-                    },					
+                        strokeDashArray: 0
+                    },
+                    {
+                        y: 0.000001,
+                        y2: this.epoch!.record.model.min_increase_sum,
+                        borderColor: "#B2DFDB",
+                        fillColor: "#B2DFDB",
+                        strokeDashArray: 0
+                    },
                     {
                         y: this.epoch!.record.model.min_decrease_sum,
                         y2: minValue,
                         borderColor: this._chart.downwardColor,
                         fillColor: this._chart.downwardColor,
-                        strokeDashArray: 3,
-                        borderWidth: 3,
-                        label: {
-                            borderColor: this._chart.downwardColor,
-                            style: { color: "#fff", background: this._chart.downwardColor}
-                        }
+                        strokeDashArray: 0
+                    },
+                    {
+                        y: -0.000001,
+                        y2: this.epoch!.record.model.min_decrease_sum,
+                        borderColor: "#FFCDD2",
+                        fillColor: "#FFCDD2",
+                        strokeDashArray: 0
                     }
                 ],
                 points: [
