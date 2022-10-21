@@ -3,6 +3,7 @@ import { IEpochRecord, IPrediction, IPredictionModelConfig } from "src/app/core"
 
 
 export interface IPredictionDialogComponent {
+    displayFeaturesDialog(): void,
     close(): void
 }
 

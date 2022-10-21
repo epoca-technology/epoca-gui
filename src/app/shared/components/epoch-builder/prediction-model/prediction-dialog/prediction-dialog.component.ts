@@ -1,7 +1,8 @@
 import { Component, Inject, OnInit, ViewChild } from "@angular/core";
-import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
 import * as moment from "moment";
 import { ApexAnnotations, ChartComponent } from "ng-apexcharts";
+import { BigNumber } from "bignumber.js";
 import { 
 	CandlestickService, 
 	ICandlestick, 
@@ -19,8 +20,8 @@ import {
 	ICandlestickChartOptions, 
 	NavService 
 } from "../../../../../services";
+import { FeaturesSumDialogComponent, IFeaturesSumDialogData } from "./features-sum-dialog";
 import { IPredictionDialogComponent, IPredictionDialogData } from "./interfaces";
-import { BigNumber } from "bignumber.js";
 
 @Component({
   selector: "app-prediction-dialog",
@@ -68,7 +69,8 @@ export class PredictionDialogComponent implements OnInit, IPredictionDialogCompo
 		private _candlestick: CandlestickService,
 		private _localDB: LocalDatabaseService,
         private _chart: ChartService,
-		private _app: AppService
+		private _app: AppService,
+		private dialog: MatDialog,
 	) { 
 		// Main Data
 		this.epoch = this.data.epoch;
@@ -209,35 +211,51 @@ export class PredictionDialogComponent implements OnInit, IPredictionDialogCompo
 		// Retrieve the chart options
 		this.chart = this._chart.getCandlestickChartOptions(list, annotations, false, false);
 		this.chart.chart!.id = "candles";
+		this.chart.chart!.group = "predictions";
 		this.chart.chart!.toolbar = {show: true,tools: {selection: true,zoom: true,zoomin: true,zoomout: true,download: false}};
 		this.chart.chart!.zoom = {enabled: true, type: "xy"};
 		this.chart.chart!.height = 370;
+		this.chart.yaxis!.labels = { minWidth: 40};
 
 		// Initialize the prediction bar chart if possible
 		if (this.epoch) {
 			try {
 				// Retrieve the predictions within the range
-				const preds: IPrediction[] = await this._localDB.listPredictions(this.epoch.id, active.ct, end, 0, this.epoch.installed);
+				const preds: IPrediction[] = await this._localDB.listPredictions(
+					this.epoch.id, 
+					moment(active.ot).subtract(this._candlestick.predictionCandlestickInterval, "minutes").valueOf(), 
+					end,
+					this.epoch.installed
+				);
 
 				// Build the bars data
 				const { values, colors } = this.buildPredictionBarsData(list, preds);
-
+				
 				// Build the chart
 				this.barChart = this._chart.getBarChartOptions(
 					{
-						series: [{name: "Pred. Sum", data: values}],
-						chart: {height: 160, type: "bar",animations: { enabled: false}, toolbar: {show: false,tools: {download: false}}, zoom: {enabled: false}},
+						series: [{name: "SUM Mean", data: values}],
+						chart: {height: 200, type: "bar",animations: { enabled: false}, toolbar: {show: false,tools: {download: false}}, zoom: {enabled: false}},
 						plotOptions: {bar: {borderRadius: 0, horizontal: false, distributed: true,}},
 						colors: colors,
 						grid: {show: true},
-						xaxis: {labels: { show: false } },
+						xaxis: {type: "datetime", tooltip: {enabled: false}, labels: { show: false, datetimeUTC: false } }
 					}, 
 					[], 
 					undefined, 
 					false,
 					false
 				);
-			} catch (e) { console.log(e) }
+				this.barChart.chart!.id = "bars";
+				this.barChart.chart!.group = "predictions";
+				this.barChart.yaxis!.labels = {minWidth: 40}
+				this.barChart.yaxis!.tooltip = {enabled: false}
+			} catch (e) { 
+				console.log(e);
+				this.showFeatures = true;
+			}
+		} else {
+			if (this._app.layout.value == "desktop") this.showFeatures = true;
 		}
 	}
 
@@ -253,15 +271,15 @@ export class PredictionDialogComponent implements OnInit, IPredictionDialogCompo
 	 * @param preds 
 	 * @returns {values: number[], colors: string[]}
 	 */
-	private buildPredictionBarsData(candlesticks: ICandlestick[], preds: IPrediction[]): {values: number[], colors: string[]} {
+	private buildPredictionBarsData(candlesticks: ICandlestick[], preds: IPrediction[]): {values: {x: number, y: number}[], colors: string[]} {
 		// Init values
-		let values: number[] = [];
+		let values: {x: number, y: number}[] = [];
 		let colors: string[] = [];
 
 		// Iterate over each candlestick and group the preds
 		for (let candle of candlesticks) {
 			// Group the predictions within the candlestick
-			const predsInCandle: IPrediction[] = preds.filter((p) => p.t >= candle.ot && p.t <= candle.ct);
+			const predsInCandle: IPrediction[] = preds.filter((p) => candle.ot >= p.t  && p.t <= candle.ct);
 
 			// Make sure there are predictions in the candle
 			if (predsInCandle.length) {
@@ -269,13 +287,15 @@ export class PredictionDialogComponent implements OnInit, IPredictionDialogCompo
 				const sumsMean: number = <number>this._utils.getMean(predsInCandle.map((p) => p.s), {dp: 6});
 
 				// Append the values
-				values.push(sumsMean);
-				colors.push(sumsMean > 0 ? this._chart.upwardColor: this._chart.downwardColor);
+				values.push({x: candle.ot, y: sumsMean});
+				if (sumsMean > 0) { colors.push(this._chart.upwardColor) }
+				else if (sumsMean < 0) { colors.push(this._chart.downwardColor) }
+				else { colors.push(this._chart.neutralColor) }
 			}
 			
 			// Otherwise, fill the void with blanks
 			else {
-				values.push(0);
+				values.push({x: candle.ot, y: 0.000000});
 				colors.push(this._chart.neutralColor);
 			}
 		}
@@ -482,6 +502,29 @@ export class PredictionDialogComponent implements OnInit, IPredictionDialogCompo
 			return {takeProfit: 0, stopLoss: 0};
 		}
 	}
+
+
+
+
+
+
+	/**
+	 * Displays the features dedicated dialog to gather more information
+	 * about the prediction.
+	 */
+	public displayFeaturesDialog(): void {
+		this.dialog.open(FeaturesSumDialogComponent, {
+			hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
+			panelClass: "small-dialog",
+				data: <IFeaturesSumDialogData>{
+					sum: this.featuresSum,
+					features: this.prediction.f,
+					result: this.prediction.r,
+					model: this.model
+				}
+		})
+	}
+
 
 
 

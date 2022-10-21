@@ -11,16 +11,23 @@
         <!-- Chart View -->
         <button mat-icon-button 
                 *ngIf="initialized && epoch && loaded" 
-                [disabled]="chartView || submitting"
-                matTooltip="Enable Chart View"
-                (click)="chartView = true"><mat-icon>insights</mat-icon></button>
+                [disabled]="view == 'line' || submitting"
+                matTooltip="Enable Line View"
+                (click)="activateView('line')"><mat-icon>insights</mat-icon></button>
+        
+        <!-- Candlesticks View -->
+        <button mat-icon-button 
+                *ngIf="initialized && epoch && loaded" 
+                [disabled]="view == 'candlesticks' || submitting"
+                matTooltip="Enable Candlesticks View"
+                (click)="activateView('candlesticks')"><mat-icon>waterfall_chart</mat-icon></button>
 
         <!-- Grid View -->
         <button mat-icon-button 
                 *ngIf="initialized && epoch && loaded" 
-                [disabled]="!chartView || submitting"
+                [disabled]="view == 'grid' || submitting"
                 matTooltip="Enable Grid View"
-                (click)="chartView = false"><mat-icon>grid_view</mat-icon></button>
+                (click)="activateView('grid')"><mat-icon>grid_view</mat-icon></button>
     </div>
 </mat-toolbar>
 
@@ -42,9 +49,9 @@
             </div>
 
             <!-- Prediction Content -->
-            <div *ngIf="loaded" class="fadeIn">
+            <div *ngIf="loaded">
                 <!-- Starred Predictions -->
-                <div *ngIf="starredList.length">
+                <div *ngIf="starredList.length" class="fadeIn">
                     <mat-grid-list [cols]="gridCols" rowHeight="60" gutterSize="15">
                         <mat-grid-tile 
                             *ngFor="let pred of starredList"
@@ -75,7 +82,7 @@
                 </div>
 
                 <!-- Prediction Hist -->
-                <div *ngIf="chartView && predictionsHist" style="overflow: hidden;">
+                <div *ngIf="view == 'line' && predictionsHist" style="overflow: hidden;" class="fadeIn">
                     <apx-chart
                         [series]="predictionsHist.series"
                         [chart]="predictionsHist.chart"
@@ -87,8 +94,22 @@
                     ></apx-chart>
                 </div>
 
+                <!-- Prediction Candlesticks -->
+                <div *ngIf="view == 'candlesticks'" class="fadeIn">
+                    <div *ngIf="candlesticksChart" style="overflow: hidden;">
+                        <apx-chart
+                            [series]="candlesticksChart.series!"
+                            [chart]="candlesticksChart.chart!"
+                            [plotOptions]="candlesticksChart.plotOptions!"
+                            [xaxis]="candlesticksChart.xaxis!"
+                            [yaxis]="candlesticksChart.yaxis!"
+                            [annotations]="candlesticksChart!.annotations!"
+                        ></apx-chart>
+                    </div>
+                </div>
+
                 <!-- Prediction Grid -->
-                <div *ngIf="!chartView">
+                <div *ngIf="view == 'grid'" class="fadeIn">
                     <div *ngIf="starredList.length" class="divider"></div>
                     <mat-grid-list [cols]="gridCols" rowHeight="60" gutterSize="15">
                         <div *ngFor="let pred of predictions; index as predIndex">
@@ -131,17 +152,17 @@
 
 
 
-            <!-- Load More Fab -->
-            <div *ngIf="hasMore && chartView" class="prediction-loader-fab">
-                <button mat-fab color="primary" class="show-on-desktop" matTooltip="Load More"
-                    [disabled]="submitting"
-                    (click)="loadPredictions()">
-                    <mat-icon>aspect_ratio</mat-icon>
+            <!-- Candlesticks Settings Fab -->
+            <div *ngIf="hasMore && view == 'candlesticks'" class="prediction-loader-fab">
+                <button mat-fab color="primary" class="show-on-desktop"
+                    [disabled]="submitting || !loaded"
+                    (click)="activateCandlesticks()">
+                    <mat-icon>settings</mat-icon>
                 </button>
-                <button mat-mini-fab color="primary" class="show-on-mobile" matTooltip="Load More"
-                    [disabled]="submitting"
-                    (click)="loadPredictions()">
-                    <mat-icon>aspect_ratio</mat-icon>
+                <button mat-mini-fab color="primary" class="show-on-mobile"
+                    [disabled]="submitting || !loaded"
+                    (click)="activateCandlesticks()">
+                    <mat-icon>settings</mat-icon>
                 </button>
             </div>
         </div>

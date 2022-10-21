@@ -1,6 +1,7 @@
 import { ICandlestick } from "../candlestick";
 import { IEpochRecord, IEpochSummary } from "../epoch";
 import { IPrediction, IPredictionModelCertificate, IRegressionTrainingCertificate } from "../epoch-builder";
+import { IPredictionCandlestick } from "../prediction";
 
 
 
@@ -38,7 +39,6 @@ export interface ILocalDatabaseService {
 		epochID: string,
 		startAt: number,
 		endAt: number,
-		limit: number,
 		epochInstalled: number
 	 ): Promise<IPrediction[]>,
 
@@ -46,6 +46,15 @@ export interface ILocalDatabaseService {
     starPrediction(pred: IPrediction): Promise<void>,
     unstarPrediction(pred: IPrediction): Promise<void>,
     getStarredPredictions(): Promise<IPrediction[]>,
+
+    // Epoch Prediction Candlesticks
+    listPredictionCandlesticks(
+		epochID: string, 
+		startAt: number, 
+		endAt: number, 
+		epochInstalled: number,
+		serverTime: number
+	): Promise<IPredictionCandlestick[]>,
 }
 
 

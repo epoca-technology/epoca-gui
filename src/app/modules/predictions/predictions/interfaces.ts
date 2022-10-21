@@ -6,6 +6,10 @@ export interface IPredictionsComponent {
     // Initializer
     initializeEpochData(epochID?: string): Promise<void>,
 
+    // View Management
+    activateView(view: IView): Promise<void>,
+    activateCandlesticks(days?: number): Promise<void>,
+    
     // Predictions Loader
     viewMore(): Promise<void> 
     loadPredictions(): Promise<void>,
@@ -13,3 +17,8 @@ export interface IPredictionsComponent {
     // Prediction Starring
     starAction(pred: IPrediction): Promise<void>
 }
+
+
+
+
+export type IView = "line"|"candlesticks"|"grid";

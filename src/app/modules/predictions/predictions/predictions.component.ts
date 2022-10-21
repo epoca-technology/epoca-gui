@@ -7,6 +7,7 @@ import * as moment from "moment";
 import { 
     IEpochSummary, 
     IPrediction, 
+    IPredictionCandlestick, 
     LocalDatabaseService, 
     PredictionService, 
     UtilsService 
@@ -14,17 +15,19 @@ import {
 import { 
     AppService, 
     ChartService, 
+    ICandlestickChartOptions, 
     ILayout, 
     ILineChartOptions, 
     NavService, 
     ValidationsService 
 } from "../../../services";
-import { IPredictionsComponent } from "./interfaces";
+import { IPredictionsComponent, IView } from "./interfaces";
+import { MatBottomSheetRef } from "@angular/material/bottom-sheet";
 
 @Component({
-  selector: 'app-predictions',
-  templateUrl: './predictions.component.html',
-  styleUrls: ['./predictions.component.scss']
+  selector: "app-predictions",
+  templateUrl: "./predictions.component.html",
+  styleUrls: ["./predictions.component.scss"]
 })
 export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComponent {
     // Layout
@@ -32,7 +35,7 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
 	private layoutSub?: Subscription;
 
     // View
-    public chartView: boolean = true; 
+    public view: IView = "line"; 
 
     // Active Prediction
     public epoch: IEpochSummary|null = null;
@@ -47,6 +50,10 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
 
     // Predictions History
     public predictionsHist?: ILineChartOptions;
+
+    // Prediction Candlesticks
+    public candlesticks: IPredictionCandlestick[] = [];
+    public candlesticksChart?: ICandlestickChartOptions;
 
     // Predictions Grid
     public visibleTilesIncrement: number = 41;
@@ -140,7 +147,8 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
         this.epoch = null;
         this.active = null;
         this.predictions = [];
-        this.chartView = true;
+        this.predictionsHistPayload = [];
+        this.view = "line";
         this.visibleTiles = this.visibleTilesIncrement;
         this.starred = {};
         this.starredList = [];
@@ -207,6 +215,162 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
 
 
 
+    /* View Management */
+
+
+
+    /**
+     * Activates a given view. In the case of the candlesticks,
+     * it loads the data and initializes the chart.
+     * @param view 
+     * @returns Promise<void>
+     */
+    public async activateView(view: IView): Promise<void> {
+        if (view == "line" || view == "grid") { this.view = view }
+        else { return this.activateCandlesticks(14) }
+    }
+
+
+
+
+
+
+
+    /**
+     * Activates the candlesticks for a given amount of days. If none 
+     * are provided, it will prompt the menu.
+     * @param days?
+     * @returns Promise<void>
+     */
+    public async activateCandlesticks(days?: number): Promise<void> {
+        // If the days were provided, load the data right away
+        if (typeof days == "number") {
+            this.loaded = false;
+            await this.loadCandlesticks(days);
+            this.view = "candlesticks";
+            this.loaded = true;
+        }
+        
+        // Otherwise, prompt the menu with the options
+        else {
+            // Display the bottom sheet and handle the action
+            const bs: MatBottomSheetRef = this._nav.displayBottomSheetMenu([
+                {icon: "waterfall_chart", title: "Last 7 Days", description: "View 1 week worth of data", response: "7"},
+                {icon: "waterfall_chart", title: "Last 14 Days", description: "View 2 weeks worth of data", response: "14"},
+                {icon: "waterfall_chart", title: "Last 21 Days", description: "View 3 weeks worth of data", response: "21"},
+                {icon: "waterfall_chart", title: "Last Month", description: "View 30 days worth of data", response: "30"},
+                {icon: "waterfall_chart", title: "Last 1.5 Months", description: "View 45 days worth of data", response: "45"},
+                {icon: "waterfall_chart", title: "Last 2 Months", description: "View 60 days worth of data", response: "60"},
+                {icon: "waterfall_chart", title: "Last 3 Months", description: "View 90 days worth of data", response: "90"},
+            ]);
+            bs.afterDismissed().subscribe(async (response: string|undefined) => {
+                if (response) {
+                    this.loaded = false;
+                    await this.loadCandlesticks(Number(response));
+                    this.view = "candlesticks";
+                    this.loaded = true;
+                }
+            });
+        }
+
+    }
+
+
+
+
+
+
+    /**
+     * Loads the candlesticks data based on a given number of days.
+     * @param days 
+     * @returns Promise<void>
+     */
+    private async loadCandlesticks(days: number): Promise<void> {
+        try {
+            // Retrieve the candlesticks
+            this.candlesticks = await this._localDB.listPredictionCandlesticks(
+                this.epoch!.record.id, 
+                moment(this._app.serverTime.value).subtract(days, "days").valueOf(),
+                this._app.serverTime.value!,
+                this.epoch!.record.installed, 
+                this._app.serverTime.value!
+            );
+
+            // Build the chart
+            const minValue: number = -this.epoch!.record.model.regressions.length;
+            const maxValue: number = this.epoch!.record.model.regressions.length;
+            const annotations: ApexAnnotations = {
+                yaxis: [
+                    {
+                        y: this.epoch!.record.model.min_increase_sum,
+                        y2: maxValue,
+                        borderColor: this._chart.upwardColor,
+                        fillColor: this._chart.upwardColor,
+                        strokeDashArray: 3,
+                        borderWidth: 3,
+                        label: {
+                            borderColor: this._chart.upwardColor,
+                            style: { color: "#FFFFFF", background: this._chart.upwardColor}
+                        }
+                    },					
+                    {
+                        y: this.epoch!.record.model.min_decrease_sum,
+                        y2: minValue,
+                        borderColor: this._chart.downwardColor,
+                        fillColor: this._chart.downwardColor,
+                        strokeDashArray: 3,
+                        borderWidth: 3,
+                        label: {
+                            borderColor: this._chart.downwardColor,
+                            style: { color: "#fff", background: this._chart.downwardColor}
+                        }
+                    }
+                ],
+                points: [
+                    {
+                        x: this.predictions[0].t,
+                        y: this.predictions[0].s,
+                        marker: {
+                            size: 0,
+                        },
+                        label: {
+                            borderColor: this.predictions[0].s > 0 ? this._chart.upwardColor: this._chart.downwardColor,
+                            style: { 
+                                color: "#fff", 
+                                background: this.predictions[0].s > 0 ? this._chart.upwardColor: this._chart.downwardColor
+                            },
+                            text: String(this.predictions[0].s),
+                            offsetX: -30
+                        }
+                    }
+                ]
+            };
+            this.candlesticksChart = this._chart.getCandlestickChartOptions(
+                this.candlesticks, 
+                annotations, 
+                false, 
+                false, 
+                //{min: minValue, max: maxValue}
+            );
+            this.candlesticksChart.chart!.zoom = {enabled: true, type: "xy"};
+            // @TODO: Click
+        } catch(e) { this._app.error(e) } 
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    /* Prediction Data Management */
+
+
 
     /**
      * Increases the number of visible grid tiles and checks
@@ -240,7 +404,7 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
      * @returns Promise<void>
      */
     public async loadPredictions(): Promise<void> {
-        // Make sure it isn't already loading predictions
+        // Make sure it isn"t already loading predictions
         if (this.submitting) return;
 
         // Set submission state
@@ -254,12 +418,11 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
                 this.epoch!.record.id,
                 startAt,
                 endAt,
-                0,
                 this.epoch!.record.installed
             );
 
             // Concatenate them with the current list
-            this.predictions = this.predictions.concat(preds);
+            this.predictionsHistPayload = preds.concat(this.predictionsHistPayload);
 
             // Check if there are more records
             this.hasMore = preds.length != 0;
@@ -283,8 +446,8 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
      */
     private getPredictionRange(): {startAt: number, endAt: number} {
         // Init values
-        let endAt: number = this.predictions.length ? this.predictions[this.predictions.length - 1].t: <number>this._app.serverTime.value;
-        let startAt: number = moment(endAt).subtract(5, "hours").valueOf();
+        let endAt: number = this.predictionsHistPayload.length ? this.predictionsHistPayload[0].t: <number>this._app.serverTime.value;
+        let startAt: number = moment(endAt).subtract(60, "minutes").valueOf();
 
         // Finally, return the range
         return { startAt: startAt, endAt: endAt - 1 }
@@ -302,7 +465,7 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
      */
     private onNewPrediction(pred: IPrediction): void {
         // Preprend it to the list
-        this.predictions = [pred].concat(this.predictions);
+        this.predictionsHistPayload.push(pred);
 
         // Emmit the data change event
         this.onDataChanges();
@@ -322,18 +485,16 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
      */
      private onDataChanges(): void {
         // Make sure there are records available
-        if (this.predictions.length) {
+        if (this.predictionsHistPayload.length) {
+            // Initialize the predictions grid
+            this.predictions = this.predictionsHistPayload.slice();
+            this.predictions.reverse();
+
             // Update the Title
             this.titleService.setTitle(`${this._prediction.resultNames[this.predictions[0].r]}: ${this.predictions[0].s}`);
 
-            // Set the chart list
-            this.predictionsHistPayload = this.predictions.slice();
-
-            // Reverse the items
-            this.predictionsHistPayload.reverse();
-
             // Init the color of the prediction sum line
-            let predLineColor: string = "#000000";
+            let predLineColor: string = this._chart.neutralColor;
             if (this.predictions[0].s >= this.epoch!.record.model.min_increase_sum) {
                 predLineColor = this._chart.upwardColor;
             } else if (this.predictions[0].s <= this.epoch!.record.model.min_decrease_sum) {
@@ -368,7 +529,7 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
                         borderWidth: 3,
                         label: {
                             borderColor: this._chart.downwardColor,
-                            style: { color: '#fff', background: this._chart.downwardColor}
+                            style: { color: "#fff", background: this._chart.downwardColor}
                         }
                     }
                 ],
@@ -418,7 +579,7 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
                                 color: predLineColor
                             }
                         ],
-                        stroke: {curve: "smooth", width:3},
+                        stroke: {curve: "straight", width:3},
                         annotations: annotations,
                         xaxis: {type: "datetime",tooltip: {enabled: true}, labels: {datetimeUTC: false}}, 
                     },
@@ -444,6 +605,8 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
             }
         }
     }
+
+
 
 
 

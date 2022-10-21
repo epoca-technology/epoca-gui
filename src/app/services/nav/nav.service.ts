@@ -352,7 +352,7 @@ export class NavService implements INavService {
 	* @param model
 	* @param pred
 	* @param outcome?
-	* @param epochID?
+	* @param epoch?
 	* @returns MatDialogRef<any>
 	* */
 	public displayPredictionDialog(

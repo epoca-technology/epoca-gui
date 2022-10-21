@@ -1,4 +1,4 @@
-import { IBacktestPosition, ICandlestick, IEpochPositionRecord } from "../../core";
+import { IBacktestPosition, ICandlestick, IEpochPositionRecord, IPredictionCandlestick } from "../../core";
 import {
 	ApexAxisChartSeries,
 	ApexChart,
@@ -29,7 +29,13 @@ export interface IChartService {
 	neutralColor: string,
 	
     // Candlesticks
-    getCandlestickChartOptions(candlesticks: ICandlestick[], annotations?: ApexAnnotations, highlightCurrentPrice?: boolean): ICandlestickChartOptions,
+    getCandlestickChartOptions(
+		candlesticks: Array<ICandlestick|IPredictionCandlestick>, 
+		annotations?: ApexAnnotations, 
+		highlightCurrentPrice?: boolean,
+		disableNiceScale?: boolean,
+		range?: IChartRange
+	): ICandlestickChartOptions,
 
 	// Bar Charts
 	getBarChartOptions(

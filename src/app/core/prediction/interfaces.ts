@@ -18,9 +18,13 @@ export interface IPredictionService {
     listPredictions(
       epochID: string,
       startAt: number,
-      endAt: number,
-      limit: number
-    ): Promise<IPrediction[]>
+      endAt: number
+    ): Promise<IPrediction[]>,
+    listPredictionCandlesticks(
+      epochID: string,
+      startAt: number,
+      endAt: number
+     ): Promise<IPredictionCandlestick[]>
 }
 
 
@@ -32,4 +36,13 @@ export interface IPredictionService {
 
 
 
-
+// Prediction Candlestick Record
+export interface IPredictionCandlestick {
+  ot: number,                 // Open Time
+  ct: number,                 // Close Time
+  o: number,                  // Open Sum
+  h: number,                  // High Sum
+  l: number,                  // Low Sum
+  c: number,                  // Close Sum
+  sm: number                  // Sum Mean
+}
