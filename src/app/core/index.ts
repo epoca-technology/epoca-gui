@@ -14,6 +14,7 @@ export * from "./gui-version";
 export * from "./ip-blacklist";
 export * from "./local-database";
 export * from "./notification";
+export * from "./order-book";
 export * from "./prediction";
 export * from "./server";
 export * from "./utils";

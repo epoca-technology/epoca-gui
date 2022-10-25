@@ -527,7 +527,7 @@ export class PredictionModelsComponent implements OnInit, OnDestroy, IPrediction
 		// Init the counters
 		let priceChangeRequirementCount: {[paramKey: string]: number} = { "2.5": 0, "3": 0, "3.5": 0,"4": 0, "Unknown": 0};
 		let minSumFunctionCount: {[paramKey: string]: number} = { "mean": 0, "median": 0, "Unknown": 0 };
-		let minSumAdjustmentFactorCount: {[paramKey: string]: number} = { "2": 0, "2.5": 0, "Unknown": 0 };
+		let minSumAdjustmentFactorCount: {[paramKey: string]: number} = { "1": 0, "1.5": 0, "2": 0, "2.5": 0, "Unknown": 0 };
 		let regressionsPerModelCount: {[paramKey: string]: number} = { "4": 0, "8": 0, "16": 0, "Unknown": 0 };
 
 		// Iterate over each certificate and populate the counters
@@ -594,14 +594,16 @@ export class PredictionModelsComponent implements OnInit, OnDestroy, IPrediction
 			minSumAdjustmentFactor: this._chart.getBarChartOptions(
 				{
 					series: [
+						{ name: "x1", data: [ minSumAdjustmentFactorCount["1"] ] },
+						{ name: "x1.5", data: [ minSumAdjustmentFactorCount["1.5"] ] },
 						{ name: "x2", data: [ minSumAdjustmentFactorCount["2"] ] },
 						{ name: "x2.5", data: [ minSumAdjustmentFactorCount["2.5"] ] },
 						{ name: "Unknown", data: [ minSumAdjustmentFactorCount["Unknown"] ] }
 					], 
-					colors: [ "#01579B", "#03A9F4", "#9E9E9E" ],
+					colors: [ "#041f59", "#2b608a", "#01579B", "#03A9F4", "#9E9E9E" ],
 					xaxis: {categories: [ "Min Sum Adjustment Factor" ], labels: {show: false}},
 					yaxis: {labels: {show: false}},
-					plotOptions: { bar: { horizontal: false, borderRadius: 4, columnWidth: "15%"}},
+					plotOptions: { bar: { horizontal: false, borderRadius: 4, columnWidth: "25%"}},
 				}, 
 				[ "Min Sum Adjustment Factor" ], 
 				this.gridChartHeight

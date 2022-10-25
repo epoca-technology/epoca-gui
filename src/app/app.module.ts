@@ -74,6 +74,9 @@ import {
 	// Notification
 	NotificationService,
 
+	// Order Book
+	OrderBookService,
+
 	// Prediction
 	PredictionService,
 
@@ -185,6 +188,9 @@ import { AppComponent } from "./app.component";
 
 		// Notification
 		NotificationService,
+
+		// Order Book
+		OrderBookService,
 
 		// Prediction
 		PredictionService,

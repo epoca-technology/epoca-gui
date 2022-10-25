@@ -4,7 +4,7 @@
         <button mat-icon-button class="show-on-mobile" (click)="_nav.dashboard()"><mat-icon>arrow_back</mat-icon></button>
         <span>Order Book</span>
         <span fxFlex></span>
-
+        <app-refresh-button (refresh)="refreshBook()" [intervalSeconds]="30"></app-refresh-button>
     </div>
 </mat-toolbar>
 
@@ -14,12 +14,85 @@
 </div>
 
 <!-- Content -->
-<div *ngIf="loaded">
-    <div fxLayout="row" fxLayoutAlign="center center">
-        <div fxFlex fxFlex.md="35" fxFlex.lg="25" fxFlex.xl="20" class="padding align-center">
-            <div class="desktop-card">
-                <p>@TODO</p>
+<div *ngIf="loaded" class="padding fadeIn">
+    <!-- The book has not been set -->
+    <p *ngIf="!book" class="light-text align-center" style="margin:100px;">The order book has not been set</p>
+    
+    <!-- The book exists-->
+    <div *ngIf="book">
+        <p class="error-color align-center" style="margin:15px 0 25px 0;" *ngIf="!synced">
+            The order book was last updated on {{book.last_update | date: 'medium'}}
+        </p>
+        <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column">
+            <span fxFlex></span>
+
+            <!-- Bids -->
+            <div fxFlex fxFlex.md="25" fxFlex.lg="20" fxFlex.xl="15" class="full-width">
+                <!-- Header -->
+                <div fxLayout="row" fxLayoutAlign="start center">
+                    <h2>Bids</h2>
+                    <span fxFlex></span>
+                    <h5 class="success-color" 
+                        matTooltip="Safe bid to take when selling.">{{book.safe_bid | currency}}</h5>
+                </div>
+
+                <!-- Table -->
+                <div class="desktop-card no-padding">
+                    <table class="bordered">
+                        <tbody>
+                            <tr *ngFor="let item of book.bids" class="bid-row-{{item.percent}}">
+                                <td><p>{{item.quantity | number: '1.2-2'}} BTC</p></td>
+                                <td class="align-right">
+                                    <p [ngClass]="{'success-color': item.price == book.safe_bid}">
+                                        <mat-icon class="success-color" *ngIf="item.price == book.safe_bid">location_searching</mat-icon> {{item.price | currency}}
+                                    </p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
+
+
+            <span fxFlex="7"></span>
+            <div class="divider show-on-mobile"></div>
+
+
+
+            <!-- Asks -->
+            <div fxFlex fxFlex.md="25" fxFlex.lg="20" fxFlex.xl="15" class="full-width">
+                <!-- Header -->
+                <div fxLayout="row" fxLayoutAlign="start center">
+                    <h2>Asks</h2>
+                    <span fxFlex></span>
+                    <h5 class="error-color" 
+                        matTooltip="Safe ask to take when buying.">{{book.safe_ask | currency}}</h5>
+                </div>
+
+                <!-- Table -->
+                <div class="desktop-card no-padding">
+                    <table class="bordered">
+                        <tbody>
+                            <tr *ngFor="let item of book.asks" class="ask-row-{{item.percent}}">
+                                <td class="show-on-desktop">
+                                    <p [ngClass]="{'error-color': item.price == book.safe_ask}">
+                                        {{item.price | currency}} <mat-icon class="error-color" *ngIf="item.price == book.safe_ask">location_searching</mat-icon>
+                                    </p>
+                                </td>
+                                <td class="align-right show-on-desktop"><p>{{item.quantity | number: '1.2-2'}} BTC</p></td>
+                                <td class="align-left show-on-mobile"><p>{{item.quantity | number: '1.2-2'}} BTC</p></td>
+                                <td class="show-on-mobile align-right">
+                                    <p [ngClass]="{'error-color': item.price == book.safe_ask}">
+                                        {{item.price | currency}} <mat-icon class="error-color" *ngIf="item.price == book.safe_ask">location_searching</mat-icon>
+                                    </p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <span fxFlex></span>
         </div>
     </div>
 </div>
