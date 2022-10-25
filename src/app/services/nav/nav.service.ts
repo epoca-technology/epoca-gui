@@ -359,6 +359,7 @@ export class NavService implements INavService {
 		model: IPredictionModelConfig, 
 		pred: IPrediction, 
 		outcome?: boolean, 
+		openPrice?: number, 
 		epoch?: IEpochRecord
 	): MatDialogRef<any> {
 		return this.dialog.open(PredictionDialogComponent, {
@@ -368,6 +369,7 @@ export class NavService implements INavService {
 				model: model,
 				prediction: pred,
 				outcome: outcome,
+				openPrice: openPrice,
 				epoch: epoch
 			}
 		});

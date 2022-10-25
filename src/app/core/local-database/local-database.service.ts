@@ -71,15 +71,15 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 				// Initialize DB
 				this.db = new Dexie(this.dbName);
 				this.db.version(1).stores({
-					userPreferences: "++id",
-					epochRecords: "++id, realID",
-					epochSummaries: "++id, realID",
-					predictionModelCertificates: "++id, realID",
-					regressionCertificates: "++id, realID",
-					predictionCandlesticks: "++id, realID",
-					predictions: "++id, realID",
-					starredPredictions: "++id, realID",
-					epochPredictionCandlesticks: "++id, realID",
+					userPreferences: "id",
+					epochRecords: "id",
+					epochSummaries: "id",
+					predictionModelCertificates: "id",
+					regressionCertificates: "id",
+					predictionCandlesticks: "id",
+					predictions: "id",
+					starredPredictions: "id",
+					epochPredictionCandlesticks: "id",
 				});
 				
 				// Open the database
@@ -262,7 +262,7 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 		 */
 		try {
 			// Read the data and return it if found
-			const localData: ILocalData = await this.epochRecords!.where("realID").equals(epochID).first();
+			const localData: ILocalData = await this.epochRecords!.where("id").equals(epochID).first();
 			if (localData && localData.data) { return localData.data } 
 
 			// If it isn't found, retrieve it, store it and return it
@@ -273,7 +273,7 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 				// Attempt to save it if found and it has been uninstalled
 				if (record && typeof record.uninstalled == "number") {
 					try {
-						await this.epochRecords!.add(<ILocalData> { realID: epochID, data: record });
+						await this.epochRecords!.put(<ILocalData> { id: epochID, data: record });
 					} catch (e) { console.error(e) }
 				}
 
@@ -310,7 +310,7 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 		 */
 		try {
 			// Read the data and return it if found
-			const localData: ILocalData = await this.epochSummaries!.where("realID").equals(epochID).first();
+			const localData: ILocalData = await this.epochSummaries!.where("id").equals(epochID).first();
 			if (localData && localData.data) { return localData.data } 
 
 			// If it isn't found, retrieve it, store it and return it
@@ -321,7 +321,7 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 				// Attempt to save it if it has been uninstalled
 				if (typeof summary.record.uninstalled == "number") {
 					try {
-						await this.epochSummaries!.add(<ILocalData> { realID: epochID, data: summary });
+						await this.epochSummaries!.put(<ILocalData> { id: epochID, data: summary });
 					} catch (e) { console.error(e) }
 				}
 
@@ -333,6 +333,8 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 			return this._epoch.getEpochSummary(epochID);
 		}
 	}
+
+
 
 
 
@@ -365,7 +367,7 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 		 */
 		try {
 			// Read the data and return it if found
-			const localData: ILocalData = await this.predictionModelCertificates!.where("realID").equals(id).first();
+			const localData: ILocalData = await this.predictionModelCertificates!.where("id").equals(id).first();
 			if (localData && localData.data) { return localData.data } 
 
 			// If it isn't found, retrieve it, store it and return it
@@ -375,7 +377,7 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 
 				// Attempt to save it
 				try {
-					await this.predictionModelCertificates!.add(<ILocalData> { realID: id, data: cert });
+					await this.predictionModelCertificates!.put(<ILocalData> { id: id, data: cert });
 				} catch (e) { console.error(e) }
 
 				// Finally, return it
@@ -410,7 +412,7 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 		 */
 		try {
 			// Read the data and return it if found
-			const localData: ILocalData = await this.regressionCertificates!.where("realID").equals(id).first();
+			const localData: ILocalData = await this.regressionCertificates!.where("id").equals(id).first();
 			if (localData && localData.data) { return localData.data } 
 
 			// If it isn't found, retrieve it, store it and return it
@@ -420,7 +422,7 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 
 				// Attempt to save it
 				try {
-					await this.regressionCertificates!.add(<ILocalData> { realID: id, data: cert });
+					await this.regressionCertificates!.put(<ILocalData> { id: id, data: cert });
 				} catch (e) { console.error(e) }
 
 				// Finally, return it
@@ -431,6 +433,9 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 			return this._epoch.getRegressionCertificate(id);
 		}
 	}
+
+
+
 
 
 
@@ -467,26 +472,21 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 			try {
 				// Make sure the beginning of the range exists
 				const firstRecordEnd: number = moment(start).add(30, "minutes").valueOf() - 1;
-				const firstRecord: ILocalData[] = await this.predictionCandlesticks!.where("realID").between(start, firstRecordEnd, true, true).sortBy("realID");
+				const firstRecord: ILocalData[] = await this.predictionCandlesticks!.where("id").between(start, firstRecordEnd, true, true).sortBy("id");
 				if (firstRecord.length) {
 					// Retrieve the head
-					const head: ILocalData[] = await this.predictionCandlesticks!.where("realID").between(start, end, true, true).sortBy("realID");
+					const head: ILocalData[] = await this.predictionCandlesticks!.where("id").between(start, end, true, true).sortBy("id");
 
 					// Check if the head contains the entire query. If so, return it right away
 					if (end <= head[head.length - 1]!.data.ct) { 
-						return head.map((localData) => localData!.data); 
+						return this.processCandlesticks(head.map((localData) => localData!.data), serverTime);
 					}
 
 					// Otherwise, complete the records and save them afterwards
 					else {
 						// Retrieve the tail
 						const tail: ICandlestick[] = await this._candlestick.getForPeriod(head[head.length - 1]!.data.ot + 1, end, intervalMinutes);
-
-						// Save it
-						await this.saveCandlesticks(tail, serverTime);
-
-						// Finally, return both, the head and the tail
-						return head.map((localData) => localData!.data).concat(tail);
+						return this.processCandlesticks(head.map((localData) => localData!.data).concat(tail), serverTime);
 					}
 				}
 
@@ -494,12 +494,7 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 				else {
 					// Retrieve the candlesticks
 					const candlesticks: ICandlestick[] = await this._candlestick.getForPeriod(start, end, intervalMinutes);
-					
-					// Save them if any was found
-					if (candlesticks.length) await this.saveCandlesticks(candlesticks, serverTime);
-
-					// Finally, return them
-					return candlesticks;
+					return this.processCandlesticks(candlesticks, serverTime, true);
 				}
 			} catch (e) { 
 				console.log(e);
@@ -514,6 +509,58 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 	}
 
 
+
+
+	/**
+	 * Once the candlesticks have been retrieved, they can be passed to this
+	 * function so the integrity can be verified. If there is any kind of issue,
+	 * it will ditch the provided candlesticks and rerun the process unless
+	 * the original request data was passed.
+	 * @param candlesticks 
+	 * @param serverTime 
+	 * @param originalRequestData? 
+	 * @returns Promise<ICandlestick[]>
+	 */
+	private async processCandlesticks(
+		candlesticks: ICandlestick[], 
+		serverTime: number, 
+		originalRequestData?: boolean
+	): Promise<ICandlestick[]> {
+		try {
+			// Make sure there are candlesticks
+			if (candlesticks.length) {
+				// Make sure the is a valid sequence
+				const ninetyMinutes: number = 90 * 60 * 1000
+				let invalidSequence: boolean = false;
+				let i = 0;
+				while (!invalidSequence && i < candlesticks.length - 2 && !originalRequestData) {
+					// Make sure the distance from the current and next candlestick is no larger than 90 minutes
+					invalidSequence = (candlesticks[i + 1].ot - candlesticks[i].ot) > ninetyMinutes
+
+					// Increment the counter
+					i += 1;
+				}
+
+				// If the sequence is invalid, retrieve the candlesticks again
+				if (invalidSequence) {
+					console.log("Invalid candlesticks sequence. Fixing...");
+					candlesticks = await this._candlestick.getForPeriod(candlesticks[0].ot, candlesticks[candlesticks.length - 1].ct);
+				}
+
+				// Save the candlesticks
+				await this.saveCandlesticks(candlesticks, serverTime);
+
+				// Finally, return them
+				return candlesticks;
+			}
+
+			// Otherwise, just return an empty list
+			else { return [] }
+		} catch (e) {
+			console.error(e);
+			return this._candlestick.getForPeriod(candlesticks[0].ot, candlesticks[candlesticks.length - 1].ct);
+		}
+	}
 
 
 
@@ -537,13 +584,13 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 				// Make sure the candlestick is finalized
 				if (candle.ct <= finalizedTS) {
 					// Make sure the candlestick doesn't already exist
-					const rec: ILocalData|undefined = await this.predictionCandlesticks!.where("realID").equals(candle.ot).first();
-					if (!rec) saveable.push({ realID: candle.ot, data: candle });
+					const rec: ILocalData|undefined = await this.predictionCandlesticks!.where("id").equals(candle.ot).first();
+					if (!rec) saveable.push({ id: candle.ot, data: candle });
 				}
 			}
 
 			// Check if there are candlesticks that should be saved
-			if (saveable.length) await this.predictionCandlesticks!.bulkAdd(saveable);
+			if (saveable.length) await this.predictionCandlesticks!.bulkPut(saveable);
 		} catch (e) { console.log(e) }
 	}
 
@@ -551,6 +598,9 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 
 
 	
+
+
+
 
 
 
@@ -591,14 +641,14 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 		try {
 			// Make sure the beginning of the range exists
 			const firstRecordEnd: number = moment(startAt).add(1, "minute").valueOf();
-			let firstRecord: ILocalData[] = await this.predictions!.where("realID").between(startAt, firstRecordEnd, true, true).sortBy("realID");
+			let firstRecord: ILocalData[] = await this.predictions!.where("id").between(startAt, firstRecordEnd, true, true).sortBy("id");
 			if (firstRecord.length) {
 				// Retrieve the head and reverse it
-				let head: ILocalData[] = await this.predictions!.where("realID").between(startAt, endAt, true, true).sortBy("realID");
+				const head: ILocalData[] = await this.predictions!.where("id").between(startAt, endAt, true, true).sortBy("id");
 
 				// Check if the head contains the entire query. If so, return it right away
 				if (endAt <= moment(head[head.length - 1]!.data.t).add(2, "minutes").valueOf()) {
-					return head.map((localData) => localData!.data); 
+					return this.processPredictions(epochID, head.map((localData) => localData!.data));
 				}
 
 				// Otherwise, complete the records and save them afterwards
@@ -609,25 +659,14 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 						head[head.length - 1]!.data.t, 
 						endAt
 					);
-					
-					// Save it
-					await this.savePredictions(tail);
-
-					// Finally, return both, the head and the tail
-					return head.map((localData) => localData!.data).concat(tail);
+					return this.processPredictions(epochID, head.map((localData) => localData!.data).concat(tail));
 				}
 			}
 
 			// Otherwise, fallback to the original request
 			else {
-				// Retrieve the predictions
 				const preds: IPrediction[] = await this._prediction.listPredictions(epochID, startAt, endAt);
-				
-				// Save them if any was found
-				if (preds.length) await this.savePredictions(preds);
-
-				// Finally, return them
-				return preds;
+				return this.processPredictions(epochID, preds, true);
 			}
 		} catch (e) { 
 			console.log(e);
@@ -637,6 +676,62 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 
 
 
+
+
+
+	/**
+	 * Once the predictions have been retrieved, they can be passed to this
+	 * function so the integrity can be verified. If there is any kind of issue,
+	 * it will ditch the provided preds and rerun the process unless
+	 * the original request data was passed.
+	 * @param epochID 
+	 * @param preds 
+	 * @param originalRequestData 
+	 * @returns Promise<IPrediction[]>
+	 */
+	private async processPredictions(
+		epochID: string, 
+		preds: IPrediction[], 
+		originalRequestData?: boolean
+	): Promise<IPrediction[]> {
+		try {
+			// Make sure there are predictions
+			if (preds.length) {
+				// Make sure the is a valid sequence
+				const sixtyMinutes: number = 60 * 60 * 1000
+				let invalidSequence: boolean = false;
+				let i = 0;
+				while (!invalidSequence && i < preds.length - 2 && !originalRequestData) {
+					// Make sure the distance from the current and next candlestick is no larger than 60 minutes
+					invalidSequence = (preds[i + 1].t - preds[i].t) > sixtyMinutes
+
+					// Increment the counter
+					i += 1;
+				}
+
+				// If the sequence is invalid, retrieve the predictions again
+				if (invalidSequence) {
+					console.log("Invalid predictions sequence. Fixing...");
+					preds = await this._prediction.listPredictions(epochID, preds[0].t, preds[preds.length - 1].t);
+				}
+
+				// Save the predictions
+				await this.savePredictions(preds);
+
+				// Finally, return them
+				return preds;
+			} 
+			
+			// Otherwise, return an empty list
+			else { return [] }
+		} catch (e) {
+			console.error(e);
+			return this._prediction.listPredictions(epochID, preds[0].t, preds[preds.length - 1].t);
+		}
+	}
+
+
+	
 
 
 
@@ -656,14 +751,17 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 			let saveable: ILocalData[] = [];
 			for (let pred of preds) {
 				// Make sure the prediction doesn't already exist
-				const rec: ILocalData|undefined = await this.predictions!.where("realID").equals(pred.t).first();
-				if (!rec) saveable.push({ realID: pred.t, data: pred });
+				const rec: ILocalData|undefined = await this.predictions!.where("id").equals(pred.t).first();
+				if (!rec) saveable.push({ id: pred.t, data: pred });
 			}
 
 			// Check if there are candlesticks that should be saved
-			if (saveable.length) await this.predictions!.bulkAdd(saveable);
+			if (saveable.length) await this.predictions!.bulkPut(saveable);
 		} catch (e) { console.log(e) }
 	}
+
+
+
 
 
 
@@ -694,7 +792,7 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 
 		// Save the record safely
 		try {
-			await this.starredPredictions!.add({ realID: pred.t, data: pred });
+			await this.starredPredictions!.put({ id: pred.t, data: pred });
 		} catch (e) { console.log(e) }
 	}
 
@@ -716,7 +814,7 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 
 		// Save the record safely
 		try {
-			await this.starredPredictions!.where("realID").equals(pred.t).delete();
+			await this.starredPredictions!.where("id").equals(pred.t).delete();
 		} catch (e) { console.log(e) }
 	}
 
@@ -739,7 +837,7 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 
 		try {
 			// Retrieve the predictions
-			const localData: ILocalData[] = await this.starredPredictions!.orderBy("realID").reverse().toArray();
+			const localData: ILocalData[] = await this.starredPredictions!.orderBy("id").reverse().toArray();
 
 			// Return the list of predictions
 			return localData.map((ld) => ld!.data);
@@ -748,6 +846,9 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 			return [];
 		}
 	}
+
+
+
 
 
 
@@ -798,14 +899,18 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 		try {
 			// Make sure the beginning of the range exists
 			const firstRecordEnd: number = moment(startAt).add(30, "minutes").valueOf() - 1;
-			const firstRecord: ILocalData[] = await this.epochPredictionCandlesticks!.where("realID").between(startAt, firstRecordEnd, true, true).sortBy("realID");
+			const firstRecord: ILocalData[] = await this.epochPredictionCandlesticks!.where("id").between(startAt, firstRecordEnd, true, true).sortBy("id");
 			if (firstRecord.length) {
 				// Retrieve the head
-				const head: ILocalData[] = await this.epochPredictionCandlesticks!.where("realID").between(startAt, endAt, true, true).sortBy("realID");
+				const head: ILocalData[] = await this.epochPredictionCandlesticks!.where("id").between(startAt, endAt, true, true).sortBy("id");
 
 				// Check if the head contains the entire query. If so, return it right away
 				if (endAt <= moment(head[head.length - 1]!.data.ct).add(2, "minutes").valueOf()) { 
-					return head.map((localData) => localData!.data); 
+					return this.processEpochPredictionCandlesticks(
+						epochID,
+						head.map((localData) => localData!.data),
+						serverTime
+					);
 				}
 
 				// Otherwise, complete the records and save them afterwards
@@ -816,12 +921,11 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 						head[head.length - 1]!.data.ot + 1, 
 						endAt
 					);
-
-					// Save it
-					await this.savePredictionCandlesticks(tail, serverTime);
-
-					// Finally, return both, the head and the tail
-					return head.map((localData) => localData!.data).concat(tail);
+					return this.processEpochPredictionCandlesticks(
+						epochID, 
+						head.map((localData) => localData!.data).concat(tail),
+						serverTime
+					);
 				}
 			}
 
@@ -829,12 +933,12 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 			else {
 				// Retrieve the candlesticks
 				const candlesticks: IPredictionCandlestick[] = await this._prediction.listPredictionCandlesticks(epochID, startAt, endAt);
-				
-				// Save them if any was found
-				if (candlesticks.length) await this.savePredictionCandlesticks(candlesticks, serverTime);
-
-				// Finally, return them
-				return candlesticks;
+				return this.processEpochPredictionCandlesticks(
+					epochID, 
+					candlesticks,
+					serverTime,
+					true
+				);
 			}
 		} catch (e) { 
 			console.log(e);
@@ -842,6 +946,68 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 		}
 	}
 
+
+
+
+
+
+
+
+	/**
+	 * Once the candlesticks have been retrieved, they can be passed to this
+	 * function so the integrity can be verified. If there is any kind of issue,
+	 * it will ditch the provided candlesticks and rerun the process unless
+	 * the original request data was passed.
+	 * @param candlesticks 
+	 * @param serverTime 
+	 * @param originalRequestData? 
+	 * @returns Promise<ICandlestick[]>
+	 */
+	 private async processEpochPredictionCandlesticks(
+		epochID: string,
+		candlesticks: IPredictionCandlestick[], 
+		serverTime: number, 
+		originalRequestData?: boolean
+	): Promise<IPredictionCandlestick[]> {
+		try {
+			// Make sure there are candlesticks
+			if (candlesticks.length) {
+				// Make sure the is a valid sequence
+				const ninetyMinutes: number = 180 * 60 * 1000
+				let invalidSequence: boolean = false;
+				let i = 0;
+				while (!invalidSequence && i < candlesticks.length - 2 && !originalRequestData) {
+					// Make sure the distance from the current and next candlestick is no larger than 90 minutes
+					invalidSequence = (candlesticks[i + 1].ot - candlesticks[i].ot) > ninetyMinutes
+
+					// Increment the counter
+					i += 1;
+				}
+
+				// If the sequence is invalid, retrieve the candlesticks again
+				if (invalidSequence) {
+					console.log("Invalid epoch prediction candlesticks sequence. Fixing...");
+					candlesticks = await this._prediction.listPredictionCandlesticks(
+						epochID, 
+						candlesticks[0].ot, 
+						candlesticks[candlesticks.length - 1].ct
+					);
+				}
+
+				// Save the candlesticks
+				await this.savePredictionCandlesticks(candlesticks, serverTime);
+
+				// Finally, return them
+				return candlesticks;
+			}
+
+			// Otherwise, just return an empty list
+			else { return [] }
+		} catch (e) {
+			console.error(e);
+			return this._prediction.listPredictionCandlesticks(epochID, candlesticks[0].ot, candlesticks[candlesticks.length - 1].ct);
+		}
+	}
 
 
 
@@ -866,13 +1032,13 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 				// Make sure the candlestick is finalized
 				if (candle.ct <= finalizedTS) {
 					// Make sure the candlestick doesn't already exist
-					const rec: ILocalData|undefined = await this.epochPredictionCandlesticks!.where("realID").equals(candle.ot).first();
-					if (!rec) saveable.push({ realID: candle.ot, data: candle });
+					const rec: ILocalData|undefined = await this.epochPredictionCandlesticks!.where("id").equals(candle.ot).first();
+					if (!rec) saveable.push({ id: candle.ot, data: candle });
 				}
 			}
 
 			// Check if there are candlesticks that should be saved
-			if (saveable.length) await this.epochPredictionCandlesticks!.bulkAdd(saveable);
+			if (saveable.length) await this.epochPredictionCandlesticks!.bulkPut(saveable);
 		} catch (e) { console.log(e) }
 	}
 

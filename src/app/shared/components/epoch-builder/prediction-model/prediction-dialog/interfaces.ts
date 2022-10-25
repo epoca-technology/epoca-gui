@@ -13,5 +13,6 @@ export interface IPredictionDialogData {
     model: IPredictionModelConfig,
     prediction: IPrediction,
     outcome?: boolean,
+    openPrice?: number,
     epoch?: IEpochRecord,
 }

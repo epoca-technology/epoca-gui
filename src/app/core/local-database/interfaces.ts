@@ -93,12 +93,11 @@ export interface ILocalTableInfo {
 
 /**
  * Local Data
- * The data is stored in an object that contains the identifier of 
- * the record and optionally, the expiry timestamp.
+ * The data is stored in an object that contains the identifier and
+ * the data property which can contain anything.
  */
 export type ILocalData = ILocalDataObject|undefined;
 export interface ILocalDataObject {
-	id?: number,
-    realID?: string|number,
+	id?: number|string,
 	data: any
 }

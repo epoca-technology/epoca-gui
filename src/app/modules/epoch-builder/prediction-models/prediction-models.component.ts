@@ -721,6 +721,7 @@ export class PredictionModelsComponent implements OnInit, OnDestroy, IPrediction
 						self.cert!.model, 
 						self.cert!.backtest.positions[c.dataPointIndex].p!,
 						self.cert!.backtest.positions[c.dataPointIndex].o,
+						self.cert!.backtest.positions[c.dataPointIndex].op,
 					)
 				}
 			}

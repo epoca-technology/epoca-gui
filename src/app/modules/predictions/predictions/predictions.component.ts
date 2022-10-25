@@ -597,6 +597,7 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
                             self.epoch!.record.model, 
                             self.predictionsHistPayload[c.dataPointIndex], 
                             undefined, 
+                            undefined,
                             self.epoch!.record
                         )
                     }

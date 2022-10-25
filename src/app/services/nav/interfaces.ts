@@ -48,6 +48,7 @@ export interface INavService {
 		model: IPredictionModelConfig, 
 		pred: IPrediction, 
 		outcome?: boolean,
+		openPrice?: number,
 		epoch?: IEpochRecord
 	): MatDialogRef<any>,
 	

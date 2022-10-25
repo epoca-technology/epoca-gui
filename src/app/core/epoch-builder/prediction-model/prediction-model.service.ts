@@ -218,8 +218,8 @@ export class PredictionModelService implements IPredictionModelService {
 						evaluationFunction: "evaluateProfit",
 						evaluationParams: {
 							receivedProfit: c.backtest.profit,
-							optimalProfit: c.backtest.position_size * 2.2,
-							maxPoints: 65
+							optimalProfit: c.backtest.position_size * 3,
+							maxPoints: 45
 						}
 					},
 					{
@@ -246,7 +246,7 @@ export class PredictionModelService implements IPredictionModelService {
 						evaluationFunction: "evaluateAccuracy",
 						evaluationParams: {
 							accuracy: c.backtest.accuracy,
-							maxPoints: 25
+							maxPoints: 45
 						}
 					},
 					{

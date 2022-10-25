@@ -46,6 +46,7 @@ export class PredictionDialogComponent implements OnInit, IPredictionDialogCompo
 	public showOutcome: boolean = false;
 	public outcome: boolean|undefined;
 	private readonly outcomeCandlesticksRequirement: number = 200;
+	public openPrice: number|undefined;
 
 	// Prediction Features
 	public showFeatures: boolean = false;
@@ -88,6 +89,7 @@ export class PredictionDialogComponent implements OnInit, IPredictionDialogCompo
 		// Outcome
 		this.showOutcome = typeof this.data.outcome == "boolean";
 		this.outcome = this.data.outcome;
+		this.openPrice = this.data.openPrice;
 	}
 
 
@@ -132,7 +134,8 @@ export class PredictionDialogComponent implements OnInit, IPredictionDialogCompo
 		const end: number = list[list.length - 1].ct;
 
 		// Calculate the estimated open price
-		const openPrice: number = <number>this._utils.getMean([active.o, active.h, active.l, active.c]);
+		const openPrice: number = typeof this.openPrice == "number" ? this.openPrice:
+			<number>this._utils.getMean([active.o, active.h, active.l, active.c]);
 
 		// Init the annotations
 		let annotations: ApexAnnotations = {

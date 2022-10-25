@@ -58,7 +58,7 @@
                             class="prediction-tile mat-elevation-z2 fake-button">
                             <div class="full-width prediction-tile-inner">
                                 <div fxLayout="row" fxLayoutAlign="start center">
-                                    <div class="clickable" (click)="_nav.displayPredictionDialog(epoch.record.model, pred, undefined, epoch.record)">
+                                    <div class="clickable" (click)="_nav.displayPredictionDialog(epoch.record.model, pred, undefined, undefined, epoch.record)">
                                         <div fxLayout="row" fxLayoutAlign="start center">
                                             <img src="{{_prediction.resultImagePaths[pred.r]}}" alt="Model Type" class="model-logo-xs">
                                             <h5>{{_prediction.resultNames[pred.r]}}</h5>
@@ -119,7 +119,7 @@
                                 class="prediction-tile mat-elevation-z2 fake-button">
                                 <div class="full-width prediction-tile-inner">
                                     <div fxLayout="row" fxLayoutAlign="start center">
-                                        <div class="clickable" (click)="_nav.displayPredictionDialog(epoch.record.model, pred, undefined, epoch.record)">
+                                        <div class="clickable" (click)="_nav.displayPredictionDialog(epoch.record.model, pred, undefined, undefined, epoch.record)">
                                             <div fxLayout="row" fxLayoutAlign="start center">
                                                 <img src="{{_prediction.resultImagePaths[pred.r]}}" alt="Model Type" class="model-logo-xs">
                                                 <h5>{{_prediction.resultNames[pred.r]}}</h5>

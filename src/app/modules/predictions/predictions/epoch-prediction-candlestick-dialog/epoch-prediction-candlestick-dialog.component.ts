@@ -83,6 +83,7 @@ export class EpochPredictionCandlestickDialogComponent implements OnInit, IEpoch
 			this.epoch.model,
 			pred,
 			undefined,
+			undefined,
 			this.epoch
 		);
 	}
