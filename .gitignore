@@ -23,8 +23,6 @@ chrome-profiler-events*.json
 *.sublime-workspace
 
 # IDE - VSCode
-/.vscode
-.vscode/*
 .vscode
 
 # misc
