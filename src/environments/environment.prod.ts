@@ -10,20 +10,20 @@ export const environment: IEnvironment = {
             messagingSenderId: "192265974678",
             appId: "1:192265974678:web:6d5ebd1518f7e73176e3b7"
 		},
-		vapidKey: 'BMVi9vH_H_e3RTgfXXbS9SsCg5A-1YpmRaRmmW9xPmUsofcP4FPEdOqFfIWtQ-ZLfNJMc0YHeLof832xpgXGz2o'
+		vapidKey: "BMVi9vH_H_e3RTgfXXbS9SsCg5A-1YpmRaRmmW9xPmUsofcP4FPEdOqFfIWtQ-ZLfNJMc0YHeLof832xpgXGz2o"
 	},
     localServer: false,
     apiURL: {
-        local: 'http://localhost:8075',
-        external: ''
+        local: "http://localhost:8075",
+        external: "https://api.epoca.tech"
     },
     pgAdmin: {
-        local: 'http://localhost:8080/',
-        external: ''
+        local: "http://localhost:8080",
+        external: "https://pgadmin.epoca.tech"
     },
     dozzle: {
-        local: 'http://localhost:8085/',
-        external: ''
+        local: "http://localhost:8085",
+        external: "https://dozzle.epoca.tech"
     },
-    recaptchaKey: '6LcKVT8eAAAAAA5GsQCepHT5nDnSo3ays2FXZ__N',
+    recaptchaKey: "6LcKVT8eAAAAAA5GsQCepHT5nDnSo3ays2FXZ__N",
 };

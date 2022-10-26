@@ -5,9 +5,9 @@ Epoca GUI is an application designed to interact with the Core API through HTTP 
 
 ## Requirements
 
-- NodeJS: v16.13.1
+- NodeJS: v16.14.0
 
-- NPM: v8.1.2
+- NPM: v8.3.1
 
 - Install dependencies with `npm install` 
 
