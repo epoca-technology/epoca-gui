@@ -33,28 +33,23 @@
                         matBadgeOverlap="false"></mat-icon>
         </div>
 
-        <!-- Trading Simulations -->
-        <div fxFlex fxLayout="row" fxLayoutAlign="center center"
-             class="tab" role="button" matRipple
-             [ngClass]="{'active': activeTab == 3}" (click)="navigate(3)">
-            <mat-icon   svgIcon="ssid_chart" 
-                        [matBadge]="_app.activeSimulations.value" 
-                        [matBadgeHidden]="!_app.epoch.value" 
-                        matBadgePosition="after"
-                        matBadgeSize="small"
-                        matBadgeOverlap="false"></mat-icon>
-        </div>
-
         <!-- Trading Sessions -->
         <div fxFlex fxLayout="row" fxLayoutAlign="center center"
              class="tab" role="button" matRipple
-             [ngClass]="{'active': activeTab == 4}" (click)="navigate(4)">
+             [ngClass]="{'active': activeTab == 3}" (click)="navigate(3)">
             <mat-icon   svgIcon="auto_graph" 
                         [matBadge]="_app.activeSessionPositions.value" 
                         [matBadgeHidden]="!_app.epoch.value" 
                         matBadgePosition="after"
                         matBadgeSize="small"
                         matBadgeOverlap="false"></mat-icon>
+        </div>
+
+        <!-- My Wallet -->
+        <div fxFlex fxLayout="row" fxLayoutAlign="center center"
+             class="tab" role="button" matRipple
+             [ngClass]="{'active': activeTab == 4}" (click)="navigate(4)">
+            <mat-icon svgIcon="wallet"></mat-icon>
         </div>
     </div>
 </div>

@@ -39,10 +39,10 @@ const routes: Routes = [
 		loadChildren: () => import("./modules/trading-sessions/trading-sessions.module").then(m => m.TradingSessionsModule),
 	},
 
-	// Trading Simulations
+	// My Wallet
 	{
-		path: "tradingSimulations",
-		loadChildren: () => import("./modules/trading-simulations/trading-simulations.module").then(m => m.TradingSimulationsModule),
+		path: "myWallet",
+		loadChildren: () => import("./modules/my-wallet/my-wallet.module").then(m => m.MyWalletModule),
 	},
 
 	// Candlesticks

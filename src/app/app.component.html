@@ -36,17 +36,17 @@
                 </button>
             </mat-list-item>
 
-            <!-- Trading Simulations -->
-            <mat-list-item>
-                <button mat-button class="left-icon-button" (click)="_nav.tradingSimulations()" [disabled]="state.module == 'tradingSimulations'">
-                    <mat-icon svgIcon="ssid_chart"></mat-icon><span>Trading Simulations</span>
-                </button>
-            </mat-list-item>
-
             <!-- Trading Sessions -->
             <mat-list-item>
                 <button mat-button class="left-icon-button" (click)="_nav.tradingSessions()" [disabled]="state.module == 'tradingSessions'">
                     <mat-icon svgIcon="auto_graph"></mat-icon><span>Trading Sessions</span>
+                </button>
+            </mat-list-item>
+
+            <!-- My Wallet -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.myWallet()" [disabled]="state.module == 'myWallet'">
+                    <mat-icon svgIcon="wallet"></mat-icon><span>My Wallet</span>
                 </button>
             </mat-list-item>
 
@@ -202,17 +202,6 @@
                     <mat-icon svgIcon="wand_magic_sparkles"></mat-icon><span>Predictions</span>
                 </button>
 
-                <!-- Trading Simulations -->
-                <button mat-button 
-                        class="left-icon-button" 
-                        (click)="_nav.tradingSimulations()" 
-                        [matBadge]="_app.activeSimulations.value" 
-                        [matBadgeHidden]="!_app.epoch.value" 
-                        [disabled]="state.module == 'tradingSimulations'" 
-                        *ngIf="uid">
-                    <mat-icon svgIcon="ssid_chart"></mat-icon><span>Trading Simulations</span>
-                </button>
-
                 <!-- Trading Session -->
                 <button mat-button 
                         class="left-icon-button" 
@@ -222,6 +211,15 @@
                         [disabled]="state.module == 'tradingSessions'" 
                         *ngIf="uid">
                     <mat-icon svgIcon="auto_graph"></mat-icon><span>Trading Sessions</span>
+                </button>
+
+                <!-- My Wallet -->
+                <button mat-button 
+                        class="left-icon-button" 
+                        (click)="_nav.myWallet()" 
+                        [disabled]="state.module == 'myWallet'" 
+                        *ngIf="uid">
+                    <mat-icon svgIcon="wallet"></mat-icon><span>My Wallet</span>
                 </button>
 
                 <!-- Menu -->

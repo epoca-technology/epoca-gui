@@ -83,7 +83,7 @@ export class EpochsComponent implements OnInit, OnDestroy, IEpochsComponent {
 
                 // Set the init state
                 this.initialized = true;
-            }
+            } else if (e == undefined) { this.initialized = true  }
         });
     }
 

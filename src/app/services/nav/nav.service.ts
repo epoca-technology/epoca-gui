@@ -100,15 +100,6 @@ export class NavService implements INavService {
 		}
 	}
 
-	// Trading Simulations
-	public tradingSimulations(epochID?: string): Promise<boolean> { 
-		if (typeof epochID == "string") {
-			return this.navigate(`tradingSimulations/${epochID}`);
-		} else {
-			return this.navigate("tradingSimulations");
-		}
-	}
-
 	// Trading Sessions
 	public tradingSessions(epochID?: string): Promise<boolean> { 
 		if (typeof epochID == "string") {
@@ -117,6 +108,9 @@ export class NavService implements INavService {
 			return this.navigate("tradingSessions");
 		}
 	}
+
+	// My Wallet
+	public myWallet(): Promise<boolean> { return this.navigate("myWallet") }
 
 	// Candlesticks
 	public candlesticks(): Promise<boolean> { return this.navigate("candlesticks") }

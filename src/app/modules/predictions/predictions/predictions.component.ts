@@ -115,7 +115,7 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
 
                 // Set the init state
                 this.initialized = true;
-            }
+            } else if (e == undefined) { this.initialized = true  }
         });
     }
 
