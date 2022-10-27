@@ -101,9 +101,11 @@ export class UninstallEpochComponent implements OnInit, IUninstallEpochComponent
 
 			// Check if the installation completed
 			if (task.state == "completed") {
-				await this._app.refreshAppBulk();
-				this._app.success(`The epoch has been uninstalled successfully.`);
-				this.close();
+				setTimeout(async () => {
+					await this._app.refreshAppBulk();
+					this._app.success(`The epoch has been uninstalled successfully.`);
+					setTimeout(() => { this.close() }, 500);
+				}, 1000);
 			}
 
 			// Otherwise, just update the task's state

@@ -173,9 +173,11 @@ export class InstallEpochComponent implements OnInit, IInstallEpochComponent {
 
 			// Check if the installation completed
 			if (task.state == "completed") {
-				await this._app.refreshAppBulk();
-				this._app.success(`The epoch ${this.epochID} has been installed successfully.`);
-				this.close();
+				setTimeout(async () => {
+					await this._app.refreshAppBulk();
+					this._app.success(`The epoch ${this.epochID} has been installed successfully.`);
+					setTimeout(() => { this.close() }, 500);
+				}, 1000);
 			}
 
 			// Otherwise, just update the task's state
