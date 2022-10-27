@@ -1,4 +1,4 @@
-import {Injectable} from "@angular/core";
+import {Injectable, NgZone} from "@angular/core";
 import { MediaChange, MediaObserver } from "@angular/flex-layout";
 import {MatSnackBar, MatSnackBarRef, TextOnlySnackBar} from "@angular/material/snack-bar";
 import {Clipboard} from "@angular/cdk/clipboard";
@@ -73,7 +73,8 @@ export class AppService implements IAppService{
         private _utils: UtilsService,
 		private _auth: AuthService,
 		private _bulk: BulkDataService,
-		private _prediction: PredictionService
+		private _prediction: PredictionService,
+		private ngZone: NgZone
 	) {
 		// Initialize the Layout
 		this.layout = new BehaviorSubject<ILayout>(this.getLayout());
@@ -149,23 +150,26 @@ export class AppService implements IAppService{
 			// Unpack the metadata
 			const metadata: IAppBulkMetadata = this.getAppBulkMetadata(bulk);
 
-			// Broadcast the server's time
-			this.serverTime.next(bulk.serverTime);
+			// Update the values within angular's zone
+			this.ngZone.run(() => {
+				// Broadcast the server's time
+				this.serverTime.next(bulk.serverTime);
 
-			// Broadcast the active epoch summary
-			this.epoch.next(bulk.epoch);
+				// Broadcast the active epoch summary
+				this.epoch.next(bulk.epoch);
 
-			// Broadcast the active prediction as well as the metadata
-			this.prediction.next(bulk.prediction);
-			this.predictionIcon.next(metadata.predictionIcon);
+				// Broadcast the active prediction as well as the metadata
+				this.prediction.next(bulk.prediction);
+				this.predictionIcon.next(metadata.predictionIcon);
 
-			// Broadcast the simulations as well as the metadata
-			this.simulations.next(bulk.simulations);
-			this.activeSimulations.next(metadata.activeSimulations);
+				// Broadcast the simulations as well as the metadata
+				this.simulations.next(bulk.simulations);
+				this.activeSimulations.next(metadata.activeSimulations);
 
-			// Broadcast the sessions as well as the metadata
-			this.sessions.next(bulk.sessions);
-			this.activeSessionPositions.next(metadata.activeSessionPositions);
+				// Broadcast the sessions as well as the metadata
+				this.sessions.next(bulk.sessions);
+				this.activeSessionPositions.next(metadata.activeSessionPositions);
+			});
 		} catch (e) { console.error(e) }
 	}
 
@@ -193,9 +197,6 @@ export class AppService implements IAppService{
 		// Populate the active prediction icon
 		if (bulk.prediction) { predictionIcon = this._prediction.resultIconNames[bulk.prediction.r]} 
 		else { predictionIcon = undefined }
-
-		// Calculate the number of active simulations
-		// @TODO
 
 		// Calculate the number of positions in the active session
 		// @TODO
