@@ -79,7 +79,7 @@ export class SignInComponent implements OnInit, OnDestroy, ISignInComponent {
         // Prompt the confirmation dialog
         this._nav.displayConfirmationDialog({
             title: 'Sign In',
-            content: `<p class="align-center">Are you sure that you wish to sign into your Plutus account?</p>`,
+            content: `<p class="align-center">Are you sure that you wish to sign into your Epoca account?</p>`,
             otpConfirmation: true
         }).afterClosed().subscribe(
             async (otp: string|undefined) => {
