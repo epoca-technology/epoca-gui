@@ -50,7 +50,7 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
 	private layoutSub?: Subscription;
 
     // User Preferences
-    public userPreferences!: IUserPreferences;
+    public userPreferences: IUserPreferences = <IUserPreferences>{ sound: false };
 
     // Server Data
     public serverData?: IServerData;
