@@ -161,7 +161,10 @@
     <mat-sidenav-content class="app-content">
 
         <!-- Navigation progress bar -->
-        <mat-progress-bar *ngIf="state.navigating" class="navigation-progress-bar" mode="indeterminate" color="accent"></mat-progress-bar>
+        <mat-progress-bar *ngIf="state.navigating || (uid && !_app.serverTime.value)" 
+                        class="navigation-progress-bar" 
+                        mode="indeterminate" 
+                        color="accent"></mat-progress-bar>
 
 
 

@@ -1,4 +1,4 @@
 export interface IGuiVersionService { 
-    get(): Promise<string>,
+    //get(): Promise<string>,
     update(version: string, otp: string): Promise<void>
 }

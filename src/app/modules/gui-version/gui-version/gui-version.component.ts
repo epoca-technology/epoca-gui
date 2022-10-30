@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
+import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from "@angular/core";
 import {SwUpdate} from "@angular/service-worker";
-import {ActivatedRoute} from "@angular/router";
+import { Subscription } from "rxjs";
 import {AbstractControl, FormControl, FormGroup} from "@angular/forms";
 import { IGuiVersionComponent } from "./interfaces";
 import { GuiVersionService } from "../../../core";
@@ -11,12 +11,13 @@ import { AppService, NavService, ValidationsService } from "../../../services";
   templateUrl: "./gui-version.component.html",
   styleUrls: ["./gui-version.component.scss"]
 })
-export class GuiVersionComponent implements OnInit, IGuiVersionComponent {
+export class GuiVersionComponent implements OnInit, OnDestroy, IGuiVersionComponent {
     // Input
     @ViewChild("versionControl") versionControl? : ElementRef;
 
 	// Version
 	public currentVersion: string|null|undefined;
+    private currentVersionSub?: Subscription;
 	public versionMissmatch: boolean = false;
 
     // Edit Mode
@@ -33,7 +34,6 @@ export class GuiVersionComponent implements OnInit, IGuiVersionComponent {
     
     constructor(
         private _app: AppService,
-		private route: ActivatedRoute,
 		private swUpdate: SwUpdate,
         private _version: GuiVersionService,
         public _nav: NavService,
@@ -45,23 +45,29 @@ export class GuiVersionComponent implements OnInit, IGuiVersionComponent {
 
     
     async ngOnInit(): Promise<void> {
-        // Check if the current version was provided in the route
-        this.currentVersion = this.route.snapshot.paramMap.get("currentVersion");
-        
-        // In case it wast, retrieve it
-        if (typeof this.currentVersion != "string") {
-            try {
-                this.currentVersion = await this._version.get();
-            } catch (e) { this._app.error(e) }
-        }
+        // Force an app bulk refresh
+        await this._app.refreshAppBulk();
 
-        // Check if there is a missmatch
-        this.versionMissmatch = this._app.version != this.currentVersion;
-        
-        // Allow for a small delay before marking the component as loaded
-        this.loaded = true
+        // Subscribe to the gui version
+        this.currentVersionSub = this._app.guiVersion.subscribe((version: string|null|undefined) => {
+            if (typeof version == "string") {
+                // Populate the version
+                this.currentVersion = version;
+
+                // Check if there is a missmatch
+                this.versionMissmatch = this._app.version != this.currentVersion;
+                
+                // Allow for a small delay before marking the component as loaded
+                this.loaded = true
+            }
+        });
     }
 
+
+
+    ngOnDestroy(): void {
+        if (this.currentVersionSub) this.currentVersionSub.unsubscribe(); 
+    }
 
 
 

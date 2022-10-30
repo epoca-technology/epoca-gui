@@ -15,10 +15,11 @@ export class GuiVersionService implements IGuiVersionService {
     /**
      * Retrieves the current GUI Version.
      * @returns Promise<string>
+	 * @DEPRECATED This route has been moved to BulkDataRoute.getAppBulk 
      */
-	public get(): Promise<string> {
+	/*public get(): Promise<string> {
 		return this._api.request('get','guiVersion/get', {}, true);
-	}
+	}*/
 
 
 
@@ -28,7 +29,7 @@ export class GuiVersionService implements IGuiVersionService {
      * Updates the current GUI Version.
      * @returns Promise<void>
      */
-     public update(version: string, otp: string): Promise<void> {
+    public update(version: string, otp: string): Promise<void> {
 		return this._api.request('post','guiVersion/update', {version: version}, true, otp);
 	}
 }

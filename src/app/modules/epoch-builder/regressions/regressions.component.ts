@@ -3,12 +3,14 @@ import { ActivatedRoute } from '@angular/router';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { MatSidenav } from '@angular/material/sidenav';
 import {MatDialog} from '@angular/material/dialog';
+import { MatBottomSheetRef } from "@angular/material/bottom-sheet";
 import { Subscription } from 'rxjs';
 import { 
 	UtilsService, 
 	IRegressionsOrder,
 	RegressionService,
-	IRegressionTrainingCertificate
+	IRegressionTrainingCertificate,
+	IRegressionConfig
 } from '../../../core';
 import { 
 	AppService, 
@@ -278,6 +280,34 @@ export class RegressionsComponent implements OnInit, OnDestroy, IRegressionsComp
 		this.activeCertTabIndex = 0;
 		this.learningCurveTab = 0;
 	}
+
+
+
+
+
+
+	/**
+	 * Builds a list of all the active regressions and
+	 * displays them in a menu. Once a selection is made,
+	 * the certificate is retrieved from the db
+	 */
+	public activateActiveRegression(): void {
+		// Display the bottom sheet and handle the action
+		const bs: MatBottomSheetRef = this._nav.displayBottomSheetMenu(
+			this._app.epoch.value!.record.model.regressions.map((r: IRegressionConfig) => {
+				return {
+					icon: "show_chart",
+					title: "Regression Model",
+					description: r.id,
+					response: r.id
+				}
+			})
+		);
+		bs.afterDismissed().subscribe(async (response: string|undefined) => {
+			if (typeof response == "string") { this.initWithID(response) }
+		});
+	}
+
 
 
 

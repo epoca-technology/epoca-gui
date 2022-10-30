@@ -10,6 +10,7 @@ import {
     IEpochSummary, 
     IPrediction, 
     IPredictionCandlestick, 
+    IPredictionState, 
     LocalDatabaseService, 
     PredictionService
 } from "../../../core";
@@ -66,6 +67,7 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
     public starredList: IPrediction[] = [];
 
     // Initialization State
+    public initializing: boolean = false;
     public initialized: boolean = false;
 
     // Epoch Data Loading State
@@ -102,6 +104,9 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
                 // Kill the subscription
                 if (this.epochSub) this.epochSub.unsubscribe();
 
+                // Set init state
+                this.initializing = true;
+
                 // Check if an Epoch ID was provided from the URL. If so, initialize it right away.
                 const urlEpochID: string|null = this.route.snapshot.paramMap.get("epochID");
                 if (typeof urlEpochID == "string" && this._validations.epochIDValid(urlEpochID)) { 
@@ -114,6 +119,7 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
                 }
 
                 // Set the init state
+                this.initializing = false;
                 this.initialized = true;
             } else if (e == undefined) { this.initialized = true  }
         });
@@ -440,7 +446,8 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
      */
     private getPredictionRange(): {startAt: number, endAt: number} {
         // Init values
-        let endAt: number = this.predictionsHistPayload.length ? this.predictionsHistPayload[0].t: <number>this._app.serverTime.value;
+        const serverTime: number = this._app.serverTime.value ? this._app.serverTime.value: moment().valueOf();
+        let endAt: number = this.predictionsHistPayload.length ? this.predictionsHistPayload[0].t: serverTime;
         let startAt: number = moment(endAt).subtract(60, "minutes").valueOf();
 
         // Finally, return the range
@@ -500,6 +507,7 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
             const maxValue: number = this.epoch!.record.model.regressions.length;
 
             // Build the annotations
+            const { markerSize, markerColor, label, labelColor, labelOffsetX } = this.getPointAnnotationData();
             const annotations: ApexAnnotations = {
                 yaxis: [
                     {
@@ -536,19 +544,20 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
                         x: this.predictions[0].t,
                         y: this.predictions[0].s,
                         marker: {
-                          size: 5,
-                          strokeColor: this.predictions[0].s > 0 ? this._chart.upwardColor: this._chart.downwardColor,
-                          strokeWidth: 5,
-                          shape: "circle" // circle|square
+                          size: markerSize,
+                          strokeColor: markerColor,
+                          strokeWidth: markerSize,
+                          shape: "circle", // circle|square
+                          offsetX: -5
                         },
                         label: {
-                            borderColor: this.predictions[0].s > 0 ? this._chart.upwardColor: this._chart.downwardColor,
+                            borderColor: labelColor,
                             style: { 
                                 color: "#fff", 
-                                background: this.predictions[0].s > 0 ? this._chart.upwardColor: this._chart.downwardColor
+                                background: labelColor
                             },
-                            text: String(this.predictions[0].s),
-                            offsetX: -30
+                            text: label,
+                            offsetX: labelOffsetX
                         }
                     }
                 ]
@@ -578,11 +587,11 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
                                 color: predLineColor
                             }
                         ],
-                        stroke: {curve: "straight", width:3},
+                        stroke: {curve: "straight", width:5},
                         annotations: annotations,
                         xaxis: {type: "datetime",tooltip: {enabled: true}, labels: {datetimeUTC: false}}, 
                     },
-                    this.layout == "desktop" ? 600: 350, 
+                    this.layout == "desktop" ? 600: 450, 
                     true,
                     {min: minValue, max: maxValue}
                 );
@@ -605,6 +614,82 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
             }
         }
     }
+
+
+
+
+
+
+    /**
+     * Builds the metadata that will be used to populate the monitor's
+     * point annotation.
+     * @returns {markerSize: number,markerColor: string,label: string,labelColor: string,labelOffsetX: number}
+     */
+    private getPointAnnotationData(): {
+        markerSize: number,
+        markerColor: string,
+        label: string,
+        labelColor: string,
+        labelOffsetX: number
+    } {
+        // Init values
+        let markerSize: number = 3; // Min size
+        let markerColor: string = this._chart.neutralColor;
+        let label: string = String(this.predictions[0].s);
+        let labelColor: string = this._chart.neutralColor;
+        let labelOffsetX: number = -30;
+
+        // Check if the active epoch is the one being visualized
+        if (this._app.epoch.value && this._app.epoch.value.record.id == this.epoch!.record.id) {
+            // Init the state
+            const state: IPredictionState = this._app.predictionState.value!;
+
+            // Complete the label
+            label = `${label} | ${state}`;
+            labelOffsetX = -40;
+
+            // Init the marker color
+            if (state > 0) { markerColor = this._chart.upwardColor }
+            else if (state < 0) { markerColor = this._chart.downwardColor }
+
+            // Init the marker size
+            markerSize = this.getMarkerSize(state);
+        }
+
+        // Populate the label color
+        labelColor = this.predictions[0].s > 0 ? this._chart.upwardColor: this._chart.downwardColor;
+
+        // Finally, return the data
+        return {
+            markerSize: markerSize,
+            markerColor: markerColor,
+            label: label,
+            labelColor: labelColor,
+            labelOffsetX: labelOffsetX,
+        }
+    }
+
+
+
+
+    /**
+     * Calculates the suggested marker size based on the absolute state 
+     * value.
+     * @param state 
+     * @returns number
+     */
+    private getMarkerSize(state: IPredictionState): number {
+        const absState: number = state < 0 ? -(state): state;
+        if      (absState >= 7)    { return 10 }
+        else if (absState == 6)    { return 9 }
+        else if (absState == 5)    { return 8 }
+        else if (absState == 4)    { return 7 }
+        else if (absState == 3)    { return 6 }
+        else if (absState == 2)    { return 5 }
+        else if (absState == 1)    { return 4 }
+        else                       { return 3 }
+    }
+
 
 
 

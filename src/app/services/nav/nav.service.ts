@@ -125,13 +125,7 @@ export class NavService implements INavService {
 	public users(): Promise<boolean> { return this.navigate("users") }
 
 	// GUI Version
-	public guiVersion(version?: string): Promise<boolean> { 
-        if (typeof version == "string") {
-            return this.navigate(`guiVersion/${version}`);
-        } else {
-            return this.navigate("guiVersion");
-        }
-    }
+	public guiVersion(version?: string): Promise<boolean> { return this.navigate("guiVersion") }
 
 	// IP Blacklist
 	public ipBlacklist(): Promise<boolean> { return this.navigate("ipBlacklist") }

@@ -1,6 +1,11 @@
 import {MatSnackBarRef, TextOnlySnackBar} from "@angular/material/snack-bar";
 import {BehaviorSubject} from "rxjs";
-import { IEpochSummary, IPrediction, IPredictionResultIcon } from "../../core";
+import { 
+    IEpochSummary, 
+    IPrediction, 
+    IPredictionResultIcon, 
+    IPredictionState 
+} from "../../core";
 
 
 export interface IAppService {
@@ -13,13 +18,13 @@ export interface IAppService {
 
     // App Bulk
     serverTime: BehaviorSubject<number|undefined|null>,
+    guiVersion: BehaviorSubject<string|undefined|null>,
     epoch: BehaviorSubject<IEpochSummary|undefined|null>,
     prediction: BehaviorSubject<IPrediction|undefined|null>,
+    predictionState: BehaviorSubject<IPredictionState|undefined|null>,
     predictionIcon: BehaviorSubject<IPredictionResultIcon|undefined|null>,
-    simulations: BehaviorSubject<any[]|null>,
-    activeSimulations: BehaviorSubject<number|null>,
-    sessions: BehaviorSubject<any[]|null>,
-    activeSessionPositions: BehaviorSubject<number|null>,
+    session: BehaviorSubject<object|undefined|null>,
+    activeSessionPositions: BehaviorSubject<number|undefined|null>,
     refreshAppBulk(): Promise<void>,
 
     // Snackbars
@@ -41,8 +46,8 @@ export interface IAppService {
 
 
 // Layout
-export type ILayout = 'mobile'|'desktop';
-export type ILayoutAlias = 'xs'|'sm'|'md'|'lg'|'xl';
+export type ILayout = "mobile"|"desktop";
+export type ILayoutAlias = "xs"|"sm"|"md"|"lg"|"xl";
 
 
 

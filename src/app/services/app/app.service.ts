@@ -11,6 +11,7 @@ import {
 	IEpochSummary, 
 	IPrediction, 
 	IPredictionResultIcon, 
+	IPredictionState, 
 	PredictionService, 
 	UtilsService 
 } from "../../core";
@@ -44,7 +45,7 @@ export class AppService implements IAppService{
 	/**
 	 * App Bulk
 	 * In order for the GUI to operate and keep in sync with the server,
-	 * it retrieves, unpacks and broadcasts the IAppBulk every 30 seconds.
+	 * it retrieves, unpacks and broadcasts the IAppBulk every 20 seconds.
 	 * Additionally, the refreshing functionality can be invoked from any
 	 * module that can make use of the AppService.
 	 * The observables are initialized with null, once the communication
@@ -52,15 +53,15 @@ export class AppService implements IAppService{
 	 * undefined.
 	 */
 	private appBulkInterval: any;
-	private readonly appBulkIntervalMS: number = 30 * 1000; // Every 30 seconds
+	private readonly appBulkIntervalMS: number = 20 * 1000; // Every 20 seconds
 	public serverTime: BehaviorSubject<number|undefined|null> = new BehaviorSubject<number|undefined|null>(null);
+	public guiVersion: BehaviorSubject<string|undefined|null> = new BehaviorSubject<string|undefined|null>(null);
 	public epoch: BehaviorSubject<IEpochSummary|undefined|null> = new BehaviorSubject<IEpochSummary|undefined|null>(null);
 	public prediction: BehaviorSubject<IPrediction|undefined|null> = new BehaviorSubject<IPrediction|undefined|null>(null);
+	public predictionState: BehaviorSubject<IPredictionState|undefined|null> = new BehaviorSubject<IPredictionState|undefined|null>(null);
 	public predictionIcon: BehaviorSubject<IPredictionResultIcon|undefined|null> = new BehaviorSubject<IPredictionResultIcon|undefined|null>(null);
-	public simulations: BehaviorSubject<any[]|null> = new BehaviorSubject<any[]|null>(null);
-	public activeSimulations: BehaviorSubject<number|null> = new BehaviorSubject<number|null>(null);
-	public sessions: BehaviorSubject<any[]|null> = new BehaviorSubject<any[]|null>(null);
-	public activeSessionPositions: BehaviorSubject<number|null> = new BehaviorSubject<number|null>(null);
+	public session: BehaviorSubject<object|undefined|null> = new BehaviorSubject<object|undefined|null>(null);
+	public activeSessionPositions: BehaviorSubject<number|undefined|null> = new BehaviorSubject<number|undefined|null>(null);
 
 
 
@@ -155,19 +156,19 @@ export class AppService implements IAppService{
 				// Broadcast the server's time
 				this.serverTime.next(bulk.serverTime);
 
+				// Broadcast the gui version
+				this.guiVersion.next(bulk.guiVersion);
+
 				// Broadcast the active epoch summary
 				this.epoch.next(bulk.epoch);
 
 				// Broadcast the active prediction as well as the metadata
-				this.prediction.next(bulk.prediction);
+				this.predictionState.next(bulk.predictionState);
 				this.predictionIcon.next(metadata.predictionIcon);
+				this.prediction.next(bulk.prediction);
 
-				// Broadcast the simulations as well as the metadata
-				this.simulations.next(bulk.simulations);
-				this.activeSimulations.next(metadata.activeSimulations);
-
-				// Broadcast the sessions as well as the metadata
-				this.sessions.next(bulk.sessions);
+				// Broadcast the session as well as the metadata
+				this.session.next(bulk.session);
 				this.activeSessionPositions.next(metadata.activeSessionPositions);
 			});
 		} catch (e) { console.error(e) }
@@ -221,12 +222,12 @@ export class AppService implements IAppService{
 		if (this.appBulkInterval) clearInterval(this.appBulkInterval);
 		this.appBulkInterval = undefined;
 		this.serverTime.next(undefined);
+		this.guiVersion.next(undefined);
 		this.epoch.next(undefined);
 		this.prediction.next(undefined);
+		this.predictionState.next(0);
 		this.predictionIcon.next(undefined);
-		this.simulations.next([]);
-		this.activeSimulations.next(0);
-		this.sessions.next([]);
+		this.session.next(undefined);
 		this.activeSessionPositions.next(0);
 	}
 

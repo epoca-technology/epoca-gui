@@ -161,7 +161,7 @@ export class PredictionModelsComponent implements OnInit, OnDestroy, IPrediction
 	 * @param id 
 	 * @returns Promise<void>
 	 */
-	private async initWithID(id: string): Promise<void> {
+	public async initWithID(id: string): Promise<void> {
 		// Attempt to initiaze the certificate
 		try {
 			// Set loading state

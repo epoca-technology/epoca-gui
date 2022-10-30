@@ -30,7 +30,7 @@ export interface INavService {
 	orderBook(): Promise<boolean>,
 	server(): Promise<boolean>,
 	users(): Promise<boolean>,
-	guiVersion(version?: string): Promise<boolean>,
+	guiVersion(): Promise<boolean>,
 	ipBlacklist(): Promise<boolean>,
 	regressions(certID?: string): Promise<boolean>,
 	predictionModels(certID?: string): Promise<boolean>,

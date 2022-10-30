@@ -99,6 +99,10 @@
                         class="show-on-desktop"
                         style="margin-left:5px;"
                         *ngIf="initialized"><mat-icon>close</mat-icon></button>
+                <button mat-button 
+                        *ngIf="!initialized && !initializing && _app.epoch.value"
+                        [disabled]="loadingFromDB"
+                        (click)="activateActiveRegression()">View Active</button>
             </div>
         </mat-toolbar>
 

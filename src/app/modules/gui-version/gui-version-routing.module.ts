@@ -8,12 +8,7 @@ const routes: Routes = [
 		path: '',
 		component: GuiVersionComponent,
 		canActivate: [AuthGuard]
-	},
-    {
-		path: ':currentVersion',
-		component: GuiVersionComponent,
-		canActivate: [AuthGuard]
-	},
+	}
 ];
 
 @NgModule({

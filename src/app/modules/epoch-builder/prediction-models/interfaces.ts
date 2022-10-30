@@ -3,7 +3,8 @@ import { IBacktestPosition } from "../../../core";
 
 // Component
 export interface IPredictionModelsComponent {
-    // Component Data
+    // Component Init
+    initWithID(id: string): Promise<void>,
     fileChanged(event: any): Promise<void>,
     reset(): void,
 

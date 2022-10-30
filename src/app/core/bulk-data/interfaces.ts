@@ -1,6 +1,7 @@
 import { IApiError } from "../api-error"
 import { IEpochSummary } from "../epoch"
 import { IServerData, IServerResources } from "../server"
+import { IPredictionState } from "../prediction"
 import { IPrediction } from "../epoch-builder"
 
 
@@ -32,17 +33,20 @@ export interface IBulkDataService {
     // The current time of the server. The user's time should not be trusted
     serverTime: number,
 
+    // The current version of the GUI
+    guiVersion: string,
+
     // The summary of the active epoch. If none is active, it will be undefined
     epoch: IEpochSummary|undefined,
 
     // The active prediction. If there isn't one, or an epoch isn't active, it will be undefined
     prediction: IPrediction|undefined,
 
-    // The list of trading simulation metrics, If none is active, it will be an empty list
-    simulations: any[],
+    // The active prediction state. If there isn't one, or an epoch isn't active, it will be undefined
+    predictionState: IPredictionState,
 
-    // The list of trading session metrics. If none is active, it will be an empty list
-    sessions: any[]
+    // The active trading session metrics. If there isn't one, it will be undefined
+    session: object|undefined // @TODO
 }
 
 

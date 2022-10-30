@@ -33,11 +33,12 @@
 
 
 <!-- Section Content -->
-<div class="fadeIn" *ngIf="loaded">
+<div class="fadeIn padding" *ngIf="loaded">
     <div fxLayout="row" fxLayoutAlign="center center">
         <div fxFlex>
-            <div class="chart-container" *ngIf="rawCandlesticks && chartOptions">
-                <apx-chart
+            <!-- Candlesticks -->
+            <div class="chart-container" style="overflow: hidden;" *ngIf="rawCandlesticks && chartOptions">
+                <apx-chart #chartComp
                     [series]="chartOptions.series!"
                     [chart]="chartOptions.chart!"
                     [plotOptions]="chartOptions.plotOptions!"
@@ -46,6 +47,23 @@
                     [title]="chartOptions.title!"
                     [annotations]="chartOptions!.annotations!"
                 ></apx-chart>
+            </div>
+
+            <!-- Prediction's sum chart-->
+            <div *ngIf="barChart" style="overflow: hidden;">
+                <div>
+                    <apx-chart
+                        [series]="barChart.series"
+                        [chart]="barChart.chart"
+                        [plotOptions]="barChart.plotOptions"
+                        [xaxis]="barChart.xaxis"
+                        [dataLabels]="barChart.dataLabels"
+                        [colors]="barChart.colors"
+                        [grid]="barChart.grid"
+                        [legend]="{show: false}"
+                        [yaxis]="barChart.yaxis"
+                    ></apx-chart>
+                </div>
             </div>
         </div>
     </div>

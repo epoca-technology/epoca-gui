@@ -5,10 +5,10 @@ export interface IRegressionsComponent {
     // Component Data
     fileChanged(event: any): Promise<void>,
     reset(): void,
+    activateActiveRegression(): void,
 
     // Navigation
     navigate(viewID: IViewID, certIndexOrID?: number|string): Promise<void>,
-
 }
 
 
