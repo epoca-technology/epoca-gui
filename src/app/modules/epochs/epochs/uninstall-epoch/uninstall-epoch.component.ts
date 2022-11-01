@@ -104,7 +104,7 @@ export class UninstallEpochComponent implements OnInit, IUninstallEpochComponent
 				setTimeout(async () => {
 					await this._app.refreshAppBulk();
 					this._app.success(`The epoch has been uninstalled successfully.`);
-					setTimeout(() => { this.close() }, 500);
+					setTimeout(() => { this.close(true) }, 500);
 				}, 1000);
 			}
 
@@ -124,5 +124,5 @@ export class UninstallEpochComponent implements OnInit, IUninstallEpochComponent
 	* returns false.
 	* @returns void
 	* */
-	public close(): void { this.dialogRef.close(false) }
+	public close(actionCompleted?: boolean): void { this.dialogRef.close(actionCompleted == true) }
 }

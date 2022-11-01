@@ -1,12 +1,12 @@
 <!-- Secondary Header -->
 <mat-toolbar class="secondary-header">
     <div fxLayout="row" fxLayoutAlign="center center">
-        <button mat-icon-button 
-                *ngIf="epoch"
-                [disabled]="submitting"
-                (click)="initializeEpochData()"><mat-icon>arrow_back</mat-icon></button>
         <span *ngIf="!epoch" class="truncate">Predictions</span>
-        <span *ngIf="epoch" class="truncate">{{initialized ? epoch.record.id: 'Predictions'}}</span>
+        <span *ngIf="epoch" 
+                class="truncate clickable" 
+                (click)="_nav.displayPredictionModelConfigDialog(epoch.record.model)">
+                {{initialized ? epoch.record.id: 'Predictions'}}
+        </span>
         <span fxFlex></span>
         
         <!-- Chart View -->
@@ -29,6 +29,13 @@
                 [disabled]="view == 'grid' || submitting"
                 matTooltip="Enable Grid View"
                 (click)="activateView('grid')"><mat-icon>grid_view</mat-icon></button>
+
+        <!-- Close Epoch-->
+        <button mat-icon-button 
+                *ngIf="epoch && loaded"
+                [disabled]="submitting"
+                matTooltip="Close {{epoch.record.id}}"
+                (click)="initializeEpochData()"><mat-icon>close</mat-icon></button>
     </div>
 </mat-toolbar>
 

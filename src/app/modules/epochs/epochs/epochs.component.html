@@ -1,21 +1,25 @@
 <!-- Secondary Header -->
 <mat-toolbar class="secondary-header">
     <div fxLayout="row" fxLayoutAlign="center center">
-        <button mat-icon-button 
-                *ngIf="epoch"
-                (click)="initializeEpochData()"><mat-icon>arrow_back</mat-icon></button>
         <span class="truncate">{{epoch ? epoch.record.id: 'Epochs'}}</span>
         <span fxFlex></span>
         
         <!-- Epoch Installer -->
         <button mat-button 
-                *ngIf="initialized && !_app.epoch.value && !epoch" 
+                *ngIf="initialized && _app.epoch.value === undefined && !epoch" 
                 (click)="install()">INSTALL</button>
+
 
         <!-- Epoch Uninstaller -->
         <button mat-button 
-                *ngIf="initialized && _app.epoch.value && (!epoch || _app.epoch.value.record.id == epoch.record.id)" 
+                *ngIf="initialized && epoch && _app.epoch.value && _app.epoch.value.record.id == epoch.record.id && loaded" 
                 (click)="uninstall()">UNINSTALL</button>
+
+        <!-- Epoch Closer -->
+        <button mat-icon-button 
+                *ngIf="epoch && loaded"
+                matTooltip="Close {{epoch.record.id}}"
+                (click)="initializeEpochData()"><mat-icon>close</mat-icon></button>
     </div>
 </mat-toolbar>
 

@@ -236,7 +236,9 @@ export class EpochsComponent implements OnInit, OnDestroy, IEpochsComponent {
             disableClose: true,
             hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
             panelClass: "small-dialog"
-        });
+        }).afterClosed().subscribe(
+            (installed: boolean) => { if (installed) this.initializeEpochData() }
+        );
     }
 
 
@@ -253,6 +255,8 @@ export class EpochsComponent implements OnInit, OnDestroy, IEpochsComponent {
             disableClose: true,
             hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
             panelClass: "small-dialog"
-        });
+        }).afterClosed().subscribe(
+            (uninstalled: boolean) => { if (uninstalled) this.initializeEpochData() }
+        );
     }
 }

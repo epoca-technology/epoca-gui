@@ -176,7 +176,7 @@ export class InstallEpochComponent implements OnInit, IInstallEpochComponent {
 				setTimeout(async () => {
 					await this._app.refreshAppBulk();
 					this._app.success(`The epoch ${this.epochID} has been installed successfully.`);
-					setTimeout(() => { this.close() }, 500);
+					setTimeout(() => { this.close(true) }, 500);
 				}, 1000);
 			}
 
@@ -249,5 +249,5 @@ export class InstallEpochComponent implements OnInit, IInstallEpochComponent {
 	* returns false.
 	* @returns void
 	* */
-	public close(): void { this.dialogRef.close(false) }
+	public close(actionCompleted?: boolean): void { this.dialogRef.close(actionCompleted == true) }
 }
