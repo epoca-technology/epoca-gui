@@ -192,15 +192,15 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
 
         // Populate the epoch
         this.epoch = epochSummary;
-
+        
         // Load the initial predictions
         await this.loadPredictions();
-
+        
         // Initialize the starred predictions
         await this.initializeStarredPredictions();
-
+        
         // Subscribe to the active prediction if the epoch matches
-        if (epochSummary.record.id == epochID) {
+        if (this._app.epoch.value && this._app.epoch.value.record.id == epochID) {
             this.predictionSub = this._app.prediction.subscribe(async (pred: IPrediction|null|undefined) => {
                 if (pred) {
                     // If it is an actual new prediction, add it to the list
@@ -420,7 +420,7 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
                 endAt,
                 this.epoch!.record.installed
             );
-
+            
             // Concatenate them with the current list
             this.predictionsHistPayload = preds.concat(this.predictionsHistPayload);
 
@@ -507,7 +507,7 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
             const maxValue: number = this.epoch!.record.model.regressions.length;
 
             // Build the annotations
-            const { markerSize, markerColor, label, labelColor, labelOffsetX } = this.getPointAnnotationData();
+            const { markerSize, markerColor, labelColor } = this.getPointAnnotationData();
             const annotations: ApexAnnotations = {
                 yaxis: [
                     {
@@ -556,8 +556,8 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
                                 color: "#fff", 
                                 background: labelColor
                             },
-                            text: label,
-                            offsetX: labelOffsetX
+                            text: String(this.predictions[0].s),
+                            offsetX: -30
                         }
                     }
                 ]
@@ -628,25 +628,17 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
     private getPointAnnotationData(): {
         markerSize: number,
         markerColor: string,
-        label: string,
         labelColor: string,
-        labelOffsetX: number
     } {
         // Init values
-        let markerSize: number = 3; // Min size
+        let markerSize: number = 3.5; // Min size
         let markerColor: string = this._chart.neutralColor;
-        let label: string = String(this.predictions[0].s);
         let labelColor: string = this._chart.neutralColor;
-        let labelOffsetX: number = -30;
 
         // Check if the active epoch is the one being visualized
         if (this._app.epoch.value && this._app.epoch.value.record.id == this.epoch!.record.id) {
             // Init the state
             const state: IPredictionState = this._app.predictionState.value!;
-
-            // Complete the label
-            label = `${label} | ${state}`;
-            labelOffsetX = -40;
 
             // Init the marker color
             if (state > 0) { markerColor = this._chart.upwardColor }
@@ -663,9 +655,7 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
         return {
             markerSize: markerSize,
             markerColor: markerColor,
-            label: label,
             labelColor: labelColor,
-            labelOffsetX: labelOffsetX,
         }
     }
 
@@ -680,14 +670,16 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
      */
     private getMarkerSize(state: IPredictionState): number {
         const absState: number = state < 0 ? -(state): state;
-        if      (absState >= 7)    { return 10 }
-        else if (absState == 6)    { return 9 }
-        else if (absState == 5)    { return 8 }
-        else if (absState == 4)    { return 7 }
-        else if (absState == 3)    { return 6 }
-        else if (absState == 2)    { return 5 }
+        if      (absState >= 9)    { return 9 }
+        else if (absState == 8)    { return 8 }
+        else if (absState == 7)    { return 7 }
+        else if (absState == 6)    { return 6.5 }
+        else if (absState == 5)    { return 6 }
+        else if (absState == 4)    { return 5.5 }
+        else if (absState == 3)    { return 5 }
+        else if (absState == 2)    { return 4.5 }
         else if (absState == 1)    { return 4 }
-        else                       { return 3 }
+        else                       { return 3.5 }
     }
 
 

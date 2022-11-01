@@ -155,7 +155,7 @@
                             </mat-grid-tile>
                         </div>
 
-                        <mat-grid-tile *ngIf="hasMore || visibleTiles < predictions.length" 
+                        <mat-grid-tile *ngIf="hasMore || visibleTiles < predictions.length && predictions.length" 
                                     class="clickable fake-button" role="button" 
                                     (click)="viewMore()">
                             {{submitting ? 'Loading...': 'View More'}}
@@ -167,7 +167,7 @@
 
 
             <!-- Candlesticks Settings Fab -->
-            <div *ngIf="hasMore && view == 'candlesticks'" class="prediction-loader-fab">
+            <div *ngIf="view == 'candlesticks'" class="prediction-loader-fab">
                 <button mat-fab color="primary" class="show-on-desktop"
                     [disabled]="submitting || !loaded"
                     (click)="activateCandlesticks()">
