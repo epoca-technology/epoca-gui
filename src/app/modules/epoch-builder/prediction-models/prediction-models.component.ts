@@ -4,23 +4,27 @@ import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { MatSidenav } from '@angular/material/sidenav';
 import {MatDialog} from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
-import { ApexAxisChartSeries } from 'ng-apexcharts';
+import { ApexAnnotations, ApexAxisChartSeries, PointAnnotations, XAxisAnnotations, YAxisAnnotations } from 'ng-apexcharts';
 import { BigNumber} from "bignumber.js";
+import * as moment from "moment";
 import { 
 	UtilsService, 
 	PredictionModelService,
 	IPredictionModelCertificate,
 	IPredictionModelsOrder,
-	IBacktestPosition
+	IBacktestPosition,
+	LocalDatabaseService,
+	ICandlestick,
+	PredictionService
 } from '../../../core';
 import { 
 	AppService, 
 	ChartService, 
 	IBarChartOptions, 
+	ICandlestickChartOptions, 
 	ILayout, 
 	ILineChartOptions, 
 	IPieChartOptions, 
-	IScatterChartOptions, 
 	NavService,
 	ValidationsService, 
 } from '../../../services';
@@ -30,8 +34,11 @@ import {
 	IEpochBuilderConfigDialog, 
 	IEpochBuilderConfigDialogResponse, 
 } from "../shared";
-import { IPredictionModelsComponent, IViewID, IView } from "./interfaces";
-import { PredictionModelBacktestPositionDialogComponent, IBacktestPositionDialogData } from './prediction-model-backtest-position-dialog';
+import { 
+	PredictionModelBacktestPositionDialogComponent, 
+	IBacktestPositionDialogData
+} from './prediction-model-backtest-position-dialog';
+import { IPredictionModelsComponent, IViewID, IView, IHistoryPage } from "./interfaces";
 
 
 @Component({
@@ -100,7 +107,7 @@ export class PredictionModelsComponent implements OnInit, OnDestroy, IPrediction
 	// Certificate View
 	public certificateView?: {
 		accuracy: IBarChartOptions,
-		predictionInsight: IScatterChartOptions,
+		predictionInsight: IBarChartOptions,
 		balanceHist: IBarChartOptions,
 		positions: IPieChartOptions,
 		outcomes: IPieChartOptions,
@@ -108,6 +115,12 @@ export class PredictionModelsComponent implements OnInit, OnDestroy, IPrediction
 	public cert?: IPredictionModelCertificate;
 	public activeCertTabIndex: number = 0;
 	public visiblePositions: number = 15;
+
+	// Position Hist specifics
+	public histChart?: ICandlestickChartOptions;
+	public histPages: Array<IHistoryPage> = [];
+	public activePage: number = 0;
+	public loadingPage: boolean = false;
 
 	// Loading state - Just for certificates
 	public loaded: boolean = false;
@@ -120,7 +133,9 @@ export class PredictionModelsComponent implements OnInit, OnDestroy, IPrediction
 		public _pm: PredictionModelService,
 		private dialog: MatDialog,
         private route: ActivatedRoute,
-		private _validations: ValidationsService
+		private _validations: ValidationsService,
+		private _localDB: LocalDatabaseService,
+		private _prediction: PredictionService
 	) { }
 
 
@@ -358,6 +373,20 @@ export class PredictionModelsComponent implements OnInit, OnDestroy, IPrediction
 
 
 
+
+
+	/**
+	 * Triggers whenever the certificate tab changes. If the 
+	 * history is activated, it will be
+	 * @param newIndex 
+	 */
+	public certTabChanged(newIndex: number): void {
+		// Check if the hist needs to be initialized
+		if (newIndex == 3) { this.loadFirstHistPage() }
+
+		// Activate the new index
+		this.activeCertTabIndex = newIndex;
+	}
 
 
 
@@ -645,8 +674,9 @@ export class PredictionModelsComponent implements OnInit, OnDestroy, IPrediction
 
 		 // Retrieve the balance history data
 		 const { colors, values } = this._chart.getModelBalanceHistoryData(this.cert.backtest.positions);
-		 const minBalance: number = <number>this._utils.getMin(values);
-		 const maxBalance: number = <number>this._utils.getMax(values);
+		 const balanceValues: number[] = values.map(v => v.y);
+		 const minBalance: number = <number>this._utils.getMin(balanceValues);
+		 const maxBalance: number = <number>this._utils.getMax(balanceValues);
  
 		 // Build the view
 		 this.certificateView = {
@@ -671,7 +701,7 @@ export class PredictionModelsComponent implements OnInit, OnDestroy, IPrediction
 					plotOptions: {bar: {borderRadius: 0, horizontal: false, distributed: true,}},
 					colors: colors,
 					grid: {show: true},
-					xaxis: {labels: { show: false } }
+					xaxis: {tooltip: {enabled: false}, labels: { show: false } }
 				}, 
 				[], 
 				undefined, 
@@ -679,11 +709,20 @@ export class PredictionModelsComponent implements OnInit, OnDestroy, IPrediction
 				true,
 				{min: minBalance, max: maxBalance}
 			),
-			predictionInsight: this._chart.getScatterChartOptions(
-				{ 
-					series: [{name: "Prediction", data: this.getPredictionInsightsData()}],
-				},
-				300,
+			predictionInsight: this._chart.getBarChartOptions(
+				{
+					series: [{name: this.cert.id, data: this.getPredictionInsightsData()}],
+					chart: {height: 220, type: 'bar',animations: { enabled: false}, toolbar: {show: false,tools: {download: false}}},
+					plotOptions: {bar: {borderRadius: 0, horizontal: false, distributed: true,}},
+					colors: colors,
+					grid: {show: true},
+					xaxis: {tooltip: {enabled: false}, labels: { show: false } }
+				}, 
+				[], 
+				undefined, 
+				false,
+				true,
+				{min: -this.cert.model.regressions.length, max: this.cert.model.regressions.length}
 			),
 			positions: this._chart.getPieChartOptions(
 				{
@@ -705,7 +744,13 @@ export class PredictionModelsComponent implements OnInit, OnDestroy, IPrediction
 			),
 		};
 
-		// Finally, Attach the click events
+		// Tether the balance hist and the predictions
+		this.certificateView.balanceHist!.chart!.id = "bars";
+		this.certificateView.balanceHist!.chart!.group = "positions";
+		this.certificateView.predictionInsight!.chart!.id = "dots";
+		this.certificateView.predictionInsight!.chart!.group = "positions";
+
+		// Attach the click events
 		const self = this;
 		this.certificateView.balanceHist!.chart.events = {
 			click: function(e: any, cc: any, c: any) {
@@ -726,6 +771,9 @@ export class PredictionModelsComponent implements OnInit, OnDestroy, IPrediction
 				}
 			}
 		}
+
+		// Finally, build the history pages
+		this.buildHistPages();
 	 }
 
 
@@ -742,7 +790,7 @@ export class PredictionModelsComponent implements OnInit, OnDestroy, IPrediction
 
 		// Iterate over each position
 		for (let i = 0; i < this.cert!.backtest.positions.length; i++) {
-			const predSum: number = <number>this._utils.outputNumber(BigNumber.sum.apply(null, this.cert!.backtest.positions[i].p.f))
+			const predSum: number = <number>this._utils.outputNumber(BigNumber.sum.apply(null, this.cert!.backtest.positions[i].p.f), {dp: 6})
 			let predColor: string = "";
 			if (this.cert!.backtest.positions[i].t == 1 && !this.cert!.backtest.positions[i].o) { predColor = "#4DB6AC" }			
 			else if (this.cert!.backtest.positions[i].t == 1 && this.cert!.backtest.positions[i].o) { predColor = "#004D40" }
@@ -759,6 +807,249 @@ export class PredictionModelsComponent implements OnInit, OnDestroy, IPrediction
 
 
 
+
+	/* Positions History */
+
+
+
+	/**
+	 * Builds the history pages based on the positions executed
+	 * in the backtest.
+	 */
+	private buildHistPages(): void {
+		// Calculate the start of the first page
+		const realStart: number = moment(this.cert!.backtest.positions[0].ot).subtract(6, "hours").valueOf();
+
+		// Calculate the end of the last page
+		const realEnd: number = moment(this.cert!.backtest.positions[this.cert!.backtest.positions.length - 1].ct).add(6, "hours").valueOf();
+
+		// Calculate the number of milliseconds in 4 days
+		const pageSize: number = 1000 * 60 * 60 * 24 * 4;
+
+		// Init the pages and build them
+		this.histPages = [];
+		for (let i = realStart; i < realEnd; i = i + pageSize) {
+			this.histPages.push({start: i, end: i + pageSize });
+		}
+	}
+
+
+
+	// First Page
+	public async loadFirstHistPage(): Promise<void> {
+		// Set loading state
+		this.loadingPage = true;
+
+		// Load the data
+		try {
+			// Calculate the new page
+			const newPage: number = 0;
+			
+			// Load the page
+			await this.buildHistoryCandlesticks(newPage);
+
+			// Set the active page
+			this.activePage = newPage;
+		} catch (e) { this._app.error(e) }
+
+		// Set loading state
+		this.loadingPage = false;
+	}
+
+
+	// Previous Page
+	public async loadPreviousHistPage(): Promise<void> {
+		// Load the first page if applies
+		if (this.activePage == 2) {
+			await this.loadFirstHistPage();
+		}
+
+		// Otherwise, load the correct page
+		else {
+			// Set loading state
+			this.loadingPage = true;
+
+			// Load the data
+			try {
+				// Calculate the new page
+				const newPage: number = this.activePage - 1;
+
+				// Load the page
+				await this.buildHistoryCandlesticks(newPage);
+
+				// Set the active page
+				this.activePage = newPage;
+			} catch (e) { this._app.error(e) }
+
+			// Set loading state
+			this.loadingPage = false;
+		}
+	}
+
+
+	// Next Page
+	public async loadNextHistPage(): Promise<void> {
+		// Load the last page if applies
+		if (this.activePage == this.histPages.length - 2) {
+			await this.loadLastHistPage();
+		}
+
+		// Otherwise, load the correct page
+		else {
+			// Set loading state
+			this.loadingPage = true;
+
+			// Load the data
+			try {
+				// Calculate the new page
+				const newPage: number = this.activePage + 1;
+
+				// Load the page
+				await this.buildHistoryCandlesticks(newPage);
+
+				// Set the active page
+				this.activePage = newPage;
+			} catch (e) { this._app.error(e) }
+
+			// Set loading state
+			this.loadingPage = false;
+		}
+	}
+
+
+	// Last Page
+	public async loadLastHistPage(): Promise<void> {
+		// Set loading state
+		this.loadingPage = true;
+
+		// Load the data
+		try {
+			// Calculate the new page
+			const newPage: number = this.histPages.length - 1;
+
+			// Load the page
+			await this.buildHistoryCandlesticks(newPage);
+
+			// Set the active page
+			this.activePage = newPage;
+		} catch (e) { this._app.error(e) }
+
+		// Set loading state
+		this.loadingPage = false;
+	}
+
+
+
+
+	/**
+	 * Downloads and builds the history's candlesticks
+	 * based on a provided page index.
+	 * @param pageIndex 
+	 * @returns Promise<void>
+	 */
+	private async buildHistoryCandlesticks(pageIndex: number): Promise<void> {
+		// Retrieve the candlesticks
+		const candlesticks: ICandlestick[] = await this._localDB.getCandlesticksForPeriod(
+			this.histPages[pageIndex].start,
+			this.histPages[pageIndex].end,
+			<number>this._app.serverTime.value
+		);
+
+		// If there are no candlesticks, don't build the chart
+		if (!candlesticks.length) throw new Error("The chart could not be built because no candlesticks were retrieved.");
+
+		// Build the annotations
+		const annotations: ApexAnnotations = this.buildHistoryCandlesticksAnnotations(pageIndex);
+
+		// Build the chart
+		this.histChart = this._chart.getCandlestickChartOptions(candlesticks, annotations, false, false);
+		this.histChart.chart!.toolbar = {show: true,tools: {selection: true,zoom: true,zoomin: true,zoomout: true,download: false}};
+		this.histChart.chart!.zoom = {enabled: true, type: "xy"};
+		this.histChart.chart!.height = this._app.layout.value == "desktop" ? 550: 370;
+
+		// Add the click events
+		const self = this;
+		this.histChart.chart.events = {
+			click: function(e: any, cc: any, c: any) {
+				/*if (c.dataPointIndex >= 0 && self.cert!.backtest.positions[c.dataPointIndex]) {
+					self.displayPosition(self.cert!.backtest.positions[c.dataPointIndex])
+				}*/
+			}
+		}
+	}
+
+
+
+	/**
+	 * Builds the annotations based on a provided list of candlesticks.
+	 * @returns ApexAnnotations
+	 */
+	private buildHistoryCandlesticksAnnotations(pageIndex: number): ApexAnnotations {
+		// Init values
+		const pageStart: number = this.histPages[pageIndex].start;
+		const pageEnd: number = this.histPages[pageIndex].end;
+		let yaxis: YAxisAnnotations[] = [];
+		let xaxis: XAxisAnnotations[] = [];
+		let points: PointAnnotations[] = [];
+
+		// Retrieve the positions that were opened within the candlestick's range
+		const open: IBacktestPosition[] = this.cert!.backtest.positions.filter(p => p.ot >= pageStart  && p.ot <= pageEnd);
+
+		// Check if any position opening was found
+		if (open.length) {
+			for (let oPosition of open) {
+				const color: string = this.getPositionColor(oPosition);
+				xaxis.push(
+					{
+						x: oPosition.ot,
+						label: {
+							text: `OPEN: ${this._utils.getSum(oPosition.p.f, {dp: 1, of: "s"})}`,
+							borderColor: color,
+							style: { color: '#fff', background: color}
+						}
+					}
+				);
+			}
+		}
+
+		// Retrieve the positions that were closed within the candlestick's range
+		const close: IBacktestPosition[] = this.cert!.backtest.positions.filter(p => p.ct >= pageStart  && p.ct <= pageEnd);
+
+		// Check if any position opening was found
+		if (close.length) {
+			for (let cPosition of close) {
+				const color: string = this.getPositionColor(cPosition);
+				xaxis.push(
+					{
+						x: cPosition.ct,
+						label: {
+							position: "bottom",
+							text: `CLOSE: ${this._utils.getSum(cPosition.p.f, {dp: 1, of: "s"})}`,
+							borderColor: color,
+							style: { color: '#fff', background: color}
+						}
+					}
+				);
+			}
+		}
+
+		// Finally, return the annotations
+		return {
+			yaxis: yaxis,
+			xaxis: xaxis,
+			points: points
+		}
+	}
+
+
+
+
+	private getPositionColor(pos: IBacktestPosition): string {
+		if (pos.t == 1 && !pos.o) { return "#26A69A" }			
+		else if (pos.t == 1 && pos.o) { return "#004D40" }
+		else if (pos.t == -1 && !pos.o) { return "#EF5350" }
+		else { return "#B71C1C" }
+	}
 
 
 

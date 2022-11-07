@@ -533,7 +533,7 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 				const ninetyMinutes: number = 90 * 60 * 1000
 				let invalidSequence: boolean = false;
 				let i = 0;
-				while (!invalidSequence && i < candlesticks.length - 2 && !originalRequestData) {
+				while (!invalidSequence && i < candlesticks.length - 1 && !originalRequestData) {
 					// Make sure the distance from the current and next candlestick is no larger than 90 minutes
 					invalidSequence = (candlesticks[i + 1].ot - candlesticks[i].ot) > ninetyMinutes
 
@@ -701,7 +701,7 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 				const sixtyMinutes: number = 60 * 60 * 1000
 				let invalidSequence: boolean = false;
 				let i = 0;
-				while (!invalidSequence && i < preds.length - 2 && !originalRequestData) {
+				while (!invalidSequence && i < preds.length - 1 && !originalRequestData) {
 					// Make sure the distance from the current and next candlestick is no larger than 60 minutes
 					invalidSequence = (preds[i + 1].t - preds[i].t) > sixtyMinutes
 
@@ -976,7 +976,7 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 				const ninetyMinutes: number = 180 * 60 * 1000
 				let invalidSequence: boolean = false;
 				let i = 0;
-				while (!invalidSequence && i < candlesticks.length - 2 && !originalRequestData) {
+				while (!invalidSequence && i < candlesticks.length - 1 && !originalRequestData) {
 					// Make sure the distance from the current and next candlestick is no larger than 90 minutes
 					invalidSequence = (candlesticks[i + 1].ot - candlesticks[i].ot) > ninetyMinutes
 

@@ -536,18 +536,18 @@ export class ChartService implements IChartService {
 	 * Builds the balance hist bar chart"s data based on a series of
 	 * backtest positions.
 	 * @param positions
-	 * @returns {colors: string[], values: number[]}
+	 * @returns {colors: string[], values: {x: number, y: number}[]}
 	 */
-	public getModelBalanceHistoryData(positions: IBacktestPosition[]): {colors: string[], values: number[]} {
+	public getModelBalanceHistoryData(positions: IBacktestPosition[]): {colors: string[], values: {x: number, y: number}[]} {
 		let colors: string[] = [];
-		let values: number[] = [];
+		let values: {x: number, y: number}[] = [];
 		for (let i = 0; i < positions.length; i++) {
 			if (positions[i].t == 1) { 
 				colors.push(this.upwardColor);
 			} else { 
 				colors.push(this.downwardColor);
 			}
-			values.push(<number>this._utils.outputNumber(positions[i].b))
+			values.push({x: i, y: <number>this._utils.outputNumber(positions[i].b)})
 		}
 		return {colors: colors, values: values};
 	}

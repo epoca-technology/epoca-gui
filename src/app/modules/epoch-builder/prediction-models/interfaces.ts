@@ -10,6 +10,13 @@ export interface IPredictionModelsComponent {
 
     // Navigation
     navigate(viewID: IViewID, certIndexOrID?: number|string): Promise<void>,
+    certTabChanged(newIndex: number): void,
+
+    // Hist Paging
+    loadFirstHistPage(): Promise<void>,
+    loadPreviousHistPage(): Promise<void>,
+    loadNextHistPage(): Promise<void>,
+    loadLastHistPage(): Promise<void>,
 
     // Misc Helpers
     displayPosition(position: IBacktestPosition): void,
@@ -26,4 +33,12 @@ export interface IView {
     name: string,
     icon: string,
     svg?: boolean
+}
+
+
+
+// History Pages
+export interface IHistoryPage {
+    start: number,
+    end: number
 }

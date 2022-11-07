@@ -71,7 +71,7 @@ export interface IChartService {
 	): IPieChartOptions,
 
 	// Misc Helpers
-	getModelBalanceHistoryData(positions: IBacktestPosition[]): {colors: string[], values: number[]},
+	getModelBalanceHistoryData(positions: IBacktestPosition[]): {colors: string[], values: {x: number, y: number}[]},
 	getProfitHistoryData(positions: IEpochPositionRecord[]): {colors: string[], values: number[]},
 	calculateChartHeight(
 		baseHeight: number,
