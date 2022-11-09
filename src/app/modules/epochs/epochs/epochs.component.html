@@ -121,7 +121,7 @@
                             <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
                                 <p class="light-text">Range</p>
                                 <span fxFlex></span>
-                                <div matTooltip="The date range covered by the Epoch.">
+                                <div class="align-right" matTooltip="The date range covered by the Epoch.">
                                     <p class="ts-s">{{epoch.record.config.start | date: 'medium'}}</p>
                                     <p class="ts-s">{{epoch.record.config.end | date: 'medium'}}</p>
                                 </div>
@@ -131,7 +131,7 @@
                             <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
                                 <p class="light-text">Test DS Range</p>
                                 <span fxFlex></span>
-                                <div matTooltip="The date range covered in the test dataset. This is the range used to train and evaluate models.">
+                                <div class="align-right" matTooltip="The date range covered in the test dataset. This is the range used to train and evaluate models.">
                                     <p class="ts-s">{{epoch.record.config.test_ds_start | date: 'medium'}}</p>
                                     <p class="ts-s">{{epoch.record.config.test_ds_end | date: 'medium'}}</p>
                                 </div>

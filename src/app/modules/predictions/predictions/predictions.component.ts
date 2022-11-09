@@ -253,8 +253,8 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
         // If the days were provided, load the data right away
         if (typeof days == "number") {
             this.loaded = false;
-            await this.loadCandlesticks(days);
             this.view = "candlesticks";
+            await this.loadCandlesticks(days);
             this.loaded = true;
         }
         
@@ -273,8 +273,8 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
             bs.afterDismissed().subscribe(async (response: string|undefined) => {
                 if (response) {
                     this.loaded = false;
-                    await this.loadCandlesticks(Number(response));
                     this.view = "candlesticks";
+                    await this.loadCandlesticks(Number(response));
                     this.loaded = true;
                 }
             });
@@ -448,7 +448,7 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
         // Init values
         const serverTime: number = this._app.serverTime.value ? this._app.serverTime.value: moment().valueOf();
         let endAt: number = this.predictionsHistPayload.length ? this.predictionsHistPayload[0].t: serverTime;
-        let startAt: number = moment(endAt).subtract(60, "minutes").valueOf();
+        let startAt: number = moment(endAt).subtract(3, "hours").valueOf();
 
         // Finally, return the range
         return { startAt: startAt, endAt: endAt - 1 }

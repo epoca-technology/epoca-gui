@@ -72,12 +72,12 @@ export class EpochsComponent implements OnInit, OnDestroy, IEpochsComponent {
             if (e != null && !this.initialized) {
                 // Check if an Epoch ID was provided from the URL. If so, initialize it right away.
                 const urlEpochID: string|null = this.route.snapshot.paramMap.get("epochID");
-                if (typeof urlEpochID == "string" && this._validations.epochIDValid(urlEpochID)) { 
+                if (typeof urlEpochID == "string" && this._validations.epochIDValid(urlEpochID) && !this.initialized) { 
                     await this.initializeEpochData(urlEpochID);
                 }
 
                 // Otherwise, check if an active epoch is available
-                else if (e){
+                else if (e && !this.initialized){
                     await this.initializeEpochData(e.record.id);
                 }
 
