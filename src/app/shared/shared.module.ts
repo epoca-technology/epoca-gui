@@ -63,6 +63,7 @@ import { FilesizePipe } from "./pipes/filesize/filesize.pipe";
 import { FilterPipe } from "./pipes/filter/filter.pipe";
 import { SecondToFormatPipe } from "./pipes/second-to-format/second-to-format.pipe";
 import { StringOverviewPipe } from "./pipes/string-overview/string-overview.pipe";
+import { TimeAgoPipe } from './pipes/time-ago/time-ago.pipe';
 
 
 
@@ -131,6 +132,7 @@ import { EpochsMenuComponent } from './components/epochs-menu/epochs-menu.compon
 		FilterPipe,
 		SecondToFormatPipe,
 		StringOverviewPipe,
+		TimeAgoPipe,
 
 		/* Shared Components */
 
@@ -304,6 +306,7 @@ import { EpochsMenuComponent } from './components/epochs-menu/epochs-menu.compon
 		FilterPipe,
 		SecondToFormatPipe,
 		StringOverviewPipe,
+		TimeAgoPipe,
 		
 		/* Shared Components */
 
