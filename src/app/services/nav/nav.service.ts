@@ -109,8 +109,8 @@ export class NavService implements INavService {
 		}
 	}
 
-	// My Wallet
-	public myWallet(): Promise<boolean> { return this.navigate("myWallet") }
+	// Coin Stacker
+	public coinStacker(): Promise<boolean> { return this.navigate("coinStacker") }
 
 	// Candlesticks
 	public candlesticks(): Promise<boolean> { return this.navigate("candlesticks") }

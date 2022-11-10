@@ -1,9 +1,11 @@
 <mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
     <div fxLayout="row" fxLayoutAlign="center center">
-        <mat-icon class="header-icon">{{resultIcon}}</mat-icon>
+        <button class="show-on-mobile" mat-icon-button (click)="close()"><mat-icon>arrow_back</mat-icon></button>
+        <mat-icon class="header-icon show-on-desktop">{{resultIcon}}</mat-icon>
         <span>{{sum}}</span>
         <span fxFlex></span>
-        <button mat-icon-button (click)="close()"><mat-icon>close</mat-icon></button>
+        <mat-icon class="header-icon show-on-mobile">{{resultIcon}}</mat-icon>
+        <button class="show-on-desktop" mat-icon-button (click)="close()"><mat-icon>close</mat-icon></button>
     </div>
 </mat-toolbar>
 <div mat-dialog-content>

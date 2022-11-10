@@ -45,11 +45,15 @@
                         matBadgeOverlap="false"></mat-icon>
         </div>
 
-        <!-- My Wallet -->
+        <!-- Coin Stacker -->
         <div fxFlex fxLayout="row" fxLayoutAlign="center center"
              class="tab" role="button" matRipple
              [ngClass]="{'active': activeTab == 4}" (click)="navigate(4)">
-            <mat-icon svgIcon="wallet"></mat-icon>
+            <mat-icon   svgIcon="coins" 
+                        [matBadge]="0" 
+                        matBadgePosition="after"
+                        matBadgeSize="small"
+                        matBadgeOverlap="false"></mat-icon>
         </div>
     </div>
 </div>

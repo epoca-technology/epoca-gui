@@ -45,8 +45,8 @@
 
             <!-- My Wallet -->
             <mat-list-item>
-                <button mat-button class="left-icon-button" (click)="_nav.myWallet()" [disabled]="state.module == 'myWallet'">
-                    <mat-icon svgIcon="wallet"></mat-icon><span>My Wallet</span>
+                <button mat-button class="left-icon-button" (click)="_nav.coinStacker()" [disabled]="state.module == 'coinStacker'">
+                    <mat-icon svgIcon="coins"></mat-icon><span>Coin Stacker</span>
                 </button>
             </mat-list-item>
 
@@ -216,13 +216,14 @@
                     <mat-icon svgIcon="auto_graph"></mat-icon><span>Trading Sessions</span>
                 </button>
 
-                <!-- My Wallet -->
+                <!-- Coin Stacker -->
                 <button mat-button 
                         class="left-icon-button" 
-                        (click)="_nav.myWallet()" 
-                        [disabled]="state.module == 'myWallet'" 
+                        (click)="_nav.coinStacker()" 
+                        [matBadge]="0" 
+                        [disabled]="state.module == 'coinStacker'" 
                         *ngIf="uid">
-                    <mat-icon svgIcon="wallet"></mat-icon><span>My Wallet</span>
+                    <mat-icon svgIcon="coins"></mat-icon><span>Coin Stacker</span>
                 </button>
 
                 <!-- Menu -->

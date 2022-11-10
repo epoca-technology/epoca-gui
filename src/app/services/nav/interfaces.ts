@@ -25,7 +25,7 @@ export interface INavService {
 	epochs(epochID?: string): Promise<boolean> ,
 	predictions(epochID?: string): Promise<boolean>,
 	tradingSessions(epochID?: string): Promise<boolean>,
-	myWallet(): Promise<boolean>,
+	coinStacker(): Promise<boolean>,
 	candlesticks(): Promise<boolean>,
 	orderBook(): Promise<boolean>,
 	server(): Promise<boolean>,

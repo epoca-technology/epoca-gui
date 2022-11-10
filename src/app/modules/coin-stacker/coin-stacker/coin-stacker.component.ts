@@ -1,14 +1,14 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { AppService, ILayout, NavService } from '../../../services';
-import { IMyWalletComponent } from './interfaces';
+import { ICoinStackerComponent } from './interfaces';
 
 @Component({
-  selector: 'app-my-wallet',
-  templateUrl: './my-wallet.component.html',
-  styleUrls: ['./my-wallet.component.scss']
+  selector: 'app-coin-stacker',
+  templateUrl: './coin-stacker.component.html',
+  styleUrls: ['./coin-stacker.component.scss']
 })
-export class MyWalletComponent implements OnInit, OnDestroy, IMyWalletComponent {
+export class CoinStackerComponent implements OnInit, OnDestroy, ICoinStackerComponent {
     // Layout
 	public layout: ILayout = this._app.layout.value;
 	private layoutSub?: Subscription;

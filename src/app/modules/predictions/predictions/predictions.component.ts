@@ -591,7 +591,7 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
                         annotations: annotations,
                         xaxis: {type: "datetime",tooltip: {enabled: true}, labels: {datetimeUTC: false}}, 
                     },
-                    this.layout == "desktop" ? 600: 450, 
+                    this.layout == "desktop" ? 550: 400, 
                     true,
                     {min: minValue, max: maxValue}
                 );

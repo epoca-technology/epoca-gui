@@ -39,10 +39,10 @@ const routes: Routes = [
 		loadChildren: () => import("./modules/trading-sessions/trading-sessions.module").then(m => m.TradingSessionsModule),
 	},
 
-	// My Wallet
+	// Coin Stacker
 	{
-		path: "myWallet",
-		loadChildren: () => import("./modules/my-wallet/my-wallet.module").then(m => m.MyWalletModule),
+		path: "coinStacker",
+		loadChildren: () => import("./modules/coin-stacker/coin-stacker.module").then(m => m.CoinStackerModule),
 	},
 
 	// Candlesticks

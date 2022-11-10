@@ -55,7 +55,7 @@ export class MobileTabsComponent implements OnInit, OnDestroy, IMobileTabsCompon
 				this._nav.tradingSessions();
 				break;
 			case 4:
-				this._nav.myWallet();
+				this._nav.coinStacker();
 				break;
 		}
 	}
@@ -93,7 +93,7 @@ export class MobileTabsComponent implements OnInit, OnDestroy, IMobileTabsCompon
 			case "tradingSessions":
 				this.activeTab = 3;
 				break;
-			case "myWallet":
+			case "coinStacker":
 				this.activeTab = 4;
 				break;
 			default:

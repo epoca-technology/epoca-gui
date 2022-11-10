@@ -95,16 +95,39 @@
                 </div>
 
                 <!-- Prediction Hist -->
-                <div *ngIf="view == 'line' && predictionsHist" style="overflow: hidden;" class="fadeIn">
-                    <apx-chart
-                        [series]="predictionsHist.series"
-                        [chart]="predictionsHist.chart"
-                        [dataLabels]="predictionsHist.dataLabels"
-                        [xaxis]="predictionsHist.xaxis"
-                        [yaxis]="predictionsHist.yaxis"
-                        [stroke]="predictionsHist.stroke"
-                        [annotations]="predictionsHist.annotations"
-                    ></apx-chart>
+                <div *ngIf="view == 'line' && predictionsHist" class="fadeIn">
+                    <!-- History Line -->
+                    <div style="overflow: hidden;">
+                        <apx-chart
+                            [series]="predictionsHist.series"
+                            [chart]="predictionsHist.chart"
+                            [dataLabels]="predictionsHist.dataLabels"
+                            [xaxis]="predictionsHist.xaxis"
+                            [yaxis]="predictionsHist.yaxis"
+                            [stroke]="predictionsHist.stroke"
+                            [annotations]="predictionsHist.annotations"
+                        ></apx-chart>
+                    </div>
+
+
+                    <!-- Features -->
+                    <div *ngIf="active" class="features">
+                        <div *ngFor="let reg of epoch.record.model.regressions; index as regIndex" class="feature">
+                            <div class="clickable" role="button"
+                                (click)="_nav.displayKerasModelDialog(reg)"
+                                [matTooltip]="reg.id"
+                                [ngClass]="{
+                                    'square-badge-success': active.f[regIndex] > 0,
+                                    'square-badge-error': active.f[regIndex] < 0,
+                                    'square-badge-neutral': active.f[regIndex] == 0
+                                }">
+                                <mat-icon *ngIf="active.f[regIndex] > 0">trending_up</mat-icon>
+                                <mat-icon *ngIf="active.f[regIndex] < 0">trending_down</mat-icon>
+                                <mat-icon *ngIf="active.f[regIndex] == 0">trending_flat</mat-icon>
+                                &nbsp;{{active.f[regIndex] | number: layout == 'desktop' ? '1.0-6': '1.0-2'}}
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Prediction Candlesticks -->

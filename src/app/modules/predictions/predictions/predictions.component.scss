@@ -24,6 +24,19 @@ h5 { margin: 0; margin-left:4px;}
 
 
 
+.features {
+    max-width: 100%;
+    text-align: center;
+    .feature {
+        margin:5px 15px 5px 15px;
+        display:inline-block;
+    }
+}
+
+
+
+
+
 
 
 
@@ -33,6 +46,7 @@ h5 { margin: 0; margin-left:4px;}
 /* mobile: sm & xs */
 @media only screen and (max-width: 959px) {
     .prediction-loader-fab { bottom: 80px!important;}
+    .features { .feature { margin:5px 5px 5px 5px;}}
 }
 
 
