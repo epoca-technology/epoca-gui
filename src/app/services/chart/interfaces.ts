@@ -1,4 +1,4 @@
-import { IBacktestPosition, ICandlestick, IEpochPositionRecord, IPredictionCandlestick } from "../../core";
+import { IBacktestPosition, ICandlestick, IPredictionCandlestick } from "../../core";
 import {
 	ApexAxisChartSeries,
 	ApexChart,
@@ -72,7 +72,6 @@ export interface IChartService {
 
 	// Misc Helpers
 	getModelBalanceHistoryData(positions: IBacktestPosition[]): {colors: string[], values: {x: number, y: number}[]},
-	getProfitHistoryData(positions: IEpochPositionRecord[]): {colors: string[], values: number[]},
 	calculateChartHeight(
 		baseHeight: number,
 		increment: number,

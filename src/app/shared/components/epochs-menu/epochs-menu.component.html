@@ -36,17 +36,15 @@
 
             <!-- List -->
             <div class="margin-top">
-                <div *ngFor="let epoch of epochs; last as lastEpoch; first as firstEpoch">
-                    <div class="desktop-card clickable" role="button" (click)="activateEpoch(epoch.id)" [ngClass]="{'uninstalled': !firstEpoch}">
+                <div *ngFor="let epoch of epochs; last as lastEpoch;">
+                    <div class="desktop-card clickable" role="button" (click)="activateEpoch(epoch.id)" [ngClass]="{'uninstalled': epoch.uninstalled}">
                         <div fxLayout="row" fxLayoutAlign="center start">
                             <div>
                                 <h4>{{epoch.id}}</h4>
                                 <p class="light-text ts-s">{{epoch.installed | date: 'medium'}}</p>
                             </div>
                             <span fxFlex></span>
-                            <div class="{{epoch.profit >= 0 ? 'square-badge-success': 'square-badge-error'}}">
-                                {{epoch.profit | currency}}
-                            </div>
+                            <div *ngIf="!epoch.uninstalled" class="square-badge-success">Running...</div>
                         </div>
                     </div>
                     <div *ngIf="!lastEpoch" class="divider show-on-mobile"></div>

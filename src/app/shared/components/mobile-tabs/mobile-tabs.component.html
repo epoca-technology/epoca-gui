@@ -7,22 +7,10 @@
             <mat-icon svgIcon="home"></mat-icon>
         </div>
 
-        <!-- Epochs -->
-        <div fxFlex fxLayout="row" fxLayoutAlign="center center"
-             class="tab" role="button" matRipple
-             [ngClass]="{'active': activeTab == 1}" (click)="navigate(1)">
-            <mat-icon   svgIcon="brain" 
-                        [matBadge]="_app.epoch.value ? _app.epoch.value.positions.length: 0" 
-                        [matBadgeHidden]="!_app.epoch.value" 
-                        matBadgePosition="after"
-                        matBadgeSize="small"
-                        matBadgeOverlap="false"></mat-icon>
-        </div>
-
         <!-- Predictions -->
         <div fxFlex fxLayout="row" fxLayoutAlign="center center"
              class="tab" role="button" matRipple
-             [ngClass]="{'active': activeTab == 2}" (click)="navigate(2)">
+             [ngClass]="{'active': activeTab == 1}" (click)="navigate(1)">
             <mat-icon   svgIcon="wand_magic_sparkles"
                         matBadge="0" 
                         [appMatBadgeIcon]="_app.predictionIcon.value ? _app.predictionIcon.value: ''"
@@ -36,9 +24,9 @@
         <!-- Trading Sessions -->
         <div fxFlex fxLayout="row" fxLayoutAlign="center center"
              class="tab" role="button" matRipple
-             [ngClass]="{'active': activeTab == 3}" (click)="navigate(3)">
+             [ngClass]="{'active': activeTab == 2}" (click)="navigate(2)">
             <mat-icon   svgIcon="auto_graph" 
-                        [matBadge]="_app.activeSessionPositions.value" 
+                        [matBadge]="_app.tradingSessionTrades.value" 
                         [matBadgeHidden]="!_app.epoch.value" 
                         matBadgePosition="after"
                         matBadgeSize="small"
@@ -48,12 +36,19 @@
         <!-- Coin Stacker -->
         <div fxFlex fxLayout="row" fxLayoutAlign="center center"
              class="tab" role="button" matRipple
-             [ngClass]="{'active': activeTab == 4}" (click)="navigate(4)">
+             [ngClass]="{'active': activeTab == 3}" (click)="navigate(3)">
             <mat-icon   svgIcon="coins" 
                         [matBadge]="0" 
                         matBadgePosition="after"
                         matBadgeSize="small"
                         matBadgeOverlap="false"></mat-icon>
+        </div>
+
+        <!-- Server -->
+        <div fxFlex fxLayout="row" fxLayoutAlign="center center"
+             class="tab" role="button" matRipple
+             [ngClass]="{'active': activeTab == 4}" (click)="navigate(4)">
+            <mat-icon svgIcon="server"></mat-icon>
         </div>
     </div>
 </div>

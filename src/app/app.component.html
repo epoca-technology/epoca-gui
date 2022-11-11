@@ -25,7 +25,7 @@
             <!-- Epochs -->
             <mat-list-item>
                 <button mat-button class="left-icon-button" (click)="_nav.epochs()" [disabled]="state.module == 'epochs'">
-                    <mat-icon svgIcon="brain"></mat-icon><span>{{_app.epoch.value ? _app.epoch.value.record.id: 'Epochs'}}</span>
+                    <mat-icon svgIcon="brain"></mat-icon><span>{{_app.epoch.value ? _app.epoch.value.id: 'Epochs'}}</span>
                 </button>
             </mat-list-item>
 
@@ -182,17 +182,6 @@
                     <mat-icon svgIcon="home"></mat-icon><span>Dashboard</span>
                 </button>
 
-                <!-- Epochs -->
-                <button mat-button 
-                        class="left-icon-button" 
-                        (click)="_nav.epochs()" 
-                        [matBadge]="_app.epoch.value ? _app.epoch.value.positions.length: 0" 
-                        [matBadgeHidden]="!_app.epoch.value" 
-                        [disabled]="state.module == 'epochs'" 
-                        *ngIf="uid">
-                    <mat-icon svgIcon="brain"></mat-icon><span>{{_app.epoch.value ? _app.epoch.value.record.id: 'Epochs'}}</span>
-                </button>
-
                 <!-- Predictions -->
                 <button mat-button 
                         class="left-icon-button" 
@@ -209,7 +198,7 @@
                 <button mat-button 
                         class="left-icon-button" 
                         (click)="_nav.tradingSessions()" 
-                        [matBadge]="_app.activeSessionPositions.value" 
+                        [matBadge]="_app.tradingSessionTrades.value" 
                         [matBadgeHidden]="!_app.epoch.value" 
                         [disabled]="state.module == 'tradingSessions'" 
                         *ngIf="uid">
@@ -224,6 +213,15 @@
                         [disabled]="state.module == 'coinStacker'" 
                         *ngIf="uid">
                     <mat-icon svgIcon="coins"></mat-icon><span>Coin Stacker</span>
+                </button>
+
+                <!-- Server -->
+                <button mat-button 
+                        class="left-icon-button" 
+                        (click)="_nav.server()" 
+                        [disabled]="state.module == 'server'" 
+                        *ngIf="uid">
+                    <mat-icon svgIcon="server"></mat-icon><span>Server</span>
                 </button>
 
                 <!-- Menu -->

@@ -1,5 +1,5 @@
 import { ICandlestick } from "../candlestick";
-import { IEpochRecord, IEpochSummary } from "../epoch";
+import { IEpochRecord } from "../epoch";
 import { IPrediction, IPredictionModelCertificate, IRegressionTrainingCertificate } from "../epoch-builder";
 import { IPredictionCandlestick } from "../prediction";
 
@@ -25,7 +25,6 @@ export interface ILocalDatabaseService {
 
     // Epoch
     getEpochRecord(epochID: string): Promise<IEpochRecord|undefined>,
-    getEpochSummary(epochID: string): Promise<IEpochSummary>,
 
     // Certificates
     getPredictionModelCertificate(id: string): Promise<IPredictionModelCertificate>,

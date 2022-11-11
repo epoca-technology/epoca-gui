@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import Dexie from "dexie";
 import * as moment from "moment";
 import { UtilsService } from "../utils";
-import { EpochService, IEpochRecord, IEpochSummary } from "../epoch";
+import { EpochService, IEpochRecord } from "../epoch";
 import { CandlestickService, ICandlestick } from "../candlestick";
 import { IPredictionCandlestick, PredictionService } from "../prediction";
 import { IPrediction, IPredictionModelCertificate, IRegressionTrainingCertificate } from "../epoch-builder";
@@ -30,7 +30,6 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 	// Tables
 	private userPreferences?: Dexie.Table;
 	private epochRecords?: Dexie.Table;
-	private epochSummaries?: Dexie.Table;
 	private predictionModelCertificates?: Dexie.Table;
 	private regressionCertificates?: Dexie.Table;
 	private predictionCandlesticks?: Dexie.Table;
@@ -73,7 +72,6 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 				this.db.version(1).stores({
 					userPreferences: "id",
 					epochRecords: "id",
-					epochSummaries: "id",
 					predictionModelCertificates: "id",
 					regressionCertificates: "id",
 					predictionCandlesticks: "id",
@@ -88,7 +86,6 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 				// Initialize Tables
 				this.userPreferences = this.db.table("userPreferences");
 				this.epochRecords = this.db.table("epochRecords");
-				this.epochSummaries = this.db.table("epochSummaries");
 				this.predictionModelCertificates = this.db.table("predictionModelCertificates");
 				this.regressionCertificates = this.db.table("regressionCertificates");
 				this.predictionCandlesticks = this.db.table("predictionCandlesticks");
@@ -151,7 +148,6 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 		return [
 			{ name: "userPreferences", records: await this.userPreferences!.count()},
 			{ name: "epochRecords", records: await this.epochRecords!.count()},
-			{ name: "epochSummaries", records: await this.epochSummaries!.count()},
 			{ name: "predictionModelCertificates", records: await this.predictionModelCertificates!.count()},
 			{ name: "regressionCertificates", records: await this.regressionCertificates!.count()},
 			{ name: "predictionCandlesticks", records: await this.predictionCandlesticks!.count()},
@@ -286,53 +282,6 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 		}
 	}
 
-
-
-
-
-
-	/**
-	 * Retrieves, stores and returns an epoch summary if the browser 
-	 * is compatible.
-	 * @param epochID 
-	 * @returns Promise<IEpochSummary>
-	 */
-	public async getEpochSummary(epochID: string): Promise<IEpochSummary> {
-		// Attempt to initialize the db in case it hadn't been
-		if (!this.initialized) await this.initialize();
-
-		// If it is not compatible, return the original call right away
-		if (!this.initialized) return this._epoch.getEpochSummary(epochID);
-
-		/**
-		 * Check if the record is currently stored, in the case of an error when interacting
-		 * with the db, handle it and return the original call.
-		 */
-		try {
-			// Read the data and return it if found
-			const localData: ILocalData = await this.epochSummaries!.where("id").equals(epochID).first();
-			if (localData && localData.data) { return localData.data } 
-
-			// If it isn't found, retrieve it, store it and return it
-			else { 
-				// Perform the request
-				const summary: IEpochSummary = await this._epoch.getEpochSummary(epochID);
-
-				// Attempt to save it if it has been uninstalled
-				if (typeof summary.record.uninstalled == "number") {
-					try {
-						await this.epochSummaries!.put(<ILocalData> { id: epochID, data: summary });
-					} catch (e) { console.error(e) }
-				}
-
-				// Finally, return it
-				return summary; 
-			}
-		} catch (e) {
-			console.error(e);
-			return this._epoch.getEpochSummary(epochID);
-		}
-	}
 
 
 

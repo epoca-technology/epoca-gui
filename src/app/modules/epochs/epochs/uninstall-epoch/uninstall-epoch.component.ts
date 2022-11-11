@@ -32,7 +32,7 @@ export class UninstallEpochComponent implements OnInit, IUninstallEpochComponent
 
 	ngOnInit(): void {
         // Initialize the Epoch's ID
-        const epochID: string|undefined = this._app.epoch.value ? this._app.epoch.value.record.id: undefined;
+        const epochID: string|undefined = this._app.epoch.value ? this._app.epoch.value.id: undefined;
         if (!epochID) {
             this._app.error("An Epoch that is not active cannot be uninstalled.");
             this.close();

@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import * as moment from "moment";
 import { ApexAnnotations, ApexChart, ApexPlotOptions, ApexYAxis, ApexAxisChartSeries, ApexXAxis } from "ng-apexcharts";
-import { IBacktestPosition, ICandlestick, IEpochPositionRecord, IPredictionCandlestick, UtilsService } from "../../core";
+import { IBacktestPosition, ICandlestick, IPredictionCandlestick, UtilsService } from "../../core";
 import { AppService, ILayout } from "../app";
 import { 
 	IApexCandlestick, 
@@ -554,29 +554,6 @@ export class ChartService implements IChartService {
 
 
 
-
-
-	/**
-	 * Builds the profit hist bar chart"s data based on a series of
-	 * positions.
-	 * @param positions
-	 * @returns {colors: string[], values: number[]}
-	 */
-	public getProfitHistoryData(positions: IEpochPositionRecord[]): {colors: string[], values: number[]} {
-		let colors: string[] = [];
-		let values: number[] = [];
-		let profitAcum: number = 0;
-		for (let i = 0; i < positions.length; i++) {
-			if (positions[i].t == 1) { 
-				colors.push(this.upwardColor);
-			} else { 
-				colors.push(this.downwardColor);
-			}
-			profitAcum = profitAcum + positions[i].p;
-			values.push(<number>this._utils.outputNumber(profitAcum))
-		}
-		return {colors: colors, values: values};
-	}
 
 
 

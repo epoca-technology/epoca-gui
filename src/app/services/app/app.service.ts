@@ -1,4 +1,4 @@
-import {Injectable, NgZone} from "@angular/core";
+import {Injectable} from "@angular/core";
 import { MediaChange, MediaObserver } from "@angular/flex-layout";
 import {MatSnackBar, MatSnackBarRef, TextOnlySnackBar} from "@angular/material/snack-bar";
 import {Clipboard} from "@angular/cdk/clipboard";
@@ -8,7 +8,7 @@ import {
 	AuthService, 
 	BulkDataService, 
 	IAppBulk, 
-	IEpochSummary, 
+	IEpochRecord, 
 	IPrediction, 
 	IPredictionResultIcon, 
 	IPredictionState, 
@@ -56,12 +56,14 @@ export class AppService implements IAppService{
 	private readonly appBulkIntervalMS: number = 20 * 1000; // Every 20 seconds
 	public serverTime: BehaviorSubject<number|undefined|null> = new BehaviorSubject<number|undefined|null>(null);
 	public guiVersion: BehaviorSubject<string|undefined|null> = new BehaviorSubject<string|undefined|null>(null);
-	public epoch: BehaviorSubject<IEpochSummary|undefined|null> = new BehaviorSubject<IEpochSummary|undefined|null>(null);
+	public epoch: BehaviorSubject<IEpochRecord|undefined|null> = new BehaviorSubject<IEpochRecord|undefined|null>(null);
 	public prediction: BehaviorSubject<IPrediction|undefined|null> = new BehaviorSubject<IPrediction|undefined|null>(null);
 	public predictionState: BehaviorSubject<IPredictionState|undefined|null> = new BehaviorSubject<IPredictionState|undefined|null>(null);
 	public predictionIcon: BehaviorSubject<IPredictionResultIcon|undefined|null> = new BehaviorSubject<IPredictionResultIcon|undefined|null>(null);
-	public session: BehaviorSubject<object|undefined|null> = new BehaviorSubject<object|undefined|null>(null);
-	public activeSessionPositions: BehaviorSubject<number|undefined|null> = new BehaviorSubject<number|undefined|null>(null);
+	public tradingSession: BehaviorSubject<object|undefined|null> = new BehaviorSubject<object|undefined|null>(null);
+	public tradingSessionTrades: BehaviorSubject<number|undefined|null> = new BehaviorSubject<number|undefined|null>(null);
+	public coinStackerSession: BehaviorSubject<object|undefined|null> = new BehaviorSubject<object|undefined|null>(null);
+	public coinStackerSessionPurchases: BehaviorSubject<number|undefined|null> = new BehaviorSubject<number|undefined|null>(null);
 
 
 
@@ -74,8 +76,7 @@ export class AppService implements IAppService{
         private _utils: UtilsService,
 		private _auth: AuthService,
 		private _bulk: BulkDataService,
-		private _prediction: PredictionService,
-		private ngZone: NgZone
+		private _prediction: PredictionService
 	) {
 		// Initialize the Layout
 		this.layout = new BehaviorSubject<ILayout>(this.getLayout());
@@ -151,26 +152,27 @@ export class AppService implements IAppService{
 			// Unpack the metadata
 			const metadata: IAppBulkMetadata = this.getAppBulkMetadata(bulk);
 
-			// Update the values within angular's zone
-			this.ngZone.run(() => {
-				// Broadcast the server's time
-				this.serverTime.next(bulk.serverTime);
+			// Broadcast the server's time
+			this.serverTime.next(bulk.serverTime);
 
-				// Broadcast the gui version
-				this.guiVersion.next(bulk.guiVersion);
+			// Broadcast the gui version
+			this.guiVersion.next(bulk.guiVersion);
 
-				// Broadcast the active epoch summary
-				this.epoch.next(bulk.epoch);
+			// Broadcast the active epoch summary
+			this.epoch.next(bulk.epoch);
 
-				// Broadcast the active prediction as well as the metadata
-				this.predictionState.next(bulk.predictionState);
-				this.predictionIcon.next(metadata.predictionIcon);
-				this.prediction.next(bulk.prediction);
+			// Broadcast the active prediction as well as the metadata
+			this.predictionState.next(bulk.predictionState);
+			this.predictionIcon.next(metadata.predictionIcon);
+			this.prediction.next(bulk.prediction);
 
-				// Broadcast the session as well as the metadata
-				this.session.next(bulk.session);
-				this.activeSessionPositions.next(metadata.activeSessionPositions);
-			});
+			// Broadcast the session as well as the metadata
+			this.tradingSession.next(bulk.tradingSession);
+			this.tradingSessionTrades.next(metadata.tradingSessionTrades);
+
+			// Broadcast the coin stacker session as well as the metadata
+			this.coinStackerSession.next(bulk.coinStackerSession);
+			this.coinStackerSessionPurchases.next(metadata.coinStackerSessionPurchases);
 		} catch (e) { console.error(e) }
 	}
 
@@ -183,30 +185,29 @@ export class AppService implements IAppService{
 	 * Puts together the bulk's metadata that will be broadcasted with the
 	 * main app bulk data.
 	 * @param bulk 
-	 * @returns 
+	 * @returns IAppBulkMetadata
 	 */
-	private getAppBulkMetadata(bulk: IAppBulk): {
-		predictionIcon: IPredictionResultIcon|undefined,
-		activeSimulations: number,
-		activeSessionPositions: number
-	} {
+	private getAppBulkMetadata(bulk: IAppBulk): IAppBulkMetadata {
 		// Init values
 		let predictionIcon: IPredictionResultIcon|undefined = undefined;
-		let activeSimulations: number = 0;
-		let activeSessionPositions: number = 0;
+		let tradingSessionTrades: number = 0;
+		let coinStackerSessionPurchases: number = 0;
 
 		// Populate the active prediction icon
 		if (bulk.prediction) { predictionIcon = this._prediction.resultIconNames[bulk.prediction.r]} 
 		else { predictionIcon = undefined }
 
-		// Calculate the number of positions in the active session
+		// Calculate the number of trades in the active position
+		// @TODO
+
+		// Calculate the number of purchases in the active coin stacker session
 		// @TODO
 
 		// Finally, return the packed metadata
 		return {
 			predictionIcon: predictionIcon,
-			activeSimulations: activeSimulations,
-			activeSessionPositions: activeSessionPositions
+			tradingSessionTrades: tradingSessionTrades,
+			coinStackerSessionPurchases: coinStackerSessionPurchases
 		}
 	}
 
@@ -227,8 +228,10 @@ export class AppService implements IAppService{
 		this.prediction.next(undefined);
 		this.predictionState.next(0);
 		this.predictionIcon.next(undefined);
-		this.session.next(undefined);
-		this.activeSessionPositions.next(0);
+		this.tradingSession.next(undefined);
+		this.tradingSessionTrades.next(0);
+		this.coinStackerSession.next(undefined);
+		this.coinStackerSessionPurchases.next(0);
 	}
 
 

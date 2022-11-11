@@ -7,7 +7,7 @@ import { Subscription } from "rxjs";
 import { ApexAnnotations } from "ng-apexcharts";
 import * as moment from "moment";
 import { 
-    IEpochSummary, 
+    IEpochRecord, 
     IPrediction, 
     IPredictionCandlestick, 
     IPredictionState, 
@@ -40,7 +40,7 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
     public view: IView = "line"; 
 
     // Active Prediction
-    public epoch: IEpochSummary|null = null;
+    public epoch: IEpochRecord|null = null;
     public active: IPrediction|null = null;
     private predictionSub?: Subscription;
     private epochSub?: Subscription;
@@ -99,7 +99,7 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
          * Initialize the epoch sub briefly. This subscription is destroyed once the 
          * first epoch value is emmited
          */
-         this.epochSub = this._app.epoch.subscribe(async (e: IEpochSummary|undefined|null) => {
+         this.epochSub = this._app.epoch.subscribe(async (e: IEpochRecord|undefined|null) => {
             if (e != null && !this.initialized) {
                 // Kill the subscription
                 if (this.epochSub) this.epochSub.unsubscribe();
@@ -115,7 +115,7 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
 
                 // Otherwise, check if an active epoch is available
                 else if (e){
-                    await this.initializeEpochData(e.record.id);
+                    await this.initializeEpochData(e.id);
                 }
 
                 // Set the init state
@@ -168,10 +168,10 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
         }
 
         // Initialize the epoch summary
-        let epochSummary: IEpochSummary|null = null;
+        let epochSummary: IEpochRecord|undefined|null = null;
 
         // Check if the epoch matches the active one
-        if (this._app.epoch.value && this._app.epoch.value.record.id == epochID) {
+        if (this._app.epoch.value && this._app.epoch.value.id == epochID) {
             // Set the epoch summary
             epochSummary = this._app.epoch.value;
         }
@@ -179,13 +179,13 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
         // If it isn"t the active epoch, retrieve the summary from the API
         else {
             try {
-                epochSummary = await this._localDB.getEpochSummary(<string>epochID);
+                epochSummary = await this._localDB.getEpochRecord(<string>epochID);
             } catch (e) { this._app.error(e) }
         }
 
         // Make sure an epoch summary was found
         if (!epochSummary) {
-            this._app.error("Could not extract the Epoch Summary.");
+            this._app.error("Could not extract the Epoch Record.");
             this.loaded = true;
             return;
         }
@@ -200,7 +200,7 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
         await this.initializeStarredPredictions();
         
         // Subscribe to the active prediction if the epoch matches
-        if (this._app.epoch.value && this._app.epoch.value.record.id == epochID) {
+        if (this._app.epoch.value && this._app.epoch.value.id == epochID) {
             this.predictionSub = this._app.prediction.subscribe(async (pred: IPrediction|null|undefined) => {
                 if (pred) {
                     // If it is an actual new prediction, add it to the list
@@ -296,20 +296,20 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
         try {
             // Retrieve the candlesticks
             this.candlesticks = await this._localDB.listPredictionCandlesticks(
-                this.epoch!.record.id, 
+                this.epoch!.id, 
                 moment(this._app.serverTime.value).subtract(days, "days").valueOf(),
                 this._app.serverTime.value!,
-                this.epoch!.record.installed, 
+                this.epoch!.installed, 
                 this._app.serverTime.value!
             );
 
             // Build the chart
-            const minValue: number = -this.epoch!.record.model.regressions.length;
-            const maxValue: number = this.epoch!.record.model.regressions.length;
+            const minValue: number = -this.epoch!.model.regressions.length;
+            const maxValue: number = this.epoch!.model.regressions.length;
             const annotations: ApexAnnotations = {
                 yaxis: [
                     {
-                        y: this.epoch!.record.model.min_increase_sum,
+                        y: this.epoch!.model.min_increase_sum,
                         y2: maxValue,
                         borderColor: this._chart.upwardColor,
                         fillColor: this._chart.upwardColor,
@@ -318,13 +318,13 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
                     },
                     {
                         y: 0.000001,
-                        y2: this.epoch!.record.model.min_increase_sum,
+                        y2: this.epoch!.model.min_increase_sum,
                         borderColor: "#B2DFDB",
                         fillColor: "#B2DFDB",
                         strokeDashArray: 0
                     },
                     {
-                        y: this.epoch!.record.model.min_decrease_sum,
+                        y: this.epoch!.model.min_decrease_sum,
                         y2: minValue,
                         borderColor: this._chart.downwardColor,
                         fillColor: this._chart.downwardColor,
@@ -332,7 +332,7 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
                     },
                     {
                         y: -0.000001,
-                        y2: this.epoch!.record.model.min_decrease_sum,
+                        y2: this.epoch!.model.min_decrease_sum,
                         borderColor: "#FFCDD2",
                         fillColor: "#FFCDD2",
                         strokeDashArray: 0
@@ -415,10 +415,10 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
             // Download the predictions
             const { startAt, endAt } = this.getPredictionRange();
             const preds: IPrediction[] = await this._localDB.listPredictions(
-                this.epoch!.record.id,
+                this.epoch!.id,
                 startAt,
                 endAt,
-                this.epoch!.record.installed
+                this.epoch!.installed
             );
             
             // Concatenate them with the current list
@@ -496,22 +496,22 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
 
             // Init the color of the prediction sum line
             let predLineColor: string = this._chart.neutralColor;
-            if (this.predictions[0].s >= this.epoch!.record.model.min_increase_sum) {
+            if (this.predictions[0].s >= this.epoch!.model.min_increase_sum) {
                 predLineColor = this._chart.upwardColor;
-            } else if (this.predictions[0].s <= this.epoch!.record.model.min_decrease_sum) {
+            } else if (this.predictions[0].s <= this.epoch!.model.min_decrease_sum) {
                 predLineColor = this._chart.downwardColor;
             }
 
             // Init the min and max values
-            const minValue: number = -this.epoch!.record.model.regressions.length;
-            const maxValue: number = this.epoch!.record.model.regressions.length;
+            const minValue: number = -this.epoch!.model.regressions.length;
+            const maxValue: number = this.epoch!.model.regressions.length;
 
             // Build the annotations
             const { markerSize, markerColor, labelColor } = this.getPointAnnotationData();
             const annotations: ApexAnnotations = {
                 yaxis: [
                     {
-                        y: this.epoch!.record.model.min_increase_sum,
+                        y: this.epoch!.model.min_increase_sum,
                         y2: maxValue,
                         borderColor: this._chart.upwardColor,
                         fillColor: this._chart.upwardColor,
@@ -519,13 +519,13 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
                     },
                     {
                         y: 0.000001,
-                        y2: this.epoch!.record.model.min_increase_sum,
+                        y2: this.epoch!.model.min_increase_sum,
                         borderColor: "#B2DFDB",
                         fillColor: "#B2DFDB",
                         strokeDashArray: 0
                     },
                     {
-                        y: this.epoch!.record.model.min_decrease_sum,
+                        y: this.epoch!.model.min_decrease_sum,
                         y2: minValue,
                         borderColor: this._chart.downwardColor,
                         fillColor: this._chart.downwardColor,
@@ -533,7 +533,7 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
                     },
                     {
                         y: -0.000001,
-                        y2: this.epoch!.record.model.min_decrease_sum,
+                        y2: this.epoch!.model.min_decrease_sum,
                         borderColor: "#FFCDD2",
                         fillColor: "#FFCDD2",
                         strokeDashArray: 0
@@ -591,7 +591,7 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
                         annotations: annotations,
                         xaxis: {type: "datetime",tooltip: {enabled: true}, labels: {datetimeUTC: false}}, 
                     },
-                    this.layout == "desktop" ? 550: 400, 
+                    this.layout == "desktop" ? 550: 375, 
                     true,
                     {min: minValue, max: maxValue}
                 );
@@ -603,11 +603,11 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
                 click: function(e: any, cc: any, c: any) {
                     if (c.dataPointIndex >= 0 && self.predictionsHistPayload[c.dataPointIndex]) {
                         self._nav.displayPredictionDialog(
-                            self.epoch!.record.model, 
+                            self.epoch!.model, 
                             self.predictionsHistPayload[c.dataPointIndex], 
                             undefined, 
                             undefined,
-                            self.epoch!.record
+                            self.epoch!
                         )
                     }
                 }
@@ -636,7 +636,7 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
         let labelColor: string = this._chart.neutralColor;
 
         // Check if the active epoch is the one being visualized
-        if (this._app.epoch.value && this._app.epoch.value.record.id == this.epoch!.record.id) {
+        if (this._app.epoch.value && this._app.epoch.value.id == this.epoch!.id) {
             // Init the state
             const state: IPredictionState = this._app.predictionState.value!;
 
@@ -796,7 +796,7 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
 			panelClass: "small-dialog",
             data: <IPredictionCandlestickDialogData> {
                 candlestick: candlestick,
-                epoch: this.epoch!.record
+                epoch: this.epoch!
             }
 		})
     }

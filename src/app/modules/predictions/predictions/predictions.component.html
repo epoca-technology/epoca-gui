@@ -4,8 +4,8 @@
         <span *ngIf="!epoch" class="truncate">Predictions</span>
         <span *ngIf="epoch" 
                 class="truncate clickable" 
-                (click)="_nav.displayPredictionModelConfigDialog(epoch.record.model)">
-                {{initialized ? epoch.record.id: 'Predictions'}}
+                (click)="_nav.displayPredictionModelConfigDialog(epoch.model)">
+                {{initialized ? epoch.id: 'Predictions'}}
         </span>
         <span fxFlex></span>
         
@@ -34,7 +34,7 @@
         <button mat-icon-button 
                 *ngIf="epoch && loaded"
                 [disabled]="submitting"
-                matTooltip="Close {{epoch.record.id}}"
+                matTooltip="Close {{epoch.id}}"
                 (click)="initializeEpochData()"><mat-icon>close</mat-icon></button>
     </div>
 </mat-toolbar>
@@ -71,7 +71,7 @@
                             class="prediction-tile mat-elevation-z2 fake-button">
                             <div class="full-width prediction-tile-inner">
                                 <div fxLayout="row" fxLayoutAlign="start center">
-                                    <div class="clickable" (click)="_nav.displayPredictionDialog(epoch.record.model, pred, undefined, undefined, epoch.record)">
+                                    <div class="clickable" (click)="_nav.displayPredictionDialog(epoch.model, pred, undefined, undefined, epoch)">
                                         <div fxLayout="row" fxLayoutAlign="start center">
                                             <img src="{{_prediction.resultImagePaths[pred.r]}}" alt="Model Type" class="model-logo-xs">
                                             <h5>{{_prediction.resultNames[pred.r]}}</h5>
@@ -112,7 +112,7 @@
 
                     <!-- Features -->
                     <div *ngIf="active" class="features">
-                        <div *ngFor="let reg of epoch.record.model.regressions; index as regIndex" class="feature">
+                        <div *ngFor="let reg of epoch.model.regressions; index as regIndex" class="feature">
                             <div class="clickable" role="button"
                                 (click)="_nav.displayKerasModelDialog(reg)"
                                 [matTooltip]="reg.id"
@@ -130,7 +130,7 @@
 
                         <!-- Last Prediction time -->
                         <p class="light-text align-center ts-s" 
-                        style="margin-top:5px">{{active.t | timeAgo}}</p>
+                        style="margin:5px">{{active.t | date: 'short'}}</p>
                     </div>
                 </div>
 
@@ -159,7 +159,7 @@
                                 class="prediction-tile mat-elevation-z2 fake-button">
                                 <div class="full-width prediction-tile-inner">
                                     <div fxLayout="row" fxLayoutAlign="start center">
-                                        <div class="clickable" (click)="_nav.displayPredictionDialog(epoch.record.model, pred, undefined, undefined, epoch.record)">
+                                        <div class="clickable" (click)="_nav.displayPredictionDialog(epoch.model, pred, undefined, undefined, epoch)">
                                             <div fxLayout="row" fxLayoutAlign="start center">
                                                 <img src="{{_prediction.resultImagePaths[pred.r]}}" alt="Model Type" class="model-logo-xs">
                                                 <h5>{{_prediction.resultNames[pred.r]}}</h5>

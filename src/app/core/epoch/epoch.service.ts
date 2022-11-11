@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { ApiService } from "../api";
 import { IBackgroundTaskInfo } from "../background-task";
 import { IPredictionModelCertificate, IRegressionTrainingCertificate } from "../epoch-builder";
-import { IEpochListItem, IEpochRecord, IEpochService, IEpochSummary } from "./interfaces";
+import { IEpochListItem, IEpochRecord, IEpochService } from "./interfaces";
 
 @Injectable({
   providedIn: "root"
@@ -41,47 +41,6 @@ export class EpochService implements IEpochService {
 
 
 
-
-	/**
-	 * Retrieves the active epoch's summary. If no epoch is active, 
-	 * it returns undefined.
-	 * @returns Promise<IEpochSummary|undefined>
-	 */
-	/*public getActiveEpochSummary(): Promise<IEpochSummary|undefined> {
-		return this._api.request(
-			"get","epoch/getActiveEpochSummary", 
-			{}, 
-			true
-		);
-	}*/
-
-
-
-
-
-
-
-	/**
-	 * Retrieves an Epoch Summary based on the provided ID.
-	 * @param epochID
-	 * @returns Promise<IEpochSummary>
-	 */
-	public getEpochSummary(epochID: string): Promise<IEpochSummary> {
-		return this._api.request(
-			"get","epoch/getEpochSummary", 
-			{
-				epochID: epochID
-			}, 
-			true
-		);
-	}
-
-
-
-
-
-
-
 	/**
 	 * Retrieves the list of epochs based on a given starting point and limit.
 	 * @param startAt
@@ -105,6 +64,8 @@ export class EpochService implements IEpochService {
 
 
 
+
+	
 
 	/* Epoch Install Endpoints */
 

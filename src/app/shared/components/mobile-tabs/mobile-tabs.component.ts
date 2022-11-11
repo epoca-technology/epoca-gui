@@ -46,16 +46,16 @@ export class MobileTabsComponent implements OnInit, OnDestroy, IMobileTabsCompon
 				this._nav.dashboard();
 				break;
 			case 1:
-				this._nav.epochs();
-				break;
-			case 2:
 				this._nav.predictions();
 				break;
-			case 3:
+			case 2:
 				this._nav.tradingSessions();
 				break;
-			case 4:
+			case 3:
 				this._nav.coinStacker();
+				break;
+			case 4:
+				this._nav.server();
 				break;
 		}
 	}
@@ -84,16 +84,16 @@ export class MobileTabsComponent implements OnInit, OnDestroy, IMobileTabsCompon
 			case "dashboard":
 				this.activeTab = 0;
 				break;
-			case "epochs":
+			case "predictions":
 				this.activeTab = 1;
 				break;
-			case "predictions":
+			case "tradingSessions":
 				this.activeTab = 2;
 				break;
-			case "tradingSessions":
+			case "coinStacker":
 				this.activeTab = 3;
 				break;
-			case "coinStacker":
+			case "server":
 				this.activeTab = 4;
 				break;
 			default:

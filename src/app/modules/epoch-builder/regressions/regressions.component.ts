@@ -294,7 +294,7 @@ export class RegressionsComponent implements OnInit, OnDestroy, IRegressionsComp
 	public activateActiveRegression(): void {
 		// Display the bottom sheet and handle the action
 		const bs: MatBottomSheetRef = this._nav.displayBottomSheetMenu(
-			this._app.epoch.value!.record.model.regressions.map((r: IRegressionConfig) => {
+			this._app.epoch.value!.model.regressions.map((r: IRegressionConfig) => {
 				return {
 					icon: "show_chart",
 					title: "Regression Model",

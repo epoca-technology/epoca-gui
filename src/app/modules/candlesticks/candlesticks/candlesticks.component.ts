@@ -117,10 +117,10 @@ export class CandlesticksComponent implements OnInit, OnDestroy, ICandlesticksCo
                 try {
                     // Retrieve the predictions within the range
                     const preds: IPredictionCandlestick[] = await this._localDB.listPredictionCandlesticks(
-                        this._app.epoch.value.record.id, 
+                        this._app.epoch.value.id, 
                         this.rawCandlesticks[0].ot, 
                         this.rawCandlesticks[this.rawCandlesticks.length - 1].ct,
-                        this._app.epoch.value.record.installed,
+                        this._app.epoch.value.installed,
                         <number>this._app.serverTime.value
                     );
     
@@ -142,8 +142,8 @@ export class CandlesticksComponent implements OnInit, OnDestroy, ICandlesticksCo
                         false,
                         true,
                         {
-                            min: -this._app.epoch.value.record.model.regressions.length, 
-                            max: this._app.epoch.value.record.model.regressions.length, 
+                            min: -this._app.epoch.value.model.regressions.length, 
+                            max: this._app.epoch.value.model.regressions.length, 
                         }
                     );
                     this.barChart.chart!.id = "bars";

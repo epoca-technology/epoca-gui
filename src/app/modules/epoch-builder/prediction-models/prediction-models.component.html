@@ -102,7 +102,7 @@
                 <button mat-button 
                         *ngIf="!initialized && !initializing && _app.epoch.value"
                         [disabled]="loadingFromDB"
-                        (click)="initWithID(_app.epoch.value.record.model.id)">View Active</button>
+                        (click)="initWithID(_app.epoch.value.model.id)">View Active</button>
             </div>
         </mat-toolbar>
 
