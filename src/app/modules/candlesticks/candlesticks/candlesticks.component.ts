@@ -140,7 +140,11 @@ export class CandlesticksComponent implements OnInit, OnDestroy, ICandlesticksCo
                         [], 
                         undefined, 
                         false,
-                        false
+                        true,
+                        {
+                            min: -this._app.epoch.value.record.model.regressions.length, 
+                            max: this._app.epoch.value.record.model.regressions.length, 
+                        }
                     );
                     this.barChart.chart!.id = "bars";
                     this.barChart.chart!.group = "predictions";
@@ -270,7 +274,7 @@ export class CandlesticksComponent implements OnInit, OnDestroy, ICandlesticksCo
     private getDefaultConfig(): ICandlesticksConfig {
         const currentTS: number = Date.now();
 		return {
-			start: moment(currentTS).subtract(80, "hours").valueOf(),
+			start: moment(currentTS).subtract(64, "hours").valueOf(),
 			end: currentTS,
 			intervalMinutes: 30
 		}
