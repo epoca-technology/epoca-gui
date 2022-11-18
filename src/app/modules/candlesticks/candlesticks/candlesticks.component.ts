@@ -151,7 +151,7 @@ export class CandlesticksComponent implements OnInit, OnDestroy, ICandlesticksCo
                     this.barChart.yaxis!.labels = {minWidth: 40}
                     this.barChart.yaxis!.tooltip = {enabled: false}
                 } catch (e) { this._app.error(e) }
-        }
+        } else { this.barChart = undefined }
 
 		// Update loaded state
 		this.loaded = true;
@@ -274,7 +274,7 @@ export class CandlesticksComponent implements OnInit, OnDestroy, ICandlesticksCo
     private getDefaultConfig(): ICandlesticksConfig {
         const currentTS: number = Date.now();
 		return {
-			start: moment(currentTS).subtract(64, "hours").valueOf(),
+			start: moment(currentTS).subtract(128, "hours").valueOf(),
 			end: currentTS,
 			intervalMinutes: 30
 		}

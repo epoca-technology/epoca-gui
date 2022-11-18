@@ -234,7 +234,7 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
      */
     public async activateView(view: IView): Promise<void> {
         if (view == "line" || view == "grid") { this.view = view }
-        else { return this.activateCandlesticks(7) }
+        else { return this.activateCandlesticks(3) }
     }
 
 
@@ -262,6 +262,7 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
         else {
             // Display the bottom sheet and handle the action
             const bs: MatBottomSheetRef = this._nav.displayBottomSheetMenu([
+                {icon: "waterfall_chart", title: "Last 3 Days", description: "View 3 days worth of data", response: "3"},
                 {icon: "waterfall_chart", title: "Last 7 Days", description: "View 1 week worth of data", response: "7"},
                 {icon: "waterfall_chart", title: "Last 14 Days", description: "View 2 weeks worth of data", response: "14"},
                 {icon: "waterfall_chart", title: "Last 21 Days", description: "View 3 weeks worth of data", response: "21"},
@@ -269,6 +270,7 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
                 {icon: "waterfall_chart", title: "Last 1.5 Months", description: "View 45 days worth of data", response: "45"},
                 {icon: "waterfall_chart", title: "Last 2 Months", description: "View 60 days worth of data", response: "60"},
                 {icon: "waterfall_chart", title: "Last 3 Months", description: "View 90 days worth of data", response: "90"},
+                {icon: "waterfall_chart", title: "Last 6 Months", description: "View 120 days worth of data", response: "120"},
             ]);
             bs.afterDismissed().subscribe(async (response: string|undefined) => {
                 if (response) {

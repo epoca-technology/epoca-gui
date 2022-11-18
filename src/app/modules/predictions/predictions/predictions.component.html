@@ -14,7 +14,7 @@
                 *ngIf="initialized && epoch && loaded" 
                 [disabled]="view == 'line' || submitting"
                 matTooltip="Enable Line View"
-                (click)="activateView('line')"><mat-icon>insights</mat-icon></button>
+                (click)="activateView('line')"><mat-icon>timeline</mat-icon></button>
         
         <!-- Candlesticks View -->
         <button mat-icon-button 
@@ -130,7 +130,7 @@
 
                         <!-- Last Prediction time -->
                         <p class="light-text align-center ts-s" 
-                        style="margin:5px">{{active.t | date: 'short'}}</p>
+                        style="margin:5px">{{active.t | date: 'mediumTime'}}</p>
                     </div>
                 </div>
 
