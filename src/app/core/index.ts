@@ -13,6 +13,7 @@ export * from "./file";
 export * from "./gui-version";
 export * from "./ip-blacklist";
 export * from "./local-database";
+export * from "./market-state";
 export * from "./notification";
 export * from "./order-book";
 export * from "./prediction";

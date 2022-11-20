@@ -2,6 +2,7 @@ import {MatSnackBarRef, TextOnlySnackBar} from "@angular/material/snack-bar";
 import {BehaviorSubject} from "rxjs";
 import { 
     IEpochRecord, 
+    IMarketState, 
     IPrediction, 
     IPredictionResultIcon, 
     IPredictionState 
@@ -25,8 +26,7 @@ export interface IAppService {
     predictionIcon: BehaviorSubject<IPredictionResultIcon|undefined|null>,
     tradingSession: BehaviorSubject<object|undefined|null>,
     tradingSessionTrades: BehaviorSubject<number|undefined|null>,
-    coinStackerSession: BehaviorSubject<object|undefined|null>,
-    coinStackerSessionPurchases: BehaviorSubject<number|undefined|null>,
+    marketState: BehaviorSubject<IMarketState|undefined|null>,
     refreshAppBulk(): Promise<void>,
 
     // Snackbars
@@ -56,6 +56,5 @@ export type ILayoutAlias = "xs"|"sm"|"md"|"lg"|"xl";
 // App Bulk Metadata
 export interface IAppBulkMetadata {
     predictionIcon: IPredictionResultIcon|undefined,
-    tradingSessionTrades: number,
-    coinStackerSessionPurchases: number
+    tradingSessionTrades: number
 }

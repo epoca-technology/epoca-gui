@@ -36,6 +36,7 @@ export interface IChartService {
 		disableNiceScale?: boolean,
 		range?: IChartRange
 	): ICandlestickChartOptions,
+	getApexCandlesticks(candlesticks: Array<ICandlestick|IPredictionCandlestick>): IApexCandlestick[],
 
 	// Bar Charts
 	getBarChartOptions(

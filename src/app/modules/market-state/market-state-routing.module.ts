@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from "../../services";
-import { CoinStackerComponent } from './coin-stacker/coin-stacker.component';
+import { MarketStateComponent } from './market-state/market-state.component';
 
 const routes: Routes = [
 	{
 		path: "",
-		component: CoinStackerComponent,
+		component: MarketStateComponent,
 		canActivate: [AuthGuard]
 	},
 ];
@@ -15,4 +15,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class CoinStackerRoutingModule { }
+export class MarketStateRoutingModule { }

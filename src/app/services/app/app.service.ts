@@ -9,6 +9,7 @@ import {
 	BulkDataService, 
 	IAppBulk, 
 	IEpochRecord, 
+	IMarketState, 
 	IPrediction, 
 	IPredictionResultIcon, 
 	IPredictionState, 
@@ -62,8 +63,7 @@ export class AppService implements IAppService{
 	public predictionIcon: BehaviorSubject<IPredictionResultIcon|undefined|null> = new BehaviorSubject<IPredictionResultIcon|undefined|null>(null);
 	public tradingSession: BehaviorSubject<object|undefined|null> = new BehaviorSubject<object|undefined|null>(null);
 	public tradingSessionTrades: BehaviorSubject<number|undefined|null> = new BehaviorSubject<number|undefined|null>(null);
-	public coinStackerSession: BehaviorSubject<object|undefined|null> = new BehaviorSubject<object|undefined|null>(null);
-	public coinStackerSessionPurchases: BehaviorSubject<number|undefined|null> = new BehaviorSubject<number|undefined|null>(null);
+	public marketState: BehaviorSubject<IMarketState|undefined|null> = new BehaviorSubject<IMarketState|undefined|null>(null);
 
 
 
@@ -170,9 +170,8 @@ export class AppService implements IAppService{
 			this.tradingSession.next(bulk.tradingSession);
 			this.tradingSessionTrades.next(metadata.tradingSessionTrades);
 
-			// Broadcast the coin stacker session as well as the metadata
-			this.coinStackerSession.next(bulk.coinStackerSession);
-			this.coinStackerSessionPurchases.next(metadata.coinStackerSessionPurchases);
+			// Broadcast the market state
+			this.marketState.next(bulk.marketState);
 		} catch (e) { console.error(e) }
 	}
 
@@ -191,7 +190,6 @@ export class AppService implements IAppService{
 		// Init values
 		let predictionIcon: IPredictionResultIcon|undefined = undefined;
 		let tradingSessionTrades: number = 0;
-		let coinStackerSessionPurchases: number = 0;
 
 		// Populate the active prediction icon
 		if (bulk.prediction) { predictionIcon = this._prediction.resultIconNames[bulk.prediction.r]} 
@@ -206,8 +204,7 @@ export class AppService implements IAppService{
 		// Finally, return the packed metadata
 		return {
 			predictionIcon: predictionIcon,
-			tradingSessionTrades: tradingSessionTrades,
-			coinStackerSessionPurchases: coinStackerSessionPurchases
+			tradingSessionTrades: tradingSessionTrades
 		}
 	}
 
@@ -230,8 +227,7 @@ export class AppService implements IAppService{
 		this.predictionIcon.next(undefined);
 		this.tradingSession.next(undefined);
 		this.tradingSessionTrades.next(0);
-		this.coinStackerSession.next(undefined);
-		this.coinStackerSessionPurchases.next(0);
+		this.marketState.next(undefined);
 	}
 
 

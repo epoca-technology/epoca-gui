@@ -29,13 +29,6 @@
                 </button>
             </mat-list-item>
 
-            <!-- Predictions -->
-            <mat-list-item>
-                <button mat-button class="left-icon-button" (click)="_nav.predictions()" [disabled]="state.module == 'predictions'">
-                    <mat-icon svgIcon="wand_magic_sparkles"></mat-icon><span>Predictions</span>
-                </button>
-            </mat-list-item>
-
             <!-- Trading Sessions -->
             <mat-list-item>
                 <button mat-button class="left-icon-button" (click)="_nav.tradingSessions()" [disabled]="state.module == 'tradingSessions'">
@@ -43,10 +36,17 @@
                 </button>
             </mat-list-item>
 
-            <!-- My Wallet -->
+            <!-- Market State -->
             <mat-list-item>
-                <button mat-button class="left-icon-button" (click)="_nav.coinStacker()" [disabled]="state.module == 'coinStacker'">
-                    <mat-icon svgIcon="coins"></mat-icon><span>Coin Stacker</span>
+                <button mat-button class="left-icon-button" (click)="_nav.marketState()" [disabled]="state.module == 'marketState'">
+                    <mat-icon svgIcon="bitcoin"></mat-icon><span>Market State</span>
+                </button>
+            </mat-list-item>
+
+            <!-- Predictions -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.predictions()" [disabled]="state.module == 'predictions'">
+                    <mat-icon svgIcon="wand_magic_sparkles"></mat-icon><span>Predictions</span>
                 </button>
             </mat-list-item>
 
@@ -182,18 +182,6 @@
                     <mat-icon svgIcon="home"></mat-icon><span>Dashboard</span>
                 </button>
 
-                <!-- Predictions -->
-                <button mat-button 
-                        class="left-icon-button" 
-                        (click)="_nav.predictions()" 
-                        matBadge="0" 
-                        [appMatBadgeIcon]="_app.predictionIcon.value ? _app.predictionIcon.value: ''"
-                        [matBadgeHidden]="!_app.epoch.value || !_app.predictionIcon.value" 
-                        *ngIf="uid" 
-                        [disabled]="state.module == 'predictions'">
-                    <mat-icon svgIcon="wand_magic_sparkles"></mat-icon><span>Predictions</span>
-                </button>
-
                 <!-- Trading Session -->
                 <button mat-button 
                         class="left-icon-button" 
@@ -205,14 +193,25 @@
                     <mat-icon svgIcon="auto_graph"></mat-icon><span>Trading Sessions</span>
                 </button>
 
-                <!-- Coin Stacker -->
+                <!-- Market State -->
                 <button mat-button 
                         class="left-icon-button" 
-                        (click)="_nav.coinStacker()" 
-                        [matBadge]="0" 
-                        [disabled]="state.module == 'coinStacker'" 
+                        (click)="_nav.marketState()" 
+                        [disabled]="state.module == 'marketState'" 
                         *ngIf="uid">
-                    <mat-icon svgIcon="coins"></mat-icon><span>Coin Stacker</span>
+                    <mat-icon svgIcon="bitcoin"></mat-icon><span>Market State</span>
+                </button>
+
+                <!-- Predictions -->
+                <button mat-button 
+                        class="left-icon-button" 
+                        (click)="_nav.predictions()" 
+                        matBadge="0" 
+                        [appMatBadgeIcon]="_app.predictionIcon.value ? _app.predictionIcon.value: ''"
+                        [matBadgeHidden]="!_app.epoch.value || !_app.predictionIcon.value" 
+                        *ngIf="uid" 
+                        [disabled]="state.module == 'predictions'">
+                    <mat-icon svgIcon="wand_magic_sparkles"></mat-icon><span>Predictions</span>
                 </button>
 
                 <!-- Server -->

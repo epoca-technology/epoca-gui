@@ -91,15 +91,6 @@ export class NavService implements INavService {
 		}
 	}
 
-	// Predictions
-	public predictions(epochID?: string): Promise<boolean> { 
-		if (typeof epochID == "string") {
-			return this.navigate(`predictions/${epochID}`);
-		} else {
-			return this.navigate("predictions");
-		}
-	}
-
 	// Trading Sessions
 	public tradingSessions(epochID?: string): Promise<boolean> { 
 		if (typeof epochID == "string") {
@@ -109,8 +100,17 @@ export class NavService implements INavService {
 		}
 	}
 
-	// Coin Stacker
-	public coinStacker(): Promise<boolean> { return this.navigate("coinStacker") }
+	// Market State
+	public marketState(): Promise<boolean> { return this.navigate("marketState") }
+
+	// Predictions
+	public predictions(epochID?: string): Promise<boolean> { 
+		if (typeof epochID == "string") {
+			return this.navigate(`predictions/${epochID}`);
+		} else {
+			return this.navigate("predictions");
+		}
+	}
 
 	// Candlesticks
 	public candlesticks(): Promise<boolean> { return this.navigate("candlesticks") }

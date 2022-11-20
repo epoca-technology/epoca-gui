@@ -1,0 +1,84 @@
+<mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <button mat-icon-button class="show-on-mobile" (click)="close()"><mat-icon>arrow_back</mat-icon></button>
+        <span class="truncate">KeyZones</span>&nbsp;
+        <span fxFlex></span>
+        <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
+    </div>
+</mat-toolbar>
+<div mat-dialog-content>
+    <div class="component">
+        <!-- KeyZones Above-->
+        <div *ngIf="state.above.length">
+            <div class="above fake-button" role="button" matRipple 
+                *ngFor="let zone of state.above.slice().reverse()"
+                (click)="displayReversals(zone.r)">
+                <div fxLayout="row" fxLayoutAlign="start center">
+                    <div>
+                        <p>{{zone.s | currency}} <mat-icon>arrow_right_alt</mat-icon> {{zone.e | currency}}</p>
+                        <p class="light-text ts-s">+{{aboveDistances[zone.id]}}% away</p>
+                    </div>
+        
+                    <span fxFlex></span>
+
+                    <!-- Reversals -->
+                    <div [ngClass]="{
+                            'square-badge': zone.m, 
+                            'square-badge-success': !zone.m && zone.r[0].t == 'r',
+                            'square-badge-error': !zone.m && zone.r[0].t == 's'
+                        }"
+                        matTooltip="The number of reversals that have taken place in the KeyZone.">
+                        {{zone.r.length}}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Active KeyZone -->
+        <div *ngIf="state.active" [ngClass]="{'margin-top-x2': state.above.length}">
+            <div class="active fake-button" role="button" matRipple
+                (click)="displayReversals(state.active.r)">
+                <div fxLayout="row" fxLayoutAlign="start center">
+                    <div>
+                        <p>{{state.active.s | currency}} <mat-icon>arrow_right_alt</mat-icon> {{state.active.e | currency}}</p>
+                    </div>
+        
+                    <span fxFlex></span>
+
+                    <!-- Reversals -->
+                    <div class="square-badge" matTooltip="The number of reversals that have taken place in the KeyZone.">
+                        {{state.active.r.length}}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- KeyZones Below -->
+        <div *ngIf="state.below.length" [ngClass]="{'margin-top-x2': state.active || state.above.length}">
+            <div class="below fake-button" role="button" matRipple 
+                *ngFor="let zone of state.below"
+                (click)="displayReversals(zone.r)">
+                <div fxLayout="row" fxLayoutAlign="start center">
+                    <div>
+                        <p>{{zone.e | currency}} <mat-icon>arrow_right_alt</mat-icon> {{zone.s | currency}}</p>
+                        <p class="light-text ts-s">{{belowDistances[zone.id]}}% away</p>
+                    </div>
+        
+                    <span fxFlex></span>
+
+                    <!-- Reversals -->
+                    <div [ngClass]="{
+                        'square-badge': zone.m, 
+                        'square-badge-success': !zone.m && zone.r[0].t == 'r',
+                        'square-badge-error': !zone.m && zone.r[0].t == 's'
+                        }"
+                        matTooltip="The number of reversals that have taken place in the KeyZone.">
+                        {{zone.r.length}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

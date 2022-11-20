@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CoinStackerComponent } from './coin-stacker.component';
+import { KeyzoneStateDialogComponent } from './keyzone-state-dialog.component';
 
-describe('CoinStackerComponent', () => {
-  let component: CoinStackerComponent;
-  let fixture: ComponentFixture<CoinStackerComponent>;
+describe('KeyzoneStateDialogComponent', () => {
+  let component: KeyzoneStateDialogComponent;
+  let fixture: ComponentFixture<KeyzoneStateDialogComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CoinStackerComponent ]
+      declarations: [ KeyzoneStateDialogComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CoinStackerComponent);
+    fixture = TestBed.createComponent(KeyzoneStateDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -119,7 +119,7 @@ export class ChartService implements IChartService {
 	 * Given a list of raw candlesticks, it will convert them into Apex format.
 	 * @returns IApexCandlestick[]
 	 */
-     private getApexCandlesticks(candlesticks: Array<ICandlestick|IPredictionCandlestick>): IApexCandlestick[] {
+    public getApexCandlesticks(candlesticks: Array<ICandlestick|IPredictionCandlestick>): IApexCandlestick[] {
 		// Init the final list
 		let final: IApexCandlestick[] = [];
 

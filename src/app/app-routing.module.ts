@@ -27,22 +27,22 @@ const routes: Routes = [
 		loadChildren: () => import("./modules/epochs/epochs.module").then(m => m.EpochsModule),
 	},
 
-	// Predictions
-	{
-		path: "predictions",
-		loadChildren: () => import("./modules/predictions/predictions.module").then(m => m.PredictionsModule),
-	},
-
 	// Trading Sessions
 	{
 		path: "tradingSessions",
 		loadChildren: () => import("./modules/trading-sessions/trading-sessions.module").then(m => m.TradingSessionsModule),
 	},
 
-	// Coin Stacker
+	// Market State
 	{
-		path: "coinStacker",
-		loadChildren: () => import("./modules/coin-stacker/coin-stacker.module").then(m => m.CoinStackerModule),
+		path: "marketState",
+		loadChildren: () => import("./modules/market-state/market-state.module").then(m => m.MarketStateModule),
+	},
+
+	// Predictions
+	{
+		path: "predictions",
+		loadChildren: () => import("./modules/predictions/predictions.module").then(m => m.PredictionsModule),
 	},
 
 	// Candlesticks
