@@ -181,9 +181,9 @@ export class MarketStateComponent implements OnInit, OnDestroy, IMarketStateComp
     private updatePredictionChart(): void {
         // Init the color of the prediction sum line
         let predLineColor: string = this._chart.neutralColor;
-        if (this.predictions[0].s >= this.epoch!.model.min_increase_sum) {
+        if (this.predictions[this.predictions.length - 1].s >= this.epoch!.model.min_increase_sum) {
             predLineColor = this._chart.upwardColor;
-        } else if (this.predictions[0].s <= this.epoch!.model.min_decrease_sum) {
+        } else if (this.predictions[this.predictions.length - 1].s <= this.epoch!.model.min_decrease_sum) {
             predLineColor = this._chart.downwardColor;
         }
 

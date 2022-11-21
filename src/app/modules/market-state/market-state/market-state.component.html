@@ -76,6 +76,11 @@
                                 </p>
                             </div>
                             <span fxFlex></span>
+                            <div class="square-badge margin-right clickable" role="button" 
+                                (click)="displaySplitPredictions = !displaySplitPredictions" 
+                                matTooltip="{{displaySplitPredictions ? 'View Sum Chart': 'View Split Chart'}}">
+                                <mat-icon>{{displaySplitPredictions ? 'timeline': 'ssid_chart'}}</mat-icon>
+                            </div>
                             <div *ngIf="activePrediction" 
                                 matTooltip="Sum: {{activeSum}}" 
                                 class="clickable" role="button"
@@ -84,22 +89,12 @@
                                     'square-badge-error': activePrediction.r == -1,
                                     'square-badge-neutral': activePrediction.r == 0
                                 }" 
-                                [matMenuTriggerFor]="predChartMenu">
+                                (click)="displayFeaturesDialog()">
                                 <mat-icon *ngIf="activePrediction.r == 1">trending_up</mat-icon>
                                 <mat-icon *ngIf="activePrediction.r == -1">trending_down</mat-icon>
                                 <mat-icon *ngIf="activePrediction.r == 0">trending_flat</mat-icon>
                                 {{activeSum | number: '1.0-6'}}
                             </div>
-                            <mat-menu #predChartMenu="matMenu">
-                                <button mat-menu-item (click)="displaySplitPredictions = !displaySplitPredictions">
-                                    <mat-icon>{{displaySplitPredictions ? 'timeline': 'ssid_chart'}}</mat-icon> 
-                                    {{displaySplitPredictions ? 'Sum Chart': 'Split Chart'}}
-                                </button>
-
-                                <button mat-menu-item (click)="displayFeaturesDialog()" >
-                                    <mat-icon>info</mat-icon> View Details
-                                </button>
-                            </mat-menu>
                         </div>
     
                         <!-- Chart -->
