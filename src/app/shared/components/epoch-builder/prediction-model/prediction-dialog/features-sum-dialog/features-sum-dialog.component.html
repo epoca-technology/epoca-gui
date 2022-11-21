@@ -1,10 +1,8 @@
 <mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
     <div fxLayout="row" fxLayoutAlign="center center">
         <button class="show-on-mobile" mat-icon-button (click)="close()"><mat-icon>arrow_back</mat-icon></button>
-        <mat-icon class="header-icon show-on-desktop">{{resultIcon}}</mat-icon>
-        <span>{{sum}}</span>
+        <span>Sum: {{sum}}</span>
         <span fxFlex></span>
-        <mat-icon class="header-icon show-on-mobile">{{resultIcon}}</mat-icon>
         <button class="show-on-desktop" mat-icon-button (click)="close()"><mat-icon>close</mat-icon></button>
     </div>
 </mat-toolbar>
@@ -23,7 +21,7 @@
                     <mat-icon *ngIf="features[regIndex] > 0">trending_up</mat-icon>
                     <mat-icon *ngIf="features[regIndex] < 0">trending_down</mat-icon>
                     <mat-icon *ngIf="features[regIndex] == 0">trending_flat</mat-icon>
-                    &nbsp;{{features[regIndex] | number: '1.0-4'}}
+                    &nbsp;{{features[regIndex] | number: '1.0-6'}}
                 </div>
             </div>
         </div>

@@ -16,7 +16,7 @@ export class KeyzoneStateDialogComponent implements OnInit, IKeyZoneStateDialogC
 	public state: IKeyZoneState;
 
 	// Current Price
-	private currentPrice: number;
+	public currentPrice: number;
 
 	// Distances from price
 	public aboveDistances: IKeyZoneDistance = {};

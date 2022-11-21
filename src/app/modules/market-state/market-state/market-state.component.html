@@ -32,16 +32,17 @@
                         </p>
                     </div>
                     <span fxFlex></span>
-                    <div matTooltip="The % change present in the window from the beginning till the end.">
-                        <div *ngIf="state.window.state == 'increasing'" class="square-badge-success">
-                            <mat-icon>trending_up</mat-icon> {{state.window.state_value | number: '1.0-2'}}%
-                        </div>
-                        <div *ngIf="state.window.state == 'decreasing'" class="square-badge-error">
-                            <mat-icon>trending_down</mat-icon> {{state.window.state_value | number: '1.0-2'}}%
-                        </div>
-                        <div *ngIf="state.window.state == 'stateless'" class="square-badge-neutral">
-                            <mat-icon>trending_flat</mat-icon> {{state.window.state_value | number: '1.0-2'}}%
-                        </div>
+                    <div [ngClass]="{
+                            'square-badge-success': state.window.state == 'increasing',
+                            'square-badge-error': state.window.state == 'decreasing',
+                            'square-badge-neutral': state.window.state == 'stateless'
+                        }"
+                        matTooltip="The % change present in the window from the beginning till the end.">
+                        <mat-icon *ngIf="state.window.state == 'increasing'">trending_up</mat-icon>
+                        <mat-icon *ngIf="state.window.state == 'decreasing'">trending_down</mat-icon>
+                        <mat-icon *ngIf="state.window.state == 'stateless'">trending_flat</mat-icon>
+                        ${{state.window.window[state.window.window.length - 1].c | number: '1.0-0'}}&nbsp;
+                        ({{state.window.state_value | number: '1.0-2'}}%)
                     </div>
                 </div>
 
@@ -75,34 +76,63 @@
                                 </p>
                             </div>
                             <span fxFlex></span>
-                            <div *ngIf="activePrediction">
-                                <div *ngIf="activePrediction.r == 1" class="square-badge-success clickable" role="button" (click)="displayFeaturesDialog()"
-                                    matTooltip="{{activeSum}}">
-                                    <mat-icon>trending_up</mat-icon> {{activeSum | number: layout == 'desktop' ? '1.0-4': '1.0-2'}}
-                                </div>
-                                <div *ngIf="activePrediction.r == -1" class="square-badge-error clickable" role="button" (click)="displayFeaturesDialog()"
-                                    matTooltip="{{activeSum}}">
-                                    <mat-icon>trending_down</mat-icon> {{activeSum | number: layout == 'desktop' ? '1.0-4': '1.0-2'}}
-                                </div>
-                                <div *ngIf="activePrediction.r == 0" class="square-badge-neutral clickable" role="button" (click)="displayFeaturesDialog()"
-                                    matTooltip="{{activeSum}}">
-                                    <mat-icon>trending_flat</mat-icon> {{activeSum | number: layout == 'desktop' ? '1.0-4': '1.0-2'}}
-                                </div>
+                            <div *ngIf="activePrediction" 
+                                matTooltip="Sum: {{activeSum}}" 
+                                class="clickable" role="button"
+                                [ngClass]="{
+                                    'square-badge-success': activePrediction.r == 1,
+                                    'square-badge-error': activePrediction.r == -1,
+                                    'square-badge-neutral': activePrediction.r == 0
+                                }" 
+                                [matMenuTriggerFor]="predChartMenu">
+                                <mat-icon *ngIf="activePrediction.r == 1">trending_up</mat-icon>
+                                <mat-icon *ngIf="activePrediction.r == -1">trending_down</mat-icon>
+                                <mat-icon *ngIf="activePrediction.r == 0">trending_flat</mat-icon>
+                                {{activeSum | number: '1.0-6'}}
                             </div>
+                            <mat-menu #predChartMenu="matMenu">
+                                <button mat-menu-item (click)="displaySplitPredictions = !displaySplitPredictions">
+                                    <mat-icon>{{displaySplitPredictions ? 'timeline': 'ssid_chart'}}</mat-icon> 
+                                    {{displaySplitPredictions ? 'Sum Chart': 'Split Chart'}}
+                                </button>
+
+                                <button mat-menu-item (click)="displayFeaturesDialog()" >
+                                    <mat-icon>info</mat-icon> View Details
+                                </button>
+                            </mat-menu>
                         </div>
     
                         <!-- Chart -->
-                        <p *ngIf="!predictionsChart" class="light-text ts-m align-center" style="margin: 30px 0 30px 0!important">No data was found</p>
-                        <div *ngIf="predictionsChart">
-                            <apx-chart
-                                [series]="predictionsChart.series"
-                                [chart]="predictionsChart.chart"
-                                [dataLabels]="predictionsChart.dataLabels"
-                                [xaxis]="predictionsChart.xaxis"
-                                [yaxis]="predictionsChart.yaxis"
-                                [stroke]="predictionsChart.stroke"
-                                [annotations]="predictionsChart.annotations"
-                            ></apx-chart>
+                        <div *ngIf="!displaySplitPredictions">
+                            <p *ngIf="!predictionsChart" class="light-text ts-m align-center" style="margin: 30px 0 30px 0!important">No data was found</p>
+                            <div *ngIf="predictionsChart">
+                                <apx-chart
+                                    [series]="predictionsChart.series"
+                                    [chart]="predictionsChart.chart"
+                                    [dataLabels]="predictionsChart.dataLabels"
+                                    [xaxis]="predictionsChart.xaxis"
+                                    [yaxis]="predictionsChart.yaxis"
+                                    [stroke]="predictionsChart.stroke"
+                                    [annotations]="predictionsChart.annotations"
+                                ></apx-chart>
+                            </div>
+                        </div>
+
+                        <!-- Split Chart -->
+                        <div *ngIf="displaySplitPredictions">
+                            <p *ngIf="!splitPredictionsChart" class="light-text ts-m align-center" style="margin: 30px 0 30px 0!important">No data was found</p>
+                            <div *ngIf="splitPredictionsChart">
+                                <apx-chart
+                                    [series]="splitPredictionsChart.series"
+                                    [chart]="splitPredictionsChart.chart"
+                                    [dataLabels]="splitPredictionsChart.dataLabels"
+                                    [xaxis]="splitPredictionsChart.xaxis"
+                                    [yaxis]="splitPredictionsChart.yaxis"
+                                    [stroke]="splitPredictionsChart.stroke"
+                                    [annotations]="splitPredictionsChart.annotations"
+                                    [legend]="{show: false}"
+                                ></apx-chart>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -122,16 +152,16 @@
                                         <p class="light-text ts-xs">{{state.volume.ts | date: layout == 'desktop' ? 'medium': 'mediumTime'}}</p>
                                     </div>
                                     <span fxFlex></span>
-                                    <div matTooltip="The volume state within the window.">
-                                        <div *ngIf="state.volume.state == 'increasing'" class="square-badge-success">
-                                            <mat-icon>trending_up</mat-icon> {{state.volume.state_value | number: '1.0-2'}}%
-                                        </div>
-                                        <div *ngIf="state.volume.state == 'decreasing'" class="square-badge-error">
-                                            <mat-icon>trending_down</mat-icon> {{state.volume.state_value | number: '1.0-2'}}%
-                                        </div>
-                                        <div *ngIf="state.volume.state == 'stateless'" class="square-badge-neutral">
-                                            <mat-icon>trending_flat</mat-icon> {{state.volume.state_value | number: '1.0-2'}}%
-                                        </div>
+                                    <div matTooltip="The volume state within the window." 
+                                        [ngClass]="{
+                                            'square-badge-success': state.volume.state == 'increasing',
+                                            'square-badge-error': state.volume.state == 'decreasing',
+                                            'square-badge-neutral': state.volume.state == 'stateless'
+                                        }">
+                                        <mat-icon *ngIf="state.volume.state == 'increasing'">trending_up</mat-icon>
+                                        <mat-icon *ngIf="state.volume.state == 'decreasing'">trending_down</mat-icon>
+                                        <mat-icon *ngIf="state.volume.state == 'stateless'">trending_flat</mat-icon>
+                                        {{state.volume.state_value | number: '1.0-2'}}%
                                     </div>
                                 </div>
         
@@ -163,16 +193,16 @@
                                         <p class="light-text ts-xs">{{state.network_fee.ts | date: layout == 'desktop' ? 'medium': 'mediumTime'}}</p>
                                     </div>
                                     <span fxFlex></span>
-                                    <div matTooltip="The network fee state within the last 24 hours.">
-                                        <div *ngIf="state.network_fee.state == 'increasing'" class="square-badge-success">
-                                            <mat-icon>trending_up</mat-icon> {{state.network_fee.state_value | number: '1.0-2'}}%
-                                        </div>
-                                        <div *ngIf="state.network_fee.state == 'decreasing'" class="square-badge-error">
-                                            <mat-icon>trending_down</mat-icon> {{state.network_fee.state_value | number: '1.0-2'}}%
-                                        </div>
-                                        <div *ngIf="state.network_fee.state == 'stateless'" class="square-badge-neutral">
-                                            <mat-icon>trending_flat</mat-icon> {{state.network_fee.state_value | number: '1.0-2'}}%
-                                        </div>
+                                    <div matTooltip="The network fee state within the last 24 hours." 
+                                        [ngClass]="{
+                                            'square-badge-success': state.network_fee.state == 'increasing',
+                                            'square-badge-error': state.network_fee.state == 'decreasing',
+                                            'square-badge-neutral': state.network_fee.state == 'stateless'
+                                        }">
+                                        <mat-icon *ngIf="state.network_fee.state == 'increasing'">trending_up</mat-icon>
+                                        <mat-icon *ngIf="state.network_fee.state == 'decreasing'">trending_down</mat-icon>
+                                        <mat-icon *ngIf="state.network_fee.state == 'stateless'">trending_flat</mat-icon>
+                                        {{state.network_fee.state_value | number: '1.0-2'}}%
                                     </div>
                                 </div>
         

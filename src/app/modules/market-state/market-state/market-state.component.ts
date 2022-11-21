@@ -4,7 +4,7 @@ import {Title} from "@angular/platform-browser";
 import { Subscription } from "rxjs";
 import * as moment from "moment";
 import {BigNumber} from "bignumber.js";
-import { ApexAnnotations } from "ng-apexcharts";
+import { ApexAnnotations, ApexAxisChartSeries } from "ng-apexcharts";
 import { 
     IEpochRecord, 
     IKeyZone, 
@@ -39,12 +39,16 @@ export class MarketStateComponent implements OnInit, OnDestroy, IMarketStateComp
 
     // Prediction Lists
     public epoch?: IEpochRecord;
-    public predictionsChart?: ILineChartOptions;
     public activePrediction?: IPrediction;
     public activeSum?: number;
     public predictions: IPrediction[] = [];
     private predictionSub!: Subscription;
     private predictionsLoaded: boolean = false;
+
+    // Prediction Charts
+    public predictionsChart?: ILineChartOptions;
+    public splitPredictionsChart?: ILineChartOptions;
+    public displaySplitPredictions: boolean = false;
 
     // State
     public state!: IMarketState;
@@ -104,7 +108,7 @@ export class MarketStateComponent implements OnInit, OnDestroy, IMarketStateComp
                         if (this.activePrediction && pred.t != this.activePrediction.t) this.onNewPrediction(pred);
 
                         // Populate the prediction
-                        this.activePrediction = pred;
+                        //this.activePrediction = pred;
                     }
 
                     // Set loading state
@@ -158,7 +162,23 @@ export class MarketStateComponent implements OnInit, OnDestroy, IMarketStateComp
 
         // Add the new prediction
         this.predictions.push(pred);
+        this.activePrediction = pred;
 
+        // Update the prediction chart
+        this.updatePredictionChart();
+
+        // Update the split prediction chart
+        this.updateSplitPredictionChart();
+    }
+
+
+
+
+    /**
+     * Triggers whenever a new prediction comes into existance. Builds or
+     * updates the chart accordingly.
+     */
+    private updatePredictionChart(): void {
         // Init the color of the prediction sum line
         let predLineColor: string = this._chart.neutralColor;
         if (this.predictions[0].s >= this.epoch!.model.min_increase_sum) {
@@ -172,7 +192,7 @@ export class MarketStateComponent implements OnInit, OnDestroy, IMarketStateComp
         const maxValue: number = this.epoch!.model.regressions.length;
 
         // Build the annotations
-        const { markerSize, markerColor, labelColor } = this.getPointAnnotationData();
+        const { markerSize, markerColor } = this.getPointAnnotationData();
         const annotations: ApexAnnotations = {
             yaxis: [
                 {
@@ -247,22 +267,12 @@ export class MarketStateComponent implements OnInit, OnDestroy, IMarketStateComp
                     annotations: annotations,
                     xaxis: {type: "datetime",tooltip: {enabled: true}, labels: {datetimeUTC: false}}, 
                 },
-                this.layout == "desktop" ? 300: 330, 
+                this.layout == "desktop" ? 350: 330, 
                 true,
                 {min: minValue, max: maxValue}
             );
         }
-
-        // Finally, Attach the click event
-        const self = this;
-        this.predictionsChart.chart.events = {
-            click: function(e: any, cc: any, c: any) {
-                if (c.dataPointIndex >= 0) { self.displayFeaturesDialog() }
-            }
-        }
     }
-
-
 
 
 
@@ -270,17 +280,12 @@ export class MarketStateComponent implements OnInit, OnDestroy, IMarketStateComp
     /**
      * Builds the metadata that will be used to populate the monitor's
      * point annotation.
-     * @returns {markerSize: number,markerColor: string,label: string,labelColor: string,labelOffsetX: number}
+     * @returns {markerSize: number,markerColor: string}
      */
-    private getPointAnnotationData(): {
-        markerSize: number,
-        markerColor: string,
-        labelColor: string,
-    } {
+    private getPointAnnotationData(): {markerSize: number, markerColor: string} {
         // Init values
         let markerSize: number = 3.5; // Min size
         let markerColor: string = this._chart.neutralColor;
-        let labelColor: string = this._chart.neutralColor;
 
         // Check if the active epoch is the one being visualized
         if (this._app.epoch.value && this._app.epoch.value.id == this.epoch!.id) {
@@ -295,15 +300,8 @@ export class MarketStateComponent implements OnInit, OnDestroy, IMarketStateComp
             markerSize = this.getMarkerSize(state);
         }
 
-        // Populate the label color
-        labelColor = this.predictions[0].s > 0 ? this._chart.upwardColor: this._chart.downwardColor;
-
         // Finally, return the data
-        return {
-            markerSize: markerSize,
-            markerColor: markerColor,
-            labelColor: labelColor,
-        }
+        return { markerSize: markerSize, markerColor: markerColor }
     }
 
 
@@ -333,6 +331,95 @@ export class MarketStateComponent implements OnInit, OnDestroy, IMarketStateComp
 
 
 
+    /**
+     * Triggers whenever a new prediction comes into existance. Builds or
+     * updates the chart accordingly.
+     */
+     private updateSplitPredictionChart(): void {
+        // Init the series
+        let series: ApexAxisChartSeries = [];
+
+        // Build the list of features
+        const features: Array<{x: number, y: number[]}> = this.predictions.map((p) => { return { x: p.t, y: p.f} });
+
+        // Build the color list based on their active predictions
+        const colors: string[] = this.activePrediction!.f.map((f) => {
+            if (f >= 0.5) { return this._chart.upwardColor }
+            else if (f <= -0.5) { return this._chart.downwardColor }
+            else { return this._chart.neutralColor}
+        });
+
+        // Iterate over each regression and populate the values
+        for (let i = 0; i < this.epoch!.model.regressions.length; i++) {
+            series.push({
+                name: this.epoch!.model.regressions[i].id.slice(0, 12) + "...",
+                data: features.map((f) => { return {x: f.x, y: f.y[i]}}),
+                color: colors[i]
+            });
+        }
+
+        // Build/Update the chart
+        if (this.splitPredictionsChart) {
+            // Update the series
+            this.splitPredictionsChart.series = series;
+        } else {
+            // Build the annotations
+            const annotations: ApexAnnotations = {
+                yaxis: [
+                    {
+                        y: 0.500000,
+                        y2: 1.000000,
+                        borderColor: this._chart.upwardColor,
+                        fillColor: this._chart.upwardColor,
+                        strokeDashArray: 0
+                    },
+                    {
+                        y: 0.000001,
+                        y2: 0.499999,
+                        borderColor: "#B2DFDB",
+                        fillColor: "#B2DFDB",
+                        strokeDashArray: 0
+                    },
+                    {
+                        y: -0.500000,
+                        y2: -1.000000,
+                        borderColor: this._chart.downwardColor,
+                        fillColor: this._chart.downwardColor,
+                        strokeDashArray: 0
+                    },
+                    {
+                        y: -0.000001,
+                        y2: -0.499999,
+                        borderColor: "#FFCDD2",
+                        fillColor: "#FFCDD2",
+                        strokeDashArray: 0
+                    }
+                ]
+            };
+
+            // Create the chart from scratch
+            this.splitPredictionsChart = this._chart.getLineChartOptions(
+                { 
+                    series: series,
+                    stroke: {curve: "straight", width:3},
+                    annotations: annotations,
+                    xaxis: {type: "datetime",tooltip: {enabled: true}, labels: {datetimeUTC: false}}, 
+                },
+                this.layout == "desktop" ? 350: 330, 
+                true,
+                {min: -1, max: 1}
+            );
+        }
+    }
+
+
+
+
+
+
+
+
+
 
 
     /* State Update Event Handler */
@@ -353,7 +440,15 @@ export class MarketStateComponent implements OnInit, OnDestroy, IMarketStateComp
         this.updateNetworkFeeState();
 
         // Update the title
-        this.titleService.setTitle(`$${this.state.window.window[this.state.window.window.length - 1].c}`);
+        const price: string = <string>this._utils.outputNumber(
+            this.state.window.window[this.state.window.window.length - 1].c, 
+            {dp: 0, of: "s"}
+        );
+        if (this.activeSum) {
+            this.titleService.setTitle(`$${price}: ${this._utils.outputNumber(this.activeSum, {dp: 1})}`);
+        } else {
+            this.titleService.setTitle(`$${price}`);
+        }
     }
 
 
@@ -392,21 +487,8 @@ export class MarketStateComponent implements OnInit, OnDestroy, IMarketStateComp
                 true,
                 { min:  minVal, max: maxVal }
             );
-            this.windowChart.chart!.height = this.layout == "desktop" ? 599: 450;
+            this.windowChart.chart!.height = this.layout == "desktop" ? 599: 400;
             this.windowChart.chart!.zoom = {enabled: true, type: "xy"};
-            /*const self = this;
-            this.windowChart.chart!.events = {
-                click: function(event, chartContext, config) {
-                    if (
-                        config.dataPointIndex >= 0 && 
-                        self.state.window.window[config.dataPointIndex] &&
-                        (self.state.window.window[config.dataPointIndex].h >= self.state.window.upper_band.start ||
-                        self.state.window.window[config.dataPointIndex].l <= self.state.window.lower_band.start)  
-                    ) {
-                        self.displayKeyZoneDialog();
-                    }
-                }
-            }*/
         }
     }
 
@@ -449,7 +531,7 @@ export class MarketStateComponent implements OnInit, OnDestroy, IMarketStateComp
 					style: { color: "#fff", background: "#000000",},
 					text: this.getKeyZoneLabelText(this.state.keyzone.active),
 					position: "left",
-					offsetX: 170
+					offsetX: 145
 				}
 			})
         }
@@ -483,10 +565,7 @@ export class MarketStateComponent implements OnInit, OnDestroy, IMarketStateComp
         if (!zone.m) {
             zoneState = zone.r[0].t == "r" ? "R": "S";
         }
-		//label += `${zone.mutated ? 'm': ''}${zone.reversals[zone.reversals.length - 1].type.toUpperCase()} `;
-		//label += `${moment(zone.id).format('DD-MM HH:mm')}  (${zone.reversals.length}) | `;
-		//label += `Reversals ${zone.reversals.length} | `;
-		label += `$${new BigNumber(zone.s).toFormat(2)} - $${new BigNumber(zone.e).toFormat(2)} | Rx${zone.r.length} | ${zoneState}`;
+		label += `$${new BigNumber(zone.s).toFormat(2)} - $${new BigNumber(zone.e).toFormat(2)} | ${zoneState}${zone.r.length}`;
 		return label;
 	}
 
@@ -531,7 +610,7 @@ export class MarketStateComponent implements OnInit, OnDestroy, IMarketStateComp
                     ],
                     stroke: {curve: "smooth", width:5},
                 },
-                this.layout == "desktop" ? 200: 330, 
+                this.layout == "desktop" ? 150: 150, 
                 false
             );
             this.volumeChart.yaxis.labels = {show: false}
@@ -579,7 +658,7 @@ export class MarketStateComponent implements OnInit, OnDestroy, IMarketStateComp
                     ],
                     stroke: {curve: "smooth", width:5},
                 },
-                this.layout == "desktop" ? 200: 330, 
+                this.layout == "desktop" ? 150: 150, 
                 false,
             );
             this.networkFeeChart.yaxis.labels = {show: false}
