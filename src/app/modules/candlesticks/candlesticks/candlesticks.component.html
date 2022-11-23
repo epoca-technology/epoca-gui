@@ -33,7 +33,7 @@
 
 
 <!-- Section Content -->
-<div class="fadeIn padding" *ngIf="loaded">
+<div class="fadeIn padding" [ngClass]="{'section-content': layout == 'mobile'}" *ngIf="loaded">
     <div fxLayout="row" fxLayoutAlign="center center">
         <div fxFlex>
             <!-- Candlesticks -->
@@ -68,3 +68,6 @@
         </div>
     </div>
 </div>
+
+<!-- Mobile Tabs -->
+<app-mobile-tabs *ngIf="layout == 'mobile'"></app-mobile-tabs>

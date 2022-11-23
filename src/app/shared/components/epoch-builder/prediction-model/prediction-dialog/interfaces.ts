@@ -3,7 +3,6 @@ import { IEpochRecord, IPrediction, IPredictionModelConfig } from "src/app/core"
 
 
 export interface IPredictionDialogComponent {
-    displayFeaturesDialog(): void,
     close(): void
 }
 
@@ -11,8 +10,5 @@ export interface IPredictionDialogComponent {
 
 export interface IPredictionDialogData {
     model: IPredictionModelConfig,
-    prediction: IPrediction,
-    outcome?: boolean,
-    openPrice?: number,
-    epoch?: IEpochRecord,
+    prediction: IPrediction
 }

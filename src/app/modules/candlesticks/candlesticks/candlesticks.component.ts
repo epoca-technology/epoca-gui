@@ -4,7 +4,7 @@ import {MatDialog} from "@angular/material/dialog";
 import * as moment from "moment";
 import { ChartComponent } from "ng-apexcharts";
 import { CandlestickService, ICandlestick, IPredictionCandlestick, LocalDatabaseService } from "../../../core";
-import { AppService, ChartService, IBarChartOptions, ICandlestickChartOptions, NavService } from "../../../services";
+import { AppService, ChartService, IBarChartOptions, ICandlestickChartOptions, ILayout, NavService } from "../../../services";
 import { CandlestickFilesDialogComponent } from "./candlestick-files-dialog/candlestick-files-dialog.component";
 import { CandlesticksConfigDialogComponent } from "./candlesticks-config-dialog/candlesticks-config-dialog.component";
 import { CandlestickDialogComponent } from "../../../shared/components/candlestick";
@@ -18,6 +18,10 @@ import { Subscription } from "rxjs";
   styleUrls: ["./candlesticks.component.scss"]
 })
 export class CandlesticksComponent implements OnInit, OnDestroy, ICandlesticksComponent {
+	// Layout
+	public layout: ILayout = this._app.layout.value;
+	private layoutSub?: Subscription;
+
 	// Config
 	public config: ICandlesticksConfig = this.getDefaultConfig();
 
@@ -47,6 +51,10 @@ export class CandlesticksComponent implements OnInit, OnDestroy, ICandlesticksCo
     ) { }
 
     ngOnInit(): void {
+        // Initialize layout
+        this.layoutSub = this._app.layout.subscribe((nl: ILayout) => this.layout = nl);
+
+        // Subscribe to the server time
         this.serverTimeSub = this._app.serverTime.subscribe((newTime: number|null|undefined) => {
             if (typeof newTime == "number" && newTime > 0) {
                 this.serverTime = newTime;
@@ -57,6 +65,7 @@ export class CandlesticksComponent implements OnInit, OnDestroy, ICandlesticksCo
 
 
     ngOnDestroy(): void {
+        if (this.layoutSub) this.layoutSub.unsubscribe();
         this.titleService.setTitle("Epoca");
         if (this.serverTimeSub) this.serverTimeSub.unsubscribe();
     }

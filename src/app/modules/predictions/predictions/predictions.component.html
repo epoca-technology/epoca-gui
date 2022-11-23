@@ -9,26 +9,12 @@
         </span>
         <span fxFlex></span>
         
-        <!-- Chart View -->
+        <!-- Chart Settings -->
         <button mat-icon-button 
                 *ngIf="initialized && epoch && loaded" 
-                [disabled]="view == 'line' || submitting"
-                matTooltip="Enable Line View"
-                (click)="activateView('line')"><mat-icon>timeline</mat-icon></button>
-        
-        <!-- Candlesticks View -->
-        <button mat-icon-button 
-                *ngIf="initialized && epoch && loaded" 
-                [disabled]="view == 'candlesticks' || submitting"
-                matTooltip="Enable Candlesticks View"
-                (click)="activateView('candlesticks')"><mat-icon>waterfall_chart</mat-icon></button>
-
-        <!-- Grid View -->
-        <button mat-icon-button 
-                *ngIf="initialized && epoch && loaded" 
-                [disabled]="view == 'grid' || submitting"
-                matTooltip="Enable Grid View"
-                (click)="activateView('grid')"><mat-icon>grid_view</mat-icon></button>
+                [disabled]="submitting"
+                matTooltip="Chart Configuration"
+                (click)="activateCandlesticks()"><mat-icon>settings</mat-icon></button>
 
         <!-- Close Epoch-->
         <button mat-icon-button 
@@ -61,150 +47,19 @@
                 <div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div>
             </div>
 
-            <!-- Prediction Content -->
-            <div *ngIf="loaded">
-                <!-- Starred Predictions -->
-                <div *ngIf="starredList.length" class="fadeIn">
-                    <mat-grid-list [cols]="gridCols" rowHeight="60" gutterSize="15">
-                        <mat-grid-tile 
-                            *ngFor="let pred of starredList"
-                            class="prediction-tile mat-elevation-z2 fake-button">
-                            <div class="full-width prediction-tile-inner">
-                                <div fxLayout="row" fxLayoutAlign="start center">
-                                    <div class="clickable" (click)="_nav.displayPredictionDialog(epoch.model, pred, undefined, undefined, epoch)">
-                                        <div fxLayout="row" fxLayoutAlign="start center">
-                                            <img src="{{_prediction.resultImagePaths[pred.r]}}" alt="Model Type" class="model-logo-xs">
-                                            <h5>{{_prediction.resultNames[pred.r]}}</h5>
-                                        </div>
-                                        <p class="light-text ts-xs truncate">{{pred.t | date: 'medium'}}</p>
-                                    </div>
-                                    <span fxFlex></span>
-                                    <div class="clickable" 
-                                        [ngClass]="{
-                                            'square-badge-success': pred.r == 1,
-                                            'square-badge-error': pred.r == -1,
-                                            'square-badge-neutral': pred.r == 0
-                                        }" matTooltip="{{pred.s}}" 
-                                        (click)="starAction(pred)">
-                                        {{pred.s | number: '1.0-2'}}
-                                    </div>
-                                </div>
-                            </div>
-                        </mat-grid-tile>
-                    </mat-grid-list>
+            <!-- Prediction Candlesticks -->
+            <div *ngIf="loaded && candlesticksChart" class="fadeIn">
+                <div>
+                    <apx-chart
+                        [series]="candlesticksChart.series!"
+                        [chart]="candlesticksChart.chart!"
+                        [plotOptions]="candlesticksChart.plotOptions!"
+                        [xaxis]="candlesticksChart.xaxis!"
+                        [yaxis]="candlesticksChart.yaxis!"
+                        [annotations]="candlesticksChart!.annotations!"
+                        [title]="candlesticksChart.title!"
+                    ></apx-chart>
                 </div>
-
-                <!-- Prediction Hist -->
-                <div *ngIf="view == 'line' && predictionsHist" class="fadeIn">
-                    <!-- History Line -->
-                    <div style="overflow: hidden;">
-                        <apx-chart
-                            [series]="predictionsHist.series"
-                            [chart]="predictionsHist.chart"
-                            [dataLabels]="predictionsHist.dataLabels"
-                            [xaxis]="predictionsHist.xaxis"
-                            [yaxis]="predictionsHist.yaxis"
-                            [stroke]="predictionsHist.stroke"
-                            [annotations]="predictionsHist.annotations"
-                        ></apx-chart>
-                    </div>
-
-
-                    <!-- Features -->
-                    <div *ngIf="active" class="features">
-                        <div *ngFor="let reg of epoch.model.regressions; index as regIndex" class="feature">
-                            <div class="clickable" role="button"
-                                (click)="_nav.displayKerasModelDialog(reg)"
-                                [matTooltip]="reg.id"
-                                [ngClass]="{
-                                    'square-badge-success': active.f[regIndex] > 0,
-                                    'square-badge-error': active.f[regIndex] < 0,
-                                    'square-badge-neutral': active.f[regIndex] == 0
-                                }">
-                                <mat-icon *ngIf="active.f[regIndex] > 0">trending_up</mat-icon>
-                                <mat-icon *ngIf="active.f[regIndex] < 0">trending_down</mat-icon>
-                                <mat-icon *ngIf="active.f[regIndex] == 0">trending_flat</mat-icon>
-                                &nbsp;{{active.f[regIndex] | number: layout == 'desktop' ? '1.0-6': '1.0-2'}}
-                            </div>
-                        </div>
-
-                        <!-- Last Prediction time -->
-                        <p class="light-text align-center ts-s" 
-                        style="margin:5px">{{active.t | date: 'mediumTime'}}</p>
-                    </div>
-                </div>
-
-                <!-- Prediction Candlesticks -->
-                <div *ngIf="view == 'candlesticks'" class="fadeIn" [ngClass]="{'margin-top': starredList.length}">
-                    <div *ngIf="candlesticksChart" style="overflow: hidden;">
-                        <apx-chart
-                            [series]="candlesticksChart.series!"
-                            [chart]="candlesticksChart.chart!"
-                            [plotOptions]="candlesticksChart.plotOptions!"
-                            [xaxis]="candlesticksChart.xaxis!"
-                            [yaxis]="candlesticksChart.yaxis!"
-                            [annotations]="candlesticksChart!.annotations!"
-                            [title]="candlesticksChart.title!"
-                        ></apx-chart>
-                    </div>
-                </div>
-
-                <!-- Prediction Grid -->
-                <div *ngIf="view == 'grid'" class="fadeIn">
-                    <div *ngIf="starredList.length" class="divider"></div>
-                    <mat-grid-list [cols]="gridCols" rowHeight="60" gutterSize="15">
-                        <div *ngFor="let pred of predictions; index as predIndex">
-                            <mat-grid-tile 
-                                *ngIf="predIndex < visibleTiles"
-                                class="prediction-tile mat-elevation-z2 fake-button">
-                                <div class="full-width prediction-tile-inner">
-                                    <div fxLayout="row" fxLayoutAlign="start center">
-                                        <div class="clickable" (click)="_nav.displayPredictionDialog(epoch.model, pred, undefined, undefined, epoch)">
-                                            <div fxLayout="row" fxLayoutAlign="start center">
-                                                <img src="{{_prediction.resultImagePaths[pred.r]}}" alt="Model Type" class="model-logo-xs">
-                                                <h5>{{_prediction.resultNames[pred.r]}}</h5>
-                                            </div>
-                                            <p class="light-text ts-xs truncate">{{pred.t | date: 'medium'}}</p>
-                                        </div>
-                                        <span fxFlex></span>
-                                        <div class="clickable" 
-                                            [ngClass]="{
-                                                'square-badge-success': pred.r == 1,
-                                                'square-badge-error': pred.r == -1,
-                                                'square-badge-neutral': pred.r == 0,
-                                                'unstarred-prediction': !starred[pred.t]
-                                            }" matTooltip="{{pred.s}}" 
-                                            (click)="starAction(pred)">
-                                            {{pred.s | number: '1.0-2'}}
-                                        </div>
-                                    </div>
-                                </div>
-                            </mat-grid-tile>
-                        </div>
-
-                        <mat-grid-tile *ngIf="hasMore || visibleTiles < predictions.length && predictions.length" 
-                                    class="clickable fake-button" role="button" 
-                                    (click)="viewMore()">
-                            {{submitting ? 'Loading...': 'View More'}}
-                        </mat-grid-tile>
-                    </mat-grid-list>
-                </div>
-            </div>
-
-
-
-            <!-- Candlesticks Settings Fab -->
-            <div *ngIf="view == 'candlesticks'" class="prediction-loader-fab">
-                <button mat-fab color="primary" class="show-on-desktop"
-                    [disabled]="submitting || !loaded"
-                    (click)="activateCandlesticks()">
-                    <mat-icon>settings</mat-icon>
-                </button>
-                <button mat-mini-fab color="primary" class="show-on-mobile"
-                    [disabled]="submitting || !loaded"
-                    (click)="activateCandlesticks()">
-                    <mat-icon>settings</mat-icon>
-                </button>
             </div>
         </div>
     </div>

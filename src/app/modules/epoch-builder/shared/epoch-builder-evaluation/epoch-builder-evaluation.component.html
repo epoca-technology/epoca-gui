@@ -72,7 +72,7 @@
                         </div>
             
                         <!-- Items -->
-                        <div *ngIf="active == catIndex" class="fadeIn">
+                        <div *ngIf="active == catIndex">
                             <div *ngFor="let item of cat.items; last as lastItem" 
                                 class="item clickable" role="button" 
                                 (click)="_nav.displayTooltip(item.name, item.description)">

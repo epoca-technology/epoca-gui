@@ -4,6 +4,15 @@
     max-width: 120px;
 }
 
+.component {
+    h4 { margin:0}
+    p {margin: 0}
+    .chart-card { 
+        padding:0!important;
+        .chart-card-heading { padding: 15px 15px 0 15px}
+    }
+}
+
 
 
 /* Responsiveness */
@@ -14,12 +23,13 @@
     .chart-container {
         margin: 25px 15px 80px 15px;
     }
-
+    .divider { margin: 25px 0 25px 0;}
+    .chart-card {.chart-card-heading { padding: 0!important}}
 }
 
 
 
 /* desktop: md^ */
 @media only screen and (min-width: 960px) {
-    .secondary-header { display: none}
+    
 }

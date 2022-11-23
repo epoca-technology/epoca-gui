@@ -27,16 +27,10 @@ const routes: Routes = [
 		loadChildren: () => import("./modules/epochs/epochs.module").then(m => m.EpochsModule),
 	},
 
-	// Trading Sessions
+	// Positions
 	{
-		path: "tradingSessions",
-		loadChildren: () => import("./modules/trading-sessions/trading-sessions.module").then(m => m.TradingSessionsModule),
-	},
-
-	// Market State
-	{
-		path: "marketState",
-		loadChildren: () => import("./modules/market-state/market-state.module").then(m => m.MarketStateModule),
+		path: "positions",
+		loadChildren: () => import("./modules/positions/positions.module").then(m => m.PositionsModule),
 	},
 
 	// Predictions

@@ -91,17 +91,14 @@ export class NavService implements INavService {
 		}
 	}
 
-	// Trading Sessions
-	public tradingSessions(epochID?: string): Promise<boolean> { 
+	// Positions
+	public positions(epochID?: string): Promise<boolean> { 
 		if (typeof epochID == "string") {
-			return this.navigate(`tradingSessions/${epochID}`);
+			return this.navigate(`positions/${epochID}`);
 		} else {
-			return this.navigate("tradingSessions");
+			return this.navigate("positions");
 		}
 	}
-
-	// Market State
-	public marketState(): Promise<boolean> { return this.navigate("marketState") }
 
 	// Predictions
 	public predictions(epochID?: string): Promise<boolean> { 
@@ -343,22 +340,13 @@ export class NavService implements INavService {
 	* @param epoch?
 	* @returns MatDialogRef<any>
 	* */
-	public displayPredictionDialog(
-		model: IPredictionModelConfig, 
-		pred: IPrediction, 
-		outcome?: boolean, 
-		openPrice?: number, 
-		epoch?: IEpochRecord
-	): MatDialogRef<any> {
+	public displayPredictionDialog(model: IPredictionModelConfig, pred: IPrediction): MatDialogRef<any> {
 		return this.dialog.open(PredictionDialogComponent, {
 			hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
-			panelClass: "large-dialog",
+			panelClass: "small-dialog",
 			data: <IPredictionDialogData> {
 				model: model,
-				prediction: pred,
-				outcome: outcome,
-				openPrice: openPrice,
-				epoch: epoch
+				prediction: pred
 			}
 		});
 	}

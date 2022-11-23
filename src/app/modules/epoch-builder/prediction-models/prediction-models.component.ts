@@ -764,9 +764,7 @@ export class PredictionModelsComponent implements OnInit, OnDestroy, IPrediction
 				if (c.dataPointIndex >= 0 && self.cert!.backtest.positions[c.dataPointIndex]) {
 					self._nav.displayPredictionDialog(
 						self.cert!.model, 
-						self.cert!.backtest.positions[c.dataPointIndex].p!,
-						self.cert!.backtest.positions[c.dataPointIndex].o,
-						self.cert!.backtest.positions[c.dataPointIndex].op,
+						self.cert!.backtest.positions[c.dataPointIndex].p!
 					)
 				}
 			}

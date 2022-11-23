@@ -61,9 +61,10 @@ export class AppService implements IAppService{
 	public prediction: BehaviorSubject<IPrediction|undefined|null> = new BehaviorSubject<IPrediction|undefined|null>(null);
 	public predictionState: BehaviorSubject<IPredictionState|undefined|null> = new BehaviorSubject<IPredictionState|undefined|null>(null);
 	public predictionIcon: BehaviorSubject<IPredictionResultIcon|undefined|null> = new BehaviorSubject<IPredictionResultIcon|undefined|null>(null);
-	public tradingSession: BehaviorSubject<object|undefined|null> = new BehaviorSubject<object|undefined|null>(null);
-	public tradingSessionTrades: BehaviorSubject<number|undefined|null> = new BehaviorSubject<number|undefined|null>(null);
+	public positions: BehaviorSubject<object|undefined|null> = new BehaviorSubject<object|undefined|null>(null);
+	public positionsCount: BehaviorSubject<number|undefined|null> = new BehaviorSubject<number|undefined|null>(null);
 	public marketState: BehaviorSubject<IMarketState|undefined|null> = new BehaviorSubject<IMarketState|undefined|null>(null);
+	public apiErrors: BehaviorSubject<number|undefined|null> = new BehaviorSubject<number|undefined|null>(null);
 
 
 
@@ -166,12 +167,15 @@ export class AppService implements IAppService{
 			this.predictionIcon.next(metadata.predictionIcon);
 			this.prediction.next(bulk.prediction);
 
-			// Broadcast the session as well as the metadata
-			this.tradingSession.next(bulk.tradingSession);
-			this.tradingSessionTrades.next(metadata.tradingSessionTrades);
+			// Broadcast the positions as well as the metadata
+			this.positions.next(bulk.positions);
+			this.positionsCount.next(metadata.positionsCount);
 
 			// Broadcast the market state
 			this.marketState.next(bulk.marketState);
+
+			// Broadcast the api errors
+			this.apiErrors.next(bulk.apiErrors);
 		} catch (e) { console.error(e) }
 	}
 
@@ -189,22 +193,19 @@ export class AppService implements IAppService{
 	private getAppBulkMetadata(bulk: IAppBulk): IAppBulkMetadata {
 		// Init values
 		let predictionIcon: IPredictionResultIcon|undefined = undefined;
-		let tradingSessionTrades: number = 0;
+		let positionsCount: number = 0;
 
 		// Populate the active prediction icon
 		if (bulk.prediction) { predictionIcon = this._prediction.resultIconNames[bulk.prediction.r]} 
 		else { predictionIcon = undefined }
 
-		// Calculate the number of trades in the active position
-		// @TODO
-
-		// Calculate the number of purchases in the active coin stacker session
+		// Calculate the number of active positions
 		// @TODO
 
 		// Finally, return the packed metadata
 		return {
 			predictionIcon: predictionIcon,
-			tradingSessionTrades: tradingSessionTrades
+			positionsCount: positionsCount
 		}
 	}
 
@@ -225,8 +226,8 @@ export class AppService implements IAppService{
 		this.prediction.next(undefined);
 		this.predictionState.next(0);
 		this.predictionIcon.next(undefined);
-		this.tradingSession.next(undefined);
-		this.tradingSessionTrades.next(0);
+		this.positions.next(undefined);
+		this.positionsCount.next(0);
 		this.marketState.next(undefined);
 	}
 

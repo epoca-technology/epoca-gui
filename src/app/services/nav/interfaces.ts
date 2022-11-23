@@ -23,9 +23,8 @@ export interface INavService {
 	updatePassword(): Promise<boolean>,
 	dashboard(): Promise<boolean>,
 	epochs(epochID?: string): Promise<boolean> ,
-	tradingSessions(epochID?: string): Promise<boolean>,
+	positions(epochID?: string): Promise<boolean>,
 	predictions(epochID?: string): Promise<boolean>,
-	marketState(): Promise<boolean>,
 	candlesticks(): Promise<boolean>,
 	orderBook(): Promise<boolean>,
 	server(): Promise<boolean>,
@@ -44,13 +43,7 @@ export interface INavService {
 	displayKerasModelDialog(modelConfig: IRegressionConfig): MatDialogRef<any>,
 	displayModelSelectionDialog(): MatDialogRef<any>,
 	displayPredictionModelConfigDialog(modelConfig: IPredictionModelConfig): MatDialogRef<any>
-	displayPredictionDialog(
-		model: IPredictionModelConfig, 
-		pred: IPrediction, 
-		outcome?: boolean,
-		openPrice?: number,
-		epoch?: IEpochRecord
-	): MatDialogRef<any>,
+	displayPredictionDialog(model: IPredictionModelConfig, pred: IPrediction): MatDialogRef<any>,
 	
 	// Bottom Sheets
 	displayBottomSheetMenu(data: IBottomSheetMenuItem[]): MatBottomSheetRef<any>,

@@ -9,8 +9,8 @@
             <p class="light-text">Date Range</p>
             <span fxFlex></span>
             <div matTooltip="The Epoch's range." class="align-right">
-                <p class="ts-m">{{cert.training_data_start | date: 'medium'}}</p>
-                <p class="ts-m">{{cert.training_data_end | date: 'medium'}}</p>
+                <p>{{cert.training_data_start | date: _app.layout.value == 'desktop' ? 'medium': 'short'}}</p>
+                <p>{{cert.training_data_end | date: _app.layout.value == 'desktop' ? 'medium': 'short'}}</p>
             </div>
         </div>
 

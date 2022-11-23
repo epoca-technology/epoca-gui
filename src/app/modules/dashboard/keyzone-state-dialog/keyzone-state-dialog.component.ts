@@ -1,8 +1,8 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
 import { MatDialog } from "@angular/material/dialog";
-import { AppService, NavService } from '../../../../services';
-import { IKeyZoneState, IReversal, UtilsService } from '../../../../core';
+import { AppService, NavService } from '../../../services';
+import { IKeyZoneState, IReversal, UtilsService } from '../../../core';
 import { KeyzoneReversalsDialogComponent } from './keyzone-reversals-dialog';
 import { IKeyZoneStateDialogComponent, IKeyZonesStateDialogData, IKeyZoneDistance } from './interfaces';
 

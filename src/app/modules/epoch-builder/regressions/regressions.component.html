@@ -400,8 +400,8 @@
                                                         <span fxFlex></span>
                                                         <div class="align-right" 
                                                             matTooltip="The beggining and the end of the training process.">
-                                                            <p class="ts-m">{{cert.training_start | date: 'medium'}}</p>
-                                                            <p class="ts-m">{{cert.training_end | date: 'medium'}}</p>
+                                                            <p>{{cert.training_start | date: layout == 'desktop' ? 'medium': 'short'}}</p>
+                                                            <p>{{cert.training_end | date: layout == 'desktop' ? 'medium': 'short'}}</p>
                                                         </div>
                                                     </div>
                                                 </div>

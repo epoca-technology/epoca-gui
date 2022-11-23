@@ -601,9 +601,9 @@
                                                 <div fxLayout="row" fxLayoutAlign="start start">
                                                     <div>
                                                         <h4>Certificate</h4>
-                                                        <p class="light-text ts-s" 
+                                                        <p class="light-text" 
                                                             matTooltip="The date in which the prediction model was built.">
-                                                            {{cert.creation | date: 'medium'}}
+                                                            {{cert.creation | date: layout == 'desktop' ? 'medium': 'short'}}
                                                         </p>
                                                     </div>
                                                     <span fxFlex></span>
@@ -653,8 +653,8 @@
                                                         <p class="light-text truncate">Range</p>
                                                         <span fxFlex></span>
                                                         <div class="align-right" matTooltip="The date range covered in the test dataset.">
-                                                            <p class="ts-m">{{cert.test_ds_start | date: 'medium'}}</p>
-                                                            <p class="ts-m">{{cert.test_ds_end | date: 'medium'}}</p>
+                                                            <p>{{cert.test_ds_start | date: layout == 'desktop' ? 'medium': 'short'}}</p>
+                                                            <p>{{cert.test_ds_end | date: layout == 'desktop' ? 'medium': 'short'}}</p>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -801,8 +801,8 @@
                                                         <p class="light-text truncate">Range</p>
                                                         <span fxFlex></span>
                                                         <div class="align-right" matTooltip="The date range covered in the test dataset.">
-                                                            <p class="ts-m">{{cert.test_ds_start | date: 'medium'}}</p>
-                                                            <p class="ts-m">{{cert.test_ds_end | date: 'medium'}}</p>
+                                                            <p>{{cert.test_ds_start | date: layout == 'desktop' ? 'medium': 'short'}}</p>
+                                                            <p>{{cert.test_ds_end | date: layout == 'desktop' ? 'medium': 'short'}}</p>
                                                         </div>
                                                     </div>
                                                 </div>

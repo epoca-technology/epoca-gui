@@ -25,35 +25,7 @@
             <!-- Epochs -->
             <mat-list-item>
                 <button mat-button class="left-icon-button" (click)="_nav.epochs()" [disabled]="state.module == 'epochs'">
-                    <mat-icon svgIcon="brain"></mat-icon><span>{{_app.epoch.value ? _app.epoch.value.id: 'Epochs'}}</span>
-                </button>
-            </mat-list-item>
-
-            <!-- Trading Sessions -->
-            <!--<mat-list-item>
-                <button mat-button class="left-icon-button" (click)="_nav.tradingSessions()" [disabled]="state.module == 'tradingSessions'">
-                    <mat-icon svgIcon="auto_graph"></mat-icon><span>Trading Sessions</span>
-                </button>
-            </mat-list-item>-->
-
-            <!-- Market State -->
-            <!--<mat-list-item>
-                <button mat-button class="left-icon-button" (click)="_nav.marketState()" [disabled]="state.module == 'marketState'">
-                    <mat-icon svgIcon="bitcoin"></mat-icon><span>Market State</span>
-                </button>
-            </mat-list-item>-->
-
-            <!-- Predictions -->
-            <!--<mat-list-item>
-                <button mat-button class="left-icon-button" (click)="_nav.predictions()" [disabled]="state.module == 'predictions'">
-                    <mat-icon svgIcon="wand_magic_sparkles"></mat-icon><span>Predictions</span>
-                </button>
-            </mat-list-item>-->
-
-            <!-- Candlesticks -->
-            <mat-list-item>
-                <button mat-button class="left-icon-button" (click)="_nav.candlesticks()" [disabled]="state.module == 'candlesticks'">
-                    <mat-icon>waterfall_chart</mat-icon><span>Candlesticks</span>
+                    <mat-icon svgIcon="brain"></mat-icon><span>Epochs</span>
                 </button>
             </mat-list-item>
 
@@ -63,13 +35,6 @@
                     <mat-icon>menu_book</mat-icon><span>Order Book</span>
                 </button>
             </mat-list-item>
-
-            <!-- Server -->
-            <!--<mat-list-item>
-                <button mat-button class="left-icon-button" (click)="_nav.server()" [disabled]="state.module == 'server'">
-                    <mat-icon svgIcon="server"></mat-icon><span>Server</span>
-                </button>
-            </mat-list-item>-->
 
             <!-- Users -->
             <mat-list-item>
@@ -178,46 +143,49 @@
                 <span fxFlex></span>
 
                 <!-- Dashboard -->
-                <button mat-button class="left-icon-button" (click)="_nav.dashboard()" [disabled]="state.module == 'dashboard'" *ngIf="uid">
+                <button mat-button class="left-icon-button" 
+                        (click)="_nav.dashboard()" 
+                        matBadge="0" 
+                        [appMatBadgeIcon]="_app.predictionIcon.value ? _app.predictionIcon.value: ''"
+                        [matBadgeHidden]="!_app.epoch.value || !_app.predictionIcon.value" 
+                        [disabled]="state.module == 'dashboard'" *ngIf="uid">
                     <mat-icon svgIcon="home"></mat-icon><span>Dashboard</span>
                 </button>
 
-                <!-- Trading Session -->
+                <!-- Positions -->
                 <button mat-button 
                         class="left-icon-button" 
-                        (click)="_nav.tradingSessions()" 
-                        [matBadge]="_app.tradingSessionTrades.value" 
+                        (click)="_nav.positions()" 
+                        [matBadge]="_app.positionsCount.value" 
                         [matBadgeHidden]="!_app.epoch.value" 
-                        [disabled]="state.module == 'tradingSessions'" 
+                        [disabled]="state.module == 'positions'" 
                         *ngIf="uid">
-                    <mat-icon svgIcon="auto_graph"></mat-icon><span>Trading Sessions</span>
-                </button>
-
-                <!-- Market State -->
-                <button mat-button 
-                        class="left-icon-button" 
-                        (click)="_nav.marketState()" 
-                        [disabled]="state.module == 'marketState'" 
-                        *ngIf="uid">
-                    <mat-icon svgIcon="bitcoin"></mat-icon><span>Market State</span>
+                    <mat-icon svgIcon="auto_graph"></mat-icon><span>Positions</span>
                 </button>
 
                 <!-- Predictions -->
                 <button mat-button 
                         class="left-icon-button" 
                         (click)="_nav.predictions()" 
-                        matBadge="0" 
-                        [appMatBadgeIcon]="_app.predictionIcon.value ? _app.predictionIcon.value: ''"
-                        [matBadgeHidden]="!_app.epoch.value || !_app.predictionIcon.value" 
                         *ngIf="uid" 
                         [disabled]="state.module == 'predictions'">
                     <mat-icon svgIcon="wand_magic_sparkles"></mat-icon><span>Predictions</span>
+                </button>
+
+                <!-- Candlesticks -->
+                <button mat-button 
+                        class="left-icon-button" 
+                        (click)="_nav.candlesticks()" 
+                        [disabled]="state.module == 'candlesticks'" 
+                        *ngIf="uid">
+                    <mat-icon>waterfall_chart</mat-icon><span>Candlesticks</span>
                 </button>
 
                 <!-- Server -->
                 <button mat-button 
                         class="left-icon-button" 
                         (click)="_nav.server()" 
+                        [matBadge]="_app.apiErrors.value" 
                         [disabled]="state.module == 'server'" 
                         *ngIf="uid">
                     <mat-icon svgIcon="server"></mat-icon><span>Server</span>

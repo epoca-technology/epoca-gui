@@ -10,7 +10,7 @@
             <mat-icon svgIcon="brain"></mat-icon>
         </button>
         <button mat-icon-button matTooltip="Display Prediction" 
-            (click)="_nav.displayPredictionDialog(model, position.p, position.o, position.op)">
+            (click)="_nav.displayPredictionDialog(model, position.p)">
             <mat-icon svgIcon="wand_magic_sparkles"></mat-icon>
         </button>
         <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
@@ -40,12 +40,12 @@
         <div class="row" fxLayout="row" fxLayoutAlign="start center">
             <p class="truncate">Open Time</p>
             <span fxFlex></span>
-            <p>{{position.ot | date: 'medium'}}</p>
+            <p>{{position.ot | date: _app.layout.value == 'desktop' ? 'medium': 'short'}}</p>
         </div>
         <div class="row" fxLayout="row" fxLayoutAlign="start center">
             <p class="truncate">Close Time</p>
             <span fxFlex></span>
-            <p>{{position.ct | date: 'medium'}}</p>
+            <p>{{position.ct | date: _app.layout.value == 'desktop' ? 'medium': 'short'}}</p>
         </div>
 
         <!-- Prices -->

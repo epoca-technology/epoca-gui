@@ -81,10 +81,7 @@ export class EpochPredictionCandlestickDialogComponent implements OnInit, IEpoch
 	public displayPrediction(pred: IPrediction): void {
 		this._nav.displayPredictionDialog(
 			this.epoch.model,
-			pred,
-			undefined,
-			undefined,
-			this.epoch
+			pred
 		);
 	}
 

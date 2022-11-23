@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
 import { IBacktestPosition, IPredictionModelConfig } from '../../../../core';
-import { NavService } from '../../../../services';
+import { AppService, NavService } from '../../../../services';
 import { IPredictionModelBacktestPositionDialogComponent, IBacktestPositionDialogData } from './interfaces';
 
 @Component({
@@ -16,7 +16,8 @@ export class PredictionModelBacktestPositionDialogComponent implements OnInit, I
 	constructor(
 		public dialogRef: MatDialogRef<PredictionModelBacktestPositionDialogComponent>,
 		@Inject(MAT_DIALOG_DATA) private data: IBacktestPositionDialogData,
-		public _nav: NavService
+		public _nav: NavService,
+		public _app: AppService
 	) { 
 		this.model = this.data.model;
 		this.position = this.data.position;

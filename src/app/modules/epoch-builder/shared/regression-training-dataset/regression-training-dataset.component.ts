@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { IRegressionTrainingCertificate } from 'src/app/core';
+import { IRegressionTrainingCertificate } from '../../../../core';
+import { AppService } from '../../../../services';
 
 @Component({
   selector: 'app-regression-training-dataset',
@@ -9,7 +10,7 @@ import { IRegressionTrainingCertificate } from 'src/app/core';
 export class RegressionTrainingDatasetComponent implements OnInit {
 	@Input() cert!: IRegressionTrainingCertificate;
 	
-	constructor() { }
+	constructor(public _app: AppService) { }
 
 	ngOnInit(): void {
 	}

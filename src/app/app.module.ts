@@ -103,7 +103,7 @@ import {SharedModule} from "./shared";
 
 
 // Pre-Loaded Components
-import { DashboardComponent } from "./modules/dashboard/dashboard.component";
+import { DashboardComponent, KeyzoneStateDialogComponent, KeyzoneReversalsDialogComponent} from "./modules/dashboard";
 
 
 // Core Components
@@ -120,7 +120,9 @@ import { AppComponent } from "./app.component";
 		AppComponent,
 
 		// Pre-Loaded Components
-		DashboardComponent
+		DashboardComponent,
+		KeyzoneStateDialogComponent,
+		KeyzoneReversalsDialogComponent,
 	],
 	imports: [
 		// Core

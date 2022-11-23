@@ -1,12 +1,17 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from "../../services";
-import { MarketStateComponent } from './market-state/market-state.component';
+import { PositionsComponent } from './positions/positions.component';
 
 const routes: Routes = [
 	{
 		path: "",
-		component: MarketStateComponent,
+		component: PositionsComponent,
+		canActivate: [AuthGuard]
+	},
+    {
+		path: ":epochID",
+		component: PositionsComponent,
 		canActivate: [AuthGuard]
 	},
 ];
@@ -15,4 +20,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class MarketStateRoutingModule { }
+export class PositionsRoutingModule { }

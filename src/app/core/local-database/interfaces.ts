@@ -20,6 +20,7 @@ export interface ILocalDatabaseService {
     // User Preferences
     getUserPreferences(): Promise<IUserPreferences>,
     saveUserPreferences(pref: IUserPreferences): Promise<void>,
+    getDefaultUserPreferences(): IUserPreferences,
 
     /* Data Caching */
 
@@ -40,11 +41,6 @@ export interface ILocalDatabaseService {
 		endAt: number,
 		epochInstalled: number
 	 ): Promise<IPrediction[]>,
-
-    // Starred Predictions
-    starPrediction(pred: IPrediction): Promise<void>,
-    unstarPrediction(pred: IPrediction): Promise<void>,
-    getStarredPredictions(): Promise<IPrediction[]>,
 
     // Epoch Prediction Candlesticks
     listPredictionCandlesticks(
@@ -70,7 +66,8 @@ export interface IUserPreferences {
     // If enabled, sound features will be enabled throughout the app
     sound: boolean,
 
-    //
+    // If enabled, it will display the split trend chart by default
+    splitTrendChart: boolean,
 
 }
 

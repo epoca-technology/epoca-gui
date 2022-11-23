@@ -40,8 +40,8 @@ export interface IAppBulk {
     // The record of the active epoch. If none is active, it will be undefined
     epoch: IEpochRecord|undefined,
 
-    // The active trading session metrics. If there isn't one, it will be undefined
-    tradingSession: object|undefined, // @TODO
+    // The active long and short positions.
+    positions: object|undefined, // @TODO
 
     // The active prediction. If there isn't one, or an epoch isn't active, it will be undefined
     prediction: IPrediction|undefined,
@@ -50,7 +50,10 @@ export interface IAppBulk {
     predictionState: IPredictionState,
 
     // The active market state.
-    marketState: IMarketState
+    marketState: IMarketState,
+
+    // The number of api errors in existance
+    apiErrors: number,
 }
 
 

@@ -23,7 +23,7 @@ import {
     NavService, 
     ValidationsService 
 } from "../../../services";
-import { IPredictionsComponent, IView } from "./interfaces";
+import { IPredictionsComponent } from "./interfaces";
 import { EpochPredictionCandlestickDialogComponent, IPredictionCandlestickDialogData } from "./epoch-prediction-candlestick-dialog";
 
 @Component({
@@ -36,35 +36,13 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
 	public layout: ILayout = this._app.layout.value;
 	private layoutSub?: Subscription;
 
-    // View
-    public view: IView = "line"; 
-
     // Active Prediction
     public epoch: IEpochRecord|null = null;
-    public active: IPrediction|null = null;
-    private predictionSub?: Subscription;
     private epochSub?: Subscription;
-
-    // Prediction Lists
-    public predictions: IPrediction[] = [];
-    public predictionsHistPayload: IPrediction[] = [];
-    public hasMore: boolean = true;
-
-    // Predictions History
-    public predictionsHist?: ILineChartOptions;
 
     // Prediction Candlesticks
     public candlesticks: IPredictionCandlestick[] = [];
     public candlesticksChart?: ICandlestickChartOptions;
-
-    // Predictions Grid
-    public visibleTilesIncrement: number = 41;
-    public visibleTiles: number = this.visibleTilesIncrement;
-    public gridCols: number = 6;
-
-    // Starred Predictions
-    public starred: {[predTimestamp: string]: IPrediction} = {};
-    public starredList: IPrediction[] = [];
 
     // Initialization State
     public initializing: boolean = false;
@@ -90,10 +68,7 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
 
     async ngOnInit(): Promise<void> {
         // Initialize layout
-        this.layoutSub = this._app.layout.subscribe((nl: ILayout) => {
-            this.layout = nl;
-            this.gridCols = this.layout == "desktop" ? 6: 1
-        });
+        this.layoutSub = this._app.layout.subscribe((nl: ILayout) => { this.layout = nl });
 
         /**
          * Initialize the epoch sub briefly. This subscription is destroyed once the 
@@ -128,7 +103,6 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
 
     ngOnDestroy(): void {
         if (this.layoutSub) this.layoutSub.unsubscribe();
-        if (this.predictionSub) this.predictionSub.unsubscribe();
         if (this.epochSub) this.epochSub.unsubscribe();
         this.titleService.setTitle("Epoca");
     }
@@ -152,14 +126,6 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
 
         // Reset the epoch values
         this.epoch = null;
-        this.active = null;
-        this.predictions = [];
-        this.predictionsHistPayload = [];
-        this.view = "line";
-        this.visibleTiles = this.visibleTilesIncrement;
-        this.starred = {};
-        this.starredList = [];
-        if (this.predictionSub) this.predictionSub.unsubscribe();
 
         // Make sure the provided ID is valid
         if (!this._validations.epochIDValid(epochID || "")) {
@@ -192,50 +158,23 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
 
         // Populate the epoch
         this.epoch = epochSummary;
-        
-        // Load the initial predictions
-        await this.loadPredictions();
-        
-        // Initialize the starred predictions
-        await this.initializeStarredPredictions();
-        
-        // Subscribe to the active prediction if the epoch matches
-        if (this._app.epoch.value && this._app.epoch.value.id == epochID) {
-            this.predictionSub = this._app.prediction.subscribe(async (pred: IPrediction|null|undefined) => {
-                if (pred) {
-                    // If it is an actual new prediction, add it to the list
-                    if (this.active && pred.t != this.active.t) this.onNewPrediction(pred);
 
-                    // Populate the prediction
-                    this.active = pred;
-                    
-                    // Set loaded state
-                    this.loaded = true;
-                }
-            });
-        }
+        // Load the candlesticks
+        await this.loadCandlesticks(1);
 
-        // Otherwise, just set the load state
-        else { this.loaded = true }
+        // Set the loading state
+        this.loaded = true;
     }
+
+
+
+
 
 
 
 
     /* View Management */
 
-
-
-    /**
-     * Activates a given view. In the case of the candlesticks,
-     * it loads the data and initializes the chart.
-     * @param view 
-     * @returns Promise<void>
-     */
-    public async activateView(view: IView): Promise<void> {
-        if (view == "line" || view == "grid") { this.view = view }
-        else { return this.activateCandlesticks(3) }
-    }
 
 
 
@@ -253,7 +192,6 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
         // If the days were provided, load the data right away
         if (typeof days == "number") {
             this.loaded = false;
-            this.view = "candlesticks";
             await this.loadCandlesticks(days);
             this.loaded = true;
         }
@@ -262,6 +200,7 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
         else {
             // Display the bottom sheet and handle the action
             const bs: MatBottomSheetRef = this._nav.displayBottomSheetMenu([
+                {icon: "waterfall_chart", title: "Last 1 Days", description: "View 24 hours worth of data", response: "1"},
                 {icon: "waterfall_chart", title: "Last 3 Days", description: "View 3 days worth of data", response: "3"},
                 {icon: "waterfall_chart", title: "Last 7 Days", description: "View 1 week worth of data", response: "7"},
                 {icon: "waterfall_chart", title: "Last 14 Days", description: "View 2 weeks worth of data", response: "14"},
@@ -275,7 +214,6 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
             bs.afterDismissed().subscribe(async (response: string|undefined) => {
                 if (response) {
                     this.loaded = false;
-                    this.view = "candlesticks";
                     await this.loadCandlesticks(Number(response));
                     this.loaded = true;
                 }
@@ -297,10 +235,11 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
     private async loadCandlesticks(days: number): Promise<void> {
         try {
             // Retrieve the candlesticks
+            const endAt: number = this.epoch!.uninstalled ? this.epoch!.uninstalled: this._app.serverTime.value!
             this.candlesticks = await this._localDB.listPredictionCandlesticks(
                 this.epoch!.id, 
-                moment(this._app.serverTime.value).subtract(days, "days").valueOf(),
-                this._app.serverTime.value!,
+                moment(endAt).subtract(days, "days").valueOf(),
+                endAt,
                 this.epoch!.installed, 
                 this._app.serverTime.value!
             );
@@ -348,7 +287,7 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
                 true, 
                 //{min: minValue, max: maxValue}
             );
-            this.candlesticksChart.chart!.height = this.layout == "desktop" ? 600: 450;
+            this.candlesticksChart.chart!.height = this.layout == "desktop" ? 600: 400;
             this.candlesticksChart.chart!.zoom = {enabled: true, type: "xy"};
             const self = this;
             this.candlesticksChart.chart!.events = {
@@ -367,413 +306,6 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
 
 
 
-
-
-
-    /* Prediction Data Management */
-
-
-
-    /**
-     * Increases the number of visible grid tiles and checks
-     * if more predictions should be loaded.
-     * @returns Promise<void>
-     */
-    public async viewMore(): Promise<void> {
-        // Make sure it has more records
-        if (this.hasMore || this.visibleTiles < this.predictions.length) {
-            // Calculate the new number of visible tiles
-            const newVisibleTiles: number = this.visibleTiles + this.visibleTilesIncrement;
-
-            // If there are enough predictions, just increase the window
-            if (this.predictions.length < newVisibleTiles) await this.loadPredictions();
-
-            // Update the visibility window
-            this.visibleTiles = newVisibleTiles;
-        }
-    }
-
-
-
-
-
-
-
-
-    /**
-     * Loads the predictions based on the predictions that are currently loaded.
-     * Once the predictions are downloaded, it triggers an onDataChanges event.
-     * @returns Promise<void>
-     */
-    public async loadPredictions(): Promise<void> {
-        // Make sure it isn"t already loading predictions
-        if (this.submitting) return;
-
-        // Set submission state
-        this.submitting = true;
-
-        // Retrieve the predictions safely
-        try {
-            // Download the predictions
-            const { startAt, endAt } = this.getPredictionRange();
-            const preds: IPrediction[] = await this._localDB.listPredictions(
-                this.epoch!.id,
-                startAt,
-                endAt,
-                this.epoch!.installed
-            );
-            
-            // Concatenate them with the current list
-            this.predictionsHistPayload = preds.concat(this.predictionsHistPayload);
-
-            // Check if there are more records
-            this.hasMore = preds.length != 0;
-
-            // Emmite a data change event
-            this.onDataChanges();
-        } catch (e) { this._app.error(e) }
-
-        // Set submission state
-        this.submitting = false;
-    }
-
-
-
-
-
-
-    /**
-     * Calculates the prediction range that will be used to query predictions.
-     * @returns {startAt: number, endAt: number}
-     */
-    private getPredictionRange(): {startAt: number, endAt: number} {
-        // Init values
-        const serverTime: number = this._app.serverTime.value ? this._app.serverTime.value: moment().valueOf();
-        let endAt: number = this.predictionsHistPayload.length ? this.predictionsHistPayload[0].t: serverTime;
-        let startAt: number = moment(endAt).subtract(3, "hours").valueOf();
-
-        // Finally, return the range
-        return { startAt: startAt, endAt: endAt - 1 }
-    }
-
-
-
-
-
-
-
-    /**
-     * Triggers whenever a new prediction has been downloaded 
-     * and needs to be appended.
-     */
-    private onNewPrediction(pred: IPrediction): void {
-        // Preprend it to the list
-        this.predictionsHistPayload.push(pred);
-
-        // Emmit the data change event
-        this.onDataChanges();
-    }
-
-
-
-
-
-
-
-
-
-    /**
-     * Triggers whenever there is a change in the data and builds
-     * all the required data.
-     */
-     private onDataChanges(): void {
-        // Make sure there are records available
-        if (this.predictionsHistPayload.length) {
-            // Initialize the predictions grid
-            this.predictions = this.predictionsHistPayload.slice();
-            this.predictions.reverse();
-
-            // Update the Title
-            this.titleService.setTitle(`${this._prediction.resultNames[this.predictions[0].r]}: ${this.predictions[0].s}`);
-
-            // Init the color of the prediction sum line
-            let predLineColor: string = this._chart.neutralColor;
-            if (this.predictions[0].s >= this.epoch!.model.min_increase_sum) {
-                predLineColor = this._chart.upwardColor;
-            } else if (this.predictions[0].s <= this.epoch!.model.min_decrease_sum) {
-                predLineColor = this._chart.downwardColor;
-            }
-
-            // Init the min and max values
-            const minValue: number = -this.epoch!.model.regressions.length;
-            const maxValue: number = this.epoch!.model.regressions.length;
-
-            // Build the annotations
-            const { markerSize, markerColor, labelColor } = this.getPointAnnotationData();
-            const annotations: ApexAnnotations = {
-                yaxis: [
-                    {
-                        y: this.epoch!.model.min_increase_sum,
-                        y2: maxValue,
-                        borderColor: this._chart.upwardColor,
-                        fillColor: this._chart.upwardColor,
-                        strokeDashArray: 0
-                    },
-                    {
-                        y: 0.000001,
-                        y2: this.epoch!.model.min_increase_sum,
-                        borderColor: "#B2DFDB",
-                        fillColor: "#B2DFDB",
-                        strokeDashArray: 0
-                    },
-                    {
-                        y: this.epoch!.model.min_decrease_sum,
-                        y2: minValue,
-                        borderColor: this._chart.downwardColor,
-                        fillColor: this._chart.downwardColor,
-                        strokeDashArray: 0
-                    },
-                    {
-                        y: -0.000001,
-                        y2: this.epoch!.model.min_decrease_sum,
-                        borderColor: "#FFCDD2",
-                        fillColor: "#FFCDD2",
-                        strokeDashArray: 0
-                    }
-                ],
-                points: [
-                    {
-                        x: this.predictions[0].t,
-                        y: this.predictions[0].s,
-                        marker: {
-                          size: markerSize,
-                          strokeColor: markerColor,
-                          strokeWidth: markerSize,
-                          shape: "circle", // circle|square
-                          offsetX: -5
-                        },
-                        label: {
-                            borderColor: labelColor,
-                            style: { 
-                                color: "#fff", 
-                                background: labelColor
-                            },
-                            text: String(this.predictions[0].s),
-                            offsetX: -30
-                        }
-                    }
-                ]
-            };
-
-            // Build/Update the chart
-            if (this.predictionsHist) {
-                // Update the series
-                this.predictionsHist.series = [
-                    {
-                        name: "Prediction Sum", 
-                        data: this.predictionsHistPayload.map((p) => { return {x: p.t, y: p.s } }), 
-                        color: predLineColor
-                    }
-                ]
-
-                // Update the current point
-                this.predictionsHist.annotations = annotations;
-            } else {
-                // Create the chart from scratch
-                this.predictionsHist = this._chart.getLineChartOptions(
-                    { 
-                        series: [
-                            {
-                                name: "Prediction Sum", 
-                                data: this.predictionsHistPayload.map((p) =>  { return {x: p.t, y: p.s } }), 
-                                color: predLineColor
-                            }
-                        ],
-                        stroke: {curve: "straight", width:5},
-                        annotations: annotations,
-                        xaxis: {type: "datetime",tooltip: {enabled: true}, labels: {datetimeUTC: false}}, 
-                    },
-                    this.layout == "desktop" ? 550: 375, 
-                    true,
-                    {min: minValue, max: maxValue}
-                );
-            }
-
-            // Finally, Attach the click event
-            const self = this;
-            this.predictionsHist.chart.events = {
-                click: function(e: any, cc: any, c: any) {
-                    if (c.dataPointIndex >= 0 && self.predictionsHistPayload[c.dataPointIndex]) {
-                        self._nav.displayPredictionDialog(
-                            self.epoch!.model, 
-                            self.predictionsHistPayload[c.dataPointIndex], 
-                            undefined, 
-                            undefined,
-                            self.epoch!
-                        )
-                    }
-                }
-            }
-        }
-    }
-
-
-
-
-
-
-    /**
-     * Builds the metadata that will be used to populate the monitor's
-     * point annotation.
-     * @returns {markerSize: number,markerColor: string,label: string,labelColor: string,labelOffsetX: number}
-     */
-    private getPointAnnotationData(): {
-        markerSize: number,
-        markerColor: string,
-        labelColor: string,
-    } {
-        // Init values
-        let markerSize: number = 3.5; // Min size
-        let markerColor: string = this._chart.neutralColor;
-        let labelColor: string = this._chart.neutralColor;
-
-        // Check if the active epoch is the one being visualized
-        if (this._app.epoch.value && this._app.epoch.value.id == this.epoch!.id) {
-            // Init the state
-            const state: IPredictionState = this._app.predictionState.value!;
-
-            // Init the marker color
-            if (state > 0) { markerColor = this._chart.upwardColor }
-            else if (state < 0) { markerColor = this._chart.downwardColor }
-
-            // Init the marker size
-            markerSize = this.getMarkerSize(state);
-        }
-
-        // Populate the label color
-        labelColor = this.predictions[0].s > 0 ? this._chart.upwardColor: this._chart.downwardColor;
-
-        // Finally, return the data
-        return {
-            markerSize: markerSize,
-            markerColor: markerColor,
-            labelColor: labelColor,
-        }
-    }
-
-
-
-
-    /**
-     * Calculates the suggested marker size based on the absolute state 
-     * value.
-     * @param state 
-     * @returns number
-     */
-    private getMarkerSize(state: IPredictionState): number {
-        const absState: number = state < 0 ? -(state): state;
-        if      (absState >= 9)    { return 9 }
-        else if (absState == 8)    { return 8 }
-        else if (absState == 7)    { return 7 }
-        else if (absState == 6)    { return 6.5 }
-        else if (absState == 5)    { return 6 }
-        else if (absState == 4)    { return 5.5 }
-        else if (absState == 3)    { return 5 }
-        else if (absState == 2)    { return 4.5 }
-        else if (absState == 1)    { return 4 }
-        else                       { return 3.5 }
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /* Prediction Starring */
-
-
-
-
-
-    /**
-     * Initializes the starred predictions if the browser is compatible
-     */
-    private async initializeStarredPredictions(): Promise<void> {
-        // Retrieve the starred predictions
-        this.starredList = await this._localDB.getStarredPredictions();
-
-        // Build the starred object
-        this.starred = this.starredList.reduce((acc: {[predTS: string]: IPrediction}, pred) => {
-            acc[pred.t] = pred;
-            return acc;
-        }, {});
-    }
-
-
-
-
-
-
-    /**
-     * Handles the starring or unstarring of a prediction.
-     * @param pred 
-     * @returns 
-     */
-    public async starAction(pred: IPrediction): Promise<void> {
-        // Check if the prediction is currently starred. If so, prompt the confirmation dialog
-        if (this.starred[pred.t]) {
-            // Prompt the confirmation dialog
-            this._nav.displayConfirmationDialog({
-                title: "Unstar Prediction",
-                content: `
-                    <p class="align-center">
-                        Are you sure that you wish to <strong>unstar</strong> the prediction?
-                    </p>
-                `
-            }).afterClosed().subscribe(
-                async (confirmed: boolean) => {
-                    if (confirmed) {
-                        // Delete the prediction from the starred object
-                        delete this.starred[pred.t];
-
-                        // Delete the prediction from the local db
-                        await this._localDB.unstarPrediction(pred);
-
-                        // Rebuild the list
-                        this.starredList = Object.values(this.starred).map((pred) => pred);
-
-                        // Notify the user
-                        this._app.success("The prediction has been unstarred successfully.");
-                    }
-                }
-            );
-        }
-
-        // Otherwise, star it
-        else {
-            // Add it to the starred object
-            this.starred[pred.t] = pred;
-
-            // Push it to the list
-            this.starredList.push(pred);
-
-            // Save it in the local db
-            await this._localDB.starPrediction(pred);
-
-            // Notify the user
-            this._app.success("The prediction has been starred successfully.");
-        }
-
-        // Finally, sort the list
-        this.starredList.sort((a, b) => (a.t > b.t) ? -1 : 1)
-    }
 
 
 

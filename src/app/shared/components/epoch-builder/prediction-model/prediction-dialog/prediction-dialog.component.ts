@@ -1,27 +1,13 @@
-import { Component, Inject, OnInit, ViewChild } from "@angular/core";
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
-import * as moment from "moment";
-import { ApexAnnotations, ChartComponent } from "ng-apexcharts";
+import { Component, Inject, OnInit } from "@angular/core";
+import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
 import { BigNumber } from "bignumber.js";
 import { 
-	CandlestickService, 
-	ICandlestick, 
-	IEpochRecord, 
 	IPrediction, 
-	IPredictionCandlestick, 
 	IPredictionModelConfig, 
-	LocalDatabaseService, 
 	PredictionService, 
 	UtilsService 
 } from "../../../../../core";
-import { 
-	AppService, 
-	ChartService, 
-	IBarChartOptions, 
-	ICandlestickChartOptions, 
-	NavService 
-} from "../../../../../services";
-import { FeaturesSumDialogComponent, IFeaturesSumDialogData } from "./features-sum-dialog";
+import { NavService } from "../../../../../services";
 import { IPredictionDialogComponent, IPredictionDialogData } from "./interfaces";
 
 @Component({
@@ -31,30 +17,12 @@ import { IPredictionDialogComponent, IPredictionDialogData } from "./interfaces"
 })
 export class PredictionDialogComponent implements OnInit, IPredictionDialogComponent {
 	// Init main data
-	public epoch: IEpochRecord|undefined;
 	public model: IPredictionModelConfig;
-	private lookback: number;
-	private predictions: number;
 	public prediction: IPrediction;
 	public featuresSum: number;
 
 	// Prediction Result Name
 	public resultName: string;
-	public resultImage: string;
-
-	// Prediction Outcome
-	public showOutcome: boolean = false;
-	public outcome: boolean|undefined;
-	public openPrice: number|undefined;
-
-	// Prediction Features
-	public showFeatures: boolean = false;
-
-	// Prediction Chart
-	@ViewChild("chartComp") chartComp?: ChartComponent;
-	public chart?: Partial<ICandlestickChartOptions>;
-	public barChart?: IBarChartOptions;
-	public chartLoaded: boolean = false;
 
 
 	// Load State
@@ -67,285 +35,21 @@ export class PredictionDialogComponent implements OnInit, IPredictionDialogCompo
 		private _utils: UtilsService,
 		public _nav: NavService,
 		private _prediction: PredictionService,
-		private _candlestick: CandlestickService,
-		private _localDB: LocalDatabaseService,
-        private _chart: ChartService,
-		private _app: AppService,
-		private dialog: MatDialog,
 	) { 
 		// Main Data
-		this.epoch = this.data.epoch;
 		this.model = this.data.model;
-		this.lookback = this.model.regressions[0].lookback;
-		this.predictions = this.model.regressions[0].predictions;
 		this.prediction = this.data.prediction;
 		this.featuresSum = <number>this._utils.outputNumber(BigNumber.sum.apply(null, this.prediction.f), { dp: 6 });
 
 		// Prediction Result Details
 		this.resultName = this._prediction.resultNames[this.prediction.r];
-		this.resultImage = this._prediction.resultImagePaths[this.prediction.r];
-
-		// Outcome
-		this.showOutcome = typeof this.data.outcome == "boolean";
-		this.outcome = this.data.outcome;
-		this.openPrice = this.data.openPrice;
 	}
 
 
 
     async ngOnInit(): Promise<void> {
-		try { 
-			await this.initChart();
-		} catch (e) { 
-			console.log(e);
-			this.showFeatures = true;
-		}
 		this.loaded = true;
-		setTimeout(() => { 
-			this.chartComp?.resetSeries();
-			this.chartLoaded = true;
-		}, 750);
     }
-
-
-
-
-
-	/* Prediction Chart */
-
-
-
-
-
-	/**
-	 * Retrieves all the candlesticks within the prediction's 
-	 * range and charts all relevant information.
-	 */
-	private async initChart(): Promise<void> {
-		// Firstly, retrieve the candlesticks
-		const { list, active } = await this.getCandlesticks();
-
-		// If there are no candlesticks, don't build the chart
-		if (!list.length) throw new Error("The chart could not be built because no candlesticks were retrieved.");
-
-		// Initialize the data range
-		const start: number = list[0].ot;
-		const end: number = list[list.length - 1].ct;
-
-		// Calculate the estimated open price
-		const openPrice: number = typeof this.openPrice == "number" ? this.openPrice:
-			<number>this._utils.getMean([active.o, active.h, active.l, active.c]);
-
-		// Init the annotations
-		let annotations: ApexAnnotations = {
-			yaxis: [],
-			points: [
-				{
-					x: this.prediction.t,
-					y: openPrice,
-					marker: { size: 0},
-					image: { 
-						path: this.resultImage,
-						width: 18,
-						height: 18,
-					}
-				},		
-			]
-		};
-
-		// Include additional annotations in case it is a non-neutral prediction
-		if (this.prediction.r != 0) {
-			// Calculate the price targets based on the active candlestick
-			const targetPrice: number = this.calculateTargetPrice(openPrice);
-
-			// Include the take profit and stop loss annotations
-			annotations.yaxis = [
-				{
-					y: targetPrice,
-					borderColor: this._chart.upwardColor,
-					strokeDashArray: 3,
-					borderWidth: 3,
-					label: {
-						borderColor: this._chart.upwardColor,
-						style: { color: "#FFFFFF", background: this._chart.upwardColor,},
-						text: "TARGET",
-						position: "left"
-					}
-				}
-			];
-		}
-
-		// Retrieve the chart options
-		this.chart = this._chart.getCandlestickChartOptions(list, annotations, false, false);
-		this.chart.chart!.id = "candles";
-		this.chart.chart!.group = "predictions";
-		this.chart.chart!.toolbar = {show: true,tools: {selection: true,zoom: true,zoomin: true,zoomout: true,download: false}};
-		this.chart.chart!.zoom = {enabled: true, type: "xy"};
-		this.chart.chart!.height = 370;
-		this.chart.yaxis!.labels = { minWidth: 40};
-
-		// Initialize the prediction bar chart if possible
-		if (this.epoch) {
-			try {
-				// Retrieve the predictions within the range
-				const preds: IPredictionCandlestick[] = await this._localDB.listPredictionCandlesticks(
-					this.epoch.id, 
-					moment(active.ot).subtract(this._candlestick.predictionCandlestickInterval, "minutes").valueOf(), 
-					moment(end).add(30, "minutes").valueOf(),
-					this.epoch.installed,
-					<number>this._app.serverTime.value
-				);
-
-				// Build the bars data
-				const { values, colors } = this.buildPredictionBarsData(list, preds);
-				
-				// Build the chart
-				this.barChart = this._chart.getBarChartOptions(
-					{
-						series: [{name: "SUM Mean", data: values}],
-						chart: {height: 200, type: "bar",animations: { enabled: false}, toolbar: {show: false,tools: {download: false}}, zoom: {enabled: false}},
-						plotOptions: {bar: {borderRadius: 0, horizontal: false, distributed: true,}},
-						colors: colors,
-						grid: {show: true},
-						xaxis: {type: "datetime", tooltip: {enabled: false}, labels: { show: false, datetimeUTC: false } }
-					}, 
-					[], 
-					undefined, 
-					false,
-					true,
-					{
-						min: <number>this._utils.outputNumber(-this.model.regressions.length, {dp: 6}), 
-						max: <number>this._utils.outputNumber(this.model.regressions.length, {dp: 6})
-					}
-				);
-				this.barChart.chart!.id = "bars";
-				this.barChart.chart!.group = "predictions";
-				this.barChart.yaxis!.labels = {minWidth: 40}
-				this.barChart.yaxis!.tooltip = {enabled: false}
-			} catch (e) { 
-				console.log(e);
-				this.showFeatures = true;
-			}
-		} else {
-			if (this._app.layout.value == "desktop") this.showFeatures = true;
-		}
-	}
-
-
-
-
-
-
-	/**
-	 * Builds the data required by the bar chart based on the 
-	 * candlesticks and the generated predictions.
-	 * @param candlesticks 
-	 * @param preds 
-	 * @returns {values: number[], colors: string[]}
-	 */
-	private buildPredictionBarsData(
-		candlesticks: ICandlestick[], 
-		preds: IPredictionCandlestick[]
-	): {values: {x: number, y: number}[], colors: string[]} {
-		// Init values
-		let values: {x: number, y: number}[] = [];
-		let colors: string[] = [];
-
-		// Iterate over each candlestick and group the preds
-		for (let candle of candlesticks) {
-			// Group the predictions within the candlestick
-			const predsInCandle: IPredictionCandlestick[] = preds.filter((p) => candle.ot >= p.ot  && p.ot <= candle.ct);
-
-			// Make sure there are predictions in the candle
-			if (predsInCandle.length) {
-				// Calculate the mean of the sums within the group
-				const sumsMean: number = predsInCandle[predsInCandle.length - 1].sm;
-
-				// Append the values
-				values.push({x: candle.ot, y: sumsMean});
-				if (sumsMean > 0) { colors.push(this._chart.upwardColor) }
-				else if (sumsMean < 0) { colors.push(this._chart.downwardColor) }
-				else { colors.push(this._chart.neutralColor) }
-			}
-			
-			// Otherwise, fill the void with blanks
-			else {
-				values.push({x: candle.ot, y: 0.000000});
-				colors.push(this._chart.neutralColor);
-			}
-		}
-
-		// Finally, return the data
-		return { values: values, colors: colors };
-	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-	/* Candlestick Retrievers */
-
-
-
-
-
-	/**
-	 * Retrieves a list of candlesticks that cover ~5 candlesticks from the past
-	 * all the way until the end based on the maxPredictions. The future candlesticks
-	 * may not exist yet.
-	 * @returns Promise<{list: ICandlestick[], active: ICandlestick}>
-	 */
-	 private async getCandlesticks(): Promise<{list: ICandlestick[], active: ICandlestick}> {
-		// Retrieve the list of candlesticks within the prediction's range
-		const candlesticks: ICandlestick[] = await this._localDB.getCandlesticksForPeriod(
-			this.getCandlestickStartTime(), 
-			this.getCandlestickEndTime(),
-			<number>this._app.serverTime.value
-		);
-
-		// Find the candlestick that was active when the prediction was made
-		const active: ICandlestick[] = candlesticks.filter((c) => this.prediction.t >= c.ot  && this.prediction.t <= c.ct);
-		
-		// Finally, return the packed values
-		return {list: candlesticks, active: active[0]}
-	}
-
-
-
-
-
-	/**
-	 * Retrieves the start of the candlesticks time range that sufficient to
-	 * give the prediction some context.
-	 * @returns number
-	 */
-	private getCandlestickStartTime(): number {
-		return moment(this.prediction.t)
-				.subtract(this._candlestick.predictionCandlestickInterval * this.predictions, "minutes")
-				.valueOf();
-	}
-
-
-
-
-	/**
-	 * Retrieves the end of the candlesticks time range that hopefully
-	 * is sufficient in order to identify the prediction's outcome.
-	 * @returns number
-	 */
-	private getCandlestickEndTime(): number {
-		return moment(this.prediction.t)
-				.add(this._candlestick.predictionCandlestickInterval * 200, "minutes")
-				.valueOf();
-	}
 
 
 
@@ -359,56 +63,6 @@ export class PredictionDialogComponent implements OnInit, IPredictionDialogCompo
 
 
 	/* Misc Helpers */
-
-
-
-
-
-	/**
-	 * Calculates the take profit target based on the
-	 * candlestick that was active when the prediction was generated. 
-	 * @param initialPrice 
-	 * @returns number
-	 */
-	private calculateTargetPrice(initialPrice: number): number {
-		// Calculate the targets for a long position
-		if (this.prediction.r == 1) {
-			return <number>this._utils.alterNumberByPercentage(initialPrice, this.model.price_change_requirement)
-		}
-		// Calculate the targets for a short position
-		else if (this.prediction.r == -1) {
-			return <number>this._utils.alterNumberByPercentage(initialPrice, -this.model.price_change_requirement)
-		}
-
-		// There are no targets in a neutral position
-		else {
-			return 0;
-		}
-	}
-
-
-
-
-
-
-	/**
-	 * Displays the features dedicated dialog to gather more information
-	 * about the prediction.
-	 */
-	public displayFeaturesDialog(): void {
-		this.dialog.open(FeaturesSumDialogComponent, {
-			hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
-			panelClass: "small-dialog",
-				data: <IFeaturesSumDialogData>{
-					sum: this.featuresSum,
-					features: this.prediction.f,
-					result: this.prediction.r,
-					model: this.model
-				}
-		})
-	}
-
-
 
 
 

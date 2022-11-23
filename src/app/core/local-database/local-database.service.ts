@@ -34,7 +34,6 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 	private regressionCertificates?: Dexie.Table;
 	private predictionCandlesticks?: Dexie.Table;
 	private predictions?: Dexie.Table;
-	private starredPredictions?: Dexie.Table;
 	private epochPredictionCandlesticks?: Dexie.Table;
 
 
@@ -76,7 +75,6 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 					regressionCertificates: "id",
 					predictionCandlesticks: "id",
 					predictions: "id",
-					starredPredictions: "id",
 					epochPredictionCandlesticks: "id",
 				});
 				
@@ -90,7 +88,6 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 				this.regressionCertificates = this.db.table("regressionCertificates");
 				this.predictionCandlesticks = this.db.table("predictionCandlesticks");
 				this.predictions = this.db.table("predictions");
-				this.starredPredictions = this.db.table("starredPredictions");
 				this.epochPredictionCandlesticks = this.db.table("epochPredictionCandlesticks");
 
 				// Update the init state
@@ -152,7 +149,6 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 			{ name: "regressionCertificates", records: await this.regressionCertificates!.count()},
 			{ name: "predictionCandlesticks", records: await this.predictionCandlesticks!.count()},
 			{ name: "predictions", records: await this.predictions!.count()},
-			{ name: "starredPredictions", records: await this.starredPredictions!.count()},
 			{ name: "epochPredictionCandlesticks", records: await this.epochPredictionCandlesticks!.count()},
 		];
 	}
@@ -179,7 +175,7 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 		if (!this.initialized) await this.initialize();
 
 		// Init the default obj
-		const pref: IUserPreferences = { sound: false };
+		const pref: IUserPreferences = this.getDefaultUserPreferences();
 
 		// If it is not compatible, return the default obj
 		if (!this.initialized) return pref;
@@ -214,6 +210,18 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 			await this.userPreferences!.put(<ILocalData> { id: 0, data: pref });
 		} catch (e) { console.error(e) }
 	}
+
+
+
+
+	/**
+	 * Retrieves the default user preferences object.
+	 * @returns IUserPreferences
+	 */
+	public getDefaultUserPreferences(): IUserPreferences { 
+		return { sound: false, splitTrendChart: false};
+	}
+
 
 
 
@@ -708,94 +716,6 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 			if (saveable.length) await this.predictions!.bulkPut(saveable);
 		} catch (e) { console.log(e) }
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-	/**********************************
-	 * Starred Predictions Management *
-	 **********************************/
-
-
-
-
-	/**
-	 * Adds a prediction to the starred table.
-	 * @param pred 
-	 * @returns Promise<void>
-	 */
-	public async starPrediction(pred: IPrediction): Promise<void> {
-		// Attempt to initialize the db in case it hadn't been
-		if (!this.initialized) await this.initialize();
-
-		// If it is not compatible, return the original call right away
-		if (!this.initialized) return;
-
-		// Save the record safely
-		try {
-			await this.starredPredictions!.put({ id: pred.t, data: pred });
-		} catch (e) { console.log(e) }
-	}
-
-
-
-
-
-	/**
-	 * Deletes a prediction from the starred table.
-	 * @param pred 
-	 * @returns Promise<void>
-	 */
-	public async unstarPrediction(pred: IPrediction): Promise<void> {
-		// Attempt to initialize the db in case it hadn't been
-		if (!this.initialized) await this.initialize();
-
-		// If it is not compatible, return the original call right away
-		if (!this.initialized) return;
-
-		// Save the record safely
-		try {
-			await this.starredPredictions!.where("id").equals(pred.t).delete();
-		} catch (e) { console.log(e) }
-	}
-
-
-
-
-
-
-
-	/**
-	 * Retrieves the list of starred predictions.
-	 * @returns Promise<IPrediction[]>
-	 */
-	public async getStarredPredictions(): Promise<IPrediction[]> {
-		// Attempt to initialize the db in case it hadn't been
-		if (!this.initialized) await this.initialize();
-
-		// If it is not compatible, return the original call right away
-		if (!this.initialized) return [];
-
-		try {
-			// Retrieve the predictions
-			const localData: ILocalData[] = await this.starredPredictions!.orderBy("id").reverse().toArray();
-
-			// Return the list of predictions
-			return localData.map((ld) => ld!.data);
-		} catch (e) {
-			console.log(e);
-			return [];
-		}
-	}
-
 
 
 
