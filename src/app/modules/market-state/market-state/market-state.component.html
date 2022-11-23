@@ -76,7 +76,8 @@
                                 </p>
                             </div>
                             <span fxFlex></span>
-                            <div class="square-badge margin-right clickable" role="button" 
+                            <div *ngIf="activePrediction"  
+                                class="square-badge margin-right clickable" role="button" 
                                 (click)="displaySplitPredictions = !displaySplitPredictions" 
                                 matTooltip="{{displaySplitPredictions ? 'View Sum Chart': 'View Split Chart'}}">
                                 <mat-icon>{{displaySplitPredictions ? 'timeline': 'ssid_chart'}}</mat-icon>
