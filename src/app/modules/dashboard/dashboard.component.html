@@ -244,7 +244,10 @@
                                             <mat-icon *ngIf="activePrediction.r == 1">trending_up</mat-icon>
                                             <mat-icon *ngIf="activePrediction.r == -1">trending_down</mat-icon>
                                             <mat-icon *ngIf="activePrediction.r == 0">trending_flat</mat-icon>
-                                            {{activeSum | number: '1.0-6'}}
+                                            {{activeSum | number: '1.0-6'}} 
+                                            <span *ngIf="activePredictionState != 0">
+                                                ({{activePredictionState! > 0 ? '+': ''}}{{activePredictionState}})
+                                            </span>
                                         </div>
                                     </div>
                 

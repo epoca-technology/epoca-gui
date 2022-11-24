@@ -66,11 +66,13 @@
             
 
             <!-- Network -->
-            <div class="margin-top" fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" fxLayoutAlign="start start">
-                <p class="light-text truncate margin-bottom">Network</p>
-                <span fxFlex></span>
-                <div class="formula">
-                    <p *ngFor="let l of model.summary.layers" class="smt">{{l.name}}({{l.input_shape}}) > ({{l.output_shape}})</p>
+            <div class="margin-top">
+                <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" fxLayoutAlign="start start">
+                    <p class="light-text truncate margin-bottom">Network</p>
+                    <span fxFlex></span>
+                    <div class="formula">
+                        <p *ngFor="let l of model.summary.layers" class="smt">{{l.name}}({{l.input_shape}}) > ({{l.output_shape}})</p>
+                    </div>
                 </div>
             </div>
         </div>

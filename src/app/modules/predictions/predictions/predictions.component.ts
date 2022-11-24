@@ -160,7 +160,7 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
         this.epoch = epochSummary;
 
         // Load the candlesticks
-        await this.loadCandlesticks(1);
+        await this.loadCandlesticks(2);
 
         // Set the loading state
         this.loaded = true;
@@ -200,7 +200,8 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
         else {
             // Display the bottom sheet and handle the action
             const bs: MatBottomSheetRef = this._nav.displayBottomSheetMenu([
-                {icon: "waterfall_chart", title: "Last 1 Days", description: "View 24 hours worth of data", response: "1"},
+                {icon: "waterfall_chart", title: "Last Day", description: "View 24 hours worth of data", response: "1"},
+                {icon: "waterfall_chart", title: "Last 2 Days", description: "View 48 hours worth of data", response: "2"},
                 {icon: "waterfall_chart", title: "Last 3 Days", description: "View 3 days worth of data", response: "3"},
                 {icon: "waterfall_chart", title: "Last 7 Days", description: "View 1 week worth of data", response: "7"},
                 {icon: "waterfall_chart", title: "Last 14 Days", description: "View 2 weeks worth of data", response: "14"},

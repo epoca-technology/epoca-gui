@@ -58,6 +58,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     public epoch?: IEpochRecord;
     public activePrediction?: IPrediction;
     public activeSum?: number;
+    public activePredictionState?: IPredictionState;
     public predictions: IPrediction[] = [];
     private predictionSub!: Subscription;
     private predictionsLoaded: boolean = false;
@@ -190,6 +191,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         // Add the new prediction
         this.predictions.push(pred);
         this.activePrediction = pred;
+        this.activePredictionState = this._app.predictionState.value!;
 
         // Update the prediction chart
         this.updatePredictionChart();
@@ -727,7 +729,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 	 */
      public displayFeaturesDialog(): void {
 		this.dialog.open(FeaturesSumDialogComponent, {
-			hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
+			hasBackdrop: true,
 			panelClass: "light-dialog",
 				data: <IFeaturesSumDialogData>{
 					sum: this.activeSum,
@@ -746,7 +748,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
      */
     public displayKeyZoneDialog(): void {
 		this.dialog.open(KeyzoneStateDialogComponent, {
-			hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
+			hasBackdrop: this._app.layout.value != "mobile",
 			panelClass: "large-dialog",
 			data: <IKeyZonesStateDialogData> {
                 state: this.state.keyzone,
