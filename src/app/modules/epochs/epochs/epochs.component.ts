@@ -60,21 +60,21 @@ export class EpochsComponent implements OnInit, OnDestroy, IEpochsComponent {
          * epoch data initialization is invoked.
          */
         this.epochSub = this._app.epoch.subscribe(async (e: IEpochRecord|undefined|null) => {
-            if (e != null && !this.initialized) {
+            if (e !== null && !this.initialized && !this.epoch) {
                 // Check if an Epoch ID was provided from the URL. If so, initialize it right away.
                 const urlEpochID: string|null = this.route.snapshot.paramMap.get("epochID");
-                if (typeof urlEpochID == "string" && this._validations.epochIDValid(urlEpochID) && !this.initialized) { 
+                if (typeof urlEpochID == "string" && this._validations.epochIDValid(urlEpochID)) { 
                     await this.initializeEpochData(urlEpochID);
                 }
 
                 // Otherwise, check if an active epoch is available
-                else if (e && !this.initialized){
+                else if (e){
                     await this.initializeEpochData(e.id);
                 }
 
                 // Set the init state
                 this.initialized = true;
-            } else if (e == undefined) { this.initialized = true  }
+            } else if (e === undefined) { this.initialized = true; }
         });
     }
 
@@ -103,7 +103,9 @@ export class EpochsComponent implements OnInit, OnDestroy, IEpochsComponent {
 
         // Reset the epoch values
         this.epoch = null;
-        if (this.epochSub) this.epochSub.unsubscribe();
+
+        // Kill the subscription if exists
+        this.epochSub?.unsubscribe();
 
         // Make sure the provided ID is valid
         if (!this._validations.epochIDValid(epochID || "")) {
@@ -113,12 +115,7 @@ export class EpochsComponent implements OnInit, OnDestroy, IEpochsComponent {
 
         // Check if the epoch matches the active one
         if (this._app.epoch.value && this._app.epoch.value.id == epochID) {
-            this.epochSub = this._app.epoch.subscribe(async (summary: IEpochRecord|null|undefined) => {
-                if (summary) {
-                    this.epoch = summary;
-                    this.loaded = true;
-                }
-            })
+            this.epoch = this._app.epoch.value;
         }
 
         // If it isn"t the active epoch, retrieve the summary from the API
@@ -128,8 +125,10 @@ export class EpochsComponent implements OnInit, OnDestroy, IEpochsComponent {
                 if (!rec) { throw new Error(`The epoch ${epochID} was not found in the database.`)}
                 this.epoch = rec;
             } catch (e) { this._app.error(e) }
-            this.loaded = true;
         }
+
+        // Set the loading state
+        this.loaded = true;
     }
 
 

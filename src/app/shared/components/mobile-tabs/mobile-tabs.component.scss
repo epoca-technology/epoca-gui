@@ -10,12 +10,12 @@
 	width: 100%;
 	border-top: 1px solid #E0E0E0;
 	height:var(--tabs-height);
-    color: #7d7d80;
 }
-.mobile-tabs-container .active { color: var(--primary-color) }
 
 .mobile-tabs-container .tabs { height:100%;}
 
-.mobile-tabs-container .tab {height:100%; text-align: center;}
+.mobile-tabs-container .tab {height:100%; text-align: center;opacity: 0.5;}
+
+.mobile-tabs-container .active { opacity: 1 }
 
 

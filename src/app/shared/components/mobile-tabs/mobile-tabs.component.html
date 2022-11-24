@@ -11,33 +11,33 @@
                         [matBadgeHidden]="!_app.epoch.value || !_app.predictionIcon.value" 
                         matBadgePosition="after"
                         matBadgeSize="small"
-                        matBadgeOverlap="false"></mat-icon>
+                        matBadgeOverlap="false" style="max-width:20px;"></mat-icon>
         </div>
 
         <!-- Positions -->
         <div fxFlex fxLayout="row" fxLayoutAlign="center center"
              class="tab" role="button" matRipple
              [ngClass]="{'active': activeTab == 1}" (click)="navigate(1)">
-            <mat-icon   svgIcon="auto_graph" 
+            <mat-icon   svgIcon="money_bill_transfer" 
                         [matBadge]="_app.positionsCount.value" 
-                        [matBadgeHidden]="!_app.epoch.value" 
+                        [matBadgeHidden]="!_app.epoch.value || !_app.positionsCount.value" 
                         matBadgePosition="after"
                         matBadgeSize="small"
-                        matBadgeOverlap="false"></mat-icon>
+                        matBadgeOverlap="false" style="max-width:23px;"></mat-icon>
         </div>
 
         <!-- Predictions -->
         <div fxFlex fxLayout="row" fxLayoutAlign="center center"
              class="tab" role="button" matRipple
              [ngClass]="{'active': activeTab == 2}" (click)="navigate(2)">
-            <mat-icon svgIcon="wand_magic_sparkles"></mat-icon>
+            <mat-icon svgIcon="wand_magic_sparkles" style="max-width:20px;"></mat-icon>
         </div>
 
         <!-- Candlesticks -->
         <div fxFlex fxLayout="row" fxLayoutAlign="center center"
              class="tab" role="button" matRipple
              [ngClass]="{'active': activeTab == 3}" (click)="navigate(3)">
-            <mat-icon style="font-size:28px;margin-top:-4px">waterfall_chart</mat-icon>
+            <mat-icon style="font-size:25px;margin-top:-2px">waterfall_chart</mat-icon>
         </div>
 
         <!-- Server -->
@@ -46,9 +46,10 @@
              [ngClass]="{'active': activeTab == 4}" (click)="navigate(4)">
             <mat-icon svgIcon="server"
                     [matBadge]="_app.apiErrors.value" 
+                    [matBadgeHidden]="!_app.apiErrors.value" 
                     matBadgePosition="after"
                     matBadgeSize="small"
-                    matBadgeOverlap="false"></mat-icon>
+                    matBadgeOverlap="false" style="max-width:20px;"></mat-icon>
         </div>
     </div>
 </div>

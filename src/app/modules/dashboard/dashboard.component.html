@@ -192,7 +192,7 @@
                                     <mat-icon *ngIf="state.window.state == 'decreasing'">trending_down</mat-icon>
                                     <mat-icon *ngIf="state.window.state == 'stateless'">trending_flat</mat-icon>
                                     ${{state.window.window[state.window.window.length - 1].c | number: '1.0-0'}}&nbsp;
-                                    ({{state.window.state_value | number: '1.0-2'}}%)
+                                    ({{state.window.state_value > 0 ? '+': ''}}{{state.window.state_value | number: '1.0-1'}}%)
                                 </div>
                             </div>
 
@@ -307,7 +307,7 @@
                                                     <mat-icon *ngIf="state.volume.state == 'increasing'">trending_up</mat-icon>
                                                     <mat-icon *ngIf="state.volume.state == 'decreasing'">trending_down</mat-icon>
                                                     <mat-icon *ngIf="state.volume.state == 'stateless'">trending_flat</mat-icon>
-                                                    {{state.volume.state_value | number: '1.0-2'}}%
+                                                    {{state.volume.state_value > 0 ? '+': ''}}{{state.volume.state_value | number: '1.0-0'}}%
                                                 </div>
                                             </div>
                     
@@ -339,7 +339,7 @@
                                                     <p class="light-text ts-xs">{{state.network_fee.ts | date: layout == 'desktop' ? 'medium': 'mediumTime'}}</p>
                                                 </div>
                                                 <span fxFlex></span>
-                                                <div matTooltip="The network fee state within the last 24 hours." 
+                                                <div matTooltip="The network fee state within the last 24 hours. The current height is: #{{state.network_fee.height}}" 
                                                     [ngClass]="{
                                                         'square-badge-success': state.network_fee.state == 'increasing',
                                                         'square-badge-error': state.network_fee.state == 'decreasing',
@@ -348,7 +348,7 @@
                                                     <mat-icon *ngIf="state.network_fee.state == 'increasing'">trending_up</mat-icon>
                                                     <mat-icon *ngIf="state.network_fee.state == 'decreasing'">trending_down</mat-icon>
                                                     <mat-icon *ngIf="state.network_fee.state == 'stateless'">trending_flat</mat-icon>
-                                                    {{state.network_fee.state_value | number: '1.0-2'}}%
+                                                    {{state.network_fee.state_value > 0 ? '+': ''}}{{state.network_fee.state_value | number: '1.0-0'}}%
                                                 </div>
                                             </div>
                     

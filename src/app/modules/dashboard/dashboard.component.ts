@@ -114,7 +114,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                         // Load the predictions in case they haven't been
                         if (!this.predictions.length) {
                             let endAt: number = this._app.serverTime.value ? this._app.serverTime.value: moment().valueOf();
-                            let startAt: number = moment(endAt).subtract(3, "hours").valueOf();
+                            let startAt: number = moment(endAt).subtract(4, "hours").valueOf();
                             this.predictions = await this._localDB.listPredictions(
                                 this.epoch!.id,
                                 startAt,

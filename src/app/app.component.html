@@ -15,13 +15,6 @@
 
         <!-- Menu Content -->
         <mat-list>
-            <!-- Dashboard -->
-            <mat-list-item>
-                <button mat-button class="left-icon-button" (click)="_nav.dashboard()" [disabled]="state.module == 'dashboard'">
-                    <mat-icon svgIcon="home"></mat-icon><span>Dashboard</span>
-                </button>
-            </mat-list-item>
-
             <!-- Epochs -->
             <mat-list-item>
                 <button mat-button class="left-icon-button" (click)="_nav.epochs()" [disabled]="state.module == 'epochs'">
@@ -149,7 +142,7 @@
                         [appMatBadgeIcon]="_app.predictionIcon.value ? _app.predictionIcon.value: ''"
                         [matBadgeHidden]="!_app.epoch.value || !_app.predictionIcon.value" 
                         [disabled]="state.module == 'dashboard'" *ngIf="uid">
-                    <mat-icon svgIcon="home"></mat-icon><span>Dashboard</span>
+                    <mat-icon svgIcon="home" style="max-width:20px;"></mat-icon><span>Dashboard</span>
                 </button>
 
                 <!-- Positions -->
@@ -157,10 +150,10 @@
                         class="left-icon-button" 
                         (click)="_nav.positions()" 
                         [matBadge]="_app.positionsCount.value" 
-                        [matBadgeHidden]="!_app.epoch.value" 
+                        [matBadgeHidden]="!_app.epoch.value || !_app.positionsCount.value" 
                         [disabled]="state.module == 'positions'" 
                         *ngIf="uid">
-                    <mat-icon svgIcon="auto_graph"></mat-icon><span>Positions</span>
+                    <mat-icon svgIcon="money_bill_transfer" style="max-width:23px;"></mat-icon><span>Positions</span>
                 </button>
 
                 <!-- Predictions -->
@@ -169,7 +162,7 @@
                         (click)="_nav.predictions()" 
                         *ngIf="uid" 
                         [disabled]="state.module == 'predictions'">
-                    <mat-icon svgIcon="wand_magic_sparkles"></mat-icon><span>Predictions</span>
+                    <mat-icon svgIcon="wand_magic_sparkles" style="max-width:20px;"></mat-icon><span>Predictions</span>
                 </button>
 
                 <!-- Candlesticks -->
@@ -178,7 +171,7 @@
                         (click)="_nav.candlesticks()" 
                         [disabled]="state.module == 'candlesticks'" 
                         *ngIf="uid">
-                    <mat-icon>waterfall_chart</mat-icon><span>Candlesticks</span>
+                    <mat-icon style="font-size:25px;margin-top:-2px">waterfall_chart</mat-icon><span>Candlesticks</span>
                 </button>
 
                 <!-- Server -->
@@ -186,9 +179,10 @@
                         class="left-icon-button" 
                         (click)="_nav.server()" 
                         [matBadge]="_app.apiErrors.value" 
+                        [matBadgeHidden]="!_app.apiErrors.value" 
                         [disabled]="state.module == 'server'" 
                         *ngIf="uid">
-                    <mat-icon svgIcon="server"></mat-icon><span>Server</span>
+                    <mat-icon svgIcon="server" style="max-width:20px;"></mat-icon><span>Server</span>
                 </button>
 
                 <!-- Menu -->

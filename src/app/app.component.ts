@@ -40,7 +40,7 @@ export class AppComponent implements IAppComponent {
     "person","notifications","logo_google","paste","ubuntu","code_branch","hdd","microchip","server","database",
     "hardware_chip", "ssid_chart", "brain", "auto_graph", "bug_report", "file_csv", "file_waveform",
     "wand_magic_sparkles", "flask_vial", "book", "microscope", "file_invoice", "coins", "bitcoin",
-    "file_signature", "file_circle_check", "compass_drafting", "terminal", "file_zipper"];
+    "file_signature", "file_circle_check", "compass_drafting", "terminal", "file_zipper", "money_bill_transfer"];
 	
 	// Route State
 	public state: IRouteState = this._nav.routeState.value;
