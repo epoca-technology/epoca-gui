@@ -120,6 +120,34 @@ import { ICandlestick } from "../candlestick";
  
  
  
+
+
+/****************************************************************************
+ * OPEN INTEREST STATE                                                      *
+ * The purpose of the open interest state is to enable programatic          *
+ * understanding of the interest in the futures market.                     *
+ ****************************************************************************/
+ export interface IOpenInterestState extends IState {
+    // The list of grouped interest values
+    interest: number[]
+}
+
+
+
+
+
+
+/****************************************************************************
+ * LONG/SHORT RATIO STATE                                                   *
+ * The purpose of the long/short state is to enable programatic             *
+ * understanding of the ratio in the futures market.                        *
+ ****************************************************************************/
+ export interface ILongShortRatioState extends IState {
+    // The list of grouped long/short ratio values
+    ratio: number[]
+}
+
+
  
  
  
@@ -235,5 +263,7 @@ import { ICandlestick } from "../candlestick";
      window: IWindowState,
      volume: IVolumeState,
      keyzone: IKeyZoneState,
-     network_fee: INetworkFeeState
+     network_fee: INetworkFeeState,
+     open_interest: IOpenInterestState,
+     long_short_ratio: ILongShortRatioState
  }

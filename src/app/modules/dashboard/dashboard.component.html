@@ -174,30 +174,30 @@
                         <!-- Window State -->
                         <div fxFlex="50" fxFlex.xs="100" fxFlex.sm="100" class="desktop-card chart-card full-width">
                             <!-- Heading -->
-                            <div fxLayout="row" fxLayoutAlign="start start" class="chart-card-heading">
-                                <div>
+                            <div fxLayout="row" fxLayoutAlign="start start" fxLayoutAlign.xs="center center" fxLayoutAlign.sm="center center"
+                                class="chart-card-heading">
+                                <div class="show-on-desktop">
                                     <h4>Window</h4>
                                     <p class="light-text ts-xs">
                                         {{state.window.ts | date: layout == 'desktop' ? 'medium': 'mediumTime'}}
                                     </p>
                                 </div>
-                                <span fxFlex></span>
-                                <div [ngClass]="{
-                                        'square-badge-success': state.window.state == 'increasing',
-                                        'square-badge-error': state.window.state == 'decreasing',
-                                        'square-badge-neutral': state.window.state == 'stateless'
-                                    }"
-                                    matTooltip="The % change present in the window from the beginning till the end.">
-                                    <mat-icon *ngIf="state.window.state == 'increasing'">trending_up</mat-icon>
-                                    <mat-icon *ngIf="state.window.state == 'decreasing'">trending_down</mat-icon>
-                                    <mat-icon *ngIf="state.window.state == 'stateless'">trending_flat</mat-icon>
-                                    ${{state.window.window[state.window.window.length - 1].c | number: '1.0-0'}}&nbsp;
-                                    ({{state.window.state_value > 0 ? '+': ''}}{{state.window.state_value | number: '1.0-1'}}%)
+                                <span fxFlex class="show-on-desktop"></span>
+                                <div class="square-badge-success clickable position-badge" role="button"
+                                    matTooltip="Margin: ${{589 | number: '1.0-0'}}">
+                                    LONG: 
+                                    +${{17.67 | number: '1.0-0'}} | +{{3 | number: '1.0-1'}}%
+                                </div>
+                                <span fxFlex="1" fxFlex.xs="2" fxFlex.sm="2"></span>
+                                <div class="square-badge-error clickable position-badge" role="button"
+                                    matTooltip="Margin: ${{1422 | number: '1.0-0'}}">
+                                    SHORT: 
+                                    -${{43.55 | number: '1.0-0'}} | {{-9.18 | number: '1.0-1'}}%
                                 </div>
                             </div>
 
                             <!-- Chart -->
-                            <div *ngIf="windowChart">
+                            <div *ngIf="windowChart" [ngClass]="{'margin-top': layout == 'mobile'}">
                                 <apx-chart
                                     [series]="windowChart.series!"
                                     [chart]="windowChart.chart!"
@@ -246,7 +246,7 @@
                                             <mat-icon *ngIf="activePrediction.r == 0">trending_flat</mat-icon>
                                             {{activeSum | number: '1.0-6'}} 
                                             <span *ngIf="activePredictionState != 0">
-                                                ({{activePredictionState! > 0 ? '+': ''}}{{activePredictionState}})
+                                                | {{activePredictionState! > 0 ? '+': ''}}{{activePredictionState}}
                                             </span>
                                         </div>
                                     </div>
@@ -288,7 +288,7 @@
 
                             <div class="divider show-on-mobile"></div>
 
-                            <!-- Volume and network fees -->
+                            <!-- Volume & Open Interest -->
                             <div>
                                 <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" class="full-width">
                                     <!-- Volume -->
@@ -297,8 +297,10 @@
                                             <!-- Heading -->
                                             <div fxLayout="row" fxLayoutAlign="start start" class="chart-card-heading">
                                                 <div>
-                                                    <h4>Volume</h4>
-                                                    <p class="light-text ts-xs">{{state.volume.ts | date: layout == 'desktop' ? 'medium': 'mediumTime'}}</p>
+                                                    <h4 matTooltip="Updated: {{state.volume.ts | date: 'short'}}">Volume</h4>
+                                                    <p class="light-text ts-xs show-on-mobile">
+                                                        {{state.volume.ts | date: layout == 'desktop' ? 'medium': 'mediumTime'}}
+                                                    </p>
                                                 </div>
                                                 <span fxFlex></span>
                                                 <div matTooltip="The volume state within the window." 
@@ -332,14 +334,109 @@
                                     <span fxFlex></span>
                                     <div class="divider show-on-mobile"></div>
                 
+                                    <!-- Open Interest -->
+                                    <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                                        <div class="desktop-card no-margin chart-card">
+                                            <!-- Heading -->
+                                            <div fxLayout="row" fxLayoutAlign="start start" class="chart-card-heading">
+                                                <div>
+                                                    <h4 matTooltip="Updated: {{state.open_interest.ts | date: 'short'}}">Open Interest</h4>
+                                                    <p class="light-text ts-xs show-on-mobile">
+                                                        {{state.open_interest.ts | date: layout == 'desktop' ? 'medium': 'mediumTime'}}
+                                                    </p>
+                                                </div>
+                                                <span fxFlex></span>
+                                                <div matTooltip="The open interest within the window." 
+                                                    [ngClass]="{
+                                                        'square-badge-success': state.open_interest.state == 'increasing',
+                                                        'square-badge-error': state.open_interest.state == 'decreasing',
+                                                        'square-badge-neutral': state.open_interest.state == 'stateless'
+                                                    }">
+                                                    <mat-icon *ngIf="state.open_interest.state == 'increasing'">trending_up</mat-icon>
+                                                    <mat-icon *ngIf="state.open_interest.state == 'decreasing'">trending_down</mat-icon>
+                                                    <mat-icon *ngIf="state.open_interest.state == 'stateless'">trending_flat</mat-icon>
+                                                    {{state.open_interest.state_value > 0 ? '+': ''}}{{state.open_interest.state_value | number: '1.0-0'}}%
+                                                </div>
+                                            </div>
+                    
+                                            <!-- Chart -->
+                                            <div *ngIf="openInterestChart">
+                                                <apx-chart
+                                                    [series]="openInterestChart.series"
+                                                    [chart]="openInterestChart.chart"
+                                                    [dataLabels]="openInterestChart.dataLabels"
+                                                    [xaxis]="openInterestChart.xaxis"
+                                                    [yaxis]="openInterestChart.yaxis"
+                                                    [stroke]="openInterestChart.stroke"
+                                                    [grid]="{show: false}"
+                                                ></apx-chart>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <!-- Long/Short Ratio & Network Fee-->
+                            <div [ngClass]="{'margin-top': layout == 'desktop'}">
+                                <div class="divider show-on-mobile"></div>
+                                <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" class="full-width">
+                                    <!-- Long/Short Ratio -->
+                                    <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                                        <div class="desktop-card no-margin chart-card">
+                                            <!-- Heading -->
+                                            <div fxLayout="row" fxLayoutAlign="start start" class="chart-card-heading">
+                                                <div>
+                                                    <h4 matTooltip="Updated: {{state.long_short_ratio.ts | date: 'short'}}">Long/Short Ratio</h4>
+                                                    <p class="light-text ts-xs show-on-mobile">
+                                                        {{state.long_short_ratio.ts | date: layout == 'desktop' ? 'medium': 'mediumTime'}}
+                                                    </p>
+                                                </div>
+                                                <span fxFlex></span>
+                                                <div matTooltip="The long/short ratio state within the window." 
+                                                    [ngClass]="{
+                                                        'square-badge-success': state.long_short_ratio.state == 'increasing',
+                                                        'square-badge-error': state.long_short_ratio.state == 'decreasing',
+                                                        'square-badge-neutral': state.long_short_ratio.state == 'stateless'
+                                                    }">
+                                                    <mat-icon *ngIf="state.long_short_ratio.state == 'increasing'">trending_up</mat-icon>
+                                                    <mat-icon *ngIf="state.long_short_ratio.state == 'decreasing'">trending_down</mat-icon>
+                                                    <mat-icon *ngIf="state.long_short_ratio.state == 'stateless'">trending_flat</mat-icon>
+                                                    {{state.long_short_ratio.state_value > 0 ? '+': ''}}{{state.long_short_ratio.state_value | number: '1.0-0'}}%
+                                                </div>
+                                            </div>
+                    
+                                            <!-- Chart -->
+                                            <div *ngIf="longShortRatioChart">
+                                                <apx-chart
+                                                    [series]="longShortRatioChart.series"
+                                                    [chart]="longShortRatioChart.chart"
+                                                    [dataLabels]="longShortRatioChart.dataLabels"
+                                                    [xaxis]="longShortRatioChart.xaxis"
+                                                    [yaxis]="longShortRatioChart.yaxis"
+                                                    [stroke]="longShortRatioChart.stroke"
+                                                    [grid]="{show: false}"
+                                                ></apx-chart>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                
+                                    <span fxFlex></span>
+                                    <div class="divider show-on-mobile"></div>
+
+
+
                                     <!-- Network Fee -->
                                     <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
                                         <div class="desktop-card no-margin chart-card">
                                             <!-- Heading -->
                                             <div fxLayout="row" fxLayoutAlign="start start" class="chart-card-heading">
                                                 <div>
-                                                    <h4>Network Fee</h4>
-                                                    <p class="light-text ts-xs">{{state.network_fee.ts | date: layout == 'desktop' ? 'medium': 'mediumTime'}}</p>
+                                                    <h4 matTooltip="Updated: {{state.network_fee.ts | date: 'short'}}">Network Fee</h4>
+                                                    <p class="light-text ts-xs show-on-mobile">
+                                                        {{state.network_fee.ts | date: layout == 'desktop' ? 'medium': 'mediumTime'}}
+                                                    </p>
                                                 </div>
                                                 <span fxFlex></span>
                                                 <div matTooltip="The network fee state within the last 24 hours. The current height is: #{{state.network_fee.height}}" 

@@ -81,6 +81,16 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     // Network Fees State Chart
     public networkFeeChart?: ILineChartOptions;
 
+    // Open Interest State Chart
+    public openInterestChart?: ILineChartOptions;
+
+    // Long/Short Ratio State Chart
+    public longShortRatioChart?: ILineChartOptions;
+
+    // Desktop Chart height helpers
+    private readonly predictionChartDesktopHeight: number = 260;
+    private readonly marketStateChartDesktopHeight: number = 90;
+
     // Loading State
     public loaded: boolean = false;
 
@@ -297,7 +307,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                     xaxis: {type: "datetime",tooltip: {enabled: true}, labels: {datetimeUTC: false}}, 
                     yaxis: { tooltip: {enabled: true}}
                 },
-                this.layout == "desktop" ? 350: 330, 
+                this.layout == "desktop" ? this.predictionChartDesktopHeight: 330, 
                 true,
                 {min: minValue, max: maxValue}
             );
@@ -436,7 +446,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                     xaxis: {type: "datetime",tooltip: {enabled: true}, labels: {datetimeUTC: false}},
                     yaxis: { tooltip: {enabled: true}}
                 },
-                this.layout == "desktop" ? 350: 330, 
+                this.layout == "desktop" ? this.predictionChartDesktopHeight: 330, 
                 true,
                 {min: -1, max: 1}
             );
@@ -469,6 +479,12 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
         // Update the network fee state chart
         this.updateNetworkFeeState();
+
+        // Update the open interest state chart
+        this.updateOpenInterestState();
+
+        // Update the long short state chart
+        this.updateLongShortRatioState();
 
         // Update the title
         const price: string = <string>this._utils.outputNumber(
@@ -518,7 +534,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                 true,
                 { min:  minVal, max: maxVal }
             );
-            this.windowChart.chart!.height = this.layout == "desktop" ? 599: 400;
+            this.windowChart.chart!.height = this.layout == "desktop" ? 600: 400;
             this.windowChart.chart!.zoom = {enabled: true, type: "xy"};
         }
     }
@@ -533,6 +549,9 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     private buildWindowAnnotations(): ApexAnnotations {
         // Init the annotations
         let annotations: ApexAnnotations = { yaxis: [] };
+
+
+        /* KeyZone Annotations */
 
         // Init the colors
         const resistanceColor: string = this._chart.upwardColor;
@@ -579,6 +598,32 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 			})
         }
 
+
+
+
+        /* Window State Annotations */
+        const currentPrice: number = this.state.window.window[this.state.window.window.length - 1].c
+        let windowStateColor: string = this._chart.neutralColor;
+        if (this.state.window.state == "increasing") { windowStateColor = this._chart.upwardColor }
+        else if (this.state.window.state == "decreasing") { windowStateColor = this._chart.downwardColor }
+        annotations.yaxis!.push({
+            y: currentPrice,
+            strokeDashArray: 0,
+            borderColor: "",
+            fillColor: "",
+            label: {
+                borderColor: windowStateColor,
+                style: { color: "#fff", background: windowStateColor, fontSize: "12px", padding: {top: 4, right: 4, left: 4, bottom: 4}},
+                text: `$${this._utils.formatNumber(currentPrice, 0)} | ${this.state.window.state_value > 0 ? '+': ''}${this.state.window.state_value}%`,
+                position: "right",
+                offsetY: -15
+            }
+        });
+
+
+        /* Position Annotations */
+        // @TODO
+
         // Finally, return the annotations
         return annotations;
     }
@@ -618,8 +663,21 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             lineColor = this._chart.downwardColor;
         }
 
+        // Init the min and max values
+        const minValue: number = this.state.volume.lower_band.end;
+        const maxValue: number = this.state.volume.upper_band.end;
+
         // Build/Update the chart
         if (this.volumeChart) {
+            // Update the range
+            this.volumeChart.yaxis = { 
+                tooltip: { enabled: true }, 
+                labels: { show: false},
+                axisTicks: { show: false},
+                axisBorder: { show: false},
+                forceNiceScale: false, min: minValue, max: maxValue
+            };
+
             // Update the series
             this.volumeChart.series = [
                 {
@@ -641,8 +699,9 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                     ],
                     stroke: {curve: "smooth", width:5},
                 },
-                this.layout == "desktop" ? 150: 150, 
-                false
+                this.layout == "desktop" ? this.marketStateChartDesktopHeight: 150, 
+                true,
+                { max: maxValue, min: minValue}
             );
             this.volumeChart.yaxis.labels = {show: false}
             this.volumeChart.xaxis.axisTicks = {show: false}
@@ -666,8 +725,21 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             lineColor = this._chart.downwardColor;
         }
 
+        // Init the min and max values
+        const minValue: number = this.state.network_fee.lower_band.end;
+        const maxValue: number = this.state.network_fee.upper_band.end;
+
         // Build/Update the chart
         if (this.networkFeeChart) {
+            // Update the range
+            this.networkFeeChart.yaxis = { 
+                tooltip: { enabled: true }, 
+                labels: { show: false},
+                axisTicks: { show: false},
+                axisBorder: { show: false},
+                forceNiceScale: false, min: minValue, max: maxValue
+            };
+
             // Update the series
             this.networkFeeChart.series = [
                 {
@@ -689,8 +761,9 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                     ],
                     stroke: {curve: "smooth", width:5},
                 },
-                this.layout == "desktop" ? 150: 150, 
-                false,
+                this.layout == "desktop" ? this.marketStateChartDesktopHeight: 150, 
+                true,
+                { max: maxValue, min: minValue}
             );
             this.networkFeeChart.yaxis.labels = {show: false}
             this.networkFeeChart.xaxis.axisTicks = {show: false}
@@ -698,6 +771,130 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         }
     }
 
+
+
+
+
+    /**
+     * Triggers whenever a new state is downloaded and builds the open interest chart.
+     */
+     private updateOpenInterestState(): void {
+        // Init the color of the prediction sum line
+        let lineColor: string = this._chart.neutralColor;
+        if (this.state.open_interest.state == "increasing") {
+            lineColor = this._chart.upwardColor;
+        } else if (this.state.open_interest.state == "decreasing") {
+            lineColor = this._chart.downwardColor;
+        }
+
+        // Init the min and max values
+        const minValue: number = this.state.open_interest.lower_band.end;
+        const maxValue: number = this.state.open_interest.upper_band.end;
+
+        // Build/Update the chart
+        if (this.openInterestChart) {
+            // Update the range
+            this.openInterestChart.yaxis = { 
+                tooltip: { enabled: true }, 
+                labels: { show: false},
+                axisTicks: { show: false},
+                axisBorder: { show: false},
+                forceNiceScale: false, min: minValue, max: maxValue
+            };
+
+            // Update the series
+            this.openInterestChart.series = [
+                {
+                    name: "USDT", 
+                    data: this.state.open_interest.interest, 
+                    color: lineColor
+                }
+            ]
+        } else {
+            // Create the chart from scratch
+            this.openInterestChart = this._chart.getLineChartOptions(
+                { 
+                    series: [
+                        {
+                            name: "USDT", 
+                            data: this.state.open_interest.interest, 
+                            color: lineColor
+                        }
+                    ],
+                    stroke: {curve: "smooth", width:5},
+                },
+                this.layout == "desktop" ? this.marketStateChartDesktopHeight: 150, 
+                true,
+                { max: maxValue, min: minValue}
+            );
+            this.openInterestChart.yaxis.labels = {show: false}
+            this.openInterestChart.xaxis.axisTicks = {show: false}
+            this.openInterestChart.xaxis.axisBorder = {show: false}
+        }
+    }
+
+
+
+
+
+
+    /**
+     * Triggers whenever a new state is downloaded and builds the long/short ratio chart.
+     */
+     private updateLongShortRatioState(): void {
+        // Init the color of the prediction sum line
+        let lineColor: string = this._chart.neutralColor;
+        if (this.state.long_short_ratio.state == "increasing") {
+            lineColor = this._chart.upwardColor;
+        } else if (this.state.long_short_ratio.state == "decreasing") {
+            lineColor = this._chart.downwardColor;
+        }
+
+        // Init the min and max values
+        const minValue: number = this.state.long_short_ratio.lower_band.end;
+        const maxValue: number = this.state.long_short_ratio.upper_band.end;
+
+        // Build/Update the chart
+        if (this.longShortRatioChart) {
+            // Update the range
+            this.longShortRatioChart.yaxis = { 
+                tooltip: { enabled: true }, 
+                labels: { show: false},
+                axisTicks: { show: false},
+                axisBorder: { show: false},
+                forceNiceScale: false, min: minValue, max: maxValue
+            };
+
+            // Update the series
+            this.longShortRatioChart.series = [
+                {
+                    name: "Long vs Short", 
+                    data: this.state.long_short_ratio.ratio, 
+                    color: lineColor
+                }
+            ]
+        } else {
+            // Create the chart from scratch
+            this.longShortRatioChart = this._chart.getLineChartOptions(
+                { 
+                    series: [
+                        {
+                            name: "Long vs Short", 
+                            data: this.state.long_short_ratio.ratio, 
+                            color: lineColor
+                        }
+                    ],
+                    stroke: {curve: "smooth", width:5},
+                },
+                this.layout == "desktop" ? this.marketStateChartDesktopHeight: 150, 
+                true,
+                { max: maxValue, min: minValue}
+            );
+            this.longShortRatioChart.yaxis.labels = {show: false}
+            this.longShortRatioChart.xaxis.axisTicks = {show: false}
+            this.longShortRatioChart.xaxis.axisBorder = {show: false}
+        }
+    }
 
 
 
