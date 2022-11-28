@@ -107,10 +107,13 @@ import {SharedModule} from "./shared";
 
 // Pre-Loaded Components
 import { 
-	DashboardComponent, 
+	ActivePositionDialogComponent,
 	BalanceDialogComponent, 
 	KeyzoneStateDialogComponent, 
-	KeyzoneReversalsDialogComponent
+	KeyzoneReversalsDialogComponent,
+	StrategyBuilderDialogComponent,
+	StrategyFormDialogComponent,
+	DashboardComponent, 
 } from "./modules/dashboard";
 
 
@@ -132,6 +135,9 @@ import { AppComponent } from "./app.component";
 		BalanceDialogComponent,
 		KeyzoneStateDialogComponent,
 		KeyzoneReversalsDialogComponent,
+		StrategyFormDialogComponent,
+		StrategyBuilderDialogComponent,
+		ActivePositionDialogComponent,
 	],
 	imports: [
 		// Core

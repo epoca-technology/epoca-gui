@@ -18,6 +18,12 @@ export class KeyzoneStateDialogComponent implements OnInit, IKeyZoneStateDialogC
 	// Current Price
 	public currentPrice: number;
 
+	// Visibility
+	public visibleAbove: number;
+	public hasMoreAbove: boolean;
+	public visibleBelow: number;
+	public hasMoreBelow: boolean;
+
 	// Distances from price
 	public aboveDistances: IKeyZoneDistance = {};
 	public belowDistances: IKeyZoneDistance = {};
@@ -32,11 +38,21 @@ export class KeyzoneStateDialogComponent implements OnInit, IKeyZoneStateDialogC
 	) { 
 		this.state = this.data.state;
 		this.currentPrice = this.data.currentPrice;
+		if (this._app.layout.value == "desktop") {
+			this.visibleAbove = this.state.active ? 3: 3;
+			this.visibleBelow = this.state.active ? 3: 3;
+		}else {
+			this.visibleAbove = this.state.active ? 1: 2;
+			this.visibleBelow = this.state.active ? 1: 2;
+		}
+		this.hasMoreAbove = this.state.above.length > this.visibleAbove;
+		this.hasMoreBelow = this.state.below.length > this.visibleBelow;
 		this.calculateDistances();
 	}
 
 	ngOnInit(): void {
 	}
+
 
 
 
@@ -57,6 +73,34 @@ export class KeyzoneStateDialogComponent implements OnInit, IKeyZoneStateDialogC
 		});
 	}
 
+
+
+
+
+	/**
+	 * Displays more keyzones for a given end.
+	 * @param above 
+	 */
+	public showMore(above?: boolean): void {
+		if (above) {
+			this.visibleAbove = this.state.above.length;
+			this.hasMoreAbove = false;
+		} else {
+			this.visibleBelow = this.state.below.length;
+			this.hasMoreBelow = false;
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+	/* Misc Helpers */
 
 
 

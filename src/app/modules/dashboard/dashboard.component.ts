@@ -17,7 +17,9 @@ import {
     UtilsService,
     AuthService,
     IUserPreferences,
-    IPositionSummary
+    IPositionSummary,
+    IActivePosition,
+    PositionService
 } from "../../core";
 import { 
     AppService, 
@@ -29,8 +31,9 @@ import {
 } from "../../services";
 import { FeaturesSumDialogComponent, IFeaturesSumDialogData } from "../../shared/components/epoch-builder";
 import { KeyzoneStateDialogComponent, IKeyZonesStateDialogData } from "./keyzone-state-dialog";
-import { IDashboardComponent } from "./interfaces";
 import { BalanceDialogComponent } from "./balance-dialog";
+import { ActivePositionDialogComponent } from "./active-position-dialog";
+import { IDashboardComponent } from "./interfaces";
 
 @Component({
   selector: "app-dashboard",
@@ -58,6 +61,10 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
     // Position
     public position!: IPositionSummary;
+    public canOpenLong: boolean = false;
+    public canIncreaseLong: boolean = false;
+    public canOpenShort: boolean = false;
+    public canIncreaseShort: boolean = false;
     private positionSub?: Subscription;
     private positionLoaded: boolean = false;
 
@@ -101,6 +108,10 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     // Loading State
     public loaded: boolean = false;
 
+    // Submission State
+    public submitting: boolean = false;
+    public submittingText: string = "Submitting...";
+
     constructor(
         public _nav: NavService,
         private _localDB: LocalDatabaseService,
@@ -110,7 +121,8 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         private titleService: Title,
         public _prediction: PredictionService,
         private _utils: UtilsService,
-        private _auth: AuthService
+        private _auth: AuthService,
+        private _position: PositionService
     ) { }
 
     async ngOnInit(): Promise<void> {
@@ -205,9 +217,43 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
 
 
+
+    /**
+     * Populates all the position values adjusted to the current
+     * state.
+     * @param summary 
+     */
     private onActivePositionsUpdate(summary: IPositionSummary): void {
         // Update the local value
         this.position = summary;
+
+        // Check if any position can be open
+        this.canOpenLong = !this.position.long && this.position.balance.available >= this.position.strategy.level_1.size;
+        this.canOpenShort = !this.position.short && this.position.balance.available >= this.position.strategy.level_1.size;
+
+        // Reset the increase sizes
+        this.canIncreaseLong = false;
+        this.canIncreaseShort = false;
+        
+        // Check the long position can be increased
+        if (this.position.long) {
+            const { current, next } = this._position.getStrategyState(this.position.strategy, this.position.long.isolated_wallet);
+            this.canIncreaseLong = 
+                next !== undefined && 
+                typeof this.position.long.min_increase_price == "number" &&
+                this.position.balance.available >= next.size &&
+                this.position.long.mark_price <= this.position.long.min_increase_price;
+        }
+
+        // Check the short position can be increased
+        if (this.position.short) {
+            const { current, next } = this._position.getStrategyState(this.position.strategy, this.position.short.isolated_wallet);
+            this.canIncreaseShort = 
+                next !== undefined && 
+                typeof this.position.short.min_increase_price == "number" &&
+                this.position.balance.available >= next.size &&
+                this.position.short.mark_price >= this.position.short.min_increase_price;
+        }
     }
 
 
@@ -613,14 +659,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 				y2: this.state.keyzone.active.e,
 				strokeDashArray: 0,
 				borderColor: "#000000",
-				fillColor: "#000000",
-				label: {
-					borderColor: "#000000",
-					style: { color: "#fff", background: "#000000",},
-					text: this.getKeyZoneLabelText(this.state.keyzone.active),
-					position: "left",
-					offsetX: 145
-				}
+				fillColor: "#000000"
 			})
         }
 
@@ -643,7 +682,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         if (this.position.long) {
             annotations.yaxis!.push({
                 y: this.position.long.entry_price,
-                strokeDashArray: 10,
+                strokeDashArray: 3,
                 borderColor: this._chart.upwardColor,
                 fillColor: this._chart.upwardColor,
                 label: {
@@ -656,7 +695,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             });
             annotations.yaxis!.push({
                 y: this.position.long.target_price,
-                strokeDashArray: 3,
+                strokeDashArray: 0,
                 borderColor: this._chart.upwardColor,
                 fillColor: this._chart.upwardColor,
                 label: {
@@ -667,6 +706,21 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                     offsetX: 50
                 }
             });
+            if (this.position.long.min_increase_price) {
+                annotations.yaxis!.push({
+                    y: this.position.long.min_increase_price,
+                    strokeDashArray: 10,
+                    borderColor: this._chart.upwardColor,
+                    fillColor: this._chart.upwardColor,
+                    label: {
+                        borderColor: this._chart.upwardColor,
+                        style: { color: "#fff", background: this._chart.upwardColor},
+                        text: `MIN_INCREASE`,
+                        position: "left",
+                        offsetX: 88
+                    }
+                });
+            }
             annotations.yaxis!.push({
                 y: this.position.long.liquidation_price,
                 strokeDashArray: 0,
@@ -686,7 +740,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         if (this.position.short) {
             annotations.yaxis!.push({
                 y: this.position.short.entry_price,
-                strokeDashArray: 10,
+                strokeDashArray: 3,
                 borderColor: this._chart.downwardColor,
                 fillColor: this._chart.downwardColor,
                 label: {
@@ -699,7 +753,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             });
             annotations.yaxis!.push({
                 y: this.position.short.target_price,
-                strokeDashArray: 3,
+                strokeDashArray: 0,
                 borderColor: this._chart.downwardColor,
                 fillColor: this._chart.downwardColor,
                 label: {
@@ -710,6 +764,21 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                     offsetX: 50
                 }
             });
+            if (this.position.short.min_increase_price) {
+                annotations.yaxis!.push({
+                    y: this.position.short.min_increase_price,
+                    strokeDashArray: 10,
+                    borderColor: this._chart.downwardColor,
+                    fillColor: this._chart.downwardColor,
+                    label: {
+                        borderColor: this._chart.downwardColor,
+                        style: { color: "#fff", background: this._chart.downwardColor},
+                        text: `MIN_INCREASE`,
+                        position: "left",
+                        offsetX: 88
+                    }
+                });
+            }
             annotations.yaxis!.push({
                 y: this.position.short.liquidation_price,
                 strokeDashArray: 0,
@@ -763,7 +832,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         if (!zone.m) {
             zoneState = zone.r[0].t == "r" ? "R": "S";
         }
-		label += `$${new BigNumber(zone.s).toFormat(2)} - $${new BigNumber(zone.e).toFormat(2)} | ${zoneState}${zone.r.length}`;
+		label += `KEYZONE ${zoneState}${zone.r.length}`;
 		return label;
 	}
 
@@ -1066,6 +1135,23 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 			data: this.position.balance
 		})
 	}
+
+
+
+
+
+	/**
+	 * Displays the position information dialog.
+	 */
+    public displayPositionDialog(position: IActivePosition): void {
+		this.dialog.open(ActivePositionDialogComponent, {
+			hasBackdrop: true,
+            disableClose: false,
+			panelClass: "small-dialog",
+            data: position
+		})
+	}
+
 
 
     

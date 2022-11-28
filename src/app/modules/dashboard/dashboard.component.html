@@ -145,12 +145,14 @@
                     <button mat-button 
                             *ngIf="loaded && layout == 'desktop'"
                             (click)="displayStrategyFormDialog()"
+                            [disabled]="submitting"
                             matTooltip="Updated: {{position.strategy.ts | date: 'short'}}">
                             <mat-icon style="font-size:23px;">tune</mat-icon>&nbsp;Strategy
                     </button>
                     <button mat-icon-button 
                             *ngIf="loaded && layout == 'mobile'"
-                            (click)="displayStrategyFormDialog()">
+                            (click)="displayStrategyFormDialog()"
+                            [disabled]="submitting">
                             <mat-icon style="font-size:22px;">tune</mat-icon>
                     </button>
 
@@ -158,12 +160,14 @@
                     <button mat-button 
                             *ngIf="loaded && layout == 'desktop'"
                             (click)="displayBalanceDialog()"
+                            [disabled]="submitting"
                             matTooltip="Updated: {{position.balance.ts | date: 'short'}}">
                             <mat-icon style="font-size:22px;">account_balance_wallet</mat-icon>&nbsp;Balance
                     </button>
                     <button mat-icon-button 
                             *ngIf="loaded && layout == 'mobile'"
-                            (click)="displayBalanceDialog()">
+                            (click)="displayBalanceDialog()"
+                            [disabled]="submitting">
                             <mat-icon style="font-size:22px;">account_balance_wallet</mat-icon>
                     </button>
 
@@ -171,18 +175,21 @@
                     <button mat-button 
                             *ngIf="loaded && layout == 'desktop'"
                             (click)="displayKeyZoneDialog()"
+                            [disabled]="submitting"
                             matTooltip="Built: {{state.keyzone.build_ts | date: 'short'}}">
                             <mat-icon style="font-size:20px;">vertical_distribute</mat-icon>&nbsp;KeyZones
                     </button>
                     <button mat-icon-button 
                             *ngIf="loaded && layout == 'mobile'"
-                            (click)="displayKeyZoneDialog()">
+                            (click)="displayKeyZoneDialog()"
+                            [disabled]="submitting">
                             <mat-icon style="font-size:20px;">vertical_distribute</mat-icon>
                     </button>
 
                     <!-- Menu -->
                     <button mat-icon-button 
                             (click)="sidenav?.toggle()" 
+                            [disabled]="submitting"
                             class="show-on-mobile"><mat-icon style="font-size:26px;">menu</mat-icon></button>
                 </div>
             </mat-toolbar>
@@ -221,42 +228,48 @@
 
                                 <!-- Long Position -->
                                 <div *ngIf="!position.long" 
-                                    class="square-badge clickable position-badge" role="button" matRipple
+                                    class="square-badge-success clickable position-badge" role="button" matRipple
                                     [matMenuTriggerFor]="longMenu"
-                                    matTooltip="Long Position Inactive">
-                                    LONG: 0 | 0%
+                                    matTooltip="Margin: $0">
+                                    LONG: none
                                 </div>
                                 <div *ngIf="position.long" 
-                                    class="clickable position-badge truncate" role="button" matRipple
+                                    class="clickable square-badge-success position-badge truncate" role="button" matRipple
                                     [matMenuTriggerFor]="longMenu"
-                                    [ngClass]="{
-                                        'square-badge-neutral': position.long.roe == 0,
-                                        'square-badge-success': position.long.roe > 0,
-                                        'square-badge-error': position.long.roe < 0
-                                    }"
+                                    [ngClass]="{'losing-position': position.long.roe < 0}"
                                     matTooltip="Margin: ${{position.long.isolated_wallet | number: '1.0-0'}}">
                                     LONG: 
                                     {{position.long.roe > 0 ? '+': ''}}{{position.long.unrealized_pnl | number: '1.0-0'}} | 
                                     {{position.long.roe > 0 ? '+': ''}}{{position.long.roe | number: '1.0-1'}}%
                                 </div>
                                 <mat-menu #longMenu="matMenu">
-                                    <button mat-menu-item *ngIf="!position.long">
+                                    <button mat-menu-item 
+                                            *ngIf="!position.long"
+                                            [disabled]="submitting || !canOpenLong">
                                         <mat-icon>add</mat-icon>
                                         <span>Open Long</span>
                                     </button>
-                                    <button mat-menu-item *ngIf="position.long">
+                                    <button mat-menu-item 
+                                            *ngIf="position.long"
+                                            [disabled]="submitting">
                                         <mat-icon>close</mat-icon>
                                         <span>Close Long</span>
                                     </button>
-                                    <button mat-menu-item *ngIf="position.long">
+                                    <button mat-menu-item 
+                                            *ngIf="position.long"
+                                            [disabled]="submitting || !canIncreaseLong">
                                         <mat-icon>switch_access_shortcut</mat-icon>
                                         <span>Increase Long</span>
                                     </button>
-                                    <button mat-menu-item>
+                                    <button mat-menu-item
+                                            [disabled]="submitting">
                                         <mat-icon>tune</mat-icon>
                                         <span>Strategy Builder</span>
                                     </button>
-                                    <button mat-menu-item *ngIf="position.long">
+                                    <button mat-menu-item 
+                                            *ngIf="position.long"
+                                            (click)="displayPositionDialog(position.long)"
+                                            [disabled]="submitting">
                                         <mat-icon>info</mat-icon>
                                         <span>Position Information</span>
                                     </button>
@@ -266,42 +279,48 @@
 
                                 <!-- Short Position -->
                                 <div *ngIf="!position.short" 
-                                    class="square-badge clickable position-badge" role="button" matRipple
+                                    class="square-badge-error clickable position-badge" role="button" matRipple
                                     [matMenuTriggerFor]="shortMenu"
-                                    matTooltip="Short Position Inactive">
-                                    SHORT: 0 | 0%
+                                    matTooltip="Margin: $0">
+                                    SHORT: none
                                 </div>
                                 <div *ngIf="position.short" 
-                                    class="clickable position-badge truncate" role="button" matRipple
+                                    class="clickable square-badge-error position-badge truncate" role="button" matRipple
                                     [matMenuTriggerFor]="shortMenu"
-                                    [ngClass]="{
-                                        'square-badge-neutral': position.short.roe == 0,
-                                        'square-badge-success': position.short.roe > 0,
-                                        'square-badge-error': position.short.roe < 0
-                                    }"
+                                    [ngClass]="{'losing-position': position.short.roe < 0}"
                                     matTooltip="Margin: ${{position.short.isolated_wallet | number: '1.0-0'}}">
                                     SHORT:
                                     {{position.short.roe > 0 ? '+': ''}}{{position.short.unrealized_pnl | number: '1.0-0'}} | 
                                     {{position.short.roe > 0 ? '+': ''}}{{position.short.roe | number: '1.0-1'}}%
                                 </div>
                                 <mat-menu #shortMenu="matMenu">
-                                    <button mat-menu-item *ngIf="!position.short">
+                                    <button mat-menu-item 
+                                            *ngIf="!position.short"
+                                            [disabled]="submitting || !canOpenShort">
                                         <mat-icon>add</mat-icon>
                                         <span>Open Short</span>
                                     </button>
-                                    <button mat-menu-item *ngIf="position.short">
+                                    <button mat-menu-item 
+                                            *ngIf="position.short"
+                                            [disabled]="submitting">
                                         <mat-icon>close</mat-icon>
                                         <span>Close Short</span>
                                     </button>
-                                    <button mat-menu-item *ngIf="position.short">
+                                    <button mat-menu-item 
+                                            *ngIf="position.short"
+                                            [disabled]="submitting || !canIncreaseShort">
                                         <mat-icon>switch_access_shortcut</mat-icon>
                                         <span>Increase Short</span>
                                     </button>
-                                    <button mat-menu-item>
+                                    <button mat-menu-item
+                                            [disabled]="submitting">
                                         <mat-icon>tune</mat-icon>
                                         <span>Strategy Builder</span>
                                     </button>
-                                    <button mat-menu-item *ngIf="position.short">
+                                    <button mat-menu-item 
+                                            *ngIf="position.short"
+                                            (click)="displayPositionDialog(position.short)"
+                                            [disabled]="submitting">
                                         <mat-icon>info</mat-icon>
                                         <span>Position Information</span>
                                     </button>

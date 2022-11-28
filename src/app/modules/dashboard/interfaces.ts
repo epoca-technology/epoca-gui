@@ -1,3 +1,5 @@
+import { IActivePosition } from "../../core";
+
 export interface IDashboardComponent {
     
 
@@ -5,6 +7,7 @@ export interface IDashboardComponent {
     toggleTrendChart(): Promise<void>,
     displayStrategyFormDialog(): void,
     displayBalanceDialog(): void,
+    displayPositionDialog(position: IActivePosition): void,
     displayFeaturesDialog(): void,
     displayKeyZoneDialog(): void
     

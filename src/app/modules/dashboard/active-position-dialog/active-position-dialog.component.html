@@ -1,0 +1,102 @@
+<mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <button mat-icon-button class="show-on-mobile" (click)="close()"><mat-icon>arrow_back</mat-icon></button>
+        <span matTooltip="The weighted entry price based on all the trades within the position.">
+            {{position.side == 'LONG' ? 'Long': 'Short'}} at {{position.entry_price | currency}}
+        </span>
+        <span fxFlex></span>
+        <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
+    </div>
+</mat-toolbar>
+<div mat-dialog-content>
+    <!-- Container -->
+    <div class="component">
+        <!-- Mark Price -->
+        <div fxLayout="row" fxLayoutAlign="start start">
+            <p class="light-text ts-m truncate">Mark Price</p>
+            <span fxFlex></span>
+            <p matTooltip="Binance mark price when the active positions were updated.">
+                <strong>{{position.mark_price | currency}}</strong>
+            </p>
+        </div>
+
+        <!-- PNL/ROE %-->
+        <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
+            <p class="light-text ts-m truncate">State</p>
+            <span fxFlex></span>
+            <div matTooltip="PNL(ROE %)" class="align-right">
+                <p [ngClass]="{'success-color': position.roe > 0,'error-color': position.roe < 0}">
+                    {{position.roe > 0 ? '+': ''}}{{position.unrealized_pnl | number: '1.0-2'}} USDT
+                </p>
+                <p [ngClass]="{'success-color': position.roe > 0,'error-color': position.roe < 0}" 
+                    class="ts-s">
+                    {{position.roe > 0 ? '+': ''}}{{position.roe}}%
+                </p>
+            </div>
+        </div>
+
+        <!-- Liquidation-->
+        <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
+            <p class="light-text ts-m truncate">Liquidation</p>
+            <span fxFlex></span>
+            <div matTooltip="Liquidation Price (Distance)" class="align-right" 
+                [ngClass]="{'success-color': liquidationDistance > 20,'error-color': liquidationDistance < 15}">
+                <p>{{position.liquidation_price | currency}}</p>
+                <p class="ts-s">{{liquidationDistance}}% away</p>
+            </div>
+        </div>
+
+        <!-- Target Price -->
+        <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
+            <p class="light-text ts-m truncate">Target Price</p>
+            <span fxFlex></span>
+            <div matTooltip="The price in which the position is labeled as 'successful' and is ready to be closed."
+                class="align-right" [ngClass]="{'success-color': !targetDistance}">
+                <p>{{position.target_price | currency}}</p>
+                <p *ngIf="targetDistance" class="ts-s light-text">{{targetDistance}}% away</p>
+                <p *ngIf="!targetDistance" class="ts-s">Target Hit</p>
+            </div>
+        </div>
+
+        <!-- Min Increase Price -->
+        <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
+            <p class="light-text ts-m truncate">Min. Increase Price</p>
+            <span fxFlex></span>
+            <p matTooltip="The minimum price at which a position can be increased based on its side.">
+                {{position.min_increase_price | currency}}
+            </p>
+        </div>
+
+        <!-- Margin -->
+        <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
+            <p class="light-text ts-m truncate">Margin</p>
+            <span fxFlex></span>
+            <div class="align-right" >
+                <p matTooltip="The total margin (USDT) put into the position.">
+                    {{position.isolated_wallet | currency}}
+                </p>
+                <p class="ts-s light-text" 
+                    matTooltip="The current value of the isolated_wallet + unrealized_pnl.">
+                    ~{{position.isolated_margin | currency}}
+                </p>
+            </div>
+        </div>
+
+        <!-- Position Size -->
+        <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
+            <p class="light-text ts-m truncate">Position Size</p>
+            <span fxFlex></span>
+            <div matTooltip="Position Amount (BTC) and Notional (USDT)" class="align-right" >
+                <p>{{position.position_amount | number: '1.0-8'}} BTC</p>
+                <p class="ts-s light-text">{{position.notional | currency}}</p>
+            </div>
+        </div>
+
+        <!-- Last Update -->
+        <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
+            <p class="light-text ts-m truncate">Last Update</p>
+            <span fxFlex></span>
+            <p matTooltip="The time at which the position was last updated">{{position.ts | date: 'short'}}</p>
+        </div>
+    </div>
+</div>
