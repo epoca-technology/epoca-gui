@@ -10,6 +10,7 @@ import {
 	IAppBulk, 
 	IEpochRecord, 
 	IMarketState, 
+	IPositionSummary, 
 	IPrediction, 
 	IPredictionResultIcon, 
 	IPredictionState, 
@@ -54,15 +55,14 @@ export class AppService implements IAppService{
 	 * undefined.
 	 */
 	private appBulkInterval: any;
-	private readonly appBulkIntervalMS: number = 20 * 1000; // Every 20 seconds
+	private readonly appBulkIntervalMS: number = 15 * 1000; // Every 15 seconds
 	public serverTime: BehaviorSubject<number|undefined|null> = new BehaviorSubject<number|undefined|null>(null);
 	public guiVersion: BehaviorSubject<string|undefined|null> = new BehaviorSubject<string|undefined|null>(null);
 	public epoch: BehaviorSubject<IEpochRecord|undefined|null> = new BehaviorSubject<IEpochRecord|undefined|null>(null);
 	public prediction: BehaviorSubject<IPrediction|undefined|null> = new BehaviorSubject<IPrediction|undefined|null>(null);
 	public predictionState: BehaviorSubject<IPredictionState|undefined|null> = new BehaviorSubject<IPredictionState|undefined|null>(null);
 	public predictionIcon: BehaviorSubject<IPredictionResultIcon|undefined|null> = new BehaviorSubject<IPredictionResultIcon|undefined|null>(null);
-	public positions: BehaviorSubject<object|undefined|null> = new BehaviorSubject<object|undefined|null>(null);
-	public positionsCount: BehaviorSubject<number|undefined|null> = new BehaviorSubject<number|undefined|null>(null);
+	public position: BehaviorSubject<IPositionSummary|undefined|null> = new BehaviorSubject<IPositionSummary|undefined|null>(null);
 	public marketState: BehaviorSubject<IMarketState|undefined|null> = new BehaviorSubject<IMarketState|undefined|null>(null);
 	public apiErrors: BehaviorSubject<number|undefined|null> = new BehaviorSubject<number|undefined|null>(null);
 
@@ -148,7 +148,8 @@ export class AppService implements IAppService{
 	public async refreshAppBulk(): Promise<void> {
 		try {
 			// Retrieve the bulk from the API
-			const bulk: IAppBulk = await this._bulk.getAppBulk();
+			const epochID: string|undefined = this.epoch.value ? this.epoch.value.id: undefined;
+			const bulk: IAppBulk = await this._bulk.getAppBulk(epochID);
 
 			// Unpack the metadata
 			const metadata: IAppBulkMetadata = this.getAppBulkMetadata(bulk);
@@ -159,17 +160,16 @@ export class AppService implements IAppService{
 			// Broadcast the gui version
 			this.guiVersion.next(bulk.guiVersion);
 
-			// Broadcast the active epoch summary
-			this.epoch.next(bulk.epoch);
+			// Broadcast the active epoch record if applies
+			if (bulk.epoch != "keep") this.epoch.next(bulk.epoch);
 
 			// Broadcast the active prediction as well as the metadata
 			this.predictionState.next(bulk.predictionState);
 			this.predictionIcon.next(metadata.predictionIcon);
 			this.prediction.next(bulk.prediction);
 
-			// Broadcast the positions as well as the metadata
-			this.positions.next(bulk.positions);
-			this.positionsCount.next(metadata.positionsCount);
+			// Broadcast the position summary
+			this.position.next(bulk.position);
 
 			// Broadcast the market state
 			this.marketState.next(bulk.marketState);
@@ -193,19 +193,16 @@ export class AppService implements IAppService{
 	private getAppBulkMetadata(bulk: IAppBulk): IAppBulkMetadata {
 		// Init values
 		let predictionIcon: IPredictionResultIcon|undefined = undefined;
-		let positionsCount: number = 0;
 
 		// Populate the active prediction icon
 		if (bulk.prediction) { predictionIcon = this._prediction.resultIconNames[bulk.prediction.r]} 
 		else { predictionIcon = undefined }
 
-		// Calculate the number of active positions
-		// @TODO
+		// ...
 
 		// Finally, return the packed metadata
 		return {
 			predictionIcon: predictionIcon,
-			positionsCount: positionsCount
 		}
 	}
 
@@ -226,8 +223,7 @@ export class AppService implements IAppService{
 		this.prediction.next(undefined);
 		this.predictionState.next(0);
 		this.predictionIcon.next(undefined);
-		this.positions.next(undefined);
-		this.positionsCount.next(0);
+		this.position.next(undefined);
 		this.marketState.next(undefined);
 	}
 

@@ -77,6 +77,9 @@ import {
 	// Order Book
 	OrderBookService,
 
+	// Position
+	PositionService,
+
 	// Prediction
 	PredictionService,
 
@@ -103,7 +106,12 @@ import {SharedModule} from "./shared";
 
 
 // Pre-Loaded Components
-import { DashboardComponent, KeyzoneStateDialogComponent, KeyzoneReversalsDialogComponent} from "./modules/dashboard";
+import { 
+	DashboardComponent, 
+	BalanceDialogComponent, 
+	KeyzoneStateDialogComponent, 
+	KeyzoneReversalsDialogComponent
+} from "./modules/dashboard";
 
 
 // Core Components
@@ -121,6 +129,7 @@ import { AppComponent } from "./app.component";
 
 		// Pre-Loaded Components
 		DashboardComponent,
+		BalanceDialogComponent,
 		KeyzoneStateDialogComponent,
 		KeyzoneReversalsDialogComponent,
 	],
@@ -193,6 +202,9 @@ import { AppComponent } from "./app.component";
 
 		// Order Book
 		OrderBookService,
+
+		// Position
+		PositionService,
 
 		// Prediction
 		PredictionService,

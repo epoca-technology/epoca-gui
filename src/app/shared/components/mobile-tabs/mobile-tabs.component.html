@@ -18,12 +18,7 @@
         <div fxFlex fxLayout="row" fxLayoutAlign="center center"
              class="tab" role="button" matRipple
              [ngClass]="{'active': activeTab == 1}" (click)="navigate(1)">
-            <mat-icon   svgIcon="money_bill_transfer" 
-                        [matBadge]="_app.positionsCount.value" 
-                        [matBadgeHidden]="!_app.epoch.value || !_app.positionsCount.value" 
-                        matBadgePosition="after"
-                        matBadgeSize="small"
-                        matBadgeOverlap="false" style="max-width:23px;"></mat-icon>
+            <mat-icon svgIcon="money_bill_transfer" style="max-width:23px;"></mat-icon>
         </div>
 
         <!-- Predictions -->

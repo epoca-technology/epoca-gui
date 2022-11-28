@@ -1,7 +1,7 @@
 
 
 .mat-toolbar img{
-    max-width: 120px;
+    max-width: 110px;
 }
 
 .component {
@@ -26,7 +26,10 @@
     .divider { margin: 25px 0 25px 0;}
     .chart-card {.chart-card-heading { padding: 0!important}}
 
-    .position-badge { width: 100%}
+    .position-badge { 
+        width: 100%;
+        padding: 7px 3px 7px 3px;
+    }
 }
 
 

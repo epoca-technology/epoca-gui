@@ -1,7 +1,6 @@
 <!-- Header -->
 <mat-toolbar class="secondary-header">
     <div fxLayout="row" fxLayoutAlign="center center">
-        <button mat-icon-button class="show-on-mobile" (click)="_nav.dashboard()"><mat-icon>arrow_back</mat-icon></button>
         <span class="truncate">Candlesticks ({{config.intervalMinutes}}m)</span>
         <span fxFlex></span>
         <app-refresh-button class="show-on-desktop" [disabled]="!loaded" (refresh)="refresh()"></app-refresh-button>

@@ -16,6 +16,7 @@ export * from "./local-database";
 export * from "./market-state";
 export * from "./notification";
 export * from "./order-book";
+export * from "./position";
 export * from "./prediction";
 export * from "./server";
 export * from "./utils";

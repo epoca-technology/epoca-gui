@@ -141,14 +141,49 @@
                     
                     <span fxFlex></span>
 
+                    <!-- Strategy -->
+                    <button mat-button 
+                            *ngIf="loaded && layout == 'desktop'"
+                            (click)="displayStrategyFormDialog()"
+                            matTooltip="Updated: {{position.strategy.ts | date: 'short'}}">
+                            <mat-icon style="font-size:23px;">tune</mat-icon>&nbsp;Strategy
+                    </button>
+                    <button mat-icon-button 
+                            *ngIf="loaded && layout == 'mobile'"
+                            (click)="displayStrategyFormDialog()">
+                            <mat-icon style="font-size:22px;">tune</mat-icon>
+                    </button>
+
+                    <!-- Balance -->
+                    <button mat-button 
+                            *ngIf="loaded && layout == 'desktop'"
+                            (click)="displayBalanceDialog()"
+                            matTooltip="Updated: {{position.balance.ts | date: 'short'}}">
+                            <mat-icon style="font-size:22px;">account_balance_wallet</mat-icon>&nbsp;Balance
+                    </button>
+                    <button mat-icon-button 
+                            *ngIf="loaded && layout == 'mobile'"
+                            (click)="displayBalanceDialog()">
+                            <mat-icon style="font-size:22px;">account_balance_wallet</mat-icon>
+                    </button>
+
                     <!-- KeyZones -->
                     <button mat-button 
-                            *ngIf="loaded"
+                            *ngIf="loaded && layout == 'desktop'"
                             (click)="displayKeyZoneDialog()"
-                            matTooltip="KeyZones Build: {{state.keyzone.build_ts | date: 'medium'}}">KeyZones</button>
+                            matTooltip="Built: {{state.keyzone.build_ts | date: 'short'}}">
+                            <mat-icon style="font-size:20px;">vertical_distribute</mat-icon>&nbsp;KeyZones
+                    </button>
+                    <button mat-icon-button 
+                            *ngIf="loaded && layout == 'mobile'"
+                            (click)="displayKeyZoneDialog()">
+                            <mat-icon style="font-size:20px;">vertical_distribute</mat-icon>
+                    </button>
 
                     <!-- Menu -->
-                    <button mat-icon-button (click)="sidenav?.toggle()" class="show-on-mobile"><mat-icon>menu</mat-icon></button>
+                    <button mat-icon-button 
+                            (click)="sidenav?.toggle()" 
+                            class="show-on-mobile"><mat-icon style="font-size:26px;">menu</mat-icon></button>
                 </div>
             </mat-toolbar>
 
@@ -183,21 +218,101 @@
                                     </p>
                                 </div>
                                 <span fxFlex class="show-on-desktop"></span>
-                                <div class="square-badge-success clickable position-badge" role="button"
-                                    matTooltip="Margin: ${{589 | number: '1.0-0'}}">
+
+                                <!-- Long Position -->
+                                <div *ngIf="!position.long" 
+                                    class="square-badge clickable position-badge" role="button" matRipple
+                                    [matMenuTriggerFor]="longMenu"
+                                    matTooltip="Long Position Inactive">
+                                    LONG: 0 | 0%
+                                </div>
+                                <div *ngIf="position.long" 
+                                    class="clickable position-badge truncate" role="button" matRipple
+                                    [matMenuTriggerFor]="longMenu"
+                                    [ngClass]="{
+                                        'square-badge-neutral': position.long.roe == 0,
+                                        'square-badge-success': position.long.roe > 0,
+                                        'square-badge-error': position.long.roe < 0
+                                    }"
+                                    matTooltip="Margin: ${{position.long.isolated_wallet | number: '1.0-0'}}">
                                     LONG: 
-                                    +${{17.67 | number: '1.0-0'}} | +{{3 | number: '1.0-1'}}%
+                                    {{position.long.roe > 0 ? '+': ''}}{{position.long.unrealized_pnl | number: '1.0-0'}} | 
+                                    {{position.long.roe > 0 ? '+': ''}}{{position.long.roe | number: '1.0-1'}}%
                                 </div>
+                                <mat-menu #longMenu="matMenu">
+                                    <button mat-menu-item *ngIf="!position.long">
+                                        <mat-icon>add</mat-icon>
+                                        <span>Open Long</span>
+                                    </button>
+                                    <button mat-menu-item *ngIf="position.long">
+                                        <mat-icon>close</mat-icon>
+                                        <span>Close Long</span>
+                                    </button>
+                                    <button mat-menu-item *ngIf="position.long">
+                                        <mat-icon>switch_access_shortcut</mat-icon>
+                                        <span>Increase Long</span>
+                                    </button>
+                                    <button mat-menu-item>
+                                        <mat-icon>tune</mat-icon>
+                                        <span>Strategy Builder</span>
+                                    </button>
+                                    <button mat-menu-item *ngIf="position.long">
+                                        <mat-icon>info</mat-icon>
+                                        <span>Position Information</span>
+                                    </button>
+                                </mat-menu>
+
                                 <span fxFlex="1" fxFlex.xs="2" fxFlex.sm="2"></span>
-                                <div class="square-badge-error clickable position-badge" role="button"
-                                    matTooltip="Margin: ${{1422 | number: '1.0-0'}}">
-                                    SHORT: 
-                                    -${{43.55 | number: '1.0-0'}} | {{-9.18 | number: '1.0-1'}}%
+
+                                <!-- Short Position -->
+                                <div *ngIf="!position.short" 
+                                    class="square-badge clickable position-badge" role="button" matRipple
+                                    [matMenuTriggerFor]="shortMenu"
+                                    matTooltip="Short Position Inactive">
+                                    SHORT: 0 | 0%
                                 </div>
+                                <div *ngIf="position.short" 
+                                    class="clickable position-badge truncate" role="button" matRipple
+                                    [matMenuTriggerFor]="shortMenu"
+                                    [ngClass]="{
+                                        'square-badge-neutral': position.short.roe == 0,
+                                        'square-badge-success': position.short.roe > 0,
+                                        'square-badge-error': position.short.roe < 0
+                                    }"
+                                    matTooltip="Margin: ${{position.short.isolated_wallet | number: '1.0-0'}}">
+                                    SHORT:
+                                    {{position.short.roe > 0 ? '+': ''}}{{position.short.unrealized_pnl | number: '1.0-0'}} | 
+                                    {{position.short.roe > 0 ? '+': ''}}{{position.short.roe | number: '1.0-1'}}%
+                                </div>
+                                <mat-menu #shortMenu="matMenu">
+                                    <button mat-menu-item *ngIf="!position.short">
+                                        <mat-icon>add</mat-icon>
+                                        <span>Open Short</span>
+                                    </button>
+                                    <button mat-menu-item *ngIf="position.short">
+                                        <mat-icon>close</mat-icon>
+                                        <span>Close Short</span>
+                                    </button>
+                                    <button mat-menu-item *ngIf="position.short">
+                                        <mat-icon>switch_access_shortcut</mat-icon>
+                                        <span>Increase Short</span>
+                                    </button>
+                                    <button mat-menu-item>
+                                        <mat-icon>tune</mat-icon>
+                                        <span>Strategy Builder</span>
+                                    </button>
+                                    <button mat-menu-item *ngIf="position.short">
+                                        <mat-icon>info</mat-icon>
+                                        <span>Position Information</span>
+                                    </button>
+                                </mat-menu>
                             </div>
+                            <p class="light-text ts-xs align-center show-on-mobile" style="margin-top:3px;">
+                                {{state.window.ts | date: 'mediumTime'}}
+                            </p>
 
                             <!-- Chart -->
-                            <div *ngIf="windowChart" [ngClass]="{'margin-top': layout == 'mobile'}">
+                            <div *ngIf="windowChart">
                                 <apx-chart
                                     [series]="windowChart.series!"
                                     [chart]="windowChart.chart!"
@@ -227,14 +342,14 @@
                                         </div>
                                         <span fxFlex></span>
                                         <div *ngIf="activePrediction"  
-                                            class="square-badge margin-right clickable" role="button" 
+                                            class="square-badge margin-right clickable" role="button" matRipple 
                                             (click)="toggleTrendChart()" 
                                             matTooltip="{{userPreferences.splitTrendChart ? 'View Sum Chart': 'View Split Chart'}}">
                                             <mat-icon>{{userPreferences.splitTrendChart ? 'timeline': 'ssid_chart'}}</mat-icon>
                                         </div>
                                         <div *ngIf="activePrediction" 
-                                            matTooltip="Sum: {{activeSum}}" 
-                                            class="clickable" role="button"
+                                            matTooltip="Prediction Sum" 
+                                            class="clickable" role="button" matRipple 
                                             [ngClass]="{
                                                 'square-badge-success': activePrediction.r == 1,
                                                 'square-badge-error': activePrediction.r == -1,
@@ -288,181 +403,183 @@
 
                             <div class="divider show-on-mobile"></div>
 
-                            <!-- Volume & Open Interest -->
-                            <div>
-                                <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" class="full-width">
-                                    <!-- Volume -->
-                                    <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
-                                        <div class="desktop-card no-margin chart-card">
-                                            <!-- Heading -->
-                                            <div fxLayout="row" fxLayoutAlign="start start" class="chart-card-heading">
-                                                <div>
-                                                    <h4 matTooltip="Updated: {{state.volume.ts | date: 'short'}}">Volume</h4>
-                                                    <p class="light-text ts-xs show-on-mobile">
-                                                        {{state.volume.ts | date: layout == 'desktop' ? 'medium': 'mediumTime'}}
-                                                    </p>
+                            <!-- Global Indicators -->
+                            <div class="desktop-card no-margin chart-card">
+                                <!-- Volume & Open Interest -->
+                                <div>
+                                    <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" class="full-width">
+                                        <!-- Volume -->
+                                        <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                                            <div>
+                                                <!-- Heading -->
+                                                <div fxLayout="row" fxLayoutAlign="start start" class="chart-card-heading">
+                                                    <div>
+                                                        <h4 matTooltip="Updated: {{state.volume.ts | date: 'short'}}">Volume</h4>
+                                                        <p class="light-text ts-xs show-on-mobile">
+                                                            {{state.volume.ts | date: 'mediumTime'}}
+                                                        </p>
+                                                    </div>
+                                                    <span fxFlex></span>
+                                                    <div matTooltip="The volume state within the window." 
+                                                        [ngClass]="{
+                                                            'square-badge-success': state.volume.state == 'increasing',
+                                                            'square-badge-error': state.volume.state == 'decreasing',
+                                                            'square-badge-neutral': state.volume.state == 'stateless'
+                                                        }">
+                                                        <mat-icon *ngIf="state.volume.state == 'increasing'">trending_up</mat-icon>
+                                                        <mat-icon *ngIf="state.volume.state == 'decreasing'">trending_down</mat-icon>
+                                                        <mat-icon *ngIf="state.volume.state == 'stateless'">trending_flat</mat-icon>
+                                                        {{state.volume.state_value > 0 ? '+': ''}}{{state.volume.state_value | number: '1.0-1'}}%
+                                                    </div>
                                                 </div>
-                                                <span fxFlex></span>
-                                                <div matTooltip="The volume state within the window." 
-                                                    [ngClass]="{
-                                                        'square-badge-success': state.volume.state == 'increasing',
-                                                        'square-badge-error': state.volume.state == 'decreasing',
-                                                        'square-badge-neutral': state.volume.state == 'stateless'
-                                                    }">
-                                                    <mat-icon *ngIf="state.volume.state == 'increasing'">trending_up</mat-icon>
-                                                    <mat-icon *ngIf="state.volume.state == 'decreasing'">trending_down</mat-icon>
-                                                    <mat-icon *ngIf="state.volume.state == 'stateless'">trending_flat</mat-icon>
-                                                    {{state.volume.state_value > 0 ? '+': ''}}{{state.volume.state_value | number: '1.0-0'}}%
+                        
+                                                <!-- Chart -->
+                                                <div *ngIf="volumeChart">
+                                                    <apx-chart
+                                                        [series]="volumeChart.series"
+                                                        [chart]="volumeChart.chart"
+                                                        [dataLabels]="volumeChart.dataLabels"
+                                                        [xaxis]="volumeChart.xaxis"
+                                                        [yaxis]="volumeChart.yaxis"
+                                                        [stroke]="volumeChart.stroke"
+                                                        [grid]="{show: false}"
+                                                    ></apx-chart>
                                                 </div>
-                                            </div>
-                    
-                                            <!-- Chart -->
-                                            <div *ngIf="volumeChart">
-                                                <apx-chart
-                                                    [series]="volumeChart.series"
-                                                    [chart]="volumeChart.chart"
-                                                    [dataLabels]="volumeChart.dataLabels"
-                                                    [xaxis]="volumeChart.xaxis"
-                                                    [yaxis]="volumeChart.yaxis"
-                                                    [stroke]="volumeChart.stroke"
-                                                    [grid]="{show: false}"
-                                                ></apx-chart>
                                             </div>
                                         </div>
-                                    </div>
-                
-                                    <span fxFlex></span>
-                                    <div class="divider show-on-mobile"></div>
-                
-                                    <!-- Open Interest -->
-                                    <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
-                                        <div class="desktop-card no-margin chart-card">
-                                            <!-- Heading -->
-                                            <div fxLayout="row" fxLayoutAlign="start start" class="chart-card-heading">
-                                                <div>
-                                                    <h4 matTooltip="Updated: {{state.open_interest.ts | date: 'short'}}">Open Interest</h4>
-                                                    <p class="light-text ts-xs show-on-mobile">
-                                                        {{state.open_interest.ts | date: layout == 'desktop' ? 'medium': 'mediumTime'}}
-                                                    </p>
-                                                </div>
-                                                <span fxFlex></span>
-                                                <div matTooltip="The open interest within the window." 
-                                                    [ngClass]="{
-                                                        'square-badge-success': state.open_interest.state == 'increasing',
-                                                        'square-badge-error': state.open_interest.state == 'decreasing',
-                                                        'square-badge-neutral': state.open_interest.state == 'stateless'
-                                                    }">
-                                                    <mat-icon *ngIf="state.open_interest.state == 'increasing'">trending_up</mat-icon>
-                                                    <mat-icon *ngIf="state.open_interest.state == 'decreasing'">trending_down</mat-icon>
-                                                    <mat-icon *ngIf="state.open_interest.state == 'stateless'">trending_flat</mat-icon>
-                                                    {{state.open_interest.state_value > 0 ? '+': ''}}{{state.open_interest.state_value | number: '1.0-0'}}%
-                                                </div>
-                                            </div>
                     
-                                            <!-- Chart -->
-                                            <div *ngIf="openInterestChart">
-                                                <apx-chart
-                                                    [series]="openInterestChart.series"
-                                                    [chart]="openInterestChart.chart"
-                                                    [dataLabels]="openInterestChart.dataLabels"
-                                                    [xaxis]="openInterestChart.xaxis"
-                                                    [yaxis]="openInterestChart.yaxis"
-                                                    [stroke]="openInterestChart.stroke"
-                                                    [grid]="{show: false}"
-                                                ></apx-chart>
+                                        <span fxFlex></span>
+                                        <div class="divider show-on-mobile"></div>
+                    
+                                        <!-- Open Interest -->
+                                        <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                                            <div>
+                                                <!-- Heading -->
+                                                <div fxLayout="row" fxLayoutAlign="start start" class="chart-card-heading">
+                                                    <div>
+                                                        <h4 matTooltip="Updated: {{state.open_interest.ts | date: 'short'}}">Open Interest</h4>
+                                                        <p class="light-text ts-xs show-on-mobile">
+                                                            {{state.open_interest.ts | date: 'mediumTime'}}
+                                                        </p>
+                                                    </div>
+                                                    <span fxFlex></span>
+                                                    <div matTooltip="The open interest within the window." 
+                                                        [ngClass]="{
+                                                            'square-badge-success': state.open_interest.state == 'increasing',
+                                                            'square-badge-error': state.open_interest.state == 'decreasing',
+                                                            'square-badge-neutral': state.open_interest.state == 'stateless'
+                                                        }">
+                                                        <mat-icon *ngIf="state.open_interest.state == 'increasing'">trending_up</mat-icon>
+                                                        <mat-icon *ngIf="state.open_interest.state == 'decreasing'">trending_down</mat-icon>
+                                                        <mat-icon *ngIf="state.open_interest.state == 'stateless'">trending_flat</mat-icon>
+                                                        {{state.open_interest.state_value > 0 ? '+': ''}}{{state.open_interest.state_value | number: '1.0-1'}}%
+                                                    </div>
+                                                </div>
+                        
+                                                <!-- Chart -->
+                                                <div *ngIf="openInterestChart">
+                                                    <apx-chart
+                                                        [series]="openInterestChart.series"
+                                                        [chart]="openInterestChart.chart"
+                                                        [dataLabels]="openInterestChart.dataLabels"
+                                                        [xaxis]="openInterestChart.xaxis"
+                                                        [yaxis]="openInterestChart.yaxis"
+                                                        [stroke]="openInterestChart.stroke"
+                                                        [grid]="{show: false}"
+                                                    ></apx-chart>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
 
-
-                            <!-- Long/Short Ratio & Network Fee-->
-                            <div [ngClass]="{'margin-top': layout == 'desktop'}">
-                                <div class="divider show-on-mobile"></div>
-                                <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" class="full-width">
-                                    <!-- Long/Short Ratio -->
-                                    <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
-                                        <div class="desktop-card no-margin chart-card">
-                                            <!-- Heading -->
-                                            <div fxLayout="row" fxLayoutAlign="start start" class="chart-card-heading">
-                                                <div>
-                                                    <h4 matTooltip="Updated: {{state.long_short_ratio.ts | date: 'short'}}">Long/Short Ratio</h4>
-                                                    <p class="light-text ts-xs show-on-mobile">
-                                                        {{state.long_short_ratio.ts | date: layout == 'desktop' ? 'medium': 'mediumTime'}}
-                                                    </p>
+                                <!-- Long/Short Ratio & Network Fee-->
+                                <div>
+                                    <div class="divider show-on-mobile"></div>
+                                    <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" class="full-width">
+                                        <!-- Long/Short Ratio -->
+                                        <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                                            <div>
+                                                <!-- Heading -->
+                                                <div fxLayout="row" fxLayoutAlign="start start" class="chart-card-heading">
+                                                    <div>
+                                                        <h4 matTooltip="Updated: {{state.long_short_ratio.ts | date: 'short'}}">Long/Short Ratio</h4>
+                                                        <p class="light-text ts-xs show-on-mobile">
+                                                            {{state.long_short_ratio.ts | date: 'mediumTime'}}
+                                                        </p>
+                                                    </div>
+                                                    <span fxFlex></span>
+                                                    <div matTooltip="The long/short ratio state within the window." 
+                                                        [ngClass]="{
+                                                            'square-badge-success': state.long_short_ratio.state == 'increasing',
+                                                            'square-badge-error': state.long_short_ratio.state == 'decreasing',
+                                                            'square-badge-neutral': state.long_short_ratio.state == 'stateless'
+                                                        }">
+                                                        <mat-icon *ngIf="state.long_short_ratio.state == 'increasing'">trending_up</mat-icon>
+                                                        <mat-icon *ngIf="state.long_short_ratio.state == 'decreasing'">trending_down</mat-icon>
+                                                        <mat-icon *ngIf="state.long_short_ratio.state == 'stateless'">trending_flat</mat-icon>
+                                                        {{state.long_short_ratio.state_value > 0 ? '+': ''}}{{state.long_short_ratio.state_value | number: '1.0-1'}}%
+                                                    </div>
                                                 </div>
-                                                <span fxFlex></span>
-                                                <div matTooltip="The long/short ratio state within the window." 
-                                                    [ngClass]="{
-                                                        'square-badge-success': state.long_short_ratio.state == 'increasing',
-                                                        'square-badge-error': state.long_short_ratio.state == 'decreasing',
-                                                        'square-badge-neutral': state.long_short_ratio.state == 'stateless'
-                                                    }">
-                                                    <mat-icon *ngIf="state.long_short_ratio.state == 'increasing'">trending_up</mat-icon>
-                                                    <mat-icon *ngIf="state.long_short_ratio.state == 'decreasing'">trending_down</mat-icon>
-                                                    <mat-icon *ngIf="state.long_short_ratio.state == 'stateless'">trending_flat</mat-icon>
-                                                    {{state.long_short_ratio.state_value > 0 ? '+': ''}}{{state.long_short_ratio.state_value | number: '1.0-0'}}%
+                        
+                                                <!-- Chart -->
+                                                <div *ngIf="longShortRatioChart">
+                                                    <apx-chart
+                                                        [series]="longShortRatioChart.series"
+                                                        [chart]="longShortRatioChart.chart"
+                                                        [dataLabels]="longShortRatioChart.dataLabels"
+                                                        [xaxis]="longShortRatioChart.xaxis"
+                                                        [yaxis]="longShortRatioChart.yaxis"
+                                                        [stroke]="longShortRatioChart.stroke"
+                                                        [grid]="{show: false}"
+                                                    ></apx-chart>
                                                 </div>
-                                            </div>
-                    
-                                            <!-- Chart -->
-                                            <div *ngIf="longShortRatioChart">
-                                                <apx-chart
-                                                    [series]="longShortRatioChart.series"
-                                                    [chart]="longShortRatioChart.chart"
-                                                    [dataLabels]="longShortRatioChart.dataLabels"
-                                                    [xaxis]="longShortRatioChart.xaxis"
-                                                    [yaxis]="longShortRatioChart.yaxis"
-                                                    [stroke]="longShortRatioChart.stroke"
-                                                    [grid]="{show: false}"
-                                                ></apx-chart>
                                             </div>
                                         </div>
-                                    </div>
 
-                
-                                    <span fxFlex></span>
-                                    <div class="divider show-on-mobile"></div>
-
-
-
-                                    <!-- Network Fee -->
-                                    <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
-                                        <div class="desktop-card no-margin chart-card">
-                                            <!-- Heading -->
-                                            <div fxLayout="row" fxLayoutAlign="start start" class="chart-card-heading">
-                                                <div>
-                                                    <h4 matTooltip="Updated: {{state.network_fee.ts | date: 'short'}}">Network Fee</h4>
-                                                    <p class="light-text ts-xs show-on-mobile">
-                                                        {{state.network_fee.ts | date: layout == 'desktop' ? 'medium': 'mediumTime'}}
-                                                    </p>
-                                                </div>
-                                                <span fxFlex></span>
-                                                <div matTooltip="The network fee state within the last 24 hours. The current height is: #{{state.network_fee.height}}" 
-                                                    [ngClass]="{
-                                                        'square-badge-success': state.network_fee.state == 'increasing',
-                                                        'square-badge-error': state.network_fee.state == 'decreasing',
-                                                        'square-badge-neutral': state.network_fee.state == 'stateless'
-                                                    }">
-                                                    <mat-icon *ngIf="state.network_fee.state == 'increasing'">trending_up</mat-icon>
-                                                    <mat-icon *ngIf="state.network_fee.state == 'decreasing'">trending_down</mat-icon>
-                                                    <mat-icon *ngIf="state.network_fee.state == 'stateless'">trending_flat</mat-icon>
-                                                    {{state.network_fee.state_value > 0 ? '+': ''}}{{state.network_fee.state_value | number: '1.0-0'}}%
-                                                </div>
-                                            </div>
                     
-                                            <!-- Chart -->
-                                            <div *ngIf="networkFeeChart">
-                                                <apx-chart
-                                                    [series]="networkFeeChart.series"
-                                                    [chart]="networkFeeChart.chart"
-                                                    [dataLabels]="networkFeeChart.dataLabels"
-                                                    [xaxis]="networkFeeChart.xaxis"
-                                                    [yaxis]="networkFeeChart.yaxis"
-                                                    [stroke]="networkFeeChart.stroke"
-                                                    [grid]="{show: false}"
-                                                ></apx-chart>
+                                        <span fxFlex></span>
+                                        <div class="divider show-on-mobile"></div>
+
+
+
+                                        <!-- Network Fee -->
+                                        <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                                            <div>
+                                                <!-- Heading -->
+                                                <div fxLayout="row" fxLayoutAlign="start start" class="chart-card-heading">
+                                                    <div>
+                                                        <h4 matTooltip="Updated: {{state.network_fee.ts | date: 'short'}}">Network Fee</h4>
+                                                        <p class="light-text ts-xs show-on-mobile">
+                                                            {{state.network_fee.ts | date: 'mediumTime'}}
+                                                        </p>
+                                                    </div>
+                                                    <span fxFlex></span>
+                                                    <div matTooltip="The network fee state within the last 24 hours. The current height is: #{{state.network_fee.height}}" 
+                                                        [ngClass]="{
+                                                            'square-badge-success': state.network_fee.state == 'increasing',
+                                                            'square-badge-error': state.network_fee.state == 'decreasing',
+                                                            'square-badge-neutral': state.network_fee.state == 'stateless'
+                                                        }">
+                                                        <mat-icon *ngIf="state.network_fee.state == 'increasing'">trending_up</mat-icon>
+                                                        <mat-icon *ngIf="state.network_fee.state == 'decreasing'">trending_down</mat-icon>
+                                                        <mat-icon *ngIf="state.network_fee.state == 'stateless'">trending_flat</mat-icon>
+                                                        {{state.network_fee.state_value > 0 ? '+': ''}}{{state.network_fee.state_value | number: '1.0-1'}}%
+                                                    </div>
+                                                </div>
+                        
+                                                <!-- Chart -->
+                                                <div *ngIf="networkFeeChart">
+                                                    <apx-chart
+                                                        [series]="networkFeeChart.series"
+                                                        [chart]="networkFeeChart.chart"
+                                                        [dataLabels]="networkFeeChart.dataLabels"
+                                                        [xaxis]="networkFeeChart.xaxis"
+                                                        [yaxis]="networkFeeChart.yaxis"
+                                                        [stroke]="networkFeeChart.stroke"
+                                                        [grid]="{show: false}"
+                                                    ></apx-chart>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

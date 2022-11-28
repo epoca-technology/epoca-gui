@@ -16,7 +16,8 @@ import {
     PredictionService, 
     UtilsService,
     AuthService,
-    IUserPreferences
+    IUserPreferences,
+    IPositionSummary
 } from "../../core";
 import { 
     AppService, 
@@ -29,6 +30,7 @@ import {
 import { FeaturesSumDialogComponent, IFeaturesSumDialogData } from "../../shared/components/epoch-builder";
 import { KeyzoneStateDialogComponent, IKeyZonesStateDialogData } from "./keyzone-state-dialog";
 import { IDashboardComponent } from "./interfaces";
+import { BalanceDialogComponent } from "./balance-dialog";
 
 @Component({
   selector: "app-dashboard",
@@ -53,6 +55,11 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     // New Version Available
     public newVersionAvailable: string|undefined;
     private guiVersionSub?: Subscription;
+
+    // Position
+    public position!: IPositionSummary;
+    private positionSub?: Subscription;
+    private positionLoaded: boolean = false;
 
     // Prediction Lists
     public epoch?: IEpochRecord;
@@ -88,7 +95,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     public longShortRatioChart?: ILineChartOptions;
 
     // Desktop Chart height helpers
-    private readonly predictionChartDesktopHeight: number = 260;
+    private readonly predictionChartDesktopHeight: number = 275;
     private readonly marketStateChartDesktopHeight: number = 90;
 
     // Loading State
@@ -112,6 +119,15 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
         // Initialize the user preferences
         this.userPreferences = await this._localDB.getUserPreferences();
+
+        // Subscribe to be position summary
+        this.positionSub = this._app.position.subscribe((pos) => {
+            if (pos) {
+                this.onActivePositionsUpdate(pos);
+                this.positionLoaded = true;
+                this.checkLoadState();
+            } 
+        });
 
         // Subscribe to the active prediction
         this.predictionSub = this._app.prediction.subscribe(
@@ -174,11 +190,29 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
     ngOnDestroy(): void {
         if (this.layoutSub) this.layoutSub.unsubscribe();
+        if (this.positionSub) this.positionSub.unsubscribe();
         if (this.predictionSub) this.predictionSub.unsubscribe();
         if (this.stateSub) this.stateSub.unsubscribe();
         if (this.guiVersionSub) this.guiVersionSub.unsubscribe();
         this.titleService.setTitle("Epoca");
     }
+
+
+
+
+
+    /* Position Update Event Handler */
+
+
+
+    private onActivePositionsUpdate(summary: IPositionSummary): void {
+        // Update the local value
+        this.position = summary;
+    }
+
+
+
+
 
 
 
@@ -535,7 +569,11 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                 { min:  minVal, max: maxVal }
             );
             this.windowChart.chart!.height = this.layout == "desktop" ? 600: 400;
-            this.windowChart.chart!.zoom = {enabled: true, type: "xy"};
+            if (this.layout == "desktop") {
+                this.windowChart.chart!.zoom = {enabled: true, type: "xy"};
+            } else {
+                this.windowChart.chart!.toolbar!.show = false;
+            }
         }
     }
 
@@ -599,6 +637,94 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         }
 
 
+        /* Position Annotations */
+        
+        // Long Position
+        if (this.position.long) {
+            annotations.yaxis!.push({
+                y: this.position.long.entry_price,
+                strokeDashArray: 10,
+                borderColor: this._chart.upwardColor,
+                fillColor: this._chart.upwardColor,
+                label: {
+                    borderColor: this._chart.upwardColor,
+                    style: { color: "#fff", background: this._chart.upwardColor},
+                    text: `LONG`,
+                    position: "left",
+                    offsetX: 38
+                }
+            });
+            annotations.yaxis!.push({
+                y: this.position.long.target_price,
+                strokeDashArray: 3,
+                borderColor: this._chart.upwardColor,
+                fillColor: this._chart.upwardColor,
+                label: {
+                    borderColor: this._chart.upwardColor,
+                    style: { color: "#fff", background: this._chart.upwardColor},
+                    text: `TARGET`,
+                    position: "left",
+                    offsetX: 50
+                }
+            });
+            annotations.yaxis!.push({
+                y: this.position.long.liquidation_price,
+                strokeDashArray: 0,
+                borderColor: this._chart.upwardColor,
+                fillColor: this._chart.upwardColor,
+                label: {
+                    borderColor: this._chart.upwardColor,
+                    style: { color: "#fff", background: this._chart.upwardColor},
+                    text: `LIQUIDATION`,
+                    position: "left",
+                    offsetX: 75
+                }
+            });
+        }
+
+        // Short Position
+        if (this.position.short) {
+            annotations.yaxis!.push({
+                y: this.position.short.entry_price,
+                strokeDashArray: 10,
+                borderColor: this._chart.downwardColor,
+                fillColor: this._chart.downwardColor,
+                label: {
+                    borderColor: this._chart.downwardColor,
+                    style: { color: "#fff", background: this._chart.downwardColor},
+                    text: `SHORT`,
+                    position: "left",
+                    offsetX: 45
+                }
+            });
+            annotations.yaxis!.push({
+                y: this.position.short.target_price,
+                strokeDashArray: 3,
+                borderColor: this._chart.downwardColor,
+                fillColor: this._chart.downwardColor,
+                label: {
+                    borderColor: this._chart.downwardColor,
+                    style: { color: "#fff", background: this._chart.downwardColor},
+                    text: `TARGET`,
+                    position: "left",
+                    offsetX: 50
+                }
+            });
+            annotations.yaxis!.push({
+                y: this.position.short.liquidation_price,
+                strokeDashArray: 0,
+                borderColor: this._chart.downwardColor,
+                fillColor: this._chart.downwardColor,
+                label: {
+                    borderColor: this._chart.downwardColor,
+                    style: { color: "#fff", background: this._chart.downwardColor},
+                    text: `LIQUIDATION`,
+                    position: "left",
+                    offsetX: 75
+                }
+            });
+        }
+
 
 
         /* Window State Annotations */
@@ -619,10 +745,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                 offsetY: -15
             }
         });
-
-
-        /* Position Annotations */
-        // @TODO
 
         // Finally, return the annotations
         return annotations;
@@ -671,7 +793,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         if (this.volumeChart) {
             // Update the range
             this.volumeChart.yaxis = { 
-                tooltip: { enabled: true }, 
+                tooltip: { enabled: false }, 
                 labels: { show: false},
                 axisTicks: { show: false},
                 axisBorder: { show: false},
@@ -733,7 +855,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         if (this.networkFeeChart) {
             // Update the range
             this.networkFeeChart.yaxis = { 
-                tooltip: { enabled: true }, 
+                tooltip: { enabled: false }, 
                 labels: { show: false},
                 axisTicks: { show: false},
                 axisBorder: { show: false},
@@ -795,7 +917,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         if (this.openInterestChart) {
             // Update the range
             this.openInterestChart.yaxis = { 
-                tooltip: { enabled: true }, 
+                tooltip: { enabled: false }, 
                 labels: { show: false},
                 axisTicks: { show: false},
                 axisBorder: { show: false},
@@ -858,7 +980,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         if (this.longShortRatioChart) {
             // Update the range
             this.longShortRatioChart.yaxis = { 
-                tooltip: { enabled: true }, 
+                tooltip: { enabled: false }, 
                 labels: { show: false},
                 axisTicks: { show: false},
                 axisBorder: { show: false},
@@ -919,6 +1041,33 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
 
 
+
+    /**
+     * Displays the strategy form dialog.
+     */
+    public displayStrategyFormDialog(): void {
+		this.dialog.open(BalanceDialogComponent, {
+			hasBackdrop: true,
+            disableClose: true,
+			panelClass: "small-dialog",
+            data: this.position.strategy
+		})
+	}
+
+
+
+	/**
+	 * Displays the balance dialog.
+	 */
+    public displayBalanceDialog(): void {
+		this.dialog.open(BalanceDialogComponent, {
+			hasBackdrop: true,
+			panelClass: "light-dialog",
+			data: this.position.balance
+		})
+	}
+
+
     
 	/**
 	 * Displays the features dedicated dialog to gather more information
@@ -928,12 +1077,12 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 		this.dialog.open(FeaturesSumDialogComponent, {
 			hasBackdrop: true,
 			panelClass: "light-dialog",
-				data: <IFeaturesSumDialogData>{
-					sum: this.activeSum,
-					features: this.activePrediction!.f,
-					result: this.activePrediction!.r,
-					model: this.epoch!.model
-				}
+            data: <IFeaturesSumDialogData>{
+                sum: this.activeSum,
+                features: this.activePrediction!.f,
+                result: this.activePrediction!.r,
+                model: this.epoch!.model
+            }
 		})
 	}
 
@@ -963,7 +1112,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
      * Checks if all the required data has been loaded.
      */
     private checkLoadState(): void {
-        this.loaded = this.predictionsLoaded && this.stateLoaded;
+        this.loaded = this.positionLoaded && this.predictionsLoaded && this.stateLoaded;
     }
 
 
