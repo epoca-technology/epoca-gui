@@ -13,7 +13,7 @@ import { onValue, get, DataSnapshot, child } from "firebase/database";
 import { BehaviorSubject } from "rxjs";
 import { UtilsService } from "../utils";
 import { DatabaseService } from "../database";
-import { IAuthService, IAuthority } from "./interfaces";
+import { IAuthService } from "./interfaces";
 
 
 @Injectable({

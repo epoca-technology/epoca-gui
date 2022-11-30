@@ -59,12 +59,14 @@
         </div>
 
         <!-- Min Increase Price -->
-        <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
+        <div *ngIf="position.min_increase_price" fxLayout="row" fxLayoutAlign="start start" class="margin-top">
             <p class="light-text ts-m truncate">Min. Increase Price</p>
             <span fxFlex></span>
-            <p matTooltip="The minimum price at which a position can be increased based on its side.">
-                {{position.min_increase_price | currency}}
-            </p>
+            <div class="align-right" matTooltip="The minimum price at which a position can be increased based on its side.">
+                <p>{{position.min_increase_price | currency}}</p>
+                <p *ngIf="increaseDistance" class="ts-s light-text">{{increaseDistance}}% away</p>
+                <p *ngIf="!increaseDistance" class="ts-s light-text">Increasable</p>
+            </div>
         </div>
 
         <!-- Margin -->

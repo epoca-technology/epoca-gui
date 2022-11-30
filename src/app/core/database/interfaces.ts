@@ -12,6 +12,7 @@ export interface IDatabaseService {
     // Firebase Ref Paths
     getApiSecretPath(uid: string): string,
     getApiSecretRef(uid: string): DatabaseReference,
+    getAppBulkRef(): DatabaseReference,
 }
 
 

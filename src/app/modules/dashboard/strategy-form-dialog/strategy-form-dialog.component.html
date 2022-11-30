@@ -1,1 +1,146 @@
-<p>strategy-form-dialog works!</p>
+<mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <button mat-icon-button class="show-on-mobile" (click)="cancel()" [disabled]="submitting"><mat-icon>arrow_back</mat-icon></button>
+        <span class="truncate">Strategy</span>
+        <span fxFlex></span>
+        <button mat-icon-button (click)="update()" [disabled]="submitting || form.invalid"><mat-icon>save</mat-icon></button>
+        <button mat-icon-button class="show-on-desktop" (click)="cancel()" [disabled]="submitting"><mat-icon>close</mat-icon></button>
+    </div>
+</mat-toolbar>
+<div mat-dialog-content>
+    <!-- Container -->
+    <div class="fadeIn padding">
+
+        <!-- Form -->
+        <div *ngIf="form">
+            <form [formGroup]="form" (ngSubmit)="update()">
+                <!-- Leverage & Level Increase Requirement-->
+                <div>
+                    <div fxLayout="row" fxLayoutAlign="start start">
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Leverage</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="leverage"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 2">
+                            </mat-form-field>
+                        </div>
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Increase Requirement</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="level_increase_requirement"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 5">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Level 1-->
+                <div>
+                    <div fxLayout="row" fxLayoutAlign="center center">
+                        <div>
+                            <p><strong>Level 1:</strong>&nbsp;&nbsp;</p>
+                        </div>
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Size</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="level_1_size"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 150">
+                            </mat-form-field>
+                        </div>
+                        <div fxFlex="50">
+                            <mat-form-field>
+                                <mat-label>Target</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="level_1_target"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 1.5">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Level 2-->
+                <div>
+                    <div fxLayout="row" fxLayoutAlign="center center">
+                        <div fxFlex>
+                            <p><strong>Level 2:</strong> {{strategy.level_2.size | currency}}</p>
+                        </div>
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Target</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="level_2_target"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 1">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Level 3-->
+                <div>
+                    <div fxLayout="row" fxLayoutAlign="center center">
+                        <div fxFlex>
+                            <p><strong>Level 3:</strong> {{strategy.level_3.size | currency}}</p>
+                        </div>
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Target</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="level_3_target"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 0.5">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <!-- Level 4 -->
+                <div>
+                    <div fxLayout="row" fxLayoutAlign="center center">
+                        <div fxFlex>
+                            <p><strong>Level 4:</strong> {{strategy.level_4.size | currency}}</p>
+                        </div>
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Target</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="level_4_target"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 0">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="margin-top">
+                <p><strong>Side Budget:</strong> {{sideBudget | currency}}</p>
+                <p style="margin-top:4px;"><strong>Total Budget:</strong> {{totalBudget | currency}}</p>
+            </div>
+        </div>
+    </div>
+</div>

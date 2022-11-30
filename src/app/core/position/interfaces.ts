@@ -6,8 +6,17 @@
 // Service
 export interface IPositionService {
 
+    // Position Management
+    open(side: IBinancePositionSide, otp: string): Promise<void>,
+    increase(side: IBinancePositionSide, otp: string): Promise<void>,
+    close(side: IBinancePositionSide, otp: string): Promise<void>,
+
     // Position Strategy
+    updateStrategy(newStrategy: IPositionStrategy, otp: string): Promise<void>,
     getStrategyState(strategy: IPositionStrategy, margin: number): IPositionStrategyState,
+
+    // Position History
+    // ...
 }
 
 
@@ -21,6 +30,8 @@ export interface IPositionService {
 /* General */
 
 
+// Position Action Side
+export type IBinancePositionActionSide = "BUY"|"SELL";
 
 // Position Side
 export type IBinancePositionSide = "LONG"|"SHORT";

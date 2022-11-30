@@ -1,4 +1,5 @@
-import {Injectable} from "@angular/core";
+import {Injectable, NgZone} from "@angular/core";
+import { onValue, DataSnapshot } from "firebase/database";
 import { MediaChange, MediaObserver } from "@angular/flex-layout";
 import {MatSnackBar, MatSnackBarRef, TextOnlySnackBar} from "@angular/material/snack-bar";
 import {Clipboard} from "@angular/cdk/clipboard";
@@ -7,6 +8,7 @@ import packageJson from "../../../../package.json";
 import { 
 	AuthService, 
 	BulkDataService, 
+	DatabaseService, 
 	IAppBulk, 
 	IEpochRecord, 
 	IMarketState, 
@@ -47,15 +49,16 @@ export class AppService implements IAppService{
 	/**
 	 * App Bulk
 	 * In order for the GUI to operate and keep in sync with the server,
-	 * it retrieves, unpacks and broadcasts the IAppBulk every 20 seconds.
+	 * it retrieves, unpacks and broadcasts the IAppBulk every 60 seconds.
 	 * Additionally, the refreshing functionality can be invoked from any
 	 * module that can make use of the AppService.
 	 * The observables are initialized with null, once the communication
 	 * with the server is established, they may return any value, including
 	 * undefined.
 	 */
+	private appBulkStream?: Function;
 	private appBulkInterval: any;
-	private readonly appBulkIntervalMS: number = 15 * 1000; // Every 15 seconds
+	private readonly appBulkIntervalMS: number = 60 * 1000; // Every 60 seconds
 	public serverTime: BehaviorSubject<number|undefined|null> = new BehaviorSubject<number|undefined|null>(null);
 	public guiVersion: BehaviorSubject<string|undefined|null> = new BehaviorSubject<string|undefined|null>(null);
 	public epoch: BehaviorSubject<IEpochRecord|undefined|null> = new BehaviorSubject<IEpochRecord|undefined|null>(null);
@@ -77,7 +80,9 @@ export class AppService implements IAppService{
         private _utils: UtilsService,
 		private _auth: AuthService,
 		private _bulk: BulkDataService,
-		private _prediction: PredictionService
+		private _prediction: PredictionService,
+		private _db: DatabaseService,
+		private ngZone: NgZone
 	) {
 		// Initialize the Layout
 		this.layout = new BehaviorSubject<ILayout>(this.getLayout());
@@ -115,7 +120,7 @@ export class AppService implements IAppService{
 
 
 
-	/* App Bulk */
+	/* App Bulk Manager */
 
 
 
@@ -127,6 +132,9 @@ export class AppService implements IAppService{
 	 * @returns Promise<void>
 	 */
 	private async initializeAppBulk(): Promise<void> {
+		// Initialize the stream
+		this.initializeAppBulkStream();
+
 		// Initialize the bulk data
 		await this.refreshAppBulk();
 
@@ -137,6 +145,32 @@ export class AppService implements IAppService{
 	}
 
 
+
+
+	/**
+	 * Destroys all the intervals and broadcasts an empty App Bulk state.
+	 * This functionality is only invoked when the user signs out.
+	 */
+	 private deactivateAppBulk(): void {
+		if (this.appBulkInterval) clearInterval(this.appBulkInterval);
+		this.appBulkInterval = undefined;
+		this.serverTime.next(undefined);
+		this.guiVersion.next(undefined);
+		this.epoch.next(undefined);
+		this.prediction.next(undefined);
+		this.predictionState.next(0);
+		this.predictionIcon.next(undefined);
+		this.position.next(undefined);
+		this.marketState.next(undefined);
+		if (typeof this.appBulkStream == "function") this.appBulkStream();
+	}
+
+
+
+
+
+
+	/* App Bulk Stream */
 
 
 
@@ -151,34 +185,69 @@ export class AppService implements IAppService{
 			const epochID: string|undefined = this.epoch.value ? this.epoch.value.id: undefined;
 			const bulk: IAppBulk = await this._bulk.getAppBulk(epochID);
 
-			// Unpack the metadata
-			const metadata: IAppBulkMetadata = this.getAppBulkMetadata(bulk);
-
-			// Broadcast the server's time
-			this.serverTime.next(bulk.serverTime);
-
-			// Broadcast the gui version
-			this.guiVersion.next(bulk.guiVersion);
-
-			// Broadcast the active epoch record if applies
-			if (bulk.epoch != "keep") this.epoch.next(bulk.epoch);
-
-			// Broadcast the active prediction as well as the metadata
-			this.predictionState.next(bulk.predictionState);
-			this.predictionIcon.next(metadata.predictionIcon);
-			this.prediction.next(bulk.prediction);
-
-			// Broadcast the position summary
-			this.position.next(bulk.position);
-
-			// Broadcast the market state
-			this.marketState.next(bulk.marketState);
-
-			// Broadcast the api errors
-			this.apiErrors.next(bulk.apiErrors);
+			// Finally, broadcast the app bulk
+			this.broadcastAppBulk(bulk);
 		} catch (e) { console.error(e) }
 	}
 
+
+
+
+
+    /**
+     * Initializes the API Secret DB Connection.
+     * @returns void
+     */
+	 private initializeAppBulkStream(): void {
+        this.appBulkStream = onValue( this._db.getAppBulkRef(), (snapshot: DataSnapshot) => {
+                this.ngZone.run(() => {
+                    const snapVal: IAppBulk|null = snapshot.val();
+                    if (snapVal) this.broadcastAppBulk(snapVal);
+                });
+            },
+            e => console.error(e)
+        );
+    }
+
+
+
+
+
+
+
+
+
+	/**
+	 * Broadcasts the app bulk through all the observables.
+	 * @param bulk 
+	 */
+	private broadcastAppBulk(bulk: IAppBulk): void {
+		// Unpack the metadata
+		const metadata: IAppBulkMetadata = this.getAppBulkMetadata(bulk);
+
+		// Broadcast the server's time
+		this.serverTime.next(bulk.serverTime);
+
+		// Broadcast the gui version
+		this.guiVersion.next(bulk.guiVersion);
+
+		// Broadcast the active epoch record if applies
+		if (bulk.epoch != "keep") this.epoch.next(bulk.epoch);
+
+		// Broadcast the active prediction as well as the metadata
+		this.predictionState.next(bulk.predictionState);
+		this.predictionIcon.next(metadata.predictionIcon);
+		this.prediction.next(bulk.prediction);
+
+		// Broadcast the position summary
+		this.position.next(bulk.position);
+
+		// Broadcast the market state
+		this.marketState.next(bulk.marketState);
+
+		// Broadcast the api errors
+		this.apiErrors.next(bulk.apiErrors);
+	}
 
 
 
@@ -204,27 +273,6 @@ export class AppService implements IAppService{
 		return {
 			predictionIcon: predictionIcon,
 		}
-	}
-
-
-
-
-
-	/**
-	 * Destroys all the intervals and broadcasts an empty App Bulk state.
-	 * This functionality is only invoked when the user signs out.
-	 */
-	private deactivateAppBulk(): void {
-		if (this.appBulkInterval) clearInterval(this.appBulkInterval);
-		this.appBulkInterval = undefined;
-		this.serverTime.next(undefined);
-		this.guiVersion.next(undefined);
-		this.epoch.next(undefined);
-		this.prediction.next(undefined);
-		this.predictionState.next(0);
-		this.predictionIcon.next(undefined);
-		this.position.next(undefined);
-		this.marketState.next(undefined);
 	}
 
 

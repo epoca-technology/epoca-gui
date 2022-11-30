@@ -42,7 +42,7 @@ export class ApiErrorService {
      * Deletes all the api errors from the database.
      * @returns Promise<IApiError[]>
      */
-     public deleteAll(otp: string): Promise<IApiError[]> { 
+    public deleteAll(otp: string): Promise<IApiError[]> { 
         return this._api.request("post","apiError/deleteAll", {}, true, otp);
     }
 }

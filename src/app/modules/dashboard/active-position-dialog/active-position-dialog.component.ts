@@ -11,6 +11,7 @@ import { IActivePositionDialogComponent } from './interfaces';
 export class ActivePositionDialogComponent implements OnInit, IActivePositionDialogComponent {
 	public liquidationDistance: number;
 	public targetDistance: number|undefined;
+	public increaseDistance: number|undefined;
 	constructor(
 		public dialogRef: MatDialogRef<ActivePositionDialogComponent>,
 		@Inject(MAT_DIALOG_DATA) public position: IActivePosition,
@@ -29,6 +30,16 @@ export class ActivePositionDialogComponent implements OnInit, IActivePositionDia
 			this.targetDistance = this.position.mark_price >= this.position.target_price ? undefined: targetDistance;
 		} else {
 			this.targetDistance = this.position.mark_price <= this.position.target_price ? undefined: targetDistance;
+		}
+
+		// Calculate the increase distance
+		if (this.position.min_increase_price) {
+			const increaseDistance: number = <number>this._utils.calculatePercentageChange(this.position.mark_price, this.position.min_increase_price);
+			if (this.position.side == "LONG") {
+				this.increaseDistance = this.position.mark_price > this.position.min_increase_price ? increaseDistance: undefined;
+			} else {
+				this.increaseDistance = this.position.mark_price < this.position.min_increase_price ? increaseDistance: undefined;
+			}
 		}
 	}
 

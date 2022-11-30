@@ -20,7 +20,7 @@
             <!-- Epochs -->
             <mat-list-item>
                 <button mat-button class="left-icon-button" (click)="_nav.epochs()">
-                    <mat-icon svgIcon="brain"></mat-icon><span>{{_app.epoch.value ? _app.epoch.value.id: 'Epochs'}}</span>
+                    <mat-icon svgIcon="brain"></mat-icon><span>Epochs</span>
                 </button>
             </mat-list-item>
 
@@ -212,9 +212,8 @@
 
                     <!-- Dashboard Content-->
                     <div fxLayout="row" fxLayoutAlign="center start" fxLayout.xs="column" fxLayout.sm="column" class="full-width">
-                        <span fxFlex></span>
                         <!-- Window State -->
-                        <div fxFlex="50" fxFlex.xs="100" fxFlex.sm="100" class="desktop-card chart-card full-width">
+                        <div fxFlex="58" fxFlex.xs="100" fxFlex.sm="100" class="chart-card full-width">
                             <!-- Heading -->
                             <div fxLayout="row" fxLayoutAlign="start start" fxLayoutAlign.xs="center center" fxLayoutAlign.sm="center center"
                                 class="chart-card-heading">
@@ -244,26 +243,29 @@
                                 </div>
                                 <mat-menu #longMenu="matMenu">
                                     <button mat-menu-item 
-                                            *ngIf="!position.long"
-                                            [disabled]="submitting || !canOpenLong">
+                                            *ngIf="!position.long && canOpenLong"
+                                            (click)="openPosition('LONG')"
+                                            [disabled]="submitting">
                                         <mat-icon>add</mat-icon>
                                         <span>Open Long</span>
                                     </button>
                                     <button mat-menu-item 
                                             *ngIf="position.long"
+                                            (click)="closePosition('LONG')"
                                             [disabled]="submitting">
                                         <mat-icon>close</mat-icon>
                                         <span>Close Long</span>
                                     </button>
                                     <button mat-menu-item 
-                                            *ngIf="position.long"
-                                            [disabled]="submitting || !canIncreaseLong">
+                                            *ngIf="position.long && canIncreaseLong"
+                                            (click)="increasePosition('LONG')"
+                                            [disabled]="submitting">
                                         <mat-icon>switch_access_shortcut</mat-icon>
                                         <span>Increase Long</span>
                                     </button>
                                     <button mat-menu-item
                                             [disabled]="submitting">
-                                        <mat-icon>tune</mat-icon>
+                                        <mat-icon>design_services</mat-icon>
                                         <span>Strategy Builder</span>
                                     </button>
                                     <button mat-menu-item 
@@ -295,26 +297,29 @@
                                 </div>
                                 <mat-menu #shortMenu="matMenu">
                                     <button mat-menu-item 
-                                            *ngIf="!position.short"
-                                            [disabled]="submitting || !canOpenShort">
+                                            *ngIf="!position.short && canOpenShort"
+                                            (click)="openPosition('SHORT')"
+                                            [disabled]="submitting">
                                         <mat-icon>add</mat-icon>
                                         <span>Open Short</span>
                                     </button>
                                     <button mat-menu-item 
                                             *ngIf="position.short"
+                                            (click)="closePosition('SHORT')"
                                             [disabled]="submitting">
                                         <mat-icon>close</mat-icon>
                                         <span>Close Short</span>
                                     </button>
                                     <button mat-menu-item 
-                                            *ngIf="position.short"
-                                            [disabled]="submitting || !canIncreaseShort">
+                                            *ngIf="position.short && canIncreaseShort"
+                                            (click)="increasePosition('SHORT')"
+                                            [disabled]="submitting">
                                         <mat-icon>switch_access_shortcut</mat-icon>
                                         <span>Increase Short</span>
                                     </button>
                                     <button mat-menu-item
                                             [disabled]="submitting">
-                                        <mat-icon>tune</mat-icon>
+                                        <mat-icon>design_services</mat-icon>
                                         <span>Strategy Builder</span>
                                     </button>
                                     <button mat-menu-item 
@@ -346,11 +351,11 @@
                         <span fxFlex></span>
 
                         <!-- Rest of the Indicators -->
-                        <div fxFlex="45" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                        <div fxFlex="41" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
                             <!-- Trend -->
                             <div class="divider show-on-mobile"></div>
                             <div>
-                                <div class="desktop-card chart-card">
+                                <div class="chart-card">
                                     <!-- Heading -->
                                     <div fxLayout="row" fxLayoutAlign="start start" class="chart-card-heading">
                                         <div>
@@ -423,7 +428,7 @@
                             <div class="divider show-on-mobile"></div>
 
                             <!-- Global Indicators -->
-                            <div class="desktop-card no-margin chart-card">
+                            <div class="chart-card">
                                 <!-- Volume & Open Interest -->
                                 <div>
                                     <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" class="full-width">
@@ -605,12 +610,14 @@
                                 </div>
                             </div>
                         </div>
-
-                        <span fxFlex></span>
                     </div>
                 </div>
             </div>
 
+            <!-- Submission Card -->
+            <div class="submission-status" fxLayout="row" fxLayoutAlign="center center" *ngIf="submitting">
+                <mat-spinner diameter="25"></mat-spinner><p class="ts-m">{{submittingText}}</p>
+            </div>
 
             <!-- Mobile Tabs -->
             <app-mobile-tabs *ngIf="layout == 'mobile'"></app-mobile-tabs>

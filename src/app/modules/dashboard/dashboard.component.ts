@@ -4,11 +4,9 @@ import { MatDialog } from "@angular/material/dialog";
 import {Title} from "@angular/platform-browser";
 import { Subscription } from "rxjs";
 import * as moment from "moment";
-import {BigNumber} from "bignumber.js";
 import { ApexAnnotations, ApexAxisChartSeries } from "ng-apexcharts";
 import { 
     IEpochRecord, 
-    IKeyZone, 
     IMarketState, 
     IPrediction, 
     IPredictionState, 
@@ -19,7 +17,8 @@ import {
     IUserPreferences,
     IPositionSummary,
     IActivePosition,
-    PositionService
+    PositionService,
+    IBinancePositionSide
 } from "../../core";
 import { 
     AppService, 
@@ -33,6 +32,7 @@ import { FeaturesSumDialogComponent, IFeaturesSumDialogData } from "../../shared
 import { KeyzoneStateDialogComponent, IKeyZonesStateDialogData } from "./keyzone-state-dialog";
 import { BalanceDialogComponent } from "./balance-dialog";
 import { ActivePositionDialogComponent } from "./active-position-dialog";
+import { StrategyFormDialogComponent } from "./strategy-form-dialog";
 import { IDashboardComponent } from "./interfaces";
 
 @Component({
@@ -102,15 +102,15 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     public longShortRatioChart?: ILineChartOptions;
 
     // Desktop Chart height helpers
-    private readonly predictionChartDesktopHeight: number = 275;
-    private readonly marketStateChartDesktopHeight: number = 90;
+    private readonly predictionChartDesktopHeight: number = 285;
+    private readonly marketStateChartDesktopHeight: number = 115;
 
     // Loading State
     public loaded: boolean = false;
 
     // Submission State
     public submitting: boolean = false;
-    public submittingText: string = "Submitting...";
+    public submittingText: string = "";
 
     constructor(
         public _nav: NavService,
@@ -179,10 +179,19 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         this.stateSub = this._app.marketState.subscribe((state: IMarketState|undefined|null) => {
             if (state) {
                 // Update the local state
+                const prevState: IMarketState|undefined = this.state;
                 this.state = state;
 
                 // Update charts
-                this.onStateUpdate();
+                if (
+                    !prevState || 
+                    (
+                        prevState.window.window.length && 
+                        prevState.window.window[prevState.window.window.length - 1].c != this.state.window.window[this.state.window.window.length - 1].c
+                    )
+                ) {
+                    this.onStateUpdate();
+                }
 
                 // Set loading state
                 this.stateLoaded = true;
@@ -523,7 +532,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                     series: series,
                     stroke: {curve: "straight", width:3},
                     annotations: annotations,
-                    xaxis: {type: "datetime",tooltip: {enabled: true}, labels: {datetimeUTC: false}},
+                    xaxis: {type: "datetime",tooltip: {enabled: false}, labels: {datetimeUTC: false}},
                     yaxis: { tooltip: {enabled: true}}
                 },
                 this.layout == "desktop" ? this.predictionChartDesktopHeight: 330, 
@@ -571,10 +580,15 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             this.state.window.window[this.state.window.window.length - 1].c, 
             {dp: 0, of: "s"}
         );
+        let newTitle: string = `$${price}`;
         if (this.activeSum) {
-            this.titleService.setTitle(`$${price}: ${this._utils.outputNumber(this.activeSum, {dp: 1})}`);
+            newTitle += `: ${this._utils.outputNumber(this.activeSum, {dp: 1})}`;
+            if (this.activePredictionState) {
+                newTitle += ` ${this.activePredictionState > 0 ? '+':''}${this.activePredictionState}`;
+            }
+            this.titleService.setTitle(newTitle);
         } else {
-            this.titleService.setTitle(`$${price}`);
+            this.titleService.setTitle(newTitle);
         }
     }
 
@@ -614,7 +628,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                 true,
                 { min:  minVal, max: maxVal }
             );
-            this.windowChart.chart!.height = this.layout == "desktop" ? 600: 400;
+            this.windowChart.chart!.height = this.layout == "desktop" ? 630: 400;
             if (this.layout == "desktop") {
                 this.windowChart.chart!.zoom = {enabled: true, type: "xy"};
             } else {
@@ -809,7 +823,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             label: {
                 borderColor: windowStateColor,
                 style: { color: "#fff", background: windowStateColor, fontSize: "12px", padding: {top: 4, right: 4, left: 4, bottom: 4}},
-                text: `$${this._utils.formatNumber(currentPrice, 0)} | ${this.state.window.state_value > 0 ? '+': ''}${this.state.window.state_value}%`,
+                text: `$${this._utils.formatNumber(currentPrice, 0)} | ${this.state.window.state_value > 0 ? '+': ''}${this._utils.formatNumber(this.state.window.state_value, 1)}%`,
                 position: "right",
                 offsetY: -15
             }
@@ -818,23 +832,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         // Finally, return the annotations
         return annotations;
     }
-
-
-	/**
-	 * Returns a label for a given zone.
-	 * @param zone 
-	 * @returns string
-	 */
-     private getKeyZoneLabelText(zone: IKeyZone): string {
-		if (this.layout == "mobile") return ''; 
-		let label: string = "";
-        let zoneState: "R"|"S"|"M" = "M";
-        if (!zone.m) {
-            zoneState = zone.r[0].t == "r" ? "R": "S";
-        }
-		label += `KEYZONE ${zoneState}${zone.r.length}`;
-		return label;
-	}
 
 
 
@@ -1093,6 +1090,127 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
 
 
+    /* Position Management */
+
+
+
+    /**
+     * Displays the confirmation dialog in order to open
+     * a new position.
+     * @param side 
+     */
+    public openPosition(side: IBinancePositionSide): void {
+        this._nav.displayConfirmationDialog({
+            title: `Open ${side} Position`,
+            content: `
+                <p class="align-center">Are you sure that you wish to <strong>open</strong> a <strong>${side}</strong> Position?</p>
+            `,
+            otpConfirmation: true
+        }).afterClosed().subscribe(
+            async (otp: string|undefined) => {
+                if (otp) {
+                    // Set Submission State
+                    this.setSubmission(`Opening ${side} Position...`);
+                    try {
+                        // Perform Action
+                        await this._position.open(side, otp);
+                        await this._app.refreshAppBulk();
+
+                        // Notify
+                        this._app.success(`The ${side} position was opened successfully.`);
+
+                        // Set Submission State
+                        this.setSubmission();
+                    } catch(e) { this._app.error(e) }
+
+                    // Set Submission State
+                    this.setSubmission();
+                }
+            }
+        );
+    }
+
+
+
+
+
+    /**
+     * Displays the confirmation dialog in order to increase
+     * an existing position.
+     * @param side 
+     */
+    public increasePosition(side: IBinancePositionSide): void {
+        this._nav.displayConfirmationDialog({
+            title: `Increase ${side} Position`,
+            content: `
+                <p class="align-center">Are you sure that you wish to <strong>increase</strong> the <strong>${side}</strong> Position?</p>
+            `,
+            otpConfirmation: true
+        }).afterClosed().subscribe(
+            async (otp: string|undefined) => {
+                if (otp) {
+                    // Set Submission State
+                    this.setSubmission(`Increasing ${side} Position...`);
+                    try {
+                        // Perform Action
+                        await this._position.increase(side, otp);
+                        await this._app.refreshAppBulk();
+
+                        // Notify
+                        this._app.success(`The ${side} position was increased successfully.`);
+
+                        // Set Submission State
+                        this.setSubmission();
+                    } catch(e) { this._app.error(e) }
+
+                    // Set Submission State
+                    this.setSubmission();
+                }
+            }
+        );
+    }
+
+
+
+    /**
+     * Displays the confirmation dialog in order to close
+     * an existing position.
+     * @param side 
+     */
+    public closePosition(side: IBinancePositionSide): void {
+        this._nav.displayConfirmationDialog({
+            title: `Close ${side} Position`,
+            content: `
+                <p class="align-center">Are you sure that you wish to <strong>close</strong> the <strong>${side}</strong> Position?</p>
+            `,
+            otpConfirmation: true
+        }).afterClosed().subscribe(
+            async (otp: string|undefined) => {
+                if (otp) {
+                    // Set Submission State
+                    this.setSubmission(`Closing ${side} Position...`);
+                    try {
+                        // Perform Action
+                        await this._position.close(side, otp);
+                        await this._app.refreshAppBulk();
+
+                        // Notify
+                        this._app.success(`The ${side} position was closed successfully.`);
+
+                        // Set Submission State
+                        this.setSubmission();
+                    } catch(e) { this._app.error(e) }
+
+                    // Set Submission State
+                    this.setSubmission();
+                }
+            }
+        );
+    }
+
+
+
+
 
 
     /* Misc Helpers */
@@ -1115,7 +1233,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
      * Displays the strategy form dialog.
      */
     public displayStrategyFormDialog(): void {
-		this.dialog.open(BalanceDialogComponent, {
+		this.dialog.open(StrategyFormDialogComponent, {
 			hasBackdrop: true,
             disableClose: true,
 			panelClass: "small-dialog",
@@ -1206,6 +1324,18 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
 
 
+    /**
+     * Enables/Disables the submission state on the component.
+     * @param action 
+     */
+    private setSubmission(action?: string): void {
+        if (typeof action == "string") {
+            this.submittingText = action;
+            this.submitting = true;
+        } else {
+            this.submitting = false;
+        }
+    }
 
 
 

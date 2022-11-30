@@ -1,8 +1,8 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {AbstractControl, FormControl, FormGroup, Validators} from '@angular/forms';
-import { IAlarmsConfigDialogComponent } from './interfaces';
 import { IAlarmsConfig } from '../../../../core';
+import { IAlarmsConfigDialogComponent } from './interfaces';
 
 @Component({
   selector: 'app-alarms-config-dialog',

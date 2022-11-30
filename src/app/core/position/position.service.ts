@@ -1,15 +1,70 @@
 import { Injectable } from '@angular/core';
-import { IPositionService, IPositionStrategy, IPositionStrategyState } from './interfaces';
+import { ApiService } from "../api";
+import { 
+    IBinancePositionSide, 
+    IPositionService, 
+    IPositionStrategy, 
+    IPositionStrategyState 
+} from './interfaces';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PositionService implements IPositionService {
 
-	constructor() { }
+    constructor(private _api: ApiService) { }
 
 
 
+	/***********************
+	 * Position Management *
+	 ***********************/
+
+
+
+
+
+
+    /**
+     * Opens a brand new position on a given side.
+     * @param side
+     * @param otp
+     * @returns Promise<void>
+     */
+    public open(side: IBinancePositionSide, otp: string): Promise<void> { 
+        return this._api.request("post","position/open", {side: side}, true, otp);
+    }
+
+
+
+
+
+    /**
+     * Increases an existing position based on a given side.
+     * @param side
+     * @param otp
+     * @returns Promise<void>
+     */
+    public increase(side: IBinancePositionSide, otp: string): Promise<void> { 
+        return this._api.request("post","position/increase", {side: side}, true, otp);
+    }
+
+
+
+
+
+
+
+
+    /**
+     * Closes an existing position based on a given side.
+     * @param side
+     * @param otp
+     * @returns Promise<void>
+     */
+    public close(side: IBinancePositionSide, otp: string): Promise<void> { 
+        return this._api.request("post","position/close", {side: side}, true, otp);
+    }
 
 
 
@@ -21,6 +76,21 @@ export class PositionService implements IPositionService {
 	/*********************
 	 * Position Strategy *
 	 *********************/
+
+
+
+
+
+
+    /**
+     * Deletes all the api errors from the database.
+     * @param newStrategy
+     * @param otp
+     * @returns Promise<void>
+     */
+    public updateStrategy(newStrategy: IPositionStrategy, otp: string): Promise<void> { 
+        return this._api.request("post","position/updateStrategy", {newStrategy: newStrategy}, true, otp);
+    }
 
 
 
@@ -60,4 +130,17 @@ export class PositionService implements IPositionService {
             throw new Error(`The strategy state cannot be calculated as the provided position has no margin. Received ${margin}`);
         }
     }
+
+
+
+
+
+
+    /********************
+     * Position History *
+     ********************/
+
+
+
+
 }

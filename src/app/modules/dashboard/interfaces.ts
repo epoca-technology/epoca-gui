@@ -1,7 +1,10 @@
-import { IActivePosition } from "../../core";
+import { IActivePosition, IBinancePositionSide } from "../../core";
 
 export interface IDashboardComponent {
-    
+    // Position Management
+    openPosition(side: IBinancePositionSide): void,
+    increasePosition(side: IBinancePositionSide): void,
+    closePosition(side: IBinancePositionSide): void,
 
     // Misc Helpers
     toggleTrendChart(): Promise<void>,
