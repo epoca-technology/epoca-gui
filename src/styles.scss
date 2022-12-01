@@ -104,6 +104,7 @@ div {min-width: 0;}
 
 // Margin
 .no-margin { margin:0!important; }
+.no-margin-top { margin-top:0!important; }
 .margin { margin: 15px }
 
 // Margin Top
@@ -592,6 +593,7 @@ th { font-weight: 500}
 //td img{max-width: 100%;}
 
 
+.confirmation-dialog-table { margin-top: -15px!important;margin-bottom: -15px!important;}
 
 
 

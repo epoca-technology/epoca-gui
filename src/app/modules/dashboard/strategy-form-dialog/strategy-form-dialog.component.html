@@ -3,7 +3,7 @@
         <button mat-icon-button class="show-on-mobile" (click)="cancel()" [disabled]="submitting"><mat-icon>arrow_back</mat-icon></button>
         <span class="truncate">Strategy</span>
         <span fxFlex></span>
-        <button mat-icon-button (click)="update()" [disabled]="submitting || form.invalid"><mat-icon>save</mat-icon></button>
+        <button mat-icon-button (click)="update()" [disabled]="submitting || form.invalid" matTooltip="Update Strategy"><mat-icon>save</mat-icon></button>
         <button mat-icon-button class="show-on-desktop" (click)="cancel()" [disabled]="submitting"><mat-icon>close</mat-icon></button>
     </div>
 </mat-toolbar>

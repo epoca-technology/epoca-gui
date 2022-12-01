@@ -18,7 +18,10 @@ import {
     IPositionSummary,
     IActivePosition,
     PositionService,
-    IBinancePositionSide
+    IBinancePositionSide,
+    IPositionStrategy,
+    IPositionStrategyState,
+    IPositionPriceRange
 } from "../../core";
 import { 
     AppService, 
@@ -31,9 +34,10 @@ import {
 import { FeaturesSumDialogComponent, IFeaturesSumDialogData } from "../../shared/components/epoch-builder";
 import { KeyzoneStateDialogComponent, IKeyZonesStateDialogData } from "./keyzone-state-dialog";
 import { BalanceDialogComponent } from "./balance-dialog";
-import { ActivePositionDialogComponent } from "./active-position-dialog";
+import { ActivePositionDialogComponent, IActivePositionDialogData } from "./active-position-dialog";
 import { StrategyFormDialogComponent } from "./strategy-form-dialog";
 import { IDashboardComponent } from "./interfaces";
+import { IStrategyBuilderDialogData, StrategyBuilderDialogComponent } from "./strategy-builder-dialog";
 
 @Component({
   selector: "app-dashboard",
@@ -825,7 +829,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                 style: { color: "#fff", background: windowStateColor, fontSize: "12px", padding: {top: 4, right: 4, left: 4, bottom: 4}},
                 text: `$${this._utils.formatNumber(currentPrice, 0)} | ${this.state.window.state_value > 0 ? '+': ''}${this._utils.formatNumber(this.state.window.state_value, 1)}%`,
                 position: "right",
-                offsetY: -15
+                offsetY: -30
             }
         });
 
@@ -1100,10 +1104,48 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
      * @param side 
      */
     public openPosition(side: IBinancePositionSide): void {
+        const strat: IPositionStrategy = this.position.strategy;
+        const entry: number = this.state.window.window[this.state.window.window.length - 1].c;
+        const target: number = <number>this._utils.alterNumberByPercentage(
+            entry, 
+            side == "LONG" ? strat.level_1.target: -(strat.level_1.target)
+        );
+        const minIncrease: number = <number>this._utils.alterNumberByPercentage(
+            entry, 
+            side == "LONG" ? -(strat.level_increase_requirement): strat.level_increase_requirement
+        );
+        const range: IPositionPriceRange = this._position.calculatePositionPriceRange(
+            side, 
+            strat.leverage, 
+            [ { price: entry, margin: strat.level_1.size} ]
+        );
         this._nav.displayConfirmationDialog({
-            title: `Open ${side} Position`,
+            title: `Open ${side}`,
             content: `
-                <p class="align-center">Are you sure that you wish to <strong>open</strong> a <strong>${side}</strong> Position?</p>
+                <table class="confirmation-dialog-table bordered">
+                    <tbody>
+                        <tr>
+                            <td><strong>Entry</strong></td>
+                            <td class="align-right">$${entry}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Target</strong></td>
+                            <td class="align-right">$${target}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Min. Increase</strong></td>
+                            <td class="align-right">$${minIncrease}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Liquidation</strong></td>
+                            <td class="align-right">$${range.liquidation}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Margin</strong></td>
+                            <td class="align-right">$${strat.level_1.size}</td>
+                        </tr>
+                    </tbody>
+                </table>
             `,
             otpConfirmation: true
         }).afterClosed().subscribe(
@@ -1140,10 +1182,59 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
      * @param side 
      */
     public increasePosition(side: IBinancePositionSide): void {
+        const currentPrice: number = this.state.window.window[this.state.window.window.length - 1].c;
+        const strat: IPositionStrategy = this.position.strategy;
+        const position: IActivePosition = side == "LONG" ? this.position.long!: this.position.short!;
+        const state: IPositionStrategyState = this._position.getStrategyState(strat, position.isolated_wallet);
+        const range: IPositionPriceRange = this._position.calculatePositionPriceRange(
+            side, 
+            strat.leverage, 
+            [ 
+                { price: position.entry_price, margin: position.isolated_wallet },
+                { price: currentPrice, margin: state.next!.size },
+            ]
+        );
+        const nextTarget: number = <number>this._utils.alterNumberByPercentage(
+            range.entry, 
+            side == "LONG" ? state.next!.target: -(state.next!.target)
+        );
+        const nextMinIncrease: number = <number>this._utils.alterNumberByPercentage(
+            range.entry, 
+            side == "LONG" ? -(strat.level_increase_requirement): strat.level_increase_requirement
+        );
+        const nextMargin: number = <number>this._utils.outputNumber(position.isolated_wallet + state.next!.size);
         this._nav.displayConfirmationDialog({
-            title: `Increase ${side} Position`,
+            title: `Increase ${side}`,
             content: `
-                <p class="align-center">Are you sure that you wish to <strong>increase</strong> the <strong>${side}</strong> Position?</p>
+                <table class="confirmation-dialog-table bordered">
+                    <tbody>
+                        <tr>
+                            <td><strong>Entry</strong></td>
+                            <td class="align-right light-text ts-xs">$${position.entry_price}</td>
+                            <td class="align-right">$${range.entry}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Target</strong></td>
+                            <td class="align-right light-text ts-xs">$${position.target_price}</td>
+                            <td class="align-right">$${nextTarget}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Min. Increase</strong></td>
+                            <td class="align-right light-text ts-xs">$${position.min_increase_price}</td>
+                            <td class="align-right">$${nextMinIncrease}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Liquidation</strong></td>
+                            <td class="align-right light-text ts-xs">$${position.liquidation_price}</td>
+                            <td class="align-right">$${range.liquidation}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Margin</strong></td>
+                            <td class="align-right light-text ts-xs">$${position.isolated_wallet}</td>
+                            <td class="align-right">$${nextMargin}</td>
+                        </tr>
+                    </tbody>
+                </table>
             `,
             otpConfirmation: true
         }).afterClosed().subscribe(
@@ -1178,10 +1269,33 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
      * @param side 
      */
     public closePosition(side: IBinancePositionSide): void {
+        const position: IActivePosition = side == "LONG" ? this.position.long!: this.position.short!;
+        let pnlClass: string = "light-text";
+        if (position.unrealized_pnl > 0) { pnlClass = "success-color" }
+        else if (position.unrealized_pnl < 0) { pnlClass = "error-color" }
         this._nav.displayConfirmationDialog({
-            title: `Close ${side} Position`,
+            title: `Close ${side}`,
             content: `
-                <p class="align-center">Are you sure that you wish to <strong>close</strong> the <strong>${side}</strong> Position?</p>
+                <table class="confirmation-dialog-table bordered">
+                    <tbody>
+                        <tr>
+                            <td><strong>Entry</strong></td>
+                            <td class="align-right">$${position.entry_price}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Exit</strong></td>
+                            <td class="align-right">$${position.mark_price}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Margin</strong></td>
+                            <td class="align-right">$${position.isolated_margin}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>PNL</strong></td>
+                            <td class="align-right"><strong><span class="${pnlClass}">$${position.unrealized_pnl} (${position.roe}%)</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
             `,
             otpConfirmation: true
         }).afterClosed().subscribe(
@@ -1266,9 +1380,36 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 			hasBackdrop: true,
             disableClose: false,
 			panelClass: "small-dialog",
-            data: position
+            data: <IActivePositionDialogData> {
+                strategy: this.position.strategy,
+                position: position
+            }
 		})
 	}
+
+
+
+
+
+
+	/**
+	 * Displays the strategy builder dialog dialog.
+	 */
+     public displayStrategyBuilderDialog(side: IBinancePositionSide): void {
+		this.dialog.open(StrategyBuilderDialogComponent, {
+			hasBackdrop: true,
+            disableClose: true,
+			panelClass: "large-dialog",
+            data: <IStrategyBuilderDialogData> {
+                currentPrice: this.state.window.window[this.state.window.window.length - 1].c,
+                keyZones: this.state.keyzone,
+                side: side,
+                strategy: this.position.strategy,
+                position: side == "LONG" ? this.position.long: this.position.short
+            }
+		})
+	}
+
 
 
 

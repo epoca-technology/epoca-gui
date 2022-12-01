@@ -1,1 +1,58 @@
-<p>strategy-builder-dialog works!</p>
+<mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <button mat-icon-button class="show-on-mobile" (click)="cancel()"><mat-icon>arrow_back</mat-icon></button>
+        <span class="truncate">{{side}} Strategy</span>
+        <span fxFlex></span>
+        <button mat-icon-button (click)="levelUp()" [disabled]="false" matTooltip="Level Up"><mat-icon>north</mat-icon></button>
+        <button mat-icon-button (click)="levelDown()" [disabled]="false" matTooltip="Level Down"><mat-icon>south</mat-icon></button>
+        <button mat-icon-button (click)="displayKeyZoneDialog()" [disabled]="false" matTooltip="KeyZones"><mat-icon style="font-size:20px;">vertical_distribute</mat-icon></button>
+        <button mat-icon-button class="show-on-desktop" (click)="cancel()"><mat-icon>close</mat-icon></button>
+    </div>
+</mat-toolbar>
+<div mat-dialog-content>
+    <!-- Container -->
+    <div class="component">
+        <!-- Form -->
+
+        <!-- Chart View -->
+        <div>
+            <!-- Level Stepper -->
+            <div class="levels" fxLayout="row" fxLayoutAlign="center center">
+                <div fxFlex class="level-container">
+                    <span class="level-number">1</span>
+                    <p class="level-size" matTooltip="Margin Increase">{{strategy.level_1.size | currency}}</p>
+                    <p class="level-acum-margin" matTooltip="Accumulated Margin">~{{marginAcum[0] | currency}}</p>
+                </div>
+                <div fxFlex class="level-container" [ngClass]="{'inactive': levelNumber < 2}">
+                    <span class="level-number">2</span>
+                    <p class="level-size" matTooltip="Margin Increase">{{strategy.level_2.size | currency}}</p>
+                    <p class="level-acum-margin" matTooltip="Accumulated Margin">~{{marginAcum[1] | currency}}</p>
+                </div>
+                <div fxFlex class="level-container" [ngClass]="{'inactive': levelNumber < 3}">
+                    <span class="level-number">3</span>
+                    <p class="level-size" matTooltip="Margin Increase">{{strategy.level_3.size | currency}}</p>
+                    <p class="level-acum-margin" matTooltip="Accumulated Margin">~{{marginAcum[2] | currency}}</p>
+                </div>
+                <div fxFlex class="level-container" [ngClass]="{'inactive': levelNumber < 4}">
+                    <span class="level-number">4</span>
+                    <p class="level-size" matTooltip="Margin Increase">{{strategy.level_4.size | currency}}</p>
+                    <p class="level-acum-margin" matTooltip="Accumulated Margin">~{{marginAcum[3] | currency}}</p>
+                </div>
+            </div>
+
+            <!-- Chart -->
+            <div *ngIf="chart">
+                <apx-chart
+                    [series]="chart.series"
+                    [chart]="chart.chart"
+                    [dataLabels]="chart.dataLabels"
+                    [xaxis]="chart.xaxis"
+                    [yaxis]="chart.yaxis"
+                    [stroke]="chart.stroke"
+                    [annotations]="chart.annotations"
+                    [grid]="{show: false}"
+                ></apx-chart>
+            </div>
+        </div>
+    </div>
+</div>

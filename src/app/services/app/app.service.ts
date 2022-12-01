@@ -49,7 +49,7 @@ export class AppService implements IAppService{
 	/**
 	 * App Bulk
 	 * In order for the GUI to operate and keep in sync with the server,
-	 * it retrieves, unpacks and broadcasts the IAppBulk every 60 seconds.
+	 * it retrieves, unpacks and broadcasts the IAppBulk every 120 seconds.
 	 * Additionally, the refreshing functionality can be invoked from any
 	 * module that can make use of the AppService.
 	 * The observables are initialized with null, once the communication
@@ -58,7 +58,7 @@ export class AppService implements IAppService{
 	 */
 	private appBulkStream?: Function;
 	private appBulkInterval: any;
-	private readonly appBulkIntervalMS: number = 60 * 1000; // Every 60 seconds
+	private readonly appBulkIntervalMS: number = 120 * 1000; // Every 120 seconds
 	public serverTime: BehaviorSubject<number|undefined|null> = new BehaviorSubject<number|undefined|null>(null);
 	public guiVersion: BehaviorSubject<string|undefined|null> = new BehaviorSubject<string|undefined|null>(null);
 	public epoch: BehaviorSubject<IEpochRecord|undefined|null> = new BehaviorSubject<IEpochRecord|undefined|null>(null);

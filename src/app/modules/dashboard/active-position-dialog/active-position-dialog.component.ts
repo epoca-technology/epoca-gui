@@ -1,7 +1,13 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
-import { IActivePosition, UtilsService } from "../../../core";
-import { IActivePositionDialogComponent } from './interfaces';
+import { 
+	IActivePosition, 
+	IPositionStrategy, 
+	IStrategyLevelID, 
+	PositionService, 
+	UtilsService 
+} from "../../../core";
+import { IActivePositionDialogComponent, IActivePositionDialogData } from './interfaces';
 
 @Component({
   selector: 'app-active-position-dialog',
@@ -9,14 +15,33 @@ import { IActivePositionDialogComponent } from './interfaces';
   styleUrls: ['./active-position-dialog.component.scss']
 })
 export class ActivePositionDialogComponent implements OnInit, IActivePositionDialogComponent {
+	// Inherited data
+	public strategy: IPositionStrategy;
+	public position: IActivePosition;
+
+	// Level
+	public levelNumber: number;
+	public marginAcum: number[] = [];
+
+	// Distances
 	public liquidationDistance: number;
 	public targetDistance: number|undefined;
 	public increaseDistance: number|undefined;
 	constructor(
 		public dialogRef: MatDialogRef<ActivePositionDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public position: IActivePosition,
-		private _utils: UtilsService
+		@Inject(MAT_DIALOG_DATA) private data: IActivePositionDialogData,
+		private _utils: UtilsService,
+		private _position: PositionService
 	) {
+		// Init values
+		this.strategy = this.data.strategy;
+		this.position = this.data.position;
+
+		// Level
+		const { current, next } = this._position.getStrategyState(this.strategy, this.position.isolated_wallet);
+		this.levelNumber = this._position.getLevelNumber(current.id);
+		this.marginAcum = this._position.getMarginAcums(this.strategy);
+
 		// Calculate the liquidation distance
 		const liquidationDistance: number = <number>this._utils.calculatePercentageChange(
 			this.position.mark_price, 
@@ -44,6 +69,11 @@ export class ActivePositionDialogComponent implements OnInit, IActivePositionDia
 	}
 
 	ngOnInit(): void {}
+
+
+
+
+
 
 	
 	/*

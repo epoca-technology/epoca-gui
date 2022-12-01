@@ -11,6 +11,7 @@ export interface IDashboardComponent {
     displayStrategyFormDialog(): void,
     displayBalanceDialog(): void,
     displayPositionDialog(position: IActivePosition): void,
+    displayStrategyBuilderDialog(side: IBinancePositionSide): void,
     displayFeaturesDialog(): void,
     displayKeyZoneDialog(): void
     

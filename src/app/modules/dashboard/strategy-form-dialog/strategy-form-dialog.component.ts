@@ -152,6 +152,7 @@ export class StrategyFormDialogComponent implements OnInit, OnDestroy, IStrategy
 						try {
 							// Set new version
 							await this._position.updateStrategy(this.strategy, otp);
+							await this._app.refreshAppBulk();
 	
 							// Notify
 							this._app.success("The strategy has been updated successfully.");
