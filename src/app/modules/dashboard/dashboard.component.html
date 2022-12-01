@@ -238,7 +238,7 @@
                                     [ngClass]="{'losing-position': position.long.roe < 0}"
                                     matTooltip="Margin: ${{position.long.isolated_wallet | number: '1.0-0'}}">
                                     LONG: 
-                                    {{position.long.roe > 0 ? '+': ''}}{{position.long.unrealized_pnl | number: '1.0-0'}} | 
+                                    {{position.long.roe > 0 ? '+': ''}}{{position.long.unrealized_pnl | number: '1.0-1'}} | 
                                     {{position.long.roe > 0 ? '+': ''}}{{position.long.roe | number: '1.0-1'}}%
                                 </div>
                                 <mat-menu #longMenu="matMenu">
@@ -293,7 +293,7 @@
                                     [ngClass]="{'losing-position': position.short.roe < 0}"
                                     matTooltip="Margin: ${{position.short.isolated_wallet | number: '1.0-0'}}">
                                     SHORT:
-                                    {{position.short.roe > 0 ? '+': ''}}{{position.short.unrealized_pnl | number: '1.0-0'}} | 
+                                    {{position.short.roe > 0 ? '+': ''}}{{position.short.unrealized_pnl | number: '1.0-1'}} | 
                                     {{position.short.roe > 0 ? '+': ''}}{{position.short.roe | number: '1.0-1'}}%
                                 </div>
                                 <mat-menu #shortMenu="matMenu">
