@@ -77,10 +77,12 @@
                 <!-- Level 2-->
                 <div>
                     <div fxLayout="row" fxLayoutAlign="center center">
+                        <p><strong>Level 2:&nbsp;&nbsp;</strong></p>
                         <div fxFlex>
-                            <p><strong>Level 2:</strong> {{strategy.level_2.size | currency}}</p>
+                            <p matTooltip="Margin Increase">{{strategy.level_2.size | currency}}</p>
+                            <p class="light-text ts-s" matTooltip="Accumulated Margin">~{{marginAcum[1] | currency}}</p>
                         </div>
-                        <div fxFlex>
+                        <div fxFlex="50">
                             <mat-form-field>
                                 <mat-label>Target</mat-label>
                                 <input type="number"
@@ -98,10 +100,12 @@
                 <!-- Level 3-->
                 <div>
                     <div fxLayout="row" fxLayoutAlign="center center">
+                        <p><strong>Level 3:&nbsp;&nbsp;</strong></p>
                         <div fxFlex>
-                            <p><strong>Level 3:</strong> {{strategy.level_3.size | currency}}</p>
+                            <p matTooltip="Margin Increase">{{strategy.level_3.size | currency}}</p>
+                            <p class="light-text ts-s" matTooltip="Accumulated Margin">~{{marginAcum[2] | currency}}</p>
                         </div>
-                        <div fxFlex>
+                        <div fxFlex="50">
                             <mat-form-field>
                                 <mat-label>Target</mat-label>
                                 <input type="number"
@@ -120,10 +124,12 @@
                 <!-- Level 4 -->
                 <div>
                     <div fxLayout="row" fxLayoutAlign="center center">
+                        <p><strong>Level 4:&nbsp;&nbsp;</strong></p>
                         <div fxFlex>
-                            <p><strong>Level 4:</strong> {{strategy.level_4.size | currency}}</p>
+                            <p matTooltip="Margin Increase">{{strategy.level_4.size | currency}}</p>
+                            <p class="light-text ts-s" matTooltip="Accumulated Margin">~{{marginAcum[3] | currency}}</p>
                         </div>
-                        <div fxFlex>
+                        <div fxFlex="50">
                             <mat-form-field>
                                 <mat-label>Target</mat-label>
                                 <input type="number"

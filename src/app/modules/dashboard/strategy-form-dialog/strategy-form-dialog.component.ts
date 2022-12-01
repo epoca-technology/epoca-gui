@@ -19,6 +19,7 @@ export class StrategyFormDialogComponent implements OnInit, OnDestroy, IStrategy
 
 	// Build
 	public strategy: IPositionStrategy;
+	public marginAcum: number[];
 
 	// Budget
 	public sideBudget: number = 0;
@@ -45,6 +46,7 @@ export class StrategyFormDialogComponent implements OnInit, OnDestroy, IStrategy
             level_3_target: new FormControl(this.strategy.level_3.target, [ Validators.required, Validators.min(0), Validators.max(10) ]),
             level_4_target: new FormControl(this.strategy.level_4.target, [ Validators.required, Validators.min(0), Validators.max(10) ]),
         });
+		this.marginAcum = this._position.getMarginAcums(this.strategy);
 		this.calculateBudget();
     }
 
@@ -96,6 +98,7 @@ export class StrategyFormDialogComponent implements OnInit, OnDestroy, IStrategy
 			this.strategy.level_4.size = <number>this._utils.outputNumber(this._utils.outputNumber(new BigNumber(this.strategy.level_3.size).times(2)));
 			this.strategy.level_4.target = <number>this._utils.outputNumber(this.level_4_target.value);
 
+			this.marginAcum = this._position.getMarginAcums(this.strategy);
 			this.calculateBudget();
 		}
 	}

@@ -25,6 +25,7 @@ import {
 } from "../../../services";
 import { IPredictionsComponent } from "./interfaces";
 import { EpochPredictionCandlestickDialogComponent, IPredictionCandlestickDialogData } from "./epoch-prediction-candlestick-dialog";
+import { IBottomSheetMenuItem } from "src/app/shared/components/bottom-sheet-menu";
 
 @Component({
   selector: "app-predictions",
@@ -43,6 +44,7 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
     // Prediction Candlesticks
     public candlesticks: IPredictionCandlestick[] = [];
     public candlesticksChart?: ICandlestickChartOptions;
+    private displayDays: number = 2;
 
     // Initialization State
     public initializing: boolean = false;
@@ -192,6 +194,7 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
         // If the days were provided, load the data right away
         if (typeof days == "number") {
             this.loaded = false;
+            this.displayDays = days;
             await this.loadCandlesticks(days);
             this.loaded = true;
         }
@@ -199,7 +202,7 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
         // Otherwise, prompt the menu with the options
         else {
             // Display the bottom sheet and handle the action
-            const bs: MatBottomSheetRef = this._nav.displayBottomSheetMenu([
+            const menu: IBottomSheetMenuItem[] = [
                 {icon: "waterfall_chart", title: "Last Day", description: "View 24 hours worth of data", response: "1"},
                 {icon: "waterfall_chart", title: "Last 2 Days", description: "View 48 hours worth of data", response: "2"},
                 {icon: "waterfall_chart", title: "Last 3 Days", description: "View 3 days worth of data", response: "3"},
@@ -211,11 +214,13 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
                 {icon: "waterfall_chart", title: "Last 2 Months", description: "View 60 days worth of data", response: "60"},
                 {icon: "waterfall_chart", title: "Last 3 Months", description: "View 90 days worth of data", response: "90"},
                 {icon: "waterfall_chart", title: "Last 6 Months", description: "View 120 days worth of data", response: "120"},
-            ]);
+            ];
+            const bs: MatBottomSheetRef = this._nav.displayBottomSheetMenu(menu.filter((mi) => Number(mi.response) != this.displayDays));
             bs.afterDismissed().subscribe(async (response: string|undefined) => {
                 if (response) {
                     this.loaded = false;
-                    await this.loadCandlesticks(Number(response));
+                    this.displayDays = Number(response);
+                    await this.loadCandlesticks(this.displayDays);
                     this.loaded = true;
                 }
             });

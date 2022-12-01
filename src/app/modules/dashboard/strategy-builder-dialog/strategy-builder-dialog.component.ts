@@ -1,5 +1,6 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild, ElementRef } from '@angular/core';
 import {MatDialogRef, MAT_DIALOG_DATA, MatDialog} from "@angular/material/dialog";
+import {AbstractControl, FormControl, FormGroup, Validators} from "@angular/forms";
 import { ApexAnnotations } from 'ng-apexcharts';
 import { 
 	IActivePosition, 
@@ -7,7 +8,11 @@ import {
 	IPositionStrategy, 
 	IKeyZoneState, 
 	IKeyZone, 
-	PositionService 
+	PositionService, 
+	UtilsService,
+	IStrategyLevelID,
+	IPositionStrategyLevel,
+	IPositionCalculatorTradeItem
 } from '../../../core';
 import { AppService, ChartService, ILineChartOptions } from '../../../services';
 import { IKeyZonesStateDialogData, KeyzoneStateDialogComponent } from '../keyzone-state-dialog';
@@ -15,7 +20,8 @@ import {
 	IStrategyBuilderDialogComponent, 
 	IStrategyBuilderDialogData, 
 	IStrategyColors,
-	IView
+	IView,
+	IStateItem
 } from './interfaces';
 
 @Component({
@@ -24,6 +30,10 @@ import {
   styleUrls: ['./strategy-builder-dialog.component.scss']
 })
 export class StrategyBuilderDialogComponent implements OnInit, IStrategyBuilderDialogComponent {
+    // Input Elements
+    @ViewChild("initPriceControl") initPriceControl? : ElementRef;
+    @ViewChild("increasePriceControl") increasePriceControl? : ElementRef;
+
 	// Inherited values
     public currentPrice: number;
     public keyZones: IKeyZoneState;
@@ -34,21 +44,19 @@ export class StrategyBuilderDialogComponent implements OnInit, IStrategyBuilderD
 	// Active view
 	public view: IView = "init";
 
-	//
+	// General information
 	public initialLevelNumber: number;
-	public levelNumber: number;
 	public marginAcum: number[];
 
-	public hist: any[] = [
-		{
-			levelNumber: 1,
-			level: { id : "level_1", size: 150, target: 1.5},
-			entry: 0,
-			target: 0,
-			increase: 0,
-			liquidation: 0
-		}
-	]
+	// Init Form
+	public initForm: FormGroup;
+
+	// Increase Form
+	public increaseForm: FormGroup;
+
+	// Strategy History
+	public hist: Array<IStateItem[]> = [];
+	public active!: IStateItem;
 
 	// Color Helpers
 	private longColors: IStrategyColors = {
@@ -74,7 +82,8 @@ export class StrategyBuilderDialogComponent implements OnInit, IStrategyBuilderD
 		private _app: AppService,
         private dialog: MatDialog,
 		private _chart: ChartService,
-		private _position: PositionService
+		private _position: PositionService,
+		private _utils: UtilsService
 	) { 
 		// Populate inherited values
 		this.currentPrice = this.data.currentPrice;
@@ -83,35 +92,47 @@ export class StrategyBuilderDialogComponent implements OnInit, IStrategyBuilderD
 		this.strategy = this.data.strategy;
 		this.position = this.data.position;
 
-		// Calculate the margin acums
+		// Calculate the current strategy state
 		const { current, next } = this._position.getStrategyState(
 			this.strategy,
 			this.position ? this.position.isolated_wallet: this.strategy.level_1.size
 		);
-		this.initialLevelNumber = this._position.getLevelNumber(current.id);
-		this.levelNumber = this.initialLevelNumber;
+
+		// Save the initial level so the builder can be leveled down
+		this.initialLevelNumber = this.position ? this._position.getLevelNumber(current.id): 1;
+
+		// Calculate the margin acums
 		this.marginAcum = this._position.getMarginAcums(this.strategy);
+
+		// Init the forms
+		this.initForm = new FormGroup ({
+            price: new FormControl(this.currentPrice, [ Validators.required, this.initPriceValid() ]),
+        });
+		this.increaseForm = new FormGroup ({
+            price: new FormControl("", [ Validators.required, this.increasePriceValid() ]),
+        });
 
 		// Select the range of colors based on the position
 		this.color = this.side == "LONG" ? this.longColors: this.shortColors;
 
 		// If a position is active, skip the initialization process
 		if (this.position) {
-
-			this.view = "chart";
+			this.initStrategy();
 		}
 
 		// Otherwise, activate the init form and focus the input
 		else {
-
+			setTimeout(() => { if (this.initPriceControl) this.initPriceControl.nativeElement.focus() }, 100);
 		}
-		this.chartChanged();
 	}
 
 	ngOnInit(): void {
 	}
 
 
+    /* Form Getters */
+	get initPrice(): AbstractControl { return <AbstractControl>this.initForm?.get("price") }
+	get increasePrice(): AbstractControl { return <AbstractControl>this.increaseForm?.get("price") }
 
 
 
@@ -120,15 +141,207 @@ export class StrategyBuilderDialogComponent implements OnInit, IStrategyBuilderD
 
 
 
+	/**
+	 * Initializes the strategy builder based on a given price.
+	 */
+	public initStrategy(): void {
+		// Initialize the strategy from scratch
+		if (!this.position && this.initForm.valid) {
+			// Build the item
+			const item: IStateItem = this.buildItem([
+				{ price: this.initPrice.value, margin: this.strategy.level_1.size }
+			])
+
+			// Add it to the history
+			this.hist.push([item]);
+			this.active = item;
+
+			// Reset the init form and set the chart view
+			this.initPrice.setValue(this.currentPrice);
+			this.chartChanged();
+			this.view = "chart";
+		}
+
+		// Initialize the strategy starting from the active position
+		else if (this.position) {
+			// Build the item
+			const item: IStateItem = this.buildItem([
+				{ price: this.position.entry_price, margin: this.position.isolated_wallet}
+			]);
+
+			// Add it to the history
+			this.hist.push([item]);
+			this.active = item;
+
+			// Reset the init form and set the chart view
+			this.initPrice.setValue(this.currentPrice);
+			this.chartChanged();
+			this.view = "chart";
+		}
+	}
+
+
+
+
+	
+
+
+
+
+	/**
+	 * Activates the level up form and sets the minimum increase
+	 * price.
+	 */
 	public levelUp(): void {
-
+		if (this.active) {
+			this.increasePrice.setValue(this.active.increase);
+			this.view = "increase";
+			setTimeout(() => { if (this.increasePriceControl) this.increasePriceControl.nativeElement.focus() }, 100);
+		}
 	}
 
 
 
+
+
+
+
+	/**
+	 * Adds a level to the current calculation history and updates
+	 * all values.
+	 */
+	public processLevelUp(): void {
+		if (this.increaseForm.valid) {
+			// Get the current state
+			const { current, next } = this._position.getStrategyState(this.strategy, this.marginAcum[this.active.levelNumber - 1]);
+
+			// Build the item
+			const item: IStateItem = this.buildItem([
+				{ price: this.active.entry, margin: this.marginAcum[this.active.levelNumber - 1]},
+				{ price: this.increasePrice.value, margin: next!.size}
+			]);
+
+			// Add it to the history
+			let newSequence = this.hist[this.hist.length - 1].slice();
+			newSequence.push(item);
+			this.hist.push(newSequence);
+			this.active = item;
+
+			// Reset the init form and set the chart view
+			this.increasePrice.setValue(item.increase);
+			this.chartChanged();
+			this.view = "chart";
+		}
+	}
+
+
+
+
+
+	/**
+	 * Cancels the level up form and goes back to the
+	 * chart.
+	 */
+	public cancelLevelUp(): void {
+		this.increasePrice.setValue(0);
+		this.view = "chart";
+	}
+
+
+
+
+
+
+
+	/**
+	 * Levels down a trade in the calculator.
+	 */
 	public levelDown(): void {
-		
+		// Slice the last item in the history
+		this.hist = this.hist.slice(0, this.hist.length - 1);
+
+		// Set the new active item
+		const currentStates: IStateItem[] = this.hist[this.hist.length - 1];
+		this.active = currentStates[currentStates.length - 1];
+
+		// Update the chart
+		this.chartChanged();
 	}
+
+
+
+
+
+
+	/* Misc Calculations */
+
+
+
+
+	/**
+	 * Builds an item to be appended to the strategy.
+	 * @param trades
+	 * @returns IStateItem
+	 */
+	private buildItem(trades: IPositionCalculatorTradeItem[]): IStateItem {
+		// Get the current state
+		const { current, next } = this._position.getStrategyState(
+			this.strategy, 
+			trades.reduce((partialSum, a) => partialSum + a.margin, 0)
+		);
+
+		// Calculate the current level number
+		const levelNumber: number = this._position.getLevelNumber(current.id);
+
+		// Calculate the position range
+		const { entry, liquidation} = this._position.calculatePositionPriceRange(
+			this.side,
+			this.strategy.leverage,
+			trades
+		);
+
+		// Calculate the target and the min increase price
+		const { target, increase } = this.calculateTargetAndIncrease(current, entry);
+
+		// Finally, return the item
+		return {
+			levelNumber: levelNumber,
+			level: current,
+			nextLevel: next,
+			entry: entry,
+			target: target,
+			increase: increase,
+			liquidation: liquidation
+		}
+	}
+
+
+
+	/**
+	 * Calculates the target and increase prices based on the
+	 * current level and the entry price.
+	 * @param level 
+	 * @param entryPrice 
+	 * @returns {target: number, increase: number}
+	 */
+	 private calculateTargetAndIncrease(level: IPositionStrategyLevel, entryPrice: number): {target: number, increase: number} { 
+		if (this.side == "LONG") {
+			return {
+				target: <number>this._utils.alterNumberByPercentage(entryPrice, level.target),
+				increase: <number>this._utils.alterNumberByPercentage(entryPrice, -(this.strategy.level_increase_requirement)),
+			}
+		} else {
+			return {
+				target: <number>this._utils.alterNumberByPercentage(entryPrice, -(level.target)),
+				increase: <number>this._utils.alterNumberByPercentage(entryPrice, this.strategy.level_increase_requirement),
+			}
+		}
+	}
+
+
+
+
+
 
 
 
@@ -138,40 +351,46 @@ export class StrategyBuilderDialogComponent implements OnInit, IStrategyBuilderD
 
 
 
+
+
+	/**
+	 * Triggers whenever there is a change in the strategy
+	 * and plots the new chart.
+	 */
 	private chartChanged(): void {
+		// Init the data series
+		let ids: IStrategyLevelID[] = [];
+		let entries: number[] = [];
+		let targets: number[] = [];
+		let increases: number[] = [];
+		let liquidations: number[] = [];
+
+		// Iterate over the last state and build the series data
+		for (let item of this.hist[this.hist.length - 1]) {
+			ids.push(item.level.id);
+			entries.push(item.entry);
+			targets.push(item.target);
+			increases.push(item.increase);
+			liquidations.push(item.liquidation);
+		}
+
         // Build/Update the chart
         if (this.chart) {
-            /*this.chart.series = [
-                {
-                    name: "Entry Price", 
-                    data: [], 
-                    color: this.color.entry
-                }
-            ]*/
+            this.chart.series = [
+				{ name: "Entry", data: entries, color: this.color.entry },
+				{ name: "Target", data: targets, color: this.color.target },
+				{ name: "Increase", data: increases, color: this.color.increase },
+				{ name: "Liquidation", data: liquidations, color: this.color.liquidation },
+			];
+			this.chart!.xaxis.categories = ids;
         } else {
             this.chart = this._chart.getLineChartOptions(
                 { 
                     series: [
-                        {
-                            name: "Entry", 
-                            data: [16755, 17285.55, 18285.55], 
-                            color: this.color.entry
-                        },
-                        {
-                            name: "Target", 
-                            data: [16655, 17115.43, 17415.43], 
-                            color: this.color.target
-                        },
-                        {
-                            name: "Increase", 
-                            data: [17905.33, 18248.43, 19031.43], 
-                            color: this.color.increase
-                        },
-                        {
-                            name: "Liquidation", 
-                            data: [21155.29, 22864.11, 24464.11], 
-                            color: this.color.liquidation
-                        },
+                        { name: "Entry", data: entries, color: this.color.entry },
+                        { name: "Target", data: targets, color: this.color.target },
+                        { name: "Increase", data: increases, color: this.color.increase },
+                        { name: "Liquidation", data: liquidations, color: this.color.liquidation },
                     ],
                     stroke: {
 						curve: "smooth", 
@@ -179,7 +398,7 @@ export class StrategyBuilderDialogComponent implements OnInit, IStrategyBuilderD
 						width: [3, 3, 2, 4]
 					},
 					xaxis: { 
-						categories: ["level_1", "level_2", "level_3"], 
+						categories: ids, 
 						tooltip: {enabled: false}, 
 						labels: { show: true }, 
 						axisTicks: { show: true}
@@ -221,6 +440,91 @@ export class StrategyBuilderDialogComponent implements OnInit, IStrategyBuilderD
 
         // Finally, return the annotations
         return annotations;
+	}
+
+
+
+
+
+
+
+
+
+
+	/* Form Validations */
+
+
+
+
+	/*
+	* Makes sure the entry price is within acceptable ranges.
+	* @returns (() => {invalid: boolean}|null)
+	* */
+	private initPriceValid(): (() => {invalid: boolean}|null) {
+		return (): {invalid: boolean}|null => {
+			if (this.initPrice && this.initPrice.value) {
+				const price: number = Number(this.initPrice.value);
+				try {
+					const minPrice: number = <number>this._utils.alterNumberByPercentage(this.currentPrice, -50);
+					const maxPrice: number = <number>this._utils.alterNumberByPercentage(this.currentPrice, 50);
+					if (price < minPrice || price > maxPrice) {
+						return {invalid: true};
+					} else {
+						return null;
+					}
+				} catch (e) {
+					return {invalid: true};
+				}
+			} else {
+				return {invalid: true};
+			}
+		};
+	}
+
+
+
+
+
+
+	/*
+	* Makes sure the increase price is within acceptable ranges.
+	* @returns (() => {invalid: boolean}|null)
+	* */
+	private increasePriceValid(): (() => {invalid: boolean}|null) {
+		return (): {invalid: boolean}|null => {
+			if (this.increasePrice && this.increasePrice.value && this.active) {
+				const price: number = Number(this.increasePrice.value);
+				try {
+					/**
+					 * If it is a long, the price must be greater than the liquidation price and less 
+					 * than the min increase price.
+					 */
+					if (this.side == "LONG") {
+						if (price > this.active.increase || price < this.active.liquidation) {
+							return {invalid: true};
+						} else {
+							return null;
+						}
+					}
+
+					/**
+					 * If it is a short, the price must be less than the liquidation price and greater 
+					 * than the min increase price.
+					 */
+					else {
+						if (price < this.active.increase || price > this.active.liquidation) {
+							return {invalid: true};
+						} else {
+							return null;
+						}
+					}
+				} catch (e) {
+					return {invalid: true};
+				}
+			} else {
+				return {invalid: true};
+			}
+		};
 	}
 
 
