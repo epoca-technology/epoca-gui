@@ -85,6 +85,9 @@ export interface IItemElement {
     y: number
 }
 export interface IPositionDataItem {
+    // The name of the data item
+    name: string,
+
     // The list of elements within the item
     elements: IItemElement[],
 

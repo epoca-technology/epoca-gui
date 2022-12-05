@@ -966,14 +966,14 @@ export class PredictionModelsComponent implements OnInit, OnDestroy, IPrediction
 		this.histChart.chart!.height = this._app.layout.value == "desktop" ? 550: 370;
 
 		// Add the click events
-		const self = this;
+		/*const self = this;
 		this.histChart.chart.events = {
 			click: function(e: any, cc: any, c: any) {
-				/*if (c.dataPointIndex >= 0 && self.cert!.backtest.positions[c.dataPointIndex]) {
+				if (c.dataPointIndex >= 0 && self.cert!.backtest.positions[c.dataPointIndex]) {
 					self.displayPosition(self.cert!.backtest.positions[c.dataPointIndex])
-				}*/
+				}
 			}
-		}
+		}*/
 	}
 
 

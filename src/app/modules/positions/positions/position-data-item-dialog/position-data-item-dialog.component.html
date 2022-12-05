@@ -1,0 +1,106 @@
+<mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <button mat-icon-button class="show-on-mobile" (click)="close()"><mat-icon>arrow_back</mat-icon></button>
+        <span class="truncate">{{items.length == 1 ? items[0].name: 'Data'}}</span>
+        <span fxFlex></span>
+        <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
+    </div>
+</mat-toolbar>
+<div mat-dialog-content>
+    <!-- Single Item -->
+    <div *ngIf="items.length == 1" class="fadeIn padding">
+        <!-- Count -->
+        <div class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p class="truncate light-text">Count</p>
+            <span fxFlex></span>
+            <p matTooltip="Elements in the data item.">{{items[0].elements.length}}</p>
+        </div>
+
+        <!-- Accumulated -->
+        <div class="row" fxLayout="row" fxLayoutAlign="start center" *ngIf="items[0].lastAccum != 0">
+            <p class="truncate light-text">Accumulated</p>
+            <span fxFlex></span>
+            <p matTooltip="The total value accumulated in the date range.">{{items[0].lastAccum | number}}</p>
+        </div>
+
+        <!-- Last Value -->
+        <div class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p class="truncate light-text">Last</p>
+            <span fxFlex></span>
+            <p matTooltip="The last value within the date range">{{items[0].last | number}}</p>
+        </div>
+
+        <!-- Mean -->
+        <div class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p class="truncate light-text">Mean</p>
+            <span fxFlex></span>
+            <p matTooltip="The mean of all the values within the date range">{{items[0].mean | number}}</p>
+        </div>
+
+        <!-- Min -->
+        <div class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p class="truncate light-text">Min</p>
+            <span fxFlex></span>
+            <p matTooltip="The lowest of all the values within the date range">{{items[0].min | number}}</p>
+        </div>
+
+        <!-- Max -->
+        <div class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p class="truncate light-text">Max</p>
+            <span fxFlex></span>
+            <p matTooltip="The highest of all the values within the date range">{{items[0].max | number}}</p>
+        </div>
+    </div>
+
+    <!-- Multi Items -->
+    <div *ngIf="items.length > 1">
+        <!-- Tabs -->
+        <mat-tab-group backgroundColor="primary">
+            <mat-tab *ngFor="let item of items" [label]="item.name">
+                <div class="padding fadeIn">
+                    <!-- Count -->
+                    <div class="row" fxLayout="row" fxLayoutAlign="start center">
+                        <p class="truncate light-text">Count</p>
+                        <span fxFlex></span>
+                        <p matTooltip="Elements in the data item.">{{item.elements.length}}</p>
+                    </div>
+
+                    <!-- Accumulated -->
+                    <div class="row" fxLayout="row" fxLayoutAlign="start center" *ngIf="item.lastAccum != 0">
+                        <p class="truncate light-text">Accumulated</p>
+                        <span fxFlex></span>
+                        <p matTooltip="The total value accumulated in the date range.">{{item.lastAccum | number}}</p>
+                    </div>
+
+                    <!-- Last Value -->
+                    <div class="row" fxLayout="row" fxLayoutAlign="start center">
+                        <p class="truncate light-text">Last</p>
+                        <span fxFlex></span>
+                        <p matTooltip="The last value within the date range">{{item.last | number}}</p>
+                    </div>
+
+                    <!-- Mean -->
+                    <div class="row" fxLayout="row" fxLayoutAlign="start center">
+                        <p class="truncate light-text">Mean</p>
+                        <span fxFlex></span>
+                        <p matTooltip="The mean of all the values within the date range">{{item.mean | number}}</p>
+                    </div>
+
+                    <!-- Min -->
+                    <div class="row" fxLayout="row" fxLayoutAlign="start center">
+                        <p class="truncate light-text">Min</p>
+                        <span fxFlex></span>
+                        <p matTooltip="The lowest of all the values within the date range">{{item.min | number}}</p>
+                    </div>
+
+                    <!-- Max -->
+                    <div class="row" fxLayout="row" fxLayoutAlign="start center">
+                        <p class="truncate light-text">Max</p>
+                        <span fxFlex></span>
+                        <p matTooltip="The highest of all the values within the date range">{{item.max | number}}</p>
+                    </div>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+    </div>
+</div>

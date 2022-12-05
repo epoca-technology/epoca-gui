@@ -259,31 +259,31 @@ export class PositionDataService implements IPositionDataService {
 		this.end = endAt;
 
 		// Build the Items
-		this.pnl = this.buildItem(pnl);
-		this.longPNL = this.buildItem(longPNL);
-		this.shortPNL = this.buildItem(shortPNL);
-		this.fees = this.buildItem(fees);
-		this.longFees = this.buildItem(longFees);
-		this.shortFees = this.buildItem(shortFees);
-		this.prices = this.buildItem(prices);
-		this.longPrices = this.buildItem(longPrices);
-		this.longIncreasePrices = this.buildItem(longIncreasePrices);
-		this.longClosePrices = this.buildItem(longClosePrices);
-		this.shortPrices = this.buildItem(shortPrices);
-		this.shortIncreasePrices = this.buildItem(shortIncreasePrices);
-		this.shortClosePrices = this.buildItem(shortClosePrices);
-		this.amounts = this.buildItem(amounts);
-		this.longAmounts = this.buildItem(longAmounts);
-		this.longIncreaseAmounts = this.buildItem(longIncreaseAmounts);
-		this.longCloseAmounts = this.buildItem(longCloseAmounts);
-		this.shortAmounts = this.buildItem(shortAmounts);
-		this.shortIncreaseAmounts = this.buildItem(shortIncreaseAmounts);
-		this.shortCloseAmounts = this.buildItem(shortCloseAmounts);
+		this.pnl = this.buildItem("PNL", pnl);
+		this.longPNL = this.buildItem("Long PNL", longPNL);
+		this.shortPNL = this.buildItem("Short PNL", shortPNL);
+		this.fees = this.buildItem("Fees", fees);
+		this.longFees = this.buildItem("Long Fees", longFees);
+		this.shortFees = this.buildItem("Short Fees", shortFees);
+		this.prices = this.buildItem("Prices", prices, true);
+		this.longPrices = this.buildItem("Long Prices", longPrices, true);
+		this.longIncreasePrices = this.buildItem("Long Incr. Prices", longIncreasePrices, true);
+		this.longClosePrices = this.buildItem("Long Close Prices", longClosePrices, true);
+		this.shortPrices = this.buildItem("Short Prices", shortPrices, true);
+		this.shortIncreasePrices = this.buildItem("Short Incr. Prices", shortIncreasePrices, true);
+		this.shortClosePrices = this.buildItem("Short Close Prices", shortClosePrices, true);
+		this.amounts = this.buildItem("Amounts", amounts);
+		this.longAmounts = this.buildItem("Long Amounts", longAmounts);
+		this.longIncreaseAmounts = this.buildItem("Long Incr. Amounts", longIncreaseAmounts);
+		this.longCloseAmounts = this.buildItem("Long Close Amounts", longCloseAmounts);
+		this.shortAmounts = this.buildItem("Short Amounts", shortAmounts);
+		this.shortIncreaseAmounts = this.buildItem("Short Incr. Amounts", shortIncreaseAmounts);
+		this.shortCloseAmounts = this.buildItem("Short Close Amounts", shortCloseAmounts);
 
 		// Calculate the bottom line
-		this.subTotal = this.pnl.lastAccum;
-		this.feesTotal = this.fees.lastAccum;
-		this.netProfit = this.subTotal - this.feesTotal;
+		this.subTotal = <number>this._utils.outputNumber(this.pnl.lastAccum);
+		this.feesTotal = <number>this._utils.outputNumber(this.fees.lastAccum);
+		this.netProfit = <number>this._utils.outputNumber(this.subTotal - this.feesTotal);
 	}
 
 
@@ -301,10 +301,12 @@ export class PositionDataService implements IPositionDataService {
 
 	/**
 	 * Builds an item based on a list of numbers.
-	 * @param values 
+	 * @param name
+	 * @param values
+	 * @param ignoreAccum?
 	 * @returns IPositionDataItem
 	 */
-	private buildItem(values: IItemElement[]): IPositionDataItem {
+	private buildItem(name: string, values: IItemElement[], ignoreAccum?: boolean): IPositionDataItem {
 		// Make sure there are items in the list
 		if (values.length) {
 			// Init values
@@ -317,21 +319,24 @@ export class PositionDataService implements IPositionDataService {
 				rawValues.push(v.y);
 
 				// Add the accumulation to the list
-				accum.push({
-					x: v.x,
-					y: accum.length ? <number>this._utils.outputNumber(accum[accum.length - 1].y + v.y): v.y
-				});
+				if (!ignoreAccum) {
+					accum.push({
+						x: v.x,
+						y: accum.length ? <number>this._utils.outputNumber(accum[accum.length - 1].y + v.y): v.y
+					});
+				}
 			}
 
 			// Finally, return the build
 			return {
+				name: name,
 				elements: values,
 				elementsAccum: accum,
 				min: <number>this._utils.getMin(rawValues),
 				max: <number>this._utils.getMax(rawValues),
 				mean: <number>this._utils.getMean(rawValues),
 				last: values[values.length - 1].y,
-				lastAccum: accum[accum.length - 1].y,
+				lastAccum: ignoreAccum ? 0: accum[accum.length - 1].y
 			}
 		} 
 		
@@ -349,6 +354,7 @@ export class PositionDataService implements IPositionDataService {
 	 */
 	private getDefaultItemBuild(): IPositionDataItem {
 		return {
+			name: "",
 			elements: [],
 			elementsAccum: [],
 			min: 0,
