@@ -1273,30 +1273,39 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         let pnlClass: string = "light-text";
         if (position.unrealized_pnl > 0) { pnlClass = "success-color" }
         else if (position.unrealized_pnl < 0) { pnlClass = "error-color" }
+        let confirmContent: string = `
+            <table class="confirmation-dialog-table bordered">
+                <tbody>
+                    <tr>
+                        <td><strong>Entry</strong></td>
+                        <td class="align-right">$${position.entry_price}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Exit</strong></td>
+                        <td class="align-right">$${position.mark_price}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Margin</strong></td>
+                        <td class="align-right">$${position.isolated_margin}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>PNL</strong></td>
+                        <td class="align-right"><strong><span class="${pnlClass}">$${position.unrealized_pnl} (${position.roe}%)</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        `;
+        if (position.unrealized_pnl < 0) {
+            confirmContent += `
+                <p class="margin-top align-center ts-m">
+                    <strong>Warning:</strong> you're about to close a <strong>${side}</strong> position with a 
+                    <strong class="error-color">negative PNL</strong>
+                </p>
+            `;
+        }
         this._nav.displayConfirmationDialog({
             title: `Close ${side}`,
-            content: `
-                <table class="confirmation-dialog-table bordered">
-                    <tbody>
-                        <tr>
-                            <td><strong>Entry</strong></td>
-                            <td class="align-right">$${position.entry_price}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Exit</strong></td>
-                            <td class="align-right">$${position.mark_price}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Margin</strong></td>
-                            <td class="align-right">$${position.isolated_margin}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>PNL</strong></td>
-                            <td class="align-right"><strong><span class="${pnlClass}">$${position.unrealized_pnl} (${position.roe}%)</strong></td>
-                        </tr>
-                    </tbody>
-                </table>
-            `,
+            content: confirmContent,
             otpConfirmation: true
         }).afterClosed().subscribe(
             async (otp: string|undefined) => {

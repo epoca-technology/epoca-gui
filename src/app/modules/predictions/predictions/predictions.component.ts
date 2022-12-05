@@ -8,9 +8,7 @@ import { ApexAnnotations } from "ng-apexcharts";
 import * as moment from "moment";
 import { 
     IEpochRecord, 
-    IPrediction, 
     IPredictionCandlestick, 
-    IPredictionState, 
     LocalDatabaseService, 
     PredictionService
 } from "../../../core";
@@ -19,13 +17,12 @@ import {
     ChartService, 
     ICandlestickChartOptions, 
     ILayout, 
-    ILineChartOptions, 
     NavService, 
     ValidationsService 
 } from "../../../services";
-import { IPredictionsComponent } from "./interfaces";
 import { EpochPredictionCandlestickDialogComponent, IPredictionCandlestickDialogData } from "./epoch-prediction-candlestick-dialog";
 import { IBottomSheetMenuItem } from "src/app/shared/components/bottom-sheet-menu";
+import { IPredictionsComponent } from "./interfaces";
 
 @Component({
   selector: "app-predictions",
@@ -37,7 +34,7 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
 	public layout: ILayout = this._app.layout.value;
 	private layoutSub?: Subscription;
 
-    // Active Prediction
+    // Active Epoch
     public epoch: IEpochRecord|null = null;
     private epochSub?: Subscription;
 
@@ -77,7 +74,7 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
          * first epoch value is emmited
          */
          this.epochSub = this._app.epoch.subscribe(async (e: IEpochRecord|undefined|null) => {
-            if (e != null && !this.initialized) {
+            if (e !== null && !this.initialized) {
                 // Kill the subscription
                 if (this.epochSub) this.epochSub.unsubscribe();
 
@@ -98,7 +95,7 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
                 // Set the init state
                 this.initializing = false;
                 this.initialized = true;
-            } else if (e == undefined) { this.initialized = true  }
+            } else if (e === undefined) { this.initialized = true  }
         });
     }
 

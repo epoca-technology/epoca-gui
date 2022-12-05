@@ -1,20 +1,406 @@
-<!-- Secondary Header -->
-<mat-toolbar class="secondary-header">
-    <div fxLayout="row" fxLayoutAlign="center center">
-        <span>Positions</span>
-        <span fxFlex></span>
-    </div>
-</mat-toolbar>
+<!-- Section Container -->
+<mat-drawer-container class="section-container">
 
-<!-- Loader -->
-<div *ngIf="!loaded" class="section-loader">
-    <div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div>
-</div>
+    <!-- Main Sidenav -->
+    <mat-drawer #positionSidenav [(opened)]="positionSidenavOpened" class="sidenav" position="start" mode="over" autoFocus="false">
+        <!-- Menu Heading Toolbar -->
+        <mat-toolbar color="primary">
+            <div fxLayout="row" fxLayoutAlign="start center">
+                <button mat-icon-button (click)="positionSidenav?.toggle()"><mat-icon>arrow_back</mat-icon></button>
+                <span class="truncate clickable" (click)="displayPredictionModel()">
+                    {{epoch ? epoch.id + ' Positions': 'Positions'}}
+                </span>
+                <span fxFlex></span>
+            </div>
+        </mat-toolbar>
 
-<!-- Content -->
-<div *ngIf="loaded" [ngClass]="{'section-content': layout == 'mobile'}">
-    <p>@TODO</p>
+        <!-- Menu Content -->
+        <mat-list>
+            <mat-list-item *ngFor="let item of sections">
+                <button mat-button class="left-icon-button" 
+                        (click)="activateSection(item.id)" 
+                        [disabled]="activeSection.id == item.id">
+                    <mat-icon *ngIf="item.svgIcon" [svgIcon]="item.svgIcon"></mat-icon>
+                    <mat-icon *ngIf="item.icon">{{item.icon}}</mat-icon>
+                    <span>{{item.name}}</span>
+                </button>
+            </mat-list-item>
+        </mat-list>
+    </mat-drawer>
 
-    <!-- Mobile Tabs -->
-    <app-mobile-tabs *ngIf="layout == 'mobile'"></app-mobile-tabs>
-</div>
+
+    <!-- Section Content -->
+    <mat-drawer-content>
+        <div>
+            <!-- Section Header -->
+            <mat-toolbar class="secondary-header">
+                <div fxLayout="row" fxLayoutAlign="center center">
+                    <button mat-icon-button (click)="positionSidenav?.toggle()" class="show-on-mobile"><mat-icon>menu</mat-icon></button>
+                    <span class="truncate">{{epoch ? activeSection.name: 'Positions'}}</span>
+                    <span fxFlex></span>
+
+                    <!-- View Size -->
+                    <button mat-button 
+                        *ngIf="epoch && loaded"
+                        [disabled]="submitting"
+                        matTooltip="Current Range: {{_d.start | date: 'short'}} - {{_d.end | date: 'short'}}"
+                        (click)="changeViewSize()"><mat-icon>date_range</mat-icon> {{viewSize}}</button>
+
+                    <!-- Close Epoch-->
+                    <button mat-icon-button 
+                            *ngIf="epoch && loaded"
+                            [disabled]="submitting"
+                            matTooltip="Close {{epoch.id}}"
+                            (click)="initializeEpochData()"><mat-icon>close</mat-icon></button>
+                </div>
+            </mat-toolbar>
+
+
+
+            <!-- Section Content -->
+            <div [ngClass]="{'section-content': layout == 'mobile'}">
+                <!-- Initialization Loader -->
+                <div *ngIf="!initialized && initializing" class="section-loader">
+                    <div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div>
+                </div>
+
+                <!-- Epoch Menu -->
+                <div *ngIf="initialized && !epoch" fxLayout="row" fxLayoutAlign="center center" class="padding">
+                    <div fxFlex="30" fxFlex.xs="100" fxFlex.sm="100">
+                        <app-epochs-menu (epochID)="initializeEpochData($event)"></app-epochs-menu>
+                    </div>
+                </div>
+
+                <!-- Prediction Container -->
+                <div *ngIf="initialized && epoch">
+                    <!-- Loader -->
+                    <div *ngIf="!loaded" class="section-loader">
+                        <div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div>
+                    </div>
+
+                    <!-- No trades in range-->
+                    <p *ngIf="loaded && !_d.query.length" class="light-text align-center margin-top-x3 fadeIn">No trades were found</p>
+
+                    <!-- Prediction Candlesticks -->
+                    <div *ngIf="loaded && _d.query.length" class="fadeIn">
+                        <div fxLayout="row">
+                            <!-- Desktop Sidenav -->
+                            <div *ngIf="layout == 'desktop'" class="desktop-sidenav">
+                                <mat-list>
+                                    <div mat-subheader class="truncate clickable" (click)="displayPredictionModel()">
+                                        {{epoch ? epoch.id + ' Positions': 'Positions'}}
+                                    </div>
+                                    <mat-list-item *ngFor="let item of sections">
+                                        <button mat-button 
+                                                class="left-icon-button" 
+                                                (click)="activateSection(item.id)" [disabled]="activeSection.id == item.id">
+                                            <mat-icon *ngIf="item.svgIcon" [svgIcon]="item.svgIcon"></mat-icon>
+                                            <mat-icon *ngIf="item.icon">{{item.icon}}</mat-icon>
+                                            <span>{{item.name}}</span>
+                                        </button>
+                                    </mat-list-item>
+                                </mat-list>
+                            </div>
+
+                            <!-- Content -->
+                            <div fxFlex>
+                                <!-- Loader -->
+                                <div *ngIf="!sectionLoaded" class="loader">
+                                    <div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div>
+                                </div>
+
+                                <!-- Section Content -->
+                                <div *ngIf="sectionLoaded" class="fadeIn">
+
+                                    <!-- Summary -->
+                                    <div *ngIf="activeSection.id == 'summary' && summary" class="padding">
+                                        <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" class="full-width">
+                                            <!-- PNL History, Position Trades & PNL -->
+                                            <div fxFlex="49" fxFlex.xs="100" fxFlex.sm="100">
+
+                                                <!-- PNL History -->
+                                                <div class="desktop-card">
+                                                    <!-- Header -->
+                                                    <div fxLayout="row" fxLayoutAlign="center center" class="chart-header">
+                                                        <h4>PNL History</h4>
+                                                        <span fxFlex></span>
+                                                        <div [ngClass]="{
+                                                            'square-badge-neutral': _d.pnl.lastAccum == 0,
+                                                            'square-badge-success': _d.pnl.lastAccum > 0,
+                                                            'square-badge-error': _d.pnl.lastAccum < 0
+                                                        }" matTooltip="Realized PNL">
+                                                        {{_d.pnl.lastAccum > 0 ? '+':''}}{{_d.pnl.lastAccum | currency}}
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Chart -->
+                                                    <div class="chart">
+                                                        <apx-chart
+                                                            [series]="summary.pnlHist.series"
+                                                            [chart]="summary.pnlHist.chart"
+                                                            [dataLabels]="summary.pnlHist.dataLabels"
+                                                            [xaxis]="summary.pnlHist.xaxis"
+                                                            [yaxis]="summary.pnlHist.yaxis"
+                                                            [stroke]="summary.pnlHist.stroke"
+                                                        ></apx-chart>
+                                                    </div>
+                                                </div>
+
+                                                <div class="divider show-on-mobile"></div>
+
+                                                <!-- Position Trades & PNL -->
+                                                <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" class="full-width">
+                                                    <div fxFlex="48">
+                                                        <div class="desktop-card">
+                                                            <!-- Header -->
+                                                            <div fxLayout="row" fxLayoutAlign="center center" class="chart-header">
+                                                                <h4>Trades</h4>
+                                                                <span fxFlex></span>
+                                                                <div class="square-badge" matTooltip="Total Trades">
+                                                                    {{_d.longTrades + _d.shortTrades| number}}
+                                                                </div>
+                                                            </div>
+        
+                                                            <!-- Chart -->
+                                                            <div class="chart">
+                                                                <apx-chart
+                                                                    [series]="summary.trades.series"
+                                                                    [chart]="summary.trades.chart"
+                                                                    [plotOptions]="summary.trades.plotOptions"
+                                                                    [xaxis]="summary.trades.xaxis"
+                                                                    [yaxis]="summary.trades.yaxis"
+                                                                    [dataLabels]="summary.trades.dataLabels"
+                                                                    [colors]="summary.trades.colors"
+                                                                    [grid]="summary.trades.grid"
+                                                                    [legend]="{position: 'bottom'}"
+                                                                ></apx-chart>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="divider show-on-mobile"></div>
+                                                    <span fxFlex></span>
+                                                    <div fxFlex="48">
+                                                        <div class="desktop-card">
+                                                            <!-- Header -->
+                                                            <div fxLayout="row" fxLayoutAlign="center center" class="chart-header">
+                                                                <h4>PNL</h4>
+                                                                <span fxFlex></span>
+                                                                <div class="square-badge-success margin-right" matTooltip="Long PNL">
+                                                                    {{_d.longPNL.lastAccum > 0 ? '+': ''}}{{_d.longPNL.lastAccum | currency}}
+                                                                </div>
+                                                                <div class="square-badge-error" matTooltip="Short PNL">
+                                                                    {{_d.shortPNL.lastAccum > 0 ? '+': ''}}{{_d.shortPNL.lastAccum | currency}}
+                                                                </div>
+                                                            </div>
+        
+                                                            <!-- Chart -->
+                                                            <div class="chart">
+                                                                <apx-chart
+                                                                    [series]="summary.pnl.series"
+                                                                    [chart]="summary.pnl.chart"
+                                                                    [plotOptions]="summary.pnl.plotOptions"
+                                                                    [xaxis]="summary.pnl.xaxis"
+                                                                    [yaxis]="summary.pnl.yaxis"
+                                                                    [dataLabels]="summary.pnl.dataLabels"
+                                                                    [colors]="summary.pnl.colors"
+                                                                    [grid]="summary.pnl.grid"
+                                                                    [legend]="{position: 'bottom'}"
+                                                                ></apx-chart>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="divider show-on-mobile"></div>
+                                            <span fxFlex></span>
+
+                                            <!-- General Info -->
+                                            <div fxFlex="49" fxFlex.xs="100" fxFlex.sm="100">
+
+                                                <!-- Bottom Line & Fees -->
+                                                <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" class="full-width">
+
+                                                    <!-- Bottom Line -->
+                                                    <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100">
+                                                        <div class="desktop-card">
+                                                            <!-- Header -->
+                                                            <div fxLayout="row" fxLayoutAlign="center center" class="chart-header">
+                                                                <h4>Bottom Line</h4>
+                                                                <span fxFlex></span>
+                                                                <div [ngClass]="{
+                                                                    'square-badge-neutral': _d.netProfit == 0,
+                                                                    'square-badge-success': _d.netProfit > 0,
+                                                                    'square-badge-error': _d.netProfit < 0
+                                                                }" matTooltip="Net Profit">
+                                                                    {{_d.netProfit > 0 ? '+':''}}{{_d.netProfit | currency}}
+                                                                </div>
+                                                            </div>
+        
+                                                            <!-- Chart -->
+                                                            <div class="chart">
+                                                                <apx-chart
+                                                                    [series]="summary.bottomLine.series"
+                                                                    [chart]="summary.bottomLine.chart"
+                                                                    [plotOptions]="summary.bottomLine.plotOptions"
+                                                                    [xaxis]="summary.bottomLine.xaxis"
+                                                                    [yaxis]="summary.bottomLine.yaxis"
+                                                                    [dataLabels]="summary.bottomLine.dataLabels"
+                                                                    [colors]="summary.bottomLine.colors"
+                                                                    [grid]="summary.bottomLine.grid"
+                                                                    [legend]="{show: true, position: 'bottom'}"
+                                                                ></apx-chart>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="divider show-on-mobile"></div>
+                                                    <span fxFlex></span>
+
+
+                                                    <!-- Fees -->
+                                                    <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100">
+                                                        <div class="desktop-card">
+                                                            <!-- Header -->
+                                                            <div fxLayout="row" fxLayoutAlign="center center" class="chart-header">
+                                                                <h4>Fees</h4>
+                                                                <span fxFlex></span>
+                                                                <div class="square-badge" matTooltip="Total Fees">
+                                                                    ~{{_d.feesTotal | currency}}
+                                                                </div>
+                                                            </div>
+        
+                                                            <!-- Chart -->
+                                                            <div class="chart">
+                                                                <apx-chart
+                                                                    [series]="summary.fees.series"
+                                                                    [chart]="summary.fees.chart"
+                                                                    [plotOptions]="summary.fees.plotOptions"
+                                                                    [xaxis]="summary.fees.xaxis"
+                                                                    [yaxis]="summary.fees.yaxis"
+                                                                    [dataLabels]="summary.fees.dataLabels"
+                                                                    [colors]="summary.fees.colors"
+                                                                    [grid]="summary.fees.grid"
+                                                                    [legend]="{show: true, position: 'bottom'}"
+                                                                ></apx-chart>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="divider show-on-mobile"></div>
+
+                                               
+                                                <!-- Amounts & Prices -->
+                                                <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" class="full-width">
+
+                                                    <!-- Amounts -->
+                                                    <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100">
+                                                        <div class="desktop-card">
+                                                            <!-- Header -->
+                                                            <div fxLayout="row" fxLayoutAlign="center center" class="chart-header">
+                                                                <h4>Amounts</h4>
+                                                                <span fxFlex></span>
+                                                                <div class="square-badge" matTooltip="Total amount traded">
+                                                                    {{_d.amounts.lastAccum| currency}}
+                                                                </div>
+                                                            </div>
+        
+                                                            <!-- Chart -->
+                                                            <div class="chart">
+                                                                <apx-chart
+                                                                    [series]="summary.amounts.series"
+                                                                    [chart]="summary.amounts.chart"
+                                                                    [plotOptions]="summary.amounts.plotOptions"
+                                                                    [xaxis]="summary.amounts.xaxis"
+                                                                    [yaxis]="summary.amounts.yaxis"
+                                                                    [dataLabels]="summary.amounts.dataLabels"
+                                                                    [colors]="summary.amounts.colors"
+                                                                    [grid]="summary.amounts.grid"
+                                                                    [legend]="{show: true, position: 'bottom'}"
+                                                                ></apx-chart>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="divider show-on-mobile"></div>
+                                                    <span fxFlex></span>
+
+
+                                                    <!-- Prices -->
+                                                    <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100">
+                                                        <div class="desktop-card">
+                                                            <!-- Header -->
+                                                            <div fxLayout="row" fxLayoutAlign="center center" class="chart-header">
+                                                                <h4>Prices</h4>
+                                                                <span fxFlex></span>
+                                                                <div class="square-badge" matTooltip="The mean of all the prices">
+                                                                    ~{{_d.prices.mean | currency}}
+                                                                </div>
+                                                            </div>
+        
+                                                            <!-- Chart -->
+                                                            <div class="chart">
+                                                                <apx-chart
+                                                                    [series]="summary.prices.series"
+                                                                    [chart]="summary.prices.chart"
+                                                                    [plotOptions]="summary.prices.plotOptions"
+                                                                    [xaxis]="summary.prices.xaxis"
+                                                                    [yaxis]="summary.prices.yaxis"
+                                                                    [dataLabels]="summary.prices.dataLabels"
+                                                                    [colors]="summary.prices.colors"
+                                                                    [grid]="summary.prices.grid"
+                                                                    [legend]="{show: true, position: 'bottom'}"
+                                                                ></apx-chart>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- PNL -->
+                                    <div *ngIf="activeSection.id == 'pnl'">
+                                        <p>PNL</p>
+                                    </div>
+
+                                    <!-- Fees -->
+                                    <div *ngIf="activeSection.id == 'fees'">
+                                        <p>Fees</p>
+                                    </div>
+
+                                    <!-- Amounts -->
+                                    <div *ngIf="activeSection.id == 'amounts'">
+                                        <p>Amounts</p>
+                                    </div>
+
+                                    <!-- Prices -->
+                                    <div *ngIf="activeSection.id == 'prices'">
+                                        <p>Prices</p>
+                                    </div>
+
+                                    <!-- Trades -->
+                                    <div *ngIf="activeSection.id == 'trades'">
+                                        <p>Trades</p>
+                                    </div>
+
+                                    <!-- History -->
+                                    <div *ngIf="activeSection.id == 'history'">
+                                        <p>History</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- Mobile Tabs -->
+        <app-mobile-tabs *ngIf="layout == 'mobile'"></app-mobile-tabs>
+    </mat-drawer-content>
+</mat-drawer-container>

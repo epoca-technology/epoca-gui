@@ -10,7 +10,8 @@ import {
     IBinanceLeverageTiers,
     IPositionCalculatorTradeItem,
     IPositionPriceRange,
-    IStrategyLevelID
+    IStrategyLevelID,
+    IPositionTrade
 } from './interfaces';
 
 @Injectable({
@@ -300,11 +301,27 @@ export class PositionService implements IPositionService {
 
 
 
-    /********************
-     * Position History *
-     ********************/
+    /*******************
+     * Position Trades *
+     *******************/
 
 
 
 
+	/**
+	 * Lists all the position trades (inclusively) within the date range.
+	 * @param startAt 
+	 * @param endAt 
+	 * @returns Promise<IPositionTrade[]>
+	 */
+     public listTrades(startAt: number, endAt: number): Promise<IPositionTrade[]> {
+		return this._api.request(
+            "get","position/listTrades", 
+            {
+                startAt: startAt,
+                endAt: endAt
+            }, 
+            true
+        );
+	}
 }

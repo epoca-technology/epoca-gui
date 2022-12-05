@@ -79,6 +79,7 @@ import {
 
 	// Position
 	PositionService,
+	PositionDataService,
 
 	// Prediction
 	PredictionService,
@@ -211,6 +212,7 @@ import { AppComponent } from "./app.component";
 
 		// Position
 		PositionService,
+		PositionDataService,
 
 		// Prediction
 		PredictionService,
