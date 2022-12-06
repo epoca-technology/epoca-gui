@@ -235,11 +235,11 @@
                                 <div *ngIf="position.long" 
                                     class="clickable square-badge-success position-badge truncate" role="button" matRipple
                                     [matMenuTriggerFor]="longMenu"
-                                    [ngClass]="{'losing-position': position.long.roe < 0}"
+                                    [ngClass]="{'losing-position': position.long.unrealized_pnl < 0}"
                                     matTooltip="Margin: ${{position.long.isolated_wallet | number: '1.0-0'}}">
                                     LONG: 
-                                    {{position.long.roe > 0 ? '+': ''}}{{position.long.unrealized_pnl | number: '1.0-1'}} | 
-                                    {{position.long.roe > 0 ? '+': ''}}{{position.long.roe | number: '1.0-1'}}%
+                                    {{position.long.unrealized_pnl > 0 ? '+': ''}}{{position.long.unrealized_pnl | number: '1.1-1'}} | 
+                                    {{position.long.roe > 0 ? '+': ''}}{{position.long.roe | number: '1.1-1'}}%
                                 </div>
                                 <mat-menu #longMenu="matMenu">
                                     <button mat-menu-item 
@@ -290,11 +290,11 @@
                                 <div *ngIf="position.short" 
                                     class="clickable square-badge-error position-badge truncate" role="button" matRipple
                                     [matMenuTriggerFor]="shortMenu"
-                                    [ngClass]="{'losing-position': position.short.roe < 0}"
+                                    [ngClass]="{'losing-position': position.short.unrealized_pnl < 0}"
                                     matTooltip="Margin: ${{position.short.isolated_wallet | number: '1.0-0'}}">
                                     SHORT:
-                                    {{position.short.roe > 0 ? '+': ''}}{{position.short.unrealized_pnl | number: '1.0-1'}} | 
-                                    {{position.short.roe > 0 ? '+': ''}}{{position.short.roe | number: '1.0-1'}}%
+                                    {{position.short.unrealized_pnl > 0 ? '+': ''}}{{position.short.unrealized_pnl | number: '1.1-1'}} | 
+                                    {{position.short.roe > 0 ? '+': ''}}{{position.short.roe | number: '1.1-1'}}%
                                 </div>
                                 <mat-menu #shortMenu="matMenu">
                                     <button mat-menu-item 

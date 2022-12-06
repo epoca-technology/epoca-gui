@@ -48,12 +48,16 @@
         <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
             <p class="light-text ts-m truncate">State</p>
             <span fxFlex></span>
-            <div matTooltip="PNL(ROE %)" class="align-right">
-                <p [ngClass]="{'success-color': position.roe > 0,'error-color': position.roe < 0}">
-                    {{position.roe > 0 ? '+': ''}}{{position.unrealized_pnl | number: '1.0-2'}} USDT
+            <div matTooltip="PNL(ROE %)" 
+                class="align-right"  
+                [ngClass]="{
+                    'success-color': position.unrealized_pnl > 0, 
+                    'error-color': position.unrealized_pnl < 0
+                }">
+                <p>
+                    {{position.unrealized_pnl > 0 ? '+': ''}}{{position.unrealized_pnl | number: '1.0-2'}} USDT
                 </p>
-                <p [ngClass]="{'success-color': position.roe > 0,'error-color': position.roe < 0}" 
-                    class="ts-s">
+                <p class="ts-s">
                     {{position.roe > 0 ? '+': ''}}{{position.roe}}%
                 </p>
             </div>
