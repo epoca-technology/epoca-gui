@@ -1008,6 +1008,7 @@
                                                                 <th>Date</th>
                                                                 <th>Type</th>
                                                                 <th *ngIf="layout == 'desktop'">Price</th>
+                                                                <th *ngIf="layout == 'desktop'">Amount</th>
                                                                 <th *ngIf="layout == 'desktop'">PNL</th>
                                                             </tr>
                                                         </thead>
@@ -1019,16 +1020,23 @@
                                                                 </td>
                                                                 <td *ngIf="(i+1) <= visibleTrades">
                                                                     <p class="show-on-desktop">{{t.t | date:'medium'}}</p>
-                                                                    <p class="show-on-mobile">{{t.t | date:'short'}}</p>
+                                                                    <p class="show-on-mobile">{{t.t | date:'shortDate'}}</p>
                                                                 </td>
-                                                                <td *ngIf="(i+1) <= visibleTrades">
-                                                                    <p [ngClass]="{
+                                                                <td *ngIf="(i+1) <= visibleTrades" 
+                                                                    [ngClass]="{
                                                                         'success-color': t.ps == 'LONG', 
                                                                         'error-color': t.ps == 'SHORT'
-                                                                        }">{{t.ps}}</p>
+                                                                    }">
+                                                                    <p *ngIf="t.ps == 'LONG' && t.s == 'BUY'">LONG-INCREASE</p>
+                                                                    <p *ngIf="t.ps == 'LONG' && t.s == 'SELL'">LONG-CLOSE</p>
+                                                                    <p *ngIf="t.ps == 'SHORT' && t.s == 'SELL'">SHORT-INCREASE</p>
+                                                                    <p *ngIf="t.ps == 'SHORT' && t.s == 'BUY'">SHORT-CLOSE</p>
                                                                 </td>
                                                                 <td *ngIf="(i+1) <= visibleTrades && layout == 'desktop'">
                                                                     <p>{{t.p | currency}}</p>
+                                                                </td>
+                                                                <td *ngIf="(i+1) <= visibleTrades && layout == 'desktop'">
+                                                                    <p>{{t.qqty | currency}}</p>
                                                                 </td>
                                                                 <td *ngIf="(i+1) <= visibleTrades && layout == 'desktop'">
                                                                     <p [ngClass]="{
