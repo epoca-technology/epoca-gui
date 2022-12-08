@@ -16,7 +16,8 @@ import {
 	ApexMarkers,
 	ApexResponsive,
 	ApexNonAxisChartSeries,
-	ApexLegend
+	ApexLegend,
+	ApexOptions
 } from "ng-apexcharts";
 
 
@@ -152,6 +153,7 @@ export type ILineChartOptions = {
 	xaxis: ApexXAxis;
 	yaxis: ApexYAxis;
 	annotations: ApexAnnotations;
+	options?: ApexOptions;
 	colors: string[];
 };
 

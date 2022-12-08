@@ -397,7 +397,13 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                     ],
                     stroke: {curve: "straight", width:5},
                     annotations: annotations,
-                    xaxis: {type: "datetime",tooltip: {enabled: true}, labels: {datetimeUTC: false}}, 
+                    xaxis: {
+                        type: "datetime",
+                        tooltip: {enabled: true, }, 
+                        labels: {datetimeUTC: false, formatter: function(value, opts): string {
+                            return moment(value).format("h:mm a")
+                        }}
+                    }, 
                     yaxis: { tooltip: {enabled: true}}
                 },
                 this.layout == "desktop" ? this.predictionChartDesktopHeight: 330, 
@@ -536,7 +542,13 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                     series: series,
                     stroke: {curve: "straight", width:3},
                     annotations: annotations,
-                    xaxis: {type: "datetime",tooltip: {enabled: false}, labels: {datetimeUTC: false}},
+                    xaxis: {
+                        type: "datetime",
+                        tooltip: {enabled: true, }, 
+                        labels: {datetimeUTC: false, formatter: function(value, opts): string {
+                            return moment(value).format("h:mm a")
+                        }}
+                    },
                     yaxis: { tooltip: {enabled: true}}
                 },
                 this.layout == "desktop" ? this.predictionChartDesktopHeight: 330, 

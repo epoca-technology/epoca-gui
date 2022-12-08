@@ -373,7 +373,7 @@ export class ChartService implements IChartService {
 			xaxis: config.xaxis ? config.xaxis: {labels: { show: false }, axisTicks: {show: false} },
 			yaxis: yaxis || {},
 			annotations: config.annotations ? config.annotations: {},
-			colors: colors ? colors: []
+			colors: colors ? colors: [],
 		}
 	}
 
