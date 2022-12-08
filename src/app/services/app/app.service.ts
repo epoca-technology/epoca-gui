@@ -49,7 +49,7 @@ export class AppService implements IAppService{
 	/**
 	 * App Bulk
 	 * In order for the GUI to operate and keep in sync with the server,
-	 * it retrieves, unpacks and broadcasts the IAppBulk every ~3 minutes.
+	 * it retrieves, unpacks and broadcasts the IAppBulk every ~2 minutes.
 	 * Additionally, the refreshing functionality can be invoked from any
 	 * module that can make use of the AppService.
 	 * The observables are initialized with null, once the communication
@@ -58,7 +58,7 @@ export class AppService implements IAppService{
 	 */
 	private appBulkStream?: Function;
 	private appBulkInterval: any;
-	private readonly appBulkIntervalMS: number = 180 * 1000; // Every 120 seconds
+	private readonly appBulkIntervalMS: number = 120 * 1000; // Every 120 seconds
 	public serverTime: BehaviorSubject<number|undefined|null> = new BehaviorSubject<number|undefined|null>(null);
 	public guiVersion: BehaviorSubject<string|undefined|null> = new BehaviorSubject<string|undefined|null>(null);
 	public epoch: BehaviorSubject<IEpochRecord|undefined|null> = new BehaviorSubject<IEpochRecord|undefined|null>(null);
@@ -132,11 +132,11 @@ export class AppService implements IAppService{
 	 * @returns Promise<void>
 	 */
 	private async initializeAppBulk(): Promise<void> {
-		// Initialize the stream
-		this.initializeAppBulkStream();
-
 		// Initialize the bulk data
 		await this.refreshAppBulk();
+
+		// Initialize the stream
+		this.initializeAppBulkStream();
 
 		// Create the interval
 		if (!this.appBulkInterval) {
@@ -180,14 +180,28 @@ export class AppService implements IAppService{
 	 * @returns Promise<void>
 	 */
 	public async refreshAppBulk(): Promise<void> {
-		try {
-			// Retrieve the bulk from the API
-			const epochID: string|undefined = this.epoch.value ? this.epoch.value.id: undefined;
-			const bulk: IAppBulk = await this._bulk.getAppBulk(epochID);
+		try { await this._refreshAppBulk() } 
+		catch (e) { 
+			console.error(e);
+			await this._utils.asyncDelay(3);
+			try { await this._refreshAppBulk() } 
+			catch (e) {
+				console.error(e);
+				await this._utils.asyncDelay(3);
+				try { await this._refreshAppBulk() } 
+				catch (e) {
+					this.error(e);
+				}
+			}
+		}
+	}
+	private async _refreshAppBulk(): Promise<void> {
+		// Retrieve the bulk from the API
+		const epochID: string|undefined = this.epoch.value ? this.epoch.value.id: undefined;
+		const bulk: IAppBulk = await this._bulk.getAppBulk(epochID);
 
-			// Finally, broadcast the app bulk
-			this.broadcastAppBulk(bulk);
-		} catch (e) { console.error(e) }
+		// Finally, broadcast the app bulk
+		this.broadcastAppBulk(bulk);
 	}
 
 
@@ -201,8 +215,11 @@ export class AppService implements IAppService{
 	 private initializeAppBulkStream(): void {
         this.appBulkStream = onValue( this._db.getAppBulkRef(), (snapshot: DataSnapshot) => {
                 this.ngZone.run(() => {
-                    const snapVal: IAppBulk|null = snapshot.val();
-                    if (snapVal) this.broadcastAppBulk(snapVal);
+                    let snapVal: IAppBulk|null = snapshot.val();
+                    if (snapVal) {
+						snapVal.epoch = this.epoch.value!;
+						this.broadcastAppBulk(snapVal);
+					}
                 });
             },
             e => console.error(e)
