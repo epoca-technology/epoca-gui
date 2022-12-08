@@ -41,6 +41,13 @@
             </div>
         </div>
 
+        <!-- Fee -->
+        <div class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p class="truncate light-text">Fee</p>
+            <span fxFlex></span>
+            <p matTooltip="The total fee charged by the exchange">{{trade.c | currency}}</p>
+        </div>
+
         <!-- Realized PNL -->
         <div class="row" fxLayout="row" fxLayoutAlign="start center">
             <p class="truncate light-text">Realized PNL</p>
@@ -51,15 +58,8 @@
                     'error-color': trade.rpnl < 0,
                     'light-text': trade.rpnl == 0
                 }">
-                {{trade.rpnl > 0 ? '+': ''}}{{trade.rpnl | currency}}
+                <strong>{{trade.rpnl > 0 ? '+': ''}}{{trade.rpnl | currency}}</strong>
             </p>
-        </div>
-
-        <!-- Fee -->
-        <div class="row" fxLayout="row" fxLayoutAlign="start center">
-            <p class="truncate light-text">Fee</p>
-            <span fxFlex></span>
-            <p matTooltip="The total fee charged by the exchange">{{trade.c | currency}}</p>
         </div>
     </div>
 </div>

@@ -163,6 +163,7 @@ export class AppService implements IAppService{
 		this.position.next(undefined);
 		this.marketState.next(undefined);
 		if (typeof this.appBulkStream == "function") this.appBulkStream();
+		this.appBulkStream = undefined;
 	}
 
 
@@ -213,17 +214,19 @@ export class AppService implements IAppService{
      * @returns void
      */
 	 private initializeAppBulkStream(): void {
-        this.appBulkStream = onValue( this._db.getAppBulkRef(), (snapshot: DataSnapshot) => {
-                this.ngZone.run(() => {
-                    let snapVal: IAppBulk|null = snapshot.val();
-                    if (snapVal) {
-						snapVal.epoch = this.epoch.value!;
-						this.broadcastAppBulk(snapVal);
-					}
-                });
-            },
-            e => console.error(e)
-        );
+		if (!this.appBulkStream) {
+			this.appBulkStream = onValue( this._db.getAppBulkRef(), (snapshot: DataSnapshot) => {
+					this.ngZone.run(() => {
+						let snapVal: IAppBulk|null = snapshot.val();
+						if (snapVal) {
+							snapVal.epoch = this.epoch.value!;
+							this.broadcastAppBulk(snapVal);
+						}
+					});
+				},
+				e => console.error(e)
+			);
+		}
     }
 
 

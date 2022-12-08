@@ -998,7 +998,7 @@
                                     <!-- Trades -->
                                     <div *ngIf="activeSection.id == 'trades'" class="padding">
                                         <div fxLayout="row" fxLayoutAlign="center center">
-                                            <div fxFlex="60" fxFlex.xs="100" fxFlex.sm="100">
+                                            <div fxFlex="75" fxFlex.xs="100" fxFlex.sm="100">
                                                 <!-- Positions Table -->
                                                 <div class="desktop-card no-padding">
                                                     <table class="bordered highlight">
@@ -1009,6 +1009,7 @@
                                                                 <th>Type</th>
                                                                 <th *ngIf="layout == 'desktop'">Price</th>
                                                                 <th *ngIf="layout == 'desktop'">Amount</th>
+                                                                <th *ngIf="layout == 'desktop'">Fee</th>
                                                                 <th *ngIf="layout == 'desktop'">PNL</th>
                                                             </tr>
                                                         </thead>
@@ -1039,12 +1040,15 @@
                                                                     <p>{{t.qqty | currency}}</p>
                                                                 </td>
                                                                 <td *ngIf="(i+1) <= visibleTrades && layout == 'desktop'">
+                                                                    <p>{{t.c | currency}}</p>
+                                                                </td>
+                                                                <td *ngIf="(i+1) <= visibleTrades && layout == 'desktop'">
                                                                     <p [ngClass]="{
                                                                         'success-color': t.rpnl > 0, 
                                                                         'error-color': t.rpnl < 0,
                                                                         'light-text': t.rpnl == 0
                                                                     }">
-                                                                        {{t.rpnl > 0 ? '+': ''}}{{t.rpnl | currency}}
+                                                                        <strong>{{t.rpnl > 0 ? '+': ''}}{{t.rpnl | currency}}</strong>
                                                                     </p>
                                                                 </td>
                                                             </tr>
