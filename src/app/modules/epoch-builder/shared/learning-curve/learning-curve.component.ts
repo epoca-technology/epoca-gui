@@ -55,7 +55,7 @@ export class LearningCurveComponent implements OnInit, ILearningCurveComponent {
 				stroke: {curve: "straight", width: [2, 2]}
 			}, 
 			400, 
-			true
+			false
 		);
 		curveChart.chart.toolbar = {show: true,tools: {selection: true,zoom: true,zoomin: true,zoomout: true,download: false}};
 		curveChart.chart.zoom = {enabled: true, type: "xy"};
