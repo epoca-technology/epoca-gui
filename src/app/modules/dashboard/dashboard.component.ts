@@ -106,8 +106,8 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     public longShortRatioChart?: ILineChartOptions;
 
     // Desktop Chart height helpers
-    private readonly predictionChartDesktopHeight: number = 298;
-    private readonly marketStateChartDesktopHeight: number = 115;
+    private readonly predictionChartDesktopHeight: number = 305;
+    private readonly marketStateChartDesktopHeight: number = 110;
 
     // Loading State
     public loaded: boolean = false;
@@ -616,10 +616,14 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
      */
     private updateWindowState(): void {
         // Calculate the min and max values
-        const minVal: number = this.state.window.lower_band.end < this.state.keyzone.below[0].s ? 
-            this.state.window.lower_band.end: this.state.keyzone.below[0].s;
-        const maxVal: number = this.state.window.upper_band.end > this.state.keyzone.above[0].e ? 
-            this.state.window.upper_band.end: this.state.keyzone.above[0].e;
+        let minVal: number = this.state.window.lower_band.end;
+        if (this.state.keyzone.below.length && this.state.window.lower_band.end > this.state.keyzone.below[0].s) {
+            minVal = <number>this._utils.alterNumberByPercentage(this.state.keyzone.below[0].e, -0.5);
+        }
+        let maxVal: number = this.state.window.upper_band.end;
+        if (this.state.keyzone.above.length && this.state.window.upper_band.end < this.state.keyzone.above[0].e) {
+            maxVal = <number>this._utils.alterNumberByPercentage(this.state.keyzone.above[0].s, 0.5);
+        }
 
         // Build/update the chart
         if (this.windowChart) {
