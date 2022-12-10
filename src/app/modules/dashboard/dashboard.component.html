@@ -213,7 +213,7 @@
                     <!-- Dashboard Content-->
                     <div fxLayout="row" fxLayoutAlign="center start" fxLayout.xs="column" fxLayout.sm="column" class="full-width">
                         <!-- Window State -->
-                        <div fxFlex="58" fxFlex.xs="100" fxFlex.sm="100" class="chart-card full-width">
+                        <div fxFlex="60" fxFlex.xs="100" fxFlex.sm="100" class="chart-card full-width">
                             <!-- Heading -->
                             <div fxLayout="row" fxLayoutAlign="start start" fxLayoutAlign.xs="center center" fxLayoutAlign.sm="center center"
                                 class="chart-card-heading">
@@ -353,7 +353,7 @@
                         <span fxFlex></span>
 
                         <!-- Rest of the Indicators -->
-                        <div fxFlex="41" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                        <div fxFlex="39" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
                             <!-- Trend -->
                             <div class="divider show-on-mobile"></div>
                             <div>
@@ -362,7 +362,7 @@
                                     <div fxLayout="row" fxLayoutAlign="start start" class="chart-card-heading">
                                         <div>
                                             <h4>Trend</h4>
-                                            <p *ngIf="activePrediction" class="light-text ts-xs">
+                                            <p *ngIf="activePrediction" class="light-text ts-xs show-on-mobile">
                                                 {{activePrediction.t | date: layout == 'desktop' ? 'medium': 'mediumTime'}}
                                             </p>
                                         </div>

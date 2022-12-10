@@ -10,6 +10,9 @@ import {
 	BulkDataService, 
 	DatabaseService, 
 	IAppBulk, 
+	IAppBulkStream, 
+	ICandlestick, 
+	ICompressedCandlesticks, 
 	IEpochRecord, 
 	IMarketState, 
 	IPositionSummary, 
@@ -213,13 +216,20 @@ export class AppService implements IAppService{
      * Initializes the API Secret DB Connection.
      * @returns void
      */
-	 private initializeAppBulkStream(): void {
+	private initializeAppBulkStream(): void {
 		if (!this.appBulkStream) {
 			this.appBulkStream = onValue( this._db.getAppBulkRef(), (snapshot: DataSnapshot) => {
 					this.ngZone.run(() => {
-						let snapVal: IAppBulk|null = snapshot.val();
+						let snapVal: IAppBulk|IAppBulkStream|null|any = snapshot.val();
 						if (snapVal) {
+							snapVal.serverTime = this.serverTime.value!;
+							snapVal.guiVersion = this.guiVersion.value!;
 							snapVal.epoch = this.epoch.value!;
+							snapVal.marketState.window.window = this.decompressCandlesticks(snapVal.marketState.window.window);
+							snapVal.marketState.keyzone = this.marketState.value!.keyzone;
+							snapVal.marketState.network_fee = this.marketState.value!.network_fee;
+							snapVal.marketState.open_interest = this.marketState.value!.open_interest;
+							snapVal.marketState.long_short_ratio = this.marketState.value!.long_short_ratio;
 							this.broadcastAppBulk(snapVal);
 						}
 					});
@@ -228,6 +238,36 @@ export class AppService implements IAppService{
 			);
 		}
     }
+
+
+
+
+	/**
+	 * Decompresses the candlesticks attached to the AppBulk
+	 * and builds the standard candlesticks.
+	 * @param compressed 
+	 * @returns ICandlestick[]
+	 */
+	private decompressCandlesticks(compressed: ICompressedCandlesticks): ICandlestick[] {
+		// Initialize the list
+		let candlesticks: ICandlestick[] = [];
+
+		// Iterate over each candlestick
+		for (let i = 0; i < compressed.ot.length; i++) {
+			candlesticks.push({
+				ot: compressed.ot[i],
+				ct: compressed.ct[i],
+				o: compressed.o[i],
+				h: compressed.h[i],
+				l: compressed.l[i],
+				c: compressed.c[i],
+				v: compressed.v[i],
+			});
+		}
+
+		// Finally, return the list
+		return candlesticks;
+	}
 
 
 

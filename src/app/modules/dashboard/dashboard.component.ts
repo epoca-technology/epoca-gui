@@ -106,7 +106,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     public longShortRatioChart?: ILineChartOptions;
 
     // Desktop Chart height helpers
-    private readonly predictionChartDesktopHeight: number = 285;
+    private readonly predictionChartDesktopHeight: number = 298;
     private readonly marketStateChartDesktopHeight: number = 115;
 
     // Loading State
