@@ -38,6 +38,7 @@ export interface IStrategyBuilderDialogData {
 
 
 export interface IStrategyColors {
+    market: string,
     entry: string,
     target: string,
     increase: string,
@@ -51,6 +52,7 @@ export interface IStateItem {
     levelNumber: number,
     level: IPositionStrategyLevel,
     nextLevel: IPositionStrategyLevel|undefined,
+    market: number,
     entry: number,
     target: number,
     increase: number,

@@ -740,21 +740,19 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                     offsetX: 50
                 }
             });
-            if (this.position.long.min_increase_price) {
-                annotations.yaxis!.push({
-                    y: this.position.long.min_increase_price,
-                    strokeDashArray: 10,
+            annotations.yaxis!.push({
+                y: this.position.long.min_increase_price,
+                strokeDashArray: 10,
+                borderColor: this._chart.upwardColor,
+                fillColor: this._chart.upwardColor,
+                label: {
                     borderColor: this._chart.upwardColor,
-                    fillColor: this._chart.upwardColor,
-                    label: {
-                        borderColor: this._chart.upwardColor,
-                        style: { color: "#fff", background: this._chart.upwardColor},
-                        text: `MIN_INCREASE`,
-                        position: "left",
-                        offsetX: 88
-                    }
-                });
-            }
+                    style: { color: "#fff", background: this._chart.upwardColor},
+                    text: `INCREASE_CLOSE`,
+                    position: "left",
+                    offsetX: 105
+                }
+            });
             annotations.yaxis!.push({
                 y: this.position.long.liquidation_price,
                 strokeDashArray: 0,
@@ -798,21 +796,19 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                     offsetX: 50
                 }
             });
-            if (this.position.short.min_increase_price) {
-                annotations.yaxis!.push({
-                    y: this.position.short.min_increase_price,
-                    strokeDashArray: 10,
+            annotations.yaxis!.push({
+                y: this.position.short.min_increase_price,
+                strokeDashArray: 10,
+                borderColor: this._chart.downwardColor,
+                fillColor: this._chart.downwardColor,
+                label: {
                     borderColor: this._chart.downwardColor,
-                    fillColor: this._chart.downwardColor,
-                    label: {
-                        borderColor: this._chart.downwardColor,
-                        style: { color: "#fff", background: this._chart.downwardColor},
-                        text: `MIN_INCREASE`,
-                        position: "left",
-                        offsetX: 88
-                    }
-                });
-            }
+                    style: { color: "#fff", background: this._chart.downwardColor},
+                    text: `INCREASE_CLOSE`,
+                    position: "left",
+                    offsetX: 105
+                }
+            });
             annotations.yaxis!.push({
                 y: this.position.short.liquidation_price,
                 strokeDashArray: 0,

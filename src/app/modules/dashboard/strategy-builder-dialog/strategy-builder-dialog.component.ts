@@ -60,16 +60,18 @@ export class StrategyBuilderDialogComponent implements OnInit, IStrategyBuilderD
 
 	// Color Helpers
 	private longColors: IStrategyColors = {
-		entry: "#004D40",
-		target: "#009688",
-		increase: "#00BFA5",
-		liquidation: "#80CBC4",
+		market: "#2196F3",
+		entry: "#000000",
+		target: "#00796B",
+		increase: "#E57373",
+		liquidation: "#C62828",
 	};
 	private shortColors: IStrategyColors = {
-		entry: "#D50000",
-		target: "#FF1744",
-		increase: "#FF5252",
-		liquidation: "#FF8A80",
+		market: "#2196F3",
+		entry: "#000000",
+		target: "#00796B",
+		increase: "#E57373",
+		liquidation: "#C62828",
 	}
 	private color: IStrategyColors;
 
@@ -167,7 +169,7 @@ export class StrategyBuilderDialogComponent implements OnInit, IStrategyBuilderD
 			// Build the item
 			const item: IStateItem = this.buildItem([
 				{ price: this.position.entry_price, margin: this.position.isolated_wallet}
-			]);
+			], this.currentPrice);
 
 			// Add it to the history
 			this.hist.push([item]);
@@ -281,9 +283,10 @@ export class StrategyBuilderDialogComponent implements OnInit, IStrategyBuilderD
 	/**
 	 * Builds an item to be appended to the strategy.
 	 * @param trades
+	 * @param currentPrice?
 	 * @returns IStateItem
 	 */
-	private buildItem(trades: IPositionCalculatorTradeItem[]): IStateItem {
+	private buildItem(trades: IPositionCalculatorTradeItem[], currentPrice?: number): IStateItem {
 		// Get the current state
 		const { current, next } = this._position.getStrategyState(
 			this.strategy, 
@@ -301,13 +304,14 @@ export class StrategyBuilderDialogComponent implements OnInit, IStrategyBuilderD
 		);
 
 		// Calculate the target and the min increase price
-		const { target, increase } = this.calculateTargetAndIncrease(current, entry);
+		const { target, increase } = this.calculateTargetAndIncrease(current, entry, liquidation);
 
 		// Finally, return the item
 		return {
 			levelNumber: levelNumber,
 			level: current,
 			nextLevel: next,
+			market: currentPrice || trades[trades.length - 1].price,
 			entry: entry,
 			target: target,
 			increase: increase,
@@ -322,18 +326,23 @@ export class StrategyBuilderDialogComponent implements OnInit, IStrategyBuilderD
 	 * current level and the entry price.
 	 * @param level 
 	 * @param entryPrice 
+	 * @param liquidationPrice 
 	 * @returns {target: number, increase: number}
 	 */
-	 private calculateTargetAndIncrease(level: IPositionStrategyLevel, entryPrice: number): {target: number, increase: number} { 
+	 private calculateTargetAndIncrease(
+		level: IPositionStrategyLevel, 
+		entryPrice: number,
+		liquidationPrice: number
+	): {target: number, increase: number} { 
 		if (this.side == "LONG") {
 			return {
 				target: <number>this._utils.alterNumberByPercentage(entryPrice, level.target),
-				increase: <number>this._utils.alterNumberByPercentage(entryPrice, -(this.strategy.level_increase_requirement)),
+				increase: <number>this._utils.alterNumberByPercentage(liquidationPrice, this.strategy.level_increase_requirement),
 			}
 		} else {
 			return {
 				target: <number>this._utils.alterNumberByPercentage(entryPrice, -(level.target)),
-				increase: <number>this._utils.alterNumberByPercentage(entryPrice, this.strategy.level_increase_requirement),
+				increase: <number>this._utils.alterNumberByPercentage(liquidationPrice, -(this.strategy.level_increase_requirement)),
 			}
 		}
 	}
@@ -360,6 +369,7 @@ export class StrategyBuilderDialogComponent implements OnInit, IStrategyBuilderD
 	private chartChanged(): void {
 		// Init the data series
 		let ids: IStrategyLevelID[] = [];
+		let markets: number[] = [];
 		let entries: number[] = [];
 		let targets: number[] = [];
 		let increases: number[] = [];
@@ -368,6 +378,7 @@ export class StrategyBuilderDialogComponent implements OnInit, IStrategyBuilderD
 		// Iterate over the last state and build the series data
 		for (let item of this.hist[this.hist.length - 1]) {
 			ids.push(item.level.id);
+			markets.push(item.market);
 			entries.push(item.entry);
 			targets.push(item.target);
 			increases.push(item.increase);
@@ -377,6 +388,7 @@ export class StrategyBuilderDialogComponent implements OnInit, IStrategyBuilderD
         // Build/Update the chart
         if (this.chart) {
             this.chart.series = [
+				{ name: "Market", data: markets, color: this.color.market },
 				{ name: "Entry", data: entries, color: this.color.entry },
 				{ name: "Target", data: targets, color: this.color.target },
 				{ name: "Increase", data: increases, color: this.color.increase },
@@ -387,6 +399,7 @@ export class StrategyBuilderDialogComponent implements OnInit, IStrategyBuilderD
             this.chart = this._chart.getLineChartOptions(
                 { 
                     series: [
+						{ name: "Market", data: markets, color: this.color.market },
                         { name: "Entry", data: entries, color: this.color.entry },
                         { name: "Target", data: targets, color: this.color.target },
                         { name: "Increase", data: increases, color: this.color.increase },
@@ -394,8 +407,8 @@ export class StrategyBuilderDialogComponent implements OnInit, IStrategyBuilderD
                     ],
                     stroke: {
 						curve: "smooth", 
-						dashArray: [5, 0, 10, 0], 
-						width: [3, 3, 2, 4]
+						dashArray:  [0, 0, 0, 4, 0], 
+						width: 		[3, 3, 3, 1.5, 3]
 					},
 					xaxis: { 
 						categories: ids, 
@@ -465,8 +478,8 @@ export class StrategyBuilderDialogComponent implements OnInit, IStrategyBuilderD
 			if (this.initPrice && this.initPrice.value) {
 				const price: number = Number(this.initPrice.value);
 				try {
-					const minPrice: number = <number>this._utils.alterNumberByPercentage(this.currentPrice, -50);
-					const maxPrice: number = <number>this._utils.alterNumberByPercentage(this.currentPrice, 50);
+					const minPrice: number = <number>this._utils.alterNumberByPercentage(this.currentPrice, -99);
+					const maxPrice: number = <number>this._utils.alterNumberByPercentage(this.currentPrice, 10000);
 					if (price < minPrice || price > maxPrice) {
 						return {invalid: true};
 					} else {
