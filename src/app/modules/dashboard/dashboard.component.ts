@@ -484,6 +484,8 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         // Build the color list based on their active predictions
         const colors: string[] = this.activePrediction!.f.map((f) => {
             if (f >= 0.5) { return this._chart.upwardColor }
+            else if (f >= 0.000001 && f < 0.5) { return "#4DB6AC" }
+            else if (f > -0.5 && f <= -0.000001) { return "#E57373" }
             else if (f <= -0.5) { return this._chart.downwardColor }
             else { return this._chart.neutralColor}
         });

@@ -257,9 +257,9 @@
                                         <span>Close Long</span>
                                     </button>
                                     <button mat-menu-item 
-                                            *ngIf="position.long && canIncreaseLong"
+                                            *ngIf="position.long"
                                             (click)="increasePosition('LONG')"
-                                            [disabled]="submitting">
+                                            [disabled]="submitting || !canIncreaseLong">
                                         <mat-icon>switch_access_shortcut</mat-icon>
                                         <span>Increase Long</span>
                                     </button>
@@ -312,9 +312,9 @@
                                         <span>Close Short</span>
                                     </button>
                                     <button mat-menu-item 
-                                            *ngIf="position.short && canIncreaseShort"
+                                            *ngIf="position.short"
                                             (click)="increasePosition('SHORT')"
-                                            [disabled]="submitting">
+                                            [disabled]="submitting || !canIncreaseShort">
                                         <mat-icon>switch_access_shortcut</mat-icon>
                                         <span>Increase Short</span>
                                     </button>
