@@ -40,7 +40,7 @@ export class StrategyFormDialogComponent implements OnInit, OnDestroy, IStrategy
         this.form = new FormGroup ({
             leverage: new FormControl(this.strategy.leverage, [ Validators.required, Validators.min(1), Validators.max(5) ]),
             level_increase_requirement: new FormControl(this.strategy.level_increase_requirement, [ Validators.required, Validators.min(0.01), Validators.max(30) ]),
-            stop_loss: new FormControl(this.strategy.stop_loss, [ Validators.required, Validators.min(1), Validators.max(50) ]),
+            stop_loss: new FormControl(this.strategy.stop_loss, [ Validators.required, Validators.min(1), Validators.max(70) ]),
             level_1_size: new FormControl(this.strategy.level_1.size, [ Validators.required, Validators.min(150), Validators.max(500000) ]),
             level_1_target: new FormControl(this.strategy.level_1.target, [ Validators.required, Validators.min(0), Validators.max(10) ]),
             level_2_target: new FormControl(this.strategy.level_2.target, [ Validators.required, Validators.min(0), Validators.max(10) ]),
