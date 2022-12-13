@@ -2,6 +2,7 @@ import { Component, OnInit, Inject, ViewChild, ElementRef } from '@angular/core'
 import {MatDialogRef, MAT_DIALOG_DATA, MatDialog} from "@angular/material/dialog";
 import {AbstractControl, FormControl, FormGroup, Validators} from "@angular/forms";
 import { ApexAnnotations } from 'ng-apexcharts';
+import { BigNumber } from "bignumber.js"; 
 import { 
 	IActivePosition, 
 	IBinancePositionSide, 
@@ -63,14 +64,16 @@ export class StrategyBuilderDialogComponent implements OnInit, IStrategyBuilderD
 		market: "#2196F3",
 		entry: "#000000",
 		target: "#00796B",
-		increase: "#E57373",
+		stopLoss: "#E57373",
+		increase: "#F44336",
 		liquidation: "#C62828",
 	};
 	private shortColors: IStrategyColors = {
 		market: "#2196F3",
 		entry: "#000000",
 		target: "#00796B",
-		increase: "#E57373",
+		stopLoss: "#E57373",
+		increase: "#F44336",
 		liquidation: "#C62828",
 	}
 	private color: IStrategyColors;
@@ -259,15 +262,27 @@ export class StrategyBuilderDialogComponent implements OnInit, IStrategyBuilderD
 	 * Levels down a trade in the calculator.
 	 */
 	public levelDown(): void {
-		// Slice the last item in the history
-		this.hist = this.hist.slice(0, this.hist.length - 1);
+		// Check if there is more than 1 item in the history
+		if (this.hist.length > 1) {
+			// Slice the last item in the history
+			this.hist = this.hist.slice(0, this.hist.length - 1);
 
-		// Set the new active item
-		const currentStates: IStateItem[] = this.hist[this.hist.length - 1];
-		this.active = currentStates[currentStates.length - 1];
+			// Set the new active item
+			const currentStates: IStateItem[] = this.hist[this.hist.length - 1];
+			this.active = currentStates[currentStates.length - 1];
 
-		// Update the chart
-		this.chartChanged();
+			// Update the chart
+			this.chartChanged();
+		}
+
+		// Otherwise, unset the position and initialize the strategy from scratch
+		else {
+			this.position = undefined;
+			this.hist = [];
+			this.initPrice.setValue(this.currentPrice);
+			this.view = "init";
+			setTimeout(() => { if (this.initPriceControl) this.initPriceControl.nativeElement.focus() }, 100);
+		}
 	}
 
 
@@ -306,6 +321,13 @@ export class StrategyBuilderDialogComponent implements OnInit, IStrategyBuilderD
 		// Calculate the target and the min increase price
 		const { target, increase } = this.calculateTargetAndIncrease(current, entry, liquidation);
 
+		// Calculate the stop loss price
+		const realStopLossPercent: BigNumber = new BigNumber(this.strategy.stop_loss).dividedBy(this.strategy.leverage);
+		const stopLossPrice: number = <number>this._utils.alterNumberByPercentage(
+			entry,
+			this.side == "LONG" ? realStopLossPercent.times(-1): realStopLossPercent
+		);
+
 		// Finally, return the item
 		return {
 			levelNumber: levelNumber,
@@ -314,6 +336,7 @@ export class StrategyBuilderDialogComponent implements OnInit, IStrategyBuilderD
 			market: currentPrice || trades[trades.length - 1].price,
 			entry: entry,
 			target: target,
+			stopLoss: stopLossPrice,
 			increase: increase,
 			liquidation: liquidation
 		}
@@ -372,6 +395,7 @@ export class StrategyBuilderDialogComponent implements OnInit, IStrategyBuilderD
 		let markets: number[] = [];
 		let entries: number[] = [];
 		let targets: number[] = [];
+		let stopLosses: number[] = [];
 		let increases: number[] = [];
 		let liquidations: number[] = [];
 
@@ -381,6 +405,7 @@ export class StrategyBuilderDialogComponent implements OnInit, IStrategyBuilderD
 			markets.push(item.market);
 			entries.push(item.entry);
 			targets.push(item.target);
+			stopLosses.push(item.stopLoss);
 			increases.push(item.increase);
 			liquidations.push(item.liquidation);
 		}
@@ -391,6 +416,7 @@ export class StrategyBuilderDialogComponent implements OnInit, IStrategyBuilderD
 				{ name: "Market", data: markets, color: this.color.market },
 				{ name: "Entry", data: entries, color: this.color.entry },
 				{ name: "Target", data: targets, color: this.color.target },
+				{ name: "Stop Loss", data: stopLosses, color: this.color.stopLoss },
 				{ name: "Increase", data: increases, color: this.color.increase },
 				{ name: "Liquidation", data: liquidations, color: this.color.liquidation },
 			];
@@ -402,13 +428,14 @@ export class StrategyBuilderDialogComponent implements OnInit, IStrategyBuilderD
 						{ name: "Market", data: markets, color: this.color.market },
                         { name: "Entry", data: entries, color: this.color.entry },
                         { name: "Target", data: targets, color: this.color.target },
+						{ name: "Stop Loss", data: stopLosses, color: this.color.stopLoss },
                         { name: "Increase", data: increases, color: this.color.increase },
                         { name: "Liquidation", data: liquidations, color: this.color.liquidation },
                     ],
                     stroke: {
 						curve: "smooth", 
-						dashArray:  [0, 0, 0, 4, 0], 
-						width: 		[3, 3, 3, 1.5, 3]
+						dashArray:  [0, 0, 0, 10, 3, 0], 
+						width: 		[3, 3, 3, 1.5, 3, 5]
 					},
 					xaxis: { 
 						categories: ids, 

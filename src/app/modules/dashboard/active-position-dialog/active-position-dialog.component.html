@@ -1,7 +1,7 @@
 <mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
     <div fxLayout="row" fxLayoutAlign="center center">
         <button mat-icon-button class="show-on-mobile" (click)="close()"><mat-icon>arrow_back</mat-icon></button>
-        <span matTooltip="The weighted entry price based on all the trades within the position.">
+        <span matTooltip="The weighted entry price based on all the trades within the position. Last Update: {{position.ts | date: 'short'}}">
             {{position.side == 'LONG' ? 'Long': 'Short'}} at {{position.entry_price | currency}}
         </span>
         <span fxFlex></span>
@@ -86,11 +86,25 @@
             </div>
         </div>
 
+        <!-- Stop Loss Price -->
+        <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
+            <p class="light-text ts-m truncate">Stop Loss</p>
+            <span fxFlex></span>
+            <div matTooltip="The price in which the position should be closed in case it won't or can't be increased."
+                class="align-right" [ngClass]="{'error-color': !stopLossDistance}">
+                <p>{{position.stop_loss_price | currency}}</p>
+                <p *ngIf="stopLossDistance" class="ts-s light-text">{{stopLossDistance}}% away</p>
+                <p *ngIf="!stopLossDistance" class="ts-s">Stop Loss Hit</p>
+            </div>
+        </div>
+
         <!-- Min Increase Price -->
         <div *ngIf="position.min_increase_price" fxLayout="row" fxLayoutAlign="start start" class="margin-top">
             <p class="light-text ts-m truncate">Min. Increase Price</p>
             <span fxFlex></span>
-            <div class="align-right" matTooltip="The minimum price at which a position can be increased based on its side.">
+            <div class="align-right" 
+                matTooltip="The minimum price at which a position can be increased based on its side."  
+                [ngClass]="{'error-color': !increaseDistance}">
                 <p>{{position.min_increase_price | currency}}</p>
                 <p *ngIf="increaseDistance" class="ts-s light-text">{{increaseDistance}}% away</p>
                 <p *ngIf="!increaseDistance" class="ts-s light-text">Increasable</p>
@@ -120,13 +134,6 @@
                 <p>{{position.position_amount | number: '1.0-8'}} BTC</p>
                 <p class="ts-s light-text">{{position.notional | currency}}</p>
             </div>
-        </div>
-
-        <!-- Last Update -->
-        <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
-            <p class="light-text ts-m truncate">Last Update</p>
-            <span fxFlex></span>
-            <p matTooltip="The time at which the position was last updated">{{position.ts | date: 'short'}}</p>
         </div>
     </div>
 </div>

@@ -673,18 +673,14 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
         /* KeyZone Annotations */
 
-        // Init the colors
-        const resistanceColor: string = this._chart.upwardColor;
-        const supportcolor: string = this._chart.downwardColor;
-
         // Iterate over the keyzones above
         for (let i = 0; i < this.state.keyzone.above.length; i++) {
             annotations.yaxis!.push({
 				y: this.state.keyzone.above[i].s,
 				y2: this.state.keyzone.above[i].e,
 				strokeDashArray: 0,
-				borderColor: resistanceColor,
-				fillColor: resistanceColor
+				borderColor: this._chart.upwardColor,
+				fillColor: this._chart.upwardColor
 			})
         }
 
@@ -706,8 +702,8 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 				y: this.state.keyzone.below[i].s,
 				y2: this.state.keyzone.below[i].e,
 				strokeDashArray: 0,
-				borderColor: supportcolor,
-				fillColor: supportcolor
+				borderColor: this._chart.downwardColor,
+				fillColor: this._chart.downwardColor
 			})
         }
 
@@ -743,16 +739,29 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                 }
             });
             annotations.yaxis!.push({
-                y: this.position.long.min_increase_price,
+                y: this.position.long.stop_loss_price,
                 strokeDashArray: 10,
                 borderColor: this._chart.upwardColor,
                 fillColor: this._chart.upwardColor,
                 label: {
                     borderColor: this._chart.upwardColor,
                     style: { color: "#fff", background: this._chart.upwardColor},
-                    text: `INCREASE_CLOSE`,
+                    text: `STOP_LOSS`,
                     position: "left",
-                    offsetX: 105
+                    offsetX: 71
+                }
+            });
+            annotations.yaxis!.push({
+                y: this.position.long.min_increase_price,
+                strokeDashArray: 3,
+                borderColor: this._chart.upwardColor,
+                fillColor: this._chart.upwardColor,
+                label: {
+                    borderColor: this._chart.upwardColor,
+                    style: { color: "#fff", background: this._chart.upwardColor},
+                    text: `INCREASE`,
+                    position: "left",
+                    offsetX: 62
                 }
             });
             annotations.yaxis!.push({
@@ -799,16 +808,29 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                 }
             });
             annotations.yaxis!.push({
-                y: this.position.short.min_increase_price,
+                y: this.position.short.stop_loss_price,
                 strokeDashArray: 10,
                 borderColor: this._chart.downwardColor,
                 fillColor: this._chart.downwardColor,
                 label: {
                     borderColor: this._chart.downwardColor,
                     style: { color: "#fff", background: this._chart.downwardColor},
-                    text: `INCREASE_CLOSE`,
+                    text: `STOP_LOSS`,
                     position: "left",
-                    offsetX: 105
+                    offsetX: 71
+                }
+            });
+            annotations.yaxis!.push({
+                y: this.position.short.min_increase_price,
+                strokeDashArray: 3,
+                borderColor: this._chart.downwardColor,
+                fillColor: this._chart.downwardColor,
+                label: {
+                    borderColor: this._chart.downwardColor,
+                    style: { color: "#fff", background: this._chart.downwardColor},
+                    text: `INCREASE`,
+                    position: "left",
+                    offsetX: 62
                 }
             });
             annotations.yaxis!.push({

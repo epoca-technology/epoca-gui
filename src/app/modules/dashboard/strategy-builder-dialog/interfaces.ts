@@ -41,6 +41,7 @@ export interface IStrategyColors {
     market: string,
     entry: string,
     target: string,
+    stopLoss: string,
     increase: string,
     liquidation: string
 }
@@ -55,6 +56,7 @@ export interface IStateItem {
     market: number,
     entry: number,
     target: number,
+    stopLoss: number,
     increase: number,
     liquidation: number
 }

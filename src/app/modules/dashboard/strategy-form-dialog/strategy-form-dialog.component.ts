@@ -40,6 +40,7 @@ export class StrategyFormDialogComponent implements OnInit, OnDestroy, IStrategy
         this.form = new FormGroup ({
             leverage: new FormControl(this.strategy.leverage, [ Validators.required, Validators.min(1), Validators.max(5) ]),
             level_increase_requirement: new FormControl(this.strategy.level_increase_requirement, [ Validators.required, Validators.min(0.01), Validators.max(30) ]),
+            stop_loss: new FormControl(this.strategy.stop_loss, [ Validators.required, Validators.min(1), Validators.max(50) ]),
             level_1_size: new FormControl(this.strategy.level_1.size, [ Validators.required, Validators.min(150), Validators.max(500000) ]),
             level_1_target: new FormControl(this.strategy.level_1.target, [ Validators.required, Validators.min(0), Validators.max(10) ]),
             level_2_target: new FormControl(this.strategy.level_2.target, [ Validators.required, Validators.min(0), Validators.max(10) ]),
@@ -63,6 +64,7 @@ export class StrategyFormDialogComponent implements OnInit, OnDestroy, IStrategy
     /* Form Getters */
 	get leverage(): AbstractControl { return <AbstractControl>this.form.get("leverage") }
 	get level_increase_requirement(): AbstractControl { return <AbstractControl>this.form.get("level_increase_requirement") }
+	get stop_loss(): AbstractControl { return <AbstractControl>this.form.get("stop_loss") }
 	get level_1_size(): AbstractControl { return <AbstractControl>this.form.get("level_1_size") }
 	get level_1_target(): AbstractControl { return <AbstractControl>this.form.get("level_1_target") }
 	get level_2_target(): AbstractControl { return <AbstractControl>this.form.get("level_2_target") }
@@ -86,6 +88,7 @@ export class StrategyFormDialogComponent implements OnInit, OnDestroy, IStrategy
 		if (this.form.valid) {
 			this.strategy.leverage = <number>this._utils.outputNumber(this.leverage.value, {dp: 0});
 			this.strategy.level_increase_requirement = <number>this._utils.outputNumber(this.level_increase_requirement.value);
+			this.strategy.stop_loss = <number>this._utils.outputNumber(this.stop_loss.value);
 			this.strategy.level_1.size = <number>this._utils.outputNumber(this.level_1_size.value);
 			this.strategy.level_1.target = <number>this._utils.outputNumber(this.level_1_target.value);
 

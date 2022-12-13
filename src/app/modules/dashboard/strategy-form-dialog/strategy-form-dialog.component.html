@@ -30,6 +30,17 @@
                         </div>
                         <div fxFlex>
                             <mat-form-field>
+                                <mat-label>Stop Loss</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="stop_loss"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 15">
+                            </mat-form-field>
+                        </div>
+                        <div fxFlex>
+                            <mat-form-field>
                                 <mat-label>Increase Requirement</mat-label>
                                 <input type="number"
                                        matInput

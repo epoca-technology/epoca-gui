@@ -11,7 +11,7 @@
                 matTooltip="Level Up"><mat-icon>north</mat-icon></button>
         <button mat-icon-button 
                 (click)="levelDown()" 
-                [disabled]="!active || active.levelNumber == initialLevelNumber || view != 'chart'" 
+                [disabled]="!active || active.levelNumber == 1 || view != 'chart'" 
                 matTooltip="Level Down"><mat-icon>south</mat-icon></button>
         <button mat-icon-button 
                 (click)="displayKeyZoneDialog()" 
