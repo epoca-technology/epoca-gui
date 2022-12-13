@@ -4,6 +4,7 @@ import { MatDialog } from "@angular/material/dialog";
 import {Title} from "@angular/platform-browser";
 import { Subscription } from "rxjs";
 import * as moment from "moment";
+import { BigNumber } from "bignumber.js";
 import { ApexAnnotations, ApexAxisChartSeries } from "ng-apexcharts";
 import { 
     IEpochRecord, 
@@ -36,7 +37,7 @@ import { KeyzoneStateDialogComponent, IKeyZonesStateDialogData } from "./keyzone
 import { BalanceDialogComponent } from "./balance-dialog";
 import { ActivePositionDialogComponent, IActivePositionDialogData } from "./active-position-dialog";
 import { StrategyFormDialogComponent } from "./strategy-form-dialog";
-import { IDashboardComponent } from "./interfaces";
+import { IDashboardComponent, IPositionCloseChunkSize } from "./interfaces";
 import { IStrategyBuilderDialogData, StrategyBuilderDialogComponent } from "./strategy-builder-dialog";
 
 @Component({
@@ -67,8 +68,10 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     public position!: IPositionSummary;
     public canOpenLong: boolean = false;
     public canIncreaseLong: boolean = false;
+    public longChunkSize?: IPositionCloseChunkSize;
     public canOpenShort: boolean = false;
     public canIncreaseShort: boolean = false;
+    public shortChunkSize?: IPositionCloseChunkSize;
     private positionSub?: Subscription;
     private positionLoaded: boolean = false;
 
@@ -247,27 +250,66 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         // Reset the increase sizes
         this.canIncreaseLong = false;
         this.canIncreaseShort = false;
+
+        // Reset the close chunk sizes
+        this.longChunkSize = undefined;
+        this.shortChunkSize = undefined;
         
         // Check the long position can be increased
         if (this.position.long) {
+            // Check if the position can be increased
             const { current, next } = this._position.getStrategyState(this.position.strategy, this.position.long.isolated_wallet);
             this.canIncreaseLong = 
                 next !== undefined && 
                 typeof this.position.long.min_increase_price == "number" &&
                 this.position.balance.available >= next.size &&
                 this.position.long.mark_price <= this.position.long.min_increase_price;
+
+            // Calculate the Close Chunk Sizes
+            this.longChunkSize = this.calculateChunkSizes(this.position.long.isolated_margin);
         }
 
         // Check the short position can be increased
         if (this.position.short) {
+            // Check if the position can be increased
             const { current, next } = this._position.getStrategyState(this.position.strategy, this.position.short.isolated_wallet);
             this.canIncreaseShort = 
                 next !== undefined && 
                 typeof this.position.short.min_increase_price == "number" &&
                 this.position.balance.available >= next.size &&
                 this.position.short.mark_price >= this.position.short.min_increase_price;
+
+            // Calculate the Close Chunk Sizes
+            this.shortChunkSize = this.calculateChunkSizes(this.position.short.isolated_margin);
         }
     }
+
+
+
+
+
+    /**
+     * Calculates the chunk sizes for a position side based on the
+     * isolated margin balance.
+     * @param isolatedMargin 
+     * @returns IPositionCloseChunkSize
+     */
+    private calculateChunkSizes(isolatedMargin: number): IPositionCloseChunkSize {
+        // Initialize the bignumber instance of the margin
+        const margin: BigNumber = new BigNumber(isolatedMargin);
+
+        // Finally, return the build
+        return {
+            1: <number>this._utils.outputNumber(margin),
+            0.75: <number>this._utils.outputNumber(margin.times(0.75)),
+            0.66: <number>this._utils.outputNumber(margin.times(0.66)),
+            0.5: <number>this._utils.outputNumber(margin.times(0.5)),
+            0.33: <number>this._utils.outputNumber(margin.times(0.33)),
+            0.25: <number>this._utils.outputNumber(margin.times(0.25))
+        }
+    }
+
+
 
 
 
@@ -714,7 +756,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         if (this.position.long) {
             annotations.yaxis!.push({
                 y: this.position.long.entry_price,
-                strokeDashArray: 3,
+                strokeDashArray: 1,
                 borderColor: this._chart.upwardColor,
                 fillColor: this._chart.upwardColor,
                 label: {
@@ -753,7 +795,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             });
             annotations.yaxis!.push({
                 y: this.position.long.min_increase_price,
-                strokeDashArray: 3,
+                strokeDashArray: 5,
                 borderColor: this._chart.upwardColor,
                 fillColor: this._chart.upwardColor,
                 label: {
@@ -783,7 +825,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         if (this.position.short) {
             annotations.yaxis!.push({
                 y: this.position.short.entry_price,
-                strokeDashArray: 3,
+                strokeDashArray: 1,
                 borderColor: this._chart.downwardColor,
                 fillColor: this._chart.downwardColor,
                 label: {
@@ -822,7 +864,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             });
             annotations.yaxis!.push({
                 y: this.position.short.min_increase_price,
-                strokeDashArray: 3,
+                strokeDashArray: 5,
                 borderColor: this._chart.downwardColor,
                 fillColor: this._chart.downwardColor,
                 label: {
@@ -865,7 +907,8 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                 style: { color: "#fff", background: windowStateColor, fontSize: "12px", padding: {top: 4, right: 4, left: 4, bottom: 4}},
                 text: `$${this._utils.formatNumber(currentPrice, 0)} | ${this.state.window.state_value > 0 ? '+': ''}${this._utils.formatNumber(this.state.window.state_value, 1)}%`,
                 position: "right",
-                offsetY: -30
+                offsetY: -30,
+                offsetX: -10
             }
         });
 
@@ -1303,12 +1346,22 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
      * Displays the confirmation dialog in order to close
      * an existing position.
      * @param side 
+     * @param chunkSize 
      */
-    public closePosition(side: IBinancePositionSide): void {
+    public closePosition(side: IBinancePositionSide, chunkSize: number): void {
+        // Initialize the position
         const position: IActivePosition = side == "LONG" ? this.position.long!: this.position.short!;
+
+        // Calculate the PNL's color
         let pnlClass: string = "light-text";
         if (position.unrealized_pnl > 0) { pnlClass = "success-color" }
         else if (position.unrealized_pnl < 0) { pnlClass = "error-color" }
+
+        // Calculate the margin, pnl & row based on the chunk size
+        const margin: number = <number>this._utils.outputNumber(new BigNumber(position.isolated_margin).times(chunkSize), {dp: 2});
+        const pnl: number = <number>this._utils.outputNumber(new BigNumber(position.unrealized_pnl).times(chunkSize), {dp: 2});
+        const roe: number = <number>this._utils.outputNumber(new BigNumber(position.roe).times(chunkSize), {dp: 2});
+
         let confirmContent: string = `
             <table class="confirmation-dialog-table bordered">
                 <tbody>
@@ -1322,11 +1375,11 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                     </tr>
                     <tr>
                         <td><strong>Margin</strong></td>
-                        <td class="align-right">$${position.isolated_margin}</td>
+                        <td class="align-right">$${margin}</td>
                     </tr>
                     <tr>
                         <td><strong>PNL</strong></td>
-                        <td class="align-right"><strong><span class="${pnlClass}">$${position.unrealized_pnl} (${position.roe}%)</strong></td>
+                        <td class="align-right"><strong><span class="${pnlClass}">$${pnl} (${roe}%)</strong></td>
                     </tr>
                 </tbody>
             </table>
@@ -1340,7 +1393,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             `;
         }
         this._nav.displayConfirmationDialog({
-            title: `Close ${side}`,
+            title: `Close ${side} ${chunkSize * 100}%`,
             content: confirmContent,
             otpConfirmation: true
         }).afterClosed().subscribe(
@@ -1350,7 +1403,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                     this.setSubmission(`Closing ${side} Position...`);
                     try {
                         // Perform Action
-                        await this._position.close(side, otp);
+                        await this._position.close(side, chunkSize, otp);
                         await this._app.refreshAppBulk();
 
                         // Notify

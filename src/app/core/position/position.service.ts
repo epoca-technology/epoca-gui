@@ -90,11 +90,12 @@ export class PositionService implements IPositionService {
     /**
      * Closes an existing position based on a given side.
      * @param side
+     * @param chunkSize
      * @param otp
      * @returns Promise<void>
      */
-    public close(side: IBinancePositionSide, otp: string): Promise<void> { 
-        return this._api.request("post","position/close", {side: side}, true, otp);
+    public close(side: IBinancePositionSide, chunkSize: number, otp: string): Promise<void> { 
+        return this._api.request("post","position/close", {side: side, chunkSize: chunkSize}, true, otp);
     }
 
 

@@ -251,7 +251,7 @@
                                     </button>
                                     <button mat-menu-item 
                                             *ngIf="position.long"
-                                            (click)="closePosition('LONG')"
+                                            [matMenuTriggerFor]="closeLongMenu"
                                             [disabled]="submitting">
                                         <mat-icon>close</mat-icon>
                                         <span>Close Long</span>
@@ -276,6 +276,52 @@
                                         <mat-icon>info</mat-icon>
                                         <span>Position Information</span>
                                     </button>
+                                </mat-menu>
+                                <mat-menu #closeLongMenu="matMenu">
+                                    <div *ngIf="longChunkSize">
+                                        <button mat-menu-item (click)="closePosition('LONG', 1)">
+                                            <div fxLayout="row" fxLayoutAlign="center center">
+                                                <strong>100%</strong>&nbsp;
+                                                <span fxFlex></span>
+                                                <span class="light-text ts-xs">{{longChunkSize[1] | currency}}</span>
+                                            </div>
+                                        </button>
+                                        <button mat-menu-item (click)="closePosition('LONG', 0.75)">
+                                            <div fxLayout="row" fxLayoutAlign="center center">
+                                                <strong>75%</strong>
+                                                <span fxFlex></span>
+                                                <span class="light-text ts-xs">{{longChunkSize[0.75] | currency}}</span>
+                                            </div>
+                                        </button>
+                                        <button mat-menu-item (click)="closePosition('LONG', 0.66)">
+                                            <div fxLayout="row" fxLayoutAlign="center center">
+                                                <strong>66%</strong>
+                                                <span fxFlex></span>
+                                                <span class="light-text ts-xs">{{longChunkSize[0.66] | currency}}</span>
+                                            </div>
+                                        </button>
+                                        <button mat-menu-item (click)="closePosition('LONG', 0.5)">
+                                            <div fxLayout="row" fxLayoutAlign="center center">
+                                                <strong>50%</strong>
+                                                <span fxFlex></span>
+                                                <span class="light-text ts-xs">{{longChunkSize[0.5] | currency}}</span>
+                                            </div>
+                                        </button>
+                                        <button mat-menu-item (click)="closePosition('LONG', 0.33)">
+                                            <div fxLayout="row" fxLayoutAlign="center center">
+                                                <strong>33%</strong>
+                                                <span fxFlex></span>
+                                                <span class="light-text ts-xs">{{longChunkSize[0.33] | currency}}</span>
+                                            </div>
+                                        </button>
+                                        <button mat-menu-item (click)="closePosition('LONG', 0.25)">
+                                            <div fxLayout="row" fxLayoutAlign="center center">
+                                                <strong>25%</strong>
+                                                <span fxFlex></span>
+                                                <span class="light-text ts-xs">{{longChunkSize[0.25] | currency}}</span>
+                                            </div>
+                                        </button>
+                                    </div>
                                 </mat-menu>
 
                                 <span fxFlex="1" fxFlex.xs="2" fxFlex.sm="2"></span>
@@ -306,7 +352,7 @@
                                     </button>
                                     <button mat-menu-item 
                                             *ngIf="position.short"
-                                            (click)="closePosition('SHORT')"
+                                            [matMenuTriggerFor]="closeShortMenu"
                                             [disabled]="submitting">
                                         <mat-icon>close</mat-icon>
                                         <span>Close Short</span>
@@ -331,6 +377,52 @@
                                         <mat-icon>info</mat-icon>
                                         <span>Position Information</span>
                                     </button>
+                                </mat-menu>
+                                <mat-menu #closeShortMenu="matMenu">
+                                    <div *ngIf="shortChunkSize">
+                                        <button mat-menu-item (click)="closePosition('SHORT', 1)">
+                                            <div fxLayout="row" fxLayoutAlign="center center">
+                                                <strong>100%</strong>&nbsp;
+                                                <span fxFlex></span>
+                                                <span class="light-text ts-xs">{{shortChunkSize[1] | currency}}</span>
+                                            </div>
+                                        </button>
+                                        <button mat-menu-item (click)="closePosition('SHORT', 0.75)">
+                                            <div fxLayout="row" fxLayoutAlign="center center">
+                                                <strong>75%</strong>
+                                                <span fxFlex></span>
+                                                <span class="light-text ts-xs">{{shortChunkSize[0.75] | currency}}</span>
+                                            </div>
+                                        </button>
+                                        <button mat-menu-item (click)="closePosition('SHORT', 0.66)">
+                                            <div fxLayout="row" fxLayoutAlign="center center">
+                                                <strong>66%</strong>
+                                                <span fxFlex></span>
+                                                <span class="light-text ts-xs">{{shortChunkSize[0.66] | currency}}</span>
+                                            </div>
+                                        </button>
+                                        <button mat-menu-item (click)="closePosition('SHORT', 0.5)">
+                                            <div fxLayout="row" fxLayoutAlign="center center">
+                                                <strong>50%</strong>
+                                                <span fxFlex></span>
+                                                <span class="light-text ts-xs">{{shortChunkSize[0.5] | currency}}</span>
+                                            </div>
+                                        </button>
+                                        <button mat-menu-item (click)="closePosition('SHORT', 0.33)">
+                                            <div fxLayout="row" fxLayoutAlign="center center">
+                                                <strong>33%</strong>
+                                                <span fxFlex></span>
+                                                <span class="light-text ts-xs">{{shortChunkSize[0.33] | currency}}</span>
+                                            </div>
+                                        </button>
+                                        <button mat-menu-item (click)="closePosition('SHORT', 0.25)">
+                                            <div fxLayout="row" fxLayoutAlign="center center">
+                                                <strong>25%</strong>
+                                                <span fxFlex></span>
+                                                <span class="light-text ts-xs">{{shortChunkSize[0.25] | currency}}</span>
+                                            </div>
+                                        </button>
+                                    </div>
                                 </mat-menu>
                             </div>
                             <p class="light-text ts-xs align-center show-on-mobile" style="margin-top:3px;">

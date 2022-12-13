@@ -8,7 +8,7 @@ export interface IPositionService {
     // Position Management
     open(side: IBinancePositionSide, otp: string): Promise<void>,
     increase(side: IBinancePositionSide, otp: string): Promise<void>,
-    close(side: IBinancePositionSide, otp: string): Promise<void>,
+    close(side: IBinancePositionSide, chunkSize: number, otp: string): Promise<void>,
 
     // Position Strategy
     updateStrategy(newStrategy: IPositionStrategy, otp: string): Promise<void>,

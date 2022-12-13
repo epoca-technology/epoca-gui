@@ -6,22 +6,21 @@
     p { margin:0}
 
     .errors { margin-top:25px;text-align: center; p { font-size:13px!important; }}
+}
 
-    .levels {
-        .level-container {
-            text-align: center;
-            .level-number{ 
-                background-color: #000000;
-                color: white;
-                padding: 5px 10px;
-                text-align: center;
-                border-radius: 50%;
-                max-width: 25px;
-                font-weight: 500;
-            }
-            .level-size { font-size:13px;margin-top:5px!important; }
-            .level-acum-margin { font-size: 11px; color: var(--light-text-color); margin-top:-5px!important; }
-        }
-        .inactive { opacity: 0.5;}
-    }
+
+
+/* Responsiveness */
+
+
+/* mobile: sm & xs */
+@media only screen and (max-width: 959px) {
+
+}
+
+
+
+/* desktop: md^ */
+@media only screen and (min-width: 960px) {
+    
 }

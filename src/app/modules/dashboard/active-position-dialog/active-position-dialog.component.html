@@ -16,27 +16,31 @@
             <div fxFlex class="level-container">
                 <span class="level-number">1</span>
                 <p class="level-size" matTooltip="Margin Increase">{{strategy.level_1.size | currency}}</p>
-                <p class="level-acum-margin" matTooltip="Accumulated Margin">~{{marginAcum[0] | currency}}</p>
+                <p class="level-acum-margin" matTooltip="Accumulated Margin" *ngIf="levelNumber == 1">~{{position.isolated_margin | currency}}</p>
+                <p class="level-acum-margin" matTooltip="Accumulated Margin" *ngIf="levelNumber != 1">~</p>
             </div>
             <div fxFlex class="level-container" [ngClass]="{'inactive': levelNumber < 2}">
                 <span class="level-number">2</span>
                 <p class="level-size" matTooltip="Margin Increase">{{strategy.level_2.size | currency}}</p>
-                <p class="level-acum-margin" matTooltip="Accumulated Margin">~{{marginAcum[1] | currency}}</p>
+                <p class="level-acum-margin" matTooltip="Accumulated Margin" *ngIf="levelNumber == 2">~{{position.isolated_margin | currency}}</p>
+                <p class="level-acum-margin" matTooltip="Accumulated Margin" *ngIf="levelNumber != 2">~</p>
             </div>
             <div fxFlex class="level-container" [ngClass]="{'inactive': levelNumber < 3}">
                 <span class="level-number">3</span>
                 <p class="level-size" matTooltip="Margin Increase">{{strategy.level_3.size | currency}}</p>
-                <p class="level-acum-margin" matTooltip="Accumulated Margin">~{{marginAcum[2] | currency}}</p>
+                <p class="level-acum-margin" matTooltip="Accumulated Margin" *ngIf="levelNumber == 3">~{{position.isolated_margin | currency}}</p>
+                <p class="level-acum-margin" matTooltip="Accumulated Margin" *ngIf="levelNumber != 3">~</p>
             </div>
             <div fxFlex class="level-container" [ngClass]="{'inactive': levelNumber < 4}">
                 <span class="level-number">4</span>
                 <p class="level-size" matTooltip="Margin Increase">{{strategy.level_4.size | currency}}</p>
-                <p class="level-acum-margin" matTooltip="Accumulated Margin">~{{marginAcum[3] | currency}}</p>
+                <p class="level-acum-margin" matTooltip="Accumulated Margin" *ngIf="levelNumber == 4">~{{position.isolated_margin | currency}}</p>
+                <p class="level-acum-margin" matTooltip="Accumulated Margin" *ngIf="levelNumber != 4">~</p>
             </div>
         </div>
 
         <!-- Mark Price -->
-        <div fxLayout="row" fxLayoutAlign="start start">
+        <div fxLayout="row" fxLayoutAlign="start start" style="margin-top:10px;">
             <p class="light-text ts-m truncate">Mark Price</p>
             <span fxFlex></span>
             <p matTooltip="Binance mark price when the active positions were updated.">

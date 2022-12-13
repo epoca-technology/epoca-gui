@@ -17,6 +17,11 @@
     .position-badge { 
         padding: 7px;
     }
+
+    .close-position-menu {
+        max-width:15px!important;
+        .mat-menu-item { max-width:15px!important;}
+    }
 }
 
 

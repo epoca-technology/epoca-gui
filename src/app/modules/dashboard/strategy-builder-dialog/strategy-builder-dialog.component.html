@@ -7,11 +7,13 @@
         <span fxFlex></span>
         <button mat-icon-button 
                 (click)="levelUp()" 
-                [disabled]="!active || !active.nextLevel || view != 'chart'" 
+                *ngIf="view == 'chart'"
+                [disabled]="!active || !active.nextLevel" 
                 matTooltip="Level Up"><mat-icon>north</mat-icon></button>
         <button mat-icon-button 
+                *ngIf="view == 'chart'"
                 (click)="levelDown()" 
-                [disabled]="!active || active.levelNumber == 1 || view != 'chart'" 
+                [disabled]="!active" 
                 matTooltip="Level Down"><mat-icon>south</mat-icon></button>
         <button mat-icon-button 
                 (click)="displayKeyZoneDialog()" 
@@ -47,6 +49,12 @@
                                 The provided price is <strong>invalid</strong>
                             </p>
                         </div>
+
+
+                        <!-- Actions -->
+                        <div class="actions">
+                            <button type="submit" mat-raised-button color="primary" [disabled]="initForm.invalid">INITIALIZE</button>
+                        </div>
                     </div>
                 </div>
             </form>
@@ -54,46 +62,65 @@
 
 
         <!-- Increase Form -->
-        <div *ngIf="view == 'increase'" class="fadeIn margin-top">
+        <div *ngIf="view == 'increase'" class="fadeIn">
             <form [formGroup]="increaseForm" (ngSubmit)="processLevelUp()">
                 <div fxLayout="row" fxLayoutAlign="center center">
                     <div fxFlex="40" fxFlex.xs="90" fxFlex.sm="90">
-                        <div fxLayout="row" fxLayoutAlign="start center">
-                            <div fxFlex>
-                                <mat-form-field>
-                                    <mat-label>Price</mat-label>
-                                    <mat-icon matPrefix [ngClass]="{'error-color': increaseForm.touched && increaseForm.invalid}">attach_money</mat-icon>
-                                    <input type="number"
-                                           matInput
-                                           formControlName="price"
-                                           autocomplete="off"
-                                           placeholder="e.g. 21371.78" 
-                                           #increasePriceControl>
-                                    <mat-hint [ngClass]="{'error-color': increaseForm.touched && increaseForm.invalid}">
-                                        This price will be used to increase the level of the current position.
-                                    </mat-hint>
-                                </mat-form-field>
-                            </div>
-    
-                            <!-- Cancel -->
-                            <button type="button" mat-icon-button tabindex="-1"
-                                    (click)="cancelLevelUp()">
-                                <mat-icon>close</mat-icon>
-                            </button>
+                        <!-- Stop Loss Drop -->
+                        <div>
+                            <mat-form-field>
+                                <mat-label>Stop Loss Drop</mat-label>
+                                <mat-icon matPrefix [ngClass]="{'error-color': increaseForm.touched && stopLossDrop.invalid}">close_fullscreen</mat-icon>
+                                <mat-select formControlName="stopLossDrop">
+                                  <mat-option [value]="0">0%</mat-option>
+                                  <mat-option [value]="0.25">25%</mat-option>
+                                  <mat-option [value]="0.33">33%</mat-option>
+                                  <mat-option [value]="0.5">50%</mat-option>
+                                  <mat-option [value]="0.66">66%</mat-option>
+                                  <mat-option [value]="0.75">75%</mat-option>
+                                </mat-select>
+                                <mat-hint [ngClass]="{'error-color': increaseForm.touched && stopLossDrop.invalid}">
+                                    This % of the margin that will be closed at the stop loss price.
+                                </mat-hint>
+                            </mat-form-field>
                         </div>
-    
 
-                        <div *ngIf="increaseForm.touched && increaseForm.invalid" class="errors">
-                            <p *ngIf="side == 'LONG'">
-                                The provided price is <strong>invalid</strong> as the value must be greater than the 
-                                liquidation price ({{active.liquidation | currency}}) and less than the level increase
-                                requirement ({{active.increase | currency}})
-                            </p>
-                            <p *ngIf="side == 'SHORT'">
-                                The provided price is <strong>invalid</strong> as the value must be less than the 
-                                liquidation price ({{active.liquidation | currency}}) and greater than the level increase
-                                requirement ({{active.increase | currency}})
-                            </p>
+                        <!-- Increase Price -->
+                        <div class="margin-top">
+                            <mat-form-field>
+                                <mat-label>Increase Price</mat-label>
+                                <mat-icon matPrefix [ngClass]="{'error-color': increaseForm.touched && increasePrice.invalid}">attach_money</mat-icon>
+                                <input type="number"
+                                       matInput
+                                       formControlName="price"
+                                       autocomplete="off"
+                                       placeholder="e.g. 21371.78" 
+                                       #increasePriceControl>
+                                <mat-hint [ngClass]="{'error-color': increaseForm.touched && increaseForm.invalid}">
+                                    This price at which the position will be increased.
+                                </mat-hint>
+                            </mat-form-field>
+        
+    
+                            <div *ngIf="increaseForm.touched && increasePrice.invalid" class="errors">
+                                <p *ngIf="side == 'LONG'">
+                                    The provided price is <strong>invalid</strong> as the value must be greater than the 
+                                    liquidation price ({{active.liquidation | currency}}) and less than the level increase
+                                    requirement ({{active.increase | currency}})
+                                </p>
+                                <p *ngIf="side == 'SHORT'">
+                                    The provided price is <strong>invalid</strong> as the value must be less than the 
+                                    liquidation price ({{active.liquidation | currency}}) and greater than the level increase
+                                    requirement ({{active.increase | currency}})
+                                </p>
+                            </div>
+                        </div>
+
+
+                        <!-- Actions -->
+                        <div class="actions">
+                            <button type="submit" mat-raised-button color="primary" [disabled]="increaseForm.invalid">INCREASE POSITION</button>
+                            <button type="button" mat-button color="warn" (click)="cancelLevelUp()" tabindex="-1" class="margin-top">CANCEL</button>
                         </div>
                     </div>
                 </div>
@@ -107,22 +134,26 @@
                 <div fxFlex class="level-container">
                     <span class="level-number">1</span>
                     <p class="level-size" matTooltip="Margin Increase">{{strategy.level_1.size | currency}}</p>
-                    <p class="level-acum-margin" matTooltip="Accumulated Margin">~{{marginAcum[0] | currency}}</p>
+                    <p class="level-acum-margin" matTooltip="Accumulated Margin" *ngIf="active.levelNumber == 1">~{{active.margin | currency}}</p>
+                    <p class="level-acum-margin" matTooltip="Accumulated Margin" *ngIf="active.levelNumber != 1">~</p>
                 </div>
                 <div fxFlex class="level-container" [ngClass]="{'inactive': active.levelNumber < 2}">
                     <span class="level-number">2</span>
                     <p class="level-size" matTooltip="Margin Increase">{{strategy.level_2.size | currency}}</p>
-                    <p class="level-acum-margin" matTooltip="Accumulated Margin">~{{marginAcum[1] | currency}}</p>
+                    <p class="level-acum-margin" matTooltip="Accumulated Margin" *ngIf="active.levelNumber == 2">~{{active.margin | currency}}</p>
+                    <p class="level-acum-margin" matTooltip="Accumulated Margin" *ngIf="active.levelNumber != 2">~</p>
                 </div>
                 <div fxFlex class="level-container" [ngClass]="{'inactive': active.levelNumber < 3}">
                     <span class="level-number">3</span>
                     <p class="level-size" matTooltip="Margin Increase">{{strategy.level_3.size | currency}}</p>
-                    <p class="level-acum-margin" matTooltip="Accumulated Margin">~{{marginAcum[2] | currency}}</p>
+                    <p class="level-acum-margin" matTooltip="Accumulated Margin" *ngIf="active.levelNumber == 3">~{{active.margin | currency}}</p>
+                    <p class="level-acum-margin" matTooltip="Accumulated Margin" *ngIf="active.levelNumber != 3">~</p>
                 </div>
                 <div fxFlex class="level-container" [ngClass]="{'inactive': active.levelNumber < 4}">
                     <span class="level-number">4</span>
                     <p class="level-size" matTooltip="Margin Increase">{{strategy.level_4.size | currency}}</p>
-                    <p class="level-acum-margin" matTooltip="Accumulated Margin">~{{marginAcum[3] | currency}}</p>
+                    <p class="level-acum-margin" matTooltip="Accumulated Margin" *ngIf="active.levelNumber == 4">~{{active.margin | currency}}</p>
+                    <p class="level-acum-margin" matTooltip="Accumulated Margin" *ngIf="active.levelNumber != 4">~</p>
                 </div>
             </div>
 

@@ -50,6 +50,7 @@ export interface IStrategyColors {
 
 
 export interface IStateItem {
+    margin: number,
     levelNumber: number,
     level: IPositionStrategyLevel,
     nextLevel: IPositionStrategyLevel|undefined,

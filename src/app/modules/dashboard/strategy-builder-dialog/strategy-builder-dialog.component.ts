@@ -115,6 +115,7 @@ export class StrategyBuilderDialogComponent implements OnInit, IStrategyBuilderD
         });
 		this.increaseForm = new FormGroup ({
             price: new FormControl("", [ Validators.required, this.increasePriceValid() ]),
+            stopLossDrop: new FormControl("", [ Validators.required ]),
         });
 
 		// Select the range of colors based on the position
@@ -138,6 +139,7 @@ export class StrategyBuilderDialogComponent implements OnInit, IStrategyBuilderD
     /* Form Getters */
 	get initPrice(): AbstractControl { return <AbstractControl>this.initForm?.get("price") }
 	get increasePrice(): AbstractControl { return <AbstractControl>this.increaseForm?.get("price") }
+	get stopLossDrop(): AbstractControl { return <AbstractControl>this.increaseForm?.get("stopLossDrop") }
 
 
 
@@ -200,8 +202,9 @@ export class StrategyBuilderDialogComponent implements OnInit, IStrategyBuilderD
 	public levelUp(): void {
 		if (this.active) {
 			this.increasePrice.setValue(this.active.increase);
+			this.stopLossDrop.setValue(0);
 			this.view = "increase";
-			setTimeout(() => { if (this.increasePriceControl) this.increasePriceControl.nativeElement.focus() }, 100);
+			//setTimeout(() => { if (this.increasePriceControl) this.increasePriceControl.nativeElement.focus() }, 100);
 		}
 	}
 
@@ -220,9 +223,17 @@ export class StrategyBuilderDialogComponent implements OnInit, IStrategyBuilderD
 			// Get the current state
 			const { current, next } = this._position.getStrategyState(this.strategy, this.marginAcum[this.active.levelNumber - 1]);
 
+			// Calculate the margin from the previous level after applying the stop loss drop
+			let prevMargin: BigNumber = new BigNumber(this.marginAcum[this.active.levelNumber - 1]);
+			if (this.stopLossDrop.value != 0) {
+				// Calculate the reduction
+				const reduction: BigNumber = prevMargin.times(this.stopLossDrop.value);
+				prevMargin = prevMargin.minus(reduction);
+			}
+
 			// Build the item
 			const item: IStateItem = this.buildItem([
-				{ price: this.active.entry, margin: this.marginAcum[this.active.levelNumber - 1]},
+				{ price: this.active.entry, margin: <number>this._utils.outputNumber(prevMargin)},
 				{ price: this.increasePrice.value, margin: next!.size}
 			]);
 
@@ -233,6 +244,7 @@ export class StrategyBuilderDialogComponent implements OnInit, IStrategyBuilderD
 			this.active = item;
 
 			// Reset the init form and set the chart view
+			this.stopLossDrop.setValue(0);
 			this.increasePrice.setValue(item.increase);
 			this.chartChanged();
 			this.view = "chart";
@@ -302,11 +314,11 @@ export class StrategyBuilderDialogComponent implements OnInit, IStrategyBuilderD
 	 * @returns IStateItem
 	 */
 	private buildItem(trades: IPositionCalculatorTradeItem[], currentPrice?: number): IStateItem {
+		// Calculate the accumulated margin
+		const margin: number = trades.reduce((partialSum, a) => partialSum + a.margin, 0);
+
 		// Get the current state
-		const { current, next } = this._position.getStrategyState(
-			this.strategy, 
-			trades.reduce((partialSum, a) => partialSum + a.margin, 0)
-		);
+		const { current, next } = this._position.getStrategyState(this.strategy, margin);
 
 		// Calculate the current level number
 		const levelNumber: number = this._position.getLevelNumber(current.id);
@@ -330,6 +342,7 @@ export class StrategyBuilderDialogComponent implements OnInit, IStrategyBuilderD
 
 		// Finally, return the item
 		return {
+			margin: margin,
 			levelNumber: levelNumber,
 			level: current,
 			nextLevel: next,
@@ -569,6 +582,8 @@ export class StrategyBuilderDialogComponent implements OnInit, IStrategyBuilderD
 
 
 
+
+	
 
 
 
