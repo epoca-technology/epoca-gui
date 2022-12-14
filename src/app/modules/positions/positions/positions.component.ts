@@ -610,10 +610,10 @@ export class PositionsComponent implements OnInit, OnDestroy, IPositionsComponen
     // PNL CHARTS
     private buildPNLCharts(): void {
         this.pnl = {
-            long: this.getLineChart("Long PNL", this._d.longPNL.elements, this._chart.upwardColor, 260, 300),
-            longAccum: this.getLineChart("Long Accum. PNL", this._d.longPNL.elementsAccum, this._chart.upwardColor, 260, 300),
-            short: this.getLineChart("Short PNL", this._d.shortPNL.elements, this._chart.downwardColor, 260, 300),
-            shortAccum: this.getLineChart("Short Accum. PNL", this._d.shortPNL.elementsAccum, this._chart.downwardColor, 260, 300),
+            long: this.getLineChart("Long PNL", this._d.longPNL.elements, this._chart.upwardColor, 250, 300),
+            longAccum: this.getLineChart("Long Accum. PNL", this._d.longPNL.elementsAccum, this._chart.upwardColor, 250, 300),
+            short: this.getLineChart("Short PNL", this._d.shortPNL.elements, this._chart.downwardColor, 250, 300),
+            shortAccum: this.getLineChart("Short Accum. PNL", this._d.shortPNL.elementsAccum, this._chart.downwardColor, 250, 300),
         };
         this.pnl.long.chart!.id = "longPNL";
         this.pnl.long.chart!.group = "long";
@@ -645,10 +645,10 @@ export class PositionsComponent implements OnInit, OnDestroy, IPositionsComponen
     // FEES CHARTS
     private buildFeesCharts(): void {
         this.fees = {
-            long: this.getLineChart("Long Fees", this._d.longFees.elements, this._chart.upwardColor, 260, 300),
-            longAccum: this.getLineChart("Long Accum. Fees", this._d.longFees.elementsAccum, this._chart.upwardColor, 260, 300),
-            short: this.getLineChart("Short Fees", this._d.shortFees.elements, this._chart.downwardColor, 260, 300),
-            shortAccum: this.getLineChart("Short Accum. Fees", this._d.shortFees.elementsAccum, this._chart.downwardColor, 260, 300),
+            long: this.getLineChart("Long Fees", this._d.longFees.elements, this._chart.upwardColor, 250, 300),
+            longAccum: this.getLineChart("Long Accum. Fees", this._d.longFees.elementsAccum, this._chart.upwardColor, 250, 300),
+            short: this.getLineChart("Short Fees", this._d.shortFees.elements, this._chart.downwardColor, 250, 300),
+            shortAccum: this.getLineChart("Short Accum. Fees", this._d.shortFees.elementsAccum, this._chart.downwardColor, 250, 300),
         };
         this.fees.long.chart!.id = "longFees";
         this.fees.long.chart!.group = "long";
@@ -940,7 +940,7 @@ export class PositionsComponent implements OnInit, OnDestroy, IPositionsComponen
 		this.histChart = this._chart.getCandlestickChartOptions(candlesticks, annotations, false, false);
 		this.histChart.chart!.toolbar = {show: true,tools: {selection: true,zoom: true,zoomin: true,zoomout: true,download: false}};
 		this.histChart.chart!.zoom = {enabled: true, type: "xy"};
-		this.histChart.chart!.height = this._app.layout.value == "desktop" ? 480: 370;
+		this.histChart.chart!.height = this._app.layout.value == "desktop" ? 450: 370;
         this.histChart.chart!.id = "candles";
         this.histChart.chart!.group = "predictions";
 
@@ -961,7 +961,7 @@ export class PositionsComponent implements OnInit, OnDestroy, IPositionsComponen
         this.histBarChart = this._chart.getBarChartOptions(
             {
                 series: [{name: "SUM Mean", data: values}],
-                chart: {height: 140, type: "bar",animations: { enabled: false}, toolbar: {show: false,tools: {download: false}}, zoom: {enabled: false}},
+                chart: {height: 180, type: "bar",animations: { enabled: false}, toolbar: {show: false,tools: {download: false}}, zoom: {enabled: false}},
                 plotOptions: {bar: {borderRadius: 0, horizontal: false, distributed: true,}},
                 colors: colors,
                 grid: {show: true},
