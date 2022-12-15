@@ -661,11 +661,11 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     private updateWindowState(): void {
         // Calculate the min and max values
         let minVal: number = this.state.window.lower_band.end;
-        if (this.state.keyzone.below.length && this.state.window.lower_band.end > this.state.keyzone.below[0].s) {
+        if (this.state.keyzone.below.length && this.state.window.lower_band.end > this.state.keyzone.below[0].e) {
             minVal = <number>this._utils.alterNumberByPercentage(this.state.keyzone.below[0].e, -0.5);
         }
         let maxVal: number = this.state.window.upper_band.end;
-        if (this.state.keyzone.above.length && this.state.window.upper_band.end < this.state.keyzone.above[0].e) {
+        if (this.state.keyzone.above.length && this.state.window.upper_band.end < this.state.keyzone.above[0].s) {
             maxVal = <number>this._utils.alterNumberByPercentage(this.state.keyzone.above[0].s, 0.5);
         }
 
@@ -895,8 +895,14 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         /* Window State Annotations */
         const currentPrice: number = this.state.window.window[this.state.window.window.length - 1].c
         let windowStateColor: string = this._chart.neutralColor;
-        if (this.state.window.state == "increasing") { windowStateColor = this._chart.upwardColor }
-        else if (this.state.window.state == "decreasing") { windowStateColor = this._chart.downwardColor }
+        let annOffset: {x: number, y: number} = {x: -10, y: -30};
+        if (this.state.window.state == "increasing") { 
+            windowStateColor = this._chart.upwardColor;
+            annOffset.y = 30;
+        }
+        else if (this.state.window.state == "decreasing") { 
+            windowStateColor = this._chart.downwardColor;
+        }
         annotations.yaxis!.push({
             y: currentPrice,
             strokeDashArray: 0,
@@ -907,8 +913,8 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                 style: { color: "#fff", background: windowStateColor, fontSize: "12px", padding: {top: 4, right: 4, left: 4, bottom: 4}},
                 text: `$${this._utils.formatNumber(currentPrice, 0)} | ${this.state.window.state_value > 0 ? '+': ''}${this._utils.formatNumber(this.state.window.state_value, 1)}%`,
                 position: "right",
-                offsetY: -30,
-                offsetX: -10
+                offsetY: annOffset.y,
+                offsetX: annOffset.x
             }
         });
 

@@ -457,7 +457,7 @@ export class StrategyBuilderDialogComponent implements OnInit, IStrategyBuilderD
 						axisTicks: { show: true}
 					}
                 },
-                this._app.layout.value == "desktop" ? 600: 385
+                this._app.layout.value == "desktop" ? 590: 385
             );
 			this.chart.annotations = this.buildKeyZonesAnnotations();
 			this.chart.yaxis.tooltip = { enabled: true };

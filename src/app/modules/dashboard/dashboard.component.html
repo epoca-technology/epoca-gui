@@ -176,7 +176,7 @@
                             *ngIf="loaded && layout == 'desktop'"
                             (click)="displayKeyZoneDialog()"
                             [disabled]="submitting"
-                            matTooltip="Built: {{state.keyzone.build_ts | date: 'short'}}">
+                            matTooltip="Built: {{state.keyzone.build_ts | date: 'short'}} | Updated: {{state.keyzone.ts | date: 'short'}}">
                             <mat-icon style="font-size:20px;">vertical_distribute</mat-icon>&nbsp;KeyZones
                     </button>
                     <button mat-icon-button 
