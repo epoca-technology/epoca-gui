@@ -715,11 +715,11 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
         /* KeyZone Annotations */
 
-        // Iterate over the keyzones above
-        for (let i = 0; i < this.state.keyzone.above.length; i++) {
+        // Add the first keyzone below (if any)
+        if (this.state.keyzone.above.length) {
             annotations.yaxis!.push({
-				y: this.state.keyzone.above[i].s,
-				y2: this.state.keyzone.above[i].e,
+				y: this.state.keyzone.above[0].s,
+				y2: this.state.keyzone.above[0].e,
 				strokeDashArray: 0,
 				borderColor: this._chart.upwardColor,
 				fillColor: this._chart.upwardColor
@@ -738,11 +738,11 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         }
 
 
-        // Iterate over the keyzones below
-        for (let i = 0; i < this.state.keyzone.below.length; i++) {
+        // Add the first keyzone below (if any)
+        if (this.state.keyzone.below.length) {
             annotations.yaxis!.push({
-				y: this.state.keyzone.below[i].s,
-				y2: this.state.keyzone.below[i].e,
+				y: this.state.keyzone.below[0].s,
+				y2: this.state.keyzone.below[0].e,
 				strokeDashArray: 0,
 				borderColor: this._chart.downwardColor,
 				fillColor: this._chart.downwardColor

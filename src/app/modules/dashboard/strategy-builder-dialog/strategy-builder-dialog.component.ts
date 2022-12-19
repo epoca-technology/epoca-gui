@@ -221,12 +221,11 @@ export class StrategyBuilderDialogComponent implements OnInit, IStrategyBuilderD
 	public processLevelUp(): void {
 		if (this.increaseForm.valid) {
 			// Get the current state
-			const { current, next } = this._position.getStrategyState(this.strategy, this.marginAcum[this.active.levelNumber - 1]);
+			const { current, next } = this._position.getStrategyState(this.strategy, this.active.margin);
 
-			// Calculate the margin from the previous level after applying the stop loss drop
-			let prevMargin: BigNumber = new BigNumber(this.marginAcum[this.active.levelNumber - 1]);
+			// Calculate the margin from the previous level after applying the stop loss drop (if any)
+			let prevMargin: BigNumber = new BigNumber(this.active.margin);
 			if (this.stopLossDrop.value != 0) {
-				// Calculate the reduction
 				const reduction: BigNumber = prevMargin.times(this.stopLossDrop.value);
 				prevMargin = prevMargin.minus(reduction);
 			}
