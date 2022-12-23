@@ -1,7 +1,7 @@
 <mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
     <div fxLayout="row" fxLayoutAlign="center center">
         <button mat-icon-button class="show-on-mobile" (click)="close()"><mat-icon>arrow_back</mat-icon></button>
-        <span class="truncate">{{layout == 'desktop' ? 'Technicals ': ''}}{{intervalID}}: {{intervalState.s.a}}</span>
+        <span class="truncate">Technicals {{intervalID}}</span>
         <span fxFlex></span>
         <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
     </div>
@@ -13,14 +13,90 @@
             mat-align-tabs="center" 
             mat-stretch-tabs  
             backgroundColor="primary">
-            <mat-tab label="SUM"></mat-tab>
+            <mat-tab label="RESULT"></mat-tab>
             <mat-tab label="OSC"></mat-tab>
             <mat-tab label="MA"></mat-tab>
         </mat-tab-group>
 
         <!-- Summary -->
         <div *ngIf="activeIndex == 0" class="padding fadeIn">
+            <div fxLayout="row" fxLayoutAlign="center center">
+                <!-- Oscillators -->
+                <div fxFlex="30">
+                    <div class="align-center" [ngClass]="{
+                        'error-color': intervalState.o.a == 'SELL' || intervalState.o.a == 'STRONG_SELL',
+                        'success-color': intervalState.o.a == 'BUY' || intervalState.o.a == 'STRONG_BUY',
+                        'light-text': intervalState.o.a == 'NEUTRAL',
+                        'strong-action': intervalState.o.a == 'STRONG_SELL' || intervalState.o.a == 'STRONG_BUY'
+                    }">
+                        <h5>{{layout == 'desktop' ? 'Oscillators': 'OSC'}}</h5>
+                        <p class="ts-xs">{{actionNames[intervalState.o.a]}}</p>
+                    </div>
+                    <apx-chart
+                        [series]="oscillators.series"
+                        [chart]="oscillators.chart"
+                        [plotOptions]="oscillators.plotOptions"
+                        [xaxis]="oscillators.xaxis"
+                        [yaxis]="oscillators.yaxis"
+                        [dataLabels]="oscillators.dataLabels"
+                        [colors]="oscillators.colors"
+                        [grid]="oscillators.grid"
+                        [legend]="{show: false}"
+                    ></apx-chart>
+                </div>
 
+                <span fxFlex></span>
+
+                <!-- Summary  -->
+                <div fxFlex="30">
+                    <div class="align-center" [ngClass]="{
+                        'error-color': intervalState.s.a == 'SELL' || intervalState.s.a == 'STRONG_SELL',
+                        'success-color': intervalState.s.a == 'BUY' || intervalState.s.a == 'STRONG_BUY',
+                        'light-text': intervalState.s.a == 'NEUTRAL',
+                        'strong-action': intervalState.s.a == 'STRONG_SELL' || intervalState.s.a == 'STRONG_BUY'
+                    }">
+                        <h5>Summary</h5>
+                        <p class="ts-xs">{{actionNames[intervalState.s.a]}}</p>
+                    </div>
+                    <apx-chart
+                        [series]="summary.series"
+                        [chart]="summary.chart"
+                        [plotOptions]="summary.plotOptions"
+                        [xaxis]="summary.xaxis"
+                        [yaxis]="summary.yaxis"
+                        [dataLabels]="summary.dataLabels"
+                        [colors]="summary.colors"
+                        [grid]="summary.grid"
+                        [legend]="{show: false}"
+                    ></apx-chart>
+                </div>
+
+                <span fxFlex></span>
+
+                <!-- Moving Averages  -->
+                <div fxFlex="30">
+                    <div class="align-center" [ngClass]="{
+                        'error-color': intervalState.m.a == 'SELL' || intervalState.m.a == 'STRONG_SELL',
+                        'success-color': intervalState.m.a == 'BUY' || intervalState.m.a == 'STRONG_BUY',
+                        'light-text': intervalState.m.a == 'NEUTRAL',
+                        'strong-action': intervalState.m.a == 'STRONG_SELL' || intervalState.m.a == 'STRONG_BUY'
+                    }">
+                        <h5>{{layout == 'desktop' ? 'Moving Averages': 'MA'}}</h5>
+                        <p class="ts-xs">{{actionNames[intervalState.m.a]}}</p>
+                    </div>
+                    <apx-chart
+                        [series]="movingAverages.series"
+                        [chart]="movingAverages.chart"
+                        [plotOptions]="movingAverages.plotOptions"
+                        [xaxis]="movingAverages.xaxis"
+                        [yaxis]="movingAverages.yaxis"
+                        [dataLabels]="movingAverages.dataLabels"
+                        [colors]="movingAverages.colors"
+                        [grid]="movingAverages.grid"
+                        [legend]="{show: false}"
+                    ></apx-chart>
+                </div>
+            </div>
         </div>
 
         <!-- Oscillators -->

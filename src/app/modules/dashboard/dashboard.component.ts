@@ -1549,7 +1549,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     public displayTechnicalAnalysisDialog(taInterval: ITAIntervalID): void {
 		this.dialog.open(TechnicalAnalysisDialogComponent, {
 			hasBackdrop: this._app.layout.value != "mobile",
-			panelClass: "small-dialog",
+			panelClass: "medium-dialog",
 			data: <ITechnicalAnalysisDialogData> {
                 id: taInterval,
                 state: this.state.technical_analysis
