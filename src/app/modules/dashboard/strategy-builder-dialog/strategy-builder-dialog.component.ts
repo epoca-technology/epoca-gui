@@ -1,14 +1,11 @@
 import { Component, OnInit, Inject, ViewChild, ElementRef } from '@angular/core';
 import {MatDialogRef, MAT_DIALOG_DATA, MatDialog} from "@angular/material/dialog";
 import {AbstractControl, FormControl, FormGroup, Validators} from "@angular/forms";
-import { ApexAnnotations } from 'ng-apexcharts';
 import { BigNumber } from "bignumber.js"; 
 import { 
 	IActivePosition, 
 	IBinancePositionSide, 
 	IPositionStrategy, 
-	IKeyZoneState, 
-	IKeyZone, 
 	PositionService, 
 	UtilsService,
 	IStrategyLevelID,
@@ -16,7 +13,6 @@ import {
 	IPositionCalculatorTradeItem
 } from '../../../core';
 import { AppService, ChartService, ILineChartOptions } from '../../../services';
-import { IKeyZonesStateDialogData, KeyzoneStateDialogComponent } from '../keyzone-state-dialog';
 import { 
 	IStrategyBuilderDialogComponent, 
 	IStrategyBuilderDialogData, 
@@ -37,7 +33,6 @@ export class StrategyBuilderDialogComponent implements OnInit, IStrategyBuilderD
 
 	// Inherited values
     public currentPrice: number;
-    public keyZones: IKeyZoneState;
     public side: IBinancePositionSide;
     public strategy: IPositionStrategy;
     public position: IActivePosition|undefined;
@@ -61,20 +56,20 @@ export class StrategyBuilderDialogComponent implements OnInit, IStrategyBuilderD
 
 	// Color Helpers
 	private longColors: IStrategyColors = {
-		market: "#2196F3",
-		entry: "#000000",
+		market: "#0D47A1",
+		entry: "#2196F3",
 		target: "#00796B",
-		stopLoss: "#E57373",
-		increase: "#F44336",
-		liquidation: "#C62828",
+		stopLoss: "#ff7b7b",
+		increase: "#ff0000",
+		liquidation: "#a70000",
 	};
 	private shortColors: IStrategyColors = {
-		market: "#2196F3",
-		entry: "#000000",
+		market: "#0D47A1",
+		entry: "#2196F3",
 		target: "#00796B",
-		stopLoss: "#E57373",
-		increase: "#F44336",
-		liquidation: "#C62828",
+		stopLoss: "#ff7b7b",
+		increase: "#ff0000",
+		liquidation: "#a70000",
 	}
 	private color: IStrategyColors;
 
@@ -92,7 +87,6 @@ export class StrategyBuilderDialogComponent implements OnInit, IStrategyBuilderD
 	) { 
 		// Populate inherited values
 		this.currentPrice = this.data.currentPrice;
-		this.keyZones = this.data.keyZones;
 		this.side = this.data.side;
 		this.strategy = this.data.strategy;
 		this.position = this.data.position;
@@ -446,8 +440,8 @@ export class StrategyBuilderDialogComponent implements OnInit, IStrategyBuilderD
                     ],
                     stroke: {
 						curve: "smooth", 
-						dashArray:  [0, 0, 0, 10, 3, 0], 
-						width: 		[3, 3, 3, 1.5, 3, 5]
+						dashArray:  0, 
+						width: 		[3, 3, 3, 3, 3, 5]
 					},
 					xaxis: { 
 						categories: ids, 
@@ -458,7 +452,6 @@ export class StrategyBuilderDialogComponent implements OnInit, IStrategyBuilderD
                 },
                 this._app.layout.value == "desktop" ? 590: 385
             );
-			this.chart.annotations = this.buildKeyZonesAnnotations();
 			this.chart.yaxis.tooltip = { enabled: true };
         }
 	}
@@ -466,33 +459,6 @@ export class StrategyBuilderDialogComponent implements OnInit, IStrategyBuilderD
 
 
 
-
-	/**
-	 * Builds the annotations for all the keyzones.
-	 * @returns ApexAnnotations
-	 */
-	private buildKeyZonesAnnotations(): ApexAnnotations {
-		// Init the annotations
-		let annotations: ApexAnnotations = { yaxis: [] };
-
-		// Concatenate all the keyzones
-		let zones: IKeyZone[] = this.keyZones.above.concat(this.keyZones.below);
-		if (this.keyZones.active) zones.push(this.keyZones.active)
-
-        // Build the annotations
-        for (let i = 0; i < zones.length; i++) {
-            annotations.yaxis!.push({
-				y: zones[i].s,
-				y2: zones[i].e,
-				strokeDashArray: 0,
-				borderColor: "#90A4AE",
-				fillColor: "#90A4AE"
-			})
-        }
-
-        // Finally, return the annotations
-        return annotations;
-	}
 
 
 
@@ -590,21 +556,6 @@ export class StrategyBuilderDialogComponent implements OnInit, IStrategyBuilderD
 	/* Misc Helpers */
 
 
-
-
-    /**
-     * Displays the keyzone state dialog.
-     */
-	 public displayKeyZoneDialog(): void {
-		this.dialog.open(KeyzoneStateDialogComponent, {
-			hasBackdrop: this._app.layout.value != "mobile",
-			panelClass: "large-dialog",
-			data: <IKeyZonesStateDialogData> {
-                state: this.keyZones,
-                currentPrice: this.currentPrice
-            }
-		})
-    }
 
 
 

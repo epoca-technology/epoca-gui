@@ -454,12 +454,10 @@
                                     <div fxLayout="row" fxLayoutAlign="center start" class="chart-card-heading badged-header">
                                         <div class="show-on-desktop">
                                             <h4 *ngIf="!activePrediction">Prediction</h4>
-                                            <h4 *ngIf="activePrediction" matTooltip="Updated: {{activePrediction.t | date: 'short'}}">
+                                            <h4 *ngIf="activePrediction" 
+                                                matTooltip="Pred: {{activePrediction.t | date: 'shortTime'}} | TA: {{state.technical_analysis.ts | date: 'shortTime'}}">
                                                 Prediction
                                             </h4>
-                                            <!--<p *ngIf="activePrediction" class="light-text ts-xs show-on-mobile">
-                                                {{activePrediction.t | date: layout == 'desktop' ? 'medium': 'mediumTime'}}
-                                            </p>-->
                                         </div>
                                         <span fxFlex class="show-on-desktop"></span>
                                         <div class="clickable" role="button" matRipple 

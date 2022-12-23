@@ -4,7 +4,7 @@
         <button mat-icon-button class="show-on-mobile" (click)="_nav.dashboard()"><mat-icon>arrow_back</mat-icon></button>
         <span>Order Book</span>
         <span fxFlex></span>
-        <app-refresh-button (refresh)="refreshBook()" [intervalSeconds]="30"></app-refresh-button>
+        <app-refresh-button (refresh)="refreshBook()" [intervalSeconds]="60"></app-refresh-button>
     </div>
 </mat-toolbar>
 

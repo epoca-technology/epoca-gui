@@ -16,9 +16,6 @@
                 [disabled]="!active" 
                 matTooltip="Level Down"><mat-icon>south</mat-icon></button>
         <button mat-icon-button 
-                (click)="displayKeyZoneDialog()" 
-                matTooltip="KeyZones"><mat-icon style="font-size:20px;">vertical_distribute</mat-icon></button>
-        <button mat-icon-button 
                 class="show-on-desktop" 
                 (click)="cancel()"><mat-icon>close</mat-icon></button>
     </div>
@@ -158,7 +155,7 @@
             </div>
 
             <!-- Chart -->
-            <div *ngIf="chart">
+            <div *ngIf="chart" style="overflow:hidden;">
                 <apx-chart
                     [series]="chart.series"
                     [chart]="chart.chart"

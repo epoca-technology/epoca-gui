@@ -2,7 +2,6 @@ import {
     IActivePosition, 
     IBinancePositionSide, 
     IPositionStrategy, 
-    IKeyZoneState, 
     IPositionStrategyLevel
 } from "../../../core";
 
@@ -18,7 +17,6 @@ export interface IStrategyBuilderDialogComponent {
     levelDown(): void,
     
     // Misc Helpers
-    displayKeyZoneDialog(): void,
     cancel(): void
 }
 
@@ -29,7 +27,6 @@ export type IView = "chart"|"init"|"increase";
 
 export interface IStrategyBuilderDialogData { 
     currentPrice: number,
-    keyZones: IKeyZoneState,
     side: IBinancePositionSide,
     strategy: IPositionStrategy,
     position: IActivePosition|undefined

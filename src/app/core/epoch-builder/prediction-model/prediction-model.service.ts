@@ -218,7 +218,7 @@ export class PredictionModelService implements IPredictionModelService {
 						evaluationFunction: "evaluateProfit",
 						evaluationParams: {
 							receivedProfit: c.backtest.profit,
-							optimalProfit: c.backtest.position_size * 3,
+							optimalProfit: c.backtest.position_size,
 							maxPoints: 45
 						}
 					},

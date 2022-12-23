@@ -1394,9 +1394,9 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         `;
         if (position.unrealized_pnl < 0) {
             confirmContent += `
-                <p class="margin-top align-center ts-m">
+                <p class="margin-top align-center ts-m error-color">
                     <strong>Warning:</strong> you're about to close a <strong>${side}</strong> position with a 
-                    <strong class="error-color">negative PNL</strong>
+                    <strong>negative PNL</strong>
                 </p>
             `;
         }
