@@ -1,4 +1,4 @@
-import { IActivePosition, IBinancePositionSide } from "../../core";
+import { IActivePosition, IBinancePositionSide, ITAIntervalID } from "../../core";
 
 export interface IDashboardComponent {
     // Position Management
@@ -13,6 +13,7 @@ export interface IDashboardComponent {
     displayPositionDialog(position: IActivePosition): void,
     displayStrategyBuilderDialog(side: IBinancePositionSide): void,
     displayFeaturesDialog(): void,
+    displayTechnicalAnalysisDialog(taInterval: ITAIntervalID): void,
     displayKeyZoneDialog(): void
     
     // Nav Actions

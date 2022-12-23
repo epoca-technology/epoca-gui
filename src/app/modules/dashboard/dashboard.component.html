@@ -281,7 +281,7 @@
                                     <div *ngIf="longChunkSize">
                                         <button mat-menu-item (click)="closePosition('LONG', 1)">
                                             <div fxLayout="row" fxLayoutAlign="center center">
-                                                <strong>100%</strong>&nbsp;
+                                                <strong>100%</strong>&nbsp;&nbsp;
                                                 <span fxFlex></span>
                                                 <span class="light-text ts-xs">{{longChunkSize[1] | currency}}</span>
                                             </div>
@@ -382,7 +382,7 @@
                                     <div *ngIf="shortChunkSize">
                                         <button mat-menu-item (click)="closePosition('SHORT', 1)">
                                             <div fxLayout="row" fxLayoutAlign="center center">
-                                                <strong>100%</strong>&nbsp;
+                                                <strong>100%</strong>&nbsp;&nbsp;
                                                 <span fxFlex></span>
                                                 <span class="light-text ts-xs">{{shortChunkSize[1] | currency}}</span>
                                             </div>
@@ -451,38 +451,86 @@
                             <div>
                                 <div class="chart-card">
                                     <!-- Heading -->
-                                    <div fxLayout="row" fxLayoutAlign="start start" class="chart-card-heading">
-                                        <div>
-                                            <h4 *ngIf="!activePrediction">Trend</h4>
-                                            <h4 *ngIf="activePrediction" matTooltip="Updated: {{activePrediction.t | date: 'short'}}">Trend</h4>
-                                            <p *ngIf="activePrediction" class="light-text ts-xs show-on-mobile">
+                                    <div fxLayout="row" fxLayoutAlign="center start" class="chart-card-heading badged-header">
+                                        <div class="show-on-desktop">
+                                            <h4 *ngIf="!activePrediction">Prediction</h4>
+                                            <h4 *ngIf="activePrediction" matTooltip="Updated: {{activePrediction.t | date: 'short'}}">
+                                                Prediction
+                                            </h4>
+                                            <!--<p *ngIf="activePrediction" class="light-text ts-xs show-on-mobile">
                                                 {{activePrediction.t | date: layout == 'desktop' ? 'medium': 'mediumTime'}}
-                                            </p>
+                                            </p>-->
                                         </div>
-                                        <span fxFlex></span>
-                                        <div *ngIf="activePrediction"  
-                                            class="square-badge margin-right clickable" role="button" matRipple 
-                                            (click)="toggleTrendChart()" 
-                                            matTooltip="{{userPreferences.splitTrendChart ? 'View Sum Chart': 'View Split Chart'}}">
-                                            <mat-icon>{{userPreferences.splitTrendChart ? 'timeline': 'ssid_chart'}}</mat-icon>
+                                        <span fxFlex class="show-on-desktop"></span>
+                                        <div class="clickable" role="button" matRipple 
+                                            (click)="displayTechnicalAnalysisDialog('30m')"
+                                            [ngClass]="{
+                                                'square-badge-success': state.technical_analysis['30m'].s.a == 'BUY' || state.technical_analysis['30m'].s.a == 'STRONG_BUY',
+                                                'square-badge-error': state.technical_analysis['30m'].s.a == 'SELL' || state.technical_analysis['30m'].s.a == 'STRONG_SELL',
+                                                'square-badge-neutral': state.technical_analysis['30m'].s.a == 'NEUTRAL',
+                                                'inactive': state.technical_analysis['30m'].s.a != 'STRONG_BUY' && state.technical_analysis['30m'].s.a != 'STRONG_SELL'
+                                            }" matTooltip="Osc: {{state.technical_analysis['30m'].o.a}} | MA: {{state.technical_analysis['30m'].m.a}}">
+                                            30m
+                                        </div>
+                                        <div class="clickable" role="button" matRipple 
+                                            (click)="displayTechnicalAnalysisDialog('2h')"
+                                            [ngClass]="{
+                                                'square-badge-success': state.technical_analysis['2h'].s.a == 'BUY' || state.technical_analysis['2h'].s.a == 'STRONG_BUY',
+                                                'square-badge-error': state.technical_analysis['2h'].s.a == 'SELL' || state.technical_analysis['2h'].s.a == 'STRONG_SELL',
+                                                'square-badge-neutral': state.technical_analysis['2h'].s.a == 'NEUTRAL',
+                                                'inactive': state.technical_analysis['2h'].s.a != 'STRONG_BUY' && state.technical_analysis['2h'].s.a != 'STRONG_SELL'
+                                            }" matTooltip="Osc: {{state.technical_analysis['2h'].o.a}} | MA: {{state.technical_analysis['2h'].m.a}}">
+                                            2h
+                                        </div>
+                                        <div class="clickable" role="button" matRipple 
+                                            (click)="displayTechnicalAnalysisDialog('4h')"
+                                            [ngClass]="{
+                                                'square-badge-success': state.technical_analysis['4h'].s.a == 'BUY' || state.technical_analysis['4h'].s.a == 'STRONG_BUY',
+                                                'square-badge-error': state.technical_analysis['4h'].s.a == 'SELL' || state.technical_analysis['4h'].s.a == 'STRONG_SELL',
+                                                'square-badge-neutral': state.technical_analysis['4h'].s.a == 'NEUTRAL',
+                                                'inactive': state.technical_analysis['4h'].s.a != 'STRONG_BUY' && state.technical_analysis['4h'].s.a != 'STRONG_SELL'
+                                            }" matTooltip="Osc: {{state.technical_analysis['4h'].o.a}} | MA: {{state.technical_analysis['4h'].m.a}}">
+                                            4h
+                                        </div>
+                                        <div class="clickable" role="button" matRipple 
+                                            (click)="displayTechnicalAnalysisDialog('1d')"
+                                            [ngClass]="{
+                                                'square-badge-success': state.technical_analysis['1d'].s.a == 'BUY' || state.technical_analysis['1d'].s.a == 'STRONG_BUY',
+                                                'square-badge-error': state.technical_analysis['1d'].s.a == 'SELL' || state.technical_analysis['1d'].s.a == 'STRONG_SELL',
+                                                'square-badge-neutral': state.technical_analysis['1d'].s.a == 'NEUTRAL',
+                                                'inactive': state.technical_analysis['1d'].s.a != 'STRONG_BUY' && state.technical_analysis['1d'].s.a != 'STRONG_SELL'
+                                            }" matTooltip="Osc: {{state.technical_analysis['1d'].o.a}} | MA: {{state.technical_analysis['1d'].m.a}}">
+                                            1d
                                         </div>
                                         <div *ngIf="activePrediction" 
-                                            matTooltip="Prediction Sum" 
+                                            matTooltip="Predicted Trend Sum" 
+                                            [matMenuTriggerFor]="predictionMenu"
                                             class="clickable" role="button" matRipple 
                                             [ngClass]="{
                                                 'square-badge-success': activePrediction.r == 1,
                                                 'square-badge-error': activePrediction.r == -1,
-                                                'square-badge-neutral': activePrediction.r == 0
-                                            }" 
-                                            (click)="displayFeaturesDialog()">
+                                                'square-badge-neutral': activePrediction.r == 0,
+                                                'inactive': activePrediction.r == 0 || 
+                                                            (activePrediction.r == 1 && activePredictionState! < 3) ||
+                                                            (activePrediction.r == -1 && activePredictionState! > 3)
+                                            }">
                                             <mat-icon *ngIf="activePrediction.r == 1">trending_up</mat-icon>
                                             <mat-icon *ngIf="activePrediction.r == -1">trending_down</mat-icon>
                                             <mat-icon *ngIf="activePrediction.r == 0">trending_flat</mat-icon>
-                                            {{activeSum | number: '1.0-6'}} 
+                                            {{activeSum | number: '1.0-2'}} 
                                             <span *ngIf="activePredictionState != 0">
                                                 | {{activePredictionState! > 0 ? '+': ''}}{{activePredictionState}}
                                             </span>
                                         </div>
+                                        <mat-menu #predictionMenu="matMenu">
+                                            <button mat-menu-item (click)="displayFeaturesDialog()">
+                                                <mat-icon>account_tree</mat-icon> View Sum Details
+                                            </button>
+                                            <button mat-menu-item (click)="toggleTrendChart()">
+                                                <mat-icon>{{userPreferences.splitTrendChart ? 'timeline': 'ssid_chart'}}</mat-icon> 
+                                                View {{userPreferences.splitTrendChart ? 'Sum Chart': 'Split Chart'}}
+                                            </button>
+                                        </mat-menu>
                                     </div>
                 
                                     <!-- Chart -->

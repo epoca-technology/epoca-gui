@@ -22,7 +22,8 @@ import {
     IBinancePositionSide,
     IPositionStrategy,
     IPositionStrategyState,
-    IPositionPriceRange
+    IPositionPriceRange,
+    ITAIntervalID
 } from "../../core";
 import { 
     AppService, 
@@ -39,6 +40,7 @@ import { ActivePositionDialogComponent, IActivePositionDialogData } from "./acti
 import { StrategyFormDialogComponent } from "./strategy-form-dialog";
 import { IDashboardComponent, IPositionCloseChunkSize } from "./interfaces";
 import { IStrategyBuilderDialogData, StrategyBuilderDialogComponent } from "./strategy-builder-dialog";
+import { ITechnicalAnalysisDialogData, TechnicalAnalysisDialogComponent } from "./technical-analysis-dialog";
 
 @Component({
   selector: "app-dashboard",
@@ -1534,6 +1536,28 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             }
 		})
 	}
+
+
+
+    
+
+	/**
+	 * Displays the features dedicated dialog to gather more information
+	 * about the prediction.
+     * @param taInterval
+	 */
+    public displayTechnicalAnalysisDialog(taInterval: ITAIntervalID): void {
+		this.dialog.open(TechnicalAnalysisDialogComponent, {
+			hasBackdrop: this._app.layout.value != "mobile",
+			panelClass: "small-dialog",
+			data: <ITechnicalAnalysisDialogData> {
+                id: taInterval,
+                state: this.state.technical_analysis
+            }
+		})
+	}
+
+
 
 
 

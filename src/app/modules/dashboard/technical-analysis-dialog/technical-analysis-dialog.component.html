@@ -1,0 +1,306 @@
+<mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <button mat-icon-button class="show-on-mobile" (click)="close()"><mat-icon>arrow_back</mat-icon></button>
+        <span class="truncate">{{layout == 'desktop' ? 'Technicals ': ''}}{{intervalID}}: {{intervalState.s.a}}</span>
+        <span fxFlex></span>
+        <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
+    </div>
+</mat-toolbar>
+<div mat-dialog-content>
+    <div>
+        <!-- Tabs Navigation-->
+        <mat-tab-group [selectedIndex]="activeIndex" (selectedIndexChange)="activeIndex = $event" 
+            mat-align-tabs="center" 
+            mat-stretch-tabs  
+            backgroundColor="primary">
+            <mat-tab label="SUM"></mat-tab>
+            <mat-tab label="OSC"></mat-tab>
+            <mat-tab label="MA"></mat-tab>
+        </mat-tab-group>
+
+        <!-- Summary -->
+        <div *ngIf="activeIndex == 0" class="padding fadeIn">
+
+        </div>
+
+        <!-- Oscillators -->
+        <div *ngIf="activeIndex == 1" class="fadeIn">
+            <table class="bordered highlight">
+                <tbody>
+                    <tr>
+                        <td><p>{{layout == 'desktop' ? 'Relative Strength Index (14)': 'RSI (14)'}}</p></td>
+                        <td class="align-right">
+                            <p [ngClass]="{
+                                'success-color': intervalState.p.rsi_14.a == 'BUY',
+                                'error-color': intervalState.p.rsi_14.a == 'SELL',
+                                'light-text': intervalState.p.rsi_14.a == 'NEUTRAL'
+                            }">
+                                <strong>{{intervalState.p.rsi_14.v[0] | number: '1.2-2'}}</strong>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><p>{{layout == 'desktop' ? 'Commodity Channel Index (20)': 'CCI (20)'}}</p></td>
+                        <td class="align-right">
+                            <p [ngClass]="{
+                                'success-color': intervalState.p.cci_20.a == 'BUY',
+                                'error-color': intervalState.p.cci_20.a == 'SELL',
+                                'light-text': intervalState.p.cci_20.a == 'NEUTRAL'
+                            }">
+                                <strong>{{intervalState.p.cci_20.v[0] | number: '1.2-2'}}</strong>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><p>{{layout == 'desktop' ? 'Average Directional Movement Index (14)': 'ADX (14)'}}</p></td>
+                        <td class="align-right">
+                            <p [ngClass]="{
+                                'success-color': intervalState.p.adx_14.a == 'BUY',
+                                'error-color': intervalState.p.adx_14.a == 'SELL',
+                                'light-text': intervalState.p.adx_14.a == 'NEUTRAL'
+                            }">
+                                <strong>{{intervalState.p.adx_14.v[0] | number: '1.2-2'}}</strong>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><p>{{layout == 'desktop' ? 'Awesome Oscillator': 'AO'}}</p></td>
+                        <td class="align-right">
+                            <p [ngClass]="{
+                                'success-color': intervalState.p.ao.a == 'BUY',
+                                'error-color': intervalState.p.ao.a == 'SELL',
+                                'light-text': intervalState.p.ao.a == 'NEUTRAL'
+                            }">
+                                <strong>{{intervalState.p.ao.v[0] | number: '1.2-2'}}</strong>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><p>{{layout == 'desktop' ? 'Momentum (10)': 'MOM (10)'}}</p></td>
+                        <td class="align-right">
+                            <p [ngClass]="{
+                                'success-color': intervalState.p.mom_10.a == 'BUY',
+                                'error-color': intervalState.p.mom_10.a == 'SELL',
+                                'light-text': intervalState.p.mom_10.a == 'NEUTRAL'
+                            }">
+                                <strong>{{intervalState.p.mom_10.v[0] | number: '1.2-2'}}</strong>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><p>{{layout == 'desktop' ? 'MACD Level (12, 26, 9)': 'MACD (12, 26, 9)'}}</p></td>
+                        <td class="align-right">
+                            <p [ngClass]="{
+                                'success-color': intervalState.p.macd_12_26_9.a == 'BUY',
+                                'error-color': intervalState.p.macd_12_26_9.a == 'SELL',
+                                'light-text': intervalState.p.macd_12_26_9.a == 'NEUTRAL'
+                            }">
+                                <strong>{{intervalState.p.macd_12_26_9.v[0] | number: '1.2-2'}}</strong>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><p>{{layout == 'desktop' ? 'Stochastic RSI (14)': 'STOCHRSI (14)'}}</p></td>
+                        <td class="align-right">
+                            <p [ngClass]="{
+                                'success-color': intervalState.p.stochrsi_14.a == 'BUY',
+                                'error-color': intervalState.p.stochrsi_14.a == 'SELL',
+                                'light-text': intervalState.p.stochrsi_14.a == 'NEUTRAL'
+                            }">
+                                <strong>{{intervalState.p.stochrsi_14.v[0] | number: '1.2-2'}}</strong>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><p>{{layout == 'desktop' ? 'Williams Percent Range (14)': 'WILLR (14)'}}</p></td>
+                        <td class="align-right">
+                            <p [ngClass]="{
+                                'success-color': intervalState.p.willr_14.a == 'BUY',
+                                'error-color': intervalState.p.willr_14.a == 'SELL',
+                                'light-text': intervalState.p.willr_14.a == 'NEUTRAL'
+                            }">
+                                <strong>{{intervalState.p.willr_14.v[0] | number: '1.2-2'}}</strong>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><p>{{layout == 'desktop' ? 'Ultimate Oscillator (7, 14, 28)': 'ULTOSC (7, 14, 28)'}}</p></td>
+                        <td class="align-right">
+                            <p [ngClass]="{
+                                'success-color': intervalState.p.ultosc_7_14_28.a == 'BUY',
+                                'error-color': intervalState.p.ultosc_7_14_28.a == 'SELL',
+                                'light-text': intervalState.p.ultosc_7_14_28.a == 'NEUTRAL'
+                            }">
+                                <strong>{{intervalState.p.ultosc_7_14_28.v[0] | number: '1.2-2'}}</strong>
+                            </p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Moving Averages -->
+        <div *ngIf="activeIndex == 2" class="fadeIn">
+            <table class="bordered highlight">
+                <tbody>
+                    <tr>
+                        <td><p>{{layout == 'desktop' ? 'Exponential Moving Average (10)': 'EMA (10)'}}</p></td>
+                        <td class="align-right">
+                            <p [ngClass]="{
+                                'success-color': intervalState.p.ema_10.a == 'BUY',
+                                'error-color': intervalState.p.ema_10.a == 'SELL',
+                                'light-text': intervalState.p.ema_10.a == 'NEUTRAL'
+                            }">
+                                <strong>{{intervalState.p.ema_10.v[0] | number: '1.2-2'}}</strong>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><p>{{layout == 'desktop' ? 'Simple Moving Average (10)': 'SMA (10)'}}</p></td>
+                        <td class="align-right">
+                            <p [ngClass]="{
+                                'success-color': intervalState.p.sma_10.a == 'BUY',
+                                'error-color': intervalState.p.sma_10.a == 'SELL',
+                                'light-text': intervalState.p.sma_10.a == 'NEUTRAL'
+                            }">
+                                <strong>{{intervalState.p.sma_10.v[0] | number: '1.2-2'}}</strong>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><p>{{layout == 'desktop' ? 'Exponential Moving Average (20)': 'EMA (20)'}}</p></td>
+                        <td class="align-right">
+                            <p [ngClass]="{
+                                'success-color': intervalState.p.ema_20.a == 'BUY',
+                                'error-color': intervalState.p.ema_20.a == 'SELL',
+                                'light-text': intervalState.p.ema_20.a == 'NEUTRAL'
+                            }">
+                                <strong>{{intervalState.p.ema_20.v[0] | number: '1.2-2'}}</strong>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><p>{{layout == 'desktop' ? 'Simple Moving Average (20)': 'SMA (20)'}}</p></td>
+                        <td class="align-right">
+                            <p [ngClass]="{
+                                'success-color': intervalState.p.sma_20.a == 'BUY',
+                                'error-color': intervalState.p.sma_20.a == 'SELL',
+                                'light-text': intervalState.p.sma_20.a == 'NEUTRAL'
+                            }">
+                                <strong>{{intervalState.p.sma_20.v[0] | number: '1.2-2'}}</strong>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><p>{{layout == 'desktop' ? 'Exponential Moving Average (30)': 'EMA (30)'}}</p></td>
+                        <td class="align-right">
+                            <p [ngClass]="{
+                                'success-color': intervalState.p.ema_30.a == 'BUY',
+                                'error-color': intervalState.p.ema_30.a == 'SELL',
+                                'light-text': intervalState.p.ema_30.a == 'NEUTRAL'
+                            }">
+                                <strong>{{intervalState.p.ema_30.v[0] | number: '1.2-2'}}</strong>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><p>{{layout == 'desktop' ? 'Simple Moving Average (30)': 'SMA (30)'}}</p></td>
+                        <td class="align-right">
+                            <p [ngClass]="{
+                                'success-color': intervalState.p.sma_30.a == 'BUY',
+                                'error-color': intervalState.p.sma_30.a == 'SELL',
+                                'light-text': intervalState.p.sma_30.a == 'NEUTRAL'
+                            }">
+                                <strong>{{intervalState.p.sma_30.v[0] | number: '1.2-2'}}</strong>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><p>{{layout == 'desktop' ? 'Exponential Moving Average (50)': 'EMA (50)'}}</p></td>
+                        <td class="align-right">
+                            <p [ngClass]="{
+                                'success-color': intervalState.p.ema_50.a == 'BUY',
+                                'error-color': intervalState.p.ema_50.a == 'SELL',
+                                'light-text': intervalState.p.ema_50.a == 'NEUTRAL'
+                            }">
+                                <strong>{{intervalState.p.ema_50.v[0] | number: '1.2-2'}}</strong>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><p>{{layout == 'desktop' ? 'Simple Moving Average (50)': 'SMA (50)'}}</p></td>
+                        <td class="align-right">
+                            <p [ngClass]="{
+                                'success-color': intervalState.p.sma_50.a == 'BUY',
+                                'error-color': intervalState.p.sma_50.a == 'SELL',
+                                'light-text': intervalState.p.sma_50.a == 'NEUTRAL'
+                            }">
+                                <strong>{{intervalState.p.sma_50.v[0] | number: '1.2-2'}}</strong>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><p>{{layout == 'desktop' ? 'Exponential Moving Average (100)': 'EMA (100)'}}</p></td>
+                        <td class="align-right">
+                            <p [ngClass]="{
+                                'success-color': intervalState.p.ema_100.a == 'BUY',
+                                'error-color': intervalState.p.ema_100.a == 'SELL',
+                                'light-text': intervalState.p.ema_100.a == 'NEUTRAL'
+                            }">
+                                <strong>{{intervalState.p.ema_100.v[0] | number: '1.2-2'}}</strong>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><p>{{layout == 'desktop' ? 'Simple Moving Average (100)': 'SMA (100)'}}</p></td>
+                        <td class="align-right">
+                            <p [ngClass]="{
+                                'success-color': intervalState.p.sma_100.a == 'BUY',
+                                'error-color': intervalState.p.sma_100.a == 'SELL',
+                                'light-text': intervalState.p.sma_100.a == 'NEUTRAL'
+                            }">
+                                <strong>{{intervalState.p.sma_100.v[0] | number: '1.2-2'}}</strong>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><p>{{layout == 'desktop' ? 'Exponential Moving Average (200)': 'EMA (200)'}}</p></td>
+                        <td class="align-right">
+                            <p [ngClass]="{
+                                'success-color': intervalState.p.ema_200.a == 'BUY',
+                                'error-color': intervalState.p.ema_200.a == 'SELL',
+                                'light-text': intervalState.p.ema_200.a == 'NEUTRAL'
+                            }">
+                                <strong>{{intervalState.p.ema_200.v[0] | number: '1.2-2'}}</strong>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><p>{{layout == 'desktop' ? 'Simple Moving Average (200)': 'SMA (200)'}}</p></td>
+                        <td class="align-right">
+                            <p [ngClass]="{
+                                'success-color': intervalState.p.sma_200.a == 'BUY',
+                                'error-color': intervalState.p.sma_200.a == 'SELL',
+                                'light-text': intervalState.p.sma_200.a == 'NEUTRAL'
+                            }">
+                                <strong>{{intervalState.p.sma_200.v[0] | number: '1.2-2'}}</strong>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><p>{{layout == 'desktop' ? 'Hull Moving Average (9)': 'HMA (9)'}}</p></td>
+                        <td class="align-right">
+                            <p [ngClass]="{
+                                'success-color': intervalState.p.hma_9.a == 'BUY',
+                                'error-color': intervalState.p.hma_9.a == 'SELL',
+                                'light-text': intervalState.p.hma_9.a == 'NEUTRAL'
+                            }">
+                                <strong>{{intervalState.p.hma_9.v[0] | number: '1.2-2'}}</strong>
+                            </p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

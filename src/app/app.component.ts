@@ -39,7 +39,7 @@ export class AppComponent implements IAppComponent {
 	public readonly customIcons: string[] = ["home", "wallet", "format_list_numbered",
     "person","notifications","logo_google","paste","ubuntu","code_branch","hdd","microchip","server","database",
     "hardware_chip", "ssid_chart", "brain", "auto_graph", "bug_report", "file_csv", "file_waveform",
-    "wand_magic_sparkles", "flask_vial", "book", "microscope", "file_invoice", "coins", "bitcoin",
+    "wand_magic_sparkles", "flask_vial", "book", "microscope", "file_invoice", "coins", "bitcoin", "gauge",
     "file_signature", "file_circle_check", "compass_drafting", "terminal", "file_zipper", "money_bill_transfer"];
 	
 	// Route State

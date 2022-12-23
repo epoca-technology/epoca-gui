@@ -230,6 +230,7 @@ export class AppService implements IAppService{
 							snapVal.marketState.network_fee = this.marketState.value!.network_fee;
 							snapVal.marketState.open_interest = this.marketState.value!.open_interest;
 							snapVal.marketState.long_short_ratio = this.marketState.value!.long_short_ratio;
+							snapVal.marketState.technical_analysis = this.marketState.value!.technical_analysis;
 							this.broadcastAppBulk(snapVal);
 						}
 					});

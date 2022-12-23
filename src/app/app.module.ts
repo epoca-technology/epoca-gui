@@ -114,6 +114,7 @@ import {
 	KeyzoneReversalsDialogComponent,
 	StrategyBuilderDialogComponent,
 	StrategyFormDialogComponent,
+	TechnicalAnalysisDialogComponent,
 	DashboardComponent, 
 } from "./modules/dashboard";
 
@@ -138,6 +139,7 @@ import { AppComponent } from "./app.component";
 		KeyzoneReversalsDialogComponent,
 		StrategyFormDialogComponent,
 		StrategyBuilderDialogComponent,
+		TechnicalAnalysisDialogComponent,
 		ActivePositionDialogComponent,
 	],
 	imports: [
