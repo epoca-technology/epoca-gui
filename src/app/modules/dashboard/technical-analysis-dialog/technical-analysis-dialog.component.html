@@ -176,6 +176,18 @@
                         </td>
                     </tr>
                     <tr>
+                        <td><p>{{layout == 'desktop' ? 'Stoch (14, 1, 3)': 'STOCH (14, 1, 3)'}}</p></td>
+                        <td class="align-right">
+                            <p [ngClass]="{
+                                'success-color': intervalState.p.stoch_14_1_3.a == 'BUY',
+                                'error-color': intervalState.p.stoch_14_1_3.a == 'SELL',
+                                'light-text': intervalState.p.stoch_14_1_3.a == 'NEUTRAL'
+                            }">
+                                <strong>{{intervalState.p.stoch_14_1_3.v[0] | number: '1.2-2'}}</strong>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
                         <td><p>{{layout == 'desktop' ? 'Stochastic RSI (14)': 'STOCHRSI (14)'}}</p></td>
                         <td class="align-right">
                             <p [ngClass]="{
