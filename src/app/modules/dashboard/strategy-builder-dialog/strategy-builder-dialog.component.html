@@ -155,7 +155,7 @@
             </div>
 
             <!-- Chart -->
-            <div *ngIf="chart" style="overflow:hidden;">
+            <div *ngIf="chart" class="padding">
                 <apx-chart
                     [series]="chart.series"
                     [chart]="chart.chart"
@@ -164,7 +164,6 @@
                     [yaxis]="chart.yaxis"
                     [stroke]="chart.stroke"
                     [annotations]="chart.annotations"
-                    [grid]="{show: false}"
                 ></apx-chart>
             </div>
         </div>

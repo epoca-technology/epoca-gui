@@ -22,7 +22,7 @@
         max-width:15px!important;
         .mat-menu-item { max-width:15px!important;}
     }
-    .inactive { opacity: 0.65;}
+    .inactive { opacity: 0.75;}
 }
 
 
@@ -58,6 +58,7 @@
     .divider { margin: 25px 0 25px 0;}
     .chart-card {.chart-card-heading { padding: 0!important}}
 
+    .prediction-header-indicators {margin-top:10px;}
     .position-badge { 
         width: 100%;
         padding: 7px 3px 7px 3px;

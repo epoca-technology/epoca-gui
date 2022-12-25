@@ -80,28 +80,21 @@
 
                     <!-- Predictions -->
                     <div *ngIf="preds.length">
-                        <div *ngFor="let pred of preds; last as lastPred">
-                            <div class="pred fake-button clickable" (click)="displayPrediction(pred)" matRipple>
-                                <div fxLayout="row" fxLayoutAlign="start center">
-                                    <div>
-                                        <div fxLayout="row" fxLayoutAlign="start center">
-                                            <img src="{{_prediction.resultImagePaths[pred.r]}}" alt="Model Type" class="model-logo-xs">
-                                            <h5>{{_prediction.resultNames[pred.r]}}</h5>
-                                        </div>
-                                        <p class="light-text ts-xs truncate">{{pred.t | date: 'medium'}}</p>
-                                    </div>
-                                    <span fxFlex></span>
-                                    <div [ngClass]="{
-                                            'square-badge-success': pred.r == 1,
-                                            'square-badge-error': pred.r == -1,
-                                            'square-badge-neutral': pred.r == 0
-                                        }" matTooltip="{{pred.s}}">
-                                        {{pred.s | number: '1.0-6'}}
-                                    </div>
-                                </div>
-                            </div>
-                            <div *ngIf="!lastPred" class="divider"></div>
-                        </div>
+                        <table class="highlight bordered preds">
+                            <tbody>
+                                <tr *ngFor="let pred of preds;" 
+                                    class="clickable" role="button" (click)="displayPrediction(pred)"
+                                    [ngClass]="{
+                                        'success-color': pred.r == 1,
+                                        'error-color': pred.r == -1,
+                                        'light-text': pred.r == 0,
+                                        'non-neutral': pred.r != 0
+                                    }">
+                                    <td><p>{{pred.t | date: 'medium'}}</p></td>
+                                    <td class="align-right"><p>{{pred.s | number: '1.0-6'}}</p></td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

@@ -1,8 +1,10 @@
 <mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
     <div fxLayout="row" fxLayoutAlign="center center">
         <button mat-icon-button class="show-on-mobile" (click)="close()"><mat-icon>arrow_back</mat-icon></button>
-        <span matTooltip="The weighted entry price based on all the trades within the position. Last Update: {{position.ts | date: 'short'}}">
-            {{position.side == 'LONG' ? 'Long': 'Short'}} at {{position.entry_price | currency}}
+        <span class="truncate" matTooltip="PNL(ROE%). Updated: {{position.ts | date: 'short'}}">
+            {{position.side}}: 
+            {{position.unrealized_pnl > 0 ? '+': ''}}{{position.unrealized_pnl | currency}}
+            | {{position.roe > 0 ? '+': ''}}{{position.roe}}%
         </span>
         <span fxFlex></span>
         <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
@@ -48,22 +50,49 @@
             </p>
         </div>
 
-        <!-- PNL/ROE %-->
+        <!-- Entry Price -->
         <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
-            <p class="light-text ts-m truncate">State</p>
+            <p class="light-text ts-m truncate">Entry Price</p>
             <span fxFlex></span>
-            <div matTooltip="PNL(ROE %)" 
-                class="align-right"  
-                [ngClass]="{
-                    'success-color': position.unrealized_pnl > 0, 
-                    'error-color': position.unrealized_pnl < 0
-                }">
-                <p>
-                    {{position.unrealized_pnl > 0 ? '+': ''}}{{position.unrealized_pnl | number: '1.0-2'}} USDT
-                </p>
-                <p class="ts-s">
-                    {{position.roe > 0 ? '+': ''}}{{position.roe}}%
-                </p>
+            <p matTooltip="The weighted entry price based on all the trades within the position.">
+                {{position.entry_price | currency}}
+            </p>
+        </div>
+
+        <!-- Target Price -->
+        <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
+            <p class="light-text ts-m truncate">Target Price</p>
+            <span fxFlex></span>
+            <div matTooltip="The price in which the position is labeled as 'successful' and is ready to be closed."
+                class="align-right" [ngClass]="{'success-color': !targetDistance}">
+                <p>{{position.target_price | currency}}</p>
+                <p *ngIf="targetDistance" class="ts-xs light-text">{{targetDistance}}% away</p>
+                <p *ngIf="!targetDistance" class="ts-xs">Target Hit</p>
+            </div>
+        </div>
+
+        <!-- Stop Loss Price -->
+        <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
+            <p class="light-text ts-m truncate">Stop Loss</p>
+            <span fxFlex></span>
+            <div matTooltip="The price in which the position should be closed partially or fully depending on the strategy."
+                class="align-right" [ngClass]="{'error-color': !stopLossDistance}">
+                <p>{{position.stop_loss_price | currency}}</p>
+                <p *ngIf="stopLossDistance" class="ts-xs light-text">{{stopLossDistance}}% away</p>
+                <p *ngIf="!stopLossDistance" class="ts-xs">Stop Loss Hit</p>
+            </div>
+        </div>
+
+        <!-- Increase Price -->
+        <div *ngIf="position.min_increase_price" fxLayout="row" fxLayoutAlign="start start" class="margin-top">
+            <p class="light-text ts-m truncate">Increase Price</p>
+            <span fxFlex></span>
+            <div class="align-right" 
+                matTooltip="The price at which the position will be increased."  
+                [ngClass]="{'error-color': !increaseDistance}">
+                <p>{{position.min_increase_price | currency}}</p>
+                <p *ngIf="increaseDistance" class="ts-xs light-text">{{increaseDistance}}% away</p>
+                <p *ngIf="!increaseDistance" class="ts-xs light-text">Increasable</p>
             </div>
         </div>
 
@@ -74,44 +103,7 @@
             <div matTooltip="Liquidation Price (Distance)" class="align-right" 
                 [ngClass]="{'success-color': liquidationDistance > 20,'error-color': liquidationDistance < 15}">
                 <p>{{position.liquidation_price | currency}}</p>
-                <p class="ts-s">{{liquidationDistance}}% away</p>
-            </div>
-        </div>
-
-        <!-- Target Price -->
-        <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
-            <p class="light-text ts-m truncate">Target Price</p>
-            <span fxFlex></span>
-            <div matTooltip="The price in which the position is labeled as 'successful' and is ready to be closed."
-                class="align-right" [ngClass]="{'success-color': !targetDistance}">
-                <p>{{position.target_price | currency}}</p>
-                <p *ngIf="targetDistance" class="ts-s light-text">{{targetDistance}}% away</p>
-                <p *ngIf="!targetDistance" class="ts-s">Target Hit</p>
-            </div>
-        </div>
-
-        <!-- Stop Loss Price -->
-        <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
-            <p class="light-text ts-m truncate">Stop Loss</p>
-            <span fxFlex></span>
-            <div matTooltip="The price in which the position should be closed in case it won't or can't be increased."
-                class="align-right" [ngClass]="{'error-color': !stopLossDistance}">
-                <p>{{position.stop_loss_price | currency}}</p>
-                <p *ngIf="stopLossDistance" class="ts-s light-text">{{stopLossDistance}}% away</p>
-                <p *ngIf="!stopLossDistance" class="ts-s">Stop Loss Hit</p>
-            </div>
-        </div>
-
-        <!-- Min Increase Price -->
-        <div *ngIf="position.min_increase_price" fxLayout="row" fxLayoutAlign="start start" class="margin-top">
-            <p class="light-text ts-m truncate">Min. Increase Price</p>
-            <span fxFlex></span>
-            <div class="align-right" 
-                matTooltip="The minimum price at which a position can be increased based on its side."  
-                [ngClass]="{'error-color': !increaseDistance}">
-                <p>{{position.min_increase_price | currency}}</p>
-                <p *ngIf="increaseDistance" class="ts-s light-text">{{increaseDistance}}% away</p>
-                <p *ngIf="!increaseDistance" class="ts-s light-text">Increasable</p>
+                <p class="ts-xs">{{liquidationDistance}}% away</p>
             </div>
         </div>
 
@@ -123,7 +115,7 @@
                 <p matTooltip="The total margin (USDT) put into the position.">
                     {{position.isolated_wallet | currency}}
                 </p>
-                <p class="ts-s light-text" 
+                <p class="ts-xs light-text" 
                     matTooltip="The current value of the isolated_wallet + unrealized_pnl.">
                     ~{{position.isolated_margin | currency}}
                 </p>
@@ -136,7 +128,7 @@
             <span fxFlex></span>
             <div matTooltip="Position Amount (BTC) and Notional (USDT)" class="align-right" >
                 <p>{{position.position_amount | number: '1.0-8'}} BTC</p>
-                <p class="ts-s light-text">{{position.notional | currency}}</p>
+                <p class="ts-xs light-text">{{position.notional | currency}}</p>
             </div>
         </div>
     </div>
