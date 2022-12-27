@@ -5,6 +5,7 @@ import {
     IMarketState, 
     IPositionSummary, 
     IPrediction, 
+    IPredictionResult, 
     IPredictionResultIcon, 
     IPredictionState 
 } from "../../core";
@@ -24,6 +25,7 @@ export interface IAppService {
     epoch: BehaviorSubject<IEpochRecord|undefined|null>,
     prediction: BehaviorSubject<IPrediction|undefined|null>,
     predictionState: BehaviorSubject<IPredictionState|undefined|null>,
+    signal: BehaviorSubject<IPredictionResult|undefined|null>,
     predictionIcon: BehaviorSubject<IPredictionResultIcon|undefined|null>,
     position: BehaviorSubject<IPositionSummary|undefined|null>,
     marketState: BehaviorSubject<IMarketState|undefined|null>,

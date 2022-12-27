@@ -23,7 +23,8 @@ import {
     IPositionStrategy,
     IPositionStrategyState,
     IPositionPriceRange,
-    ITAIntervalID
+    ITAIntervalID,
+    IPredictionResult
 } from "../../core";
 import { 
     AppService, 
@@ -41,6 +42,7 @@ import { StrategyFormDialogComponent } from "./strategy-form-dialog";
 import { IDashboardComponent, IPositionCloseChunkSize } from "./interfaces";
 import { IStrategyBuilderDialogData, StrategyBuilderDialogComponent } from "./strategy-builder-dialog";
 import { ITechnicalAnalysisDialogData, TechnicalAnalysisDialogComponent } from "./technical-analysis-dialog";
+import { SignalPoliciesDialogComponent } from "./signal-policies-dialog";
 
 @Component({
   selector: "app-dashboard",
@@ -85,6 +87,10 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     public predictions: IPrediction[] = [];
     private predictionSub!: Subscription;
     private predictionsLoaded: boolean = false;
+
+    // Signal
+    public signal: IPredictionResult = 0;
+    private signalSub?: Subscription;
 
     // Prediction Charts
     public predictionsChart?: ILineChartOptions;
@@ -208,6 +214,11 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             }
         });
 
+        // Subscribe to the signal
+        this.signalSub = this._app.signal.subscribe((s: IPredictionResult|undefined|null) => {
+            if (typeof s == "number") this.signal = s; 
+        });
+
         // Subscribe to the current version
         this.guiVersionSub = this._app.guiVersion.subscribe((newVersion: string|undefined|null) => {
             if (typeof newVersion == "string" && this._app.version != newVersion) {
@@ -223,6 +234,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         if (this.positionSub) this.positionSub.unsubscribe();
         if (this.predictionSub) this.predictionSub.unsubscribe();
         if (this.stateSub) this.stateSub.unsubscribe();
+        if (this.signalSub) this.signalSub.unsubscribe();
         if (this.guiVersionSub) this.guiVersionSub.unsubscribe();
         this.titleService.setTitle("Epoca");
     }
@@ -1516,6 +1528,24 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 		})
 	}
 
+
+
+
+
+
+    
+	/**
+	 * Displays the features dedicated dialog to gather more information
+	 * about the prediction.
+	 */
+    public displaySignalPoliciesDialog(): void {
+		this.dialog.open(SignalPoliciesDialogComponent, {
+			hasBackdrop: true,
+            disableClose: true,
+			panelClass: "small-dialog",
+            data: {}
+		})
+	}
 
 
 

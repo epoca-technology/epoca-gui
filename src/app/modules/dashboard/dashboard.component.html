@@ -454,9 +454,10 @@
                                     <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" 
                                         fxLayoutAlign="center start" fxLayoutAlign.xs="center center"  fxLayoutAlign.sm="center center" 
                                         class="chart-card-heading badged-header full-width">
-                                        <div>
+                                        <div class="clickable" role="button" (click)="displaySignalPoliciesDialog()">
                                             <h4 *ngIf="!activePrediction">Prediction</h4>
-                                            <h4 *ngIf="activePrediction" 
+                                            <h4 *ngIf="activePrediction"
+                                                [ngClass]="{'success-color': signal == 1, 'error-color': signal == -1}"
                                                 matTooltip="Pred: {{activePrediction.t | date: 'shortTime'}} | TA: {{state.technical_analysis.ts | date: 'shortTime'}}">
                                                 {{_prediction.resultNames[activePrediction.r]}}
                                             </h4>

@@ -87,6 +87,9 @@ import {
 	// Server
 	ServerService,
 
+	// Signal
+	SignalService,
+
 	// Utils
 	UtilsService
 } from "./core";
@@ -112,6 +115,7 @@ import {
 	BalanceDialogComponent, 
 	KeyzoneStateDialogComponent, 
 	KeyzoneReversalsDialogComponent,
+	SignalPoliciesDialogComponent,
 	StrategyBuilderDialogComponent,
 	StrategyFormDialogComponent,
 	TechnicalAnalysisDialogComponent,
@@ -137,6 +141,7 @@ import { AppComponent } from "./app.component";
 		BalanceDialogComponent,
 		KeyzoneStateDialogComponent,
 		KeyzoneReversalsDialogComponent,
+		SignalPoliciesDialogComponent,
 		StrategyFormDialogComponent,
 		StrategyBuilderDialogComponent,
 		TechnicalAnalysisDialogComponent,
@@ -221,6 +226,9 @@ import { AppComponent } from "./app.component";
 
 		// Server
 		ServerService,
+
+		// Signal
+		SignalService,
 
 		// Utils
 		UtilsService,

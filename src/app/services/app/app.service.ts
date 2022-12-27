@@ -17,6 +17,7 @@ import {
 	IMarketState, 
 	IPositionSummary, 
 	IPrediction, 
+	IPredictionResult, 
 	IPredictionResultIcon, 
 	IPredictionState, 
 	PredictionService, 
@@ -67,6 +68,7 @@ export class AppService implements IAppService{
 	public epoch: BehaviorSubject<IEpochRecord|undefined|null> = new BehaviorSubject<IEpochRecord|undefined|null>(null);
 	public prediction: BehaviorSubject<IPrediction|undefined|null> = new BehaviorSubject<IPrediction|undefined|null>(null);
 	public predictionState: BehaviorSubject<IPredictionState|undefined|null> = new BehaviorSubject<IPredictionState|undefined|null>(null);
+	public signal: BehaviorSubject<IPredictionResult|undefined|null> = new BehaviorSubject<IPredictionResult|undefined|null>(null);
 	public predictionIcon: BehaviorSubject<IPredictionResultIcon|undefined|null> = new BehaviorSubject<IPredictionResultIcon|undefined|null>(null);
 	public position: BehaviorSubject<IPositionSummary|undefined|null> = new BehaviorSubject<IPositionSummary|undefined|null>(null);
 	public marketState: BehaviorSubject<IMarketState|undefined|null> = new BehaviorSubject<IMarketState|undefined|null>(null);
@@ -162,6 +164,7 @@ export class AppService implements IAppService{
 		this.epoch.next(undefined);
 		this.prediction.next(undefined);
 		this.predictionState.next(0);
+		this.signal.next(undefined);
 		this.predictionIcon.next(undefined);
 		this.position.next(undefined);
 		this.marketState.next(undefined);
@@ -297,6 +300,7 @@ export class AppService implements IAppService{
 
 		// Broadcast the active prediction as well as the metadata
 		this.predictionState.next(bulk.predictionState);
+		this.signal.next(bulk.signal);
 		this.predictionIcon.next(metadata.predictionIcon);
 		this.prediction.next(bulk.prediction);
 
@@ -325,7 +329,7 @@ export class AppService implements IAppService{
 		let predictionIcon: IPredictionResultIcon|undefined = undefined;
 
 		// Populate the active prediction icon
-		if (bulk.prediction) { predictionIcon = this._prediction.resultIconNames[bulk.prediction.r]} 
+		if (bulk.prediction) { predictionIcon = this._prediction.resultIconNames[bulk.signal]} 
 		else { predictionIcon = undefined }
 
 		// ...

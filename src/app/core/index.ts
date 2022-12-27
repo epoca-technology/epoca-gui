@@ -19,4 +19,5 @@ export * from "./order-book";
 export * from "./position";
 export * from "./prediction";
 export * from "./server";
+export * from "./signal";
 export * from "./utils";
