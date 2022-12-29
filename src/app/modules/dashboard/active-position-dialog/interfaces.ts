@@ -1,8 +1,8 @@
-import { IActivePosition, IPositionStrategy } from "../../../core";
+import { IActivePosition, ICandlestick, IPositionStrategy } from "../../../core";
 
 
 export interface IActivePositionDialogComponent { 
-    
+    close(): void
 }
 
 
@@ -14,5 +14,8 @@ export interface IActivePositionDialogData {
     strategy: IPositionStrategy,
 
     // The active position
-    position: IActivePosition
+    position: IActivePosition,
+
+    // The candlesticks within the current window
+    window: ICandlestick[]
 }

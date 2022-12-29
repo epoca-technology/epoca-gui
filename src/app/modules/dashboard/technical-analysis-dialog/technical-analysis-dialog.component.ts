@@ -83,7 +83,7 @@ export class TechnicalAnalysisDialogComponent implements OnInit, ITechnicalAnaly
 				plotOptions: { bar: { horizontal: false, borderRadius: 4, columnWidth: this.layout == "desktop" ? "40%": "70%"}},
 			}, 
 			[ category ], 
-			this.layout == "desktop" ? 300: 300
+			this.layout == "desktop" ? 250: 250
 		);
 	}
 

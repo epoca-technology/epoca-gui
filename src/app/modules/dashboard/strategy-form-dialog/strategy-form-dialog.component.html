@@ -1,7 +1,7 @@
 <mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
     <div fxLayout="row" fxLayoutAlign="center center">
         <button mat-icon-button class="show-on-mobile" (click)="cancel()" [disabled]="submitting"><mat-icon>arrow_back</mat-icon></button>
-        <span class="truncate">Strategy</span>
+        <span class="truncate" matTooltip="Last Update: {{strategy.ts | date: 'medium'}}">Strategy</span>
         <span fxFlex></span>
         <button mat-icon-button (click)="update()" [disabled]="submitting || form.invalid" matTooltip="Update Strategy"><mat-icon>save</mat-icon></button>
         <button mat-icon-button class="show-on-desktop" (click)="cancel()" [disabled]="submitting"><mat-icon>close</mat-icon></button>
@@ -14,8 +14,49 @@
         <!-- Form -->
         <div *ngIf="form">
             <form [formGroup]="form" (ngSubmit)="update()">
-                <!-- Leverage & Level Increase Requirement-->
+                <!-- Long & Short Status -->
                 <div>
+                    <div fxLayout="row" fxLayoutAlign="start start">
+                        <div fxFlex>
+                            <div fxLayout="row" fxLayoutAlign="center start">
+                                <div>
+                                    <h5>Long</h5>
+                                    <p *ngIf="long_status.value" class="success-color ts-s">Running</p>
+                                    <p *ngIf="!long_status.value" class="light-text ts-s truncate">Not running</p>
+                                    <p *ngIf="longIdling && long_status.value" class="light-text ts-s truncate">
+                                        Idle until {{strategy.long_idle_until | date: 'shortTime'}}
+                                    </p>
+                                </div>
+                                <span fxFlex></span>
+                                <mat-slide-toggle 
+                                    formControlName="long_status"
+                                    [appDisableControl]="submitting">
+                                </mat-slide-toggle>
+                            </div>
+                        </div>
+                        <span fxFlex="5"></span>
+                        <div fxFlex>
+                            <div fxLayout="row" fxLayoutAlign="center start">
+                                <div>
+                                    <h5>Short</h5>
+                                    <p *ngIf="short_status.value" class="success-color ts-s">Running</p>
+                                    <p *ngIf="!short_status.value" class="light-text ts-s">Not running</p>
+                                    <p *ngIf="shortIdling && short_status.value" class="light-text ts-s">
+                                        Idle until {{strategy.short_idle_until | date: 'shortTime'}}
+                                    </p>
+                                </div>
+                                <span fxFlex></span>
+                                <mat-slide-toggle 
+                                    formControlName="short_status"
+                                    [appDisableControl]="submitting">
+                                </mat-slide-toggle>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Leverage & Level Increase Requirement-->
+                <div class="margin-top">
                     <div fxLayout="row" fxLayoutAlign="start start">
                         <div fxFlex>
                             <mat-form-field>
@@ -28,136 +69,79 @@
                                        placeholder="e.g. 2">
                             </mat-form-field>
                         </div>
+                        <span fxFlex="5"></span>
                         <div fxFlex>
                             <mat-form-field>
-                                <mat-label>Stop Loss</mat-label>
+                                <mat-label>Position Size</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="position_size"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 1500">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Position Exit Combination -->
+                <div class="margin-top">
+                    <div fxLayout="row" fxLayoutAlign="start start">
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Take Profit%</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="take_profit"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 3">
+                            </mat-form-field>
+                        </div>
+                        <span fxFlex="5"></span>
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Stop Loss%</mat-label>
                                 <input type="number"
                                        matInput
                                        formControlName="stop_loss"
                                        autocomplete="off"
                                        [appDisableControl]="submitting"
-                                       placeholder="e.g. 15">
-                            </mat-form-field>
-                        </div>
-                        <div fxFlex>
-                            <mat-form-field>
-                                <mat-label>Increase Requirement</mat-label>
-                                <input type="number"
-                                       matInput
-                                       formControlName="level_increase_requirement"
-                                       autocomplete="off"
-                                       [appDisableControl]="submitting"
-                                       placeholder="e.g. 5">
+                                       placeholder="e.g. 3">
                             </mat-form-field>
                         </div>
                     </div>
                 </div>
 
-                <!-- Level 1-->
-                <div>
-                    <div fxLayout="row" fxLayoutAlign="center center">
-                        <div>
-                            <p><strong>Level 1:</strong>&nbsp;&nbsp;</p>
-                        </div>
+                <!-- Idle Duration -->
+                <div class="margin-top">
+                    <div fxLayout="row" fxLayoutAlign="start start">
                         <div fxFlex>
                             <mat-form-field>
-                                <mat-label>Size</mat-label>
+                                <mat-label>Long Idle Minutes</mat-label>
                                 <input type="number"
                                        matInput
-                                       formControlName="level_1_size"
+                                       formControlName="long_idle_minutes"
                                        autocomplete="off"
                                        [appDisableControl]="submitting"
-                                       placeholder="e.g. 150">
+                                       placeholder="e.g. 30">
                             </mat-form-field>
                         </div>
-                        <div fxFlex="50">
-                            <mat-form-field>
-                                <mat-label>Target</mat-label>
-                                <input type="number"
-                                       matInput
-                                       formControlName="level_1_target"
-                                       autocomplete="off"
-                                       [appDisableControl]="submitting"
-                                       placeholder="e.g. 1.5">
-                            </mat-form-field>
-                        </div>
-                    </div>
-                </div>
-
-
-                <!-- Level 2-->
-                <div>
-                    <div fxLayout="row" fxLayoutAlign="center center">
-                        <p><strong>Level 2:&nbsp;&nbsp;</strong></p>
+                        <span fxFlex="5"></span>
                         <div fxFlex>
-                            <p matTooltip="Margin Increase">{{strategy.level_2.size | currency}}</p>
-                            <p class="light-text ts-s" matTooltip="Accumulated Margin">~{{marginAcum[1] | currency}}</p>
-                        </div>
-                        <div fxFlex="50">
                             <mat-form-field>
-                                <mat-label>Target</mat-label>
+                                <mat-label>Short Idle Minutes</mat-label>
                                 <input type="number"
                                        matInput
-                                       formControlName="level_2_target"
+                                       formControlName="short_idle_minutes"
                                        autocomplete="off"
                                        [appDisableControl]="submitting"
-                                       placeholder="e.g. 1">
-                            </mat-form-field>
-                        </div>
-                    </div>
-                </div>
-
-
-                <!-- Level 3-->
-                <div>
-                    <div fxLayout="row" fxLayoutAlign="center center">
-                        <p><strong>Level 3:&nbsp;&nbsp;</strong></p>
-                        <div fxFlex>
-                            <p matTooltip="Margin Increase">{{strategy.level_3.size | currency}}</p>
-                            <p class="light-text ts-s" matTooltip="Accumulated Margin">~{{marginAcum[2] | currency}}</p>
-                        </div>
-                        <div fxFlex="50">
-                            <mat-form-field>
-                                <mat-label>Target</mat-label>
-                                <input type="number"
-                                       matInput
-                                       formControlName="level_3_target"
-                                       autocomplete="off"
-                                       [appDisableControl]="submitting"
-                                       placeholder="e.g. 0.5">
-                            </mat-form-field>
-                        </div>
-                    </div>
-                </div>
-
-
-
-                <!-- Level 4 -->
-                <div>
-                    <div fxLayout="row" fxLayoutAlign="center center">
-                        <p><strong>Level 4:&nbsp;&nbsp;</strong></p>
-                        <div fxFlex>
-                            <p matTooltip="Margin Increase">{{strategy.level_4.size | currency}}</p>
-                            <p class="light-text ts-s" matTooltip="Accumulated Margin">~{{marginAcum[3] | currency}}</p>
-                        </div>
-                        <div fxFlex="50">
-                            <mat-form-field>
-                                <mat-label>Target</mat-label>
-                                <input type="number"
-                                       matInput
-                                       formControlName="level_4_target"
-                                       autocomplete="off"
-                                       [appDisableControl]="submitting"
-                                       placeholder="e.g. 0">
+                                       placeholder="e.g. 30">
                             </mat-form-field>
                         </div>
                     </div>
                 </div>
             </form>
-            <div class="margin-top">
-                <p><strong>Side Budget:</strong> {{sideBudget | currency}}</p>
-                <p style="margin-top:4px;"><strong>Total Budget:</strong> {{totalBudget | currency}}</p>
-            </div>
         </div>
     </div>
 </div>

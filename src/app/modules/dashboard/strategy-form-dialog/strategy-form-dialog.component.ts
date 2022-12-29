@@ -1,6 +1,4 @@
-import { Component, OnInit, OnDestroy, Inject } from "@angular/core";
-import { Subscription } from "rxjs";
-import { BigNumber } from "bignumber.js";
+import { Component, OnInit, Inject } from "@angular/core";
 import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {AbstractControl, FormControl, FormGroup, Validators} from "@angular/forms";
 import { IPositionStrategy, PositionService, UtilsService } from "../../../core";
@@ -12,18 +10,16 @@ import { IStrategyFormDialogComponent } from "./interfaces";
   templateUrl: "./strategy-form-dialog.component.html",
   styleUrls: ["./strategy-form-dialog.component.scss"]
 })
-export class StrategyFormDialogComponent implements OnInit, OnDestroy, IStrategyFormDialogComponent {
+export class StrategyFormDialogComponent implements OnInit, IStrategyFormDialogComponent {
     // Form
 	public form: FormGroup;
-	private formSub?: Subscription;
 
 	// Build
 	public strategy: IPositionStrategy;
-	public marginAcum: number[];
 
-	// Budget
-	public sideBudget: number = 0;
-	public totalBudget: number = 0;
+	// Idle State
+	public longIdling: boolean = false;
+	public shortIdling: boolean = false;
 
 	// Submission
 	public submitting: boolean = false;
@@ -36,105 +32,35 @@ export class StrategyFormDialogComponent implements OnInit, OnDestroy, IStrategy
 		private _nav: NavService,
 		private _app: AppService
     ) { 
-		this.strategy = currentStrategy;
+		this.strategy = this.currentStrategy;
         this.form = new FormGroup ({
             leverage: new FormControl(this.strategy.leverage, [ Validators.required, Validators.min(2), Validators.max(15) ]),
-            level_increase_requirement: new FormControl(this.strategy.level_increase_requirement, [ Validators.required, Validators.min(0.01), Validators.max(30) ]),
-            stop_loss: new FormControl(this.strategy.stop_loss, [ Validators.required, Validators.min(1), Validators.max(70) ]),
-            level_1_size: new FormControl(this.strategy.level_1.size, [ Validators.required, Validators.min(150), Validators.max(500000) ]),
-            level_1_target: new FormControl(this.strategy.level_1.target, [ Validators.required, Validators.min(0), Validators.max(10) ]),
-            level_2_target: new FormControl(this.strategy.level_2.target, [ Validators.required, Validators.min(0), Validators.max(10) ]),
-            level_3_target: new FormControl(this.strategy.level_3.target, [ Validators.required, Validators.min(0), Validators.max(10) ]),
-            level_4_target: new FormControl(this.strategy.level_4.target, [ Validators.required, Validators.min(0), Validators.max(10) ]),
+            position_size: new FormControl(this.strategy.position_size, [ Validators.required, Validators.min(150), Validators.max(100000) ]),
+            long_status: new FormControl(this.strategy.long_status, [ Validators.required ]),
+            short_status: new FormControl(this.strategy.short_status, [ Validators.required ]),
+            take_profit: new FormControl(this.strategy.take_profit, [ Validators.required, Validators.min(0.5), Validators.max(10) ]),
+            stop_loss: new FormControl(this.strategy.stop_loss, [ Validators.required, Validators.min(0.5), Validators.max(10) ]),
+            long_idle_minutes: new FormControl(this.strategy.long_idle_minutes, [ Validators.required, Validators.min(1), Validators.max(1000) ]),
+            short_idle_minutes: new FormControl(this.strategy.short_idle_minutes, [ Validators.required, Validators.min(1), Validators.max(1000) ])
         });
-		this.marginAcum = this._position.getMarginAcums(this.strategy);
-		this.calculateBudget();
+		this.longIdling = this._app.serverTime.value! < this.strategy.long_idle_until;
+		this.shortIdling = this._app.serverTime.value! < this.strategy.short_idle_until;
     }
 
 	ngOnInit(): void {
-		this.formSub = this.form.valueChanges.subscribe(() => this.formChanged() );
-	}
-
-	ngOnDestroy(): void {
-		if (this.formSub) this.formSub.unsubscribe();
 	}
 
 
 
     /* Form Getters */
 	get leverage(): AbstractControl { return <AbstractControl>this.form.get("leverage") }
-	get level_increase_requirement(): AbstractControl { return <AbstractControl>this.form.get("level_increase_requirement") }
+	get position_size(): AbstractControl { return <AbstractControl>this.form.get("position_size") }
+	get long_status(): AbstractControl { return <AbstractControl>this.form.get("long_status") }
+	get short_status(): AbstractControl { return <AbstractControl>this.form.get("short_status") }
+	get take_profit(): AbstractControl { return <AbstractControl>this.form.get("take_profit") }
 	get stop_loss(): AbstractControl { return <AbstractControl>this.form.get("stop_loss") }
-	get level_1_size(): AbstractControl { return <AbstractControl>this.form.get("level_1_size") }
-	get level_1_target(): AbstractControl { return <AbstractControl>this.form.get("level_1_target") }
-	get level_2_target(): AbstractControl { return <AbstractControl>this.form.get("level_2_target") }
-	get level_3_target(): AbstractControl { return <AbstractControl>this.form.get("level_3_target") }
-	get level_4_target(): AbstractControl { return <AbstractControl>this.form.get("level_4_target") }
-
-
-
-
-	/* Calculators */
-
-
-
-
-
-	/**
-	 * Triggers whenever the form changes. It calculates the 
-	 * values for each level.
-	 */
-	private formChanged(): void {
-		if (this.form.valid) {
-			this.strategy.leverage = <number>this._utils.outputNumber(this.leverage.value, {dp: 0});
-			this.strategy.level_increase_requirement = <number>this._utils.outputNumber(this.level_increase_requirement.value);
-			this.strategy.stop_loss = <number>this._utils.outputNumber(this.stop_loss.value);
-			this.strategy.level_1.size = <number>this._utils.outputNumber(this.level_1_size.value);
-			this.strategy.level_1.target = <number>this._utils.outputNumber(this.level_1_target.value);
-
-			this.strategy.level_2.size = <number>this._utils.outputNumber(this._utils.outputNumber(new BigNumber(this.strategy.level_1.size).times(2)));
-			this.strategy.level_2.target = <number>this._utils.outputNumber(this.level_2_target.value);
-
-			this.strategy.level_3.size = <number>this._utils.outputNumber(this._utils.outputNumber(new BigNumber(this.strategy.level_2.size).times(2)));
-			this.strategy.level_3.target = <number>this._utils.outputNumber(this.level_3_target.value);
-
-			this.strategy.level_4.size = <number>this._utils.outputNumber(this._utils.outputNumber(new BigNumber(this.strategy.level_3.size).times(2)));
-			this.strategy.level_4.target = <number>this._utils.outputNumber(this.level_4_target.value);
-
-			this.marginAcum = this._position.getMarginAcums(this.strategy);
-			this.calculateBudget();
-		}
-	}
-
-
-
-
-	/**
-	 * Calculates the side and total budgets if the form
-	 * is valid.
-	 */
-	private calculateBudget(): void {
-		if (this.form.valid) {
-			this.sideBudget = <number>this._utils.getSum([
-				this.strategy.level_1.size,
-				this.strategy.level_2.size,
-				this.strategy.level_3.size,
-				this.strategy.level_4.size,
-			]);
-			this.totalBudget = <number>this._utils.outputNumber(new BigNumber(this.sideBudget).times(2));
-		} else {
-			this.sideBudget = 0;
-			this.totalBudget = 0;
-		}
-	}
-
-
-
-
-
-
-
-	/* API Actions */
+	get long_idle_minutes(): AbstractControl { return <AbstractControl>this.form.get("long_idle_minutes") }
+	get short_idle_minutes(): AbstractControl { return <AbstractControl>this.form.get("short_idle_minutes") }
 
 
 
@@ -153,6 +79,16 @@ export class StrategyFormDialogComponent implements OnInit, OnDestroy, IStrategy
 			}).afterClosed().subscribe(
 				async (otp: string|undefined) => {
 					if (otp) {
+						// Build the new strategy
+						this.strategy.leverage = this.leverage.value;
+						this.strategy.position_size = this.position_size.value;
+						this.strategy.long_status = this.long_status.value;
+						this.strategy.short_status = this.short_status.value;
+						this.strategy.take_profit = this.take_profit.value;
+						this.strategy.stop_loss = this.stop_loss.value;
+						this.strategy.long_idle_minutes = this.long_idle_minutes.value;
+						this.strategy.short_idle_minutes = this.short_idle_minutes.value;
+
 						// Set Submission State
 						this.submitting = true;
 						try {

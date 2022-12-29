@@ -3,7 +3,6 @@ import { IActivePosition, IBinancePositionSide, ITAIntervalID } from "../../core
 export interface IDashboardComponent {
     // Position Management
     openPosition(side: IBinancePositionSide): void,
-    increasePosition(side: IBinancePositionSide): void,
     closePosition(side: IBinancePositionSide, chunkSize: number): void,
 
     // Misc Helpers
@@ -11,7 +10,6 @@ export interface IDashboardComponent {
     displayStrategyFormDialog(): void,
     displayBalanceDialog(): void,
     displayPositionDialog(position: IActivePosition): void,
-    displayStrategyBuilderDialog(side: IBinancePositionSide): void,
     displaySignalPoliciesDialog(): void,
     displayFeaturesDialog(): void,
     displayTechnicalAnalysisDialog(taInterval: ITAIntervalID): void,

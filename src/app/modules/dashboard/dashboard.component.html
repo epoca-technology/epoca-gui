@@ -141,21 +141,6 @@
                     
                     <span fxFlex></span>
 
-                    <!-- Balance -->
-                    <button mat-button 
-                            *ngIf="loaded && layout == 'desktop'"
-                            (click)="displayBalanceDialog()"
-                            [disabled]="submitting"
-                            matTooltip="Updated: {{position.balance.ts | date: 'short'}}">
-                            <mat-icon style="font-size:22px;">account_balance_wallet</mat-icon>&nbsp;{{position.balance.available| currency}}
-                    </button>
-                    <button mat-icon-button 
-                            *ngIf="loaded && layout == 'mobile'"
-                            (click)="displayBalanceDialog()"
-                            [disabled]="submitting">
-                            <mat-icon style="font-size:22px;">account_balance_wallet</mat-icon>
-                    </button>
-
                     <!-- Strategy -->
                     <button mat-button 
                             *ngIf="loaded && layout == 'desktop'"
@@ -169,6 +154,21 @@
                             (click)="displayStrategyFormDialog()"
                             [disabled]="submitting">
                             <mat-icon style="font-size:22px;">tune</mat-icon>
+                    </button>
+
+                    <!-- Balance -->
+                    <button mat-button 
+                            *ngIf="loaded && layout == 'desktop'"
+                            (click)="displayBalanceDialog()"
+                            [disabled]="submitting"
+                            matTooltip="Updated: {{position.balance.ts | date: 'short'}}">
+                            <mat-icon style="font-size:22px;">account_balance_wallet</mat-icon>&nbsp;Balance
+                    </button>
+                    <button mat-icon-button 
+                            *ngIf="loaded && layout == 'mobile'"
+                            (click)="displayBalanceDialog()"
+                            [disabled]="submitting">
+                            <mat-icon style="font-size:22px;">account_balance_wallet</mat-icon>
                     </button>
 
                     <!-- KeyZones -->
@@ -258,19 +258,6 @@
                                     </button>
                                     <button mat-menu-item 
                                             *ngIf="position.long"
-                                            (click)="increasePosition('LONG')"
-                                            [disabled]="submitting || !canIncreaseLong">
-                                        <mat-icon>switch_access_shortcut</mat-icon>
-                                        <span>Increase Long</span>
-                                    </button>
-                                    <button mat-menu-item
-                                            (click)="displayStrategyBuilderDialog('LONG')"
-                                            [disabled]="submitting">
-                                        <mat-icon>design_services</mat-icon>
-                                        <span>Strategy Builder</span>
-                                    </button>
-                                    <button mat-menu-item 
-                                            *ngIf="position.long"
                                             (click)="displayPositionDialog(position.long)"
                                             [disabled]="submitting">
                                         <mat-icon>info</mat-icon>
@@ -356,19 +343,6 @@
                                             [disabled]="submitting">
                                         <mat-icon>close</mat-icon>
                                         <span>Close Short</span>
-                                    </button>
-                                    <button mat-menu-item 
-                                            *ngIf="position.short"
-                                            (click)="increasePosition('SHORT')"
-                                            [disabled]="submitting || !canIncreaseShort">
-                                        <mat-icon>switch_access_shortcut</mat-icon>
-                                        <span>Increase Short</span>
-                                    </button>
-                                    <button mat-menu-item
-                                            (click)="displayStrategyBuilderDialog('SHORT')"
-                                            [disabled]="submitting">
-                                        <mat-icon>design_services</mat-icon>
-                                        <span>Strategy Builder</span>
                                     </button>
                                     <button mat-menu-item 
                                             *ngIf="position.short"

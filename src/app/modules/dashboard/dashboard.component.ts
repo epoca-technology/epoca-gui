@@ -21,7 +21,6 @@ import {
     PositionService,
     IBinancePositionSide,
     IPositionStrategy,
-    IPositionStrategyState,
     IPositionPriceRange,
     ITAIntervalID,
     IPredictionResult
@@ -40,7 +39,6 @@ import { BalanceDialogComponent } from "./balance-dialog";
 import { ActivePositionDialogComponent, IActivePositionDialogData } from "./active-position-dialog";
 import { StrategyFormDialogComponent } from "./strategy-form-dialog";
 import { IDashboardComponent, IPositionCloseChunkSize } from "./interfaces";
-import { IStrategyBuilderDialogData, StrategyBuilderDialogComponent } from "./strategy-builder-dialog";
 import { ITechnicalAnalysisDialogData, TechnicalAnalysisDialogComponent } from "./technical-analysis-dialog";
 import { SignalPoliciesDialogComponent } from "./signal-policies-dialog";
 
@@ -71,10 +69,8 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     // Position
     public position!: IPositionSummary;
     public canOpenLong: boolean = false;
-    public canIncreaseLong: boolean = false;
     public longChunkSize?: IPositionCloseChunkSize;
     public canOpenShort: boolean = false;
-    public canIncreaseShort: boolean = false;
     public shortChunkSize?: IPositionCloseChunkSize;
     private positionSub?: Subscription;
     private positionLoaded: boolean = false;
@@ -257,43 +253,31 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         // Update the local value
         this.position = summary;
 
-        // Check if any position can be open
-        this.canOpenLong = !this.position.long && this.position.balance.available >= this.position.strategy.level_1.size;
-        this.canOpenShort = !this.position.short && this.position.balance.available >= this.position.strategy.level_1.size;
+        // Check if a long position can be opened
+        this.canOpenLong = 
+            !this.position.long && 
+            this.position.balance.available >= this.position.strategy.position_size && 
+            this.position.strategy.long_status;
+            //this._app.serverTime.value! >= this.position.strategy.long_idle_until;
 
-        // Reset the increase sizes
-        this.canIncreaseLong = false;
-        this.canIncreaseShort = false;
+        // Check if a short position can be opened
+        this.canOpenShort = 
+            !this.position.short && 
+            this.position.balance.available >= this.position.strategy.position_size && 
+            this.position.strategy.short_status;
+            //this._app.serverTime.value! >= this.position.strategy.short_idle_until;
 
         // Reset the close chunk sizes
         this.longChunkSize = undefined;
         this.shortChunkSize = undefined;
         
-        // Check the long position can be increased
+        // Calculate the Long Close Chunk Sizes (if any)
         if (this.position.long) {
-            // Check if the position can be increased
-            const { current, next } = this._position.getStrategyState(this.position.strategy, this.position.long.isolated_wallet);
-            this.canIncreaseLong = 
-                next !== undefined && 
-                typeof this.position.long.min_increase_price == "number" &&
-                this.position.balance.available >= next.size &&
-                this.position.long.mark_price <= this.position.long.min_increase_price;
-
-            // Calculate the Close Chunk Sizes
             this.longChunkSize = this.calculateChunkSizes(this.position.long.isolated_margin);
         }
 
-        // Check the short position can be increased
+        // Calculate the Short Chunk Sizes (if any)
         if (this.position.short) {
-            // Check if the position can be increased
-            const { current, next } = this._position.getStrategyState(this.position.strategy, this.position.short.isolated_wallet);
-            this.canIncreaseShort = 
-                next !== undefined && 
-                typeof this.position.short.min_increase_price == "number" &&
-                this.position.balance.available >= next.size &&
-                this.position.short.mark_price >= this.position.short.min_increase_price;
-
-            // Calculate the Close Chunk Sizes
             this.shortChunkSize = this.calculateChunkSizes(this.position.short.isolated_margin);
         }
     }
@@ -782,16 +766,16 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                 }
             });
             annotations.yaxis!.push({
-                y: this.position.long.target_price,
+                y: this.position.long.take_profit_price,
                 strokeDashArray: 0,
                 borderColor: this._chart.upwardColor,
                 fillColor: this._chart.upwardColor,
                 label: {
                     borderColor: this._chart.upwardColor,
                     style: { color: "#fff", background: this._chart.upwardColor},
-                    text: `TARGET`,
+                    text: `TAKE_PROFIT`,
                     position: "left",
-                    offsetX: 50
+                    offsetX: 81
                 }
             });
             annotations.yaxis!.push({
@@ -805,19 +789,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                     text: `STOP_LOSS`,
                     position: "left",
                     offsetX: 71
-                }
-            });
-            annotations.yaxis!.push({
-                y: this.position.long.min_increase_price,
-                strokeDashArray: 5,
-                borderColor: this._chart.upwardColor,
-                fillColor: this._chart.upwardColor,
-                label: {
-                    borderColor: this._chart.upwardColor,
-                    style: { color: "#fff", background: this._chart.upwardColor},
-                    text: `INCREASE`,
-                    position: "left",
-                    offsetX: 62
                 }
             });
             annotations.yaxis!.push({
@@ -851,16 +822,16 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                 }
             });
             annotations.yaxis!.push({
-                y: this.position.short.target_price,
+                y: this.position.short.take_profit_price,
                 strokeDashArray: 0,
                 borderColor: this._chart.downwardColor,
                 fillColor: this._chart.downwardColor,
                 label: {
                     borderColor: this._chart.downwardColor,
                     style: { color: "#fff", background: this._chart.downwardColor},
-                    text: `TARGET`,
+                    text: `TAKE_PROFIT`,
                     position: "left",
-                    offsetX: 50
+                    offsetX: 81
                 }
             });
             annotations.yaxis!.push({
@@ -874,19 +845,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                     text: `STOP_LOSS`,
                     position: "left",
                     offsetX: 71
-                }
-            });
-            annotations.yaxis!.push({
-                y: this.position.short.min_increase_price,
-                strokeDashArray: 5,
-                borderColor: this._chart.downwardColor,
-                fillColor: this._chart.downwardColor,
-                label: {
-                    borderColor: this._chart.downwardColor,
-                    style: { color: "#fff", background: this._chart.downwardColor},
-                    text: `INCREASE`,
-                    position: "left",
-                    offsetX: 62
                 }
             });
             annotations.yaxis!.push({
@@ -1205,18 +1163,18 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     public openPosition(side: IBinancePositionSide): void {
         const strat: IPositionStrategy = this.position.strategy;
         const entry: number = this.state.window.window[this.state.window.window.length - 1].c;
-        const target: number = <number>this._utils.alterNumberByPercentage(
+        const take_profit_price: number = <number>this._utils.alterNumberByPercentage(
             entry, 
-            side == "LONG" ? strat.level_1.target: -(strat.level_1.target)
+            side == "LONG" ? strat.take_profit: -(strat.take_profit)
         );
-        const minIncrease: number = <number>this._utils.alterNumberByPercentage(
+        const stop_loss_price: number = <number>this._utils.alterNumberByPercentage(
             entry, 
-            side == "LONG" ? -(strat.level_increase_requirement): strat.level_increase_requirement
+            side == "LONG" ? -(strat.stop_loss): strat.stop_loss
         );
         const range: IPositionPriceRange = this._position.calculatePositionPriceRange(
             side, 
             strat.leverage, 
-            [ { price: entry, margin: strat.level_1.size} ]
+            [ { price: entry, margin: strat.position_size} ]
         );
         this._nav.displayConfirmationDialog({
             title: `Open ${side}`,
@@ -1228,12 +1186,12 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                             <td class="align-right">$${entry}</td>
                         </tr>
                         <tr>
-                            <td><strong>Target</strong></td>
-                            <td class="align-right">$${target}</td>
+                            <td><strong>Take Profit</strong></td>
+                            <td class="align-right">$${take_profit_price}</td>
                         </tr>
                         <tr>
-                            <td><strong>Min. Increase</strong></td>
-                            <td class="align-right">$${minIncrease}</td>
+                            <td><strong>Stop Loss</strong></td>
+                            <td class="align-right">$${stop_loss_price}</td>
                         </tr>
                         <tr>
                             <td><strong>Liquidation</strong></td>
@@ -1241,7 +1199,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                         </tr>
                         <tr>
                             <td><strong>Margin</strong></td>
-                            <td class="align-right">$${strat.level_1.size}</td>
+                            <td class="align-right">$${strat.position_size}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -1271,94 +1229,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         );
     }
 
-
-
-
-
-    /**
-     * Displays the confirmation dialog in order to increase
-     * an existing position.
-     * @param side 
-     */
-    public increasePosition(side: IBinancePositionSide): void {
-        const currentPrice: number = this.state.window.window[this.state.window.window.length - 1].c;
-        const strat: IPositionStrategy = this.position.strategy;
-        const position: IActivePosition = side == "LONG" ? this.position.long!: this.position.short!;
-        const state: IPositionStrategyState = this._position.getStrategyState(strat, position.isolated_wallet);
-        const range: IPositionPriceRange = this._position.calculatePositionPriceRange(
-            side, 
-            strat.leverage, 
-            [ 
-                { price: position.entry_price, margin: position.isolated_wallet },
-                { price: currentPrice, margin: state.next!.size },
-            ]
-        );
-        const nextTarget: number = <number>this._utils.alterNumberByPercentage(
-            range.entry, 
-            side == "LONG" ? state.next!.target: -(state.next!.target)
-        );
-        const nextMinIncrease: number = <number>this._utils.alterNumberByPercentage(
-            range.entry, 
-            side == "LONG" ? -(strat.level_increase_requirement): strat.level_increase_requirement
-        );
-        const nextMargin: number = <number>this._utils.outputNumber(position.isolated_wallet + state.next!.size);
-        this._nav.displayConfirmationDialog({
-            title: `Increase ${side}`,
-            content: `
-                <table class="confirmation-dialog-table bordered">
-                    <tbody>
-                        <tr>
-                            <td><strong>Entry</strong></td>
-                            <td class="align-right light-text ts-xs">$${position.entry_price}</td>
-                            <td class="align-right">$${range.entry}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Target</strong></td>
-                            <td class="align-right light-text ts-xs">$${position.target_price}</td>
-                            <td class="align-right">$${nextTarget}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Min. Increase</strong></td>
-                            <td class="align-right light-text ts-xs">$${position.min_increase_price}</td>
-                            <td class="align-right">$${nextMinIncrease}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Liquidation</strong></td>
-                            <td class="align-right light-text ts-xs">$${position.liquidation_price}</td>
-                            <td class="align-right">$${range.liquidation}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Margin</strong></td>
-                            <td class="align-right light-text ts-xs">$${position.isolated_wallet}</td>
-                            <td class="align-right">$${nextMargin}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            `,
-            otpConfirmation: true
-        }).afterClosed().subscribe(
-            async (otp: string|undefined) => {
-                if (otp) {
-                    // Set Submission State
-                    this.setSubmission(`Increasing ${side} Position...`);
-                    try {
-                        // Perform Action
-                        await this._position.increase(side, otp);
-                        await this._app.refreshAppBulk();
-
-                        // Notify
-                        this._app.success(`The ${side} position was increased successfully.`);
-
-                        // Set Submission State
-                        this.setSubmission();
-                    } catch(e) { this._app.error(e) }
-
-                    // Set Submission State
-                    this.setSubmission();
-                }
-            }
-        );
-    }
 
 
 
@@ -1500,33 +1370,12 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 			panelClass: "small-dialog",
             data: <IActivePositionDialogData> {
                 strategy: this.position.strategy,
-                position: position
+                position: position,
+                window: this.state.window.window
             }
 		})
 	}
 
-
-
-
-
-
-	/**
-	 * Displays the strategy builder dialog dialog.
-	 */
-     public displayStrategyBuilderDialog(side: IBinancePositionSide): void {
-		this.dialog.open(StrategyBuilderDialogComponent, {
-			hasBackdrop: true,
-            disableClose: true,
-			panelClass: "large-dialog",
-            data: <IStrategyBuilderDialogData> {
-                currentPrice: this.state.window.window[this.state.window.window.length - 1].c,
-                keyZones: this.state.keyzone,
-                side: side,
-                strategy: this.position.strategy,
-                position: side == "LONG" ? this.position.long: this.position.short
-            }
-		})
-	}
 
 
 

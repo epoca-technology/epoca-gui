@@ -6,11 +6,9 @@ import {
     IBinancePositionSide, 
     IPositionService, 
     IPositionStrategy, 
-    IPositionStrategyState,
     IBinanceLeverageTiers,
     IPositionCalculatorTradeItem,
     IPositionPriceRange,
-    IStrategyLevelID,
     IPositionTrade
 } from './interfaces';
 
@@ -70,19 +68,6 @@ export class PositionService implements IPositionService {
 
 
 
-    /**
-     * Increases an existing position based on a given side.
-     * @param side
-     * @param otp
-     * @returns Promise<void>
-     */
-    public increase(side: IBinancePositionSide, otp: string): Promise<void> { 
-        return this._api.request("post","position/increase", {side: side}, true, otp);
-    }
-
-
-
-
 
 
 
@@ -125,87 +110,6 @@ export class PositionService implements IPositionService {
     }
 
 
-
-
-
-    /**
-     * Calculates the strategy state for a position, returning
-     * the current level and the next. This function should 
-     * not be invoked if there is no margin in the position.
-     * @param strategy
-     * @param margin
-     * @returns IPositionStrategyState
-     */
-	public getStrategyState(strategy: IPositionStrategy, margin: number): IPositionStrategyState {
-        // Init the accumulated margin list by level
-        const margin_acum: number[] = this.getMarginAcums(strategy)
-
-        // Level 1 is active
-        if (margin > 0 && margin <= margin_acum[0]) {
-            return { current: strategy.level_1, next: strategy.level_2}
-        }
-
-        // Level 2 is active
-        else if (margin > margin_acum[0] && margin <= margin_acum[1]) {
-            return { current: strategy.level_2, next: strategy.level_3}
-        }
-
-        // Level 3 is active
-        else if (margin > margin_acum[1] && margin <= margin_acum[2]) {
-            return { current: strategy.level_3, next: strategy.level_4}
-        }
-
-        // Level 4 is active
-        else if (margin > margin_acum[2]) {
-            return { current: strategy.level_4, next: undefined}
-        }
-
-        // Otherwise, there is something wrong with the margin
-        else {
-            throw new Error(`The strategy state cannot be calculated as the provided position has no margin. Received ${margin}`);
-        }
-    }
-
-
-
-
-
-    /**
-     * Retrieves the acumulated margin based on the levels.
-     * @param strat 
-     * @returns number[]
-     */
-    public getMarginAcums(strat: IPositionStrategy): number[] {
-        return [
-            strat.level_1.size,
-            strat.level_1.size + strat.level_2.size,
-            strat.level_1.size + strat.level_2.size + strat.level_3.size,
-            strat.level_1.size + strat.level_2.size + strat.level_3.size + strat.level_4.size,
-        ]
-    }
-
-
-
-
-	/**
-	 * Retrieves the level number based on an id.
-	 * @param level_id 
-	 * @returns number
-	 */
-    public getLevelNumber(level_id: IStrategyLevelID): number {
-		switch (level_id) {
-			case "level_1":
-				return 1;
-			case "level_2":
-				return 2;
-			case "level_3":
-				return 3;
-			case "level_4":
-				return 4;
-			default:
-				return 0;
-		}
-	}
 
 
 
