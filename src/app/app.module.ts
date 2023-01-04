@@ -124,6 +124,7 @@ import {
 
 // Core Components
 import { AppComponent } from "./app.component";
+import { PositionHealthDialogComponent } from './modules/dashboard/active-position-dialog/position-health-dialog/position-health-dialog.component';
 
 
 
@@ -144,6 +145,7 @@ import { AppComponent } from "./app.component";
 		StrategyFormDialogComponent,
 		TechnicalAnalysisDialogComponent,
 		ActivePositionDialogComponent,
+  PositionHealthDialogComponent,
 	],
 	imports: [
 		// Core

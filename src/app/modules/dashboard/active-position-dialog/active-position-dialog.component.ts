@@ -1,14 +1,16 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
 import { ChartService, ILineChartOptions } from '../../../services';
 import { 
 	IActivePosition, 
 	ICandlestick, 
+	IPositionSideHealth, 
 	IPositionStrategy, 
 	PositionService, 
 	UtilsService 
 } from "../../../core";
 import { IActivePositionDialogComponent, IActivePositionDialogData } from './interfaces';
+import { PositionHealthDialogComponent } from './position-health-dialog';
 
 @Component({
   selector: 'app-active-position-dialog',
@@ -19,6 +21,7 @@ export class ActivePositionDialogComponent implements OnInit, IActivePositionDia
 	// Inherited data
 	public strategy: IPositionStrategy;
 	public position: IActivePosition;
+	public health: IPositionSideHealth;
 	private window: ICandlestick[];
 
 	// Distances
@@ -38,11 +41,13 @@ export class ActivePositionDialogComponent implements OnInit, IActivePositionDia
 		@Inject(MAT_DIALOG_DATA) private data: IActivePositionDialogData,
 		private _utils: UtilsService,
 		private _position: PositionService,
-		private _chart: ChartService
+		private _chart: ChartService,
+        private dialog: MatDialog,
 	) {
 		// Init values
 		this.strategy = this.data.strategy;
 		this.position = this.data.position;
+		this.health = this.data.health;
 		this.window = this.data.window;
 
 		// Calculate the liquidation distance
@@ -93,15 +98,15 @@ export class ActivePositionDialogComponent implements OnInit, IActivePositionDia
 		let high: number[] = [];
 		let low: number[] = [];
 		let entry: number[] = [];
-		let tp: number[] = [];
 		let sl: number[] = [];
+		let tp: number[] = [];
 		for (let candlestick of this.window) {
 			close.push(candlestick.c);
 			high.push(candlestick.h);
 			low.push(candlestick.l);
 			entry.push(this.position.entry_price);
-			tp.push(this.position.take_profit_price);
 			sl.push(this.position.stop_loss_price);
+			tp.push(this.position.take_profit_price);
 		}
 
 		// Calculate the highest and lowest values within the window
@@ -109,13 +114,11 @@ export class ActivePositionDialogComponent implements OnInit, IActivePositionDia
 		const windowMin: number = <number>this._utils.getMin(low);
 		const max: number = <number>this._utils.getMax([
 			windowMax, 
-			//this.position.liquidation_price, 
 			this.position.take_profit_price, 
 			this.position.stop_loss_price, 
 		]);
 		const min: number = <number>this._utils.getMin([
 			windowMin, 
-			//this.position.liquidation_price, 
 			this.position.take_profit_price, 
 			this.position.stop_loss_price, 
 		]);
@@ -126,31 +129,32 @@ export class ActivePositionDialogComponent implements OnInit, IActivePositionDia
 				series: [
 					{name: "Price", data: close, color: "#0288D1"},
 					{name: "Entry", data: entry, color: "#000000"},
-					{name: "Take Profit", data: tp, color: this._chart.upwardColor},
-					{name: "Stop Loss", data: sl, color: this._chart.downwardColor},
+					{name: "SL", data: sl, color: this._chart.downwardColor},
+					{name: "TP", data: tp, color: this._chart.upwardColor},
 				],
 				stroke: {curve: "straight", width: [4, 2, 3, 3]},
-				/*annotations: {
-					yaxis: [
-						{
-							y: this.position.entry_price,
-							strokeDashArray: 1,
-							borderColor: "#000000",
-							fillColor: "#000000",
-							label: {
-								borderColor: "#000000",
-								style: { color: "#fff", background: "#000000"},
-								text: `OPEN`,
-							}
-						},
-
-					]
-				}*/
+				xaxis: { labels: { show: false }, axisTicks: {show: false}, tooltip: {enabled: false}}
 			},
-			300, 
+			373, 
 			true,
 			{max: max, min: min}
 		)
+	}
+
+
+
+
+
+
+	/**
+	 * Displays the position health dialog.
+	 */
+    public displayHealthDialog(): void {
+		this.dialog.open(PositionHealthDialogComponent, {
+			hasBackdrop: true,
+			panelClass: "light-dialog",
+			data: this.health
+		})
 	}
 
 

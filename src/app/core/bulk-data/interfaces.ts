@@ -56,7 +56,7 @@ export interface IAppBulk {
     signal: IPredictionResult,
 
     // The position summary object
-    position: IPositionSummary, // @TODO
+    position: IPositionSummary,
 
     // The active market state.
     marketState: IMarketState,

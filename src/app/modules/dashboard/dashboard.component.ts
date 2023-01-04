@@ -1371,6 +1371,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             data: <IActivePositionDialogData> {
                 strategy: this.position.strategy,
                 position: position,
+                health: position.side == "LONG" ? this.position.health.long: this.position.health.short,
                 window: this.state.window.window
             }
 		})

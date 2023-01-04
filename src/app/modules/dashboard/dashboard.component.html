@@ -227,19 +227,22 @@
 
                                 <!-- Long Position -->
                                 <div *ngIf="!position.long" 
-                                    class="square-badge-success clickable position-badge" role="button" matRipple
-                                    [matMenuTriggerFor]="longMenu"
-                                    matTooltip="Margin: $0">
-                                    LONG: none
+                                    class="clickable long-position-button truncate" role="button" matRipple
+                                    [matMenuTriggerFor]="longMenu">
+                                    <div class="hp" style="width:100%;"></div>
+                                    <p>LONG: none</p>
                                 </div>
                                 <div *ngIf="position.long" 
-                                    class="clickable square-badge-success position-badge truncate" role="button" matRipple
+                                    class="clickable long-position-button truncate" role="button" matRipple
                                     [matMenuTriggerFor]="longMenu"
-                                    [ngClass]="{'losing-position': position.long.unrealized_pnl < 0}"
-                                    matTooltip="Margin: ${{position.long.isolated_wallet | number: '1.0-0'}}">
-                                    LONG: 
-                                    {{position.long.unrealized_pnl > 0 ? '+': ''}}{{position.long.unrealized_pnl | number: '1.1-1'}} | 
-                                    {{position.long.roe > 0 ? '+': ''}}{{position.long.roe | number: '1.1-1'}}%
+                                    matTooltip="Margin: ${{position.long.isolated_wallet | number: '1.0-0'}} | HP: {{position.health.long ? position.health.long.chp: 0}}, {{position.health.long ? position.health.long.dd: 0}}%">
+                                    <div *ngIf="position.health.long" class="hp" 
+                                            [ngStyle]="{'width': position.health.long.chp + '%'}"></div>
+                                    <p>
+                                        LONG: 
+                                        {{position.long.unrealized_pnl > 0 ? '+': ''}}{{position.long.unrealized_pnl | number: '1.1-1'}} | 
+                                        {{position.long.roe > 0 ? '+': ''}}{{position.long.roe | number: '1.1-1'}}%
+                                    </p>
                                 </div>
                                 <mat-menu #longMenu="matMenu">
                                     <button mat-menu-item 
@@ -315,19 +318,22 @@
 
                                 <!-- Short Position -->
                                 <div *ngIf="!position.short" 
-                                    class="square-badge-error clickable position-badge" role="button" matRipple
-                                    [matMenuTriggerFor]="shortMenu"
-                                    matTooltip="Margin: $0">
-                                    SHORT: none
+                                    class="clickable short-position-button truncate" role="button" matRipple
+                                    [matMenuTriggerFor]="shortMenu">
+                                    <div class="hp" style="width:100%;"></div>
+                                    <p>SHORT: none</p>
                                 </div>
                                 <div *ngIf="position.short" 
-                                    class="clickable square-badge-error position-badge truncate" role="button" matRipple
+                                    class="clickable short-position-button truncate" role="button" matRipple
                                     [matMenuTriggerFor]="shortMenu"
-                                    [ngClass]="{'losing-position': position.short.unrealized_pnl < 0}"
-                                    matTooltip="Margin: ${{position.short.isolated_wallet | number: '1.0-0'}}">
-                                    SHORT:
-                                    {{position.short.unrealized_pnl > 0 ? '+': ''}}{{position.short.unrealized_pnl | number: '1.1-1'}} | 
-                                    {{position.short.roe > 0 ? '+': ''}}{{position.short.roe | number: '1.1-1'}}%
+                                    matTooltip="Margin: ${{position.short.isolated_wallet | number: '1.0-0'}} | HP: {{position.health.short ? position.health.short.chp: 0}}, {{position.health.short ? position.health.short.dd: 0}}%">
+                                    <div *ngIf="position.health.short" class="hp" 
+                                            [ngStyle]="{'width': position.health.short.chp + '%'}"></div>
+                                    <p>
+                                        SHORT:
+                                        {{position.short.unrealized_pnl > 0 ? '+': ''}}{{position.short.unrealized_pnl | number: '1.1-1'}} | 
+                                        {{position.short.roe > 0 ? '+': ''}}{{position.short.roe | number: '1.1-1'}}%
+                                    </p>
                                 </div>
                                 <mat-menu #shortMenu="matMenu">
                                     <button mat-menu-item 

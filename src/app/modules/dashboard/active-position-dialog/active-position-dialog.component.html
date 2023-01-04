@@ -21,7 +21,16 @@
             backgroundColor="primary">
             <mat-tab>
                 <ng-template mat-tab-label><mat-icon>monitor_heart</mat-icon><span class="show-on-desktop">&nbsp;State</span></ng-template>
-                <div class="padding">
+                <div class="clickable short-position-button" role="button" matRipple 
+                    (click)="displayHealthDialog()"
+                    [ngClass]="{
+                        'long-position-button': position.side == 'LONG',
+                        'short-position-button': position.side == 'SHORT'
+                    }">
+                    <div class="hp" [ngStyle]="{'width': health.chp + '%'}"></div>
+                    <p>HP: {{health.chp}} | {{health.dd}}%</p>
+                </div>
+                <div style="padding: 0 15px 15px 15px">
                     <apx-chart
                         [series]="chart.series"
                         [chart]="chart.chart"
@@ -54,18 +63,6 @@
                         </p>
                     </div>
 
-                    <!-- Take Profit Price -->
-                    <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
-                        <p class="light-text ts-m truncate">Take Profit</p>
-                        <span fxFlex></span>
-                        <div matTooltip="The price in which the position is labeled as 'successful' and is ready to be closed."
-                            class="align-right" [ngClass]="{'success-color': !takeProfitDistance}">
-                            <p>{{position.take_profit_price | currency}}</p>
-                            <p *ngIf="takeProfitDistance" class="ts-xs light-text">{{takeProfitDistance}}% away</p>
-                            <p *ngIf="!takeProfitDistance" class="ts-xs">Take Profit Hit</p>
-                        </div>
-                    </div>
-
                     <!-- Stop Loss Price -->
                     <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
                         <p class="light-text ts-m truncate">Stop Loss</p>
@@ -75,6 +72,18 @@
                             <p>{{position.stop_loss_price | currency}}</p>
                             <p *ngIf="stopLossDistance" class="ts-xs light-text">{{stopLossDistance}}% away</p>
                             <p *ngIf="!stopLossDistance" class="ts-xs">Stop Loss Hit</p>
+                        </div>
+                    </div>
+
+                    <!-- Take Profit Price -->
+                    <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
+                        <p class="light-text ts-m truncate">Take Profit 1</p>
+                        <span fxFlex></span>
+                        <div matTooltip="The price in which the position is labeled as 'successful' and is ready to be closed."
+                            class="align-right" [ngClass]="{'success-color': !takeProfitDistance}">
+                            <p>{{position.take_profit_price | currency}}</p>
+                            <p *ngIf="takeProfitDistance" class="ts-xs light-text">{{takeProfitDistance}}% away</p>
+                            <p *ngIf="!takeProfitDistance" class="ts-xs">Take Profit Hit</p>
                         </div>
                     </div>
 

@@ -1,0 +1,44 @@
+<div mat-dialog-title fxLayout="row" fxLayoutAlign="start center">
+    <h1>Health</h1>
+    <span fxFlex></span>
+    <button mat-icon-button (click)="close()"><mat-icon>close</mat-icon></button>
+</div>
+<div mat-dialog-content>
+    <div class="component">
+        <div fxLayout="row" fxLayoutAlign="start center">
+            <p class="light-text ts-xs truncate">Creation</p>
+            <span fxFlex></span>
+            <p>{{health.ts | date: 'short'}}</p>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+            <p class="light-text ts-xs truncate">Open SUM</p>
+            <span fxFlex></span>
+            <p>{{health.os | number: '1.0-4'}}</p>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+            <p class="light-text ts-xs truncate">Open</p>
+            <span fxFlex></span>
+            <p>{{health.ohp | number: '1.0-2'}} HP</p>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+            <p class="light-text ts-xs truncate">Highest</p>
+            <span fxFlex></span>
+            <p>{{health.hhp | number: '1.0-2'}} HP</p>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+            <p class="light-text ts-xs truncate">Lowest</p>
+            <span fxFlex></span>
+            <p>{{health.lhp | number: '1.0-2'}} HP</p>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+            <p class="light-text ts-xs truncate">Current</p>
+            <span fxFlex></span>
+            <p>{{health.chp | number: '1.0-2'}} HP</p>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+            <p class="light-text ts-xs truncate">Drawdown</p>
+            <span fxFlex></span>
+            <p><strong>{{health.dd | number: '1.0-2'}}%</strong></p>
+        </div>
+    </div>
+</div>
