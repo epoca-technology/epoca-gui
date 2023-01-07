@@ -1,8 +1,8 @@
 <mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
     <div fxLayout="row" fxLayoutAlign="center center">
         <button mat-icon-button class="show-on-mobile" (click)="close()"><mat-icon>arrow_back</mat-icon></button>
-        <span class="truncate" *ngIf="trade.ps == 'LONG'">{{trade.s == 'BUY' ? 'Long Increase': 'Long Close'}}</span>
-        <span class="truncate" *ngIf="trade.ps == 'SHORT'">{{trade.s == 'SELL' ? 'Short Increase': 'Short Close'}}</span>
+        <span class="truncate" *ngIf="trade.ps == 'LONG'">{{trade.s == 'BUY' ? 'Long Open': 'Long Close'}}</span>
+        <span class="truncate" *ngIf="trade.ps == 'SHORT'">{{trade.s == 'SELL' ? 'Short Open': 'Short Close'}}</span>
         <span fxFlex></span>
         <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
     </div>

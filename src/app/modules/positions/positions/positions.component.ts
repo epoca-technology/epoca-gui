@@ -1085,9 +1085,9 @@ export class PositionsComponent implements OnInit, OnDestroy, IPositionsComponen
      * @returns string
      */
     private getTradeLabel(trade: IPositionTrade): string {
-        if (trade.ps == "LONG" && trade.s == "BUY") { return "LONG_INCREASE" }			
+        if (trade.ps == "LONG" && trade.s == "BUY") { return "LONG_OPEN" }			
 		else if (trade.ps == "LONG" && trade.s == "SELL") { return "LONG_CLOSE" }
-		else if (trade.ps == "SHORT" && trade.s == "SELL") { return "SHORT_INCREASE" }
+		else if (trade.ps == "SHORT" && trade.s == "SELL") { return "SHORT_OPEN" }
 		else { return "SHORT_CLOSE" }
     }
 
