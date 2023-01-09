@@ -65,7 +65,7 @@ export class PositionsComponent implements OnInit, OnDestroy, IPositionsComponen
     public loaded: boolean = false;
 
     // View Size
-    public viewSize: IViewSize = "1 month";
+    public viewSize: IViewSize = "all";
 
     // Navigation
     public readonly sections: ISection[] = [
@@ -384,7 +384,7 @@ export class PositionsComponent implements OnInit, OnDestroy, IPositionsComponen
      * Resets all the view properties to pristine state.
      */
     private resetView(): void {
-        //this.viewSize = "1 week";
+        //this.viewSize = "all";
         this.activeSection = this.sections[0];
         this.summary = undefined;
         this.pnl = undefined;
@@ -509,9 +509,9 @@ export class PositionsComponent implements OnInit, OnDestroy, IPositionsComponen
             trades: this._chart.getBarChartOptions(
 				{
 					series: [
-						{name:'L.Incr.', data: [this._d.longIncreaseTrades]},
+						{name:'L.Open', data: [this._d.longIncreaseTrades]},
 						{name:'L.Close', data: [this._d.longCloseTrades]},
-						{name:'S.Incr.', data: [this._d.shortIncreaseTrades]},
+						{name:'S.Open', data: [this._d.shortIncreaseTrades]},
 						{name:'S.Close', data: [this._d.shortCloseTrades]},
 					], 
 					colors: ["#009688", "#004D40", "#F44336", "#B71C1C"],
@@ -738,10 +738,10 @@ export class PositionsComponent implements OnInit, OnDestroy, IPositionsComponen
     private buildPricesCharts(): void {
         this.prices = {
             long: this.getLineChart("Long Prices", this._d.longPrices.elements, this._chart.upwardColor, 230, 300),
-            longIncrease: this.getLineChart("Long Incr. Prices", this._d.longIncreasePrices.elements, this._chart.upwardColor, 230, 300),
+            longIncrease: this.getLineChart("Long Open Prices", this._d.longIncreasePrices.elements, this._chart.upwardColor, 230, 300),
             longClose: this.getLineChart("Long Close Prices", this._d.longClosePrices.elements, this._chart.upwardColor, 230, 300),
             short: this.getLineChart("Short Prices", this._d.shortPrices.elements, this._chart.downwardColor, 230, 300),
-            shortIncrease: this.getLineChart("Short Incr. Prices", this._d.shortIncreasePrices.elements, this._chart.downwardColor, 230, 300),
+            shortIncrease: this.getLineChart("Short Open Prices", this._d.shortIncreasePrices.elements, this._chart.downwardColor, 230, 300),
             shortClose: this.getLineChart("Short Close Prices", this._d.shortClosePrices.elements, this._chart.downwardColor, 230, 300),
         };
     }

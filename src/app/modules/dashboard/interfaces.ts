@@ -13,7 +13,6 @@ export interface IDashboardComponent {
     displaySignalPoliciesDialog(): void,
     displayFeaturesDialog(): void,
     displayTechnicalAnalysisDialog(taInterval: ITAIntervalID): void,
-    displayKeyZoneDialog(): void
     
     // Nav Actions
     createNewInstance(): void,

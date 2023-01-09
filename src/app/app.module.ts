@@ -113,18 +113,17 @@ import {SharedModule} from "./shared";
 import { 
 	ActivePositionDialogComponent,
 	BalanceDialogComponent, 
-	KeyzoneStateDialogComponent, 
-	KeyzoneReversalsDialogComponent,
 	SignalPoliciesDialogComponent,
 	StrategyFormDialogComponent,
 	TechnicalAnalysisDialogComponent,
+	PositionHealthDialogComponent,
+	PositionHealthDetailsDialogComponent,
 	DashboardComponent, 
 } from "./modules/dashboard";
 
 
 // Core Components
 import { AppComponent } from "./app.component";
-import { PositionHealthDialogComponent } from './modules/dashboard/active-position-dialog/position-health-dialog/position-health-dialog.component';
 
 
 
@@ -139,13 +138,12 @@ import { PositionHealthDialogComponent } from './modules/dashboard/active-positi
 		// Pre-Loaded Components
 		DashboardComponent,
 		BalanceDialogComponent,
-		KeyzoneStateDialogComponent,
-		KeyzoneReversalsDialogComponent,
 		SignalPoliciesDialogComponent,
 		StrategyFormDialogComponent,
 		TechnicalAnalysisDialogComponent,
 		ActivePositionDialogComponent,
-  PositionHealthDialogComponent,
+		PositionHealthDialogComponent,
+		PositionHealthDetailsDialogComponent,
 	],
 	imports: [
 		// Core

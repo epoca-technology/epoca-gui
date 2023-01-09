@@ -229,7 +229,6 @@ export class AppService implements IAppService{
 							snapVal.guiVersion = this.guiVersion.value!;
 							snapVal.epoch = this.epoch.value!;
 							snapVal.marketState.window.window = this.decompressCandlesticks(snapVal.marketState.window.window);
-							snapVal.marketState.keyzone = this.marketState.value!.keyzone;
 							snapVal.marketState.network_fee = this.marketState.value!.network_fee;
 							snapVal.marketState.open_interest = this.marketState.value!.open_interest;
 							snapVal.marketState.long_short_ratio = this.marketState.value!.long_short_ratio;

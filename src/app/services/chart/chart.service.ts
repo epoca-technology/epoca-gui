@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import * as moment from "moment";
 import { ApexAnnotations, ApexChart, ApexPlotOptions, ApexYAxis, ApexAxisChartSeries, ApexXAxis } from "ng-apexcharts";
-import { IBacktestPosition, ICandlestick, IPredictionCandlestick, UtilsService } from "../../core";
+import { IBacktestPosition, ICandlestick, IPositionHealthCandlestick, IPredictionCandlestick, UtilsService } from "../../core";
 import { AppService, ILayout } from "../app";
 import { 
 	IApexCandlestick, 
@@ -67,15 +67,17 @@ export class ChartService implements IChartService {
      * @returns ICandlestickChartOptions
      */
 	public getCandlestickChartOptions(
-		 candlesticks: Array<ICandlestick|IPredictionCandlestick>, 
+		 candlesticks: Array<ICandlestick|IPredictionCandlestick|IPositionHealthCandlestick>, 
 		 annotations?: ApexAnnotations, 
 		 highlightCurrentPrice?: boolean,
 		 disableNiceScale?: boolean,
-		 range?: IChartRange
+		 range?: IChartRange,
+		 height?: number,
+		 title?: string
 	): ICandlestickChartOptions {
         // Make sure at least 5 candlesticks have been provided
-        if (!candlesticks || candlesticks.length < 5) {
-            throw new Error("A minimum of 5 candlesticks must be provided in order to render the chart.");
+        if (!candlesticks || candlesticks.length < 1) {
+            throw new Error("A minimum of 1 candlesticks must be provided in order to render the chart.");
         }
 
 		// Check if nice scale should be disabled
@@ -94,14 +96,17 @@ export class ChartService implements IChartService {
 				type: "candlestick",
 				toolbar: {show: true,tools: {selection: true,zoom: true,zoomin: true,zoomout: true,download: false}},
 				animations: {enabled: false},
-				height: 600
+				height: height || 600
             },
 			plotOptions: {candlestick: {colors: {upward: this.upwardColor,downward: this.downwardColor}}},
             annotations: this.getCandlesticksAnnotations(
 				annotations, 
 				highlightCurrentPrice === false ? undefined: candlesticks[candlesticks.length -1].c
 			),
-            title: {text: this.getCandlesticksTitle(candlesticks),align: "left"},
+            title: {
+				text: title ? title: this.getCandlesticksTitle(candlesticks), 
+				align: "left"
+			},
             xaxis: {type: "datetime",tooltip: {enabled: true}, labels: {datetimeUTC: false}}, 
             yaxis: yaxis
         }
@@ -119,7 +124,7 @@ export class ChartService implements IChartService {
 	 * Given a list of raw candlesticks, it will convert them into Apex format.
 	 * @returns IApexCandlestick[]
 	 */
-    public getApexCandlesticks(candlesticks: Array<ICandlestick|IPredictionCandlestick>): IApexCandlestick[] {
+    public getApexCandlesticks(candlesticks: Array<ICandlestick|IPredictionCandlestick|IPositionHealthCandlestick>): IApexCandlestick[] {
 		// Init the final list
 		let final: IApexCandlestick[] = [];
 
@@ -140,7 +145,7 @@ export class ChartService implements IChartService {
 	 * Retrieves the title to be placed in the chart.
 	 * @returns string
 	 */
-     private getCandlesticksTitle(candlesticks: Array<ICandlestick|IPredictionCandlestick>): string {
+     private getCandlesticksTitle(candlesticks: Array<ICandlestick|IPredictionCandlestick|IPositionHealthCandlestick>): string {
 		// Init values
         const l: ILayout = this._app.layout.value;
 		let title: string = "";
@@ -167,7 +172,7 @@ export class ChartService implements IChartService {
 	 * @param candlesticks 
 	 * @returns IChartRange
 	 */
-	private getCandlesticksChartRange(candlesticks: Array<ICandlestick|IPredictionCandlestick>): IChartRange {
+	private getCandlesticksChartRange(candlesticks: Array<ICandlestick|IPredictionCandlestick|IPositionHealthCandlestick>): IChartRange {
 		// Init lists
 		let high: number[] = [];
 		let low: number[] = [];

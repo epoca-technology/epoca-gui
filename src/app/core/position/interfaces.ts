@@ -20,6 +20,9 @@ export interface IPositionService {
         trades: IPositionCalculatorTradeItem[]
     ): IPositionPriceRange,
 
+    // Position Health Candlesticks
+    getPositionHealthCandlesticks(side: IBinancePositionSide): Promise<IPositionHealthCandlesticks>,
+
     // Position Trades
     listTrades(startAt: number, endAt: number): Promise<IPositionTrade[]>
 }
@@ -243,6 +246,61 @@ export interface IPositionHealthWeights {
     // The state of the long/short ratio within the market state window
     long_short_ratio: number
 }
+
+
+
+
+
+/* Position Health Candlesticks */
+
+
+
+/**
+ * Position Health Candlesticks
+ * When a position is opened, the HP is constantly calculated and the 
+ * history is stored in order for users to analyze the behaviour and
+ * improve the trading strategy.
+ */
+export interface IPositionHealthCandlesticks {
+    hp: IPositionHealthCandlestick[],
+    dd: IPositionHealthCandlestick[]
+}
+
+
+/**
+ * Position Health Candlestick
+ * The object used to interact and display the position health candlesticks.
+ */
+export interface IPositionHealthCandlestick {
+    // Open Timestamp: the time in which the candlestick was first built
+    ot: number,
+
+    // Open: the HP|Drawdown when the candlestick was first built
+    o: number,
+
+    // High: the highest HP|Drawdown in the candlestick
+    h: number,
+
+    // Low: the lowest HP|Drawdown in the candlestick
+    l: number,
+
+    // Close: the last HP|Drawdown in the candlestick 
+    c: number
+}
+
+
+/**
+ * Active Candlesticks
+ * The position health class builds the candlesticks in RAM. Moreover,
+ * it can handle one or both sides at a time.
+ */
+export interface IPositionHealthActiveCandlesticks {
+    hp: IPositionHealthCandlestick|undefined,
+    dd: IPositionHealthCandlestick|undefined
+}
+
+
+
 
 
 

@@ -41,15 +41,13 @@
 
                     <!-- View Size -->
                     <button mat-button 
-                        *ngIf="epoch && loaded"
-                        [disabled]="!sectionLoaded"
+                        *ngIf="epoch && loaded && sectionLoaded"
                         matTooltip="Current Range: {{_d.start | date: 'short'}} - {{_d.end | date: 'short'}}"
                         (click)="changeViewSize()"><mat-icon>date_range</mat-icon> {{viewSize}}</button>
 
                     <!-- Close Epoch-->
                     <button mat-icon-button 
-                            *ngIf="epoch && loaded"
-                            [disabled]="!sectionLoaded"
+                            *ngIf="epoch && loaded && sectionLoaded"
                             matTooltip="Close {{epoch.id}}"
                             (click)="initializeEpochData()"><mat-icon>close</mat-icon></button>
                 </div>
@@ -852,7 +850,7 @@
                                                 <div class="desktop-card">
                                                     <!-- Header -->
                                                     <div fxLayout="row" fxLayoutAlign="center center" class="chart-header">
-                                                        <h4>Long Incr. Prices</h4>
+                                                        <h4>Long Open Prices</h4>
                                                         <span fxFlex></span>
                                                         <div class="square-badge-success clickable" role="button" matRipple 
                                                             matTooltip="Long Increase Price Mean"
@@ -941,7 +939,7 @@
                                                 <div class="desktop-card">
                                                     <!-- Header -->
                                                     <div fxLayout="row" fxLayoutAlign="center center" class="chart-header">
-                                                        <h4>Short Incr. Prices</h4>
+                                                        <h4>Short Open Prices</h4>
                                                         <span fxFlex></span>
                                                         <div class="square-badge-error clickable" role="button" matRipple
                                                             matTooltip="Short Increase Prices Mean"
@@ -1028,9 +1026,9 @@
                                                                         'success-color': t.ps == 'LONG', 
                                                                         'error-color': t.ps == 'SHORT'
                                                                     }">
-                                                                    <p *ngIf="t.ps == 'LONG' && t.s == 'BUY'">LONG-INCREASE</p>
+                                                                    <p *ngIf="t.ps == 'LONG' && t.s == 'BUY'">LONG-OPEN</p>
                                                                     <p *ngIf="t.ps == 'LONG' && t.s == 'SELL'">LONG-CLOSE</p>
-                                                                    <p *ngIf="t.ps == 'SHORT' && t.s == 'SELL'">SHORT-INCREASE</p>
+                                                                    <p *ngIf="t.ps == 'SHORT' && t.s == 'SELL'">SHORT-OPEN</p>
                                                                     <p *ngIf="t.ps == 'SHORT' && t.s == 'BUY'">SHORT-CLOSE</p>
                                                                 </td>
                                                                 <td *ngIf="(i+1) <= visibleTrades && layout == 'desktop'">

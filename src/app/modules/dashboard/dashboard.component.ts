@@ -29,12 +29,12 @@ import {
     AppService, 
     ChartService, 
     ICandlestickChartOptions, 
+    IChartRange, 
     ILayout, 
     ILineChartOptions, 
     NavService 
 } from "../../services";
 import { FeaturesSumDialogComponent, IFeaturesSumDialogData } from "../../shared/components/epoch-builder";
-import { KeyzoneStateDialogComponent, IKeyZonesStateDialogData } from "./keyzone-state-dialog";
 import { BalanceDialogComponent } from "./balance-dialog";
 import { ActivePositionDialogComponent, IActivePositionDialogData } from "./active-position-dialog";
 import { StrategyFormDialogComponent } from "./strategy-form-dialog";
@@ -657,20 +657,13 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
      * Triggers whenever a new state is downloaded and builds the window chart.
      */
     private updateWindowState(): void {
-        // Calculate the min and max values
-        let minVal: number = this.state.window.lower_band.end;
-        if (this.state.keyzone.below.length && this.state.window.lower_band.end > this.state.keyzone.below[0].e) {
-            minVal = <number>this._utils.alterNumberByPercentage(this.state.keyzone.below[0].e, -0.5);
-        }
-        let maxVal: number = this.state.window.upper_band.end;
-        if (this.state.keyzone.above.length && this.state.window.upper_band.end < this.state.keyzone.above[0].s) {
-            maxVal = <number>this._utils.alterNumberByPercentage(this.state.keyzone.above[0].s, 0.5);
-        }
+        // Calculate the chart's range
+        const { min, max } = this.getWindowStateRange();
 
         // Build/update the chart
         if (this.windowChart) {
             // Update the range
-            this.windowChart.yaxis = { tooltip: { enabled: true }, forceNiceScale: false, min: minVal, max: maxVal};
+            this.windowChart.yaxis = { tooltip: { enabled: true }, forceNiceScale: false, min: min, max: max};
 
             // Update the series
             this.windowChart.series = [
@@ -688,16 +681,45 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                 this.buildWindowAnnotations(), 
                 false, 
                 true,
-                { min:  minVal, max: maxVal }
+                { min:  min, max: max }
             );
             this.windowChart.chart!.height = this.layout == "desktop" ? 630: 400;
-            if (this.layout == "desktop") {
+            /*if (this.layout == "desktop") {
                 this.windowChart.chart!.zoom = {enabled: true, type: "xy"};
             } else {
                 this.windowChart.chart!.toolbar!.show = false;
-            }
+            }*/
+            this.windowChart.chart!.toolbar!.show = false;
         }
     }
+
+
+
+    /**
+     * Calculates the price range the chart should be built on.
+     * @returns IChartRange
+     */
+    private getWindowStateRange(): IChartRange {
+        // Init the values
+        let min: number = <number>this._utils.alterNumberByPercentage(this.state.window.lower_band.end, -0.5);
+        let max: number = <number>this._utils.alterNumberByPercentage(this.state.window.upper_band.end, 0.5);
+
+        // Check if there is a long position
+        if (this.position.long) {
+            min = this.position.long.stop_loss_price < min ? this.position.long.stop_loss_price: min;
+            max = this.position.long.take_profit_price > max ? this.position.long.take_profit_price: max;
+        }
+
+        // Check if there is a short position
+        if (this.position.short) {
+            min = this.position.short.take_profit_price < min ? this.position.short.take_profit_price: min;
+            max = this.position.short.stop_loss_price > max ? this.position.short.stop_loss_price: max;
+        }
+
+        // Finally, return the range
+        return { min: min, max: max }
+    }
+
 
 
 
@@ -711,50 +733,13 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         let annotations: ApexAnnotations = { yaxis: [] };
 
 
-        /* KeyZone Annotations */
-
-        // Add the first keyzone below (if any)
-        if (this.state.keyzone.above.length) {
-            annotations.yaxis!.push({
-				y: this.state.keyzone.above[0].s,
-				y2: this.state.keyzone.above[0].e,
-				strokeDashArray: 0,
-				borderColor: this._chart.upwardColor,
-				fillColor: this._chart.upwardColor
-			})
-        }
-
-        // Check if there is an active zone
-        if (this.state.keyzone.active) {
-            annotations.yaxis!.push({
-				y: this.state.keyzone.active.s,
-				y2: this.state.keyzone.active.e,
-				strokeDashArray: 0,
-				borderColor: "#000000",
-				fillColor: "#000000"
-			})
-        }
-
-
-        // Add the first keyzone below (if any)
-        if (this.state.keyzone.below.length) {
-            annotations.yaxis!.push({
-				y: this.state.keyzone.below[0].s,
-				y2: this.state.keyzone.below[0].e,
-				strokeDashArray: 0,
-				borderColor: this._chart.downwardColor,
-				fillColor: this._chart.downwardColor
-			})
-        }
-
-
         /* Position Annotations */
         
         // Long Position
         if (this.position.long) {
             annotations.yaxis!.push({
                 y: this.position.long.entry_price,
-                strokeDashArray: 1,
+                strokeDashArray: 0,
                 borderColor: this._chart.upwardColor,
                 fillColor: this._chart.upwardColor,
                 label: {
@@ -780,7 +765,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             });
             annotations.yaxis!.push({
                 y: this.position.long.stop_loss_price,
-                strokeDashArray: 10,
+                strokeDashArray: 0,
                 borderColor: this._chart.upwardColor,
                 fillColor: this._chart.upwardColor,
                 label: {
@@ -791,7 +776,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                     offsetX: 71
                 }
             });
-            annotations.yaxis!.push({
+            /*annotations.yaxis!.push({
                 y: this.position.long.liquidation_price,
                 strokeDashArray: 0,
                 borderColor: this._chart.upwardColor,
@@ -803,14 +788,14 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                     position: "left",
                     offsetX: 75
                 }
-            });
+            });*/
         }
 
         // Short Position
         if (this.position.short) {
             annotations.yaxis!.push({
                 y: this.position.short.entry_price,
-                strokeDashArray: 1,
+                strokeDashArray: 0,
                 borderColor: this._chart.downwardColor,
                 fillColor: this._chart.downwardColor,
                 label: {
@@ -836,7 +821,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             });
             annotations.yaxis!.push({
                 y: this.position.short.stop_loss_price,
-                strokeDashArray: 10,
+                strokeDashArray: 0,
                 borderColor: this._chart.downwardColor,
                 fillColor: this._chart.downwardColor,
                 label: {
@@ -847,7 +832,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                     offsetX: 71
                 }
             });
-            annotations.yaxis!.push({
+            /*annotations.yaxis!.push({
                 y: this.position.short.liquidation_price,
                 strokeDashArray: 0,
                 borderColor: this._chart.downwardColor,
@@ -859,7 +844,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                     position: "left",
                     offsetX: 75
                 }
-            });
+            });*/
         }
 
 
@@ -1437,24 +1422,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 		})
 	}
 
-
-
-
-
-
-    /**
-     * Displays the keyzone state dialog.
-     */
-    public displayKeyZoneDialog(): void {
-		this.dialog.open(KeyzoneStateDialogComponent, {
-			hasBackdrop: this._app.layout.value != "mobile",
-			panelClass: "large-dialog",
-			data: <IKeyZonesStateDialogData> {
-                state: this.state.keyzone,
-                currentPrice: this.state.window.window[this.state.window.window.length - 1].c
-            }
-		})
-    }
 
 
 

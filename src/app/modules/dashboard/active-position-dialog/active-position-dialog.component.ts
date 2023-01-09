@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
-import { ChartService, ILineChartOptions } from '../../../services';
+import { AppService, ChartService, ILineChartOptions } from '../../../services';
 import { 
 	IActivePosition, 
 	ICandlestick, 
@@ -9,8 +9,8 @@ import {
 	PositionService, 
 	UtilsService 
 } from "../../../core";
+import { IPositionHealthDialogData, PositionHealthDialogComponent } from './position-health-dialog';
 import { IActivePositionDialogComponent, IActivePositionDialogData } from './interfaces';
-import { PositionHealthDialogComponent } from './position-health-dialog';
 
 @Component({
   selector: 'app-active-position-dialog',
@@ -43,6 +43,7 @@ export class ActivePositionDialogComponent implements OnInit, IActivePositionDia
 		private _position: PositionService,
 		private _chart: ChartService,
         private dialog: MatDialog,
+		private _app: AppService
 	) {
 		// Init values
 		this.strategy = this.data.strategy;
@@ -151,9 +152,12 @@ export class ActivePositionDialogComponent implements OnInit, IActivePositionDia
 	 */
     public displayHealthDialog(): void {
 		this.dialog.open(PositionHealthDialogComponent, {
-			hasBackdrop: true,
-			panelClass: "light-dialog",
-			data: this.health
+			hasBackdrop: this._app.layout.value != "mobile",
+			panelClass: "large-dialog",
+			data: <IPositionHealthDialogData>{
+				side: this.position.side,
+				health: this.health
+			}
 		})
 	}
 

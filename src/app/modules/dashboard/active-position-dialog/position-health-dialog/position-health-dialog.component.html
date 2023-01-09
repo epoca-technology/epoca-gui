@@ -1,44 +1,42 @@
-<div mat-dialog-title fxLayout="row" fxLayoutAlign="start center">
-    <h1>Health</h1>
-    <span fxFlex></span>
-    <button mat-icon-button (click)="close()"><mat-icon>close</mat-icon></button>
-</div>
+<mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <button mat-icon-button class="show-on-mobile" (click)="close()"><mat-icon>arrow_back</mat-icon></button>
+        <span class="truncate">{{side}}: {{health.chp | number: '1.0-2'}} HP {{health.dd}}%</span>
+        <span fxFlex></span>
+        <button mat-icon-button (click)="displayHealthDetailsDialog()"><mat-icon>info</mat-icon></button>
+        <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
+    </div>
+</mat-toolbar>
 <div mat-dialog-content>
-    <div class="component">
-        <div fxLayout="row" fxLayoutAlign="start center">
-            <p class="light-text ts-xs truncate">Creation</p>
-            <span fxFlex></span>
-            <p>{{health.ts | date: 'short'}}</p>
+    <!-- Loader -->
+    <div *ngIf="!loaded">
+        <div class="section-loader"><div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div></div>
+    </div>
+    <div *ngIf="loaded" class="padding">
+        <!-- HP Chart -->
+        <div *ngIf="hpChart">
+            <apx-chart
+                [series]="hpChart.series!"
+                [chart]="hpChart.chart!"
+                [plotOptions]="hpChart.plotOptions!"
+                [xaxis]="hpChart.xaxis!"
+                [yaxis]="hpChart.yaxis!"
+                [annotations]="hpChart!.annotations!"
+                [title]="hpChart.title!"
+            ></apx-chart>
         </div>
-        <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
-            <p class="light-text ts-xs truncate">Open SUM</p>
-            <span fxFlex></span>
-            <p>{{health.os | number: '1.0-4'}}</p>
-        </div>
-        <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
-            <p class="light-text ts-xs truncate">Open</p>
-            <span fxFlex></span>
-            <p>{{health.ohp | number: '1.0-2'}} HP</p>
-        </div>
-        <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
-            <p class="light-text ts-xs truncate">Highest</p>
-            <span fxFlex></span>
-            <p>{{health.hhp | number: '1.0-2'}} HP</p>
-        </div>
-        <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
-            <p class="light-text ts-xs truncate">Lowest</p>
-            <span fxFlex></span>
-            <p>{{health.lhp | number: '1.0-2'}} HP</p>
-        </div>
-        <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
-            <p class="light-text ts-xs truncate">Current</p>
-            <span fxFlex></span>
-            <p>{{health.chp | number: '1.0-2'}} HP</p>
-        </div>
-        <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
-            <p class="light-text ts-xs truncate">Drawdown</p>
-            <span fxFlex></span>
-            <p><strong>{{health.dd | number: '1.0-2'}}%</strong></p>
+
+        <!-- Drawdown Chart -->
+        <div *ngIf="ddChart">
+            <apx-chart
+                [series]="ddChart.series!"
+                [chart]="ddChart.chart!"
+                [plotOptions]="ddChart.plotOptions!"
+                [xaxis]="ddChart.xaxis!"
+                [yaxis]="ddChart.yaxis!"
+                [annotations]="ddChart!.annotations!"
+                [title]="ddChart.title!"
+            ></apx-chart>
         </div>
     </div>
 </div>

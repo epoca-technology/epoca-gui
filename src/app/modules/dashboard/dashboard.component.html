@@ -171,21 +171,6 @@
                             <mat-icon style="font-size:22px;">account_balance_wallet</mat-icon>
                     </button>
 
-                    <!-- KeyZones -->
-                    <button mat-button 
-                            *ngIf="loaded && layout == 'desktop'"
-                            (click)="displayKeyZoneDialog()"
-                            [disabled]="submitting"
-                            matTooltip="Built: {{state.keyzone.build_ts | date: 'short'}} | Updated: {{state.keyzone.ts | date: 'short'}}">
-                            <mat-icon style="font-size:20px;">vertical_distribute</mat-icon>&nbsp;KeyZones
-                    </button>
-                    <button mat-icon-button 
-                            *ngIf="loaded && layout == 'mobile'"
-                            (click)="displayKeyZoneDialog()"
-                            [disabled]="submitting">
-                            <mat-icon style="font-size:20px;">vertical_distribute</mat-icon>
-                    </button>
-
                     <!-- Menu -->
                     <button mat-icon-button 
                             (click)="sidenav?.toggle()" 
@@ -235,7 +220,7 @@
                                 <div *ngIf="position.long" 
                                     class="clickable long-position-button truncate" role="button" matRipple
                                     [matMenuTriggerFor]="longMenu"
-                                    matTooltip="Margin: ${{position.long.isolated_wallet | number: '1.0-0'}} | HP: {{position.health.long ? position.health.long.chp: 0}}, {{position.health.long ? position.health.long.dd: 0}}%">
+                                    matTooltip="{{position.health.long ? position.health.long.chp: 0}} HP {{position.health.long ? position.health.long.dd: 0}}%">
                                     <div *ngIf="position.health.long" class="hp" 
                                             [ngStyle]="{'width': position.health.long.chp + '%'}"></div>
                                     <p>
@@ -254,17 +239,17 @@
                                     </button>
                                     <button mat-menu-item 
                                             *ngIf="position.long"
-                                            [matMenuTriggerFor]="closeLongMenu"
-                                            [disabled]="submitting">
-                                        <mat-icon>close</mat-icon>
-                                        <span>Close Long</span>
-                                    </button>
-                                    <button mat-menu-item 
-                                            *ngIf="position.long"
                                             (click)="displayPositionDialog(position.long)"
                                             [disabled]="submitting">
                                         <mat-icon>info</mat-icon>
                                         <span>Position Information</span>
+                                    </button>
+                                    <button mat-menu-item 
+                                            *ngIf="position.long"
+                                            [matMenuTriggerFor]="closeLongMenu"
+                                            [disabled]="submitting">
+                                        <mat-icon>close</mat-icon>
+                                        <span>Close Long</span>
                                     </button>
                                 </mat-menu>
                                 <mat-menu #closeLongMenu="matMenu">
@@ -326,7 +311,7 @@
                                 <div *ngIf="position.short" 
                                     class="clickable short-position-button truncate" role="button" matRipple
                                     [matMenuTriggerFor]="shortMenu"
-                                    matTooltip="Margin: ${{position.short.isolated_wallet | number: '1.0-0'}} | HP: {{position.health.short ? position.health.short.chp: 0}}, {{position.health.short ? position.health.short.dd: 0}}%">
+                                    matTooltip="{{position.health.short ? position.health.short.chp: 0}} HP {{position.health.short ? position.health.short.dd: 0}}%">
                                     <div *ngIf="position.health.short" class="hp" 
                                             [ngStyle]="{'width': position.health.short.chp + '%'}"></div>
                                     <p>
@@ -345,17 +330,17 @@
                                     </button>
                                     <button mat-menu-item 
                                             *ngIf="position.short"
-                                            [matMenuTriggerFor]="closeShortMenu"
-                                            [disabled]="submitting">
-                                        <mat-icon>close</mat-icon>
-                                        <span>Close Short</span>
-                                    </button>
-                                    <button mat-menu-item 
-                                            *ngIf="position.short"
                                             (click)="displayPositionDialog(position.short)"
                                             [disabled]="submitting">
                                         <mat-icon>info</mat-icon>
                                         <span>Position Information</span>
+                                    </button>
+                                    <button mat-menu-item 
+                                            *ngIf="position.short"
+                                            [matMenuTriggerFor]="closeShortMenu"
+                                            [disabled]="submitting">
+                                        <mat-icon>close</mat-icon>
+                                        <span>Close Short</span>
                                     </button>
                                 </mat-menu>
                                 <mat-menu #closeShortMenu="matMenu">

@@ -35,7 +35,8 @@ export interface IChartService {
 		annotations?: ApexAnnotations, 
 		highlightCurrentPrice?: boolean,
 		disableNiceScale?: boolean,
-		range?: IChartRange
+		range?: IChartRange,
+		height?: number
 	): ICandlestickChartOptions,
 	getApexCandlesticks(candlesticks: Array<ICandlestick|IPredictionCandlestick>): IApexCandlestick[],
 

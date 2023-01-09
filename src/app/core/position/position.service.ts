@@ -9,7 +9,8 @@ import {
     IBinanceLeverageTiers,
     IPositionCalculatorTradeItem,
     IPositionPriceRange,
-    IPositionTrade
+    IPositionTrade,
+    IPositionHealthCandlesticks
 } from './interfaces';
 
 @Injectable({
@@ -195,6 +196,39 @@ export class PositionService implements IPositionService {
             liquidation: <number>this._utils.outputNumber(liquidation_price)
         }
     }
+
+
+
+
+
+
+
+
+
+    /********************************
+     * Position Health Candlesticks *
+     ********************************/
+
+
+
+
+
+	/**
+	 * Retrieves the full health history in candlestick format for
+     * a given side.
+	 * @param side
+	 * @returns Promise<IPositionHealthCandlesticks>
+	 */
+    public getPositionHealthCandlesticks(side: IBinancePositionSide): Promise<IPositionHealthCandlesticks> {
+		return this._api.request(
+            "get","position/getPositionHealthCandlesticks", 
+            {
+                side: side
+            }, 
+            true
+        );
+	}
+
 
 
 

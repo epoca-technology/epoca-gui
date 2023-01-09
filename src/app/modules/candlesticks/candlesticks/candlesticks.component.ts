@@ -124,9 +124,6 @@ export class CandlesticksComponent implements OnInit, OnDestroy, ICandlesticksCo
             this.rawCandlesticks && this.rawCandlesticks.length > 0
             ) {
                 try {
-                    // Since the prediction sum chart will be displayed, adjust the candlesticks size
-                    this.chartOptions!.chart!.height = this._app.layout.value == "desktop" ? 550: 350;
-
                     // Retrieve the predictions within the range
                     const preds: IPredictionCandlestick[] = await this._localDB.listPredictionCandlesticks(
                         this._app.epoch.value.id, 
@@ -143,7 +140,7 @@ export class CandlesticksComponent implements OnInit, OnDestroy, ICandlesticksCo
                     this.barChart = this._chart.getBarChartOptions(
                         {
                             series: [{name: "SUM Mean", data: values}],
-                            chart: {height: 140, type: "bar",animations: { enabled: false}, toolbar: {show: false,tools: {download: false}}, zoom: {enabled: false}},
+                            chart: {height: 250, type: "bar",animations: { enabled: false}, toolbar: {show: false,tools: {download: false}}, zoom: {enabled: false}},
                             plotOptions: {bar: {borderRadius: 0, horizontal: false, distributed: true,}},
                             colors: colors,
                             grid: {show: true},
