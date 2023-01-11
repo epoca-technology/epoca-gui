@@ -71,6 +71,9 @@ import {
 	// Local Database
 	LocalDatabaseService,
 
+	// Market State
+	MarketStateService,
+
 	// Notification
 	NotificationService,
 
@@ -208,6 +211,9 @@ import { AppComponent } from "./app.component";
 
 		// Local Database
 		LocalDatabaseService,
+
+		// Market State
+		MarketStateService,
 
 		// Notification
 		NotificationService,

@@ -1,22 +1,52 @@
+import { ICandlestick } from "../candlestick";
+
+
+
+
+
+export interface IMarketStateService {
+    // Properties
+    taStates: {[result: string|number]: string},
+    marketStates: {[result: string|number]: string},
+
+}
+
+
+
+
 
 /*********
  * STATE *
  *********/
 
-import { ICandlestick } from "../candlestick";
 
 
 
 /**
  * State Type
- * A stateless type is active when the change between the beginning and
+ * All market state modules can be stateful or stateless and are update constantly.
+ * There are 2 kinds of modules within the Market State. There are those that rely
+ * on a sequence of values and the state is calculated based on the percentage change
+ * between the beginning and the end of the window. On the other hand, there are
+ * other modules which don't rely on a sequence but instead the result of a series
+ * of calculations.
+ * 
+ * Sequence Based Modules:
+ * A stateless type (0) is active when the change between the beginning and
  * the end of the window (or any sequence) doesn't meet the requirement.
- * An increasing state is issued when the window as increased the required
+ * An increasing state (2|1) is issued when the window as increased the required
  * % and that the latest value is within the upper band. On the other hand,
- * for a decreasing state to be issued, the window must have decreased the
+ * for a decreasing state (-2|-1) to be issued, the window must have decreased the
  * required % and the latest value must be within the lower band.
+ * 
+ * Technical Analysis Module:
+ * A neutral type (0) is active when the indicators are not explicitly pointing 
+ * towards a direction. The buy type is represented with a 1 while the strong buy 
+ * is represented with a 2. In contrast, sell is represented with a -1 and strong
+ * sell with a -2.
  */
- export type IStateType = "stateless"|"increasing"|"decreasing";
+export type IStateType = -2|-1|0|1|2;
+
 
 
 
@@ -238,15 +268,6 @@ export type ITAIndicatorAction = "BUY"|"SELL"|"NEUTRAL";
 
 
 /**
- * Interval State Action
- * In contrast to the indicator state, if many buys or sells suggestions
- * accumulate, a "strong" state is generated.
- */
-export type ITAIntervalStateAction = "BUY"|"STRONG_BUY"|"SELL"|"STRONG_SELL"|"NEUTRAL";
-
-
-
-/**
  * Interval State Result Counter
  * The counter used to store the indicators' suggested actions.
  */
@@ -264,7 +285,7 @@ export interface ITAIndicatorActionCounter {
  */
 export interface ITAIntervalStateResult {
     // Action: the action suggested by the state results
-    a: ITAIntervalStateAction,
+    a: IStateType,
 
     // Buy: the count of the indicators that suggest the price will rise
     b: number,

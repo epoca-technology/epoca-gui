@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import {MatDialogRef} from "@angular/material/dialog";
 import {AbstractControl, FormControl, FormGroup, Validators} from "@angular/forms";
-import { IPredictionCancellationPolicies, IPredictionCancellationPolicyItemState, SignalService } from '../../../core';
+import { IPredictionCancellationPolicies, SignalService } from '../../../core';
 import { AppService, NavService } from '../../../services';
-import { ISignalPoliciesDialogComponent } from './interfaces';
+import { ISignalPoliciesDialogComponent, IItemStateRecord } from './interfaces';
 
 @Component({
   selector: 'app-signal-policies-dialog',
@@ -16,11 +16,19 @@ export class SignalPoliciesDialogComponent implements OnInit, ISignalPoliciesDia
 	public shortForm!: FormGroup;
 
 	// States
-	public readonly taStates: IPredictionCancellationPolicyItemState[] = [
-        "IGNORE", "STRONG_BUY", "STRONG_SELL"
+	public readonly taStates: IItemStateRecord[] = [
+		{ name: "Ignore", value: 0 },
+		{ name: "Strong Sell", value: -2 },
+		{ name: "Sell", value: -1 },
+		{ name: "Buy", value: 1 },
+		{ name: "Strong Buy", value: 2 }
     ];
-	public readonly msStates: IPredictionCancellationPolicyItemState[] = [
-        "IGNORE", "INCREASING", "DECREASING"
+	public readonly msStates: IItemStateRecord[] = [
+		{ name: "Ignore", value: 0 },
+		{ name: "Decreasing Strongly", value: -2 },
+		{ name: "Decreasing", value: -1 },
+		{ name: "Increasing", value: 1 },
+		{ name: "Increasing Strongly", value: 2 }
     ];
 
 	// Tabs

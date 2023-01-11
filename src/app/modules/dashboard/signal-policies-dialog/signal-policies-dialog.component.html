@@ -34,8 +34,8 @@
                                     <mat-form-field>
                                         <mat-label>TA 30m</mat-label>
                                         <mat-select formControlName="ta_30m">
-                                          <mat-option *ngFor="let state of taStates" [value]="state">
-                                            {{state}}
+                                          <mat-option *ngFor="let state of taStates" [value]="state.value">
+                                            {{state.name}}
                                           </mat-option>
                                         </mat-select>
                                     </mat-form-field>
@@ -45,8 +45,8 @@
                                     <mat-form-field>
                                         <mat-label>TA 2h</mat-label>
                                         <mat-select formControlName="ta_2h">
-                                          <mat-option *ngFor="let state of taStates" [value]="state">
-                                            {{state}}
+                                          <mat-option *ngFor="let state of taStates" [value]="state.value">
+                                            {{state.name}}
                                           </mat-option>
                                         </mat-select>
                                     </mat-form-field>
@@ -59,8 +59,8 @@
                                     <mat-form-field>
                                         <mat-label>TA 4h</mat-label>
                                         <mat-select formControlName="ta_4h">
-                                          <mat-option *ngFor="let state of taStates" [value]="state">
-                                            {{state}}
+                                          <mat-option *ngFor="let state of taStates" [value]="state.value">
+                                            {{state.name}}
                                           </mat-option>
                                         </mat-select>
                                     </mat-form-field>
@@ -70,8 +70,8 @@
                                     <mat-form-field>
                                         <mat-label>TA 1d</mat-label>
                                         <mat-select formControlName="ta_1d">
-                                          <mat-option *ngFor="let state of taStates" [value]="state">
-                                            {{state}}
+                                          <mat-option *ngFor="let state of taStates" [value]="state.value">
+                                            {{state.name}}
                                           </mat-option>
                                         </mat-select>
                                     </mat-form-field>
@@ -84,8 +84,8 @@
                                     <mat-form-field>
                                         <mat-label>Open Interest</mat-label>
                                         <mat-select formControlName="open_interest">
-                                          <mat-option *ngFor="let state of msStates" [value]="state">
-                                            {{state}}
+                                          <mat-option *ngFor="let state of msStates" [value]="state.value">
+                                            {{state.name}}
                                           </mat-option>
                                         </mat-select>
                                     </mat-form-field>
@@ -95,8 +95,8 @@
                                     <mat-form-field>
                                         <mat-label>Long/Short Ratio</mat-label>
                                         <mat-select formControlName="long_short_ratio">
-                                          <mat-option *ngFor="let state of msStates" [value]="state">
-                                            {{state}}
+                                          <mat-option *ngFor="let state of msStates" [value]="state.value">
+                                            {{state.name}}
                                           </mat-option>
                                         </mat-select>
                                     </mat-form-field>
@@ -109,8 +109,8 @@
                                     <mat-form-field>
                                         <mat-label>Window</mat-label>
                                         <mat-select formControlName="window">
-                                          <mat-option *ngFor="let state of msStates" [value]="state">
-                                            {{state}}
+                                          <mat-option *ngFor="let state of msStates" [value]="state.value">
+                                            {{state.name}}
                                           </mat-option>
                                         </mat-select>
                                     </mat-form-field>
@@ -120,8 +120,8 @@
                                     <mat-form-field>
                                         <mat-label>Volume</mat-label>
                                         <mat-select formControlName="volume">
-                                          <mat-option *ngFor="let state of msStates" [value]="state">
-                                            {{state}}
+                                          <mat-option *ngFor="let state of msStates" [value]="state.value">
+                                            {{state.name}}
                                           </mat-option>
                                         </mat-select>
                                     </mat-form-field>
@@ -134,8 +134,8 @@
                                     <mat-form-field>
                                         <mat-label>Network Fee</mat-label>
                                         <mat-select formControlName="network_fee">
-                                          <mat-option *ngFor="let state of msStates" [value]="state">
-                                            {{state}}
+                                          <mat-option *ngFor="let state of msStates" [value]="state.value">
+                                            {{state.name}}
                                           </mat-option>
                                         </mat-select>
                                     </mat-form-field>
@@ -162,8 +162,8 @@
                                     <mat-form-field>
                                         <mat-label>TA 30m</mat-label>
                                         <mat-select formControlName="ta_30m">
-                                          <mat-option *ngFor="let state of taStates" [value]="state">
-                                            {{state}}
+                                          <mat-option *ngFor="let state of taStates" [value]="state.value">
+                                            {{state.name}}
                                           </mat-option>
                                         </mat-select>
                                     </mat-form-field>
@@ -173,8 +173,8 @@
                                     <mat-form-field>
                                         <mat-label>TA 2h</mat-label>
                                         <mat-select formControlName="ta_2h">
-                                          <mat-option *ngFor="let state of taStates" [value]="state">
-                                            {{state}}
+                                          <mat-option *ngFor="let state of taStates" [value]="state.value">
+                                            {{state.name}}
                                           </mat-option>
                                         </mat-select>
                                     </mat-form-field>
@@ -187,8 +187,8 @@
                                     <mat-form-field>
                                         <mat-label>TA 4h</mat-label>
                                         <mat-select formControlName="ta_4h">
-                                          <mat-option *ngFor="let state of taStates" [value]="state">
-                                            {{state}}
+                                          <mat-option *ngFor="let state of taStates" [value]="state.value">
+                                            {{state.name}}
                                           </mat-option>
                                         </mat-select>
                                     </mat-form-field>
@@ -198,8 +198,8 @@
                                     <mat-form-field>
                                         <mat-label>TA 1d</mat-label>
                                         <mat-select formControlName="ta_1d">
-                                          <mat-option *ngFor="let state of taStates" [value]="state">
-                                            {{state}}
+                                          <mat-option *ngFor="let state of taStates" [value]="state.value">
+                                            {{state.name}}
                                           </mat-option>
                                         </mat-select>
                                     </mat-form-field>
@@ -212,8 +212,8 @@
                                     <mat-form-field>
                                         <mat-label>Open Interest</mat-label>
                                         <mat-select formControlName="open_interest">
-                                          <mat-option *ngFor="let state of msStates" [value]="state">
-                                            {{state}}
+                                          <mat-option *ngFor="let state of msStates" [value]="state.value">
+                                            {{state.name}}
                                           </mat-option>
                                         </mat-select>
                                     </mat-form-field>
@@ -223,8 +223,8 @@
                                     <mat-form-field>
                                         <mat-label>Long/Short Ratio</mat-label>
                                         <mat-select formControlName="long_short_ratio">
-                                          <mat-option *ngFor="let state of msStates" [value]="state">
-                                            {{state}}
+                                          <mat-option *ngFor="let state of msStates" [value]="state.value">
+                                            {{state.name}}
                                           </mat-option>
                                         </mat-select>
                                     </mat-form-field>
@@ -237,8 +237,8 @@
                                     <mat-form-field>
                                         <mat-label>Window</mat-label>
                                         <mat-select formControlName="window">
-                                          <mat-option *ngFor="let state of msStates" [value]="state">
-                                            {{state}}
+                                          <mat-option *ngFor="let state of msStates" [value]="state.value">
+                                            {{state.name}}
                                           </mat-option>
                                         </mat-select>
                                     </mat-form-field>
@@ -248,8 +248,8 @@
                                     <mat-form-field>
                                         <mat-label>Volume</mat-label>
                                         <mat-select formControlName="volume">
-                                          <mat-option *ngFor="let state of msStates" [value]="state">
-                                            {{state}}
+                                          <mat-option *ngFor="let state of msStates" [value]="state.value">
+                                            {{state.name}}
                                           </mat-option>
                                         </mat-select>
                                     </mat-form-field>
@@ -262,8 +262,8 @@
                                     <mat-form-field>
                                         <mat-label>Network Fee</mat-label>
                                         <mat-select formControlName="network_fee">
-                                          <mat-option *ngFor="let state of msStates" [value]="state">
-                                            {{state}}
+                                          <mat-option *ngFor="let state of msStates" [value]="state.value">
+                                            {{state.name}}
                                           </mat-option>
                                         </mat-select>
                                     </mat-form-field>

@@ -23,7 +23,8 @@ import {
     IPositionStrategy,
     IPositionPriceRange,
     ITAIntervalID,
-    IPredictionResult
+    IPredictionResult,
+    MarketStateService
 } from "../../core";
 import { 
     AppService, 
@@ -38,9 +39,9 @@ import { FeaturesSumDialogComponent, IFeaturesSumDialogData } from "../../shared
 import { BalanceDialogComponent } from "./balance-dialog";
 import { ActivePositionDialogComponent, IActivePositionDialogData } from "./active-position-dialog";
 import { StrategyFormDialogComponent } from "./strategy-form-dialog";
-import { IDashboardComponent, IPositionCloseChunkSize } from "./interfaces";
 import { ITechnicalAnalysisDialogData, TechnicalAnalysisDialogComponent } from "./technical-analysis-dialog";
 import { SignalPoliciesDialogComponent } from "./signal-policies-dialog";
+import { IDashboardComponent, IPositionCloseChunkSize } from "./interfaces";
 
 @Component({
   selector: "app-dashboard",
@@ -133,7 +134,8 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         public _prediction: PredictionService,
         private _utils: UtilsService,
         private _auth: AuthService,
-        private _position: PositionService
+        private _position: PositionService,
+        public _ms: MarketStateService
     ) { }
 
     async ngOnInit(): Promise<void> {
@@ -689,6 +691,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             } else {
                 this.windowChart.chart!.toolbar!.show = false;
             }*/
+            this.windowChart.chart!.zoom = {enabled: false};
             this.windowChart.chart!.toolbar!.show = false;
         }
     }
@@ -852,12 +855,12 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         /* Window State Annotations */
         const currentPrice: number = this.state.window.window[this.state.window.window.length - 1].c
         let windowStateColor: string = this._chart.neutralColor;
-        let annOffset: {x: number, y: number} = {x: -10, y: -30};
-        if (this.state.window.state == "increasing") { 
+        let annOffset: {x: number, y: number} = {x: -15, y: -30};
+        if (this.state.window.state > 0) { 
             windowStateColor = this._chart.upwardColor;
             annOffset.y = 30;
         }
-        else if (this.state.window.state == "decreasing") { 
+        else if (this.state.window.state < 0) { 
             windowStateColor = this._chart.downwardColor;
         }
         annotations.yaxis!.push({
@@ -891,9 +894,9 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
      private updateVolumeState(): void {
         // Init the color of the prediction sum line
         let lineColor: string = this._chart.neutralColor;
-        if (this.state.volume.state == "increasing") {
+        if (this.state.volume.state > 0) {
             lineColor = this._chart.upwardColor;
-        } else if (this.state.volume.state == "decreasing") {
+        } else if (this.state.volume.state < 0) {
             lineColor = this._chart.downwardColor;
         }
 
@@ -953,9 +956,9 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
      private updateNetworkFeeState(): void {
         // Init the color of the prediction sum line
         let lineColor: string = this._chart.neutralColor;
-        if (this.state.network_fee.state == "increasing") {
+        if (this.state.network_fee.state > 0) {
             lineColor = this._chart.upwardColor;
-        } else if (this.state.network_fee.state == "decreasing") {
+        } else if (this.state.network_fee.state < 0) {
             lineColor = this._chart.downwardColor;
         }
 
@@ -1015,9 +1018,9 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
      private updateOpenInterestState(): void {
         // Init the color of the prediction sum line
         let lineColor: string = this._chart.neutralColor;
-        if (this.state.open_interest.state == "increasing") {
+        if (this.state.open_interest.state > 0) {
             lineColor = this._chart.upwardColor;
-        } else if (this.state.open_interest.state == "decreasing") {
+        } else if (this.state.open_interest.state < 0) {
             lineColor = this._chart.downwardColor;
         }
 
@@ -1078,9 +1081,9 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
      private updateLongShortRatioState(): void {
         // Init the color of the prediction sum line
         let lineColor: string = this._chart.neutralColor;
-        if (this.state.long_short_ratio.state == "increasing") {
+        if (this.state.long_short_ratio.state > 0) {
             lineColor = this._chart.upwardColor;
-        } else if (this.state.long_short_ratio.state == "decreasing") {
+        } else if (this.state.long_short_ratio.state < 0) {
             lineColor = this._chart.downwardColor;
         }
 
