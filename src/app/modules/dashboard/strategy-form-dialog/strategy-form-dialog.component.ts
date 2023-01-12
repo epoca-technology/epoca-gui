@@ -38,7 +38,16 @@ export class StrategyFormDialogComponent implements OnInit, IStrategyFormDialogC
             position_size: new FormControl(this.strategy.position_size, [ Validators.required, Validators.min(150), Validators.max(100000) ]),
             long_status: new FormControl(this.strategy.long_status, [ Validators.required ]),
             short_status: new FormControl(this.strategy.short_status, [ Validators.required ]),
-            take_profit: new FormControl(this.strategy.take_profit, [ Validators.required, Validators.min(0.5), Validators.max(10) ]),
+            take_profit_1_pcr: new FormControl(this.strategy.take_profit_1.price_change_requirement, [ Validators.required, Validators.min(0.4), Validators.max(10) ]),
+            take_profit_1_dd: new FormControl(this.strategy.take_profit_1.max_hp_drawdown, [ Validators.required, Validators.min(-70), Validators.max(0) ]),
+            take_profit_2_pcr: new FormControl(this.strategy.take_profit_2.price_change_requirement, [ Validators.required, Validators.min(0.4), Validators.max(10) ]),
+            take_profit_2_dd: new FormControl(this.strategy.take_profit_2.max_hp_drawdown, [ Validators.required, Validators.min(-70), Validators.max(0) ]),
+            take_profit_3_pcr: new FormControl(this.strategy.take_profit_3.price_change_requirement, [ Validators.required, Validators.min(0.4), Validators.max(10) ]),
+            take_profit_3_dd: new FormControl(this.strategy.take_profit_3.max_hp_drawdown, [ Validators.required, Validators.min(-70), Validators.max(0) ]),
+            take_profit_4_pcr: new FormControl(this.strategy.take_profit_4.price_change_requirement, [ Validators.required, Validators.min(0.4), Validators.max(10) ]),
+            take_profit_4_dd: new FormControl(this.strategy.take_profit_4.max_hp_drawdown, [ Validators.required, Validators.min(-70), Validators.max(0) ]),
+            take_profit_5_pcr: new FormControl(this.strategy.take_profit_5.price_change_requirement, [ Validators.required, Validators.min(0.4), Validators.max(10) ]),
+            take_profit_5_dd: new FormControl(this.strategy.take_profit_5.max_hp_drawdown, [ Validators.required, Validators.min(-70), Validators.max(0) ]),
             stop_loss: new FormControl(this.strategy.stop_loss, [ Validators.required, Validators.min(0.5), Validators.max(10) ]),
             long_idle_minutes: new FormControl(this.strategy.long_idle_minutes, [ Validators.required, Validators.min(1), Validators.max(1000) ]),
             short_idle_minutes: new FormControl(this.strategy.short_idle_minutes, [ Validators.required, Validators.min(1), Validators.max(1000) ])
@@ -57,7 +66,16 @@ export class StrategyFormDialogComponent implements OnInit, IStrategyFormDialogC
 	get position_size(): AbstractControl { return <AbstractControl>this.form.get("position_size") }
 	get long_status(): AbstractControl { return <AbstractControl>this.form.get("long_status") }
 	get short_status(): AbstractControl { return <AbstractControl>this.form.get("short_status") }
-	get take_profit(): AbstractControl { return <AbstractControl>this.form.get("take_profit") }
+	get take_profit_1_pcr(): AbstractControl { return <AbstractControl>this.form.get("take_profit_1_pcr") }
+	get take_profit_1_dd(): AbstractControl { return <AbstractControl>this.form.get("take_profit_1_dd") }
+	get take_profit_2_pcr(): AbstractControl { return <AbstractControl>this.form.get("take_profit_2_pcr") }
+	get take_profit_2_dd(): AbstractControl { return <AbstractControl>this.form.get("take_profit_2_dd") }
+	get take_profit_3_pcr(): AbstractControl { return <AbstractControl>this.form.get("take_profit_3_pcr") }
+	get take_profit_3_dd(): AbstractControl { return <AbstractControl>this.form.get("take_profit_3_dd") }
+	get take_profit_4_pcr(): AbstractControl { return <AbstractControl>this.form.get("take_profit_4_pcr") }
+	get take_profit_4_dd(): AbstractControl { return <AbstractControl>this.form.get("take_profit_4_dd") }
+	get take_profit_5_pcr(): AbstractControl { return <AbstractControl>this.form.get("take_profit_5_pcr") }
+	get take_profit_5_dd(): AbstractControl { return <AbstractControl>this.form.get("take_profit_5_dd") }
 	get stop_loss(): AbstractControl { return <AbstractControl>this.form.get("stop_loss") }
 	get long_idle_minutes(): AbstractControl { return <AbstractControl>this.form.get("long_idle_minutes") }
 	get short_idle_minutes(): AbstractControl { return <AbstractControl>this.form.get("short_idle_minutes") }
@@ -84,7 +102,26 @@ export class StrategyFormDialogComponent implements OnInit, IStrategyFormDialogC
 						this.strategy.position_size = this.position_size.value;
 						this.strategy.long_status = this.long_status.value;
 						this.strategy.short_status = this.short_status.value;
-						this.strategy.take_profit = this.take_profit.value;
+						this.strategy.take_profit_1 = {
+							price_change_requirement: this.take_profit_1_pcr.value,
+							max_hp_drawdown: this.take_profit_1_dd.value,
+						};
+						this.strategy.take_profit_2 = {
+							price_change_requirement: this.take_profit_2_pcr.value,
+							max_hp_drawdown: this.take_profit_2_dd.value,
+						};
+						this.strategy.take_profit_3 = {
+							price_change_requirement: this.take_profit_3_pcr.value,
+							max_hp_drawdown: this.take_profit_3_dd.value,
+						};
+						this.strategy.take_profit_4 = {
+							price_change_requirement: this.take_profit_4_pcr.value,
+							max_hp_drawdown: this.take_profit_4_dd.value,
+						};
+						this.strategy.take_profit_5 = {
+							price_change_requirement: this.take_profit_5_pcr.value,
+							max_hp_drawdown: this.take_profit_5_dd.value,
+						};
 						this.strategy.stop_loss = this.stop_loss.value;
 						this.strategy.long_idle_minutes = this.long_idle_minutes.value;
 						this.strategy.short_idle_minutes = this.short_idle_minutes.value;

@@ -109,6 +109,27 @@ export type IBinanceMarginType = "isolated"|"cross";
 
 
 
+
+
+/**
+ * Take Profit Level
+ * The trading strategy makes use of 5 take profit levels that have different
+ * characteristics.
+ */
+export interface ITakeProfitLevel {
+    // The price percentage change from the entry price for the level to be active
+    price_change_requirement: number,
+
+    /**
+     * The maximum HP Drawdown% allowed in the level. Is this requirement is not met, 
+     * the position is closed.
+     */
+    max_hp_drawdown: number
+}
+
+
+
+
 /**
  * Strategy 
  * The configuration that handles the core position entry and exit flow.
@@ -135,9 +156,14 @@ export interface IPositionStrategy {
 
     /**
      * Position Exit Combination
-     * Every position 
+     * Every position has an exit strategy that can generate profits or 
+     * calculated losses.
      */
-    take_profit: number,
+    take_profit_1: ITakeProfitLevel,
+    take_profit_2: ITakeProfitLevel,
+    take_profit_3: ITakeProfitLevel,
+    take_profit_4: ITakeProfitLevel,
+    take_profit_5: ITakeProfitLevel,
     stop_loss: number,
 
     /**
@@ -362,8 +388,12 @@ export interface IActivePosition {
     // The mark price when the active positions were updated.
     mark_price: number,
 
-    // The price in which the position is labeled as "successful" and is ready to be closed.
-    take_profit_price: number,
+    // The prices at which each level is activated
+    take_profit_price_1: number,
+    take_profit_price_2: number,
+    take_profit_price_3: number,
+    take_profit_price_4: number,
+    take_profit_price_5: number,
 
     // The price in which the position is labeled as "unsuccessful" and is ready to be closed.
     stop_loss_price: number,

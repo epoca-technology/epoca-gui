@@ -710,12 +710,12 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         // Check if there is a long position
         if (this.position.long) {
             min = this.position.long.stop_loss_price < min ? this.position.long.stop_loss_price: min;
-            max = this.position.long.take_profit_price > max ? this.position.long.take_profit_price: max;
+            max = this.position.long.take_profit_price_5 > max ? this.position.long.take_profit_price_5: max;
         }
 
         // Check if there is a short position
         if (this.position.short) {
-            min = this.position.short.take_profit_price < min ? this.position.short.take_profit_price: min;
+            min = this.position.short.take_profit_price_5 < min ? this.position.short.take_profit_price_5: min;
             max = this.position.short.stop_loss_price > max ? this.position.short.stop_loss_price: max;
         }
 
@@ -754,14 +754,66 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                 }
             });
             annotations.yaxis!.push({
-                y: this.position.long.take_profit_price,
+                y: this.position.long.take_profit_price_1,
                 strokeDashArray: 0,
                 borderColor: this._chart.upwardColor,
                 fillColor: this._chart.upwardColor,
                 label: {
                     borderColor: this._chart.upwardColor,
                     style: { color: "#fff", background: this._chart.upwardColor},
-                    text: `TAKE_PROFIT`,
+                    text: `TAKE_PROFIT_1`,
+                    position: "left",
+                    offsetX: 81
+                }
+            });
+            annotations.yaxis!.push({
+                y: this.position.long.take_profit_price_2,
+                strokeDashArray: 0,
+                borderColor: this._chart.upwardColor,
+                fillColor: this._chart.upwardColor,
+                label: {
+                    borderColor: this._chart.upwardColor,
+                    style: { color: "#fff", background: this._chart.upwardColor},
+                    text: `TAKE_PROFIT_2`,
+                    position: "left",
+                    offsetX: 81
+                }
+            });
+            annotations.yaxis!.push({
+                y: this.position.long.take_profit_price_3,
+                strokeDashArray: 0,
+                borderColor: this._chart.upwardColor,
+                fillColor: this._chart.upwardColor,
+                label: {
+                    borderColor: this._chart.upwardColor,
+                    style: { color: "#fff", background: this._chart.upwardColor},
+                    text: `TAKE_PROFIT_3`,
+                    position: "left",
+                    offsetX: 81
+                }
+            });
+            annotations.yaxis!.push({
+                y: this.position.long.take_profit_price_4,
+                strokeDashArray: 0,
+                borderColor: this._chart.upwardColor,
+                fillColor: this._chart.upwardColor,
+                label: {
+                    borderColor: this._chart.upwardColor,
+                    style: { color: "#fff", background: this._chart.upwardColor},
+                    text: `TAKE_PROFIT_4`,
+                    position: "left",
+                    offsetX: 81
+                }
+            });
+            annotations.yaxis!.push({
+                y: this.position.long.take_profit_price_5,
+                strokeDashArray: 0,
+                borderColor: this._chart.upwardColor,
+                fillColor: this._chart.upwardColor,
+                label: {
+                    borderColor: this._chart.upwardColor,
+                    style: { color: "#fff", background: this._chart.upwardColor},
+                    text: `TAKE_PROFIT_5`,
                     position: "left",
                     offsetX: 81
                 }
@@ -779,19 +831,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                     offsetX: 71
                 }
             });
-            /*annotations.yaxis!.push({
-                y: this.position.long.liquidation_price,
-                strokeDashArray: 0,
-                borderColor: this._chart.upwardColor,
-                fillColor: this._chart.upwardColor,
-                label: {
-                    borderColor: this._chart.upwardColor,
-                    style: { color: "#fff", background: this._chart.upwardColor},
-                    text: `LIQUIDATION`,
-                    position: "left",
-                    offsetX: 75
-                }
-            });*/
         }
 
         // Short Position
@@ -810,14 +849,66 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                 }
             });
             annotations.yaxis!.push({
-                y: this.position.short.take_profit_price,
+                y: this.position.short.take_profit_price_1,
                 strokeDashArray: 0,
                 borderColor: this._chart.downwardColor,
                 fillColor: this._chart.downwardColor,
                 label: {
                     borderColor: this._chart.downwardColor,
                     style: { color: "#fff", background: this._chart.downwardColor},
-                    text: `TAKE_PROFIT`,
+                    text: `TAKE_PROFIT_1`,
+                    position: "left",
+                    offsetX: 81
+                }
+            });
+            annotations.yaxis!.push({
+                y: this.position.short.take_profit_price_2,
+                strokeDashArray: 0,
+                borderColor: this._chart.downwardColor,
+                fillColor: this._chart.downwardColor,
+                label: {
+                    borderColor: this._chart.downwardColor,
+                    style: { color: "#fff", background: this._chart.downwardColor},
+                    text: `TAKE_PROFIT_2`,
+                    position: "left",
+                    offsetX: 81
+                }
+            });
+            annotations.yaxis!.push({
+                y: this.position.short.take_profit_price_3,
+                strokeDashArray: 0,
+                borderColor: this._chart.downwardColor,
+                fillColor: this._chart.downwardColor,
+                label: {
+                    borderColor: this._chart.downwardColor,
+                    style: { color: "#fff", background: this._chart.downwardColor},
+                    text: `TAKE_PROFIT_3`,
+                    position: "left",
+                    offsetX: 81
+                }
+            });
+            annotations.yaxis!.push({
+                y: this.position.short.take_profit_price_4,
+                strokeDashArray: 0,
+                borderColor: this._chart.downwardColor,
+                fillColor: this._chart.downwardColor,
+                label: {
+                    borderColor: this._chart.downwardColor,
+                    style: { color: "#fff", background: this._chart.downwardColor},
+                    text: `TAKE_PROFIT_4`,
+                    position: "left",
+                    offsetX: 81
+                }
+            });
+            annotations.yaxis!.push({
+                y: this.position.short.take_profit_price_5,
+                strokeDashArray: 0,
+                borderColor: this._chart.downwardColor,
+                fillColor: this._chart.downwardColor,
+                label: {
+                    borderColor: this._chart.downwardColor,
+                    style: { color: "#fff", background: this._chart.downwardColor},
+                    text: `TAKE_PROFIT_5`,
                     position: "left",
                     offsetX: 81
                 }
@@ -835,19 +926,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                     offsetX: 71
                 }
             });
-            /*annotations.yaxis!.push({
-                y: this.position.short.liquidation_price,
-                strokeDashArray: 0,
-                borderColor: this._chart.downwardColor,
-                fillColor: this._chart.downwardColor,
-                label: {
-                    borderColor: this._chart.downwardColor,
-                    style: { color: "#fff", background: this._chart.downwardColor},
-                    text: `LIQUIDATION`,
-                    position: "left",
-                    offsetX: 75
-                }
-            });*/
         }
 
 
@@ -1153,7 +1231,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         const entry: number = this.state.window.window[this.state.window.window.length - 1].c;
         const take_profit_price: number = <number>this._utils.alterNumberByPercentage(
             entry, 
-            side == "LONG" ? strat.take_profit: -(strat.take_profit)
+            side == "LONG" ? strat.take_profit_1.price_change_requirement: -(strat.take_profit_1.price_change_requirement)
         );
         const stop_loss_price: number = <number>this._utils.alterNumberByPercentage(
             entry, 
@@ -1174,7 +1252,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                             <td class="align-right">$${entry}</td>
                         </tr>
                         <tr>
-                            <td><strong>Take Profit</strong></td>
+                            <td><strong>Take Profit 1</strong></td>
                             <td class="align-right">$${take_profit_price}</td>
                         </tr>
                         <tr>

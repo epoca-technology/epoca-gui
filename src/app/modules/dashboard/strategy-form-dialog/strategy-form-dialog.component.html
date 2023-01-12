@@ -84,21 +84,154 @@
                     </div>
                 </div>
 
-                <!-- Position Exit Combination -->
+                <!-- Take Profit 1 -->
                 <div class="margin-top">
                     <div fxLayout="row" fxLayoutAlign="start start">
                         <div fxFlex>
                             <mat-form-field>
-                                <mat-label>Take Profit%</mat-label>
+                                <mat-label>TP_1: Price Change Requirement</mat-label>
                                 <input type="number"
                                        matInput
-                                       formControlName="take_profit"
+                                       formControlName="take_profit_1_pcr"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 0.75">
+                            </mat-form-field>
+                        </div>
+                        <span fxFlex="5"></span>
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>TP_1: Max HP Drawdown</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="take_profit_1_dd"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. -40">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Take Profit 2 -->
+                <div class="margin-top">
+                    <div fxLayout="row" fxLayoutAlign="start start">
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>TP_2: Price Change Requirement</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="take_profit_2_pcr"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 1.5">
+                            </mat-form-field>
+                        </div>
+                        <span fxFlex="5"></span>
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>TP_2: Max HP Drawdown</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="take_profit_2_dd"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. -30">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Take Profit 3 -->
+                <div class="margin-top">
+                    <div fxLayout="row" fxLayoutAlign="start start">
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>TP_3: Price Change Requirement</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="take_profit_3_pcr"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 2.25">
+                            </mat-form-field>
+                        </div>
+                        <span fxFlex="5"></span>
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>TP_3: Max HP Drawdown</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="take_profit_3_dd"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. -15">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Take Profit 4 -->
+                <div class="margin-top">
+                    <div fxLayout="row" fxLayoutAlign="start start">
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>TP_4: Price Change Requirement</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="take_profit_4_pcr"
                                        autocomplete="off"
                                        [appDisableControl]="submitting"
                                        placeholder="e.g. 3">
                             </mat-form-field>
                         </div>
                         <span fxFlex="5"></span>
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>TP_4: Max HP Drawdown</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="take_profit_4_dd"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. -10">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Take Profit 5 -->
+                <div class="margin-top">
+                    <div fxLayout="row" fxLayoutAlign="start start">
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>TP_5: Price Change Requirement</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="take_profit_5_pcr"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 6">
+                            </mat-form-field>
+                        </div>
+                        <span fxFlex="5"></span>
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>TP_5: Max HP Drawdown</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="take_profit_5_dd"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. -5">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stop Loss -->
+                <div class="margin-top">
+                    <div fxLayout="row" fxLayoutAlign="start start">
                         <div fxFlex>
                             <mat-form-field>
                                 <mat-label>Stop Loss%</mat-label>
@@ -110,6 +243,8 @@
                                        placeholder="e.g. 3">
                             </mat-form-field>
                         </div>
+                        <span fxFlex="5"></span>
+                        <div fxFlex></div>
                     </div>
                 </div>
 

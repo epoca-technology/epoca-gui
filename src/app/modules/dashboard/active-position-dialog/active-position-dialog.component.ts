@@ -26,7 +26,11 @@ export class ActivePositionDialogComponent implements OnInit, IActivePositionDia
 
 	// Distances
 	public liquidationDistance: number;
-	public takeProfitDistance: number|undefined;
+	/*public takeProfit1Distance: number|undefined;
+	public takeProfit2Distance: number|undefined;
+	public takeProfit3Distance: number|undefined;
+	public takeProfit4Distance: number|undefined;
+	public takeProfit5Distance: number|undefined;*/
 	public stopLossDistance: number|undefined;
 
 	// Chart
@@ -59,7 +63,7 @@ export class ActivePositionDialogComponent implements OnInit, IActivePositionDia
 		this.liquidationDistance = liquidationDistance >= 0 ? liquidationDistance: -(liquidationDistance);
 
 		// Calculate the target distance
-		const takeProfitDistance: number = <number>this._utils.calculatePercentageChange(
+		/*const takeProfitDistance: number = <number>this._utils.calculatePercentageChange(
 			this.position.mark_price, 
 			this.position.take_profit_price
 		);
@@ -67,7 +71,7 @@ export class ActivePositionDialogComponent implements OnInit, IActivePositionDia
 			this.takeProfitDistance = this.position.mark_price >= this.position.take_profit_price ? undefined: takeProfitDistance;
 		} else {
 			this.takeProfitDistance = this.position.mark_price <= this.position.take_profit_price ? undefined: takeProfitDistance;
-		}
+		}*/
 
 		// Calculate the stop loss distance
 		const stopLossDistance: number = <number>this._utils.calculatePercentageChange(this.position.mark_price, this.position.stop_loss_price);
@@ -100,14 +104,22 @@ export class ActivePositionDialogComponent implements OnInit, IActivePositionDia
 		let low: number[] = [];
 		let entry: number[] = [];
 		let sl: number[] = [];
-		let tp: number[] = [];
+		let tp1: number[] = [];
+		let tp2: number[] = [];
+		let tp3: number[] = [];
+		let tp4: number[] = [];
+		let tp5: number[] = [];
 		for (let candlestick of this.window) {
 			close.push(candlestick.c);
 			high.push(candlestick.h);
 			low.push(candlestick.l);
 			entry.push(this.position.entry_price);
 			sl.push(this.position.stop_loss_price);
-			tp.push(this.position.take_profit_price);
+			tp1.push(this.position.take_profit_price_1);
+			tp2.push(this.position.take_profit_price_2);
+			tp3.push(this.position.take_profit_price_3);
+			tp4.push(this.position.take_profit_price_4);
+			tp5.push(this.position.take_profit_price_5);
 		}
 
 		// Calculate the highest and lowest values within the window
@@ -115,12 +127,12 @@ export class ActivePositionDialogComponent implements OnInit, IActivePositionDia
 		const windowMin: number = <number>this._utils.getMin(low);
 		const max: number = <number>this._utils.getMax([
 			windowMax, 
-			this.position.take_profit_price, 
+			this.position.take_profit_price_5, 
 			this.position.stop_loss_price, 
 		]);
 		const min: number = <number>this._utils.getMin([
 			windowMin, 
-			this.position.take_profit_price, 
+			this.position.take_profit_price_5, 
 			this.position.stop_loss_price, 
 		]);
 
@@ -131,9 +143,13 @@ export class ActivePositionDialogComponent implements OnInit, IActivePositionDia
 					{name: "Price", data: close, color: "#0288D1"},
 					{name: "Entry", data: entry, color: "#000000"},
 					{name: "SL", data: sl, color: this._chart.downwardColor},
-					{name: "TP", data: tp, color: this._chart.upwardColor},
+					{name: "TP_1", data: tp1, color: this._chart.upwardColor},
+					{name: "TP_2", data: tp2, color: this._chart.upwardColor},
+					{name: "TP_3", data: tp3, color: this._chart.upwardColor},
+					{name: "TP_4", data: tp4, color: this._chart.upwardColor},
+					{name: "TP_5", data: tp5, color: this._chart.upwardColor},
 				],
-				stroke: {curve: "straight", width: [4, 2, 3, 3]},
+				stroke: {curve: "straight", width: [4, 2, 3, 2, 2, 2, 2, 3]},
 				xaxis: { labels: { show: false }, axisTicks: {show: false}, tooltip: {enabled: false}}
 			},
 			373, 
