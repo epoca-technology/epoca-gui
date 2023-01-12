@@ -763,7 +763,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                     style: { color: "#fff", background: this._chart.upwardColor},
                     text: `TAKE_PROFIT_1`,
                     position: "left",
-                    offsetX: 81
+                    offsetX: 92
                 }
             });
             annotations.yaxis!.push({
@@ -776,7 +776,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                     style: { color: "#fff", background: this._chart.upwardColor},
                     text: `TAKE_PROFIT_2`,
                     position: "left",
-                    offsetX: 81
+                    offsetX: 92
                 }
             });
             annotations.yaxis!.push({
@@ -789,7 +789,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                     style: { color: "#fff", background: this._chart.upwardColor},
                     text: `TAKE_PROFIT_3`,
                     position: "left",
-                    offsetX: 81
+                    offsetX: 92
                 }
             });
             annotations.yaxis!.push({
@@ -802,7 +802,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                     style: { color: "#fff", background: this._chart.upwardColor},
                     text: `TAKE_PROFIT_4`,
                     position: "left",
-                    offsetX: 81
+                    offsetX: 92
                 }
             });
             annotations.yaxis!.push({
@@ -815,7 +815,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                     style: { color: "#fff", background: this._chart.upwardColor},
                     text: `TAKE_PROFIT_5`,
                     position: "left",
-                    offsetX: 81
+                    offsetX: 92
                 }
             });
             annotations.yaxis!.push({
@@ -845,7 +845,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                     style: { color: "#fff", background: this._chart.downwardColor},
                     text: `SHORT`,
                     position: "left",
-                    offsetX: 45
+                    offsetX: 44
                 }
             });
             annotations.yaxis!.push({
@@ -858,7 +858,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                     style: { color: "#fff", background: this._chart.downwardColor},
                     text: `TAKE_PROFIT_1`,
                     position: "left",
-                    offsetX: 81
+                    offsetX: 92
                 }
             });
             annotations.yaxis!.push({
@@ -871,7 +871,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                     style: { color: "#fff", background: this._chart.downwardColor},
                     text: `TAKE_PROFIT_2`,
                     position: "left",
-                    offsetX: 81
+                    offsetX: 92
                 }
             });
             annotations.yaxis!.push({
@@ -884,7 +884,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                     style: { color: "#fff", background: this._chart.downwardColor},
                     text: `TAKE_PROFIT_3`,
                     position: "left",
-                    offsetX: 81
+                    offsetX: 92
                 }
             });
             annotations.yaxis!.push({
@@ -897,7 +897,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                     style: { color: "#fff", background: this._chart.downwardColor},
                     text: `TAKE_PROFIT_4`,
                     position: "left",
-                    offsetX: 81
+                    offsetX: 92
                 }
             });
             annotations.yaxis!.push({
@@ -910,7 +910,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                     style: { color: "#fff", background: this._chart.downwardColor},
                     text: `TAKE_PROFIT_5`,
                     position: "left",
-                    offsetX: 81
+                    offsetX: 92
                 }
             });
             annotations.yaxis!.push({

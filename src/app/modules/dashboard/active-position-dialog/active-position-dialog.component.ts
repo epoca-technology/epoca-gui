@@ -149,7 +149,7 @@ export class ActivePositionDialogComponent implements OnInit, IActivePositionDia
 					{name: "TP_4", data: tp4, color: this._chart.upwardColor},
 					{name: "TP_5", data: tp5, color: this._chart.upwardColor},
 				],
-				stroke: {curve: "straight", width: [4, 2, 3, 2, 2, 2, 2, 3]},
+				stroke: {curve: "straight", width: [4, 2, 3, 3, 3, 3, 3, 3]},
 				xaxis: { labels: { show: false }, axisTicks: {show: false}, tooltip: {enabled: false}}
 			},
 			373, 
