@@ -422,7 +422,6 @@
                                         <div class="clickable" role="button" (click)="displaySignalPoliciesDialog()">
                                             <h4 *ngIf="!activePrediction">Prediction</h4>
                                             <h4 *ngIf="activePrediction"
-                                                [ngClass]="{'success-color': signal == 1, 'error-color': signal == -1}"
                                                 matTooltip="Pred: {{activePrediction.t | date: 'shortTime'}} | TA: {{state.technical_analysis.ts | date: 'shortTime'}}">
                                                 {{_prediction.resultNames[activePrediction.r]}}
                                             </h4>
@@ -479,7 +478,7 @@
                                                     'square-badge-neutral': activePrediction.r == 0,
                                                     'inactive': activePrediction.r == 0
                                                 }">
-                                                {{activeSum | number: '1.0-2'}} 
+                                                {{activeSum | number: '1.0-4'}} 
                                                 <span>
                                                     | {{activePredictionState! > 0 ? '+': ''}}{{activePredictionState}}
                                                 </span>
