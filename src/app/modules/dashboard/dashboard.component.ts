@@ -355,9 +355,9 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     private updatePredictionChart(): void {
         // Init the color of the prediction sum line
         let predLineColor: string = this._chart.neutralColor;
-        if (this.predictions[this.predictions.length - 1].s >= this.epoch!.model.min_increase_sum) {
+        if (this.predictions[this.predictions.length - 1].r == 1) {
             predLineColor = this._chart.upwardColor;
-        } else if (this.predictions[this.predictions.length - 1].s <= this.epoch!.model.min_decrease_sum) {
+        } else if (this.predictions[this.predictions.length - 1].r == -1) {
             predLineColor = this._chart.downwardColor;
         }
 
@@ -686,11 +686,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                 { min:  min, max: max }
             );
             this.windowChart.chart!.height = this.layout == "desktop" ? 630: 400;
-            /*if (this.layout == "desktop") {
-                this.windowChart.chart!.zoom = {enabled: true, type: "xy"};
-            } else {
-                this.windowChart.chart!.toolbar!.show = false;
-            }*/
             this.windowChart.chart!.zoom = {enabled: false};
             this.windowChart.chart!.toolbar!.show = false;
         }
