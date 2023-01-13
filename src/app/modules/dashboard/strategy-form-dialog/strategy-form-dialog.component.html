@@ -16,11 +16,16 @@
             <form [formGroup]="form" (ngSubmit)="update()">
                 <!-- Long & Short Status -->
                 <div>
-                    <div fxLayout="row" fxLayoutAlign="start start">
+                    <h5>Status</h5>
+                    <p class="light-text ts-s">
+                        The model will open positions as long as non-neutral signals are generated and the side's 
+                        status is enabled. Note that positions won't be opened is a side is idling.
+                    </p>
+                    <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
                         <div fxFlex>
                             <div fxLayout="row" fxLayoutAlign="center start">
                                 <div>
-                                    <h5>Long</h5>
+                                    <h6>Long</h6>
                                     <p *ngIf="long_status.value" class="success-color ts-s">Running</p>
                                     <p *ngIf="!long_status.value" class="light-text ts-s truncate">Not running</p>
                                     <p *ngIf="longIdling && long_status.value" class="light-text ts-s truncate">
@@ -38,7 +43,7 @@
                         <div fxFlex>
                             <div fxLayout="row" fxLayoutAlign="center start">
                                 <div>
-                                    <h5>Short</h5>
+                                    <h6>Short</h6>
                                     <p *ngIf="short_status.value" class="success-color ts-s">Running</p>
                                     <p *ngIf="!short_status.value" class="light-text ts-s">Not running</p>
                                     <p *ngIf="shortIdling && short_status.value" class="light-text ts-s">
@@ -55,9 +60,33 @@
                     </div>
                 </div>
 
+                <div class="divider"></div>
+
+                <!-- Trading Mode -->
+                <div class="margin-top">
+                    <h5>Trading Mode</h5>
+                    <p class="light-text ts-s">
+                        When Hedge Mode is enabled, the model can open both, a long and a short at the same time. 
+                        Otherwise, it makes use of One-way mode which ensures only 1 position is open at a time.
+                    </p>
+                    <div class="margin-top">
+                        <mat-slide-toggle 
+                            formControlName="hedge_mode"
+                            [appDisableControl]="submitting">
+                            Hedge Mode
+                        </mat-slide-toggle>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
                 <!-- Leverage & Level Increase Requirement-->
                 <div class="margin-top">
-                    <div fxLayout="row" fxLayoutAlign="start start">
+                    <h5>General</h5>
+                    <p class="light-text ts-s">
+                        The following configuration will be used when opening positions for either side.
+                    </p>
+                    <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
                         <div fxFlex>
                             <mat-form-field>
                                 <mat-label>Leverage</mat-label>
@@ -84,154 +113,186 @@
                     </div>
                 </div>
 
-                <!-- Take Profit 1 -->
+                <div class="divider"></div>
+
+                <!-- Profit Optimization -->
                 <div class="margin-top">
-                    <div fxLayout="row" fxLayoutAlign="start start">
-                        <div fxFlex>
-                            <mat-form-field>
-                                <mat-label>TP_1: Price Change Requirement</mat-label>
-                                <input type="number"
-                                       matInput
-                                       formControlName="take_profit_1_pcr"
-                                       autocomplete="off"
-                                       [appDisableControl]="submitting"
-                                       placeholder="e.g. 0.75">
-                            </mat-form-field>
+                    <h5>Profit Optimization Strategy</h5>
+                    <p class="light-text ts-s">
+                        The following configuration will be used in order to close positions when they're profitable.
+                    </p>
+
+                    <!-- Take Profit 1 -->
+                    <div class="margin-top">
+                        <div fxLayout="row" fxLayoutAlign="center center">
+                            <div>
+                                <p><strong>Level 1&nbsp;&nbsp;&nbsp;</strong></p>
+                            </div>
+                            <div fxFlex>
+                                <mat-form-field>
+                                    <mat-label>Price Change Requirement</mat-label>
+                                    <input type="number"
+                                        matInput
+                                        formControlName="take_profit_1_pcr"
+                                        autocomplete="off"
+                                        [appDisableControl]="submitting"
+                                        placeholder="e.g. 0.75">
+                                </mat-form-field>
+                            </div>
+                            <span fxFlex="5"></span>
+                            <div fxFlex>
+                                <mat-form-field>
+                                    <mat-label>Max HP Drawdown</mat-label>
+                                    <input type="number"
+                                        matInput
+                                        formControlName="take_profit_1_dd"
+                                        autocomplete="off"
+                                        [appDisableControl]="submitting"
+                                        placeholder="e.g. -40">
+                                </mat-form-field>
+                            </div>
                         </div>
-                        <span fxFlex="5"></span>
-                        <div fxFlex>
-                            <mat-form-field>
-                                <mat-label>TP_1: Max HP Drawdown</mat-label>
-                                <input type="number"
-                                       matInput
-                                       formControlName="take_profit_1_dd"
-                                       autocomplete="off"
-                                       [appDisableControl]="submitting"
-                                       placeholder="e.g. -40">
-                            </mat-form-field>
+                    </div>
+
+                    <!-- Take Profit 2 -->
+                    <div class="margin-top">
+                        <div fxLayout="row" fxLayoutAlign="center center">
+                            <div>
+                                <p><strong>Level 2&nbsp;&nbsp;&nbsp;</strong></p>
+                            </div>
+                            <div fxFlex>
+                                <mat-form-field>
+                                    <mat-label>Price Change Requirement</mat-label>
+                                    <input type="number"
+                                        matInput
+                                        formControlName="take_profit_2_pcr"
+                                        autocomplete="off"
+                                        [appDisableControl]="submitting"
+                                        placeholder="e.g. 1.5">
+                                </mat-form-field>
+                            </div>
+                            <span fxFlex="5"></span>
+                            <div fxFlex>
+                                <mat-form-field>
+                                    <mat-label>Max HP Drawdown</mat-label>
+                                    <input type="number"
+                                        matInput
+                                        formControlName="take_profit_2_dd"
+                                        autocomplete="off"
+                                        [appDisableControl]="submitting"
+                                        placeholder="e.g. -30">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Take Profit 3 -->
+                    <div class="margin-top">
+                        <div fxLayout="row" fxLayoutAlign="center center">
+                            <div>
+                                <p><strong>Level 3&nbsp;&nbsp;&nbsp;</strong></p>
+                            </div>
+                            <div fxFlex>
+                                <mat-form-field>
+                                    <mat-label>Price Change Requirement</mat-label>
+                                    <input type="number"
+                                        matInput
+                                        formControlName="take_profit_3_pcr"
+                                        autocomplete="off"
+                                        [appDisableControl]="submitting"
+                                        placeholder="e.g. 2.25">
+                                </mat-form-field>
+                            </div>
+                            <span fxFlex="5"></span>
+                            <div fxFlex>
+                                <mat-form-field>
+                                    <mat-label>Max HP Drawdown</mat-label>
+                                    <input type="number"
+                                        matInput
+                                        formControlName="take_profit_3_dd"
+                                        autocomplete="off"
+                                        [appDisableControl]="submitting"
+                                        placeholder="e.g. -15">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Take Profit 4 -->
+                    <div class="margin-top">
+                        <div fxLayout="row" fxLayoutAlign="center center">
+                            <div>
+                                <p><strong>Level 4&nbsp;&nbsp;&nbsp;</strong></p>
+                            </div>
+                            <div fxFlex>
+                                <mat-form-field>
+                                    <mat-label>Price Change Requirement</mat-label>
+                                    <input type="number"
+                                        matInput
+                                        formControlName="take_profit_4_pcr"
+                                        autocomplete="off"
+                                        [appDisableControl]="submitting"
+                                        placeholder="e.g. 3">
+                                </mat-form-field>
+                            </div>
+                            <span fxFlex="5"></span>
+                            <div fxFlex>
+                                <mat-form-field>
+                                    <mat-label>Max HP Drawdown</mat-label>
+                                    <input type="number"
+                                        matInput
+                                        formControlName="take_profit_4_dd"
+                                        autocomplete="off"
+                                        [appDisableControl]="submitting"
+                                        placeholder="e.g. -10">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Take Profit 5 -->
+                    <div class="margin-top">
+                        <div fxLayout="row" fxLayoutAlign="center center">
+                            <div>
+                                <p><strong>Level 5&nbsp;&nbsp;&nbsp;</strong></p>
+                            </div>
+                            <div fxFlex>
+                                <mat-form-field>
+                                    <mat-label>Price Change Requirement</mat-label>
+                                    <input type="number"
+                                        matInput
+                                        formControlName="take_profit_5_pcr"
+                                        autocomplete="off"
+                                        [appDisableControl]="submitting"
+                                        placeholder="e.g. 6">
+                                </mat-form-field>
+                            </div>
+                            <span fxFlex="5"></span>
+                            <div fxFlex>
+                                <mat-form-field>
+                                    <mat-label>Max HP Drawdown</mat-label>
+                                    <input type="number"
+                                        matInput
+                                        formControlName="take_profit_5_dd"
+                                        autocomplete="off"
+                                        [appDisableControl]="submitting"
+                                        placeholder="e.g. -5">
+                                </mat-form-field>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Take Profit 2 -->
-                <div class="margin-top">
-                    <div fxLayout="row" fxLayoutAlign="start start">
-                        <div fxFlex>
-                            <mat-form-field>
-                                <mat-label>TP_2: Price Change Requirement</mat-label>
-                                <input type="number"
-                                       matInput
-                                       formControlName="take_profit_2_pcr"
-                                       autocomplete="off"
-                                       [appDisableControl]="submitting"
-                                       placeholder="e.g. 1.5">
-                            </mat-form-field>
-                        </div>
-                        <span fxFlex="5"></span>
-                        <div fxFlex>
-                            <mat-form-field>
-                                <mat-label>TP_2: Max HP Drawdown</mat-label>
-                                <input type="number"
-                                       matInput
-                                       formControlName="take_profit_2_dd"
-                                       autocomplete="off"
-                                       [appDisableControl]="submitting"
-                                       placeholder="e.g. -30">
-                            </mat-form-field>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Take Profit 3 -->
-                <div class="margin-top">
-                    <div fxLayout="row" fxLayoutAlign="start start">
-                        <div fxFlex>
-                            <mat-form-field>
-                                <mat-label>TP_3: Price Change Requirement</mat-label>
-                                <input type="number"
-                                       matInput
-                                       formControlName="take_profit_3_pcr"
-                                       autocomplete="off"
-                                       [appDisableControl]="submitting"
-                                       placeholder="e.g. 2.25">
-                            </mat-form-field>
-                        </div>
-                        <span fxFlex="5"></span>
-                        <div fxFlex>
-                            <mat-form-field>
-                                <mat-label>TP_3: Max HP Drawdown</mat-label>
-                                <input type="number"
-                                       matInput
-                                       formControlName="take_profit_3_dd"
-                                       autocomplete="off"
-                                       [appDisableControl]="submitting"
-                                       placeholder="e.g. -15">
-                            </mat-form-field>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Take Profit 4 -->
-                <div class="margin-top">
-                    <div fxLayout="row" fxLayoutAlign="start start">
-                        <div fxFlex>
-                            <mat-form-field>
-                                <mat-label>TP_4: Price Change Requirement</mat-label>
-                                <input type="number"
-                                       matInput
-                                       formControlName="take_profit_4_pcr"
-                                       autocomplete="off"
-                                       [appDisableControl]="submitting"
-                                       placeholder="e.g. 3">
-                            </mat-form-field>
-                        </div>
-                        <span fxFlex="5"></span>
-                        <div fxFlex>
-                            <mat-form-field>
-                                <mat-label>TP_4: Max HP Drawdown</mat-label>
-                                <input type="number"
-                                       matInput
-                                       formControlName="take_profit_4_dd"
-                                       autocomplete="off"
-                                       [appDisableControl]="submitting"
-                                       placeholder="e.g. -10">
-                            </mat-form-field>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Take Profit 5 -->
-                <div class="margin-top">
-                    <div fxLayout="row" fxLayoutAlign="start start">
-                        <div fxFlex>
-                            <mat-form-field>
-                                <mat-label>TP_5: Price Change Requirement</mat-label>
-                                <input type="number"
-                                       matInput
-                                       formControlName="take_profit_5_pcr"
-                                       autocomplete="off"
-                                       [appDisableControl]="submitting"
-                                       placeholder="e.g. 6">
-                            </mat-form-field>
-                        </div>
-                        <span fxFlex="5"></span>
-                        <div fxFlex>
-                            <mat-form-field>
-                                <mat-label>TP_5: Max HP Drawdown</mat-label>
-                                <input type="number"
-                                       matInput
-                                       formControlName="take_profit_5_dd"
-                                       autocomplete="off"
-                                       [appDisableControl]="submitting"
-                                       placeholder="e.g. -5">
-                            </mat-form-field>
-                        </div>
-                    </div>
-                </div>
+                <div class="divider"></div>
 
                 <!-- Stop Loss -->
                 <div class="margin-top">
-                    <div fxLayout="row" fxLayoutAlign="start start">
+                    <h5>Loss Optimization Strategy</h5>
+                    <p class="light-text ts-s">
+                        The following configuration will be used in order to close positions when they have reached
+                        an acceptable loss.
+                    </p>
+                    <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
                         <div fxFlex>
                             <mat-form-field>
                                 <mat-label>Stop Loss%</mat-label>
@@ -244,13 +305,30 @@
                             </mat-form-field>
                         </div>
                         <span fxFlex="5"></span>
-                        <div fxFlex></div>
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Max HP Drawdown</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="stop_loss_max_hp_drawdown"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. -95">
+                            </mat-form-field>
+                        </div>
                     </div>
                 </div>
 
+                <div class="divider"></div>
+
                 <!-- Idle Duration -->
                 <div class="margin-top">
-                    <div fxLayout="row" fxLayoutAlign="start start">
+                    <h5>Idling</h5>
+                    <p class="light-text ts-s">
+                        When a position is closed, the side goes into idling state and new positions won't be opened
+                        until the state fades away.
+                    </p>
+                    <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
                         <div fxFlex>
                             <mat-form-field>
                                 <mat-label>Long Idle Minutes</mat-label>

@@ -222,7 +222,7 @@
                                     [matMenuTriggerFor]="longMenu"
                                     matTooltip="{{position.health.long ? position.health.long.chp: 0}} HP {{position.health.long ? position.health.long.dd: 0}}%">
                                     <div *ngIf="position.health.long" class="hp" 
-                                            [ngStyle]="{'width': position.health.long.chp + '%'}"></div>
+                                            [ngStyle]="{'width': position.health.long.dd < 0 ? -position.health.long.dd: 0 + '%'}"></div>
                                     <p>
                                         LONG: 
                                         {{position.long.unrealized_pnl > 0 ? '+': ''}}{{position.long.unrealized_pnl | number: '1.1-1'}} | 
@@ -313,7 +313,7 @@
                                     [matMenuTriggerFor]="shortMenu"
                                     matTooltip="{{position.health.short ? position.health.short.chp: 0}} HP {{position.health.short ? position.health.short.dd: 0}}%">
                                     <div *ngIf="position.health.short" class="hp" 
-                                            [ngStyle]="{'width': position.health.short.chp + '%'}"></div>
+                                            [ngStyle]="{'width': position.health.short.dd < 0 ? -position.health.short.dd: 0  + '%'}"></div>
                                     <p>
                                         SHORT:
                                         {{position.short.unrealized_pnl > 0 ? '+': ''}}{{position.short.unrealized_pnl | number: '1.1-1'}} | 
