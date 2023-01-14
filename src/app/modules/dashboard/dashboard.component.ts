@@ -168,15 +168,20 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
                         // Load the predictions in case they haven't been
                         if (!this.predictions.length) {
-                            let endAt: number = this._app.serverTime.value ? this._app.serverTime.value: moment().valueOf();
-                            let startAt: number = moment(endAt).subtract(15, "minutes").valueOf();
-                            this.predictions = await this._localDB.listPredictions(
-                                this.epoch!.id,
-                                startAt,
-                                endAt,
-                                this.epoch!.installed
-                            );
-                            this.onNewPrediction(this.predictions[this.predictions.length - 1]);
+                            try {
+                                let endAt: number = this._app.serverTime.value!;
+                                let startAt: number = moment(endAt).subtract(15, "minutes").valueOf();
+                                const preds: IPrediction[] = await this._localDB.listPredictions(
+                                    this.epoch!.id,
+                                    startAt,
+                                    endAt,
+                                    this.epoch!.installed
+                                );
+                                if (preds.length) {
+                                    this.predictions = preds;
+                                    this.onNewPrediction(this.predictions[this.predictions.length - 1]);
+                                }
+                            } catch (e) { this._app.error(e) }
                         }
 
                         // If it is an actual new prediction, add it to the list
@@ -187,7 +192,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                     this.predictionsLoaded = true;
                     this.checkLoadState();
                 }
-
             }
         )
 
