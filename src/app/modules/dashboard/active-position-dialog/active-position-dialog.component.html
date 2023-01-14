@@ -27,7 +27,7 @@
                         'long-position-button': position.side == 'LONG',
                         'short-position-button': position.side == 'SHORT'
                     }">
-                    <div class="hp" [ngStyle]="{'width': health.dd < 0 ? -health.dd: 0 + '%'}"></div>
+                    <div class="hp" [ngStyle]="{'width': -(health.dd) + '%'}"></div>
                     <p>{{health.chp}} HP {{health.dd}}%</p>
                 </div>
                 <div style="padding: 0 15px 15px 15px">

@@ -24,7 +24,8 @@ import {
     IPositionPriceRange,
     ITAIntervalID,
     IPredictionResult,
-    MarketStateService
+    MarketStateService,
+    IPredictionCandlestick
 } from "../../core";
 import { 
     AppService, 
@@ -92,6 +93,8 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     // Prediction Charts
     public predictionsChart?: ILineChartOptions;
     public splitPredictionsChart?: ILineChartOptions;
+    public displayPredictionCandlesticks: boolean = false;
+    public predictionCandlesticksChart?: ICandlestickChartOptions;
 
     // State
     public state!: IMarketState;
@@ -114,7 +117,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     public longShortRatioChart?: ILineChartOptions;
 
     // Desktop Chart height helpers
-    private readonly predictionChartDesktopHeight: number = 305;
+    public readonly predictionChartDesktopHeight: number = 305;
     private readonly marketStateChartDesktopHeight: number = 110;
 
     // Loading State
@@ -166,7 +169,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                         // Load the predictions in case they haven't been
                         if (!this.predictions.length) {
                             let endAt: number = this._app.serverTime.value ? this._app.serverTime.value: moment().valueOf();
-                            let startAt: number = moment(endAt).subtract(3, "hours").valueOf();
+                            let startAt: number = moment(endAt).subtract(15, "minutes").valueOf();
                             this.predictions = await this._localDB.listPredictions(
                                 this.epoch!.id,
                                 startAt,
@@ -335,6 +338,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
         // Add the new prediction
         this.predictions.push(pred);
+        if (this.predictions.length > 500) this.predictions = this.predictions.slice(-500);
         this.activePrediction = pred;
         this.activePredictionState = this._app.predictionState.value!;
 
@@ -603,6 +607,88 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     }
 
 
+
+
+
+    /**
+     * Activates the prediction candlesticks chart once the data is
+     * loaded.
+     * @returns Promise<void>
+     */
+    public async activatePredictionCandlesticks(): Promise<void> {
+        try {
+            // Init the section
+            this.displayPredictionCandlesticks = true;
+            this.predictionCandlesticksChart = undefined;
+            
+            // Retrieve the candlesticks
+            const candlesticks: IPredictionCandlestick[] = await this._localDB.listPredictionCandlesticks(
+                this.epoch!.id, 
+                moment(this._app.serverTime.value!).subtract(5, "days").valueOf(),
+                this._app.serverTime.value!,
+                this.epoch!.installed, 
+                this._app.serverTime.value!
+            );
+
+            // Build the chart
+            const minValue: number = -this.epoch!.model.regressions.length;
+            const maxValue: number = this.epoch!.model.regressions.length;
+            const annotations: ApexAnnotations = {
+                yaxis: [
+                    {
+                        y: this.epoch!.model.min_increase_sum,
+                        y2: maxValue,
+                        borderColor: this._chart.upwardColor,
+                        fillColor: this._chart.upwardColor,
+                        strokeDashArray: 3,
+                        borderWidth: 0
+                    },
+                    {
+                        y: 0.000001,
+                        y2: this.epoch!.model.min_increase_sum,
+                        borderColor: "#B2DFDB",
+                        fillColor: "#B2DFDB",
+                        strokeDashArray: 0
+                    },
+                    {
+                        y: this.epoch!.model.min_decrease_sum,
+                        y2: minValue,
+                        borderColor: this._chart.downwardColor,
+                        fillColor: this._chart.downwardColor,
+                        strokeDashArray: 0
+                    },
+                    {
+                        y: -0.000001,
+                        y2: this.epoch!.model.min_decrease_sum,
+                        borderColor: "#FFCDD2",
+                        fillColor: "#FFCDD2",
+                        strokeDashArray: 0
+                    }
+                ]
+            };
+            this.predictionCandlesticksChart = this._chart.getCandlestickChartOptions(
+                candlesticks, 
+                annotations, 
+                false, 
+                true, 
+                {min: minValue, max: maxValue}
+            );
+            this.predictionCandlesticksChart.chart!.height = this.layout == "desktop" ? this.predictionChartDesktopHeight: 330;
+            this.predictionCandlesticksChart.chart!.zoom = {enabled: false};
+            this.predictionCandlesticksChart.title = {text: ""};
+        } catch(e) { this._app.error(e) } 
+    }
+
+
+
+    /**
+     * Deactivates the prediction candlesticks chart and retores
+     * the active trend chart.
+     */
+    public deactivatePredictionCandlesticks(): void {
+        this.displayPredictionCandlesticks = false;
+        this.predictionCandlesticksChart = undefined;
+    }
 
 
 

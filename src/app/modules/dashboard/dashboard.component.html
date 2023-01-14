@@ -222,7 +222,7 @@
                                     [matMenuTriggerFor]="longMenu"
                                     matTooltip="{{position.health.long ? position.health.long.chp: 0}} HP {{position.health.long ? position.health.long.dd: 0}}%">
                                     <div *ngIf="position.health.long" class="hp" 
-                                            [ngStyle]="{'width': position.health.long.dd < 0 ? -position.health.long.dd: 0 + '%'}"></div>
+                                            [ngStyle]="{'width': -(position.health.long.dd) + '%'}"></div>
                                     <p>
                                         LONG: 
                                         {{position.long.unrealized_pnl > 0 ? '+': ''}}{{position.long.unrealized_pnl | number: '1.1-1'}} | 
@@ -313,7 +313,7 @@
                                     [matMenuTriggerFor]="shortMenu"
                                     matTooltip="{{position.health.short ? position.health.short.chp: 0}} HP {{position.health.short ? position.health.short.dd: 0}}%">
                                     <div *ngIf="position.health.short" class="hp" 
-                                            [ngStyle]="{'width': position.health.short.dd < 0 ? -position.health.short.dd: 0  + '%'}"></div>
+                                            [ngStyle]="{'width': -(position.health.short.dd)  + '%'}"></div>
                                     <p>
                                         SHORT:
                                         {{position.short.unrealized_pnl > 0 ? '+': ''}}{{position.short.unrealized_pnl | number: '1.1-1'}} | 
@@ -487,16 +487,24 @@
                                                 <button mat-menu-item (click)="displayFeaturesDialog()">
                                                     <mat-icon>account_tree</mat-icon> View Sum Details
                                                 </button>
-                                                <button mat-menu-item (click)="toggleTrendChart()">
+                                                <button *ngIf="!displayPredictionCandlesticks" mat-menu-item (click)="toggleTrendChart()">
                                                     <mat-icon>{{userPreferences.splitTrendChart ? 'timeline': 'ssid_chart'}}</mat-icon> 
                                                     View {{userPreferences.splitTrendChart ? 'Sum Chart': 'Split Chart'}}
+                                                </button>
+                                                <button *ngIf="displayPredictionCandlesticks" mat-menu-item (click)="deactivatePredictionCandlesticks()">
+                                                    <mat-icon>{{userPreferences.splitTrendChart ? 'ssid_chart': 'timeline'}}</mat-icon> 
+                                                    View {{userPreferences.splitTrendChart ? 'Split Chart': 'Sum Chart'}}
+                                                </button>
+                                                <button *ngIf="!displayPredictionCandlesticks" mat-menu-item (click)="activatePredictionCandlesticks()">
+                                                    <mat-icon>candlestick_chart</mat-icon> 
+                                                    View last 5 days
                                                 </button>
                                             </mat-menu>
                                         </div>
                                     </div>
                 
-                                    <!-- Chart -->
-                                    <div *ngIf="!userPreferences.splitTrendChart">
+                                    <!-- Sum Chart -->
+                                    <div *ngIf="!userPreferences.splitTrendChart && !displayPredictionCandlesticks">
                                         <p *ngIf="!predictionsChart" class="light-text ts-m align-center" style="margin: 30px 0 30px 0!important">No data was found</p>
                                         <div *ngIf="predictionsChart">
                                             <apx-chart
@@ -512,7 +520,7 @@
                                     </div>
 
                                     <!-- Split Chart -->
-                                    <div *ngIf="userPreferences.splitTrendChart">
+                                    <div *ngIf="userPreferences.splitTrendChart && !displayPredictionCandlesticks">
                                         <p *ngIf="!splitPredictionsChart" class="light-text ts-m align-center" style="margin: 30px 0 30px 0!important">No data was found</p>
                                         <div *ngIf="splitPredictionsChart">
                                             <apx-chart
@@ -524,6 +532,24 @@
                                                 [stroke]="splitPredictionsChart.stroke"
                                                 [annotations]="splitPredictionsChart.annotations"
                                                 [legend]="{show: false}"
+                                            ></apx-chart>
+                                        </div>
+                                    </div>
+
+                                    <!-- Candlesticks Chart -->
+                                    <div *ngIf="displayPredictionCandlesticks" style="min-height:220px;">
+                                        <div *ngIf="!predictionCandlesticksChart" class="loader">
+                                            <div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div>
+                                        </div>
+                                        <div *ngIf="predictionCandlesticksChart">
+                                            <apx-chart
+                                                [series]="predictionCandlesticksChart.series!"
+                                                [chart]="predictionCandlesticksChart.chart!"
+                                                [plotOptions]="predictionCandlesticksChart.plotOptions!"
+                                                [xaxis]="predictionCandlesticksChart.xaxis!"
+                                                [yaxis]="predictionCandlesticksChart.yaxis!"
+                                                [annotations]="predictionCandlesticksChart!.annotations!"
+                                                [title]="predictionCandlesticksChart.title!"
                                             ></apx-chart>
                                         </div>
                                     </div>
