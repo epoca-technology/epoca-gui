@@ -177,12 +177,12 @@ export interface IPositionStrategy {
     /**
      * Loss Optimization Strategy
      * Each position has a fixed price in which it will be closed no matter what.
-     * Additionally, if the position's HP drawdown was to exceed the tolerance
-     * in stop_loss_max_hp_drawdown, the position will be closed automatically,
-     * regardless of the spot price.
+     * Additionally, 2 HP Drawdown limits are set which can close the position at
+     * any time based on the status of the position.
      */
     stop_loss: number,
-    stop_loss_max_hp_drawdown: number,
+    max_hp_drawdown_in_profit: number,
+    max_hp_drawdown_in_loss: number,
 
     /**
      * Idle

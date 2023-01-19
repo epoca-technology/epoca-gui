@@ -1,9 +1,16 @@
 import { IApiError } from "../api-error"
 import { IEpochRecord } from "../epoch"
 import { IServerData, IServerResources } from "../server"
-import { IPredictionState } from "../prediction"
+import { IPredictionState, IPredictionStateIntesity } from "../prediction"
 import { IPrediction, IPredictionResult } from "../epoch-builder"
-import { IMarketState, IState, IVolumeState } from "../market-state"
+import { 
+    ILongShortRatioState, 
+    IMarketState, 
+    IOpenInterestState, 
+    IState, 
+    ITAState, 
+    IVolumeState 
+} from "../market-state"
 import { IPositionSummary } from "../position"
 
 
@@ -49,8 +56,11 @@ export interface IAppBulk {
     // The active prediction. If there isn't one, or an epoch isn't active, it will be undefined
     prediction: IPrediction|undefined,
 
-    // The active prediction state. If there isn't one, or an epoch isn't active, it will be undefined
+    // The active prediction state. If there isn't one, or an epoch isn't active, it will be 0
     predictionState: IPredictionState,
+
+    // The active prediction state intensity. If there isn't one, or an epoch isn't active, it will be 0
+    predictionStateIntesity: IPredictionStateIntesity, 
 
     // The current signal based on the cancellation policies
     signal: IPredictionResult,
@@ -78,8 +88,11 @@ export interface IAppBulkStream {
     // The active prediction. If there isn't one, or an epoch isn't active, it will be undefined
     prediction: IPrediction|undefined,
 
-    // The active prediction state. If there isn't one, or an epoch isn't active, it will be undefined
-    predictionState: IPredictionState,
+    // The active prediction state. If there isn't one, or an epoch isn't active, it will be 0
+    predictionState: IPredictionState,    
+    
+    // The active prediction state intensity. If there isn't one, or an epoch isn't active, it will be 0
+    predictionStateIntesity: IPredictionStateIntesity, 
 
     // The current signal based on the cancellation policies
     signal: IPredictionResult,
@@ -105,6 +118,9 @@ export interface IAppBulkStream {
 export interface ICompressedMarketState {
     window: ICompressedWindowState,
     volume: IVolumeState,
+    open_interest: IOpenInterestState,
+    long_short_ratio: ILongShortRatioState,
+    technical_analysis: ITAState
 }
 
 export interface ICompressedWindowState extends IState {

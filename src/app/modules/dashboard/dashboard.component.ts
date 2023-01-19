@@ -5,7 +5,7 @@ import {Title} from "@angular/platform-browser";
 import { Subscription } from "rxjs";
 import * as moment from "moment";
 import { BigNumber } from "bignumber.js";
-import { ApexAnnotations, ApexAxisChartSeries } from "ng-apexcharts";
+import { ApexAnnotations, ApexAxisChartSeries, YAxisAnnotations } from "ng-apexcharts";
 import { 
     IEpochRecord, 
     IMarketState, 
@@ -25,7 +25,8 @@ import {
     ITAIntervalID,
     IPredictionResult,
     MarketStateService,
-    IPredictionCandlestick
+    IPredictionCandlestick,
+    IPredictionStateIntesity
 } from "../../core";
 import { 
     AppService, 
@@ -81,7 +82,8 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     public epoch?: IEpochRecord;
     public activePrediction?: IPrediction;
     public activeSum?: number;
-    public activePredictionState?: IPredictionState;
+    public activePredictionState: IPredictionState = 0;
+    public activePredictionStateIntensity: IPredictionStateIntesity = 0;
     public predictions: IPrediction[] = [];
     private predictionSub!: Subscription;
     private predictionsLoaded: boolean = false;
@@ -98,6 +100,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
     // State
     public state!: IMarketState;
+    public readonly taIntervals: ITAIntervalID[] = ["30m", "1h", "2h", "4h", "1d"];
     private stateSub!: Subscription;
     private stateLoaded: boolean = false;
 
@@ -345,6 +348,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         if (this.predictions.length > 500) this.predictions = this.predictions.slice(-500);
         this.activePrediction = pred;
         this.activePredictionState = this._app.predictionState.value!;
+        this.activePredictionStateIntensity = this._app.predictionStateIntensity.value!;
 
         // Update the prediction chart
         this.updatePredictionChart();
@@ -478,15 +482,12 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
         // Check if the active epoch is the one being visualized
         if (this._app.epoch.value && this._app.epoch.value.id == this.epoch!.id) {
-            // Init the state
-            const state: IPredictionState = this._app.predictionState.value!;
-
             // Init the marker color
-            if (state > 0) { markerColor = this._chart.upwardColor }
-            else if (state < 0) { markerColor = this._chart.downwardColor }
+            if (this.activePredictionState > 0) { markerColor = this._chart.upwardColor }
+            else if (this.activePredictionState < 0) { markerColor = this._chart.downwardColor }
 
             // Init the marker size
-            markerSize = this.getMarkerSize(state);
+            markerSize = this.getMarkerSize();
         }
 
         // Finally, return the data
@@ -499,21 +500,43 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     /**
      * Calculates the suggested marker size based on the absolute state 
      * value.
-     * @param state 
      * @returns number
      */
-    private getMarkerSize(state: IPredictionState): number {
-        const absState: number = state < 0 ? -(state): state;
-        if      (absState >= 9)    { return 9 }
-        else if (absState == 8)    { return 8 }
-        else if (absState == 7)    { return 7 }
-        else if (absState == 6)    { return 6.5 }
-        else if (absState == 5)    { return 6 }
-        else if (absState == 4)    { return 5.5 }
-        else if (absState == 3)    { return 5 }
-        else if (absState == 2)    { return 4.5 }
-        else if (absState == 1)    { return 4 }
-        else                       { return 3.5 }
+    private getMarkerSize(): number {
+        // Init the state and the intensity
+        const state: IPredictionState = this.activePredictionState;
+        const intensity: IPredictionStateIntesity = this.activePredictionStateIntensity;
+
+        // Handle an increasing state
+        if (state > 0 && intensity > 0) {
+            if      (state >= 9)    { return intensity == 1 ? 6.0: 9.0 }
+            else if (state == 8)    { return intensity == 1 ? 5.7: 8.5 }
+            else if (state == 7)    { return intensity == 1 ? 5.4: 8.0 }
+            else if (state == 6)    { return intensity == 1 ? 5.1: 7.5 }
+            else if (state == 5)    { return intensity == 1 ? 4.8: 7.0 }
+            else if (state == 4)    { return intensity == 1 ? 4.5: 6.5 }
+            else if (state == 3)    { return intensity == 1 ? 4.2: 6.0 }
+            else if (state == 2)    { return intensity == 1 ? 3.9: 5.5 }
+            else if (state == 1)    { return intensity == 1 ? 3.7: 5.0 }
+            else                    { return 3.5 }
+        }
+
+        // Handle a decreasing state
+        else if (state < 0 && intensity < 0) {
+            if      (state <= -9)    { return intensity == -1 ? 6.0: 9.0 }
+            else if (state == -8)    { return intensity == -1 ? 5.7: 8.5 }
+            else if (state == -7)    { return intensity == -1 ? 5.4: 8.0 }
+            else if (state == -6)    { return intensity == -1 ? 5.1: 7.5 }
+            else if (state == -5)    { return intensity == -1 ? 4.8: 7.0 }
+            else if (state == -4)    { return intensity == -1 ? 4.5: 6.5 }
+            else if (state == -3)    { return intensity == -1 ? 4.2: 6.0 }
+            else if (state == -2)    { return intensity == -1 ? 3.9: 5.5 }
+            else if (state == -1)    { return intensity == -1 ? 3.7: 5.0 }
+            else                     { return 3.5 }
+        }
+
+        // Handle a neutral state
+        else { return 3.5 }
     }
 
 
@@ -628,7 +651,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             // Retrieve the candlesticks
             const candlesticks: IPredictionCandlestick[] = await this._localDB.listPredictionCandlesticks(
                 this.epoch!.id, 
-                moment(this._app.serverTime.value!).subtract(5, "days").valueOf(),
+                moment(this._app.serverTime.value!).subtract(2, "days").valueOf(),
                 this._app.serverTime.value!,
                 this.epoch!.installed, 
                 this._app.serverTime.value!
@@ -825,192 +848,96 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         
         // Long Position
         if (this.position.long) {
-            annotations.yaxis!.push({
-                y: this.position.long.entry_price,
-                strokeDashArray: 0,
-                borderColor: this._chart.upwardColor,
-                fillColor: this._chart.upwardColor,
-                label: {
-                    borderColor: this._chart.upwardColor,
-                    style: { color: "#fff", background: this._chart.upwardColor},
-                    text: `LONG`,
-                    position: "left",
-                    offsetX: 38
-                }
-            });
-            annotations.yaxis!.push({
-                y: this.position.long.take_profit_price_1,
-                strokeDashArray: 0,
-                borderColor: this._chart.upwardColor,
-                fillColor: this._chart.upwardColor,
-                label: {
-                    borderColor: this._chart.upwardColor,
-                    style: { color: "#fff", background: this._chart.upwardColor},
-                    text: `TAKE_PROFIT_1`,
-                    position: "left",
-                    offsetX: 92
-                }
-            });
-            annotations.yaxis!.push({
-                y: this.position.long.take_profit_price_2,
-                strokeDashArray: 0,
-                borderColor: this._chart.upwardColor,
-                fillColor: this._chart.upwardColor,
-                label: {
-                    borderColor: this._chart.upwardColor,
-                    style: { color: "#fff", background: this._chart.upwardColor},
-                    text: `TAKE_PROFIT_2`,
-                    position: "left",
-                    offsetX: 92
-                }
-            });
-            annotations.yaxis!.push({
-                y: this.position.long.take_profit_price_3,
-                strokeDashArray: 0,
-                borderColor: this._chart.upwardColor,
-                fillColor: this._chart.upwardColor,
-                label: {
-                    borderColor: this._chart.upwardColor,
-                    style: { color: "#fff", background: this._chart.upwardColor},
-                    text: `TAKE_PROFIT_3`,
-                    position: "left",
-                    offsetX: 92
-                }
-            });
-            annotations.yaxis!.push({
-                y: this.position.long.take_profit_price_4,
-                strokeDashArray: 0,
-                borderColor: this._chart.upwardColor,
-                fillColor: this._chart.upwardColor,
-                label: {
-                    borderColor: this._chart.upwardColor,
-                    style: { color: "#fff", background: this._chart.upwardColor},
-                    text: `TAKE_PROFIT_4`,
-                    position: "left",
-                    offsetX: 92
-                }
-            });
-            annotations.yaxis!.push({
-                y: this.position.long.take_profit_price_5,
-                strokeDashArray: 0,
-                borderColor: this._chart.upwardColor,
-                fillColor: this._chart.upwardColor,
-                label: {
-                    borderColor: this._chart.upwardColor,
-                    style: { color: "#fff", background: this._chart.upwardColor},
-                    text: `TAKE_PROFIT_5`,
-                    position: "left",
-                    offsetX: 92
-                }
-            });
-            annotations.yaxis!.push({
-                y: this.position.long.stop_loss_price,
-                strokeDashArray: 0,
-                borderColor: this._chart.upwardColor,
-                fillColor: this._chart.upwardColor,
-                label: {
-                    borderColor: this._chart.upwardColor,
-                    style: { color: "#fff", background: this._chart.upwardColor},
-                    text: `STOP_LOSS`,
-                    position: "left",
-                    offsetX: 71
-                }
-            });
+            const tpLevel: 1|2|3|4|5 = this.getActiveTakeProfitLevel(this.position.health.long ? this.position.health.long.dd: 0);
+            annotations.yaxis!.push(this.buildPositionAnnotation(
+                this.position.long.entry_price,
+                this._chart.upwardColor,
+                "LONG",
+                38
+            ));
+            annotations.yaxis!.push(this.buildPositionAnnotation(
+                this.position.long.take_profit_price_1,
+                tpLevel == 1 ? this._chart.upwardColor: "#26A69A",
+                "TAKE_PROFIT_1",
+                92
+            ));
+            annotations.yaxis!.push(this.buildPositionAnnotation(
+                this.position.long.take_profit_price_2,
+                tpLevel == 2 ? this._chart.upwardColor: "#26A69A",
+                "TAKE_PROFIT_2",
+                92
+            ));
+            annotations.yaxis!.push(this.buildPositionAnnotation(
+                this.position.long.take_profit_price_3,
+                tpLevel == 3 ? this._chart.upwardColor: "#26A69A",
+                "TAKE_PROFIT_3",
+                92
+            ));
+            annotations.yaxis!.push(this.buildPositionAnnotation(
+                this.position.long.take_profit_price_4,
+                tpLevel == 4 ? this._chart.upwardColor: "#26A69A",
+                "TAKE_PROFIT_4",
+                92
+            ));
+            annotations.yaxis!.push(this.buildPositionAnnotation(
+                this.position.long.take_profit_price_5,
+                tpLevel == 5 ? this._chart.upwardColor: "#26A69A",
+                "TAKE_PROFIT_5",
+                92
+            ));
+            annotations.yaxis!.push(this.buildPositionAnnotation(
+                this.position.long.stop_loss_price,
+                this._chart.upwardColor,
+                "STOP_LOSS",
+                71
+            ));
         }
 
         // Short Position
         if (this.position.short) {
-            annotations.yaxis!.push({
-                y: this.position.short.entry_price,
-                strokeDashArray: 0,
-                borderColor: this._chart.downwardColor,
-                fillColor: this._chart.downwardColor,
-                label: {
-                    borderColor: this._chart.downwardColor,
-                    style: { color: "#fff", background: this._chart.downwardColor},
-                    text: `SHORT`,
-                    position: "left",
-                    offsetX: 44
-                }
-            });
-            annotations.yaxis!.push({
-                y: this.position.short.take_profit_price_1,
-                strokeDashArray: 0,
-                borderColor: this._chart.downwardColor,
-                fillColor: this._chart.downwardColor,
-                label: {
-                    borderColor: this._chart.downwardColor,
-                    style: { color: "#fff", background: this._chart.downwardColor},
-                    text: `TAKE_PROFIT_1`,
-                    position: "left",
-                    offsetX: 92
-                }
-            });
-            annotations.yaxis!.push({
-                y: this.position.short.take_profit_price_2,
-                strokeDashArray: 0,
-                borderColor: this._chart.downwardColor,
-                fillColor: this._chart.downwardColor,
-                label: {
-                    borderColor: this._chart.downwardColor,
-                    style: { color: "#fff", background: this._chart.downwardColor},
-                    text: `TAKE_PROFIT_2`,
-                    position: "left",
-                    offsetX: 92
-                }
-            });
-            annotations.yaxis!.push({
-                y: this.position.short.take_profit_price_3,
-                strokeDashArray: 0,
-                borderColor: this._chart.downwardColor,
-                fillColor: this._chart.downwardColor,
-                label: {
-                    borderColor: this._chart.downwardColor,
-                    style: { color: "#fff", background: this._chart.downwardColor},
-                    text: `TAKE_PROFIT_3`,
-                    position: "left",
-                    offsetX: 92
-                }
-            });
-            annotations.yaxis!.push({
-                y: this.position.short.take_profit_price_4,
-                strokeDashArray: 0,
-                borderColor: this._chart.downwardColor,
-                fillColor: this._chart.downwardColor,
-                label: {
-                    borderColor: this._chart.downwardColor,
-                    style: { color: "#fff", background: this._chart.downwardColor},
-                    text: `TAKE_PROFIT_4`,
-                    position: "left",
-                    offsetX: 92
-                }
-            });
-            annotations.yaxis!.push({
-                y: this.position.short.take_profit_price_5,
-                strokeDashArray: 0,
-                borderColor: this._chart.downwardColor,
-                fillColor: this._chart.downwardColor,
-                label: {
-                    borderColor: this._chart.downwardColor,
-                    style: { color: "#fff", background: this._chart.downwardColor},
-                    text: `TAKE_PROFIT_5`,
-                    position: "left",
-                    offsetX: 92
-                }
-            });
-            annotations.yaxis!.push({
-                y: this.position.short.stop_loss_price,
-                strokeDashArray: 0,
-                borderColor: this._chart.downwardColor,
-                fillColor: this._chart.downwardColor,
-                label: {
-                    borderColor: this._chart.downwardColor,
-                    style: { color: "#fff", background: this._chart.downwardColor},
-                    text: `STOP_LOSS`,
-                    position: "left",
-                    offsetX: 71
-                }
-            });
+            const tpLevel: 1|2|3|4|5 = this.getActiveTakeProfitLevel(this.position.health.short ? this.position.health.short.dd: 0);
+            annotations.yaxis!.push(this.buildPositionAnnotation(
+                this.position.short.entry_price,
+                this._chart.downwardColor,
+                "SHORT",
+                44
+            ));
+            annotations.yaxis!.push(this.buildPositionAnnotation(
+                this.position.short.take_profit_price_1,
+                tpLevel == 1 ? this._chart.downwardColor: "#EF5350",
+                "TAKE_PROFIT_1",
+                92
+            ));
+            annotations.yaxis!.push(this.buildPositionAnnotation(
+                this.position.short.take_profit_price_2,
+                tpLevel == 2 ? this._chart.downwardColor: "#EF5350",
+                "TAKE_PROFIT_2",
+                92
+            ));
+            annotations.yaxis!.push(this.buildPositionAnnotation(
+                this.position.short.take_profit_price_3,
+                tpLevel == 3 ? this._chart.downwardColor: "#EF5350",
+                "TAKE_PROFIT_3",
+                92
+            ));
+            annotations.yaxis!.push(this.buildPositionAnnotation(
+                this.position.short.take_profit_price_4,
+                tpLevel == 4 ? this._chart.downwardColor: "#EF5350",
+                "TAKE_PROFIT_4",
+                92
+            ));
+            annotations.yaxis!.push(this.buildPositionAnnotation(
+                this.position.short.take_profit_price_5,
+                tpLevel == 5 ? this._chart.downwardColor: "#EF5350",
+                "TAKE_PROFIT_5",
+                92
+            ));
+            annotations.yaxis!.push(this.buildPositionAnnotation(
+                this.position.short.stop_loss_price,
+                this._chart.downwardColor,
+                "STOP_LOSS",
+                71
+            ));
         }
 
 
@@ -1020,11 +947,11 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         let windowStateColor: string = this._chart.neutralColor;
         let annOffset: {x: number, y: number} = {x: -15, y: -30};
         if (this.state.window.state > 0) { 
-            windowStateColor = this._chart.upwardColor;
+            windowStateColor = this.state.window.state == 1 ? "#009688": "#004D40";
             annOffset.y = 30;
         }
         else if (this.state.window.state < 0) { 
-            windowStateColor = this._chart.downwardColor;
+            windowStateColor = this.state.window.state == -1 ? "#F44336": "#B71C1C";
         }
         annotations.yaxis!.push({
             y: currentPrice,
@@ -1044,6 +971,49 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         // Finally, return the annotations
         return annotations;
     }
+
+
+
+
+    /**
+     * Calculates the take profit that will be triggered with current HP conditions.
+     * @param hp_drawdown 
+     * @returns 1|2|3|4|5
+     */
+    private getActiveTakeProfitLevel(hp_drawdown: number): 1|2|3|4|5 {
+        if      (hp_drawdown <= this.position.strategy.take_profit_1.max_hp_drawdown) { return 1 }
+        else if (hp_drawdown <= this.position.strategy.take_profit_2.max_hp_drawdown) { return 2 }
+        else if (hp_drawdown <= this.position.strategy.take_profit_3.max_hp_drawdown) { return 3 }
+        else if (hp_drawdown <= this.position.strategy.take_profit_4.max_hp_drawdown) { return 4 }
+        else                                                                          { return 5 }
+    }
+
+
+
+    /**
+     * Builds a position annotation object.
+     * @param y 
+     * @param color 
+     * @param labelText 
+     * @param offsetX 
+     * @returns YAxisAnnotations
+     */
+    private buildPositionAnnotation(y: number, color: string, labelText: string, offsetX: number): YAxisAnnotations {
+        return {
+            y: y,
+            strokeDashArray: 0,
+            borderColor: color,
+            fillColor: color,
+            label: {
+                borderColor: color,
+                style: { color: "#fff", background: color},
+                text: labelText,
+                position: "left",
+                offsetX: offsetX
+            }
+        }
+    }
+
 
 
 
@@ -1522,8 +1492,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             data: <IActivePositionDialogData> {
                 strategy: this.position.strategy,
                 position: position,
-                health: position.side == "LONG" ? this.position.health.long: this.position.health.short,
-                window: this.state.window.window
+                health: position.side == "LONG" ? this.position.health.long: this.position.health.short
             }
 		})
 	}

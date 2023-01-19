@@ -54,7 +54,7 @@ export class PositionHealthDialogComponent implements OnInit, IPositionHealthDia
 				330,
 				"Health Points"
 			);
-			this.hpChart.chart!.zoom = {enabled: true, type: "xy"}
+			this.hpChart.chart!.zoom = {enabled: false};
 			this.ddChart = this._chart.getCandlestickChartOptions(
 				candlesticks.dd, 
 				undefined, 
@@ -64,7 +64,7 @@ export class PositionHealthDialogComponent implements OnInit, IPositionHealthDia
 				330,
 				"Drawdown%"
 			);
-			this.ddChart.chart!.zoom = {enabled: true, type: "xy"}
+			this.ddChart.chart!.zoom = {enabled: false};
 		} catch (e) { this._app.error(e) }
 
 		// Set the component as loaded

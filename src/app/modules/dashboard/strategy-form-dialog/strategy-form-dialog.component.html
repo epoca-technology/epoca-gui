@@ -28,7 +28,7 @@
                                     <h6>Long</h6>
                                     <p *ngIf="long_status.value" class="success-color ts-s">Running</p>
                                     <p *ngIf="!long_status.value" class="light-text ts-s truncate">Not running</p>
-                                    <p *ngIf="longIdling && long_status.value" class="light-text ts-s truncate">
+                                    <p *ngIf="longIdling" class="light-text ts-s truncate">
                                         Idle until {{strategy.long_idle_until | date: 'shortTime'}}
                                     </p>
                                 </div>
@@ -46,7 +46,7 @@
                                     <h6>Short</h6>
                                     <p *ngIf="short_status.value" class="success-color ts-s">Running</p>
                                     <p *ngIf="!short_status.value" class="light-text ts-s">Not running</p>
-                                    <p *ngIf="shortIdling && short_status.value" class="light-text ts-s">
+                                    <p *ngIf="shortIdling" class="light-text ts-s">
                                         Idle until {{strategy.short_idle_until | date: 'shortTime'}}
                                     </p>
                                 </div>
@@ -293,7 +293,7 @@
                         an acceptable loss.
                     </p>
                     <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
-                        <div fxFlex>
+                        <div fxFlex="20">
                             <mat-form-field>
                                 <mat-label>Stop Loss%</mat-label>
                                 <input type="number"
@@ -307,13 +307,25 @@
                         <span fxFlex="5"></span>
                         <div fxFlex>
                             <mat-form-field>
-                                <mat-label>Max HP Drawdown</mat-label>
+                                <mat-label>Max HP Drawdown in Profit</mat-label>
                                 <input type="number"
                                        matInput
-                                       formControlName="stop_loss_max_hp_drawdown"
+                                       formControlName="max_hp_drawdown_in_profit"
                                        autocomplete="off"
                                        [appDisableControl]="submitting"
-                                       placeholder="e.g. -95">
+                                       placeholder="e.g. -35">
+                            </mat-form-field>
+                        </div>
+                        <span fxFlex="5"></span>
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Max HP Drawdown in Loss</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="max_hp_drawdown_in_loss"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. -50">
                             </mat-form-field>
                         </div>
                     </div>

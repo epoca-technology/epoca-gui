@@ -7,7 +7,8 @@ import {
     IPrediction, 
     IPredictionResult, 
     IPredictionResultIcon, 
-    IPredictionState 
+    IPredictionState, 
+    IPredictionStateIntesity
 } from "../../core";
 
 
@@ -25,6 +26,7 @@ export interface IAppService {
     epoch: BehaviorSubject<IEpochRecord|undefined|null>,
     prediction: BehaviorSubject<IPrediction|undefined|null>,
     predictionState: BehaviorSubject<IPredictionState|undefined|null>,
+    predictionStateIntensity: BehaviorSubject<IPredictionStateIntesity|undefined|null>,
     signal: BehaviorSubject<IPredictionResult|undefined|null>,
     predictionIcon: BehaviorSubject<IPredictionResultIcon|undefined|null>,
     position: BehaviorSubject<IPositionSummary|undefined|null>,

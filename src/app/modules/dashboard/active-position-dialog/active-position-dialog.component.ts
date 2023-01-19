@@ -1,12 +1,11 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
-import { AppService, ChartService, ILineChartOptions } from '../../../services';
+import { AppService } from '../../../services';
 import { 
 	IActivePosition, 
-	ICandlestick, 
+	IBinancePositionSide, 
 	IPositionSideHealth, 
 	IPositionStrategy, 
-	PositionService, 
 	UtilsService 
 } from "../../../core";
 import { IPositionHealthDialogData, PositionHealthDialogComponent } from './position-health-dialog';
@@ -22,30 +21,21 @@ export class ActivePositionDialogComponent implements OnInit, IActivePositionDia
 	public strategy: IPositionStrategy;
 	public position: IActivePosition;
 	public health: IPositionSideHealth;
-	private window: ICandlestick[];
 
 	// Distances
 	public liquidationDistance: number;
-	/*public takeProfit1Distance: number|undefined;
+	public takeProfit1Distance: number|undefined;
 	public takeProfit2Distance: number|undefined;
 	public takeProfit3Distance: number|undefined;
 	public takeProfit4Distance: number|undefined;
-	public takeProfit5Distance: number|undefined;*/
+	public takeProfit5Distance: number|undefined;
 	public stopLossDistance: number|undefined;
-
-	// Chart
-	public chart!: ILineChartOptions;
-
-	// Tab Navigation
-	public activeIndex: number = 0;
 
 
 	constructor(
 		public dialogRef: MatDialogRef<ActivePositionDialogComponent>,
 		@Inject(MAT_DIALOG_DATA) private data: IActivePositionDialogData,
 		private _utils: UtilsService,
-		private _position: PositionService,
-		private _chart: ChartService,
         private dialog: MatDialog,
 		private _app: AppService
 	) {
@@ -53,7 +43,6 @@ export class ActivePositionDialogComponent implements OnInit, IActivePositionDia
 		this.strategy = this.data.strategy;
 		this.position = this.data.position;
 		this.health = this.data.health;
-		this.window = this.data.window;
 
 		// Calculate the liquidation distance
 		const liquidationDistance: number = <number>this._utils.calculatePercentageChange(
@@ -62,16 +51,12 @@ export class ActivePositionDialogComponent implements OnInit, IActivePositionDia
 		);
 		this.liquidationDistance = liquidationDistance >= 0 ? liquidationDistance: -(liquidationDistance);
 
-		// Calculate the target distance
-		/*const takeProfitDistance: number = <number>this._utils.calculatePercentageChange(
-			this.position.mark_price, 
-			this.position.take_profit_price
-		);
-		if (this.position.side == "LONG") {
-			this.takeProfitDistance = this.position.mark_price >= this.position.take_profit_price ? undefined: takeProfitDistance;
-		} else {
-			this.takeProfitDistance = this.position.mark_price <= this.position.take_profit_price ? undefined: takeProfitDistance;
-		}*/
+		// Calculate the take profit distances
+		this.takeProfit1Distance = this.calculateTakeProfitDistance(this.position.side, this.position.mark_price, this.position.take_profit_price_1);
+		this.takeProfit2Distance = this.calculateTakeProfitDistance(this.position.side, this.position.mark_price, this.position.take_profit_price_2);
+		this.takeProfit3Distance = this.calculateTakeProfitDistance(this.position.side, this.position.mark_price, this.position.take_profit_price_3);
+		this.takeProfit4Distance = this.calculateTakeProfitDistance(this.position.side, this.position.mark_price, this.position.take_profit_price_4);
+		this.takeProfit5Distance = this.calculateTakeProfitDistance(this.position.side, this.position.mark_price, this.position.take_profit_price_5);
 
 		// Calculate the stop loss distance
 		const stopLossDistance: number = <number>this._utils.calculatePercentageChange(this.position.mark_price, this.position.stop_loss_price);
@@ -80,9 +65,6 @@ export class ActivePositionDialogComponent implements OnInit, IActivePositionDia
 		} else {
 			this.stopLossDistance = this.position.mark_price >= this.position.stop_loss_price ? undefined: stopLossDistance;
 		}
-
-		// Build the chart
-		this.chart = this.buildChart();
 	}
 
 	ngOnInit(): void {}
@@ -92,70 +74,24 @@ export class ActivePositionDialogComponent implements OnInit, IActivePositionDia
 
 
 
-
 	/**
-	 * Builds the position chart.
-	 * @returns ILineChartOptions
+	 * Calculates the take profit distance for a position.
+	 * If the level is active, it returns undefined.
+	 * @param side 
+	 * @param mark_price 
+	 * @param take_profit_price 
+	 * @returns number|undefined
 	 */
-	private buildChart(): ILineChartOptions {
-		// Build the required lists
-		let close: number[] = [];
-		let high: number[] = [];
-		let low: number[] = [];
-		let entry: number[] = [];
-		let sl: number[] = [];
-		let tp1: number[] = [];
-		let tp2: number[] = [];
-		let tp3: number[] = [];
-		let tp4: number[] = [];
-		let tp5: number[] = [];
-		for (let candlestick of this.window) {
-			close.push(candlestick.c);
-			high.push(candlestick.h);
-			low.push(candlestick.l);
-			entry.push(this.position.entry_price);
-			sl.push(this.position.stop_loss_price);
-			tp1.push(this.position.take_profit_price_1);
-			tp2.push(this.position.take_profit_price_2);
-			tp3.push(this.position.take_profit_price_3);
-			tp4.push(this.position.take_profit_price_4);
-			tp5.push(this.position.take_profit_price_5);
+	private calculateTakeProfitDistance(side: IBinancePositionSide, mark_price: number, take_profit_price: number): number|undefined {
+		// Calculate the distance
+		const dist: number = <number>this._utils.calculatePercentageChange(mark_price, take_profit_price);
+
+		// Evaluate it based on the side
+		if (side == "LONG") {
+			return mark_price >= take_profit_price ? undefined: dist;
+		} else {
+			return mark_price <= take_profit_price ? undefined: dist;
 		}
-
-		// Calculate the highest and lowest values within the window
-		const windowMax: number = <number>this._utils.getMax(high);
-		const windowMin: number = <number>this._utils.getMin(low);
-		const max: number = <number>this._utils.getMax([
-			windowMax, 
-			this.position.take_profit_price_5, 
-			this.position.stop_loss_price, 
-		]);
-		const min: number = <number>this._utils.getMin([
-			windowMin, 
-			this.position.take_profit_price_5, 
-			this.position.stop_loss_price, 
-		]);
-
-		// Build the chart and return it
-		return this._chart.getLineChartOptions(
-			{ 
-				series: [
-					{name: "Price", data: close, color: "#0288D1"},
-					{name: "Entry", data: entry, color: "#000000"},
-					{name: "SL", data: sl, color: this._chart.downwardColor},
-					{name: "TP_1", data: tp1, color: this._chart.upwardColor},
-					{name: "TP_2", data: tp2, color: this._chart.upwardColor},
-					{name: "TP_3", data: tp3, color: this._chart.upwardColor},
-					{name: "TP_4", data: tp4, color: this._chart.upwardColor},
-					{name: "TP_5", data: tp5, color: this._chart.upwardColor},
-				],
-				stroke: {curve: "straight", width: [4, 2, 3, 3, 3, 3, 3, 3]},
-				xaxis: { labels: { show: false }, axisTicks: {show: false}, tooltip: {enabled: false}}
-			},
-			373, 
-			true,
-			{max: max, min: min}
-		)
 	}
 
 

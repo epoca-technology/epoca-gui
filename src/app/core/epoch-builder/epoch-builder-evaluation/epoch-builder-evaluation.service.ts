@@ -34,7 +34,7 @@ export class EpochBuilderEvaluationService implements IEpochBuilderEvaluationSer
 
 	// Best test ds losses
 	private readonly bestMAE: number = 0.0015;
-	private readonly bestMSE: number = 0.000005;
+	private readonly bestMSE: number = 0.00002;
 
 	// Descriptions
 	public readonly desc: IEpochBuilderEvaluationDescriptions = {

@@ -18,8 +18,5 @@ export interface IActivePositionDialogData {
     position: IActivePosition,
 
     // The health of the active position
-    health: IPositionSideHealth,
-
-    // The candlesticks within the current window
-    window: ICandlestick[]
+    health: IPositionSideHealth
 }

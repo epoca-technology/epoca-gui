@@ -20,6 +20,7 @@ import {
 	IPredictionResult, 
 	IPredictionResultIcon, 
 	IPredictionState, 
+	IPredictionStateIntesity, 
 	PredictionService, 
 	UtilsService 
 } from "../../core";
@@ -68,6 +69,7 @@ export class AppService implements IAppService{
 	public epoch: BehaviorSubject<IEpochRecord|undefined|null> = new BehaviorSubject<IEpochRecord|undefined|null>(null);
 	public prediction: BehaviorSubject<IPrediction|undefined|null> = new BehaviorSubject<IPrediction|undefined|null>(null);
 	public predictionState: BehaviorSubject<IPredictionState|undefined|null> = new BehaviorSubject<IPredictionState|undefined|null>(null);
+	public predictionStateIntensity: BehaviorSubject<IPredictionStateIntesity|undefined|null> = new BehaviorSubject<IPredictionStateIntesity|undefined|null>(null);
 	public signal: BehaviorSubject<IPredictionResult|undefined|null> = new BehaviorSubject<IPredictionResult|undefined|null>(null);
 	public predictionIcon: BehaviorSubject<IPredictionResultIcon|undefined|null> = new BehaviorSubject<IPredictionResultIcon|undefined|null>(null);
 	public position: BehaviorSubject<IPositionSummary|undefined|null> = new BehaviorSubject<IPositionSummary|undefined|null>(null);
@@ -164,6 +166,7 @@ export class AppService implements IAppService{
 		this.epoch.next(undefined);
 		this.prediction.next(undefined);
 		this.predictionState.next(0);
+		this.predictionStateIntensity.next(0);
 		this.signal.next(undefined);
 		this.predictionIcon.next(undefined);
 		this.position.next(undefined);
@@ -230,9 +233,6 @@ export class AppService implements IAppService{
 							snapVal.epoch = this.epoch.value!;
 							snapVal.marketState.window.window = this.decompressCandlesticks(snapVal.marketState.window.window);
 							snapVal.marketState.network_fee = this.marketState.value!.network_fee;
-							snapVal.marketState.open_interest = this.marketState.value!.open_interest;
-							snapVal.marketState.long_short_ratio = this.marketState.value!.long_short_ratio;
-							snapVal.marketState.technical_analysis = this.marketState.value!.technical_analysis;
 							this.broadcastAppBulk(snapVal);
 						}
 					});
@@ -299,6 +299,7 @@ export class AppService implements IAppService{
 
 		// Broadcast the active prediction as well as the metadata
 		this.predictionState.next(bulk.predictionState);
+		this.predictionStateIntensity.next(bulk.predictionStateIntesity);
 		this.signal.next(bulk.signal);
 		this.predictionIcon.next(metadata.predictionIcon);
 		this.prediction.next(bulk.prediction);
