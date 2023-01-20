@@ -116,7 +116,6 @@ import {SharedModule} from "./shared";
 import { 
 	ActivePositionDialogComponent,
 	BalanceDialogComponent, 
-	SignalPoliciesDialogComponent,
 	StrategyFormDialogComponent,
 	TechnicalAnalysisDialogComponent,
 	PositionHealthDialogComponent,
@@ -141,7 +140,6 @@ import { AppComponent } from "./app.component";
 		// Pre-Loaded Components
 		DashboardComponent,
 		BalanceDialogComponent,
-		SignalPoliciesDialogComponent,
 		StrategyFormDialogComponent,
 		TechnicalAnalysisDialogComponent,
 		ActivePositionDialogComponent,

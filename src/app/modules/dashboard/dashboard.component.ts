@@ -41,8 +41,7 @@ import { FeaturesSumDialogComponent, IFeaturesSumDialogData } from "../../shared
 import { BalanceDialogComponent } from "./balance-dialog";
 import { ActivePositionDialogComponent, IActivePositionDialogData } from "./active-position-dialog";
 import { StrategyFormDialogComponent } from "./strategy-form-dialog";
-import { ITechnicalAnalysisDialogData, TechnicalAnalysisDialogComponent } from "./technical-analysis-dialog";
-import { SignalPoliciesDialogComponent } from "./signal-policies-dialog";
+import { TechnicalAnalysisDialogComponent } from "./technical-analysis-dialog";
 import { IDashboardComponent, IPositionCloseChunkSize } from "./interfaces";
 
 @Component({
@@ -651,7 +650,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             // Retrieve the candlesticks
             const candlesticks: IPredictionCandlestick[] = await this._localDB.listPredictionCandlesticks(
                 this.epoch!.id, 
-                moment(this._app.serverTime.value!).subtract(2, "days").valueOf(),
+                moment(this._app.serverTime.value!).subtract(3, "days").valueOf(),
                 this._app.serverTime.value!,
                 this.epoch!.installed, 
                 this._app.serverTime.value!
@@ -698,7 +697,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                 annotations, 
                 false, 
                 true, 
-                {min: minValue, max: maxValue}
+                //{min: minValue, max: maxValue}
             );
             this.predictionCandlesticksChart.chart!.height = this.layout == "desktop" ? this.predictionChartDesktopHeight: 330;
             this.predictionCandlesticksChart.chart!.zoom = {enabled: false};
@@ -848,7 +847,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         
         // Long Position
         if (this.position.long) {
-            const tpLevel: 1|2|3|4|5 = this.getActiveTakeProfitLevel(this.position.health.long ? this.position.health.long.dd: 0);
+            const tpLevel: 0|1|2|3|4|5 = this.getActiveTakeProfitLevel(this.position.health.long ? this.position.health.long.dd: 0);
             annotations.yaxis!.push(this.buildPositionAnnotation(
                 this.position.long.entry_price,
                 this._chart.upwardColor,
@@ -895,7 +894,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
         // Short Position
         if (this.position.short) {
-            const tpLevel: 1|2|3|4|5 = this.getActiveTakeProfitLevel(this.position.health.short ? this.position.health.short.dd: 0);
+            const tpLevel: 0|1|2|3|4|5 = this.getActiveTakeProfitLevel(this.position.health.short ? this.position.health.short.dd: 0);
             annotations.yaxis!.push(this.buildPositionAnnotation(
                 this.position.short.entry_price,
                 this._chart.downwardColor,
@@ -978,10 +977,11 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     /**
      * Calculates the take profit that will be triggered with current HP conditions.
      * @param hp_drawdown 
-     * @returns 1|2|3|4|5
+     * @returns 0|1|2|3|4|5
      */
-    private getActiveTakeProfitLevel(hp_drawdown: number): 1|2|3|4|5 {
-        if      (hp_drawdown <= this.position.strategy.take_profit_1.max_hp_drawdown) { return 1 }
+    private getActiveTakeProfitLevel(hp_drawdown: number): 0|1|2|3|4|5 {
+        if      (hp_drawdown <= this.position.strategy.max_hp_drawdown_in_profit)     { return 0 }
+        else if (hp_drawdown <= this.position.strategy.take_profit_1.max_hp_drawdown) { return 1 }
         else if (hp_drawdown <= this.position.strategy.take_profit_2.max_hp_drawdown) { return 2 }
         else if (hp_drawdown <= this.position.strategy.take_profit_3.max_hp_drawdown) { return 3 }
         else if (hp_drawdown <= this.position.strategy.take_profit_4.max_hp_drawdown) { return 4 }
@@ -1504,19 +1504,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
 
     
-	/**
-	 * Displays the features dedicated dialog to gather more information
-	 * about the prediction.
-	 */
-    public displaySignalPoliciesDialog(): void {
-		this.dialog.open(SignalPoliciesDialogComponent, {
-			hasBackdrop: true,
-            disableClose: true,
-			panelClass: "small-dialog",
-            data: {}
-		})
-	}
-
 
 
     
@@ -1550,10 +1537,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 		this.dialog.open(TechnicalAnalysisDialogComponent, {
 			hasBackdrop: this._app.layout.value != "mobile",
 			panelClass: "medium-dialog",
-			data: <ITechnicalAnalysisDialogData> {
-                id: taInterval,
-                state: this.state.technical_analysis
-            }
+			data: taInterval
 		})
 	}
 

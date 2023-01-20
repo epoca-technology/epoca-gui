@@ -6,9 +6,9 @@ import { IPrediction, IPredictionResult } from "../epoch-builder"
 import { 
     ILongShortRatioState, 
     IMarketState, 
+    IMinifiedTAState, 
     IOpenInterestState, 
     IState, 
-    ITAState, 
     IVolumeState 
 } from "../market-state"
 import { IPositionSummary } from "../position"
@@ -120,7 +120,7 @@ export interface ICompressedMarketState {
     volume: IVolumeState,
     open_interest: IOpenInterestState,
     long_short_ratio: ILongShortRatioState,
-    technical_analysis: ITAState
+    technical_analysis: IMinifiedTAState
 }
 
 export interface ICompressedWindowState extends IState {

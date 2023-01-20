@@ -419,12 +419,12 @@
                                     <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" 
                                         fxLayoutAlign="center start" fxLayoutAlign.xs="center center"  fxLayoutAlign.sm="center center" 
                                         class="chart-card-heading badged-header full-width">
-                                        <div fxLayout="row" class="clickable" role="button" (click)="displaySignalPoliciesDialog()">
+                                        <div fxLayout="row">
                                             <mat-icon>podcasts</mat-icon>&nbsp;
-                                            <h4 *ngIf="!activePrediction">Prediction</h4>
+                                            <h4 *ngIf="!activePrediction">Neutral</h4>
                                             <h4 *ngIf="activePrediction"
                                                 matTooltip="Pred: {{activePrediction.t | date: 'shortTime'}} | TA: {{state.technical_analysis.ts | date: 'shortTime'}}">
-                                                {{_prediction.resultNames[activePrediction.r]}}
+                                                {{_prediction.resultNames[signal]}}
                                             </h4>
                                         </div>
                                         <span fxFlex class="show-on-desktop"></span>
@@ -470,7 +470,7 @@
                                                     View {{userPreferences.splitTrendChart ? 'Split Chart': 'Sum Chart'}}
                                                 </button>
                                                 <button *ngIf="!displayPredictionCandlesticks" mat-menu-item (click)="activatePredictionCandlesticks()">
-                                                    <mat-icon>candlestick_chart</mat-icon> View last 48 hours
+                                                    <mat-icon>candlestick_chart</mat-icon> View last 3 days
                                                 </button>
                                                 <button mat-menu-item (click)="displayFeaturesDialog()">
                                                     <mat-icon>account_tree</mat-icon> View Sum Details
@@ -552,13 +552,9 @@
                                                     </div>
                                                     <span fxFlex></span>
                                                     <div *ngIf="state.volume.direction != 0"
-                                                        matTooltip="The direction in which the price is being driven by the volume." 
+                                                        matTooltip="The direction in which the price is being driven by the volume. The {{state.volume.direction > 0 ? 'Bull': 'Bear'}} Dominance is currently at {{state.volume.direction_value}}%" 
                                                         class="volume-direction"
-                                                        [ngClass]="{
-                                                            'square-badge-success': state.volume.direction > 0,
-                                                            'square-badge-error': state.volume.direction < 0,
-                                                            'inactive': state.volume.direction != 2 && state.volume.direction != -2
-                                                        }">
+                                                        [ngClass]="{'inactive': state.volume.direction != 2 && state.volume.direction != -2}">
                                                         <img src="assets/img/market_state/{{state.volume.direction > 0 ? 'bull': 'bear'}}.png" alt="Volume Direction">
                                                     </div>
                                                     <div matTooltip="The volume state within the window." 
@@ -572,7 +568,7 @@
                                                         <mat-icon *ngIf="state.volume.state == -1">trending_down</mat-icon>
                                                         <mat-icon *ngIf="state.volume.state == -2" class="strong-icon">south</mat-icon>
                                                         <mat-icon *ngIf="state.volume.state == 0">trending_flat</mat-icon>
-                                                        {{state.volume.state_value > 0 ? '+': ''}}{{state.volume.state_value | number: '1.0-1'}}%
+                                                        {{state.volume.state_value > 0 ? '+': ''}}{{state.volume.state_value | number: '1.0-0'}}%
                                                     </div>
                                                 </div>
                         
@@ -713,7 +709,7 @@
                                                         <mat-icon *ngIf="state.network_fee.state == -1">trending_down</mat-icon>
                                                         <mat-icon *ngIf="state.network_fee.state == -2" class="strong-icon">south</mat-icon>
                                                         <mat-icon *ngIf="state.network_fee.state == 0">trending_flat</mat-icon>
-                                                        {{state.network_fee.state_value > 0 ? '+': ''}}{{state.network_fee.state_value | number: '1.0-1'}}%
+                                                        {{state.network_fee.state_value > 0 ? '+': ''}}{{state.network_fee.state_value | number: '1.0-0'}}%
                                                     </div>
                                                 </div>
                         

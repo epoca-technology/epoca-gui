@@ -12,7 +12,6 @@ export interface IDashboardComponent {
     displayStrategyFormDialog(): void,
     displayBalanceDialog(): void,
     displayPositionDialog(position: IActivePosition): void,
-    displaySignalPoliciesDialog(): void,
     displayFeaturesDialog(): void,
     displayTechnicalAnalysisDialog(taInterval: ITAIntervalID): void,
     

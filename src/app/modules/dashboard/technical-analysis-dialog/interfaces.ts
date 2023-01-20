@@ -6,9 +6,3 @@ export interface ITechnicalAnalysisDialogComponent {
 }
 
 
-
-
-export interface ITechnicalAnalysisDialogData {
-    id: ITAIntervalID,
-    state: ITAState
-}

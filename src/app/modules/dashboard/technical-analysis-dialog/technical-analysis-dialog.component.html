@@ -7,7 +7,12 @@
     </div>
 </mat-toolbar>
 <div mat-dialog-content>
-    <div>
+    <!-- Loader -->
+    <div *ngIf="!loaded">
+        <div class="loader show-on-desktop"><div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div></div>
+        <div class="section-loader show-on-mobile"><div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div></div>
+    </div>
+    <div *ngIf="loaded && intervalState">
         <!-- Tabs Navigation-->
         <mat-tab-group [selectedIndex]="activeIndex" (selectedIndexChange)="activeIndex = $event" 
             mat-align-tabs="center" 
@@ -19,7 +24,7 @@
         </mat-tab-group>
 
         <!-- Summary -->
-        <div *ngIf="activeIndex == 0" class="padding fadeIn">
+        <div *ngIf="activeIndex == 0" class="padding margin-top">
             <div fxLayout="row" fxLayoutAlign="center center">
                 <!-- Oscillators -->
                 <div fxFlex="30">
@@ -100,7 +105,7 @@
         </div>
 
         <!-- Oscillators -->
-        <div *ngIf="activeIndex == 1" class="fadeIn">
+        <div *ngIf="activeIndex == 1">
             <table class="bordered highlight">
                 <tbody>
                     <tr>
@@ -238,7 +243,7 @@
         </div>
 
         <!-- Moving Averages -->
-        <div *ngIf="activeIndex == 2" class="fadeIn">
+        <div *ngIf="activeIndex == 2">
             <table class="bordered highlight">
                 <tbody>
                     <tr>

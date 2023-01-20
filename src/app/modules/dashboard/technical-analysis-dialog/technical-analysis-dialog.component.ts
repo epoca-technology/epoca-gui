@@ -1,8 +1,8 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
-import { ITAIntervalID, ITAIntervalState, ITAIntervalStateResult, ITAState, MarketStateService } from '../../../core';
+import { ITAIntervalID, ITAIntervalState, ITAIntervalStateResult, MarketStateService } from '../../../core';
 import { AppService, ChartService, IBarChartOptions, ILayout, NavService } from '../../../services';
-import { ITechnicalAnalysisDialogComponent, ITechnicalAnalysisDialogData } from './interfaces';
+import { ITechnicalAnalysisDialogComponent } from './interfaces';
 
 @Component({
   selector: 'app-technical-analysis-dialog',
@@ -14,38 +14,39 @@ export class TechnicalAnalysisDialogComponent implements OnInit, ITechnicalAnaly
 	public layout: ILayout = this._app.layout.value;
 	
 	// Inherited properties
-	public intervalID: ITAIntervalID;
-	public intervalState: ITAIntervalState;
-	private state: ITAState;
+	public intervalState!: ITAIntervalState;
 
 	// Chart
-	public summary: IBarChartOptions;
-	public oscillators: IBarChartOptions;
-	public movingAverages: IBarChartOptions;
+	public summary!: IBarChartOptions;
+	public oscillators!: IBarChartOptions;
+	public movingAverages!: IBarChartOptions;
 
 	// Tabs
 	public activeIndex: number = 0;
 
+	// Load state
+	public loaded: boolean = false;
+
 	constructor(
 		public dialogRef: MatDialogRef<TechnicalAnalysisDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) private data: ITechnicalAnalysisDialogData,
+		@Inject(MAT_DIALOG_DATA) public intervalID: ITAIntervalID,
 		public _nav: NavService,
 		public _app: AppService,
 		private _chart: ChartService,
 		public _ms: MarketStateService
-	) { 
-		// Populate the core properties
-		this.intervalID = this.data.id;
-		this.intervalState = this.data.state[this.data.id]
-		this.state = this.data.state;
+	) { }
 
-		// Build the charts
-		this.summary = this.buildChart("Summary", this.intervalState.s);
-		this.oscillators = this.buildChart("Oscillators", this.intervalState.o);
-		this.movingAverages = this.buildChart("Moving Averages", this.intervalState.m);
-	}
+	async ngOnInit(): Promise<void> {
+		try {
+			// Populate the core properties
+			this.intervalState = await this._ms.getTAIntervalState(this.intervalID);
 
-	ngOnInit(): void {
+			// Build the charts
+			this.summary = this.buildChart("Summary", this.intervalState.s);
+			this.oscillators = this.buildChart("Oscillators", this.intervalState.o);
+			this.movingAverages = this.buildChart("Moving Averages", this.intervalState.m);
+		} catch (e) { this._app.error(e) }
+		this.loaded = true;
 	}
 
 

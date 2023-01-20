@@ -3,12 +3,14 @@ import { ICandlestick } from "../candlestick";
 
 
 
-
+// Service
 export interface IMarketStateService {
     // Properties
     taStates: {[result: string|number]: string},
     marketStates: {[result: string|number]: string},
 
+    // Retrievers
+    getTAIntervalState(intervalID: ITAIntervalID): Promise<ITAIntervalState>
 }
 
 
@@ -114,6 +116,9 @@ export type IStateType = -2|-1|0|1|2;
  export interface IVolumeState extends IState {
     // The direction in which the volume is driving the price
     direction: IStateType,
+
+    // The value of the currently winning direction
+    direction_value: number,
 
     // The list of grouped volumes
     volumes: number[]
@@ -454,6 +459,45 @@ export interface ITAState {
 
 
 
+/* Minified Technical Analysis State */
+
+
+
+/**
+ * Minified Interval State
+ * A minified object of an interval's state.
+ */
+export interface IMinifiedIntervalState {
+    // Summary: The result of the state, combining oscillators and moving averages
+    s: ITAIntervalStateResult,
+
+    // Oscillators: The result of the oscillators
+    o: ITAIntervalStateResult,
+
+    // Moving Averages: The result of the moving averages
+    m: ITAIntervalStateResult
+}
+
+
+
+
+/**
+ * Technical Analysis State
+ * The current state of the technicals based on the intervals. This object is 
+ * inserted into the market state.
+ */
+export interface IMinifiedTAState {
+    // States by Interval
+    "30m": IMinifiedIntervalState,
+    "1h": IMinifiedIntervalState,
+    "2h": IMinifiedIntervalState,
+    "4h": IMinifiedIntervalState,
+    "1d": IMinifiedIntervalState,
+
+    // The timestamp in which the state was generated
+    ts: number
+}
+
 
 
 
@@ -477,5 +521,5 @@ export interface IMarketState {
     network_fee: INetworkFeeState,
     open_interest: IOpenInterestState,
     long_short_ratio: ILongShortRatioState,
-    technical_analysis: ITAState
+    technical_analysis: IMinifiedTAState
 }
