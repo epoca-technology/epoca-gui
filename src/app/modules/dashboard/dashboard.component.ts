@@ -801,6 +801,16 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             this.windowChart.chart!.zoom = {enabled: false};
             this.windowChart.chart!.toolbar!.show = false;
         }
+
+        // Determine the color of the candlesticks based on the volume direction
+        let bullColor: string = "#4DB6AC";
+        let bearColor: string = "#E57373";
+        if (this.state.volume.direction > 0) {
+            bullColor = this.state.volume.direction == 1 ? "#00897B": "#004D40";
+        } else if (this.state.volume.direction < 0) {
+            bearColor = this.state.volume.direction == -1 ? "#E53935": "#B71C1C";
+        }
+        this.windowChart.plotOptions = {candlestick: {colors: {upward: bullColor, downward: bearColor}}};
     }
 
 

@@ -164,7 +164,114 @@ export class StrategyFormDialogComponent implements OnInit, IStrategyFormDialogC
 
 
 
+
+	/* Tooltips */
+
+
+
+	/* Status */
+	public statusTooltip(): void {
+		this._nav.displayTooltip("Status", [
+			"A position can be opened if the following conditions are met:",
+			"1) A non-neutral signal is generated",
+			"2) The side's status is enabled",
+			"3) The side is not idling",
+		]);
+	}
+
+	/* Trading Mode */
+	public tradingModeTooltip(): void {
+		this._nav.displayTooltip("Trading Mode", [
+			"One-Way Mode",
+			"The model can manage one position side at a time. The suggested budget distribution is Long|Short: 66.66% & Reserve: 33.33%",
+			"Hedge Mode",
+			"The model can manage both position sides simultaneously. The suggested budget distribution is Long: 33.33%, Short: 33.33% & Reserve: 33.33%."
+		]);
+	}
+
+	/* Position Size */
+	public positionSizeTooltip(): void {
+		this._nav.displayTooltip("Position Size", [
+			`The real size of a position (notional) is calculated by multipliying the margin by the leverage. 
+			When a position is opened, the margin is placed into collateral and the notional amount is borrowed 
+			until the position is closed.`,
+		]);
+	}
+
+
+	/* Profit Optimization Strategy */
+	public profitOptimizationTooltip(): void {
+		this._nav.displayTooltip("Profit Optimization Strategy", [
+			`The goals of this strategy are:`,
+			`1) Increase profits as much as possible when conditions are in favor`,
+			`2) Secure profits when conditions are starting to decay`,
+			`3) Secure profits when the market experiences significant fluctuations`,
+			`4) Trade without a Take Profit Ceiling`,
+			`________`,
+			`TAKE PROFIT LEVELS`,
+			`The model makes use of 5 take profit levels in order to always adjust to
+			the market's volatility. A level is comprised by:`,
+			`1) Take Profit%: the percentage the market needs to change in favor for the take profit level to 
+			be activated. For instance, if level 1's Take Profit% is 1 and the entry price is $20.000, 
+			level's 1 take profit price will be $20.200.`,
+			`2) Max HP Drawdown%: the position is closed when the current level's limit has been exceeded.`,
+			`3) Max Gain Drawdown%: the position is closed when the current level's limit has been exceeded.`,
+			`A take profit level is active when the market price is better than its take profit price but not 
+			better than the next level's. For example:`,
+			`Short at $20.000`,
+			`Level 1: Take Profit%=1 -> $19.800`,
+			`Level 2: Take Profit%=2 -> $19.600`,
+			`Level 3: Take Profit%=3 -> $19.400`,
+			`Some possible events:`,
+			`- Market falls to $19.801, no take profit level is active. `,
+			`- Market falls to $19.800, level 1 is active. `,
+			`- Market falls to $19.544, level 2 is active. `,
+			`- Market falls to $19.245, level 3 is active. `,
+			`In short, the take profit levels were designed for the model to determine which 
+			Max HP Drawdown% and Max Gain Drawdown% to use depending on how much profit the position has 
+			accumulated so far. The higher the profit, the less tolerant to decaying conditions.`,
+			`________`,
+			`MAX HP DRAWDOWN% IN PROFIT`,
+			`This functionality comes into play when the position is at break-even point or slightly profitable. 
+			If conditions were to decay significantly, exceeding this limit, the position is closed inmediatelly.`,
+			``,
+		]);
+	}
+
+
+	/* Loss Optimization Strategy */
+	public lossOptimizationTooltip(): void {
+		this._nav.displayTooltip("Loss Optimization Strategy", [
+			`The goal of this strategy is to establish a maximum loss per position. As well as, reducing the loss when possible.`,
+			`Stop Loss%`,
+			`Active positions have a stop loss price property which is calculated based 
+			on the side, entry price and stop loss%. For instance, if the stop loss% is 3 and a long position is 
+			opened when BTC is worth $20.000, the stop loss price is set at $19.400. If the market moves against the
+			position and hits the stop loss price, the position is closed inmediatelly.`,
+			`Max HP Drawdown% in Loss`,
+			`The size of a loss can be decreased if a losing position's health points decay drastically.`,
+			`Whenever the model re-calculates the position's HP, it will evaluate if it is at a loss and if the current 
+			HP Drawdown% exceeds this limit, the position is closed at a loss (smaller than Stop Loss%).`
+		]);
+	}
+
+	/* Idling */
+	public idlingTooltip(): void {
+		this._nav.displayTooltip("Idling", [
+			`When a position is closed, the side goes into idling state and new positions won't be opened until 
+			the state fades away. Note that this does not affect the opposite side.`,
+		]);
+	}
+
+
+
+
 	/* Misc Helpers */
+
+
+
+
+
 
 
 

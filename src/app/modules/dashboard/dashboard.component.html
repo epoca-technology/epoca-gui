@@ -551,12 +551,6 @@
                                                         </p>
                                                     </div>
                                                     <span fxFlex></span>
-                                                    <div *ngIf="state.volume.direction != 0"
-                                                        matTooltip="The direction in which the price is being driven by the volume. The {{state.volume.direction > 0 ? 'Bull': 'Bear'}} Dominance is currently at {{state.volume.direction_value}}%" 
-                                                        class="volume-direction"
-                                                        [ngClass]="{'inactive': state.volume.direction != 2 && state.volume.direction != -2}">
-                                                        <img src="assets/img/market_state/{{state.volume.direction > 0 ? 'bull': 'bear'}}.png" alt="Volume Direction">
-                                                    </div>
                                                     <div matTooltip="The volume state within the window." 
                                                         [ngClass]="{
                                                             'square-badge-success': state.volume.state > 0,

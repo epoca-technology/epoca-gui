@@ -72,7 +72,6 @@
                     [ngClass]="{'success-color': !takeProfit1Distance, 'light-text': takeProfit1Distance}">
                     <p>{{position.take_profit_price_1 | currency}}</p>
                     <p *ngIf="takeProfit1Distance" class="ts-xs">{{takeProfit1Distance}}% away</p>
-                    <p *ngIf="!takeProfit1Distance" class="ts-xs">Take Profit Hit</p>
                 </div>
             </div>
 
@@ -85,7 +84,6 @@
                     [ngClass]="{'success-color': !takeProfit2Distance, 'light-text': takeProfit2Distance}">
                     <p>{{position.take_profit_price_2 | currency}}</p>
                     <p *ngIf="takeProfit2Distance" class="ts-xs">{{takeProfit2Distance}}% away</p>
-                    <p *ngIf="!takeProfit2Distance" class="ts-xs">Take Profit Hit</p>
                 </div>
             </div>
 
@@ -98,7 +96,6 @@
                     [ngClass]="{'success-color': !takeProfit3Distance, 'light-text': takeProfit3Distance}">
                     <p>{{position.take_profit_price_3 | currency}}</p>
                     <p *ngIf="takeProfit3Distance" class="ts-xs">{{takeProfit3Distance}}% away</p>
-                    <p *ngIf="!takeProfit3Distance" class="ts-xs">Take Profit Hit</p>
                 </div>
             </div>
 
@@ -111,7 +108,6 @@
                     [ngClass]="{'success-color': !takeProfit4Distance, 'light-text': takeProfit4Distance}">
                     <p>{{position.take_profit_price_4 | currency}}</p>
                     <p *ngIf="takeProfit4Distance" class="ts-xs">{{takeProfit4Distance}}% away</p>
-                    <p *ngIf="!takeProfit4Distance" class="ts-xs">Take Profit Hit</p>
                 </div>
             </div>
 

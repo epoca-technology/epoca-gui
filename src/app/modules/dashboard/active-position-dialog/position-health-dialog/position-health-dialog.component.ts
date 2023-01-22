@@ -62,7 +62,7 @@ export class PositionHealthDialogComponent implements OnInit, IPositionHealthDia
 				true,
 				undefined,
 				330,
-				"Drawdown%"
+				"Health Points Drawdown%"
 			);
 			this.ddChart.chart!.zoom = {enabled: false};
 		} catch (e) { this._app.error(e) }
