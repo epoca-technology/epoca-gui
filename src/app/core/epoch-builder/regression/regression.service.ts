@@ -48,6 +48,11 @@ export class RegressionService implements IRegressionService {
 		// Retrieve the certificates
 		this.certificates = await this.getCertificates(event, order, limit);
 
+		// Filter out the broken regressions (if any)
+		this.certificates = this.certificates.filter(
+			(c) => c.test_ds_evaluation.mean_absolute_error != 0 && c.test_ds_evaluation.mean_squared_error != 0 
+		);
+
 		// Init values
 		this.ids = [];
 		const metadata: IEpochBuilderMetadataService = new EpochBuilderMetadataService();

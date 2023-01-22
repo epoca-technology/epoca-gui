@@ -123,19 +123,10 @@
                         <span fxFlex></span>
                         <button mat-icon-button (click)="profitOptimizationTooltip()" matTooltip="More info"><mat-icon>question_mark</mat-icon></button>
                     </div>
-                    <!--<p class="light-text ts-s small-margin-top">
-                        The following configuration will be used in order to close positions when they're profitable 
-                        and the market conditions start to decay.
-                    </p>-->
 
                     <!-- Take Profit Levels -->
                     <div class="margin-top">
                         <h6>Take Profit Levels</h6>
-                        <!--<p class="light-text ts-s small-margin-top">
-                            The take profit table allows the model to adapt to the market's volatily whilst making
-                            use of good practices in order to secure as much profit as possible as well as 
-                            guaranteeing fast reactions when the market moves strongly in favor or against.
-                        </p>-->
 
                         <!-- Take Profit 1 -->
                         <div class="margin-top">
@@ -316,8 +307,9 @@
                                 </div>
                             </div>
                             <p class="light-text ts-xs">
-                                Setting Level 5's Max HP Drawdown% to 0 will close positions inmediately when hit by 
-                                the market.
+                                <strong>*Important:</strong> setting <strong>Level 5's Max HP Drawdown%</strong> to 0 will close positions immediately 
+                                when hit by the market. What's more, setting the <strong>Max Gain Drawdown%</strong> to -100 will disable the functionality 
+                                on the level.
                             </p>
                         </div>
                     </div>
@@ -325,11 +317,6 @@
                     <!-- Max HP Drawdown in profit-->
                     <div class="margin-top-x2">
                         <h6>Max HP Drawdown% in Profit</h6>
-                        <!--<p class="light-text ts-s small-margin-top">
-                            Even though each take profit level has its dedicated HP Drawdown limit, it is possible 
-                            for the position to experience a significant HP drop while profitable but below the first 
-                            take profit level.
-                        </p>-->
                         <div fxLayout="row" fxLayoutAlign="start start">
                             <div fxFlex>
                                 <mat-form-field>

@@ -96,12 +96,14 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     public splitPredictionsChart?: ILineChartOptions;
     public displayPredictionCandlesticks: boolean = false;
     public predictionCandlesticksChart?: ICandlestickChartOptions;
+    public predLastUpdate: string = "none";
 
     // State
     public state!: IMarketState;
     public readonly taIntervals: ITAIntervalID[] = ["30m", "1h", "2h", "4h", "1d"];
     private stateSub!: Subscription;
     private stateLoaded: boolean = false;
+    public taLastUpdate: string = "none";
 
     // Window Chart
     public windowChart?: ICandlestickChartOptions;
@@ -348,6 +350,9 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         this.activePrediction = pred;
         this.activePredictionState = this._app.predictionState.value!;
         this.activePredictionStateIntensity = this._app.predictionStateIntensity.value!;
+
+        // Set the last update date
+        this.predLastUpdate = moment(pred.t).format("h:mm:ss a");
 
         // Update the prediction chart
         this.updatePredictionChart();
@@ -762,6 +767,9 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         } else {
             this.titleService.setTitle(newTitle);
         }
+
+        // Update the last technicals update
+        this.taLastUpdate = moment(this.state.technical_analysis.ts).format("h:mm:ss a");
     }
 
 
@@ -803,12 +811,12 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         }
 
         // Determine the color of the candlesticks based on the volume direction
-        let bullColor: string = "#4DB6AC";
-        let bearColor: string = "#E57373";
+        let bullColor: string = "#80CBC4";
+        let bearColor: string = "#EF9A9A";
         if (this.state.volume.direction > 0) {
-            bullColor = this.state.volume.direction == 1 ? "#00897B": "#004D40";
+            bullColor = this.state.volume.direction == 1 ? "#00796B": "#004D40";
         } else if (this.state.volume.direction < 0) {
-            bearColor = this.state.volume.direction == -1 ? "#E53935": "#B71C1C";
+            bearColor = this.state.volume.direction == -1 ? "#D32F2F": "#B71C1C";
         }
         this.windowChart.plotOptions = {candlestick: {colors: {upward: bullColor, downward: bearColor}}};
     }
@@ -1584,6 +1592,66 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
 
 
+
+
+
+    /* Tooltips */
+
+
+
+
+    // Volume
+    public volumeTooltip(): void {
+        this._nav.displayTooltip("Volume", [
+            `Volume, or trading volume, is the number of units traded in a market during a given time. It is a 
+            measurement of the number of individual units of an asset that changed hands during that period.`,
+            `Each transaction involves a buyer and a seller. When they reach an agreement at a specific price, 
+            the transaction is recorded by the facilitating exchange. This data is then used to calculate the trading volume.`
+        ]);
+    }
+
+
+    // Open Interest
+    public openInterestTooltip(): void {
+        this._nav.displayTooltip("Open Interest", [
+            `Volume and open interest are related concepts. Volume accounts for all contracts that have been traded in a given period, 
+            while open interest considers the total number of open positions held by market participants at any given time. Regardless 
+            of long or short positions, open interest adds up all opened trades and subtracts the trades that have been closed on Binance Futures. `,
+            `Why Open Interest Matters`,
+            `In traditional futures markets, traders closely monitor changes in open interest as an indicator to determine market sentiment and the 
+            strength behind price trends. `,
+            `Open interest indicates capital flowing in and out of the market. As capital flows into a futures contract, open interest increases. 
+            Conversely,  as capital flows out of the derivatives markets, open interest declines. For this reason, increasing open interest is often 
+            considered as one of the many factors that can serve as confirmation of a bull market, whereas decreasing open interest signals a bear market.`,
+        ]);
+    }
+
+
+    // Long Short Ratio
+    public longShortRatioTooltip(): void {
+        this._nav.displayTooltip("Long Short Ratio", [
+            `The long/short ratio indicates the number of long positions relative to short positions for a particular instrument. The long/short ratio is 
+            considered a barometer of investor expectations, with a high long/short ratio indicating positive investor expectations. For example, a 
+            long/short ratio that has increased in recent months indicates that more long positions are being held relative to short positions. 
+            This could be because of various factors ranging from market conditions to geo-political events. The long/short ratio is used by many as 
+            a leading indicator of market health and direction including as a precursor to what the spot markets will soon be experiencing.`,
+            `The long/short ratio is calculated by dividing the long positions by the short positions. This gives a ratio representing the number of 
+            long positions to short positions. For example, the BTCUSDT instrument on Binance on August 29 2022 shows a ratio of 1.8145, a long position 
+            of 0.6447 and a short position of 0.3553. Simply put, the long/short ratio of 1.8145 means that there are 1.8145 as many long positions as 
+            short positions. This would be considered a bullish signal.`,
+        ]);
+    }
+
+
+    // Network Fee
+    public networkFeeTooltip(): void {
+        this._nav.displayTooltip(`Fee at #${this.state.network_fee.height}`, [
+            `Mathematically, transaction fees are the difference between the amount of bitcoin sent and the amount received. Conceptually, transaction 
+            fees are a reflection of the speed with which a user wants their transaction validated on the blockchain. When a miner validates a new block 
+            in the blockchain, they also validate all of the transactions within the block.`,
+            `The transaction fee tends to increase when the price experiences a significant movement and declines once the price has "stabilized".`,
+        ]);
+    }
 
 
 

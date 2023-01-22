@@ -419,14 +419,24 @@
                                     <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" 
                                         fxLayoutAlign="center start" fxLayoutAlign.xs="center center"  fxLayoutAlign.sm="center center" 
                                         class="chart-card-heading badged-header full-width">
-                                        <div fxLayout="row">
+                                        <div fxLayout="row"
+                                            class="clickable" role="button"
+                                            [matMenuTriggerFor]="signalMenu"
+                                            matTooltip="Pred: {{predLastUpdate}} | TA: {{taLastUpdate}}">
                                             <mat-icon>podcasts</mat-icon>&nbsp;
                                             <h4 *ngIf="!activePrediction">Neutral</h4>
-                                            <h4 *ngIf="activePrediction"
-                                                matTooltip="Pred: {{activePrediction.t | date: 'shortTime'}} | TA: {{state.technical_analysis.ts | date: 'shortTime'}}">
+                                            <h4 *ngIf="activePrediction">
                                                 {{_prediction.resultNames[signal]}}
                                             </h4>
                                         </div>
+                                        <mat-menu #signalMenu="matMenu">
+                                            <button mat-menu-item>
+                                                <mat-icon>trending_up</mat-icon> <span>View Long Policies</span>
+                                            </button>
+                                            <button mat-menu-item>
+                                                <mat-icon>trending_down</mat-icon> <span>View Short Policies</span>
+                                            </button>
+                                        </mat-menu>
                                         <span fxFlex class="show-on-desktop"></span>
                                         <div fxLayout="row" fxLayoutAlign="center center" class="prediction-header-indicators">
                                             <div class="clickable" role="button" matRipple 
@@ -443,18 +453,18 @@
                                             <div *ngIf="activePrediction" 
                                                 matTooltip="Trend Sum: {{activeSum | number: '1.0-6'}}" 
                                                 [matMenuTriggerFor]="predictionMenu"
-                                                class="clickable" role="button" matRipple 
+                                                class="state-badge clickable" role="button" matRipple 
                                                 [ngClass]="{
                                                     'square-badge-success': activePrediction.r == 1,
                                                     'square-badge-error': activePrediction.r == -1,
                                                     'square-badge-neutral': activePrediction.r == 0,
                                                     'inactive': activePrediction.r == 0
                                                 }">
-                                                <mat-icon *ngIf="activePredictionStateIntensity == 2" class="strong-icon">north</mat-icon>
-                                                <mat-icon *ngIf="activePredictionStateIntensity == 1">trending_up</mat-icon>
-                                                <mat-icon *ngIf="activePredictionStateIntensity == -1">trending_down</mat-icon>
-                                                <mat-icon *ngIf="activePredictionStateIntensity == -2" class="strong-icon">south</mat-icon>
-                                                <mat-icon *ngIf="activePredictionStateIntensity == 0">trending_flat</mat-icon>
+                                                <mat-icon *ngIf="activePredictionStateIntensity == 2" svgIcon="arrow_turn_up"></mat-icon>
+                                                <mat-icon *ngIf="activePredictionStateIntensity == 1" svgIcon="arrow_trend_up"></mat-icon>
+                                                <mat-icon *ngIf="activePredictionStateIntensity == -1" svgIcon="arrow_trend_down"></mat-icon>
+                                                <mat-icon *ngIf="activePredictionStateIntensity == -2" svgIcon="arrow_turn_down"></mat-icon>
+                                                <mat-icon *ngIf="activePredictionStateIntensity == 0" svgIcon="arrow_right"></mat-icon>
                                                 {{activeSum | number: '1.0-2'}} 
                                                 <span>
                                                     | {{activePredictionState! > 0 ? '+': ''}}{{activePredictionState}}
@@ -538,7 +548,7 @@
                             <div class="chart-card">
                                 <!-- Volume & Open Interest -->
                                 <div>
-                                    <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" class="full-width badged-header">
+                                    <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" class="full-width">
                                         <!-- Volume -->
                                         <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
                                             <div>
@@ -551,17 +561,19 @@
                                                         </p>
                                                     </div>
                                                     <span fxFlex></span>
-                                                    <div matTooltip="The volume state within the window." 
+                                                    <div matTooltip="Click for more info"
+                                                        (click)="volumeTooltip()"
+                                                        class="state-badge clickable" role="button" matRipple
                                                         [ngClass]="{
                                                             'square-badge-success': state.volume.state > 0,
                                                             'square-badge-error': state.volume.state < 0,
                                                             'square-badge-neutral': state.volume.state == 0
                                                         }">
-                                                        <mat-icon *ngIf="state.volume.state == 2" class="strong-icon">north</mat-icon>
-                                                        <mat-icon *ngIf="state.volume.state == 1">trending_up</mat-icon>
-                                                        <mat-icon *ngIf="state.volume.state == -1">trending_down</mat-icon>
-                                                        <mat-icon *ngIf="state.volume.state == -2" class="strong-icon">south</mat-icon>
-                                                        <mat-icon *ngIf="state.volume.state == 0">trending_flat</mat-icon>
+                                                        <mat-icon *ngIf="state.volume.state == 2" svgIcon="arrow_turn_up"></mat-icon>
+                                                        <mat-icon *ngIf="state.volume.state == 1" svgIcon="arrow_trend_up"></mat-icon>
+                                                        <mat-icon *ngIf="state.volume.state == -1" svgIcon="arrow_trend_down"></mat-icon>
+                                                        <mat-icon *ngIf="state.volume.state == -2" svgIcon="arrow_turn_down"></mat-icon>
+                                                        <mat-icon *ngIf="state.volume.state == 0" svgIcon="arrow_right"></mat-icon>
                                                         {{state.volume.state_value > 0 ? '+': ''}}{{state.volume.state_value | number: '1.0-0'}}%
                                                     </div>
                                                 </div>
@@ -596,17 +608,19 @@
                                                         </p>
                                                     </div>
                                                     <span fxFlex></span>
-                                                    <div matTooltip="The open interest within the window." 
+                                                    <div matTooltip="Click for more info"
+                                                        (click)="openInterestTooltip()"
+                                                        class="state-badge clickable" role="button" matRipple
                                                         [ngClass]="{
                                                             'square-badge-success': state.open_interest.state > 0,
                                                             'square-badge-error': state.open_interest.state < 0,
                                                             'square-badge-neutral': state.open_interest.state == 0
                                                         }">
-                                                        <mat-icon *ngIf="state.open_interest.state == 2" class="strong-icon">north</mat-icon>
-                                                        <mat-icon *ngIf="state.open_interest.state == 1">trending_up</mat-icon>
-                                                        <mat-icon *ngIf="state.open_interest.state == -1">trending_down</mat-icon>
-                                                        <mat-icon *ngIf="state.open_interest.state == -2" class="strong-icon">south</mat-icon>
-                                                        <mat-icon *ngIf="state.open_interest.state == 0">trending_flat</mat-icon>
+                                                        <mat-icon *ngIf="state.open_interest.state == 2" svgIcon="arrow_turn_up"></mat-icon>
+                                                        <mat-icon *ngIf="state.open_interest.state == 1" svgIcon="arrow_trend_up"></mat-icon>
+                                                        <mat-icon *ngIf="state.open_interest.state == -1" svgIcon="arrow_trend_down"></mat-icon>
+                                                        <mat-icon *ngIf="state.open_interest.state == -2" svgIcon="arrow_turn_down"></mat-icon>
+                                                        <mat-icon *ngIf="state.open_interest.state == 0" svgIcon="arrow_right"></mat-icon>
                                                         {{state.open_interest.state_value > 0 ? '+': ''}}{{state.open_interest.state_value | number: '1.0-1'}}%
                                                     </div>
                                                 </div>
@@ -644,17 +658,19 @@
                                                         </p>
                                                     </div>
                                                     <span fxFlex></span>
-                                                    <div matTooltip="The long/short ratio state within the window." 
+                                                    <div matTooltip="Click for more info"
+                                                        (click)="longShortRatioTooltip()" 
+                                                        class="state-badge clickable" role="button" matRipple
                                                         [ngClass]="{
                                                             'square-badge-success': state.long_short_ratio.state > 0,
                                                             'square-badge-error': state.long_short_ratio.state < 0,
                                                             'square-badge-neutral': state.long_short_ratio.state == 0
                                                         }">
-                                                        <mat-icon *ngIf="state.long_short_ratio.state == 2" class="strong-icon">north</mat-icon>
-                                                        <mat-icon *ngIf="state.long_short_ratio.state == 1">trending_up</mat-icon>
-                                                        <mat-icon *ngIf="state.long_short_ratio.state == -1">trending_down</mat-icon>
-                                                        <mat-icon *ngIf="state.long_short_ratio.state == -2" class="strong-icon">south</mat-icon>
-                                                        <mat-icon *ngIf="state.long_short_ratio.state == 0">trending_flat</mat-icon>
+                                                        <mat-icon *ngIf="state.long_short_ratio.state == 2" svgIcon="arrow_turn_up"></mat-icon>
+                                                        <mat-icon *ngIf="state.long_short_ratio.state == 1" svgIcon="arrow_trend_up"></mat-icon>
+                                                        <mat-icon *ngIf="state.long_short_ratio.state == -1" svgIcon="arrow_trend_down"></mat-icon>
+                                                        <mat-icon *ngIf="state.long_short_ratio.state == -2" svgIcon="arrow_turn_down"></mat-icon>
+                                                        <mat-icon *ngIf="state.long_short_ratio.state == 0" svgIcon="arrow_right"></mat-icon>
                                                         {{state.long_short_ratio.state_value > 0 ? '+': ''}}{{state.long_short_ratio.state_value | number: '1.0-1'}}%
                                                     </div>
                                                 </div>
@@ -692,17 +708,19 @@
                                                         </p>
                                                     </div>
                                                     <span fxFlex></span>
-                                                    <div matTooltip="The network fee state within the last 24 hours. The current height is: #{{state.network_fee.height}}" 
+                                                    <div matTooltip="Click for more info"
+                                                        (click)="networkFeeTooltip()"
+                                                        class="state-badge clickable" role="button" matRipple 
                                                         [ngClass]="{
                                                             'square-badge-success': state.network_fee.state > 0,
                                                             'square-badge-error': state.network_fee.state < 0,
                                                             'square-badge-neutral': state.network_fee.state == 0
                                                         }">
-                                                        <mat-icon *ngIf="state.network_fee.state == 2" class="strong-icon">north</mat-icon>
-                                                        <mat-icon *ngIf="state.network_fee.state == 1">trending_up</mat-icon>
-                                                        <mat-icon *ngIf="state.network_fee.state == -1">trending_down</mat-icon>
-                                                        <mat-icon *ngIf="state.network_fee.state == -2" class="strong-icon">south</mat-icon>
-                                                        <mat-icon *ngIf="state.network_fee.state == 0">trending_flat</mat-icon>
+                                                        <mat-icon *ngIf="state.network_fee.state == 2" svgIcon="arrow_turn_up"></mat-icon>
+                                                        <mat-icon *ngIf="state.network_fee.state == 1" svgIcon="arrow_trend_up"></mat-icon>
+                                                        <mat-icon *ngIf="state.network_fee.state == -1" svgIcon="arrow_trend_down"></mat-icon>
+                                                        <mat-icon *ngIf="state.network_fee.state == -2" svgIcon="arrow_turn_down"></mat-icon>
+                                                        <mat-icon *ngIf="state.network_fee.state == 0" svgIcon="arrow_right"></mat-icon>
                                                         {{state.network_fee.state_value > 0 ? '+': ''}}{{state.network_fee.state_value | number: '1.0-0'}}%
                                                     </div>
                                                 </div>

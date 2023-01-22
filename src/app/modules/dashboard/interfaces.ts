@@ -14,6 +14,12 @@ export interface IDashboardComponent {
     displayPositionDialog(position: IActivePosition): void,
     displayFeaturesDialog(): void,
     displayTechnicalAnalysisDialog(taInterval: ITAIntervalID): void,
+
+    // Tooltips
+    volumeTooltip(): void,
+    openInterestTooltip(): void,
+    longShortRatioTooltip(): void,
+    networkFeeTooltip(): void,
     
     // Nav Actions
     createNewInstance(): void,

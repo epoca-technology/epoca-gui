@@ -192,7 +192,7 @@ export class StrategyFormDialogComponent implements OnInit, IStrategyFormDialogC
 	/* Position Size */
 	public positionSizeTooltip(): void {
 		this._nav.displayTooltip("Position Size", [
-			`The real size of a position (notional) is calculated by multipliying the margin by the leverage. 
+			`The real size of a position (notional) is calculated by multiplying the margin by the leverage. 
 			When a position is opened, the margin is placed into collateral and the notional amount is borrowed 
 			until the position is closed.`,
 		]);
@@ -233,7 +233,7 @@ export class StrategyFormDialogComponent implements OnInit, IStrategyFormDialogC
 			`________`,
 			`MAX HP DRAWDOWN% IN PROFIT`,
 			`This functionality comes into play when the position is at break-even point or slightly profitable. 
-			If conditions were to decay significantly, exceeding this limit, the position is closed inmediatelly.`,
+			If conditions were to decay significantly, exceeding this limit, the position is closed immediately.`,
 			``,
 		]);
 	}
@@ -247,7 +247,7 @@ export class StrategyFormDialogComponent implements OnInit, IStrategyFormDialogC
 			`Active positions have a stop loss price property which is calculated based 
 			on the side, entry price and stop loss%. For instance, if the stop loss% is 3 and a long position is 
 			opened when BTC is worth $20.000, the stop loss price is set at $19.400. If the market moves against the
-			position and hits the stop loss price, the position is closed inmediatelly.`,
+			position and hits the stop loss price, the position is closed immediately.`,
 			`Max HP Drawdown% in Loss`,
 			`The size of a loss can be decreased if a losing position's health points decay drastically.`,
 			`Whenever the model re-calculates the position's HP, it will evaluate if it is at a loss and if the current 

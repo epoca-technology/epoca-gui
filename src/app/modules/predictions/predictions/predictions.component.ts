@@ -287,8 +287,8 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
                 this.candlesticks, 
                 annotations, 
                 false, 
-                true, 
-                {min: minValue, max: maxValue}
+                false, 
+                //{min: minValue, max: maxValue}
             );
             this.candlesticksChart.chart!.height = this.layout == "desktop" ? 600: 400;
             this.candlesticksChart.chart!.zoom = {enabled: true, type: "xy"};
