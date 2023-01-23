@@ -16,6 +16,9 @@ export interface IDashboardComponent {
     displayTechnicalAnalysisDialog(taInterval: ITAIntervalID): void,
 
     // Tooltips
+    windowTooltip(): void,
+    predictionModelTooltip(): void,
+    signalTooltip(): void,
     volumeTooltip(): void,
     openInterestTooltip(): void,
     longShortRatioTooltip(): void,

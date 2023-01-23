@@ -8,6 +8,7 @@ export interface IMarketStateService {
     // Properties
     taStates: {[result: string|number]: string},
     marketStates: {[result: string|number]: string},
+    icons: {[result: string|number]: string},
 
     // Retrievers
     getTAIntervalState(intervalID: ITAIntervalID): Promise<ITAIntervalState>
@@ -523,3 +524,8 @@ export interface IMarketState {
     long_short_ratio: ILongShortRatioState,
     technical_analysis: IMinifiedTAState
 }
+
+
+
+
+

@@ -85,6 +85,23 @@ export class TechnicalAnalysisDialogComponent implements OnInit, ITechnicalAnaly
 
 
 
+	/**
+	 * Displays the technical analysis tooltip.
+	 */
+	public displayTooltip(): void {
+		this._nav.displayTooltip("Technical Analysis", [
+            `Epoca calculates a series of oscillators and moving averages for the most popular intervals every 
+			~20 seconds. The results of these calculations are put through an interpreter based on TradingView. 
+			The possible outputs are:`,
+			`-2 = Strong Sell`,
+			`-1 = Sell`,
+			` 0 = Neutral`,
+			` 1 = Buy`,
+			` 2 = Strong Buy`,
+        ]);
+	}
+
+
 
 
 

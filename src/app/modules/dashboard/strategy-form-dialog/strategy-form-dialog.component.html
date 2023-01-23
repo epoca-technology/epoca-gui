@@ -19,7 +19,7 @@
                     <div fxLayout="row" fxLayoutAlign="start center">
                         <h5>Status</h5>
                         <span fxFlex></span>
-                        <button mat-icon-button (click)="statusTooltip()" matTooltip="More info"><mat-icon>question_mark</mat-icon></button>
+                        <button mat-icon-button (click)="statusTooltip()" matTooltip="More information" type="button"><mat-icon>question_mark</mat-icon></button>
                     </div> 
                     <div fxLayout="row" fxLayoutAlign="start start" class="section-content">
                         <div fxFlex>
@@ -67,7 +67,7 @@
                     <div fxLayout="row" fxLayoutAlign="start center">
                         <h5>{{hedge_mode.value ? 'Hedge Mode': 'One-Way Mode'}}</h5>
                         <span fxFlex></span>
-                        <button mat-icon-button (click)="tradingModeTooltip()" matTooltip="More info"><mat-icon>question_mark</mat-icon></button>
+                        <button mat-icon-button (click)="tradingModeTooltip()" matTooltip="More information" type="button"><mat-icon>question_mark</mat-icon></button>
                     </div> 
                     <div class="section-content">
                         <mat-slide-toggle 
@@ -85,7 +85,7 @@
                     <div fxLayout="row" fxLayoutAlign="start center">
                         <h5>Position Size</h5>
                         <span fxFlex></span>
-                        <button mat-icon-button (click)="positionSizeTooltip()" matTooltip="More info"><mat-icon>question_mark</mat-icon></button>
+                        <button mat-icon-button (click)="positionSizeTooltip()" matTooltip="More information" type="button"><mat-icon>question_mark</mat-icon></button>
                     </div> 
                     <div fxLayout="row" fxLayoutAlign="start start" class="section-content">
                         <div fxFlex>
@@ -121,7 +121,11 @@
                     <div fxLayout="row" fxLayoutAlign="start center">
                         <h5>Profit Optimization Strategy</h5>
                         <span fxFlex></span>
-                        <button mat-icon-button (click)="profitOptimizationTooltip()" matTooltip="More info"><mat-icon>question_mark</mat-icon></button>
+                        <button mat-icon-button [matMenuTriggerFor]="profitMenu" matTooltip="More information" type="button"><mat-icon>question_mark</mat-icon></button>
+                        <mat-menu #profitMenu="matMenu">
+                            <button mat-menu-item (click)="healthPointsTooltip()" type="button">Health Points System</button>
+                            <button mat-menu-item (click)="profitOptimizationTooltip()" type="button">Profit Optimization Strategy</button>
+                        </mat-menu>
                     </div>
 
                     <!-- Take Profit Levels -->
@@ -343,7 +347,11 @@
                     <div fxLayout="row" fxLayoutAlign="start center">
                         <h5>Loss Optimization Strategy</h5>
                         <span fxFlex></span>
-                        <button mat-icon-button (click)="lossOptimizationTooltip()" matTooltip="More info"><mat-icon>question_mark</mat-icon></button>
+                        <button mat-icon-button [matMenuTriggerFor]="lossMenu" matTooltip="More information" type="button"><mat-icon>question_mark</mat-icon></button>
+                        <mat-menu #lossMenu="matMenu">
+                            <button mat-menu-item (click)="healthPointsTooltip()" type="button">Health Points System</button>
+                            <button mat-menu-item (click)="lossOptimizationTooltip()" type="button">Loss Optimization Strategy</button>
+                        </mat-menu>
                     </div>
                     <div fxLayout="row" fxLayoutAlign="start start" class="section-content">
                         <div fxFlex>
@@ -379,7 +387,7 @@
                     <div fxLayout="row" fxLayoutAlign="start center">
                         <h5>Idling</h5>
                         <span fxFlex></span>
-                        <button mat-icon-button (click)="idlingTooltip()" matTooltip="More info"><mat-icon>question_mark</mat-icon></button>
+                        <button mat-icon-button (click)="idlingTooltip()" matTooltip="More information" type="button"><mat-icon>question_mark</mat-icon></button>
                     </div>
                     <div fxLayout="row" fxLayoutAlign="start start" class="section-content">
                         <div fxFlex>

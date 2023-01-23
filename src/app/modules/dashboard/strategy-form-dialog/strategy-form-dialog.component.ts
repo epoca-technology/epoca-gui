@@ -199,6 +199,43 @@ export class StrategyFormDialogComponent implements OnInit, IStrategyFormDialogC
 	}
 
 
+	/* Health Points System */
+	public healthPointsTooltip(): void {
+		this._nav.displayTooltip("Health Points System", [
+			`The HP system comes into play whenever a position is opened. The initial market conditions are stored and are updated near-real-time. 
+			The HP metric consists of a number that can range from 0 (unhealthiest) to 100 (healthiest).`,
+			`The goals of this system are:`,
+			`1) Ability to determine the best time to claim profits`,
+			`2) Ability to determine the best time to take losses`,
+			`3) Ability to secure profits when the market moves against the position strongly in a short period of time`,
+			`To achieve these goals, the HP system exposes the following components to the Trading Strategy:`,
+			`1) Max HP Drawdown%: the percentage change between the highest HP the position has recorded against the current HP. This number ranges 
+			between 0 to -100.`,
+			`2) Max Gain Drawdown%: the percentage change between the highest gain the position has recorded against the current gain. This number 
+			ranges between 0 to -100, and it only functions when at least 1 take profit level is active.`,
+			`________`,
+			`Why keep track of the position HP and the gain?`,
+			`Even though the health points are very useful, they are not updated fast enough to react appropriately to a sharp price reversal. The HP 
+			system relies on some components that can only be updated every 10-20 seconds, rendering it useless against market conditions where the 
+			price can change significantly in just a few seconds.`,
+			`On the other hand, the gain is calculated and evaluated every ~4 seconds, making it the perfect tool for securing profits when the price 
+			moves strongly against the position.`,
+			`In conclusion, the health points system can be used for increasing profits and reducing losses. Whereas, the gain can be used to secure 
+			profits once a high take profit level has been activated.`,
+			`________`,
+			`How is the HP calculated?`,
+			`When a position is opened, the initial trend sum is stored and the points are calculated based on the market conditions and the side of 
+			the position (long or short). These are the components used to calculate the HP:`,
+			`1) Current trend sum vs initial trend sum (50%)`,
+			`2) Trend state and trend intensity (7.5%)`,
+			`3) Technical analysis in the following intervals: 30m, 1h, 2h, 4h, 1d (25.5%)`,
+			`4) Open Interest (7.5%)`,
+			`5) Long/Short Ratio (7.5%)`,
+			`6) Volume Direction (2%)`,
+		]);
+	}
+
+
 	/* Profit Optimization Strategy */
 	public profitOptimizationTooltip(): void {
 		this._nav.displayTooltip("Profit Optimization Strategy", [

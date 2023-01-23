@@ -203,7 +203,14 @@
                             <div fxLayout="row" fxLayoutAlign="start start" fxLayoutAlign.xs="center center" fxLayoutAlign.sm="center center"
                                 class="chart-card-heading">
                                 <div class="show-on-desktop">
-                                    <h4>Window</h4>
+                                    <h4>
+                                        Window 
+                                        <mat-icon style="font-size:14px;" 
+                                                class="clickable" 
+                                                role="button" 
+                                                (click)="windowTooltip()" 
+                                                matTooltip="More information">question_mark</mat-icon>
+                                    </h4>
                                     <p class="light-text ts-xs">
                                         {{state.window.ts | date: layout == 'desktop' ? 'medium': 'mediumTime'}}
                                     </p>
@@ -430,11 +437,14 @@
                                             </h4>
                                         </div>
                                         <mat-menu #signalMenu="matMenu">
-                                            <button mat-menu-item>
-                                                <mat-icon>trending_up</mat-icon> <span>View Long Policies</span>
+                                            <button mat-menu-item (click)="displaySignalPoliciesDialog('LONG')">
+                                                <mat-icon>trending_up</mat-icon> <span>Long Policies</span>
                                             </button>
-                                            <button mat-menu-item>
-                                                <mat-icon>trending_down</mat-icon> <span>View Short Policies</span>
+                                            <button mat-menu-item (click)="displaySignalPoliciesDialog('SHORT')">
+                                                <mat-icon>trending_down</mat-icon> <span>Short Policies</span>
+                                            </button>
+                                            <button mat-menu-item (click)="signalTooltip()">
+                                                <mat-icon>question_mark</mat-icon> <span>More information</span>
                                             </button>
                                         </mat-menu>
                                         <span fxFlex class="show-on-desktop"></span>
@@ -455,16 +465,12 @@
                                                 [matMenuTriggerFor]="predictionMenu"
                                                 class="state-badge clickable" role="button" matRipple 
                                                 [ngClass]="{
-                                                    'square-badge-success': activePrediction.r == 1,
-                                                    'square-badge-error': activePrediction.r == -1,
-                                                    'square-badge-neutral': activePrediction.r == 0,
-                                                    'inactive': activePrediction.r == 0
+                                                    'square-badge-success': activePredictionStateIntensity > 0,
+                                                    'square-badge-error': activePredictionStateIntensity < 0,
+                                                    'square-badge-neutral': activePredictionStateIntensity == 0,
+                                                    'inactive': activePredictionStateIntensity != 2 && activePredictionStateIntensity != -2
                                                 }">
-                                                <mat-icon *ngIf="activePredictionStateIntensity == 2" svgIcon="arrow_turn_up"></mat-icon>
-                                                <mat-icon *ngIf="activePredictionStateIntensity == 1" svgIcon="arrow_trend_up"></mat-icon>
-                                                <mat-icon *ngIf="activePredictionStateIntensity == -1" svgIcon="arrow_trend_down"></mat-icon>
-                                                <mat-icon *ngIf="activePredictionStateIntensity == -2" svgIcon="arrow_turn_down"></mat-icon>
-                                                <mat-icon *ngIf="activePredictionStateIntensity == 0" svgIcon="arrow_right"></mat-icon>
+                                                <mat-icon [svgIcon]="_ms.icons[activePredictionStateIntensity]"></mat-icon>
                                                 {{activeSum | number: '1.0-2'}} 
                                                 <span>
                                                     | {{activePredictionState! > 0 ? '+': ''}}{{activePredictionState}}
@@ -483,7 +489,10 @@
                                                     <mat-icon>candlestick_chart</mat-icon> View last 3 days
                                                 </button>
                                                 <button mat-menu-item (click)="displayFeaturesDialog()">
-                                                    <mat-icon>account_tree</mat-icon> View Sum Details
+                                                    <mat-icon>account_tree</mat-icon> View Trend Sum
+                                                </button>
+                                                <button mat-menu-item (click)="predictionModelTooltip()">
+                                                    <mat-icon>question_mark</mat-icon> More information
                                                 </button>
                                             </mat-menu>
                                         </div>
@@ -561,19 +570,16 @@
                                                         </p>
                                                     </div>
                                                     <span fxFlex></span>
-                                                    <div matTooltip="Click for more info"
+                                                    <div matTooltip="More information"
                                                         (click)="volumeTooltip()"
                                                         class="state-badge clickable" role="button" matRipple
                                                         [ngClass]="{
                                                             'square-badge-success': state.volume.state > 0,
                                                             'square-badge-error': state.volume.state < 0,
-                                                            'square-badge-neutral': state.volume.state == 0
+                                                            'square-badge-neutral': state.volume.state == 0,
+                                                            'inactive': state.volume.state != 2 && state.volume.state != -2
                                                         }">
-                                                        <mat-icon *ngIf="state.volume.state == 2" svgIcon="arrow_turn_up"></mat-icon>
-                                                        <mat-icon *ngIf="state.volume.state == 1" svgIcon="arrow_trend_up"></mat-icon>
-                                                        <mat-icon *ngIf="state.volume.state == -1" svgIcon="arrow_trend_down"></mat-icon>
-                                                        <mat-icon *ngIf="state.volume.state == -2" svgIcon="arrow_turn_down"></mat-icon>
-                                                        <mat-icon *ngIf="state.volume.state == 0" svgIcon="arrow_right"></mat-icon>
+                                                        <mat-icon [svgIcon]="_ms.icons[state.volume.state]"></mat-icon>
                                                         {{state.volume.state_value > 0 ? '+': ''}}{{state.volume.state_value | number: '1.0-0'}}%
                                                     </div>
                                                 </div>
@@ -608,19 +614,16 @@
                                                         </p>
                                                     </div>
                                                     <span fxFlex></span>
-                                                    <div matTooltip="Click for more info"
+                                                    <div matTooltip="More information"
                                                         (click)="openInterestTooltip()"
                                                         class="state-badge clickable" role="button" matRipple
                                                         [ngClass]="{
                                                             'square-badge-success': state.open_interest.state > 0,
                                                             'square-badge-error': state.open_interest.state < 0,
-                                                            'square-badge-neutral': state.open_interest.state == 0
+                                                            'square-badge-neutral': state.open_interest.state == 0,
+                                                            'inactive': state.open_interest.state != 2 && state.open_interest.state != -2
                                                         }">
-                                                        <mat-icon *ngIf="state.open_interest.state == 2" svgIcon="arrow_turn_up"></mat-icon>
-                                                        <mat-icon *ngIf="state.open_interest.state == 1" svgIcon="arrow_trend_up"></mat-icon>
-                                                        <mat-icon *ngIf="state.open_interest.state == -1" svgIcon="arrow_trend_down"></mat-icon>
-                                                        <mat-icon *ngIf="state.open_interest.state == -2" svgIcon="arrow_turn_down"></mat-icon>
-                                                        <mat-icon *ngIf="state.open_interest.state == 0" svgIcon="arrow_right"></mat-icon>
+                                                        <mat-icon [svgIcon]="_ms.icons[state.open_interest.state]"></mat-icon>
                                                         {{state.open_interest.state_value > 0 ? '+': ''}}{{state.open_interest.state_value | number: '1.0-1'}}%
                                                     </div>
                                                 </div>
@@ -658,19 +661,16 @@
                                                         </p>
                                                     </div>
                                                     <span fxFlex></span>
-                                                    <div matTooltip="Click for more info"
+                                                    <div matTooltip="More information"
                                                         (click)="longShortRatioTooltip()" 
                                                         class="state-badge clickable" role="button" matRipple
                                                         [ngClass]="{
                                                             'square-badge-success': state.long_short_ratio.state > 0,
                                                             'square-badge-error': state.long_short_ratio.state < 0,
-                                                            'square-badge-neutral': state.long_short_ratio.state == 0
+                                                            'square-badge-neutral': state.long_short_ratio.state == 0,
+                                                            'inactive': state.long_short_ratio.state != 2 && state.long_short_ratio.state != -2
                                                         }">
-                                                        <mat-icon *ngIf="state.long_short_ratio.state == 2" svgIcon="arrow_turn_up"></mat-icon>
-                                                        <mat-icon *ngIf="state.long_short_ratio.state == 1" svgIcon="arrow_trend_up"></mat-icon>
-                                                        <mat-icon *ngIf="state.long_short_ratio.state == -1" svgIcon="arrow_trend_down"></mat-icon>
-                                                        <mat-icon *ngIf="state.long_short_ratio.state == -2" svgIcon="arrow_turn_down"></mat-icon>
-                                                        <mat-icon *ngIf="state.long_short_ratio.state == 0" svgIcon="arrow_right"></mat-icon>
+                                                        <mat-icon [svgIcon]="_ms.icons[state.long_short_ratio.state]"></mat-icon>
                                                         {{state.long_short_ratio.state_value > 0 ? '+': ''}}{{state.long_short_ratio.state_value | number: '1.0-1'}}%
                                                     </div>
                                                 </div>
@@ -708,19 +708,16 @@
                                                         </p>
                                                     </div>
                                                     <span fxFlex></span>
-                                                    <div matTooltip="Click for more info"
+                                                    <div matTooltip="More information"
                                                         (click)="networkFeeTooltip()"
                                                         class="state-badge clickable" role="button" matRipple 
                                                         [ngClass]="{
                                                             'square-badge-success': state.network_fee.state > 0,
                                                             'square-badge-error': state.network_fee.state < 0,
-                                                            'square-badge-neutral': state.network_fee.state == 0
+                                                            'square-badge-neutral': state.network_fee.state == 0,
+                                                            'inactive': state.network_fee.state != 2 && state.network_fee.state != -2
                                                         }">
-                                                        <mat-icon *ngIf="state.network_fee.state == 2" svgIcon="arrow_turn_up"></mat-icon>
-                                                        <mat-icon *ngIf="state.network_fee.state == 1" svgIcon="arrow_trend_up"></mat-icon>
-                                                        <mat-icon *ngIf="state.network_fee.state == -1" svgIcon="arrow_trend_down"></mat-icon>
-                                                        <mat-icon *ngIf="state.network_fee.state == -2" svgIcon="arrow_turn_down"></mat-icon>
-                                                        <mat-icon *ngIf="state.network_fee.state == 0" svgIcon="arrow_right"></mat-icon>
+                                                        <mat-icon [svgIcon]="_ms.icons[state.network_fee.state]"></mat-icon>
                                                         {{state.network_fee.state_value > 0 ? '+': ''}}{{state.network_fee.state_value | number: '1.0-0'}}%
                                                     </div>
                                                 </div>

@@ -1,7 +1,8 @@
-import { ITAIntervalID, ITAState } from "../../../core";
+
 
 
 export interface ITechnicalAnalysisDialogComponent {
+    displayTooltip(): void,
     close(): void
 }
 

@@ -30,7 +30,20 @@ export class MarketStateService implements IMarketStateService {
 		"2": "Increasing Strongly",
 		"-1": "Decreasing",
 		"-2": "Decreasing Strongly"
-	  }
+	}
+
+
+	/**
+	 * Market State Icons
+	 * The names of the svg icons that represent states.
+	 */
+	public readonly icons: {[result: string|number]: string} = {
+		"0": "arrow_right",
+		"1": "arrow_trend_up",
+		"2": "arrow_turn_up",
+		"-1": "arrow_trend_down",
+		"-2": "arrow_turn_down"
+	}
 
 
   	constructor(private _api: ApiService) { }

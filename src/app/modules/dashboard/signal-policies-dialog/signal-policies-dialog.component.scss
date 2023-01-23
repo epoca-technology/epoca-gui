@@ -1,0 +1,38 @@
+
+
+p {margin:0;}
+
+h5{ margin:0;}
+
+
+.policy-items {
+    max-width: 100%;
+    text-align: left;
+    margin-top:10px;
+    .policy-item {
+        margin:5px;
+        display:inline-block;
+    }
+}
+
+.inactive { opacity: 0.65;}
+
+.state-badge { .mat-icon {max-height:17px;}}
+
+.divider { margin: 25px 0 25px 0 }
+
+
+/* Responsiveness */
+
+
+/* mobile: sm & xs */
+@media only screen and (max-width: 959px) {
+
+}
+
+
+
+/* desktop: md */
+@media only screen and (min-width: 960px) {
+
+}
