@@ -227,7 +227,7 @@
                                 <div *ngIf="position.long" 
                                     class="clickable long-position-button truncate" role="button" matRipple
                                     [matMenuTriggerFor]="longMenu"
-                                    matTooltip="{{position.health.long ? position.health.long.chp: 0}} HP {{position.health.long ? position.health.long.dd: 0}}%">
+                                    matTooltip="{{position.health.long ? position.health.long.chp: 0}} HP {{position.health.long ? position.health.long.dd: 0}}% | 0%">
                                     <div *ngIf="position.health.long" class="hp" 
                                             [ngStyle]="{'width': -(position.health.long.dd) + '%'}"></div>
                                     <p>
@@ -318,7 +318,7 @@
                                 <div *ngIf="position.short" 
                                     class="clickable short-position-button truncate" role="button" matRipple
                                     [matMenuTriggerFor]="shortMenu"
-                                    matTooltip="{{position.health.short ? position.health.short.chp: 0}} HP {{position.health.short ? position.health.short.dd: 0}}%">
+                                    matTooltip="{{position.health.short ? position.health.short.chp: 0}} HP {{position.health.short ? position.health.short.dd: 0}}% | 0%">
                                     <div *ngIf="position.health.short" class="hp" 
                                             [ngStyle]="{'width': -(position.health.short.dd)  + '%'}"></div>
                                     <p>
@@ -429,6 +429,7 @@
                                         <div fxLayout="row"
                                             class="clickable" role="button"
                                             [matMenuTriggerFor]="signalMenu"
+                                            [ngClass]="{'state': signal == 0}"
                                             matTooltip="Pred: {{predLastUpdate}} | TA: {{taLastUpdate}}">
                                             <mat-icon>podcasts</mat-icon>&nbsp;
                                             <h4 *ngIf="!activePrediction">Neutral</h4>
@@ -443,9 +444,6 @@
                                             <button mat-menu-item (click)="displaySignalPoliciesDialog('SHORT')">
                                                 <mat-icon>trending_down</mat-icon> <span>Short Policies</span>
                                             </button>
-                                            <button mat-menu-item (click)="signalTooltip()">
-                                                <mat-icon>question_mark</mat-icon> <span>More information</span>
-                                            </button>
                                         </mat-menu>
                                         <span fxFlex class="show-on-desktop"></span>
                                         <div fxLayout="row" fxLayoutAlign="center center" class="prediction-header-indicators">
@@ -456,7 +454,8 @@
                                                     'square-badge-success': state.technical_analysis[taInterval].s.a > 0,
                                                     'square-badge-error': state.technical_analysis[taInterval].s.a < 0,
                                                     'square-badge-neutral': state.technical_analysis[taInterval].s.a == 0,
-                                                    'inactive': state.technical_analysis[taInterval].s.a != 2 && state.technical_analysis[taInterval].s.a != -2
+                                                    'state': state.technical_analysis[taInterval].s.a == 1 || state.technical_analysis[taInterval].s.a == -1,
+                                                    'stateless': state.technical_analysis[taInterval].s.a == 0
                                                 }" matTooltip="Osc: {{_ms.taStates[state.technical_analysis[taInterval].o.a]}} | MA: {{_ms.taStates[state.technical_analysis[taInterval].m.a]}}">
                                                 {{taInterval}}
                                             </div>
@@ -468,7 +467,8 @@
                                                     'square-badge-success': activePredictionStateIntensity > 0,
                                                     'square-badge-error': activePredictionStateIntensity < 0,
                                                     'square-badge-neutral': activePredictionStateIntensity == 0,
-                                                    'inactive': activePredictionStateIntensity != 2 && activePredictionStateIntensity != -2
+                                                    'state': activePredictionStateIntensity == 1 || activePredictionStateIntensity == -1,
+                                                    'stateless': activePredictionStateIntensity == 0
                                                 }">
                                                 <mat-icon [svgIcon]="_ms.icons[activePredictionStateIntensity]"></mat-icon>
                                                 {{activeSum | number: '1.0-2'}} 
@@ -560,7 +560,10 @@
                                     <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" class="full-width">
                                         <!-- Volume -->
                                         <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
-                                            <div>
+                                            <div [ngClass]="{
+                                                    'state': state.volume.state == 1 || state.volume.state == -1,
+                                                    'stateless': state.volume.state == 0
+                                                }">
                                                 <!-- Heading -->
                                                 <div fxLayout="row" fxLayoutAlign="start start" class="chart-card-heading">
                                                     <div>
@@ -576,8 +579,7 @@
                                                         [ngClass]="{
                                                             'square-badge-success': state.volume.state > 0,
                                                             'square-badge-error': state.volume.state < 0,
-                                                            'square-badge-neutral': state.volume.state == 0,
-                                                            'inactive': state.volume.state != 2 && state.volume.state != -2
+                                                            'square-badge-neutral': state.volume.state == 0
                                                         }">
                                                         <mat-icon [svgIcon]="_ms.icons[state.volume.state]"></mat-icon>
                                                         {{state.volume.state_value > 0 ? '+': ''}}{{state.volume.state_value | number: '1.0-0'}}%
@@ -604,7 +606,10 @@
                     
                                         <!-- Open Interest -->
                                         <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
-                                            <div>
+                                            <div [ngClass]="{
+                                                    'state': state.open_interest.state == 1 || state.open_interest.state == -1,
+                                                    'stateless': state.open_interest.state == 0
+                                                }">
                                                 <!-- Heading -->
                                                 <div fxLayout="row" fxLayoutAlign="start start" class="chart-card-heading">
                                                     <div>
@@ -620,8 +625,7 @@
                                                         [ngClass]="{
                                                             'square-badge-success': state.open_interest.state > 0,
                                                             'square-badge-error': state.open_interest.state < 0,
-                                                            'square-badge-neutral': state.open_interest.state == 0,
-                                                            'inactive': state.open_interest.state != 2 && state.open_interest.state != -2
+                                                            'square-badge-neutral': state.open_interest.state == 0
                                                         }">
                                                         <mat-icon [svgIcon]="_ms.icons[state.open_interest.state]"></mat-icon>
                                                         {{state.open_interest.state_value > 0 ? '+': ''}}{{state.open_interest.state_value | number: '1.0-1'}}%
@@ -651,7 +655,10 @@
                                     <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" class="full-width">
                                         <!-- Long/Short Ratio -->
                                         <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
-                                            <div>
+                                            <div [ngClass]="{
+                                                    'state': state.long_short_ratio.state == 1 || state.long_short_ratio.state == -1,
+                                                    'stateless': state.long_short_ratio.state == 0
+                                                }">
                                                 <!-- Heading -->
                                                 <div fxLayout="row" fxLayoutAlign="start start" class="chart-card-heading">
                                                     <div>
@@ -667,8 +674,7 @@
                                                         [ngClass]="{
                                                             'square-badge-success': state.long_short_ratio.state > 0,
                                                             'square-badge-error': state.long_short_ratio.state < 0,
-                                                            'square-badge-neutral': state.long_short_ratio.state == 0,
-                                                            'inactive': state.long_short_ratio.state != 2 && state.long_short_ratio.state != -2
+                                                            'square-badge-neutral': state.long_short_ratio.state == 0
                                                         }">
                                                         <mat-icon [svgIcon]="_ms.icons[state.long_short_ratio.state]"></mat-icon>
                                                         {{state.long_short_ratio.state_value > 0 ? '+': ''}}{{state.long_short_ratio.state_value | number: '1.0-1'}}%
@@ -698,7 +704,10 @@
 
                                         <!-- Network Fee -->
                                         <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
-                                            <div>
+                                            <div [ngClass]="{
+                                                    'state': state.network_fee.state == 1 || state.network_fee.state == -1,
+                                                    'stateless': state.network_fee.state == 0
+                                                }">
                                                 <!-- Heading -->
                                                 <div fxLayout="row" fxLayoutAlign="start start" class="chart-card-heading">
                                                     <div>
@@ -714,8 +723,7 @@
                                                         [ngClass]="{
                                                             'square-badge-success': state.network_fee.state > 0,
                                                             'square-badge-error': state.network_fee.state < 0,
-                                                            'square-badge-neutral': state.network_fee.state == 0,
-                                                            'inactive': state.network_fee.state != 2 && state.network_fee.state != -2
+                                                            'square-badge-neutral': state.network_fee.state == 0
                                                         }">
                                                         <mat-icon [svgIcon]="_ms.icons[state.network_fee.state]"></mat-icon>
                                                         {{state.network_fee.state_value > 0 ? '+': ''}}{{state.network_fee.state_value | number: '1.0-0'}}%

@@ -18,7 +18,6 @@ export interface IDashboardComponent {
     // Tooltips
     windowTooltip(): void,
     predictionModelTooltip(): void,
-    signalTooltip(): void,
     volumeTooltip(): void,
     openInterestTooltip(): void,
     longShortRatioTooltip(): void,

@@ -15,24 +15,40 @@
     <div class="component">
         <!-- HP -->
         <div class="clickable mat-elevation-z2" role="button" matRipple 
+            matTooltip="HP (HP Drawdown%) | Gain Drawdown%"
             (click)="displayHealthDialog()"
             [ngClass]="{
                 'long-position-button': position.side == 'LONG',
                 'short-position-button': position.side == 'SHORT'
             }">
             <div class="hp" [ngStyle]="{'width': -(health.dd) + '%'}"></div>
-            <p>{{health.chp}} HP {{health.dd}}%</p>
+            <p>{{health.chp}} HP {{health.dd}}% | 0%</p>
         </div>
 
         <!-- Position Details-->
         <div class="padding">
-            <!-- Mark Price -->
+            <!-- Open -->
             <div fxLayout="row" fxLayoutAlign="start start">
+                <p class="light-text ts-m truncate">Open</p>
+                <span fxFlex></span>
+                <p matTooltip="The time at which the Position Health record was created.">
+                    {{health.ts | date: 'medium'}}
+                </p>
+            </div>
+
+            <!-- Mark Price -->
+            <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
                 <p class="light-text ts-m truncate">Mark Price</p>
                 <span fxFlex></span>
-                <p matTooltip="Binance mark price when the active positions were updated.">
-                    <strong>{{position.mark_price | currency}}</strong>
-                </p>
+                <div class="align-right">
+                    <p matTooltip="Binance mark price when the active positions were updated." 
+                        [ngClass]="{'error-color': spotDistance && (spotDistance > 1 || spotDistance < -1)}">
+                        {{position.mark_price | currency}}
+                    </p>
+                    <p *ngIf="spotDistance && (spotDistance > 1 || spotDistance < -1)" class="error-color ts-xs">
+                        {{spotDistance}}% away from spot
+                    </p>
+                </div>
             </div>
 
             <!-- Entry Price -->

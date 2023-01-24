@@ -18,5 +18,8 @@ export interface IActivePositionDialogData {
     position: IActivePosition,
 
     // The health of the active position
-    health: IPositionSideHealth
+    health: IPositionSideHealth,
+
+    // The current spot price
+    spotPrice: number
 }

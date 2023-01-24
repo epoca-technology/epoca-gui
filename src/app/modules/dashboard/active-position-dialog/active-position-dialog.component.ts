@@ -23,6 +23,7 @@ export class ActivePositionDialogComponent implements OnInit, IActivePositionDia
 	public health: IPositionSideHealth;
 
 	// Distances
+	public spotDistance: number;
 	public liquidationDistance: number;
 	public takeProfit1Distance: number|undefined;
 	public takeProfit2Distance: number|undefined;
@@ -43,6 +44,12 @@ export class ActivePositionDialogComponent implements OnInit, IActivePositionDia
 		this.strategy = this.data.strategy;
 		this.position = this.data.position;
 		this.health = this.data.health;
+
+		// Calculate the spot price distance
+		this.spotDistance = <number>this._utils.calculatePercentageChange(
+			this.position.mark_price, 
+			this.data.spotPrice
+		);
 
 		// Calculate the liquidation distance
 		const liquidationDistance: number = <number>this._utils.calculatePercentageChange(

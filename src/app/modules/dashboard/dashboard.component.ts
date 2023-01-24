@@ -1526,7 +1526,8 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             data: <IActivePositionDialogData> {
                 strategy: this.position.strategy,
                 position: position,
-                health: position.side == "LONG" ? this.position.health.long: this.position.health.short
+                health: position.side == "LONG" ? this.position.health.long: this.position.health.short,
+                spotPrice: this.state.window.window[this.state.window.window.length - 1].c
             }
 		})
 	}
@@ -1619,6 +1620,11 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         this._nav.displayTooltip("Market State Window", [
             `The market state operates in a moving window of 64 30-minute-interval candlesticks (~32 hours) that is synced 
             every ~4 seconds through Binance Spot's API.`,
+            `Additionally, the following market state submodules also make use of this exact window of time:`,
+            `1) Volume`,
+            `2) Open Interest`,
+            `3) Long/Short Ratio`,
+            `4) Network Fee`,
         ]);
     }
 
@@ -1641,16 +1647,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             This value can range from -9 to 9.`,
             `5) Prediction State Intensity: the intensity of the prediction state. This value can range from -2 to 2, if it is 0,
             the trend sum is going sideways.`,
-        ]);
-    }
-
-
-
-    // Signal Module
-    public signalTooltip(): void {
-        this._nav.displayTooltip("Signal Policies", [
-            `When a new prediction is generated, it is put through the signal policies. If the model generated a non-neutral prediction or 
-            an issuance policy is triggered, it is put through the cancellation policies.`,
         ]);
     }
 

@@ -41,7 +41,7 @@ export class AppComponent implements IAppComponent {
     "hardware_chip", "ssid_chart", "brain", "auto_graph", "bug_report", "file_csv", "file_waveform",
     "wand_magic_sparkles", "flask_vial", "book", "microscope", "file_invoice", "coins", "bitcoin", "gauge",
     "file_signature", "file_circle_check", "compass_drafting", "terminal", "file_zipper", "money_bill_transfer",
-    "arrow_right", "arrow_trend_down", "arrow_trend_up", "arrow_turn_down", "arrow_turn_up"];
+    "arrow_right", "arrow_trend_down", "arrow_trend_up", "arrow_turn_down", "arrow_turn_up", "angle_up", "angle_down"];
 	
 	// Route State
 	public state: IRouteState = this._nav.routeState.value;

@@ -219,7 +219,7 @@ export class StrategyFormDialogComponent implements OnInit, IStrategyFormDialogC
 			system relies on some components that can only be updated every 10-20 seconds, rendering it useless against market conditions where the 
 			price can change significantly in just a few seconds.`,
 			`On the other hand, the gain is calculated and evaluated every ~4 seconds, making it the perfect tool for securing profits when the price 
-			moves strongly against the position.`,
+			moves strongly against the position. Beware that this tool should be used carefully as the price can sometimes move slightly against a position, but ultimately move in favor.`,
 			`In conclusion, the health points system can be used for increasing profits and reducing losses. Whereas, the gain can be used to secure 
 			profits once a high take profit level has been activated.`,
 			`________`,

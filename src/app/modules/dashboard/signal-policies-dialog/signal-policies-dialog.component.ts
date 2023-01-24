@@ -55,8 +55,20 @@ export class SignalPoliciesDialogComponent implements OnInit, ISignalPoliciesDia
 	 */
 	public displayTooltip(): void {
         this._nav.displayTooltip("Signal Policies", [
-            `When a new prediction is generated, it is put through the signal policies. If the model generated a non-neutral prediction or 
-            an issuance policy is triggered, it is put through the cancellation policies.`,
+            `Every time the model predicts, the results and the current market state are put through 
+			the issuance policies. If a non-neutral signal is generated, it is then put through the 
+			cancellation policies and if no violations are found, the position for the signal side is 
+			opened (if allowed by the Trading Strategy).`,
+			`The signal policies' module makes use of the following components:`,
+			`1) Prediction Model:`,
+			`    - Trend Sum`,
+			`    - Trend State`,
+			`    - Trend State Intensity`,
+			`2) Market State:`,
+			`    - Window State`,
+			`    - Technical Analysis State`,
+			`    - Open Interest State`,
+			`    - Long/Short Ratio State`,
         ]);
 	}
 
