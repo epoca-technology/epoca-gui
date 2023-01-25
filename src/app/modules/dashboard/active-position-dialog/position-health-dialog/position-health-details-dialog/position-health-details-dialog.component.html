@@ -36,9 +36,19 @@
             <p>{{health.chp | number: '1.0-2'}} HP</p>
         </div>
         <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
-            <p class="light-text ts-xs truncate">Drawdown</p>
+            <p class="light-text ts-xs truncate">HP Drawdown</p>
             <span fxFlex></span>
             <p><strong>{{health.dd | number: '1.0-2'}}%</strong></p>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+            <p class="light-text ts-xs truncate">Max Gain</p>
+            <span fxFlex></span>
+            <p>{{health.mg | number: '1.0-2'}}%</p>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+            <p class="light-text ts-xs truncate">Max Gain Drawdown</p>
+            <span fxFlex></span>
+            <p><strong>{{health.mgdd | number: '1.0-2'}}%</strong></p>
         </div>
     </div>
 </div>

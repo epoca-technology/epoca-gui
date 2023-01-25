@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
-import { IBinancePositionSide, ISignalSidePolicies, ITAIntervalID, ITAIntervalState, ITAIntervalStateResult, MarketStateService, SignalService } from '../../../core';
-import { AppService, ChartService, IBarChartOptions, ILayout, NavService } from '../../../services';
+import { IBinancePositionSide, ISignalSidePolicies, MarketStateService, SignalService } from '../../../core';
+import { AppService, NavService } from '../../../services';
 import { ISignalPoliciesDialogComponent } from './interfaces';
 
 @Component({
@@ -13,12 +13,20 @@ export class SignalPoliciesDialogComponent implements OnInit, ISignalPoliciesDia
 	// Policies
 	public policies!: ISignalSidePolicies;
 
-	// Helpers
-	public min_increase_sum?: number;
-	public min_decrease_sum?: number;
-
 	// Tabs
 	public activeIndex: number = 0;
+
+	// Sum Helpers
+	public readonly sumClass = {
+		"-1": "square-badge-error",
+		"0": "square-badge-neutral",
+		"1": "square-badge-success"
+	}
+	public readonly sumText = {
+		"-1": "Trend Sum < 0",
+		"0": "Any Trend Sum",
+		"1": "Trend Sum > 0"
+	}
 
 	// Load state
 	public loaded: boolean = false;
@@ -37,10 +45,6 @@ export class SignalPoliciesDialogComponent implements OnInit, ISignalPoliciesDia
 		try {
 			this.policies = await this._signal.getPolicies(this.side);
 		} catch (e) { this._app.error(e) }
-		if (this._app.epoch.value) {
-			this.min_increase_sum = this._app.epoch.value.model.min_increase_sum;
-			this.min_decrease_sum = this._app.epoch.value.model.min_decrease_sum;
-		}
 		this.loaded = true;
 	}
 

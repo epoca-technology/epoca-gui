@@ -1,7 +1,7 @@
 <mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
     <div fxLayout="row" fxLayoutAlign="center center">
         <button mat-icon-button class="show-on-mobile" (click)="close()"><mat-icon>arrow_back</mat-icon></button>
-        <span class="truncate">{{side}}: {{health.chp | number: '1.0-2'}} HP {{health.dd}}% | 0%</span>
+        <span class="truncate">{{side}}: {{health.chp | number: '1.0-2'}} HP {{health.dd}}% | {{health.mgdd}}%</span>
         <span fxFlex></span>
         <button mat-icon-button (click)="displayHealthDetailsDialog()" matTooltip="View Health Details"><mat-icon>info</mat-icon></button>
         <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
@@ -26,7 +26,7 @@
             ></apx-chart>
         </div>
 
-        <!-- Drawdown Chart -->
+        <!-- HP Drawdown Chart -->
         <div *ngIf="ddChart">
             <apx-chart
                 [series]="ddChart.series!"
@@ -36,6 +36,19 @@
                 [yaxis]="ddChart.yaxis!"
                 [annotations]="ddChart!.annotations!"
                 [title]="ddChart.title!"
+            ></apx-chart>
+        </div>
+
+        <!-- Gain Drawdown Chart -->
+        <div *ngIf="mgddChart">
+            <apx-chart
+                [series]="mgddChart.series!"
+                [chart]="mgddChart.chart!"
+                [plotOptions]="mgddChart.plotOptions!"
+                [xaxis]="mgddChart.xaxis!"
+                [yaxis]="mgddChart.yaxis!"
+                [annotations]="mgddChart!.annotations!"
+                [title]="mgddChart.title!"
             ></apx-chart>
         </div>
     </div>

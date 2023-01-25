@@ -30,7 +30,7 @@
                 <h5 class="truncate">Pred. Model Strong Trend</h5>
                 <div *ngIf="side == 'LONG'" class="policy-items">
                     <div class="policy-item square-badge-success">
-                        Trend Sum >= {{min_increase_sum ? min_increase_sum: 'min_increase_sum'}}
+                        Trend Sum >= min_increase_sum
                     </div>
                     <div class="policy-item state-badge square-badge-success state" [matTooltip]="_ms.marketStates[1]">
                         <mat-icon svgIcon="arrow_trend_up"></mat-icon> Trend State +3<mat-icon class="caret" svgIcon="angle_up"></mat-icon>
@@ -38,7 +38,7 @@
                 </div>
                 <div *ngIf="side == 'SHORT'" class="policy-items">
                     <div class="policy-item square-badge-error">
-                        Trend Sum <= {{min_decrease_sum ? min_decrease_sum: 'min_decrease_sum'}}
+                        Trend Sum <= min_decrease_sum
                     </div>
                     <div class="policy-item state-badge square-badge-error state" [matTooltip]="_ms.marketStates[-1]">
                         <mat-icon svgIcon="arrow_trend_down"></mat-icon> Trend State -3<mat-icon class="caret" svgIcon="angle_down"></mat-icon>
@@ -52,19 +52,19 @@
             <div>
                 <h5 class="truncate">Pred. Model Strong Trend Reversal</h5>
                 <div *ngIf="side == 'LONG'" class="policy-items">
-                    <div class="policy-item square-badge-success">
-                        Trend Sum >= {{min_decrease_sum ? min_decrease_sum: 'min_decrease_sum'}}
+                    <div class="policy-item square-badge-error">
+                        Trend Sum >= min_decrease_sum
                     </div>
                     <div class="policy-item state-badge square-badge-success" [matTooltip]="_ms.marketStates[2]">
-                        <mat-icon svgIcon="arrow_turn_up"></mat-icon> Trend State +5<mat-icon class="caret" svgIcon="angle_up"></mat-icon>
+                        <mat-icon svgIcon="arrow_turn_up"></mat-icon> Trend State +5
                     </div>
                 </div>
                 <div *ngIf="side == 'SHORT'" class="policy-items">
-                    <div class="policy-item square-badge-error">
-                        Trend Sum <= {{min_increase_sum ? min_increase_sum: 'min_increase_sum'}}
+                    <div class="policy-item square-badge-success">
+                        Trend Sum <= min_increase_sum
                     </div>
                     <div class="policy-item state-badge square-badge-error" [matTooltip]="_ms.marketStates[-2]">
-                        <mat-icon svgIcon="arrow_turn_down"></mat-icon> Trend State -5<mat-icon class="caret" svgIcon="angle_down"></mat-icon>
+                        <mat-icon svgIcon="arrow_turn_down"></mat-icon> Trend State -5
                     </div>
                 </div>
             </div>
@@ -75,6 +75,10 @@
             <div>
                 <h5 class="truncate">Technicals</h5>
                 <div class="policy-items">
+                    <div class="policy-item {{sumClass[policies.issuance.technicals.trend_sum]}}"
+                        [ngClass]="{'state': policies.issuance.technicals.trend_sum != 0}">
+                        {{sumText[policies.issuance.technicals.trend_sum]}}<mat-icon *ngIf="policies.issuance.technicals.trend_sum != 1 && policies.issuance.technicals.trend_sum != -1" class="caret" svgIcon="{{side == 'LONG' ? 'angle_up': 'angle_down'}}"></mat-icon>
+                    </div>
                     <div class="policy-item state-badge"
                         [matTooltip]="_ms.marketStates[policies.issuance.technicals.trend_intensity]"
                         [ngClass]="{
@@ -150,6 +154,10 @@
             <div>
                 <h5 class="truncate">Technicals Open Interest</h5>
                 <div class="policy-items">
+                    <div class="policy-item {{sumClass[policies.issuance.technicals_open_interest.trend_sum]}}"
+                        [ngClass]="{'state': policies.issuance.technicals_open_interest.trend_sum != 0}">
+                        {{sumText[policies.issuance.technicals_open_interest.trend_sum]}}<mat-icon *ngIf="policies.issuance.technicals_open_interest.trend_sum != 1 && policies.issuance.technicals_open_interest.trend_sum != -1" class="caret" svgIcon="{{side == 'LONG' ? 'angle_up': 'angle_down'}}"></mat-icon>
+                    </div>
                     <div class="policy-item state-badge"
                         [matTooltip]="_ms.marketStates[policies.issuance.technicals_open_interest.trend_intensity]"
                         [ngClass]="{
@@ -214,6 +222,10 @@
             <div>
                 <h5 class="truncate">Technicals Long/Short Ratio</h5>
                 <div class="policy-items">
+                    <div class="policy-item {{sumClass[policies.issuance.technicals_long_short_ratio.trend_sum]}}"
+                        [ngClass]="{'state': policies.issuance.technicals_long_short_ratio.trend_sum != 0}">
+                        {{sumText[policies.issuance.technicals_long_short_ratio.trend_sum]}}<mat-icon *ngIf="policies.issuance.technicals_long_short_ratio.trend_sum != 1 && policies.issuance.technicals_long_short_ratio.trend_sum != -1" class="caret" svgIcon="{{side == 'LONG' ? 'angle_up': 'angle_down'}}"></mat-icon>
+                    </div>
                     <div class="policy-item state-badge"
                         [matTooltip]="_ms.marketStates[policies.issuance.technicals_long_short_ratio.trend_intensity]"
                         [ngClass]="{
@@ -278,6 +290,10 @@
             <div>
                 <h5 class="truncate">Open Interest Long/Short Ratio</h5>
                 <div class="policy-items">
+                    <div class="policy-item {{sumClass[policies.issuance.open_interest_long_short_ratio.trend_sum]}}"
+                        [ngClass]="{'state': policies.issuance.open_interest_long_short_ratio.trend_sum != 0}">
+                        {{sumText[policies.issuance.open_interest_long_short_ratio.trend_sum]}}<mat-icon *ngIf="policies.issuance.open_interest_long_short_ratio.trend_sum != 1 && policies.issuance.open_interest_long_short_ratio.trend_sum != -1" class="caret" svgIcon="{{side == 'LONG' ? 'angle_up': 'angle_down'}}"></mat-icon>
+                    </div>
                     <div class="policy-item state-badge"
                         [matTooltip]="_ms.marketStates[policies.issuance.open_interest_long_short_ratio.trend_intensity]"
                         [ngClass]="{

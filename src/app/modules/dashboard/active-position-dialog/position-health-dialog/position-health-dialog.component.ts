@@ -3,7 +3,8 @@ import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog
 import { AppService, ChartService, ICandlestickChartOptions } from '../../../../services';
 import { 
 	IBinancePositionSide, 
-	IPositionHealthCandlesticks, 
+	IPositionHealthCandlestick,
+	IPositionHealthCandlestickRecord, 
 	IPositionSideHealth, 
 	PositionService 
 } from '../../../../core';
@@ -23,6 +24,7 @@ export class PositionHealthDialogComponent implements OnInit, IPositionHealthDia
 	// Charts
 	public hpChart!: ICandlestickChartOptions;
 	public ddChart!: ICandlestickChartOptions;
+	public mgddChart!: ICandlestickChartOptions;
 
 	// Load state
 	public loaded: boolean = false;
@@ -43,10 +45,9 @@ export class PositionHealthDialogComponent implements OnInit, IPositionHealthDia
 
 		// Retrieve the candlesticks and build the charts
 		try {
-			const candlesticks: IPositionHealthCandlesticks = 
-				await this._position.getPositionHealthCandlesticks(this.side);
+			const { hp, dd, mgdd } = await this.getCandlesticks();
 			this.hpChart = this._chart.getCandlestickChartOptions(
-				candlesticks.hp, 
+				hp, 
 				undefined, 
 				false, 
 				true,
@@ -56,7 +57,7 @@ export class PositionHealthDialogComponent implements OnInit, IPositionHealthDia
 			);
 			this.hpChart.chart!.zoom = {enabled: false};
 			this.ddChart = this._chart.getCandlestickChartOptions(
-				candlesticks.dd, 
+				dd, 
 				undefined, 
 				false, 
 				true,
@@ -65,12 +66,67 @@ export class PositionHealthDialogComponent implements OnInit, IPositionHealthDia
 				"Health Points Drawdown%"
 			);
 			this.ddChart.chart!.zoom = {enabled: false};
+			this.mgddChart = this._chart.getCandlestickChartOptions(
+				mgdd, 
+				undefined, 
+				false, 
+				true,
+				undefined,
+				330,
+				"Max Gain Drawdown%"
+			);
+			this.mgddChart.chart!.zoom = {enabled: false};
 		} catch (e) { this._app.error(e) }
 
 		// Set the component as loaded
 		this.loaded = true;
 	}
 
+
+
+
+
+
+	/**
+	 * Retrieves the position health candlestick records and unpacks them.
+	 * @returns Promise<{hp: IPositionHealthCandlestick[], dd: IPositionHealthCandlestick[], mgdd: IPositionHealthCandlestick[]}>
+	 */
+	private async getCandlesticks(): Promise<{hp: IPositionHealthCandlestick[], dd: IPositionHealthCandlestick[], mgdd: IPositionHealthCandlestick[]}> {
+		// Init the unpacked lists
+		let hp: IPositionHealthCandlestick[] = [];
+		let dd: IPositionHealthCandlestick[] = [];
+		let mgdd: IPositionHealthCandlestick[] = [];
+
+		// Download the candlestick records and unpack them
+		const candlesticks: IPositionHealthCandlestickRecord[] = await this._position.getPositionHealthCandlesticks(this.side);
+		for (let candlestick of candlesticks) {
+			hp.push({ 
+				ot: candlestick.ot,
+				o: candlestick.d.o[0],
+				h: candlestick.d.h[0],
+				l: candlestick.d.l[0],
+				c: candlestick.d.c[0],
+			});
+			dd.push({ 
+				ot: candlestick.ot,
+				o: candlestick.d.o[1],
+				h: candlestick.d.h[1],
+				l: candlestick.d.l[1],
+				c: candlestick.d.c[1],
+			});
+			mgdd.push({ 
+				ot: candlestick.ot,
+				o: candlestick.d.o[2],
+				h: candlestick.d.h[2],
+				l: candlestick.d.l[2],
+				c: candlestick.d.c[2],
+			});
+		}
+
+
+		// Finally, return the unpacked candlesticks
+		return { hp: hp, dd: dd, mgdd: mgdd }
+	}
 
 
 

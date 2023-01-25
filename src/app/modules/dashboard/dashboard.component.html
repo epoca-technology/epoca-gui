@@ -227,12 +227,12 @@
                                 <div *ngIf="position.long" 
                                     class="clickable long-position-button truncate" role="button" matRipple
                                     [matMenuTriggerFor]="longMenu"
-                                    matTooltip="{{position.health.long ? position.health.long.chp: 0}} HP {{position.health.long ? position.health.long.dd: 0}}% | 0%">
+                                    [matTooltip]="longHPStatus">
                                     <div *ngIf="position.health.long" class="hp" 
                                             [ngStyle]="{'width': -(position.health.long.dd) + '%'}"></div>
                                     <p>
                                         LONG: 
-                                        {{position.long.unrealized_pnl > 0 ? '+': ''}}{{position.long.unrealized_pnl | number: '1.1-1'}} | 
+                                        {{position.long.unrealized_pnl > 0 ? '+': ''}}{{position.long.unrealized_pnl | currency: '$':'symbol':'1.1-1'}} | 
                                         {{position.long.roe > 0 ? '+': ''}}{{position.long.roe | number: '1.1-1'}}%
                                     </p>
                                 </div>
@@ -318,12 +318,12 @@
                                 <div *ngIf="position.short" 
                                     class="clickable short-position-button truncate" role="button" matRipple
                                     [matMenuTriggerFor]="shortMenu"
-                                    matTooltip="{{position.health.short ? position.health.short.chp: 0}} HP {{position.health.short ? position.health.short.dd: 0}}% | 0%">
+                                    [matTooltip]="shortHPStatus">
                                     <div *ngIf="position.health.short" class="hp" 
                                             [ngStyle]="{'width': -(position.health.short.dd)  + '%'}"></div>
                                     <p>
                                         SHORT:
-                                        {{position.short.unrealized_pnl > 0 ? '+': ''}}{{position.short.unrealized_pnl | number: '1.1-1'}} | 
+                                        {{position.short.unrealized_pnl > 0 ? '+': ''}}{{position.short.unrealized_pnl | currency: '$':'symbol':'1.1-1'}} | 
                                         {{position.short.roe > 0 ? '+': ''}}{{position.short.roe | number: '1.1-1'}}%
                                     </p>
                                 </div>

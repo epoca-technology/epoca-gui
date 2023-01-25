@@ -41,17 +41,22 @@ export class StrategyFormDialogComponent implements OnInit, IStrategyFormDialogC
             position_size: new FormControl(this.strategy.position_size, [ Validators.required, Validators.min(150), Validators.max(100000) ]),
             take_profit_1_pcr: new FormControl(this.strategy.take_profit_1.price_change_requirement, [ Validators.required, Validators.min(0.4), Validators.max(10) ]),
             take_profit_1_dd: new FormControl(this.strategy.take_profit_1.max_hp_drawdown, [ Validators.required, Validators.min(-70), Validators.max(0) ]),
+            take_profit_1_gdd: new FormControl(this.strategy.take_profit_1.max_gain_drawdown, [ Validators.required, Validators.min(-100), Validators.max(-0.01) ]),
             take_profit_2_pcr: new FormControl(this.strategy.take_profit_2.price_change_requirement, [ Validators.required, Validators.min(0.4), Validators.max(10) ]),
             take_profit_2_dd: new FormControl(this.strategy.take_profit_2.max_hp_drawdown, [ Validators.required, Validators.min(-70), Validators.max(0) ]),
+            take_profit_2_gdd: new FormControl(this.strategy.take_profit_2.max_gain_drawdown, [ Validators.required, Validators.min(-100), Validators.max(-0.01) ]),
             take_profit_3_pcr: new FormControl(this.strategy.take_profit_3.price_change_requirement, [ Validators.required, Validators.min(0.4), Validators.max(10) ]),
             take_profit_3_dd: new FormControl(this.strategy.take_profit_3.max_hp_drawdown, [ Validators.required, Validators.min(-70), Validators.max(0) ]),
+            take_profit_3_gdd: new FormControl(this.strategy.take_profit_3.max_gain_drawdown, [ Validators.required, Validators.min(-100), Validators.max(-0.01) ]),
             take_profit_4_pcr: new FormControl(this.strategy.take_profit_4.price_change_requirement, [ Validators.required, Validators.min(0.4), Validators.max(10) ]),
             take_profit_4_dd: new FormControl(this.strategy.take_profit_4.max_hp_drawdown, [ Validators.required, Validators.min(-70), Validators.max(0) ]),
+            take_profit_4_gdd: new FormControl(this.strategy.take_profit_4.max_gain_drawdown, [ Validators.required, Validators.min(-100), Validators.max(-0.01) ]),
             take_profit_5_pcr: new FormControl(this.strategy.take_profit_5.price_change_requirement, [ Validators.required, Validators.min(0.4), Validators.max(10) ]),
             take_profit_5_dd: new FormControl(this.strategy.take_profit_5.max_hp_drawdown, [ Validators.required, Validators.min(-70), Validators.max(0) ]),
+            take_profit_5_gdd: new FormControl(this.strategy.take_profit_5.max_gain_drawdown, [ Validators.required, Validators.min(-100), Validators.max(-0.01) ]),
+            max_hp_drawdown_in_profit: new FormControl(this.strategy.max_hp_drawdown_in_profit, [ Validators.required, Validators.min(-99), Validators.max(-10) ]),
             stop_loss: new FormControl(this.strategy.stop_loss, [ Validators.required, Validators.min(0.5), Validators.max(10) ]),
-            max_hp_drawdown_in_profit: new FormControl(this.strategy.max_hp_drawdown_in_profit, [ Validators.required, Validators.min(-99), Validators.max(-20) ]),
-            max_hp_drawdown_in_loss: new FormControl(this.strategy.max_hp_drawdown_in_loss, [ Validators.required, Validators.min(-99), Validators.max(-30) ]),
+            max_hp_drawdown_in_loss: new FormControl(this.strategy.max_hp_drawdown_in_loss, [ Validators.required, Validators.min(-99), Validators.max(-10) ]),
             long_idle_minutes: new FormControl(this.strategy.long_idle_minutes, [ Validators.required, Validators.min(1), Validators.max(1000) ]),
             short_idle_minutes: new FormControl(this.strategy.short_idle_minutes, [ Validators.required, Validators.min(1), Validators.max(1000) ])
         });
@@ -72,16 +77,21 @@ export class StrategyFormDialogComponent implements OnInit, IStrategyFormDialogC
 	get position_size(): AbstractControl { return <AbstractControl>this.form.get("position_size") }
 	get take_profit_1_pcr(): AbstractControl { return <AbstractControl>this.form.get("take_profit_1_pcr") }
 	get take_profit_1_dd(): AbstractControl { return <AbstractControl>this.form.get("take_profit_1_dd") }
+	get take_profit_1_gdd(): AbstractControl { return <AbstractControl>this.form.get("take_profit_1_gdd") }
 	get take_profit_2_pcr(): AbstractControl { return <AbstractControl>this.form.get("take_profit_2_pcr") }
 	get take_profit_2_dd(): AbstractControl { return <AbstractControl>this.form.get("take_profit_2_dd") }
+	get take_profit_2_gdd(): AbstractControl { return <AbstractControl>this.form.get("take_profit_2_gdd") }
 	get take_profit_3_pcr(): AbstractControl { return <AbstractControl>this.form.get("take_profit_3_pcr") }
 	get take_profit_3_dd(): AbstractControl { return <AbstractControl>this.form.get("take_profit_3_dd") }
+	get take_profit_3_gdd(): AbstractControl { return <AbstractControl>this.form.get("take_profit_3_gdd") }
 	get take_profit_4_pcr(): AbstractControl { return <AbstractControl>this.form.get("take_profit_4_pcr") }
 	get take_profit_4_dd(): AbstractControl { return <AbstractControl>this.form.get("take_profit_4_dd") }
+	get take_profit_4_gdd(): AbstractControl { return <AbstractControl>this.form.get("take_profit_4_gdd") }
 	get take_profit_5_pcr(): AbstractControl { return <AbstractControl>this.form.get("take_profit_5_pcr") }
 	get take_profit_5_dd(): AbstractControl { return <AbstractControl>this.form.get("take_profit_5_dd") }
-	get stop_loss(): AbstractControl { return <AbstractControl>this.form.get("stop_loss") }
+	get take_profit_5_gdd(): AbstractControl { return <AbstractControl>this.form.get("take_profit_5_gdd") }
 	get max_hp_drawdown_in_profit(): AbstractControl { return <AbstractControl>this.form.get("max_hp_drawdown_in_profit") }
+	get stop_loss(): AbstractControl { return <AbstractControl>this.form.get("stop_loss") }
 	get max_hp_drawdown_in_loss(): AbstractControl { return <AbstractControl>this.form.get("max_hp_drawdown_in_loss") }
 	get long_idle_minutes(): AbstractControl { return <AbstractControl>this.form.get("long_idle_minutes") }
 	get short_idle_minutes(): AbstractControl { return <AbstractControl>this.form.get("short_idle_minutes") }
@@ -112,25 +122,30 @@ export class StrategyFormDialogComponent implements OnInit, IStrategyFormDialogC
 						this.strategy.take_profit_1 = {
 							price_change_requirement: this.take_profit_1_pcr.value,
 							max_hp_drawdown: this.take_profit_1_dd.value,
+							max_gain_drawdown: this.take_profit_1_gdd.value,
 						};
 						this.strategy.take_profit_2 = {
 							price_change_requirement: this.take_profit_2_pcr.value,
 							max_hp_drawdown: this.take_profit_2_dd.value,
+							max_gain_drawdown: this.take_profit_2_gdd.value,
 						};
 						this.strategy.take_profit_3 = {
 							price_change_requirement: this.take_profit_3_pcr.value,
 							max_hp_drawdown: this.take_profit_3_dd.value,
+							max_gain_drawdown: this.take_profit_3_gdd.value,
 						};
 						this.strategy.take_profit_4 = {
 							price_change_requirement: this.take_profit_4_pcr.value,
 							max_hp_drawdown: this.take_profit_4_dd.value,
+							max_gain_drawdown: this.take_profit_4_gdd.value,
 						};
 						this.strategy.take_profit_5 = {
 							price_change_requirement: this.take_profit_5_pcr.value,
 							max_hp_drawdown: this.take_profit_5_dd.value,
+							max_gain_drawdown: this.take_profit_5_gdd.value,
 						};
-						this.strategy.stop_loss = this.stop_loss.value;
 						this.strategy.max_hp_drawdown_in_profit = this.max_hp_drawdown_in_profit.value;
+						this.strategy.stop_loss = this.stop_loss.value;
 						this.strategy.max_hp_drawdown_in_loss = this.max_hp_drawdown_in_loss.value;
 						this.strategy.long_idle_minutes = this.long_idle_minutes.value;
 						this.strategy.short_idle_minutes = this.short_idle_minutes.value;
@@ -216,7 +231,7 @@ export class StrategyFormDialogComponent implements OnInit, IStrategyFormDialogC
 			`________`,
 			`Why keep track of the position HP and the gain?`,
 			`Even though the health points are very useful, they are not updated fast enough to react appropriately to a sharp price reversal. The HP 
-			system relies on some components that can only be updated every 10-20 seconds, rendering it useless against market conditions where the 
+			system relies on some components that can only be updated every 10-15 seconds, rendering it useless against market conditions where the 
 			price can change significantly in just a few seconds.`,
 			`On the other hand, the gain is calculated and evaluated every ~4 seconds, making it the perfect tool for securing profits when the price 
 			moves strongly against the position. Beware that this tool should be used carefully as the price can sometimes move slightly against a position, but ultimately move in favor.`,
