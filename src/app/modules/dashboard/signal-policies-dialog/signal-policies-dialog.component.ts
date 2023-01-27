@@ -13,7 +13,6 @@ import { IPolicyChangePayload } from './signal-policy-item';
 export class SignalPoliciesDialogComponent implements OnInit, ISignalPoliciesDialogComponent {
 	// Policies
 	public policies!: ISignalSidePolicies|any;
-	public pristine: boolean = true;
 
 	// Tabs
 	public activeIndex: number = 0;
@@ -68,9 +67,6 @@ export class SignalPoliciesDialogComponent implements OnInit, ISignalPoliciesDia
 		if (change.id == "trend_state") {
 			this.policies[change.category][change.policyID].trend_intensity = change.payload.newValue2;
 		}
-
-		// Disable pristine state
-		this.pristine = false;
 	}
 
 
@@ -98,7 +94,6 @@ export class SignalPoliciesDialogComponent implements OnInit, ISignalPoliciesDia
 					try {
 						// Set new version
 						await this._signal.updatePolicies(this.side, this.policies, otp);
-						this.pristine = true;
 
 						// Notify
 						this._app.success("The policies has been updated successfully.");
