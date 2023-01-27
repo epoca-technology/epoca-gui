@@ -61,7 +61,7 @@ export interface IPredictionCandlestick {
  * The number represents the number of candlesticks backing the trend. The higher, 
  * the more intense.
  */
- export type IPredictionState = 11|10|9|8|7|6|5|4|3|2|1|0|-1|-2|-3|-4|-5|-6|-7|-8|-9|-10|-11;
+ export type IPredictionState = 9|8|7|6|5|4|3|2|1|0|-1|-2|-3|-4|-5|-6|-7|-8|-9;
 
 
 

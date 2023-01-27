@@ -33,8 +33,8 @@ export class EpochBuilderEvaluationService implements IEpochBuilderEvaluationSer
 	private readonly maximumLossDifference: number = 1;
 
 	// Best test ds losses
-	private readonly bestMAE: number = 0.0015;
-	private readonly bestMSE: number = 0.00002;
+	private readonly bestMAE: number = 0.001;
+	private readonly bestMSE: number = 0.000005;
 
 	// Descriptions
 	public readonly desc: IEpochBuilderEvaluationDescriptions = {

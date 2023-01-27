@@ -892,7 +892,8 @@ form .mat-checkbox-inner-container{
 .stateless { opacity: 0.7; }
 .state { opacity: 0.8; }
 .strong-state { opacity: 1; }
-
+.state-badge { .mat-icon {max-height:17px;}}
+.state-badge-caret { max-height:15px!important;max-width:18px; }
 
 
 

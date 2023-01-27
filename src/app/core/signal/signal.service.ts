@@ -26,4 +26,23 @@ export class SignalService implements ISignalService {
 			true
 		);
 	}
+
+
+
+
+
+
+    /**
+     * Updates the signal policies for the given side.
+     * @param side
+     * @param newStrategy
+     * @param otp
+     * @returns Promise<void>
+     */
+    public updatePolicies(side: IBinancePositionSide, newPolicies: ISignalSidePolicies, otp: string): Promise<void> { 
+        return this._api.request("post","signal/updatePolicies", {
+			side: side,
+			newPolicies: newPolicies,
+		}, true, otp);
+    }
 }

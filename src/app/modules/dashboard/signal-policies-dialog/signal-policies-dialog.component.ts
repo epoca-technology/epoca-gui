@@ -3,6 +3,7 @@ import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
 import { IBinancePositionSide, ISignalSidePolicies, MarketStateService, SignalService } from '../../../core';
 import { AppService, NavService } from '../../../services';
 import { ISignalPoliciesDialogComponent } from './interfaces';
+import { IPolicyChangePayload } from './signal-policy-item';
 
 @Component({
   selector: 'app-signal-policies-dialog',
@@ -11,22 +12,14 @@ import { ISignalPoliciesDialogComponent } from './interfaces';
 })
 export class SignalPoliciesDialogComponent implements OnInit, ISignalPoliciesDialogComponent {
 	// Policies
-	public policies!: ISignalSidePolicies;
+	public policies!: ISignalSidePolicies|any;
+	public pristine: boolean = true;
 
 	// Tabs
 	public activeIndex: number = 0;
 
-	// Sum Helpers
-	public readonly sumClass = {
-		"-1": "square-badge-error",
-		"0": "square-badge-neutral",
-		"1": "square-badge-success"
-	}
-	public readonly sumText = {
-		"-1": "Trend Sum < 0",
-		"0": "Any Trend Sum",
-		"1": "Trend Sum > 0"
-	}
+	// Issuance Policies
+	public issuance: any;
 
 	// Load state
 	public loaded: boolean = false;
@@ -51,6 +44,83 @@ export class SignalPoliciesDialogComponent implements OnInit, ISignalPoliciesDia
 
 
 
+
+
+
+
+
+
+	/* Policies Update */
+
+
+
+
+	/**
+	 * Triggers whenever a policy item changes and sets the new value/s 
+	 * accordingly.
+	 * @param change 
+	 */
+	public valueChanged(change: IPolicyChangePayload): void {
+		// Set the new value
+		this.policies[change.category][change.policyID][change.id] = change.payload.newValue;
+
+		// If it is the prediction state, set the intensity as well
+		if (change.id == "trend_state") {
+			this.policies[change.category][change.policyID].trend_intensity = change.payload.newValue2;
+		}
+
+		// Disable pristine state
+		this.pristine = false;
+	}
+
+
+
+
+
+
+
+
+
+	/**
+	 * Displays the confirmation prompt and if approved, updates the 
+	 * policies for the given side.
+	 */
+	public updatePolicies(): void {
+		this._nav.displayConfirmationDialog({
+			title: `Update ${this.side} Policies`,
+			content: `<p class="align-center">Are you sure that you wish to <strong>update</strong> the current ${this.side} Issuance & Cancellation Policies?</p>`,
+			otpConfirmation: true
+		}).afterClosed().subscribe(
+			async (otp: string|undefined) => {
+				if (otp) {
+					// Set Submission State
+					this.loaded = false;
+					try {
+						// Set new version
+						await this._signal.updatePolicies(this.side, this.policies, otp);
+						this.pristine = true;
+
+						// Notify
+						this._app.success("The policies has been updated successfully.");
+					} catch(e) { this._app.error(e) }
+
+					// Set Submission State
+					this.loaded = true;
+				}
+			}
+		);
+	}
+
+
+
+
+
+
+
+
+
+
+	/* Misc Helpers */
 
 
 

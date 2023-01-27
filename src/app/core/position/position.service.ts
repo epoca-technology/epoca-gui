@@ -101,7 +101,7 @@ export class PositionService implements IPositionService {
 
 
     /**
-     * Deletes all the api errors from the database.
+     * Updates the trading strategy.
      * @param newStrategy
      * @param otp
      * @returns Promise<void>

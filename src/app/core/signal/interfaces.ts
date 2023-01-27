@@ -10,9 +10,12 @@ import { IPredictionState, IPredictionStateIntesity } from "../prediction"
 export interface ISignalService {
     // Properties
     
-    // Retrievers
-    getPolicies(side: IBinancePositionSide): Promise<ISignalSidePolicies>
+    // API Actions
+    getPolicies(side: IBinancePositionSide): Promise<ISignalSidePolicies>,
+    updatePolicies(side: IBinancePositionSide, newPolicies: ISignalSidePolicies, otp: string): Promise<void>
 }
+
+
 
 
 
@@ -23,7 +26,11 @@ export interface ISignalService {
  * the prediction state and intensity combined with other market state components   *
  * can only generate non-neutral signals.                                           *
  ************************************************************************************/
+export type ITrendSumState = -1|0|1;
 export interface IIssuancePolicy {
+    // The status of the policy - If disabled, the policy won't be evaluated
+    enabled: boolean, 
+
     /**
      * The trend sum, state and intensity required for it to trigger.
      * The sum is represented as follows:
@@ -50,11 +57,34 @@ export interface ITechnicalsIssuance extends IIssuancePolicy {
 }
 
 
+
+/**
+ * Open Interest Issuance
+ * Triggers when the trend and the open interest align.
+ */
+export interface IOpenInterestIssuance extends IIssuancePolicy {
+    open_interest: IStateType
+}
+
+
+
+/**
+ * Long Short Ratio Issuance
+ * Triggers when the trend and the long/short ratio align.
+ */
+export interface ILongShortRatioIssuance extends IIssuancePolicy {
+    long_short_ratio: IStateType
+}
+
+
+
 /**
  * Technicals Open Interest Issuance
  * Triggers when the trend, some technicals and the open interest align.
  */
 export interface ITechnicalsOpenInterestIssuance extends IIssuancePolicy {
+    ta_30m: IStateType,
+    ta_1h: IStateType,
     ta_2h: IStateType,
     ta_4h: IStateType,
     ta_1d: IStateType,
@@ -67,6 +97,8 @@ export interface ITechnicalsOpenInterestIssuance extends IIssuancePolicy {
  * Triggers when the trend, some technicals and the long/short ratio align.
  */
 export interface ITechnicalsLongShortRatioIssuance extends IIssuancePolicy {
+    ta_30m: IStateType,
+    ta_1h: IStateType,
     ta_2h: IStateType,
     ta_4h: IStateType,
     ta_1d: IStateType,
@@ -91,10 +123,20 @@ export interface IOpenInterestLongShortRatioIssuance extends IIssuancePolicy {
  */
 export interface IIssuancePolicies {
     technicals: ITechnicalsIssuance,
+    open_interest: IOpenInterestIssuance,
+    long_short_ratio: ILongShortRatioIssuance,
     technicals_open_interest: ITechnicalsOpenInterestIssuance,
     technicals_long_short_ratio: ITechnicalsLongShortRatioIssuance,
     open_interest_long_short_ratio: IOpenInterestLongShortRatioIssuance,
 }
+export type IIssuanceBasedPolicy = ITechnicalsIssuance|IOpenInterestIssuance|ILongShortRatioIssuance|ITechnicalsOpenInterestIssuance|
+ITechnicalsLongShortRatioIssuance|IOpenInterestLongShortRatioIssuance;
+export type IIssuancePolicyNames = 
+"technicals"|"open_interest"|"long_short_ratio"|
+"technicals_open_interest"|"technicals_long_short_ratio"|
+"open_interest_long_short_ratio";
+export type ITechnicalsBasedIssuancePolicy = ITechnicalsIssuance|ITechnicalsOpenInterestIssuance|ITechnicalsLongShortRatioIssuance;
+
 
 
 
@@ -108,6 +150,8 @@ export interface IIssuancePolicies {
  * policies is met.                                                    *
  ***********************************************************************/
 export interface ICancellationPolicy {
+    // The status of the policy - If disabled, the policy won't be evaluated
+    enabled: boolean, 
 
 }
 
@@ -141,11 +185,35 @@ export interface ITechnicalsCancellation extends ICancellationPolicy {
 
 
 /**
+ * Open Interest Cancellation
+ * Triggers when the open interest is against the signal type.
+ */
+export interface IOpenInterestCancellation extends ICancellationPolicy {
+    open_interest: IStateType
+}
+
+
+
+
+/**
+ * Long/Short Cancellation
+ * Triggers when the long/short ratio is against the signal type.
+ */
+export interface ILongShortRatioCancellation extends ICancellationPolicy {
+    long_short_ratio: IStateType
+}
+
+
+
+
+/**
  * Technicals Open Interest Cancellation
  * Triggers when some technical analysis indicators and the open interest
  * are against the signal type.
  */
 export interface ITechnicalsOpenInterestCancellation extends ICancellationPolicy {
+    ta_30m: IStateType,
+    ta_1h: IStateType,
     ta_2h: IStateType,
     ta_4h: IStateType,
     ta_1d: IStateType,
@@ -161,6 +229,8 @@ export interface ITechnicalsOpenInterestCancellation extends ICancellationPolicy
  * are against the signal type.
  */
 export interface ITechnicalsLongShortRatioCancellation extends ICancellationPolicy {
+    ta_30m: IStateType,
+    ta_1h: IStateType,
     ta_2h: IStateType,
     ta_4h: IStateType,
     ta_1d: IStateType,
@@ -190,10 +260,20 @@ export interface IOpenInterestLongShortRatioCancellation extends ICancellationPo
 export interface ICancellationPolicies {
     window: IWindowCancellation,
     technicals: ITechnicalsCancellation,
+    open_interest: IOpenInterestCancellation,
+    long_short_ratio: ILongShortRatioCancellation,
     technicals_open_interest: ITechnicalsOpenInterestCancellation,
     technicals_long_short_ratio: ITechnicalsLongShortRatioCancellation,
     open_interest_long_short_ratio: IOpenInterestLongShortRatioCancellation
 }
+export type ICancellationPolicyNames = 
+"window"|"technicals"|"open_interest"|"long_short_ratio"|
+"technicals_open_interest"|"technicals_long_short_ratio"|
+"open_interest_long_short_ratio";
+export type ICancellationBasedPolicy = IWindowCancellation|ITechnicalsCancellation|IOpenInterestCancellation|ILongShortRatioCancellation|
+ITechnicalsOpenInterestCancellation|ITechnicalsLongShortRatioCancellation|IOpenInterestLongShortRatioCancellation;
+export type ITechnicalsBasedCancellationPolicy = ITechnicalsCancellation|ITechnicalsOpenInterestCancellation|ITechnicalsLongShortRatioCancellation;
+
 
 
 
@@ -216,6 +296,19 @@ export interface ISignalSidePolicies {
     cancellation: ICancellationPolicies
 }
 
+
+
+
+
+/*************************************************************************
+ * Signal Policies                                                       *
+ * Both sides' policies are stored in the database under the long/short  *
+ * keys and are always updated together.                                 *
+ *************************************************************************/
+export interface ISignalPolicies {
+    long: ISignalSidePolicies,
+    short: ISignalSidePolicies
+}
 
 
 
@@ -244,3 +337,30 @@ export interface ISignalDataset {
     // The current market state
     marketState: IMarketState
 }
+
+
+
+
+
+
+
+
+
+
+/***************************
+ * GUI Specific Interfaces *
+ ***************************/
+
+
+
+
+
+
+// Policy Category
+export type ISignalPolicyCategory = "issuance"|"cancellation";
+
+
+
+
+// Policy Item ID
+export type ISignalPolicyItemID = "trend_sum"|"trend_state"|"ta_30m"|"ta_1h"|"ta_2h"|"ta_4h"|"ta_1d"|"open_interest"|"long_short_ratio"|"window";

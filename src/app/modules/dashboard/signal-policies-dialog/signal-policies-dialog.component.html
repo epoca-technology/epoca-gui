@@ -3,15 +3,15 @@
         <button mat-icon-button class="show-on-mobile" (click)="close()"><mat-icon>arrow_back</mat-icon></button>
         <span class="truncate">{{side}} Policies</span>
         <span fxFlex></span>
-        <button mat-icon-button (click)="displayTooltip()" matTooltip="More information"><mat-icon>question_mark</mat-icon></button>
+        <button mat-icon-button *ngIf="loaded && !pristine" (click)="updatePolicies()" matTooltip="Update Policies"><mat-icon>save</mat-icon></button>
+        <button mat-icon-button *ngIf="loaded"  (click)="displayTooltip()" matTooltip="More information"><mat-icon>question_mark</mat-icon></button>
         <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
     </div>
 </mat-toolbar>
 <div mat-dialog-content>
     <!-- Loader -->
     <div *ngIf="!loaded">
-        <div class="loader show-on-desktop"><div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div></div>
-        <div class="section-loader show-on-mobile"><div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div></div>
+        <div class="section-loader"><div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div></div>
     </div>
     <div *ngIf="loaded && policies">
         <!-- Tabs Navigation-->
@@ -25,15 +25,19 @@
 
         <!-- Issuance Policies -->
         <div *ngIf="activeIndex == 0" class="padding">
-            <!-- Prediction Model Strong Trend -->
+            <!-- Strong Trend -->
             <div>
-                <h5 class="truncate">Pred. Model Strong Trend</h5>
+                <div fxLayout="row" fxLayoutAlign="start center">
+                    <h5 class="truncate">Strong Trend</h5>
+                    <span fxFlex></span>
+                    <mat-slide-toggle [checked]="true" [disabled]="true" matTooltip="Enabled"></mat-slide-toggle>
+                </div>
                 <div *ngIf="side == 'LONG'" class="policy-items">
                     <div class="policy-item square-badge-success">
                         Trend Sum >= min_increase_sum
                     </div>
                     <div class="policy-item state-badge square-badge-success state" [matTooltip]="_ms.marketStates[1]">
-                        <mat-icon svgIcon="arrow_trend_up"></mat-icon> Trend State +3<mat-icon class="caret" svgIcon="angle_up"></mat-icon>
+                        <mat-icon svgIcon="arrow_trend_up"></mat-icon> Trend State +3<mat-icon class="state-badge-caret" svgIcon="angle_up"></mat-icon>
                     </div>
                 </div>
                 <div *ngIf="side == 'SHORT'" class="policy-items">
@@ -41,16 +45,20 @@
                         Trend Sum <= min_decrease_sum
                     </div>
                     <div class="policy-item state-badge square-badge-error state" [matTooltip]="_ms.marketStates[-1]">
-                        <mat-icon svgIcon="arrow_trend_down"></mat-icon> Trend State -3<mat-icon class="caret" svgIcon="angle_down"></mat-icon>
+                        <mat-icon svgIcon="arrow_trend_down"></mat-icon> Trend State -3<mat-icon class="state-badge-caret" svgIcon="angle_down"></mat-icon>
                     </div>
                 </div>
             </div>
 
             <div class="divider"></div>
 
-            <!-- Prediction Model Strong Trend Reversal -->
+            <!-- Strong Trend Reversal -->
             <div>
-                <h5 class="truncate">Pred. Model Strong Trend Reversal</h5>
+                <div fxLayout="row" fxLayoutAlign="start center">
+                    <h5 class="truncate">Strong Trend Reversal</h5>
+                    <span fxFlex></span>
+                    <mat-slide-toggle [checked]="true" [disabled]="true" matTooltip="Enabled"></mat-slide-toggle>
+                </div>
                 <div *ngIf="side == 'LONG'" class="policy-items">
                     <div class="policy-item square-badge-error">
                         Trend Sum >= min_decrease_sum
@@ -72,483 +80,772 @@
             <div class="divider"></div>
 
             <!-- Technicals -->
-            <div>
-                <h5 class="truncate">Technicals</h5>
+            <div [ngClass]="{'inactive': !policies.issuance.technicals.enabled}">
+                <div fxLayout="row" fxLayoutAlign="start center">
+                    <h5 class="truncate">Technicals</h5>
+                    <span fxFlex></span>
+                    <mat-slide-toggle 
+                        [matTooltip]="policies.issuance.technicals.enabled ? 'Enabled': 'Disabled'" 
+                        [(ngModel)]="policies.issuance.technicals.enabled"></mat-slide-toggle>
+                </div>
                 <div class="policy-items">
-                    <div class="policy-item {{sumClass[policies.issuance.technicals.trend_sum]}}"
-                        [ngClass]="{'state': policies.issuance.technicals.trend_sum != 0}">
-                        {{sumText[policies.issuance.technicals.trend_sum]}}<mat-icon *ngIf="policies.issuance.technicals.trend_sum != 1 && policies.issuance.technicals.trend_sum != -1" class="caret" svgIcon="{{side == 'LONG' ? 'angle_up': 'angle_down'}}"></mat-icon>
-                    </div>
-                    <div class="policy-item state-badge"
-                        [matTooltip]="_ms.marketStates[policies.issuance.technicals.trend_intensity]"
-                        [ngClass]="{
-                            'square-badge-success': side == 'LONG',
-                            'square-badge-error': side == 'SHORT',
-                            'state': policies.issuance.technicals.trend_intensity == 1 || policies.issuance.technicals.trend_intensity == -1,
-                            'stateless': policies.issuance.technicals.trend_intensity == 0
-                        }">
-                        <mat-icon [svgIcon]="_ms.icons[policies.issuance.technicals.trend_intensity]"></mat-icon> 
-                        Trend State {{policies.issuance.technicals.trend_state > 0 ? '+': ''}}{{policies.issuance.technicals.trend_state}}<mat-icon class="caret" svgIcon="{{side == 'LONG' ? 'angle_up': 'angle_down'}}"></mat-icon>
-                    </div>
-                    <div class="policy-item"
-                        [matTooltip]="_ms.taStates[policies.issuance.technicals.ta_30m]"
-                        [ngClass]="{
-                            'square-badge-success': policies.issuance.technicals.ta_30m > 0,
-                            'square-badge-error': policies.issuance.technicals.ta_30m < 0,
-                            'square-badge-neutral': policies.issuance.technicals.ta_30m == 0,
-                            'state': policies.issuance.technicals.ta_30m == 1 || policies.issuance.technicals.ta_30m == -1,
-                            'stateless': policies.issuance.technicals.ta_30m == 0
-                        }">
-                        ta_30m<mat-icon *ngIf="policies.issuance.technicals.ta_30m != 2 && policies.issuance.technicals.ta_30m != -2" class="caret" svgIcon="{{side == 'LONG' ? 'angle_up': 'angle_down'}}"></mat-icon>
-                    </div>
-                    <div class="policy-item"
-                        [matTooltip]="_ms.taStates[policies.issuance.technicals.ta_1h]"
-                        [ngClass]="{
-                            'square-badge-success': policies.issuance.technicals.ta_1h > 0,
-                            'square-badge-error': policies.issuance.technicals.ta_1h < 0,
-                            'square-badge-neutral': policies.issuance.technicals.ta_1h == 0,
-                            'state': policies.issuance.technicals.ta_1h == 1 || policies.issuance.technicals.ta_1h == -1,
-                            'stateless': policies.issuance.technicals.ta_1h == 0
-                        }">
-                        ta_1h<mat-icon *ngIf="policies.issuance.technicals.ta_1h != 2 && policies.issuance.technicals.ta_1h != -2" class="caret" svgIcon="{{side == 'LONG' ? 'angle_up': 'angle_down'}}"></mat-icon>
-                    </div>
-                    <div class="policy-item"
-                        [matTooltip]="_ms.taStates[policies.issuance.technicals.ta_2h]"
-                        [ngClass]="{
-                            'square-badge-success': policies.issuance.technicals.ta_2h > 0,
-                            'square-badge-error': policies.issuance.technicals.ta_2h < 0,
-                            'square-badge-neutral': policies.issuance.technicals.ta_2h == 0,
-                            'state': policies.issuance.technicals.ta_2h == 1 || policies.issuance.technicals.ta_2h == -1,
-                            'stateless': policies.issuance.technicals.ta_2h == 0
-                        }">
-                        ta_2h<mat-icon *ngIf="policies.issuance.technicals.ta_2h != 2 && policies.issuance.technicals.ta_2h != -2" class="caret" svgIcon="{{side == 'LONG' ? 'angle_up': 'angle_down'}}"></mat-icon>
-                    </div>
-                    <div class="policy-item"
-                        [matTooltip]="_ms.taStates[policies.issuance.technicals.ta_4h]"
-                        [ngClass]="{
-                            'square-badge-success': policies.issuance.technicals.ta_4h > 0,
-                            'square-badge-error': policies.issuance.technicals.ta_4h < 0,
-                            'square-badge-neutral': policies.issuance.technicals.ta_4h == 0,
-                            'state': policies.issuance.technicals.ta_4h == 1 || policies.issuance.technicals.ta_4h == -1,
-                            'stateless': policies.issuance.technicals.ta_4h == 0
-                        }">
-                        ta_4h<mat-icon *ngIf="policies.issuance.technicals.ta_4h != 2 && policies.issuance.technicals.ta_4h != -2" class="caret" svgIcon="{{side == 'LONG' ? 'angle_up': 'angle_down'}}"></mat-icon>
-                    </div>
-                    <div class="policy-item"
-                        [matTooltip]="_ms.taStates[policies.issuance.technicals.ta_1d]"
-                        [ngClass]="{
-                            'square-badge-success': policies.issuance.technicals.ta_1d > 0,
-                            'square-badge-error': policies.issuance.technicals.ta_1d < 0,
-                            'square-badge-neutral': policies.issuance.technicals.ta_1d == 0,
-                            'state': policies.issuance.technicals.ta_1d == 1 || policies.issuance.technicals.ta_1d == -1,
-                            'stateless': policies.issuance.technicals.ta_1d == 0
-                        }">
-                        ta_1d<mat-icon *ngIf="policies.issuance.technicals.ta_1d != 2 && policies.issuance.technicals.ta_1d != -2" class="caret" svgIcon="{{side == 'LONG' ? 'angle_up': 'angle_down'}}"></mat-icon>
-                    </div>
+                    <!-- Trend Sum -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'technicals'"
+                        [id]="'trend_sum'" 
+                        [value]="policies.issuance.technicals.trend_sum"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Trend State -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'technicals'"
+                        [id]="'trend_state'" 
+                        [value]="policies.issuance.technicals.trend_state"
+                        [value2]="policies.issuance.technicals.trend_intensity"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Technicals 30m -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'technicals'"
+                        [id]="'ta_30m'" 
+                        [value]="policies.issuance.technicals.ta_30m"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Technicals 1h -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'technicals'"
+                        [id]="'ta_1h'" 
+                        [value]="policies.issuance.technicals.ta_1h"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Technicals 2h -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'technicals'"
+                        [id]="'ta_2h'" 
+                        [value]="policies.issuance.technicals.ta_2h"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Technicals 4h -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'technicals'"
+                        [id]="'ta_4h'" 
+                        [value]="policies.issuance.technicals.ta_4h"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Technicals 1d -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'technicals'"
+                        [id]="'ta_1d'" 
+                        [value]="policies.issuance.technicals.ta_1d"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- Open Interest -->
+            <div [ngClass]="{'inactive': !policies.issuance.open_interest.enabled}">
+                <div fxLayout="row" fxLayoutAlign="start center">
+                    <h5 class="truncate">Open Interest</h5>
+                    <span fxFlex></span>
+                    <mat-slide-toggle 
+                        [matTooltip]="policies.issuance.open_interest.enabled ? 'Enabled': 'Disabled'" 
+                        [(ngModel)]="policies.issuance.open_interest.enabled"></mat-slide-toggle>
+                </div>
+                <div class="policy-items">
+                    <!-- Trend Sum -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'open_interest'"
+                        [id]="'trend_sum'" 
+                        [value]="policies.issuance.open_interest.trend_sum"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Trend State -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'open_interest'"
+                        [id]="'trend_state'" 
+                        [value]="policies.issuance.open_interest.trend_state"
+                        [value2]="policies.issuance.open_interest.trend_intensity"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Open Interest -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'open_interest'"
+                        [id]="'open_interest'" 
+                        [value]="policies.issuance.open_interest.open_interest"
+                        [disableable]="false"
+                        [immutable]="true"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- Long/Short Ratio -->
+            <div [ngClass]="{'inactive': !policies.issuance.long_short_ratio.enabled}">
+                <div fxLayout="row" fxLayoutAlign="start center">
+                    <h5 class="truncate">Long/Short Ratio</h5>
+                    <span fxFlex></span>
+                    <mat-slide-toggle 
+                        [matTooltip]="policies.issuance.long_short_ratio.enabled ? 'Enabled': 'Disabled'" 
+                        [(ngModel)]="policies.issuance.long_short_ratio.enabled"></mat-slide-toggle>
+                </div>
+                <div class="policy-items">
+                    <!-- Trend Sum -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'long_short_ratio'"
+                        [id]="'trend_sum'" 
+                        [value]="policies.issuance.long_short_ratio.trend_sum"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Trend State -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'long_short_ratio'"
+                        [id]="'trend_state'" 
+                        [value]="policies.issuance.long_short_ratio.trend_state"
+                        [value2]="policies.issuance.long_short_ratio.trend_intensity"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Long/Short Ratio -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'long_short_ratio'"
+                        [id]="'long_short_ratio'" 
+                        [value]="policies.issuance.long_short_ratio.long_short_ratio"
+                        [disableable]="false"
+                        [immutable]="true"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
                 </div>
             </div>
 
             <div class="divider"></div>
 
             <!-- Technicals Open Interest -->
-            <div>
-                <h5 class="truncate">Technicals Open Interest</h5>
+            <div [ngClass]="{'inactive': !policies.issuance.technicals_open_interest.enabled}">
+                <div fxLayout="row" fxLayoutAlign="start center">
+                    <h5 class="truncate">Technicals Open Interest</h5>
+                    <span fxFlex></span>
+                    <mat-slide-toggle 
+                        [matTooltip]="policies.issuance.technicals_open_interest.enabled ? 'Enabled': 'Disabled'" 
+                        [(ngModel)]="policies.issuance.technicals_open_interest.enabled"></mat-slide-toggle>
+                </div>
                 <div class="policy-items">
-                    <div class="policy-item {{sumClass[policies.issuance.technicals_open_interest.trend_sum]}}"
-                        [ngClass]="{'state': policies.issuance.technicals_open_interest.trend_sum != 0}">
-                        {{sumText[policies.issuance.technicals_open_interest.trend_sum]}}<mat-icon *ngIf="policies.issuance.technicals_open_interest.trend_sum != 1 && policies.issuance.technicals_open_interest.trend_sum != -1" class="caret" svgIcon="{{side == 'LONG' ? 'angle_up': 'angle_down'}}"></mat-icon>
-                    </div>
-                    <div class="policy-item state-badge"
-                        [matTooltip]="_ms.marketStates[policies.issuance.technicals_open_interest.trend_intensity]"
-                        [ngClass]="{
-                            'square-badge-success': side == 'LONG',
-                            'square-badge-error': side == 'SHORT',
-                            'state': policies.issuance.technicals_open_interest.trend_intensity == 1 || policies.issuance.technicals_open_interest.trend_intensity == -1,
-                            'stateless': policies.issuance.technicals_open_interest.trend_intensity == 0
-                        }">
-                        <mat-icon [svgIcon]="_ms.icons[policies.issuance.technicals_open_interest.trend_intensity]"></mat-icon> 
-                        Trend State {{policies.issuance.technicals_open_interest.trend_state > 0 ? '+': ''}}{{policies.issuance.technicals_open_interest.trend_state}}<mat-icon class="caret" svgIcon="{{side == 'LONG' ? 'angle_up': 'angle_down'}}"></mat-icon>
-                    </div>
-                    <div class="policy-item"
-                        [matTooltip]="_ms.taStates[policies.issuance.technicals_open_interest.ta_2h]"
-                        [ngClass]="{
-                            'square-badge-success': policies.issuance.technicals_open_interest.ta_2h > 0,
-                            'square-badge-error': policies.issuance.technicals_open_interest.ta_2h < 0,
-                            'square-badge-neutral': policies.issuance.technicals_open_interest.ta_2h == 0,
-                            'state': policies.issuance.technicals_open_interest.ta_2h == 1 || policies.issuance.technicals_open_interest.ta_2h == -1,
-                            'stateless': policies.issuance.technicals_open_interest.ta_2h == 0
-                        }">
-                        ta_2h<mat-icon *ngIf="policies.issuance.technicals_open_interest.ta_2h != 2 && policies.issuance.technicals_open_interest.ta_2h != -2" class="caret" svgIcon="{{side == 'LONG' ? 'angle_up': 'angle_down'}}"></mat-icon>
-                    </div>
-                    <div class="policy-item"
-                        [matTooltip]="_ms.taStates[policies.issuance.technicals_open_interest.ta_4h]"
-                        [ngClass]="{
-                            'square-badge-success': policies.issuance.technicals_open_interest.ta_4h > 0,
-                            'square-badge-error': policies.issuance.technicals_open_interest.ta_4h < 0,
-                            'square-badge-neutral': policies.issuance.technicals_open_interest.ta_4h == 0,
-                            'state': policies.issuance.technicals_open_interest.ta_4h == 1 || policies.issuance.technicals_open_interest.ta_4h == -1,
-                            'stateless': policies.issuance.technicals_open_interest.ta_4h == 0
-                        }">
-                        ta_4h<mat-icon *ngIf="policies.issuance.technicals_open_interest.ta_4h != 2 && policies.issuance.technicals_open_interest.ta_4h != -2" class="caret" svgIcon="{{side == 'LONG' ? 'angle_up': 'angle_down'}}"></mat-icon>
-                    </div>
-                    <div class="policy-item"
-                        [matTooltip]="_ms.taStates[policies.issuance.technicals_open_interest.ta_1d]"
-                        [ngClass]="{
-                            'square-badge-success': policies.issuance.technicals_open_interest.ta_1d > 0,
-                            'square-badge-error': policies.issuance.technicals_open_interest.ta_1d < 0,
-                            'square-badge-neutral': policies.issuance.technicals_open_interest.ta_1d == 0,
-                            'state': policies.issuance.technicals_open_interest.ta_1d == 1 || policies.issuance.technicals_open_interest.ta_1d == -1,
-                            'stateless': policies.issuance.technicals_open_interest.ta_1d == 0
-                        }">
-                        ta_1d<mat-icon *ngIf="policies.issuance.technicals_open_interest.ta_1d != 2 && policies.issuance.technicals_open_interest.ta_1d != -2" class="caret" svgIcon="{{side == 'LONG' ? 'angle_up': 'angle_down'}}"></mat-icon>
-                    </div>
-                    <div class="policy-item state-badge"
-                        [matTooltip]="_ms.marketStates[policies.issuance.technicals_open_interest.open_interest]"
-                        [ngClass]="{
-                            'square-badge-success': policies.issuance.technicals_open_interest.open_interest > 0,
-                            'square-badge-error': policies.issuance.technicals_open_interest.open_interest < 0,
-                            'square-badge-neutral': policies.issuance.technicals_open_interest.open_interest == 0,
-                            'state': policies.issuance.technicals_open_interest.open_interest == 1 || policies.issuance.technicals_open_interest.open_interest == -1,
-                            'stateless': policies.issuance.technicals_open_interest.open_interest == 0
-                        }">
-                        <mat-icon [svgIcon]="_ms.icons[policies.issuance.technicals_open_interest.open_interest]"></mat-icon> Open Interest<mat-icon *ngIf="policies.issuance.technicals_open_interest.open_interest != 2 && policies.issuance.technicals_open_interest.open_interest != -2" class="caret" svgIcon="{{side == 'LONG' ? 'angle_up': 'angle_down'}}"></mat-icon>
-                    </div>
+                    <!-- Trend Sum -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'technicals_open_interest'"
+                        [id]="'trend_sum'" 
+                        [value]="policies.issuance.technicals_open_interest.trend_sum"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Trend State -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'technicals_open_interest'"
+                        [id]="'trend_state'" 
+                        [value]="policies.issuance.technicals_open_interest.trend_state"
+                        [value2]="policies.issuance.technicals_open_interest.trend_intensity"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Technicals 30m -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'technicals_open_interest'"
+                        [id]="'ta_30m'" 
+                        [value]="policies.issuance.technicals_open_interest.ta_30m"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Technicals 1h -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'technicals_open_interest'"
+                        [id]="'ta_1h'" 
+                        [value]="policies.issuance.technicals_open_interest.ta_1h"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Technicals 2h -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'technicals_open_interest'"
+                        [id]="'ta_2h'" 
+                        [value]="policies.issuance.technicals_open_interest.ta_2h"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Technicals 4h -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'technicals_open_interest'"
+                        [id]="'ta_4h'" 
+                        [value]="policies.issuance.technicals_open_interest.ta_4h"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Technicals 1d -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'technicals_open_interest'"
+                        [id]="'ta_1d'" 
+                        [value]="policies.issuance.technicals_open_interest.ta_1d"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Open Interest -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'technicals_open_interest'"
+                        [id]="'open_interest'" 
+                        [value]="policies.issuance.technicals_open_interest.open_interest"
+                        [disableable]="false"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
                 </div>
             </div>
 
             <div class="divider"></div>
     
             <!-- Technicals Long/Short Ratio -->
-            <div>
-                <h5 class="truncate">Technicals Long/Short Ratio</h5>
+            <div [ngClass]="{'inactive': !policies.issuance.technicals_long_short_ratio.enabled}">
+                <div fxLayout="row" fxLayoutAlign="start center">
+                    <h5 class="truncate">Technicals Long/Short Ratio</h5>
+                    <span fxFlex></span>
+                    <mat-slide-toggle 
+                        [matTooltip]="policies.issuance.technicals_long_short_ratio.enabled ? 'Enabled': 'Disabled'" 
+                        [(ngModel)]="policies.issuance.technicals_long_short_ratio.enabled"></mat-slide-toggle>
+                </div>
                 <div class="policy-items">
-                    <div class="policy-item {{sumClass[policies.issuance.technicals_long_short_ratio.trend_sum]}}"
-                        [ngClass]="{'state': policies.issuance.technicals_long_short_ratio.trend_sum != 0}">
-                        {{sumText[policies.issuance.technicals_long_short_ratio.trend_sum]}}<mat-icon *ngIf="policies.issuance.technicals_long_short_ratio.trend_sum != 1 && policies.issuance.technicals_long_short_ratio.trend_sum != -1" class="caret" svgIcon="{{side == 'LONG' ? 'angle_up': 'angle_down'}}"></mat-icon>
-                    </div>
-                    <div class="policy-item state-badge"
-                        [matTooltip]="_ms.marketStates[policies.issuance.technicals_long_short_ratio.trend_intensity]"
-                        [ngClass]="{
-                            'square-badge-success': side == 'LONG',
-                            'square-badge-error': side == 'SHORT',
-                            'state': policies.issuance.technicals_long_short_ratio.trend_intensity == 1 || policies.issuance.technicals_long_short_ratio.trend_intensity == -1,
-                            'stateless': policies.issuance.technicals_long_short_ratio.trend_intensity == 0
-                        }">
-                        <mat-icon [svgIcon]="_ms.icons[policies.issuance.technicals_long_short_ratio.trend_intensity]"></mat-icon> 
-                        Trend State {{policies.issuance.technicals_long_short_ratio.trend_state > 0 ? '+': ''}}{{policies.issuance.technicals_long_short_ratio.trend_state}}<mat-icon class="caret" svgIcon="{{side == 'LONG' ? 'angle_up': 'angle_down'}}"></mat-icon>
-                    </div>
-                    <div class="policy-item"
-                        [matTooltip]="_ms.taStates[policies.issuance.technicals_long_short_ratio.ta_2h]"
-                        [ngClass]="{
-                            'square-badge-success': policies.issuance.technicals_long_short_ratio.ta_2h > 0,
-                            'square-badge-error': policies.issuance.technicals_long_short_ratio.ta_2h < 0,
-                            'square-badge-neutral': policies.issuance.technicals_long_short_ratio.ta_2h == 0,
-                            'state': policies.issuance.technicals_long_short_ratio.ta_2h == 1 || policies.issuance.technicals_long_short_ratio.ta_2h == -1,
-                            'stateless': policies.issuance.technicals_long_short_ratio.ta_2h == 0
-                        }">
-                        ta_2h<mat-icon *ngIf="policies.issuance.technicals_long_short_ratio.ta_2h != 2 && policies.issuance.technicals_long_short_ratio.ta_2h != -2" class="caret" svgIcon="{{side == 'LONG' ? 'angle_up': 'angle_down'}}"></mat-icon>
-                    </div>
-                    <div class="policy-item"
-                        [matTooltip]="_ms.taStates[policies.issuance.technicals_long_short_ratio.ta_4h]"
-                        [ngClass]="{
-                            'square-badge-success': policies.issuance.technicals_long_short_ratio.ta_4h > 0,
-                            'square-badge-error': policies.issuance.technicals_long_short_ratio.ta_4h < 0,
-                            'square-badge-neutral': policies.issuance.technicals_long_short_ratio.ta_4h == 0,
-                            'state': policies.issuance.technicals_long_short_ratio.ta_4h == 1 || policies.issuance.technicals_long_short_ratio.ta_4h == -1,
-                            'stateless': policies.issuance.technicals_long_short_ratio.ta_4h == 0
-                        }">
-                        ta_4h<mat-icon *ngIf="policies.issuance.technicals_long_short_ratio.ta_4h != 2 && policies.issuance.technicals_long_short_ratio.ta_4h != -2" class="caret" svgIcon="{{side == 'LONG' ? 'angle_up': 'angle_down'}}"></mat-icon>
-                    </div>
-                    <div class="policy-item"
-                        [matTooltip]="_ms.taStates[policies.issuance.technicals_long_short_ratio.ta_1d]"
-                        [ngClass]="{
-                            'square-badge-success': policies.issuance.technicals_long_short_ratio.ta_1d > 0,
-                            'square-badge-error': policies.issuance.technicals_long_short_ratio.ta_1d < 0,
-                            'square-badge-neutral': policies.issuance.technicals_long_short_ratio.ta_1d == 0,
-                            'state': policies.issuance.technicals_long_short_ratio.ta_1d == 1 || policies.issuance.technicals_long_short_ratio.ta_1d == -1,
-                            'stateless': policies.issuance.technicals_long_short_ratio.ta_1d == 0
-                        }">
-                        ta_1d<mat-icon *ngIf="policies.issuance.technicals_long_short_ratio.ta_1d != 2 && policies.issuance.technicals_long_short_ratio.ta_1d != -2" class="caret" svgIcon="{{side == 'LONG' ? 'angle_up': 'angle_down'}}"></mat-icon>
-                    </div>
-                    <div class="policy-item state-badge"
-                        [matTooltip]="_ms.marketStates[policies.issuance.technicals_long_short_ratio.long_short_ratio]"
-                        [ngClass]="{
-                            'square-badge-success': policies.issuance.technicals_long_short_ratio.long_short_ratio > 0,
-                            'square-badge-error': policies.issuance.technicals_long_short_ratio.long_short_ratio < 0,
-                            'square-badge-neutral': policies.issuance.technicals_long_short_ratio.long_short_ratio == 0,
-                            'state': policies.issuance.technicals_long_short_ratio.long_short_ratio == 1 || policies.issuance.technicals_long_short_ratio.long_short_ratio == -1,
-                            'stateless': policies.issuance.technicals_long_short_ratio.long_short_ratio == 0
-                        }">
-                        <mat-icon [svgIcon]="_ms.icons[policies.issuance.technicals_long_short_ratio.long_short_ratio]"></mat-icon> Long/Short Ratio<mat-icon *ngIf="policies.issuance.technicals_long_short_ratio.long_short_ratio != 2 && policies.issuance.technicals_long_short_ratio.long_short_ratio != -2" class="caret" svgIcon="{{side == 'LONG' ? 'angle_up': 'angle_down'}}"></mat-icon>
-                    </div>
+                    <!-- Trend Sum -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'technicals_long_short_ratio'"
+                        [id]="'trend_sum'" 
+                        [value]="policies.issuance.technicals_long_short_ratio.trend_sum"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Trend State -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'technicals_long_short_ratio'"
+                        [id]="'trend_state'" 
+                        [value]="policies.issuance.technicals_long_short_ratio.trend_state"
+                        [value2]="policies.issuance.technicals_long_short_ratio.trend_intensity"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Technicals 30m -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'technicals_long_short_ratio'"
+                        [id]="'ta_30m'" 
+                        [value]="policies.issuance.technicals_long_short_ratio.ta_30m"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Technicals 1h -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'technicals_long_short_ratio'"
+                        [id]="'ta_1h'" 
+                        [value]="policies.issuance.technicals_long_short_ratio.ta_1h"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Technicals 2h -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'technicals_long_short_ratio'"
+                        [id]="'ta_2h'" 
+                        [value]="policies.issuance.technicals_long_short_ratio.ta_2h"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Technicals 4h -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'technicals_long_short_ratio'"
+                        [id]="'ta_4h'" 
+                        [value]="policies.issuance.technicals_long_short_ratio.ta_4h"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Technicals 1d -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'technicals_long_short_ratio'"
+                        [id]="'ta_1d'" 
+                        [value]="policies.issuance.technicals_long_short_ratio.ta_1d"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Long/Short Ratio -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'technicals_long_short_ratio'"
+                        [id]="'long_short_ratio'" 
+                        [value]="policies.issuance.technicals_long_short_ratio.long_short_ratio"
+                        [disableable]="false"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
                 </div>
             </div>
 
             <div class="divider"></div>
 
             <!-- Open Interest Long/Short Ratio -->
-            <div>
-                <h5 class="truncate">Open Interest Long/Short Ratio</h5>
+            <div [ngClass]="{'inactive': !policies.issuance.open_interest_long_short_ratio.enabled}">
+                <div fxLayout="row" fxLayoutAlign="start center">
+                    <h5 class="truncate">Open Interest Long/Short Ratio</h5>
+                    <span fxFlex></span>
+                    <mat-slide-toggle 
+                        [matTooltip]="policies.issuance.open_interest_long_short_ratio.enabled ? 'Enabled': 'Disabled'" 
+                        [(ngModel)]="policies.issuance.open_interest_long_short_ratio.enabled"></mat-slide-toggle>
+                </div>
                 <div class="policy-items">
-                    <div class="policy-item {{sumClass[policies.issuance.open_interest_long_short_ratio.trend_sum]}}"
-                        [ngClass]="{'state': policies.issuance.open_interest_long_short_ratio.trend_sum != 0}">
-                        {{sumText[policies.issuance.open_interest_long_short_ratio.trend_sum]}}<mat-icon *ngIf="policies.issuance.open_interest_long_short_ratio.trend_sum != 1 && policies.issuance.open_interest_long_short_ratio.trend_sum != -1" class="caret" svgIcon="{{side == 'LONG' ? 'angle_up': 'angle_down'}}"></mat-icon>
-                    </div>
-                    <div class="policy-item state-badge"
-                        [matTooltip]="_ms.marketStates[policies.issuance.open_interest_long_short_ratio.trend_intensity]"
-                        [ngClass]="{
-                            'square-badge-success': side == 'LONG',
-                            'square-badge-error': side == 'SHORT',
-                            'state': policies.issuance.open_interest_long_short_ratio.trend_intensity == 1 || policies.issuance.open_interest_long_short_ratio.trend_intensity == -1,
-                            'stateless': policies.issuance.open_interest_long_short_ratio.trend_intensity == 0
-                        }">
-                        <mat-icon [svgIcon]="_ms.icons[policies.issuance.open_interest_long_short_ratio.trend_intensity]"></mat-icon> 
-                        Trend State {{policies.issuance.open_interest_long_short_ratio.trend_state > 0 ? '+': ''}}{{policies.issuance.open_interest_long_short_ratio.trend_state}}<mat-icon class="caret" svgIcon="{{side == 'LONG' ? 'angle_up': 'angle_down'}}"></mat-icon>
-                    </div>
-                    <div class="policy-item state-badge"
-                        [matTooltip]="_ms.marketStates[policies.issuance.open_interest_long_short_ratio.open_interest]"
-                        [ngClass]="{
-                            'square-badge-success': policies.issuance.open_interest_long_short_ratio.open_interest > 0,
-                            'square-badge-error': policies.issuance.open_interest_long_short_ratio.open_interest < 0,
-                            'square-badge-neutral': policies.issuance.open_interest_long_short_ratio.open_interest == 0,
-                            'state': policies.issuance.open_interest_long_short_ratio.open_interest == 1 || policies.issuance.open_interest_long_short_ratio.open_interest == -1,
-                            'stateless': policies.issuance.open_interest_long_short_ratio.open_interest == 0
-                        }">
-                        <mat-icon [svgIcon]="_ms.icons[policies.issuance.open_interest_long_short_ratio.open_interest]"></mat-icon> Open Interest<mat-icon *ngIf="policies.issuance.open_interest_long_short_ratio.open_interest != 2 && policies.issuance.open_interest_long_short_ratio.open_interest != -2" class="caret" svgIcon="{{side == 'LONG' ? 'angle_up': 'angle_down'}}"></mat-icon>
-                    </div>
-                    <div class="policy-item state-badge"
-                        [matTooltip]="_ms.marketStates[policies.issuance.open_interest_long_short_ratio.long_short_ratio]"
-                        [ngClass]="{
-                            'square-badge-success': policies.issuance.open_interest_long_short_ratio.long_short_ratio > 0,
-                            'square-badge-error': policies.issuance.open_interest_long_short_ratio.long_short_ratio < 0,
-                            'square-badge-neutral': policies.issuance.open_interest_long_short_ratio.long_short_ratio == 0,
-                            'state': policies.issuance.open_interest_long_short_ratio.long_short_ratio == 1 || policies.issuance.open_interest_long_short_ratio.long_short_ratio == -1,
-                            'stateless': policies.issuance.open_interest_long_short_ratio.long_short_ratio == 0
-                        }">
-                        <mat-icon [svgIcon]="_ms.icons[policies.issuance.open_interest_long_short_ratio.long_short_ratio]"></mat-icon> Long/Short Ratio<mat-icon *ngIf="policies.issuance.open_interest_long_short_ratio.long_short_ratio != 2 && policies.issuance.open_interest_long_short_ratio.long_short_ratio != -2" class="caret" svgIcon="{{side == 'LONG' ? 'angle_up': 'angle_down'}}"></mat-icon>
-                    </div>
+                    <!-- Trend Sum -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'open_interest_long_short_ratio'"
+                        [id]="'trend_sum'" 
+                        [value]="policies.issuance.open_interest_long_short_ratio.trend_sum"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Trend State -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'open_interest_long_short_ratio'"
+                        [id]="'trend_state'" 
+                        [value]="policies.issuance.open_interest_long_short_ratio.trend_state"
+                        [value2]="policies.issuance.open_interest_long_short_ratio.trend_intensity"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Open Interest -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'open_interest_long_short_ratio'"
+                        [id]="'open_interest'" 
+                        [value]="policies.issuance.open_interest_long_short_ratio.open_interest"
+                        [disableable]="false"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Long/Short Ratio -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'open_interest_long_short_ratio'"
+                        [id]="'long_short_ratio'" 
+                        [value]="policies.issuance.open_interest_long_short_ratio.long_short_ratio"
+                        [disableable]="false"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
                 </div>
             </div>
         </div>
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         <!-- Cancellation Policies -->
         <div *ngIf="activeIndex == 1" class="padding">
+
             <!-- Window -->
-            <div>
-                <h5 class="truncate">Window</h5>
+            <div [ngClass]="{'inactive': !policies.cancellation.window.enabled}">
+                <div fxLayout="row" fxLayoutAlign="start center">
+                    <h5 class="truncate">Window</h5>
+                    <span fxFlex></span>
+                    <mat-slide-toggle 
+                        [matTooltip]="policies.cancellation.window.enabled ? 'Enabled': 'Disabled'" 
+                        [(ngModel)]="policies.cancellation.window.enabled"></mat-slide-toggle>
+                </div>
                 <div class="policy-items">
-                    <div class="policy-item state-badge"
-                        [matTooltip]="_ms.marketStates[policies.cancellation.window.window]"
-                        [ngClass]="{
-                            'square-badge-success': side == 'LONG',
-                            'square-badge-error': side == 'SHORT',
-                            'state': policies.cancellation.window.window == 1 || policies.cancellation.window.window == -1,
-                            'stateless': policies.cancellation.window.window == 0
-                        }">
-                        <mat-icon [svgIcon]="_ms.icons[policies.cancellation.window.window]"></mat-icon> Window<mat-icon *ngIf="policies.cancellation.window.window != 2 && policies.cancellation.window.window != -2" class="caret" svgIcon="{{side == 'LONG' ? 'angle_up': 'angle_down'}}"></mat-icon>
-                    </div>
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'cancellation'" 
+                        [policyID]="'window'"
+                        [id]="'window'" 
+                        [value]="policies.cancellation.window.window"
+                        [disableable]="false"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- Open Interest -->
+            <div [ngClass]="{'inactive': !policies.cancellation.open_interest.enabled}">
+                <div fxLayout="row" fxLayoutAlign="start center">
+                    <h5 class="truncate">Open Interest</h5>
+                    <span fxFlex></span>
+                    <mat-slide-toggle 
+                        [matTooltip]="policies.cancellation.open_interest.enabled ? 'Enabled': 'Disabled'" 
+                        [(ngModel)]="policies.cancellation.open_interest.enabled"></mat-slide-toggle>
+                </div>
+                <div class="policy-items">
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'cancellation'" 
+                        [policyID]="'open_interest'"
+                        [id]="'open_interest'" 
+                        [value]="policies.cancellation.open_interest.open_interest"
+                        [disableable]="false"
+                        [immutable]="true"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- Long/Short Ratio -->
+            <div [ngClass]="{'inactive': !policies.cancellation.long_short_ratio.enabled}">
+                <div fxLayout="row" fxLayoutAlign="start center">
+                    <h5 class="truncate">Long/Short Ratio</h5>
+                    <span fxFlex></span>
+                    <mat-slide-toggle 
+                        [matTooltip]="policies.cancellation.long_short_ratio.enabled ? 'Enabled': 'Disabled'" 
+                        [(ngModel)]="policies.cancellation.long_short_ratio.enabled"></mat-slide-toggle>
+                </div>
+                <div class="policy-items">
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'cancellation'" 
+                        [policyID]="'long_short_ratio'"
+                        [id]="'long_short_ratio'" 
+                        [value]="policies.cancellation.long_short_ratio.long_short_ratio"
+                        [disableable]="false"
+                        [immutable]="true"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
                 </div>
             </div>
 
             <div class="divider"></div>
 
             <!-- Technicals -->
-            <div>
-                <h5 class="truncate">Technicals</h5>
+            <div [ngClass]="{'inactive': !policies.cancellation.technicals.enabled}">
+                <div fxLayout="row" fxLayoutAlign="start center">
+                    <h5 class="truncate">Technicals</h5>
+                    <span fxFlex></span>
+                    <mat-slide-toggle 
+                        [matTooltip]="policies.cancellation.technicals.enabled ? 'Enabled': 'Disabled'" 
+                        [(ngModel)]="policies.cancellation.technicals.enabled"></mat-slide-toggle>
+                </div>
                 <div class="policy-items">
-                    <div class="policy-item"
-                        [matTooltip]="_ms.taStates[policies.cancellation.technicals.ta_30m]"
-                        [ngClass]="{
-                            'square-badge-success': policies.cancellation.technicals.ta_30m > 0,
-                            'square-badge-error': policies.cancellation.technicals.ta_30m < 0,
-                            'square-badge-neutral': policies.cancellation.technicals.ta_30m == 0,
-                            'state': policies.cancellation.technicals.ta_30m == 1 || policies.cancellation.technicals.ta_30m == -1,
-                            'stateless': policies.cancellation.technicals.ta_30m == 0
-                        }">
-                        ta_30m<mat-icon *ngIf="policies.cancellation.technicals.ta_30m != 2 && policies.cancellation.technicals.ta_30m != -2" class="caret" svgIcon="{{side == 'LONG' ? 'angle_down': 'angle_up'}}"></mat-icon>
-                    </div>
-                    <div class="policy-item"
-                        [matTooltip]="_ms.taStates[policies.cancellation.technicals.ta_1h]"
-                        [ngClass]="{
-                            'square-badge-success': policies.cancellation.technicals.ta_1h > 0,
-                            'square-badge-error': policies.cancellation.technicals.ta_1h < 0,
-                            'square-badge-neutral': policies.cancellation.technicals.ta_1h == 0,
-                            'state': policies.cancellation.technicals.ta_1h == 1 || policies.cancellation.technicals.ta_1h == -1,
-                            'stateless': policies.cancellation.technicals.ta_1h == 0
-                        }">
-                        ta_1h<mat-icon *ngIf="policies.cancellation.technicals.ta_1h != 2 && policies.cancellation.technicals.ta_1h != -2" class="caret" svgIcon="{{side == 'LONG' ? 'angle_down': 'angle_up'}}"></mat-icon>
-                    </div>
-                    <div class="policy-item"
-                        [matTooltip]="_ms.taStates[policies.cancellation.technicals.ta_2h]"
-                        [ngClass]="{
-                            'square-badge-success': policies.cancellation.technicals.ta_2h > 0,
-                            'square-badge-error': policies.cancellation.technicals.ta_2h < 0,
-                            'square-badge-neutral': policies.cancellation.technicals.ta_2h == 0,
-                            'state': policies.cancellation.technicals.ta_2h == 1 || policies.cancellation.technicals.ta_2h == -1,
-                            'stateless': policies.cancellation.technicals.ta_2h == 0
-                        }">
-                        ta_2h<mat-icon *ngIf="policies.cancellation.technicals.ta_2h != 2 && policies.cancellation.technicals.ta_2h != -2" class="caret" svgIcon="{{side == 'LONG' ? 'angle_down': 'angle_up'}}"></mat-icon>
-                    </div>
-                    <div class="policy-item"
-                        [matTooltip]="_ms.taStates[policies.cancellation.technicals.ta_4h]"
-                        [ngClass]="{
-                            'square-badge-success': policies.cancellation.technicals.ta_4h > 0,
-                            'square-badge-error': policies.cancellation.technicals.ta_4h < 0,
-                            'square-badge-neutral': policies.cancellation.technicals.ta_4h == 0,
-                            'state': policies.cancellation.technicals.ta_4h == 1 || policies.cancellation.technicals.ta_4h == -1,
-                            'stateless': policies.cancellation.technicals.ta_4h == 0
-                        }">
-                        ta_4h<mat-icon *ngIf="policies.cancellation.technicals.ta_4h != 2 && policies.cancellation.technicals.ta_4h != -2" class="caret" svgIcon="{{side == 'LONG' ? 'angle_down': 'angle_up'}}"></mat-icon>
-                    </div>
-                    <div class="policy-item"
-                        [matTooltip]="_ms.taStates[policies.cancellation.technicals.ta_1d]"
-                        [ngClass]="{
-                            'square-badge-success': policies.cancellation.technicals.ta_1d > 0,
-                            'square-badge-error': policies.cancellation.technicals.ta_1d < 0,
-                            'square-badge-neutral': policies.cancellation.technicals.ta_1d == 0,
-                            'state': policies.cancellation.technicals.ta_1d == 1 || policies.cancellation.technicals.ta_1d == -1,
-                            'stateless': policies.cancellation.technicals.ta_1d == 0
-                        }">
-                        ta_1d<mat-icon *ngIf="policies.cancellation.technicals.ta_1d != 2 && policies.cancellation.technicals.ta_1d != -2" class="caret" svgIcon="{{side == 'LONG' ? 'angle_down': 'angle_up'}}"></mat-icon>
-                    </div>
+                    <!-- Technicals 30m -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'cancellation'" 
+                        [policyID]="'technicals'"
+                        [id]="'ta_30m'" 
+                        [value]="policies.cancellation.technicals.ta_30m"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Technicals 1h -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'cancellation'" 
+                        [policyID]="'technicals'"
+                        [id]="'ta_1h'" 
+                        [value]="policies.cancellation.technicals.ta_1h"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Technicals 2h -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'cancellation'" 
+                        [policyID]="'technicals'"
+                        [id]="'ta_2h'" 
+                        [value]="policies.cancellation.technicals.ta_2h"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Technicals 4h -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'cancellation'" 
+                        [policyID]="'technicals'"
+                        [id]="'ta_4h'" 
+                        [value]="policies.cancellation.technicals.ta_4h"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Technicals 1d -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'cancellation'" 
+                        [policyID]="'technicals'"
+                        [id]="'ta_1d'" 
+                        [value]="policies.cancellation.technicals.ta_1d"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
                 </div>
             </div>
 
             <div class="divider"></div>
 
             <!-- Technicals Open Interest -->
-            <div>
-                <h5 class="truncate">Technicals Open Interest</h5>
+            <div [ngClass]="{'inactive': !policies.cancellation.technicals_open_interest.enabled}">
+                <div fxLayout="row" fxLayoutAlign="start center">
+                    <h5 class="truncate">Technicals Open Interest</h5>
+                    <span fxFlex></span>
+                    <mat-slide-toggle 
+                        [matTooltip]="policies.cancellation.technicals_open_interest.enabled ? 'Enabled': 'Disabled'" 
+                        [(ngModel)]="policies.cancellation.technicals_open_interest.enabled"></mat-slide-toggle>
+                </div>
                 <div class="policy-items">
-                    <div class="policy-item"
-                        [matTooltip]="_ms.taStates[policies.cancellation.technicals_open_interest.ta_2h]"
-                        [ngClass]="{
-                            'square-badge-success': policies.cancellation.technicals_open_interest.ta_2h > 0,
-                            'square-badge-error': policies.cancellation.technicals_open_interest.ta_2h < 0,
-                            'square-badge-neutral': policies.cancellation.technicals_open_interest.ta_2h == 0,
-                            'state': policies.cancellation.technicals_open_interest.ta_2h == 1 || policies.cancellation.technicals_open_interest.ta_2h == -1,
-                            'stateless': policies.cancellation.technicals_open_interest.ta_2h == 0
-                        }">
-                        ta_2h<mat-icon *ngIf="policies.cancellation.technicals_open_interest.ta_2h != 2 && policies.cancellation.technicals_open_interest.ta_2h != -2" class="caret" svgIcon="{{side == 'LONG' ? 'angle_down': 'angle_up'}}"></mat-icon>
-                    </div>
-                    <div class="policy-item"
-                        [matTooltip]="_ms.taStates[policies.cancellation.technicals_open_interest.ta_4h]"
-                        [ngClass]="{
-                            'square-badge-success': policies.cancellation.technicals_open_interest.ta_4h > 0,
-                            'square-badge-error': policies.cancellation.technicals_open_interest.ta_4h < 0,
-                            'square-badge-neutral': policies.cancellation.technicals_open_interest.ta_4h == 0,
-                            'state': policies.cancellation.technicals_open_interest.ta_4h == 1 || policies.cancellation.technicals_open_interest.ta_4h == -1,
-                            'stateless': policies.cancellation.technicals_open_interest.ta_4h == 0
-                        }">
-                        ta_4h<mat-icon *ngIf="policies.cancellation.technicals_open_interest.ta_4h != 2 && policies.cancellation.technicals_open_interest.ta_4h != -2" class="caret" svgIcon="{{side == 'LONG' ? 'angle_down': 'angle_up'}}"></mat-icon>
-                    </div>
-                    <div class="policy-item"
-                        [matTooltip]="_ms.taStates[policies.cancellation.technicals_open_interest.ta_1d]"
-                        [ngClass]="{
-                            'square-badge-success': policies.cancellation.technicals_open_interest.ta_1d > 0,
-                            'square-badge-error': policies.cancellation.technicals_open_interest.ta_1d < 0,
-                            'square-badge-neutral': policies.cancellation.technicals_open_interest.ta_1d == 0,
-                            'state': policies.cancellation.technicals_open_interest.ta_1d == 1 || policies.cancellation.technicals_open_interest.ta_1d == -1,
-                            'stateless': policies.cancellation.technicals_open_interest.ta_1d == 0
-                        }">
-                        ta_1d<mat-icon *ngIf="policies.cancellation.technicals_open_interest.ta_1d != 2 && policies.cancellation.technicals_open_interest.ta_1d != -2" class="caret" svgIcon="{{side == 'LONG' ? 'angle_down': 'angle_up'}}"></mat-icon>
-                    </div>
-                    <div class="policy-item state-badge"
-                        [matTooltip]="_ms.marketStates[policies.cancellation.technicals_open_interest.open_interest]"
-                        [ngClass]="{
-                            'square-badge-success': policies.cancellation.technicals_open_interest.open_interest > 0,
-                            'square-badge-error': policies.cancellation.technicals_open_interest.open_interest < 0,
-                            'square-badge-neutral': policies.cancellation.technicals_open_interest.open_interest == 0,
-                            'state': policies.cancellation.technicals_open_interest.open_interest == 1 || policies.cancellation.technicals_open_interest.open_interest == -1,
-                            'stateless': policies.cancellation.technicals_open_interest.open_interest == 0
-                        }">
-                        <mat-icon [svgIcon]="_ms.icons[policies.cancellation.technicals_open_interest.open_interest]"></mat-icon> Open Interest<mat-icon *ngIf="policies.cancellation.technicals_open_interest.open_interest != 2 && policies.cancellation.technicals_open_interest.open_interest != -2" class="caret" svgIcon="{{side == 'LONG' ? 'angle_down': 'angle_up'}}"></mat-icon>
-                    </div>
+                    <!-- Technicals 30m -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'cancellation'" 
+                        [policyID]="'technicals_open_interest'"
+                        [id]="'ta_30m'" 
+                        [value]="policies.cancellation.technicals_open_interest.ta_30m"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Technicals 1h -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'cancellation'" 
+                        [policyID]="'technicals_open_interest'"
+                        [id]="'ta_1h'" 
+                        [value]="policies.cancellation.technicals_open_interest.ta_1h"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Technicals 2h -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'cancellation'" 
+                        [policyID]="'technicals_open_interest'"
+                        [id]="'ta_2h'" 
+                        [value]="policies.cancellation.technicals_open_interest.ta_2h"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Technicals 4h -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'cancellation'" 
+                        [policyID]="'technicals_open_interest'"
+                        [id]="'ta_4h'" 
+                        [value]="policies.cancellation.technicals_open_interest.ta_4h"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Technicals 1d -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'cancellation'" 
+                        [policyID]="'technicals_open_interest'"
+                        [id]="'ta_1d'" 
+                        [value]="policies.cancellation.technicals_open_interest.ta_1d"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Open Interest -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'cancellation'" 
+                        [policyID]="'technicals_open_interest'"
+                        [id]="'open_interest'" 
+                        [value]="policies.cancellation.technicals_open_interest.open_interest"
+                        [disableable]="false"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
                 </div>
             </div>
 
             <div class="divider"></div>
     
             <!-- Technicals Long/Short Ratio -->
-            <div>
-                <h5 class="truncate">Technicals Long/Short Ratio</h5>
+            <div [ngClass]="{'inactive': !policies.cancellation.technicals_long_short_ratio.enabled}">
+                <div fxLayout="row" fxLayoutAlign="start center">
+                    <h5 class="truncate">Technicals Long/Short Ratio</h5>
+                    <span fxFlex></span>
+                    <mat-slide-toggle 
+                        [matTooltip]="policies.cancellation.technicals_long_short_ratio.enabled ? 'Enabled': 'Disabled'" 
+                        [(ngModel)]="policies.cancellation.technicals_long_short_ratio.enabled"></mat-slide-toggle>
+                </div>
                 <div class="policy-items">
-                    <div class="policy-item"
-                        [matTooltip]="_ms.taStates[policies.cancellation.technicals_long_short_ratio.ta_2h]"
-                        [ngClass]="{
-                            'square-badge-success': policies.cancellation.technicals_long_short_ratio.ta_2h > 0,
-                            'square-badge-error': policies.cancellation.technicals_long_short_ratio.ta_2h < 0,
-                            'square-badge-neutral': policies.cancellation.technicals_long_short_ratio.ta_2h == 0,
-                            'state': policies.cancellation.technicals_long_short_ratio.ta_2h == 1 || policies.cancellation.technicals_long_short_ratio.ta_2h == -1,
-                            'stateless': policies.cancellation.technicals_long_short_ratio.ta_2h == 0
-                        }">
-                        ta_2h<mat-icon *ngIf="policies.cancellation.technicals_long_short_ratio.ta_2h != 2 && policies.cancellation.technicals_long_short_ratio.ta_2h != -2" class="caret" svgIcon="{{side == 'LONG' ? 'angle_down': 'angle_up'}}"></mat-icon>
-                    </div>
-                    <div class="policy-item"
-                        [matTooltip]="_ms.taStates[policies.cancellation.technicals_long_short_ratio.ta_4h]"
-                        [ngClass]="{
-                            'square-badge-success': policies.cancellation.technicals_long_short_ratio.ta_4h > 0,
-                            'square-badge-error': policies.cancellation.technicals_long_short_ratio.ta_4h < 0,
-                            'square-badge-neutral': policies.cancellation.technicals_long_short_ratio.ta_4h == 0,
-                            'state': policies.cancellation.technicals_long_short_ratio.ta_4h == 1 || policies.cancellation.technicals_long_short_ratio.ta_4h == -1,
-                            'stateless': policies.cancellation.technicals_long_short_ratio.ta_4h == 0
-                        }">
-                        ta_4h<mat-icon *ngIf="policies.cancellation.technicals_long_short_ratio.ta_4h != 2 && policies.cancellation.technicals_long_short_ratio.ta_4h != -2" class="caret" svgIcon="{{side == 'LONG' ? 'angle_down': 'angle_up'}}"></mat-icon>
-                    </div>
-                    <div class="policy-item"
-                        [matTooltip]="_ms.taStates[policies.cancellation.technicals_long_short_ratio.ta_1d]"
-                        [ngClass]="{
-                            'square-badge-success': policies.cancellation.technicals_long_short_ratio.ta_1d > 0,
-                            'square-badge-error': policies.cancellation.technicals_long_short_ratio.ta_1d < 0,
-                            'square-badge-neutral': policies.cancellation.technicals_long_short_ratio.ta_1d == 0,
-                            'state': policies.cancellation.technicals_long_short_ratio.ta_1d == 1 || policies.cancellation.technicals_long_short_ratio.ta_1d == -1,
-                            'stateless': policies.cancellation.technicals_long_short_ratio.ta_1d == 0
-                        }">
-                        ta_1d<mat-icon *ngIf="policies.cancellation.technicals_long_short_ratio.ta_1d != 2 && policies.cancellation.technicals_long_short_ratio.ta_1d != -2" class="caret" svgIcon="{{side == 'LONG' ? 'angle_down': 'angle_up'}}"></mat-icon>
-                    </div>
-                    <div class="policy-item state-badge"
-                        [matTooltip]="_ms.marketStates[policies.cancellation.technicals_long_short_ratio.long_short_ratio]"
-                        [ngClass]="{
-                            'square-badge-success': policies.cancellation.technicals_long_short_ratio.long_short_ratio > 0,
-                            'square-badge-error': policies.cancellation.technicals_long_short_ratio.long_short_ratio < 0,
-                            'square-badge-neutral': policies.cancellation.technicals_long_short_ratio.long_short_ratio == 0,
-                            'state': policies.cancellation.technicals_long_short_ratio.long_short_ratio == 1 || policies.cancellation.technicals_long_short_ratio.long_short_ratio == -1,
-                            'stateless': policies.cancellation.technicals_long_short_ratio.long_short_ratio == 0
-                        }">
-                        <mat-icon [svgIcon]="_ms.icons[policies.cancellation.technicals_long_short_ratio.long_short_ratio]"></mat-icon> Long/Short Ratio<mat-icon *ngIf="policies.cancellation.technicals_long_short_ratio.long_short_ratio != 2 && policies.cancellation.technicals_long_short_ratio.long_short_ratio != -2" class="caret" svgIcon="{{side == 'LONG' ? 'angle_down': 'angle_up'}}"></mat-icon>
-                    </div>
+                    <!-- Technicals 30m -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'cancellation'" 
+                        [policyID]="'technicals_long_short_ratio'"
+                        [id]="'ta_30m'" 
+                        [value]="policies.cancellation.technicals_long_short_ratio.ta_30m"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Technicals 1h -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'cancellation'" 
+                        [policyID]="'technicals_long_short_ratio'"
+                        [id]="'ta_1h'" 
+                        [value]="policies.cancellation.technicals_long_short_ratio.ta_1h"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Technicals 2h -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'cancellation'" 
+                        [policyID]="'technicals_long_short_ratio'"
+                        [id]="'ta_2h'" 
+                        [value]="policies.cancellation.technicals_long_short_ratio.ta_2h"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Technicals 4h -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'cancellation'" 
+                        [policyID]="'technicals_long_short_ratio'"
+                        [id]="'ta_4h'" 
+                        [value]="policies.cancellation.technicals_long_short_ratio.ta_4h"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Technicals 1d -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'cancellation'" 
+                        [policyID]="'technicals_long_short_ratio'"
+                        [id]="'ta_1d'" 
+                        [value]="policies.cancellation.technicals_long_short_ratio.ta_1d"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Long/Short Ratio -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'cancellation'" 
+                        [policyID]="'technicals_long_short_ratio'"
+                        [id]="'long_short_ratio'" 
+                        [value]="policies.cancellation.technicals_long_short_ratio.long_short_ratio"
+                        [disableable]="false"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
                 </div>
             </div>
 
             <div class="divider"></div>
 
             <!-- Open Interest Long/Short Ratio -->
-            <div>
-                <h5 class="truncate">Open Interest Long/Short Ratio</h5>
+            <div [ngClass]="{'inactive': !policies.cancellation.open_interest_long_short_ratio.enabled}">
+                <div fxLayout="row" fxLayoutAlign="start center">
+                    <h5 class="truncate">Open Interest Long/Short Ratio</h5>
+                    <span fxFlex></span>
+                    <mat-slide-toggle 
+                        [matTooltip]="policies.cancellation.open_interest_long_short_ratio.enabled ? 'Enabled': 'Disabled'" 
+                        [(ngModel)]="policies.cancellation.open_interest_long_short_ratio.enabled"></mat-slide-toggle>
+                </div>
                 <div class="policy-items">
-                    <div class="policy-item state-badge"
-                        [matTooltip]="_ms.marketStates[policies.cancellation.open_interest_long_short_ratio.open_interest]"
-                        [ngClass]="{
-                            'square-badge-success': policies.cancellation.open_interest_long_short_ratio.open_interest > 0,
-                            'square-badge-error': policies.cancellation.open_interest_long_short_ratio.open_interest < 0,
-                            'square-badge-neutral': policies.cancellation.open_interest_long_short_ratio.open_interest == 0,
-                            'state': policies.cancellation.open_interest_long_short_ratio.open_interest == 1 || policies.cancellation.open_interest_long_short_ratio.open_interest == -1,
-                            'stateless': policies.cancellation.open_interest_long_short_ratio.open_interest == 0
-                        }">
-                        <mat-icon [svgIcon]="_ms.icons[policies.cancellation.open_interest_long_short_ratio.open_interest]"></mat-icon> Open Interest<mat-icon *ngIf="policies.cancellation.open_interest_long_short_ratio.open_interest != 2 && policies.cancellation.open_interest_long_short_ratio.open_interest != -2" class="caret" svgIcon="{{side == 'LONG' ? 'angle_down': 'angle_up'}}"></mat-icon>
-                    </div>
-                    <div class="policy-item state-badge"
-                        [matTooltip]="_ms.marketStates[policies.cancellation.open_interest_long_short_ratio.long_short_ratio]"
-                        [ngClass]="{
-                            'square-badge-success': policies.cancellation.open_interest_long_short_ratio.long_short_ratio > 0,
-                            'square-badge-error': policies.cancellation.open_interest_long_short_ratio.long_short_ratio < 0,
-                            'square-badge-neutral': policies.cancellation.open_interest_long_short_ratio.long_short_ratio == 0,
-                            'state': policies.cancellation.open_interest_long_short_ratio.long_short_ratio == 1 || policies.cancellation.open_interest_long_short_ratio.long_short_ratio == -1,
-                            'stateless': policies.cancellation.open_interest_long_short_ratio.long_short_ratio == 0
-                        }">
-                        <mat-icon [svgIcon]="_ms.icons[policies.cancellation.open_interest_long_short_ratio.long_short_ratio]"></mat-icon> Long/Short Ratio<mat-icon *ngIf="policies.cancellation.open_interest_long_short_ratio.long_short_ratio != 2 && policies.cancellation.open_interest_long_short_ratio.long_short_ratio != -2" class="caret" svgIcon="{{side == 'LONG' ? 'angle_down': 'angle_up'}}"></mat-icon>
-                    </div>
+                    <!-- Open Interest -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'cancellation'" 
+                        [policyID]="'open_interest_long_short_ratio'"
+                        [id]="'open_interest'" 
+                        [value]="policies.cancellation.open_interest_long_short_ratio.open_interest"
+                        [disableable]="false"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Long/Short Ratio -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'cancellation'" 
+                        [policyID]="'open_interest_long_short_ratio'"
+                        [id]="'long_short_ratio'" 
+                        [value]="policies.cancellation.open_interest_long_short_ratio.long_short_ratio"
+                        [disableable]="false"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
                 </div>
             </div>
         </div>
