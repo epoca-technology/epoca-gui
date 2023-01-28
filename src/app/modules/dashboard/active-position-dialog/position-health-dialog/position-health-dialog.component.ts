@@ -73,7 +73,7 @@ export class PositionHealthDialogComponent implements OnInit, IPositionHealthDia
 				true,
 				undefined,
 				330,
-				"Max Gain Drawdown%"
+				"Gain Drawdown%"
 			);
 			this.mgddChart.chart!.zoom = {enabled: false};
 		} catch (e) { this._app.error(e) }

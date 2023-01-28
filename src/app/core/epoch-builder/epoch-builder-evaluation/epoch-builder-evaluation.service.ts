@@ -34,7 +34,7 @@ export class EpochBuilderEvaluationService implements IEpochBuilderEvaluationSer
 
 	// Best test ds losses
 	private readonly bestMAE: number = 0.001;
-	private readonly bestMSE: number = 0.000005;
+	private readonly bestMSE: number = 0.000004;
 
 	// Descriptions
 	public readonly desc: IEpochBuilderEvaluationDescriptions = {
@@ -314,8 +314,11 @@ export class EpochBuilderEvaluationService implements IEpochBuilderEvaluationSer
 		// Init the accuracy
 		const realAccuracy: number = p.accuracy! > 1 ? p.accuracy!: p.accuracy! * 100;
 
+		// Init the best accuracy
+		const bestAccuracy: number = typeof p.bestAccuracy == "number" ? p.bestAccuracy: this.bestAccuracy
+
 		// Calculate the scored points
-		const points: number = this.calculatePoints(realAccuracy, this.worstAccuracy, this.bestAccuracy, p.maxPoints);
+		const points: number = this.calculatePoints(realAccuracy, this.worstAccuracy, bestAccuracy, p.maxPoints);
 
 		// Finally, return the results
 		return { 

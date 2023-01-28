@@ -26,7 +26,8 @@ import {
     IPredictionResult,
     MarketStateService,
     IPredictionCandlestick,
-    IPredictionStateIntesity
+    IPredictionStateIntesity,
+    IPositionSideHealth
 } from "../../core";
 import { 
     AppService, 
@@ -77,8 +78,14 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     public shortChunkSize?: IPositionCloseChunkSize;
     private positionSub?: Subscription;
     private positionLoaded: boolean = false;
-    public longHPStatus: string = "";
-    public shortHPStatus: string = "";
+
+    // PNL Readable States
+    public longPNLState: string = "+0$ | +0%";
+    public shortPNLState: string = "+0$ | +0%";
+
+    // HP Readable States
+    public longHPState: string = "0 HP 0% | 0%";
+    public shortHPState: string = "0 HP 0% | 0%";
 
     // Prediction Lists
     public epoch?: IEpochRecord;
@@ -287,23 +294,31 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         this.longChunkSize = undefined;
         this.shortChunkSize = undefined;
         
-        // Calculate the Long Close Chunk Sizes (if any)
+        // Build additional meta data for a long position (if any)
         if (this.position.long) {
+            // Populate the PNL State
+            this.longPNLState = this.buildPNLState(this.position.long);
+
+            // Calculate the Long Close Chunk Sizes
             this.longChunkSize = this.calculateChunkSizes(this.position.long.isolated_margin);
         }
 
-        // Calculate the Short Chunk Sizes (if any)
+        // Build additional meta data for a long position (if any)
         if (this.position.short) {
+            // Populate the PNL State
+            this.shortPNLState = this.buildPNLState(this.position.short);
+
+            // Calculate the Short Close Chunk Sizes
             this.shortChunkSize = this.calculateChunkSizes(this.position.short.isolated_margin);
         }
 
         // Populate the HP States
         if (this.position.health && this.position.health.long) {
-            this.longHPStatus = `${this.position.health.long.chp} HP ${this.position.health.long.dd}% | ${this.position.health.long.mgdd}%`;
-        } else { this.longHPStatus = "" }
+            this.longHPState = this.buildHPState(this.position.health.long);
+        } else { this.longHPState = "0 HP 0% | 0%" }
         if (this.position.health && this.position.health.short) {
-            this.shortHPStatus = `${this.position.health.short.chp} HP ${this.position.health.short.dd}% | ${this.position.health.short.mgdd}%`;
-        } else { this.shortHPStatus = "" }
+            this.shortHPState = this.buildHPState(this.position.health.short);
+        } else { this.shortHPState = "0 HP 0% | 0%" }
     }
 
 
@@ -331,6 +346,33 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         }
     }
 
+
+
+
+    /**
+     * Builds the PNL State String for an active position
+     * @param pos 
+     * @returns string
+     */
+    private buildPNLState(pos: IActivePosition): string {
+        const pnl: number = <number>this._utils.outputNumber(pos.unrealized_pnl, {dp: 1});
+        const roe: number = <number>this._utils.outputNumber(pos.roe, {dp: 1});
+        return `${pnl > 0 ? '+': ''}${pnl}$ | ${roe > 0 ? '+': ''}${roe}%`;
+    }
+
+
+
+    /**
+     * Builds the Health State String for an active position
+     * @param pos 
+     * @returns string
+     */
+    private buildHPState(h: IPositionSideHealth): string {
+        const hp: number = <number>this._utils.outputNumber(h.chp, {dp: 0});
+        const hpdd: number = <number>this._utils.outputNumber(h.dd, {dp: 1});
+        const gdd: number = <number>this._utils.outputNumber(h.mgdd, {dp: 1});
+        return `${this.layout == 'mobile' ? '': hp + ' HP '}${hpdd}% | ${gdd}%`;
+    }
 
 
 
@@ -1475,6 +1517,19 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
      */
     public async toggleTrendChart(): Promise<void> {
         this.userPreferences.splitTrendChart = !this.userPreferences.splitTrendChart;
+        await this._localDB.saveUserPreferences(this.userPreferences);
+    }
+
+
+
+
+
+    /**
+     * Toggles the kind of info to display in the position button.
+     * @returns Promise<void>
+     */
+    public async togglePositionButtonContent(): Promise<void> {
+        this.userPreferences.positionButtonPNL = !this.userPreferences.positionButtonPNL;
         await this._localDB.saveUserPreferences(this.userPreferences);
     }
 

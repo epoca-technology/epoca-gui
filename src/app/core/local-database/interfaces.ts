@@ -69,6 +69,8 @@ export interface IUserPreferences {
     // If enabled, it will display the split trend chart by default
     splitTrendChart: boolean,
 
+    // If enabled, it will display the PNL(ROE%) on the position button rather than the Position Health info
+    positionButtonPNL: boolean
 }
 
 

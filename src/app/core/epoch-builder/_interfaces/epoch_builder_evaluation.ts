@@ -163,6 +163,7 @@ export interface IEpochBuilderEvaluationFunctionParams {
 
     // evaluateAccuracy
     accuracy?: number,
+    bestAccuracy?: number,
 
     // evaluatePredictionsVsOutcomes
     predictions?: number,

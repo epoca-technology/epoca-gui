@@ -7,6 +7,7 @@ export interface IDashboardComponent {
 
     // Misc Helpers
     toggleTrendChart(): Promise<void>,
+    togglePositionButtonContent(): Promise<void>,
     activatePredictionCandlesticks(): Promise<void>,
     deactivatePredictionCandlesticks(): void,
     displayStrategyFormDialog(): void,

@@ -223,7 +223,7 @@ export class RegressionService implements IRegressionService {
 						evaluationFunction: "evaluateTestDatasetLoss",
 						evaluationParams: {
 							meanAbsoluteError: c.test_ds_evaluation.mean_absolute_error,
-							maxPoints: 30
+							maxPoints: 17.5
 						}
 					},
 					{
@@ -232,7 +232,7 @@ export class RegressionService implements IRegressionService {
 						evaluationFunction: "evaluateTestDatasetLoss",
 						evaluationParams: {
 							meanSquaredError: c.test_ds_evaluation.mean_squared_error,
-							maxPoints: 30
+							maxPoints: 17.5
 						}
 					}
 				]
@@ -250,7 +250,7 @@ export class RegressionService implements IRegressionService {
 							maxReceivablePoints: Math.floor(
 								(c.discovery.increase_outcome_num + c.discovery.decrease_outcome_num) * 0.8
 							),
-							maxPoints: 27.5
+							maxPoints: 30
 						}
 					},
 					{
@@ -259,7 +259,8 @@ export class RegressionService implements IRegressionService {
 						evaluationFunction: "evaluateAccuracy",
 						evaluationParams: {
 							accuracy: c.discovery.increase_accuracy,
-							maxPoints: 2
+							bestAccuracy: 85,
+							maxPoints: 3
 						}
 					},
 					{
@@ -268,7 +269,8 @@ export class RegressionService implements IRegressionService {
 						evaluationFunction: "evaluateAccuracy",
 						evaluationParams: {
 							accuracy: c.discovery.decrease_accuracy,
-							maxPoints: 2
+							bestAccuracy: 85,
+							maxPoints: 3
 						}
 					},
 					{
@@ -277,7 +279,8 @@ export class RegressionService implements IRegressionService {
 						evaluationFunction: "evaluateAccuracy",
 						evaluationParams: {
 							accuracy: c.discovery.accuracy,
-							maxPoints: 5
+							bestAccuracy: 85,
+							maxPoints: 10
 						}
 					},
 					{
@@ -287,7 +290,7 @@ export class RegressionService implements IRegressionService {
 						evaluationParams: {
 							predictions: c.discovery.increase_num,
 							outcomes: c.discovery.increase_outcome_num,
-							maxPoints: 1
+							maxPoints: 8
 						}
 					},
 					{
@@ -297,7 +300,7 @@ export class RegressionService implements IRegressionService {
 						evaluationParams: {
 							predictions: c.discovery.decrease_num,
 							outcomes: c.discovery.decrease_outcome_num,
-							maxPoints: 1
+							maxPoints: 8
 						}
 					}
 				]
@@ -313,7 +316,7 @@ export class RegressionService implements IRegressionService {
 						evaluationParams: {
 							firstLoss: c.training_history.loss[0],
 							lastLoss: c.training_history.loss[c.training_history.loss.length - 1],
-							maxPoints: 0.25
+							maxPoints: 0.5
 						}
 					},
 					{
@@ -323,7 +326,7 @@ export class RegressionService implements IRegressionService {
 						evaluationParams: {
 							firstLoss: c.training_history.val_loss[0],
 							lastLoss: c.training_history.val_loss[c.training_history.val_loss.length - 1],
-							maxPoints: 0.25
+							maxPoints: 0.5
 						}
 					},
 					{
@@ -333,7 +336,7 @@ export class RegressionService implements IRegressionService {
 						evaluationParams: {
 							finalLoss: c.training_history.loss[c.training_history.loss.length - 1],
 							finalValLoss: c.training_history.val_loss[c.training_history.val_loss.length - 1],
-							maxPoints: 0.25
+							maxPoints: 0.5
 						}
 					},
 					{
@@ -343,7 +346,7 @@ export class RegressionService implements IRegressionService {
 						evaluationParams: {
 							firstLoss: metricLoss[0],
 							lastLoss: metricLoss[metricLoss.length - 1],
-							maxPoints: 0.25
+							maxPoints: 0.5
 						}
 					},
 					{
@@ -353,7 +356,7 @@ export class RegressionService implements IRegressionService {
 						evaluationParams: {
 							firstLoss: metricValLoss[0],
 							lastLoss: metricValLoss[metricValLoss.length - 1],
-							maxPoints: 0.25
+							maxPoints: 0.5
 						}
 					},
 					{
@@ -363,7 +366,7 @@ export class RegressionService implements IRegressionService {
 						evaluationParams: {
 							finalLoss: metricLoss[metricLoss.length - 1],
 							finalValLoss: metricValLoss[metricValLoss.length - 1],
-							maxPoints: 0.25
+							maxPoints: 0.5
 						}
 					}
 				]

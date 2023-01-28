@@ -227,14 +227,10 @@
                                 <div *ngIf="position.long" 
                                     class="clickable long-position-button truncate" role="button" matRipple
                                     [matMenuTriggerFor]="longMenu"
-                                    [matTooltip]="longHPStatus">
+                                    [matTooltip]="userPreferences.positionButtonPNL ? longHPState: longPNLState">
                                     <div *ngIf="position.health.long" class="hp" 
                                             [ngStyle]="{'width': -(position.health.long.dd) + '%'}"></div>
-                                    <p>
-                                        LONG: 
-                                        {{position.long.unrealized_pnl > 0 ? '+': ''}}{{position.long.unrealized_pnl | currency: '$':'symbol':'1.1-1'}} | 
-                                        {{position.long.roe > 0 ? '+': ''}}{{position.long.roe | number: '1.1-1'}}%
-                                    </p>
+                                    <p class="truncate">LONG: {{userPreferences.positionButtonPNL ? longPNLState: longHPState}}</p>
                                 </div>
                                 <mat-menu #longMenu="matMenu">
                                     <button mat-menu-item 
@@ -250,6 +246,13 @@
                                             [disabled]="submitting">
                                         <mat-icon>info</mat-icon>
                                         <span>Position Information</span>
+                                    </button>
+                                    <button mat-menu-item 
+                                            *ngIf="position.long"
+                                            (click)="togglePositionButtonContent()"
+                                            [disabled]="submitting">
+                                        <mat-icon>flip_camera_android</mat-icon>
+                                        <span>{{userPreferences.positionButtonPNL ? 'View Health Points': 'View Profits & Losses'}}</span>
                                     </button>
                                     <button mat-menu-item 
                                             *ngIf="position.long"
@@ -310,7 +313,7 @@
 
                                 <!-- Short Position -->
                                 <div *ngIf="!position.short" 
-                                    class="clickable short-position-button truncate" role="button" matRipple
+                                    class="clickable short-position-button" role="button" matRipple
                                     [matMenuTriggerFor]="shortMenu">
                                     <div class="hp" style="width:100%;"></div>
                                     <p>SHORT: none</p>
@@ -318,14 +321,10 @@
                                 <div *ngIf="position.short" 
                                     class="clickable short-position-button truncate" role="button" matRipple
                                     [matMenuTriggerFor]="shortMenu"
-                                    [matTooltip]="shortHPStatus">
+                                    [matTooltip]="userPreferences.positionButtonPNL ? shortHPState: shortPNLState">
                                     <div *ngIf="position.health.short" class="hp" 
                                             [ngStyle]="{'width': -(position.health.short.dd)  + '%'}"></div>
-                                    <p>
-                                        SHORT:
-                                        {{position.short.unrealized_pnl > 0 ? '+': ''}}{{position.short.unrealized_pnl | currency: '$':'symbol':'1.1-1'}} | 
-                                        {{position.short.roe > 0 ? '+': ''}}{{position.short.roe | number: '1.1-1'}}%
-                                    </p>
+                                    <p>SHORT: {{userPreferences.positionButtonPNL ? shortPNLState: shortHPState}}</p>
                                 </div>
                                 <mat-menu #shortMenu="matMenu">
                                     <button mat-menu-item 
@@ -341,6 +340,13 @@
                                             [disabled]="submitting">
                                         <mat-icon>info</mat-icon>
                                         <span>Position Information</span>
+                                    </button>
+                                    <button mat-menu-item 
+                                            *ngIf="position.short"
+                                            (click)="togglePositionButtonContent()"
+                                            [disabled]="submitting">
+                                        <mat-icon>flip_camera_android</mat-icon>
+                                        <span>{{userPreferences.positionButtonPNL ? 'View Health Points': 'View Profits & Losses'}}</span>
                                     </button>
                                     <button mat-menu-item 
                                             *ngIf="position.short"
