@@ -223,7 +223,7 @@ export class RegressionService implements IRegressionService {
 						evaluationFunction: "evaluateTestDatasetLoss",
 						evaluationParams: {
 							meanAbsoluteError: c.test_ds_evaluation.mean_absolute_error,
-							maxPoints: 17.5
+							maxPoints: 15
 						}
 					},
 					{
@@ -232,7 +232,7 @@ export class RegressionService implements IRegressionService {
 						evaluationFunction: "evaluateTestDatasetLoss",
 						evaluationParams: {
 							meanSquaredError: c.test_ds_evaluation.mean_squared_error,
-							maxPoints: 17.5
+							maxPoints: 15
 						}
 					}
 				]
@@ -280,7 +280,7 @@ export class RegressionService implements IRegressionService {
 						evaluationParams: {
 							accuracy: c.discovery.accuracy,
 							bestAccuracy: 85,
-							maxPoints: 10
+							maxPoints: 12.5
 						}
 					},
 					{
@@ -290,7 +290,7 @@ export class RegressionService implements IRegressionService {
 						evaluationParams: {
 							predictions: c.discovery.increase_num,
 							outcomes: c.discovery.increase_outcome_num,
-							maxPoints: 8
+							maxPoints: 10
 						}
 					},
 					{
@@ -300,7 +300,7 @@ export class RegressionService implements IRegressionService {
 						evaluationParams: {
 							predictions: c.discovery.decrease_num,
 							outcomes: c.discovery.decrease_outcome_num,
-							maxPoints: 8
+							maxPoints: 10
 						}
 					}
 				]
@@ -316,7 +316,7 @@ export class RegressionService implements IRegressionService {
 						evaluationParams: {
 							firstLoss: c.training_history.loss[0],
 							lastLoss: c.training_history.loss[c.training_history.loss.length - 1],
-							maxPoints: 0.5
+							maxPoints: 0.25
 						}
 					},
 					{
@@ -326,7 +326,7 @@ export class RegressionService implements IRegressionService {
 						evaluationParams: {
 							firstLoss: c.training_history.val_loss[0],
 							lastLoss: c.training_history.val_loss[c.training_history.val_loss.length - 1],
-							maxPoints: 0.5
+							maxPoints: 0.25
 						}
 					},
 					{
@@ -336,7 +336,7 @@ export class RegressionService implements IRegressionService {
 						evaluationParams: {
 							finalLoss: c.training_history.loss[c.training_history.loss.length - 1],
 							finalValLoss: c.training_history.val_loss[c.training_history.val_loss.length - 1],
-							maxPoints: 0.5
+							maxPoints: 0.25
 						}
 					},
 					{
@@ -346,7 +346,7 @@ export class RegressionService implements IRegressionService {
 						evaluationParams: {
 							firstLoss: metricLoss[0],
 							lastLoss: metricLoss[metricLoss.length - 1],
-							maxPoints: 0.5
+							maxPoints: 0.25
 						}
 					},
 					{
@@ -356,7 +356,7 @@ export class RegressionService implements IRegressionService {
 						evaluationParams: {
 							firstLoss: metricValLoss[0],
 							lastLoss: metricValLoss[metricValLoss.length - 1],
-							maxPoints: 0.5
+							maxPoints: 0.25
 						}
 					},
 					{
@@ -366,7 +366,7 @@ export class RegressionService implements IRegressionService {
 						evaluationParams: {
 							finalLoss: metricLoss[metricLoss.length - 1],
 							finalValLoss: metricValLoss[metricValLoss.length - 1],
-							maxPoints: 0.5
+							maxPoints: 0.25
 						}
 					}
 				]
