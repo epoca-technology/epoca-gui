@@ -7,3 +7,10 @@ export interface ITechnicalAnalysisDialogComponent {
 }
 
 
+
+
+export interface IActionPercentages {
+    s: number,
+    n: number,
+    b: number,
+}

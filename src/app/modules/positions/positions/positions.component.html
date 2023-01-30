@@ -1070,7 +1070,7 @@
                                         </div>
 
                                         <!-- Content -->
-                                        <div *ngIf="!loadingPage && histChart && histBarChart">
+                                        <div *ngIf="!loadingPage && histChart">
                                             <!-- Chart -->
                                             <div>
                                                 <apx-chart
@@ -1082,23 +1082,6 @@
                                                     [annotations]="histChart!.annotations!"
                                                     [title]="histChart!.title"
                                                 ></apx-chart>
-                                            </div>
-
-                                            <!-- Prediction's sum chart-->
-                                            <div style="overflow: hidden;">
-                                                <div>
-                                                    <apx-chart
-                                                        [series]="histBarChart.series"
-                                                        [chart]="histBarChart.chart"
-                                                        [plotOptions]="histBarChart.plotOptions"
-                                                        [xaxis]="histBarChart.xaxis"
-                                                        [dataLabels]="histBarChart.dataLabels"
-                                                        [colors]="histBarChart.colors"
-                                                        [grid]="{show: false}"
-                                                        [legend]="{show: false}"
-                                                        [yaxis]="histBarChart.yaxis"
-                                                    ></apx-chart>
-                                                </div>
                                             </div>
 
                                             <!-- Pagination -->

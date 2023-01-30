@@ -2,11 +2,36 @@
 
 p {margin:0;}
 
-h5{ margin:0;font-size:16px!important}
+h5{ margin:0;}
 
-.strong-action{ font-weight: 500;}
 
-//.ts-xs { font-size:11px!important;}
+.divider { margin: 40px 0 15px 0}
+
+
+.action-container {
+    text-align: center;
+    color:white;
+    padding:8px;
+    margin-top:30px;
+    p {
+        font-weight:600;
+        font-size:12px!important;
+    }
+}
+.buy-action-container {
+    @extend .action-container;
+    background-color: var(--success-color)!important; 
+}
+.sell-action-container {
+    @extend .action-container;
+    background-color: var(--error-color)!important; 
+}
+.neutral-action-container {
+    @extend .action-container;
+    background-color: var(--neutral-color)!important; 
+}
+
+
 
 /* Responsiveness */
 

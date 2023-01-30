@@ -47,23 +47,6 @@
                     [annotations]="chartOptions!.annotations!"
                 ></apx-chart>
             </div>
-
-            <!-- Prediction's sum chart-->
-            <div *ngIf="barChart" style="overflow: hidden;">
-                <div>
-                    <apx-chart
-                        [series]="barChart.series"
-                        [chart]="barChart.chart"
-                        [plotOptions]="barChart.plotOptions"
-                        [xaxis]="barChart.xaxis"
-                        [dataLabels]="barChart.dataLabels"
-                        [colors]="barChart.colors"
-                        [grid]="barChart.grid"
-                        [legend]="{show: false}"
-                        [yaxis]="barChart.yaxis"
-                    ></apx-chart>
-                </div>
-            </div>
         </div>
     </div>
 </div>

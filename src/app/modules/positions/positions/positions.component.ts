@@ -12,7 +12,6 @@ import {
     IItemElement, 
     IPositionDataItem, 
     IPositionTrade, 
-    IPredictionCandlestick, 
     LocalDatabaseService, 
     PositionDataService, 
     PredictionService,
@@ -132,7 +131,6 @@ export class PositionsComponent implements OnInit, OnDestroy, IPositionsComponen
 
     // History
     public histChart?: ICandlestickChartOptions;
-    public histBarChart?: IBarChartOptions;
 	public histPages: Array<IDateRange> = [];
 	public activePage: number = 0;
 	public loadingPage: boolean = false;
@@ -940,46 +938,7 @@ export class PositionsComponent implements OnInit, OnDestroy, IPositionsComponen
 		this.histChart = this._chart.getCandlestickChartOptions(candlesticks, annotations, false, false);
 		this.histChart.chart!.toolbar = {show: true,tools: {selection: true,zoom: true,zoomin: true,zoomout: true,download: false}};
 		this.histChart.chart!.zoom = {enabled: true, type: "xy"};
-		this.histChart.chart!.height = this._app.layout.value == "desktop" ? 450: 370;
-        this.histChart.chart!.id = "candles";
-        this.histChart.chart!.group = "predictions";
-
-
-        // Retrieve the predictions within the range
-        const preds: IPredictionCandlestick[] = await this._localDB.listPredictionCandlesticks(
-            this.epoch!.id, 
-            this.histPages[pageIndex].start, 
-            this.histPages[pageIndex].end,
-            this.epoch!.installed,
-            <number>this._app.serverTime.value
-        );
-
-        // Build the bars data
-        const { values, colors } = this.buildPredictionBarsData(candlesticks, preds);
-        
-        // Build the chart
-        this.histBarChart = this._chart.getBarChartOptions(
-            {
-                series: [{name: "SUM Mean", data: values}],
-                chart: {height: 180, type: "bar",animations: { enabled: false}, toolbar: {show: false,tools: {download: false}}, zoom: {enabled: false}},
-                plotOptions: {bar: {borderRadius: 0, horizontal: false, distributed: true,}},
-                colors: colors,
-                grid: {show: true},
-                xaxis: {type: "datetime", tooltip: {enabled: false}, labels: { show: false, datetimeUTC: false } }
-            }, 
-            [], 
-            undefined, 
-            false,
-            true,
-            {
-                min: -this.epoch!.model.regressions.length, 
-                max: this.epoch!.model.regressions.length, 
-            }
-        );
-        this.histBarChart.chart!.id = "bars";
-        this.histBarChart.chart!.group = "predictions";
-        this.histBarChart.yaxis!.labels = {minWidth: 40}
-        this.histBarChart.yaxis!.tooltip = {enabled: false}
+		this.histChart.chart!.height = this._app.layout.value == "desktop" ? 600: 400;
 	}
 
 
@@ -1028,51 +987,6 @@ export class PositionsComponent implements OnInit, OnDestroy, IPositionsComponen
 
 
 
-
-
-
-	/**
-	 * Builds the data required by the bar chart based on the 
-	 * candlesticks and the generated predictions.
-	 * @param candlesticks 
-	 * @param preds 
-	 * @returns {values: number[], colors: string[]}
-	 */
-     private buildPredictionBarsData(
-		candlesticks: ICandlestick[], 
-		preds: IPredictionCandlestick[]
-	): {values: {x: number, y: number}[], colors: string[]} {
-		// Init values
-		let values: {x: number, y: number}[] = [];
-		let colors: string[] = [];
-
-		// Iterate over each candlestick and group the preds
-		for (let candle of candlesticks) {
-			// Group the predictions within the candlestick
-			const predsInCandle: IPredictionCandlestick[] = preds.filter((p) => candle.ot >= p.ot  && p.ot <= candle.ct);
-
-			// Make sure there are predictions in the candle
-			if (predsInCandle.length) {
-				// Calculate the mean of the sums within the group
-				const sumsMean: number = predsInCandle[predsInCandle.length - 1].sm;
-
-				// Append the values
-				values.push({x: candle.ot, y: sumsMean});
-				if (sumsMean > 0) { colors.push(this._chart.upwardColor) }
-				else if (sumsMean < 0) { colors.push(this._chart.downwardColor) }
-				else { colors.push(this._chart.neutralColor) }
-			}
-			
-			// Otherwise, fill the void with blanks
-			else {
-				values.push({x: candle.ot, y: 0.000000});
-				colors.push(this._chart.neutralColor);
-			}
-		}
-
-		// Finally, return the data
-		return { values: values, colors: colors };
-	}
 
 
 

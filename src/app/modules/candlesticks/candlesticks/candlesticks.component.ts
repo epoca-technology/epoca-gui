@@ -3,8 +3,8 @@ import {Title} from "@angular/platform-browser";
 import {MatDialog} from "@angular/material/dialog";
 import * as moment from "moment";
 import { ChartComponent } from "ng-apexcharts";
-import { CandlestickService, ICandlestick, IPredictionCandlestick, LocalDatabaseService } from "../../../core";
-import { AppService, ChartService, IBarChartOptions, ICandlestickChartOptions, ILayout, NavService } from "../../../services";
+import { ICandlestick, LocalDatabaseService } from "../../../core";
+import { AppService, ChartService, ICandlestickChartOptions, ILayout, NavService } from "../../../services";
 import { CandlestickFilesDialogComponent } from "./candlestick-files-dialog/candlestick-files-dialog.component";
 import { CandlesticksConfigDialogComponent } from "./candlesticks-config-dialog/candlesticks-config-dialog.component";
 import { CandlestickDialogComponent } from "../../../shared/components/candlestick";
@@ -33,7 +33,6 @@ export class CandlesticksComponent implements OnInit, OnDestroy, ICandlesticksCo
 	@ViewChild("chartComp") chartComp?: ChartComponent;
 	public rawCandlesticks?: ICandlestick[];
     public chartOptions?: Partial<ICandlestickChartOptions>;
-	public barChart?: IBarChartOptions;
 
 	// Load State
 	public loaded: boolean = false;
@@ -42,7 +41,6 @@ export class CandlesticksComponent implements OnInit, OnDestroy, ICandlesticksCo
 
     constructor(
         public _nav: NavService,
-        private _candlestick: CandlestickService,
         private _chart: ChartService,
         private dialog: MatDialog,
         private _app: AppService,
@@ -96,7 +94,7 @@ export class CandlesticksComponent implements OnInit, OnDestroy, ICandlesticksCo
 
             // Retrieve the chart options
             const self = this;
-            this.chartOptions = this._chart.getCandlestickChartOptions(this.rawCandlesticks, undefined, true, true);
+            this.chartOptions = this._chart.getCandlestickChartOptions(this.rawCandlesticks, undefined, false, true);
             this.chartOptions.chart!.height = this._app.layout.value == "desktop" ? 600: 400;
             this.chartOptions.chart!.zoom = {enabled: true, type: "xy"}
             this.chartOptions.chart!.id = "candles";
@@ -117,103 +115,9 @@ export class CandlesticksComponent implements OnInit, OnDestroy, ICandlesticksCo
 			this._app.error(e);
 		}
 
-        // Build the prediction indicator if applies
-        if (
-            this.config.intervalMinutes == this._candlestick.predictionCandlestickInterval && 
-            this._app.epoch.value &&
-            this.rawCandlesticks && this.rawCandlesticks.length > 0
-            ) {
-                try {
-                    // Retrieve the predictions within the range
-                    const preds: IPredictionCandlestick[] = await this._localDB.listPredictionCandlesticks(
-                        this._app.epoch.value.id, 
-                        this.rawCandlesticks[0].ot, 
-                        this.rawCandlesticks[this.rawCandlesticks.length - 1].ct,
-                        this._app.epoch.value.installed,
-                        <number>this._app.serverTime.value
-                    );
-    
-                    // Build the bars data
-                    const { values, colors } = this.buildPredictionBarsData(this.rawCandlesticks, preds);
-                    
-                    // Build the chart
-                    this.barChart = this._chart.getBarChartOptions(
-                        {
-                            series: [{name: "SUM Mean", data: values}],
-                            chart: {height: 250, type: "bar",animations: { enabled: false}, toolbar: {show: false,tools: {download: false}}, zoom: {enabled: false}},
-                            plotOptions: {bar: {borderRadius: 0, horizontal: false, distributed: true,}},
-                            colors: colors,
-                            grid: {show: true},
-                            xaxis: {type: "datetime", tooltip: {enabled: false}, labels: { show: false, datetimeUTC: false } }
-                        }, 
-                        [], 
-                        undefined, 
-                        false,
-                        true,
-                        {
-                            min: -this._app.epoch.value.model.regressions.length, 
-                            max: this._app.epoch.value.model.regressions.length, 
-                        }
-                    );
-                    this.barChart.chart!.id = "bars";
-                    this.barChart.chart!.group = "predictions";
-                    this.barChart.yaxis!.labels = {minWidth: 40}
-                    this.barChart.yaxis!.tooltip = {enabled: false}
-                } catch (e) { this._app.error(e) }
-        } else { this.barChart = undefined }
-
 		// Update loaded state
 		this.loaded = true;
 		setTimeout(() => { this.chartComp?.resetSeries() }, 100);
-	}
-
-
-
-
-
-
-
-	/**
-	 * Builds the data required by the bar chart based on the 
-	 * candlesticks and the generated predictions.
-	 * @param candlesticks 
-	 * @param preds 
-	 * @returns {values: number[], colors: string[]}
-	 */
-     private buildPredictionBarsData(
-		candlesticks: ICandlestick[], 
-		preds: IPredictionCandlestick[]
-	): {values: {x: number, y: number}[], colors: string[]} {
-		// Init values
-		let values: {x: number, y: number}[] = [];
-		let colors: string[] = [];
-
-		// Iterate over each candlestick and group the preds
-		for (let candle of candlesticks) {
-			// Group the predictions within the candlestick
-			const predsInCandle: IPredictionCandlestick[] = preds.filter((p) => candle.ot >= p.ot  && p.ot <= candle.ct);
-
-			// Make sure there are predictions in the candle
-			if (predsInCandle.length) {
-				// Calculate the mean of the sums within the group
-				const sumsMean: number = predsInCandle[predsInCandle.length - 1].sm;
-
-				// Append the values
-				values.push({x: candle.ot, y: sumsMean});
-				if (sumsMean > 0) { colors.push(this._chart.upwardColor) }
-				else if (sumsMean < 0) { colors.push(this._chart.downwardColor) }
-				else { colors.push(this._chart.neutralColor) }
-			}
-			
-			// Otherwise, fill the void with blanks
-			else {
-				values.push({x: candle.ot, y: 0.000000});
-				colors.push(this._chart.neutralColor);
-			}
-		}
-
-		// Finally, return the data
-		return { values: values, colors: colors };
 	}
 
 

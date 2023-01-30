@@ -280,7 +280,7 @@ export class RegressionService implements IRegressionService {
 						evaluationParams: {
 							accuracy: c.discovery.accuracy,
 							bestAccuracy: 85,
-							maxPoints: 12.5
+							maxPoints: 16
 						}
 					},
 					{
@@ -290,7 +290,7 @@ export class RegressionService implements IRegressionService {
 						evaluationParams: {
 							predictions: c.discovery.increase_num,
 							outcomes: c.discovery.increase_outcome_num,
-							maxPoints: 10
+							maxPoints: 8.25
 						}
 					},
 					{
@@ -300,7 +300,7 @@ export class RegressionService implements IRegressionService {
 						evaluationParams: {
 							predictions: c.discovery.decrease_num,
 							outcomes: c.discovery.decrease_outcome_num,
-							maxPoints: 10
+							maxPoints: 8.25
 						}
 					}
 				]

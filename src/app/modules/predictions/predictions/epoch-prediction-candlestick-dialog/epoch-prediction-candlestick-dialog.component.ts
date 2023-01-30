@@ -4,7 +4,6 @@ import {
 	IEpochRecord, 
 	IPrediction, 
 	IPredictionCandlestick, 
-	LocalDatabaseService,
 	PredictionService
 } from '../../../../core';
 import { AppService, NavService } from '../../../../services';
@@ -32,7 +31,6 @@ export class EpochPredictionCandlestickDialogComponent implements OnInit, IEpoch
 		@Inject(MAT_DIALOG_DATA) public data: IPredictionCandlestickDialogData,
 		private _app: AppService,
 		public _nav: NavService,
-		private _localDB: LocalDatabaseService,
 		public _prediction: PredictionService
 	) { 
 		this.candlestick = this.data.candlestick;
@@ -59,11 +57,10 @@ export class EpochPredictionCandlestickDialogComponent implements OnInit, IEpoch
 		if (this.activeTab == 1 && !this.preds.length) {
 			this.loadingPreds = true;
 			try {
-				this.preds = await this._localDB.listPredictions(
+				this.preds = await this._prediction.listPredictions(
 					this.epoch.id,
 					this.candlestick.ot,
-					this.candlestick.ct,
-					this.epoch.installed
+					this.candlestick.ct
 				);
 			} catch (e) { this._app.error(e) }
 			this.loadingPreds = false;

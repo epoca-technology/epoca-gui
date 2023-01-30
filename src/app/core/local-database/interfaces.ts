@@ -34,14 +34,6 @@ export interface ILocalDatabaseService {
     // Candlesticks
     getCandlesticksForPeriod(start: number, end: number, serverTime: number, intervalMinutes?: number): Promise<ICandlestick[]>,
 
-    // Predictions
-    listPredictions(
-		epochID: string,
-		startAt: number,
-		endAt: number,
-		epochInstalled: number
-	 ): Promise<IPrediction[]>,
-
     // Epoch Prediction Candlesticks
     listPredictionCandlesticks(
 		epochID: string, 
