@@ -1,4 +1,4 @@
-import { IBinancePositionSide, IPositionSideHealth } from "../../../../core"
+import { IBinancePositionSide, IPositionSideHealth } from "../../../core"
 
 
 

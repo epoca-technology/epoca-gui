@@ -14,3 +14,10 @@ export interface IActionPercentages {
     n: number,
     b: number,
 }
+
+
+export type IIndicatorGridClass = "buy-grid-item"|"sell-grid-item"|"neutral-grid-item"
+export interface IIndicatorGridItem {
+    name: string,
+    class: IIndicatorGridClass
+}

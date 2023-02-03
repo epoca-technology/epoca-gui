@@ -32,6 +32,30 @@ h5{ margin:0;}
 }
 
 
+.grid-item { 
+    max-width:100%;
+    text-align: center;
+    p {
+        font-size:12px!important;
+        font-weight: 500;
+        color:white;
+        max-width:90%;
+        text-overflow: ellipsis!important;overflow: hidden!important;white-space: nowrap!important;
+    }
+}
+.buy-grid-item { 
+    @extend .grid-item;
+    background-color: var(--success-color)!important;  
+}
+.sell-grid-item { 
+    @extend .grid-item;
+    background-color: var(--error-color)!important;  
+}
+.neutral-grid-item { 
+    @extend .grid-item;
+    background-color: var(--neutral-color)!important;  
+}
+
 
 /* Responsiveness */
 

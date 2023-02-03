@@ -1,13 +1,13 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
-import { AppService, ChartService, ICandlestickChartOptions } from '../../../../services';
+import { AppService, ChartService, ICandlestickChartOptions } from '../../../services';
 import { 
 	IBinancePositionSide, 
 	IPositionHealthCandlestick,
 	IPositionHealthCandlestickRecord, 
 	IPositionSideHealth, 
 	PositionService 
-} from '../../../../core';
+} from '../../../core';
 import { PositionHealthDetailsDialogComponent } from './position-health-details-dialog';
 import { IPositionHealthDialogComponent, IPositionHealthDialogData } from './interfaces';
 

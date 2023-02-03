@@ -34,8 +34,8 @@ export class LearningCurveComponent implements OnInit, ILearningCurveComponent {
 
 	ngOnInit(): void {
 		// Init the curve values
-		const train: number[] = <number[]>this.curveConfig.train.map(val => { return this._utils.outputNumber(val, {dp: 6})});
-		const val: number[] = <number[]>this.curveConfig.val.map(val => { return this._utils.outputNumber(val, {dp: 6})});
+		const train: number[] = <number[]>this.curveConfig.train.map(val => { return this._utils.outputNumber(val, {dp: 8})});
+		const val: number[] = <number[]>this.curveConfig.val.map(val => { return this._utils.outputNumber(val, {dp: 8})});
 
 		// Build the chart
 		let curveChart: ILineChartOptions = this._chart.getLineChartOptions(

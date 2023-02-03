@@ -35,18 +35,18 @@
                         [disabled]="activeView == 'certificate' && cert && certificate.id == cert.id" 
                         (click)="navigate('certificate', certIndex)">
                         <div fxLayout="row" fxLayoutAlign="start center">
-                            <span class="truncate" style="max-width: 70%;">{{certificate.id}}</span>
+                            <span class="truncate" style="max-width: 60%;">{{certificate.id}}</span>
                             <span fxFlex></span>
                             <div *ngIf="order == 'ebe_points'" 
                                 [ngClass]="certificate.ebe.state_class" 
                                 class="square-badge"><span>{{certificate.ebe.points | number: '1.2-2'}}</span></div>
                             <div *ngIf="order == 'mae'" 
                                 class="square-badge-error">
-                                <span>{{certificate.test_ds_evaluation.mean_absolute_error| number: '0.0-6'}}</span>
+                                <span>{{certificate.test_ds_evaluation.mean_absolute_error| number: '0.0-8'}}</span>
                             </div>
                             <div *ngIf="order == 'mse'" 
                                 class="square-badge-error">
-                                <span>{{certificate.test_ds_evaluation.mean_squared_error| number: '0.0-6'}}</span>
+                                <span>{{certificate.test_ds_evaluation.mean_squared_error| number: '0.0-8'}}</span>
                             </div>
                             <div *ngIf="order == 'discovery_points'"
                                 [ngClass]="{
@@ -161,18 +161,18 @@
                                     [disabled]="activeView == 'certificate' && cert && certificate.id == cert.id" 
                                     (click)="navigate('certificate', certIndex)">
                                     <div fxLayout="row" fxLayoutAlign="start center">
-                                        <span class="truncate" style="max-width: 70%;">{{certificate.id}}</span>
+                                        <span class="truncate" style="max-width: 60%;">{{certificate.id}}</span>
                                         <span fxFlex></span>
                                         <div *ngIf="order == 'ebe_points'" 
                                             [ngClass]="certificate.ebe.state_class" 
                                             class="square-badge"><span>{{certificate.ebe.points | number: '1.2-2'}}</span></div>
                                         <div *ngIf="order == 'mae'" 
                                             class="square-badge-error">
-                                            <span>{{certificate.test_ds_evaluation.mean_absolute_error| number: '0.0-6'}}</span>
+                                            <span>{{certificate.test_ds_evaluation.mean_absolute_error| number: '0.0-8'}}</span>
                                         </div>
                                         <div *ngIf="order == 'mse'" 
                                             class="square-badge-error">
-                                            <span>{{certificate.test_ds_evaluation.mean_squared_error| number: '0.0-6'}}</span>
+                                            <span>{{certificate.test_ds_evaluation.mean_squared_error| number: '0.0-8'}}</span>
                                         </div>
                                         <div *ngIf="order == 'discovery_points'"
                                             [ngClass]="{
@@ -229,12 +229,12 @@
                                             <div class="square-badge-error clickable" role="button"
                                                 (click)="navigate('certificate', _kr.md.testDatasetMAE.lowest.index)"
                                                 matTooltip="Lowest MAE: {{_kr.md.testDatasetMAE.lowest.id}}">
-                                                Best: {{_kr.md.testDatasetMAE.lowest.value | number: '1.0-6'}}
+                                                Best: {{_kr.md.testDatasetMAE.lowest.value | number: '1.0-8'}}
                                             </div>
                                             <div class="square-badge-error clickable worst-value" role="button"
                                                 (click)="navigate('certificate', _kr.md.testDatasetMAE.highest.index)"
                                                 matTooltip="Highest MAE: {{_kr.md.testDatasetMAE.highest.id}}">
-                                                Worst: {{_kr.md.testDatasetMAE.highest.value | number: '1.0-6'}}
+                                                Worst: {{_kr.md.testDatasetMAE.highest.value | number: '1.0-8'}}
                                             </div>
                                         </div>
                                         <apx-chart
@@ -264,12 +264,12 @@
                                             <div class="square-badge-error clickable" role="button"
                                                 (click)="navigate('certificate', _kr.md.testDatasetMSE.lowest.index)"
                                                 matTooltip="Lowest MSE: {{_kr.md.testDatasetMSE.lowest.id}}">
-                                                Best: {{_kr.md.testDatasetMSE.lowest.value | number: '1.0-6'}}
+                                                Best: {{_kr.md.testDatasetMSE.lowest.value | number: '1.0-8'}}
                                             </div>
                                             <div class="square-badge-error clickable worst-value" role="button"
                                                 (click)="navigate('certificate', _kr.md.testDatasetMSE.highest.index)"
                                                 matTooltip="Highest MSE: {{_kr.md.testDatasetMSE.highest.id}}">
-                                                Worst: {{_kr.md.testDatasetMSE.highest.value | number: '1.0-6'}}
+                                                Worst: {{_kr.md.testDatasetMSE.highest.value | number: '1.0-8'}}
                                             </div>
                                         </div>
                                         <apx-chart
@@ -513,14 +513,6 @@
                                                         <p>{{cert.keras_model_config.pool_sizes}}</p>
                                                     </div>
 
-                                                    <!-- Dropout Rates - If any -->
-                                                    <div *ngIf="cert.keras_model_config.dropout_rates" 
-                                                        fxLayout="row" fxLayoutAlign="start center" class="margin-top">
-                                                        <p class="light-text">Dropout Rates</p>
-                                                        <span fxFlex></span>
-                                                        <p>{{cert.keras_model_config.dropout_rates}}</p>
-                                                    </div>
-
                                                     <!-- Activations - If any -->
                                                     <div *ngIf="cert.keras_model_config.activations" 
                                                         fxLayout="row" fxLayoutAlign="start center" class="margin-top">
@@ -543,7 +535,7 @@
                                                     <span fxFlex></span>
                                                     <span class="square-badge-error" 
                                                         matTooltip="Loss received in the Test Dataset Evaluation">
-                                                        {{cert.test_ds_evaluation[cert.loss] | number: '1.0-6'}}
+                                                        {{cert.test_ds_evaluation[cert.loss] | number: '1.0-8'}}
                                                     </span>
                                                 </div>
     
@@ -553,7 +545,7 @@
                                                     <span fxFlex></span>
                                                     <span class="square-badge-error"
                                                     matTooltip="Loss Metric received in the Test Dataset Evaluation">
-                                                    {{cert.test_ds_evaluation[cert.metric] | number: '1.0-6'}}
+                                                    {{cert.test_ds_evaluation[cert.metric] | number: '1.0-8'}}
                                                 </span>
                                                 </div>
                                             </div>

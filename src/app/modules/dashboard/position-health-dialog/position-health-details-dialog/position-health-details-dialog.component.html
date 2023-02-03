@@ -11,44 +11,58 @@
             <p>{{health.ts | date: 'short'}}</p>
         </div>
         <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
-            <p class="light-text ts-xs truncate">Open SUM</p>
+            <p class="light-text ts-xs truncate">Initial SUM</p>
             <span fxFlex></span>
             <p>{{health.os | number: '1.0-4'}}</p>
         </div>
         <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
-            <p class="light-text ts-xs truncate">Open</p>
+            <p class="light-text ts-xs truncate">Initial Open Interest</p>
             <span fxFlex></span>
-            <p>{{health.ohp | number: '1.0-2'}} HP</p>
+            <p>${{health.ooi | number: '1.0-0'}}</p>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
+            <p class="light-text ts-xs truncate">Initial Long/Short Ratio</p>
+            <span fxFlex></span>
+            <p>{{health.olsr| number: '1.0-2'}}</p>
+        </div>
+
+        <h5>Health Points</h5>
+        <div fxLayout="row" fxLayoutAlign="start center">
+            <p class="light-text ts-xs truncate">Initial</p>
+            <span fxFlex></span>
+            <p>{{health.ohp | number: '1.0-2'}}</p>
         </div>
         <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
             <p class="light-text ts-xs truncate">Highest</p>
             <span fxFlex></span>
-            <p>{{health.hhp | number: '1.0-2'}} HP</p>
+            <p>{{health.hhp | number: '1.0-2'}}</p>
         </div>
         <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
             <p class="light-text ts-xs truncate">Lowest</p>
             <span fxFlex></span>
-            <p>{{health.lhp | number: '1.0-2'}} HP</p>
+            <p>{{health.lhp | number: '1.0-2'}}</p>
         </div>
         <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
             <p class="light-text ts-xs truncate">Current</p>
             <span fxFlex></span>
-            <p>{{health.chp | number: '1.0-2'}} HP</p>
+            <p>{{health.chp | number: '1.0-2'}}</p>
         </div>
         <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
-            <p class="light-text ts-xs truncate">HP Drawdown</p>
+            <p class="light-text ts-xs truncate">Drawdown</p>
             <span fxFlex></span>
-            <p><strong>{{health.dd | number: '1.0-2'}}%</strong></p>
+            <p>{{health.dd | number: '1.0-2'}}%</p>
         </div>
-        <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
-            <p class="light-text ts-xs truncate">Highest Gain</p>
+
+        <h5>Gain</h5>
+        <div fxLayout="row" fxLayoutAlign="start center">
+            <p class="light-text ts-xs truncate">Highest</p>
             <span fxFlex></span>
             <p>{{health.mg | number: '1.0-2'}}%</p>
         </div>
         <div fxLayout="row" fxLayoutAlign="start center" class="margin-top">
-            <p class="light-text ts-xs truncate">Gain Drawdown</p>
+            <p class="light-text ts-xs truncate">Drawdown</p>
             <span fxFlex></span>
-            <p><strong>{{health.mgdd | number: '1.0-2'}}%</strong></p>
+            <p>{{health.mgdd | number: '1.0-2'}}%</p>
         </div>
     </div>
 </div>

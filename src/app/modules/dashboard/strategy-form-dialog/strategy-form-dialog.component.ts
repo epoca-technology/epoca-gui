@@ -241,12 +241,14 @@ export class StrategyFormDialogComponent implements OnInit, IStrategyFormDialogC
 			`How is the HP calculated?`,
 			`When a position is opened, the initial trend sum is stored and the points are calculated based on the market conditions and the side of 
 			the position (long or short). These are the components used to calculate the HP:`,
-			`1) Current trend sum vs initial trend sum (47%)`,
-			`2) Trend state and trend intensity (8%)`,
-			`3) Technical analysis in the following intervals: 30m, 1h, 2h, 4h, 1d (23%)`,
-			`4) Open Interest (10%)`,
-			`5) Long/Short Ratio (10%)`,
-			`6) Volume Direction (2%)`,
+			`1) Current trend sum vs initial trend sum (40%)`,
+			`2) Trend state and trend intensity (10%)`,
+			`3) Technical analysis in the following intervals: 30m, 1h, 2h, 4h, 1d (21%)`,
+			`4) Current open interest vs initial open interest (5%)`,
+			`4) Open Interest State (8%)`,
+			`4) Current long/short ratio vs initial long/short ratio (5%)`,
+			`5) Long/Short Ratio State (8%)`,
+			`6) Volume Direction (3%)`,
 		]);
 	}
 

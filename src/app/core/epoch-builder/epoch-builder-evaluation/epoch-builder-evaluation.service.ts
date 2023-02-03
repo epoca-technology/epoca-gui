@@ -18,11 +18,11 @@ import { IEpochBuilderEvaluationService } from './interfaces';
 })
 export class EpochBuilderEvaluationService implements IEpochBuilderEvaluationService {
 	// The minimum accuracy percentage allowed
-	private readonly worstAccuracy: number = 40;
-	private readonly bestAccuracy: number = 65;
+	private readonly worstAccuracy: number = 50;
+	private readonly bestAccuracy: number = 70;
 
 	// The absolute maximum percentage difference allowed for predictions vs outcomes
-	private readonly maximumPredictionVsOutcomeDifference: number = 40;
+	private readonly maximumPredictionVsOutcomeDifference: number = 50;
 
 	// The maximum distance between the train and val loss
 	private readonly maximumLossVsValLossDifference: number = 3;

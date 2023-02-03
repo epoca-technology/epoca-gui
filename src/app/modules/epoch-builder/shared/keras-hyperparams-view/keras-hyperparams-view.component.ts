@@ -46,12 +46,16 @@ export class KerasHyperparamsViewComponent implements OnInit, OnDestroy, IKerasH
 
 	// Network Type
 	private networkTypeCounter: IKerasHyperparamsCounter = {
+		"CNN": 0,
+		"CNN_MP": 0,
 		"DNN": 0,
 		"CDNN": 0,
 		"CDNN_MP": 0,
 		"LSTM": 0,
+		"BDLSTM": 0,
 		"CLSTM": 0,
 		"CLSTM_MP": 0,
+		"GRU": 0,
 		"Unknown": 0
 	};
 
@@ -120,12 +124,16 @@ export class KerasHyperparamsViewComponent implements OnInit, OnDestroy, IKerasH
 			else { this.lossCounter["Unknown"] += 1 }
 
 			// Update the network type
-			if (cert.id.includes("CDNN_MP")) { this.networkTypeCounter["CDNN_MP"] += 1 }
+			if (cert.id.includes("CNN_MP")) { this.networkTypeCounter["CNN_MP"] += 1 }
+			else if (cert.id.includes("CDNN_MP")) { this.networkTypeCounter["CDNN_MP"] += 1 }
+			else if (cert.id.includes("CNN")) { this.networkTypeCounter["CNN"] += 1 }
 			else if (cert.id.includes("CDNN")) { this.networkTypeCounter["CDNN"] += 1 }
 			else if (cert.id.includes("DNN")) { this.networkTypeCounter["DNN"] += 1 }
 			else if (cert.id.includes("CLSTM_MP")) { this.networkTypeCounter["CLSTM_MP"] += 1 }
 			else if (cert.id.includes("CLSTM")) { this.networkTypeCounter["CLSTM"] += 1 }
+			else if (cert.id.includes("BDLSTM")) { this.networkTypeCounter["BDLSTM"] += 1 }
 			else if (cert.id.includes("LSTM")) { this.networkTypeCounter["LSTM"] += 1 }
+			else if (cert.id.includes("GRU")) { this.networkTypeCounter["GRU"] += 1 }
 			else { this.networkTypeCounter["Unknown"] += 1 }
 
 			// Update the network series
@@ -218,18 +226,22 @@ export class KerasHyperparamsViewComponent implements OnInit, OnDestroy, IKerasH
 		this.networkType = this._chart.getBarChartOptions(
 			{
 				series: [
+					{ name: "CNN", data: [ this.networkTypeCounter["CNN"] ] },
+					{ name: "CNN_MP", data: [ this.networkTypeCounter["CNN_MP"] ] },
 					{ name: "DNN", data: [ this.networkTypeCounter["DNN"] ] },
 					{ name: "CDNN", data: [ this.networkTypeCounter["CDNN"] ] },
 					{ name: "CDNN_MP", data: [ this.networkTypeCounter["CDNN_MP"] ] },
 					{ name: "LSTM", data: [ this.networkTypeCounter["LSTM"] ] },
+					{ name: "BDLSTM", data: [ this.networkTypeCounter["BDLSTM"] ] },
 					{ name: "CLSTM", data: [ this.networkTypeCounter["CLSTM"] ] },
 					{ name: "CLSTM_MP", data: [ this.networkTypeCounter["CLSTM_MP"] ] },
+					{ name: "GRU", data: [ this.networkTypeCounter["GRU"] ] },
 					{ name: "Unknown", data: [ this.networkTypeCounter["Unknown"] ] }
 				], 
-				colors: [ "#2f0f63", "#5c3c91", "#4b0bb3", "#7b40db", "#6207f5", "#CE93D8", "#9E9E9E" ],
+				colors: [ "#1e0f38", "#2e1654", "#3d1e70", "#4d268c", "#5c2da8", "#6c35c4", "#7f4ecf", "#936ad6", "#a886de", "#bca2e5", "#9E9E9E" ],
 				xaxis: {categories: [ "Network Type" ], labels: {show: false}},
 				yaxis: {labels: {show: false}},
-				plotOptions: { bar: { horizontal: false, borderRadius: 4, columnWidth: "20%"}},
+				plotOptions: { bar: { horizontal: false, borderRadius: 4, columnWidth: "30%"}},
 			}, 
 			[ "Network Type" ], 
 			180

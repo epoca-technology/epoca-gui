@@ -28,102 +28,53 @@
         <div *ngIf="activeIndex == 0" class="padding">
             <!-- Summary -->
             <div>
-                <div fxLayout="row" fxLayoutAlign="start center">
-                    <h5>Summary</h5>
+                <div fxLayout="row" fxLayoutAlign="start center" class="badged-header">
+                    <h5>{{_ms.taStates[intervalState.s.a]}}</h5>
                     <span fxFlex></span>
-                    <div [ngClass]="{
-                            'square-badge-success': intervalState.s.a > 0,
-                            'square-badge-error': intervalState.s.a < 0,
-                            'square-badge-neutral': intervalState.s.a == 0,
-                            'state': intervalState.s.a != -2 && intervalState.s.a != 2
-                        }">
-                        {{_ms.taStates[intervalState.s.a]}}
-                    </div>
-                </div>
-                <div fxLayout="row">
-                    <div class="sell-action-container" 
-                        matTooltip="Sell: {{summary.s}}%" 
-                        matTooltipPosition="above" 
-                        *ngIf="summary.s > 0" 
-                        [fxFlex]="summary.s"><p>{{intervalState.s.s}}</p></div>
-                    <div class="neutral-action-container" 
-                        matTooltip="Neutral: {{summary.n}}%" 
-                        matTooltipPosition="above" 
-                        *ngIf="summary.n > 0" 
-                        [fxFlex]="summary.n"><p>{{intervalState.s.n}}</p></div>
-                    <div class="buy-action-container" 
-                        matTooltip="Buy: {{summary.b}}%" 
-                        matTooltipPosition="above" 
-                        *ngIf="summary.b > 0" 
-                        [fxFlex]="summary.b"><p>{{intervalState.s.b}}</p></div>
-                </div>
-            </div>
-
-            <div class="divider"></div>
-
-            <!-- Oscillators -->
-            <div>
-                <div fxLayout="row" fxLayoutAlign="start center">
-                    <h5>Oscillators</h5>
-                    <span fxFlex></span>
-                    <div [ngClass]="{
+                    <div matTooltip="Oscillators: {{_ms.taStates[intervalState.o.a]}}" [ngClass]="{
                             'square-badge-success': intervalState.o.a > 0,
                             'square-badge-error': intervalState.o.a < 0,
                             'square-badge-neutral': intervalState.o.a == 0,
                             'state': intervalState.o.a != -2 && intervalState.o.a != 2
                         }">
-                        {{_ms.taStates[intervalState.o.a]}}
+                        OSC
                     </div>
-                </div>
-                <div fxLayout="row">
-                    <div class="sell-action-container" 
-                        matTooltip="Sell: {{oscillators.s}}%" 
-                        matTooltipPosition="above" 
-                        [fxFlex]="oscillators.s"><p>{{intervalState.o.s}}</p></div>
-                    <div class="neutral-action-container" 
-                        matTooltip="Neutral: {{oscillators.n}}%" 
-                        matTooltipPosition="above" 
-                        [fxFlex]="oscillators.n"><p>{{intervalState.o.n}}</p></div>
-                    <div class="buy-action-container" 
-                        matTooltip="Buy: {{oscillators.b}}%" 
-                        matTooltipPosition="above" 
-                        [fxFlex]="oscillators.b"><p>{{intervalState.o.b}}</p></div>
-                </div>
-            </div>
-
-            <div class="divider"></div>
-
-            <!-- Moving Averages -->
-            <div>
-                <div fxLayout="row" fxLayoutAlign="start center">
-                    <h5 class="truncate">Moving Averages</h5>
-                    <span fxFlex></span>
-                    <div [ngClass]="{
+                    <div matTooltip="Moving Averages: {{_ms.taStates[intervalState.m.a]}}" [ngClass]="{
                             'square-badge-success': intervalState.m.a > 0,
                             'square-badge-error': intervalState.m.a < 0,
                             'square-badge-neutral': intervalState.m.a == 0,
                             'state': intervalState.m.a != -2 && intervalState.m.a != 2
                         }">
-                        {{_ms.taStates[intervalState.m.a]}}
+                        MA
                     </div>
                 </div>
                 <div fxLayout="row">
                     <div class="sell-action-container" 
-                        matTooltip="Sell: {{movingAverages.s}}%" 
+                        matTooltip="Sell: {{summaryPercentages.s}}%" 
                         matTooltipPosition="above" 
-                        *ngIf="movingAverages.s > 0" 
-                        [fxFlex]="movingAverages.s"><p>{{intervalState.m.s}}</p></div>
+                        *ngIf="summaryPercentages.s > 0" 
+                        [fxFlex]="summaryPercentages.s"><p>{{intervalState.s.s}}</p></div>
                     <div class="neutral-action-container" 
-                        matTooltip="Neutral: {{movingAverages.n}}%" 
+                        matTooltip="Neutral: {{summaryPercentages.n}}%" 
                         matTooltipPosition="above" 
-                        *ngIf="movingAverages.n > 0" 
-                        [fxFlex]="movingAverages.n"><p>{{intervalState.m.n}}</p></div>
+                        *ngIf="summaryPercentages.n > 0" 
+                        [fxFlex]="summaryPercentages.n"><p>{{intervalState.s.n}}</p></div>
                     <div class="buy-action-container" 
-                        matTooltip="Buy: {{movingAverages.b}}%" 
+                        matTooltip="Buy: {{summaryPercentages.b}}%" 
                         matTooltipPosition="above" 
-                        *ngIf="movingAverages.b > 0" 
-                        [fxFlex]="movingAverages.b"><p>{{intervalState.m.b}}</p></div>
+                        *ngIf="summaryPercentages.b > 0" 
+                        [fxFlex]="summaryPercentages.b"><p>{{intervalState.s.b}}</p></div>
                 </div>
+            </div>
+
+            <!-- Indicators Grid -->
+            <div class="margin-top-x2">
+                <mat-grid-list [cols]="gridColumns" rowHeight="40px" gutterSize="1px">
+                    <mat-grid-tile *ngFor="let item of items" 
+                                    [ngClass]="item.class" 
+                                    [matTooltip]="item.name" 
+                                    matTooltipPosition="above"><p>{{item.name}}</p></mat-grid-tile>
+                </mat-grid-list>
             </div>
         </div>
 

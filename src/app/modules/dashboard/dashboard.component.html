@@ -242,17 +242,24 @@
                                     </button>
                                     <button mat-menu-item 
                                             *ngIf="position.long"
+                                            (click)="togglePositionButtonContent()"
+                                            [disabled]="submitting">
+                                        <mat-icon>visibility</mat-icon>
+                                        <span>{{userPreferences.positionButtonPNL ? longHPState: longPNLState}}</span>
+                                    </button>
+                                    <button mat-menu-item 
+                                            *ngIf="position.long"
                                             (click)="displayPositionDialog(position.long)"
                                             [disabled]="submitting">
                                         <mat-icon>info</mat-icon>
                                         <span>Position Information</span>
                                     </button>
                                     <button mat-menu-item 
-                                            *ngIf="position.long"
-                                            (click)="togglePositionButtonContent()"
+                                            *ngIf="position.health && position.health.long"
+                                            (click)="displayHealthDialog('LONG')"
                                             [disabled]="submitting">
-                                        <mat-icon>flip_camera_android</mat-icon>
-                                        <span>{{userPreferences.positionButtonPNL ? 'View Health Points': 'View Profits & Losses'}}</span>
+                                        <mat-icon>monitor_heart</mat-icon>
+                                        <span>Position Health</span>
                                     </button>
                                     <button mat-menu-item 
                                             *ngIf="position.long"
@@ -336,17 +343,24 @@
                                     </button>
                                     <button mat-menu-item 
                                             *ngIf="position.short"
+                                            (click)="togglePositionButtonContent()"
+                                            [disabled]="submitting">
+                                        <mat-icon>visibility</mat-icon>
+                                        <span>{{userPreferences.positionButtonPNL ? shortHPState: shortPNLState}}</span>
+                                    </button>
+                                    <button mat-menu-item 
+                                            *ngIf="position.short"
                                             (click)="displayPositionDialog(position.short)"
                                             [disabled]="submitting">
                                         <mat-icon>info</mat-icon>
                                         <span>Position Information</span>
                                     </button>
                                     <button mat-menu-item 
-                                            *ngIf="position.short"
-                                            (click)="togglePositionButtonContent()"
+                                            *ngIf="position.health && position.health.short"
+                                            (click)="displayHealthDialog('SHORT')"
                                             [disabled]="submitting">
-                                        <mat-icon>flip_camera_android</mat-icon>
-                                        <span>{{userPreferences.positionButtonPNL ? 'View Health Points': 'View Profits & Losses'}}</span>
+                                        <mat-icon>monitor_heart</mat-icon>
+                                        <span>Position Health</span>
                                     </button>
                                     <button mat-menu-item 
                                             *ngIf="position.short"
@@ -435,7 +449,6 @@
                                         <div fxLayout="row"
                                             class="clickable" role="button"
                                             [matMenuTriggerFor]="signalMenu"
-                                            [ngClass]="{'state': signal == 0}"
                                             matTooltip="Pred: {{predLastUpdate}} | TA: {{taLastUpdate}}">
                                             <mat-icon>podcasts</mat-icon>&nbsp;
                                             <h4 *ngIf="!activePrediction">Neutral</h4>

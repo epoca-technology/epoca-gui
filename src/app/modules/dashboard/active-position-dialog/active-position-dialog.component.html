@@ -13,18 +13,6 @@
 <div mat-dialog-content>
     <!-- Container -->
     <div class="component">
-        <!-- HP -->
-        <div class="clickable mat-elevation-z2" role="button" matRipple 
-            matTooltip="HP (HP Drawdown%) | Gain Drawdown%"
-            (click)="displayHealthDialog()"
-            [ngClass]="{
-                'long-position-button': position.side == 'LONG',
-                'short-position-button': position.side == 'SHORT'
-            }">
-            <div class="hp" [ngStyle]="{'width': -(health.dd) + '%'}"></div>
-            <p>{{health.chp}} HP {{health.dd}}% | {{health.mgdd}}%</p>
-        </div>
-
         <!-- Position Details-->
         <div class="padding">
             <!-- Open -->

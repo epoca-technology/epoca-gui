@@ -176,6 +176,7 @@ export interface IBacktestPerformance {
     position_size: number,
     initial_balance: number,
     final_balance: number,
+    largest_balance_drawdown: number,
     profit: number,
     fees: number,
     leverage: number,

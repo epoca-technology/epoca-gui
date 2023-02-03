@@ -8,7 +8,6 @@ import {
 	IPositionStrategy, 
 	UtilsService 
 } from "../../../core";
-import { IPositionHealthDialogData, PositionHealthDialogComponent } from './position-health-dialog';
 import { IActivePositionDialogComponent, IActivePositionDialogData } from './interfaces';
 
 @Component({
@@ -102,23 +101,6 @@ export class ActivePositionDialogComponent implements OnInit, IActivePositionDia
 	}
 
 
-
-
-
-
-	/**
-	 * Displays the position health dialog.
-	 */
-    public displayHealthDialog(): void {
-		this.dialog.open(PositionHealthDialogComponent, {
-			hasBackdrop: this._app.layout.value != "mobile",
-			panelClass: "large-dialog",
-			data: <IPositionHealthDialogData>{
-				side: this.position.side,
-				health: this.health
-			}
-		})
-	}
 
 
 

@@ -1,8 +1,7 @@
-import { IActivePosition, ICandlestick, IPositionSideHealth, IPositionStrategy } from "../../../core";
+import { IActivePosition, IPositionSideHealth, IPositionStrategy } from "../../../core";
 
 
 export interface IActivePositionDialogComponent { 
-    displayHealthDialog(): void,
     close(): void
 }
 

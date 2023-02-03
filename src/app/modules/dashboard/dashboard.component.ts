@@ -44,6 +44,7 @@ import { ActivePositionDialogComponent, IActivePositionDialogData } from "./acti
 import { StrategyFormDialogComponent } from "./strategy-form-dialog";
 import { TechnicalAnalysisDialogComponent } from "./technical-analysis-dialog";
 import { SignalPoliciesDialogComponent } from "./signal-policies-dialog";
+import { IPositionHealthDialogData, PositionHealthDialogComponent } from './position-health-dialog';
 import { IDashboardComponent, IPositionCloseChunkSize } from "./interfaces";
 
 @Component({
@@ -1589,6 +1590,20 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
 
 
+
+	/**
+	 * Displays the position health dialog.
+	 */
+    public displayHealthDialog(side: IBinancePositionSide): void {
+		this.dialog.open(PositionHealthDialogComponent, {
+			hasBackdrop: this._app.layout.value != "mobile",
+			panelClass: "large-dialog",
+			data: <IPositionHealthDialogData>{
+				side: side,
+				health: side == "LONG" ? this.position.health.long: this.position.health.short
+			}
+		})
+	}
 
 
     
