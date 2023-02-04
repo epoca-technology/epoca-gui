@@ -41,7 +41,7 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
     // Prediction Candlesticks
     public candlesticks: IPredictionCandlestick[] = [];
     public candlesticksChart?: ICandlestickChartOptions;
-    private displayDays: number = 2;
+    private displayDays: number = 1;
 
     // Initialization State
     public initializing: boolean = false;
@@ -159,7 +159,7 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
         this.epoch = epochSummary;
 
         // Load the candlesticks
-        await this.loadCandlesticks(2);
+        await this.loadCandlesticks(1);
 
         // Set the loading state
         this.loaded = true;
@@ -200,17 +200,17 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
         else {
             // Display the bottom sheet and handle the action
             const menu: IBottomSheetMenuItem[] = [
-                {icon: "waterfall_chart", title: "Last Day", description: "View 24 hours worth of data", response: "1"},
-                {icon: "waterfall_chart", title: "Last 2 Days", description: "View 48 hours worth of data", response: "2"},
-                {icon: "waterfall_chart", title: "Last 3 Days", description: "View 3 days worth of data", response: "3"},
-                {icon: "waterfall_chart", title: "Last 7 Days", description: "View 1 week worth of data", response: "7"},
-                {icon: "waterfall_chart", title: "Last 14 Days", description: "View 2 weeks worth of data", response: "14"},
-                {icon: "waterfall_chart", title: "Last 21 Days", description: "View 3 weeks worth of data", response: "21"},
-                {icon: "waterfall_chart", title: "Last Month", description: "View 30 days worth of data", response: "30"},
-                {icon: "waterfall_chart", title: "Last 1.5 Months", description: "View 45 days worth of data", response: "45"},
-                {icon: "waterfall_chart", title: "Last 2 Months", description: "View 60 days worth of data", response: "60"},
-                {icon: "waterfall_chart", title: "Last 3 Months", description: "View 90 days worth of data", response: "90"},
-                {icon: "waterfall_chart", title: "Last 6 Months", description: "View 120 days worth of data", response: "120"},
+                {icon: "calendar_month", title: "Last Day", description: "View 24 hours worth of data", response: "1"},
+                {icon: "calendar_month", title: "Last 2 Days", description: "View 48 hours worth of data", response: "2"},
+                {icon: "calendar_month", title: "Last 3 Days", description: "View 3 days worth of data", response: "3"},
+                {icon: "calendar_month", title: "Last 7 Days", description: "View 1 week worth of data", response: "7"},
+                {icon: "calendar_month", title: "Last 14 Days", description: "View 2 weeks worth of data", response: "14"},
+                {icon: "calendar_month", title: "Last 21 Days", description: "View 3 weeks worth of data", response: "21"},
+                {icon: "calendar_month", title: "Last Month", description: "View 30 days worth of data", response: "30"},
+                {icon: "calendar_month", title: "Last 1.5 Months", description: "View 45 days worth of data", response: "45"},
+                {icon: "calendar_month", title: "Last 2 Months", description: "View 60 days worth of data", response: "60"},
+                {icon: "calendar_month", title: "Last 3 Months", description: "View 90 days worth of data", response: "90"},
+                {icon: "calendar_month", title: "Last 6 Months", description: "View 120 days worth of data", response: "120"},
             ];
             const bs: MatBottomSheetRef = this._nav.displayBottomSheetMenu(menu.filter((mi) => Number(mi.response) != this.displayDays));
             bs.afterDismissed().subscribe(async (response: string|undefined) => {

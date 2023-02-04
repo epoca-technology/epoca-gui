@@ -62,24 +62,6 @@
 
                 <div class="divider"></div>
 
-                <!-- Trading Mode -->
-                <div>
-                    <div fxLayout="row" fxLayoutAlign="start center">
-                        <h5>{{hedge_mode.value ? 'Hedge Mode': 'One-Way Mode'}}</h5>
-                        <span fxFlex></span>
-                        <button mat-icon-button (click)="tradingModeTooltip()" matTooltip="More information" type="button"><mat-icon>question_mark</mat-icon></button>
-                    </div> 
-                    <div class="section-content">
-                        <mat-slide-toggle 
-                            formControlName="hedge_mode"
-                            [appDisableControl]="submitting">
-                            Hedge Mode
-                        </mat-slide-toggle>
-                    </div>
-                </div>
-
-                <div class="divider"></div>
-
                 <!-- Leverage & Margin -->
                 <div>
                     <div fxLayout="row" fxLayoutAlign="start center">
@@ -453,6 +435,24 @@
                                        placeholder="e.g. 30">
                             </mat-form-field>
                         </div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- Trading Mode -->
+                <div>
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <h5>{{hedge_mode.value ? 'Hedge Mode': 'One-Way Mode'}}</h5>
+                        <span fxFlex></span>
+                        <button mat-icon-button (click)="tradingModeTooltip()" matTooltip="More information" type="button"><mat-icon>question_mark</mat-icon></button>
+                    </div> 
+                    <div class="section-content">
+                        <mat-slide-toggle 
+                            formControlName="hedge_mode"
+                            [appDisableControl]="submitting">
+                            Hedge Mode
+                        </mat-slide-toggle>
                     </div>
                 </div>
             </form>

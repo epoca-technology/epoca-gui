@@ -697,7 +697,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             // Retrieve the candlesticks
             const candlesticks: IPredictionCandlestick[] = await this._localDB.listPredictionCandlesticks(
                 this.epoch!.id, 
-                moment(this._app.serverTime.value!).subtract(3, "days").valueOf(),
+                moment(this._app.serverTime.value!).subtract(1, "days").valueOf(),
                 this._app.serverTime.value!,
                 this.epoch!.installed, 
                 this._app.serverTime.value!
@@ -856,9 +856,11 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         let bullColor: string = "#80CBC4";
         let bearColor: string = "#EF9A9A";
         if (this.state.volume.direction > 0) {
-            bullColor = this.state.volume.direction == 1 ? "#00796B": "#004D40";
+            bearColor = this.state.volume.direction == 1 ? "#EF9A9A": "#80CBC4";
+            bullColor = "#004D40";
         } else if (this.state.volume.direction < 0) {
-            bearColor = this.state.volume.direction == -1 ? "#D32F2F": "#B71C1C";
+            bullColor = this.state.volume.direction == -1 ? "#80CBC4": "#EF9A9A";
+            bearColor = "#B71C1C";
         }
         this.windowChart.plotOptions = {candlestick: {colors: {upward: bullColor, downward: bearColor}}};
     }
