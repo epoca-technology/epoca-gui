@@ -134,6 +134,20 @@ export class PositionHealthDialogComponent implements OnInit, IPositionHealthDia
 
 
 	/**
+	 * Displays the position health points dialog.
+	 */
+    public displayHealthPointsDialog(): void {
+		this.dialog.open(PositionHealthDetailsDialogComponent, {
+			hasBackdrop: true,
+			panelClass: "light-dialog",
+			data: this.health
+		})
+	}
+
+
+
+
+	/**
 	 * Displays the position health dialog.
 	 */
     public displayHealthDetailsDialog(): void {

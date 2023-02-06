@@ -141,21 +141,6 @@
                     
                     <span fxFlex></span>
 
-                    <!-- Strategy -->
-                    <button mat-button 
-                            *ngIf="loaded && layout == 'desktop'"
-                            (click)="displayStrategyFormDialog()"
-                            [disabled]="submitting"
-                            matTooltip="Updated: {{position.strategy.ts | date: 'short'}}">
-                            <mat-icon style="font-size:23px;">tune</mat-icon>&nbsp;Strategy
-                    </button>
-                    <button mat-icon-button 
-                            *ngIf="loaded && layout == 'mobile'"
-                            (click)="displayStrategyFormDialog()"
-                            [disabled]="submitting">
-                            <mat-icon style="font-size:22px;">tune</mat-icon>
-                    </button>
-
                     <!-- Balance -->
                     <button mat-button 
                             *ngIf="loaded && layout == 'desktop'"
@@ -169,6 +154,21 @@
                             (click)="displayBalanceDialog()"
                             [disabled]="submitting">
                             <mat-icon style="font-size:22px;">account_balance_wallet</mat-icon>
+                    </button>
+
+                    <!-- Adjustments -->
+                    <button mat-button 
+                            *ngIf="loaded && layout == 'desktop'"
+                            (click)="displayStrategyFormDialog()"
+                            [disabled]="submitting"
+                            matTooltip="Updated: {{position.strategy.ts | date: 'short'}}">
+                            <mat-icon style="font-size:23px;">tune</mat-icon>&nbsp;Adjustments
+                    </button>
+                    <button mat-icon-button 
+                            *ngIf="loaded && layout == 'mobile'"
+                            (click)="displayStrategyFormDialog()"
+                            [disabled]="submitting">
+                            <mat-icon style="font-size:22px;">tune</mat-icon>
                     </button>
 
                     <!-- Menu -->
@@ -250,9 +250,9 @@
                                     <button mat-menu-item 
                                             *ngIf="position.long"
                                             (click)="displayPositionDialog(position.long)"
-                                            [disabled]="submitting">
+                                            [disabled]="submitting || !position.health">
                                         <mat-icon>info</mat-icon>
-                                        <span>Position Information</span>
+                                        <span>Position Details</span>
                                     </button>
                                     <button mat-menu-item 
                                             *ngIf="position.health && position.health.long"
@@ -351,9 +351,9 @@
                                     <button mat-menu-item 
                                             *ngIf="position.short"
                                             (click)="displayPositionDialog(position.short)"
-                                            [disabled]="submitting">
+                                            [disabled]="submitting || !position.health">
                                         <mat-icon>info</mat-icon>
-                                        <span>Position Information</span>
+                                        <span>Position Details</span>
                                     </button>
                                     <button mat-menu-item 
                                             *ngIf="position.health && position.health.short"

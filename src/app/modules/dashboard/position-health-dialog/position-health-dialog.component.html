@@ -3,7 +3,8 @@
         <button mat-icon-button class="show-on-mobile" (click)="close()"><mat-icon>arrow_back</mat-icon></button>
         <span class="truncate">{{side}}: {{health.chp | number: '1.0-2'}} HP {{health.dd}}% | {{health.mgdd}}%</span>
         <span fxFlex></span>
-        <button mat-icon-button (click)="displayHealthDetailsDialog()" matTooltip="View Health Details"><mat-icon>receipt_long</mat-icon></button>
+        <button mat-icon-button (click)="displayHealthPointsDialog()" matTooltip="View Health Points"><mat-icon>checklist_rtl</mat-icon></button>
+        <button mat-icon-button (click)="displayHealthDetailsDialog()" matTooltip="View Health Details"><mat-icon>info</mat-icon></button>
         <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
     </div>
 </mat-toolbar>
@@ -12,7 +13,7 @@
     <div *ngIf="!loaded">
         <div class="section-loader"><div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div></div>
     </div>
-    <div *ngIf="loaded" class="padding">
+    <div *ngIf="loaded" class="padding" style="overflow:hidden;">
         <!-- HP Chart -->
         <div *ngIf="hpChart">
             <apx-chart
