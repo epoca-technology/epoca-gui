@@ -6,9 +6,10 @@
     .mat-progress-bar { margin-top:10px;}
     .ts-xs { font-size:11px!important;}
     .hp-item {
-        margin: 20px 0 15px 0;   
+        margin: 25px 0 15px 0;   
+        .strong-item { font-weight: 500}
     }
     .hp-item:first-child { margin: 0 0 15px 0!important;   }
-    .hp-item:last-child { margin: 15px 0 0 0!important;   }
+    .hp-item:last-child { margin: 25px 0 0 0!important;   }
 }
 

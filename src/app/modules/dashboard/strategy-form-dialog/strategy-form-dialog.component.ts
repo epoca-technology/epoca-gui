@@ -183,6 +183,16 @@ export class StrategyFormDialogComponent implements OnInit, IStrategyFormDialogC
 	/* Tooltips */
 
 
+	/* Trading Strategy */
+	public tradingStrategyTooltip(): void {
+		this._nav.displayTooltip("Trading Strategy", [
+			`The strategy is fully connected to the Signal and Position HP modules. Its core responsibilities are:`,
+			`- When it receives a non-neutral signal, it determines if a position for the given side can be opened and does so`,
+			`- Calculates the size of a position (capital to be allocated)`,
+			`- Closes positions at profit or loss based on the HP & Gain systems`,
+		]);
+	}
+
 
 	/* Status */
 	public statusTooltip(): void {
@@ -239,16 +249,17 @@ export class StrategyFormDialogComponent implements OnInit, IStrategyFormDialogC
 			profits once a high take profit level has been activated.`,
 			`________`,
 			`How is the HP calculated?`,
-			`When a position is opened, the initial trend sum is stored and the points are calculated based on the market conditions and the side of 
-			the position (long or short). These are the components used to calculate the HP:`,
+			`When a position is opened, the initial trend sum, open interest and long/short ratio values are stored. Later, these initial values as well as the rest of the components' states are used to 
+			evaluate the position's HP based on its side (long or short). The components used by the Position Health module are:`,
 			`1) Current trend sum vs initial trend sum (40%)`,
 			`2) Trend state and trend intensity (10%)`,
 			`3) Technical analysis in the following intervals: 30m, 1h, 2h, 4h, 1d (21%)`,
 			`4) Current open interest vs initial open interest (5%)`,
-			`4) Open Interest State (8%)`,
-			`4) Current long/short ratio vs initial long/short ratio (5%)`,
-			`5) Long/Short Ratio State (8%)`,
-			`6) Volume Direction (3%)`,
+			`5) Open Interest State (8%)`,
+			`6) Current long/short ratio vs initial long/short ratio (5%)`,
+			`7) Long/Short Ratio State (8%)`,
+			`8) Volume Direction (3%)`,
+			`The weight% shown above are the default values set when Epoca runs the first time. To modify these weights, go to Adjustments > Health Point Weights.`
 		]);
 	}
 

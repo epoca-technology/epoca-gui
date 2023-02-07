@@ -5,6 +5,7 @@ export interface IStrategyFormDialogComponent {
     update(): void,
 
     // Tooltips
+    tradingStrategyTooltip(): void,
     statusTooltip(): void,
     tradingModeTooltip(): void,
     positionSizeTooltip(): void,

@@ -130,29 +130,62 @@ export class PositionHealthWeightsFormDialogComponent implements OnInit, IPositi
 
 
 	public positionHealthSystemTooltip(): void {
-		this._nav.displayTooltip("Position Health System", [
-			"",
+		this._nav.displayTooltip("Health Points System", [
+			`When a position is opened, the initial trend sum, open interest and long/short ratio values are stored. Later, these initial values 
+			as well as the rest of the components' states are used to evaluate the position's HP based on its side (long or short). The components 
+			used by the Position Health module are:`,
+			`1) Current trend sum vs initial trend sum`,
+			`2) Trend state and trend intensity`,
+			`3) Technical analysis in the following intervals: 30m, 1h, 2h, 4h, 1d`,
+			`4) Current open interest vs initial open interest`,
+			`5) Open Interest State`,
+			`6) Current long/short ratio vs initial long/short ratio`,
+			`7) Long/Short Ratio State`,
+			`8) Volume Direction`
 		]);
 	}
 
 
 	public trendTooltip(): void {
 		this._nav.displayTooltip("Trend", [
-			"",
+			"LONG HP",
+			"- Increases when the current trend sum is greater than the initial",
+			"- Increases when the trend state and intensity are increasing",
+			"- Decreases when the current trend sum is less than the initial",
+			"- Decreases when the trend state and intensity are decreasing",
+			"SHORT HP",
+			"- Increases when the current trend sum is less than the initial",
+			"- Increases when the trend state and intensity are decreasing",
+			"- Decreases when the current trend sum is greater than the initial",
+			"- Decreases when the trend state and intensity are increasing"
 		]);
 	}
 
 
 	public technicalsTooltip(): void {
 		this._nav.displayTooltip("Technicals", [
-			"",
+			"LONG HP",
+			`Increases when the output of the indicators is: "Buy" or "Strong Buy"`,
+			`Decreases when the output of the indicators is: "Sell" or "Strong Sell"`,
+			"SHORT HP",
+			`Increases when the output of the indicators is: "Sell" or "Strong Sell"`,
+			`Decreases when the output of the indicators is: "Buy" or "Strong Buy"`,
 		]);
 	}
 
 
 	public openInterestTooltip(): void {
 		this._nav.displayTooltip("Open Interest", [
-			"",
+			"LONG HP",
+			"- Increases when the current open interest value is greater than the initial",
+			"- Increases when the open interest state is increasing",
+			"- Decreases when the current open interest value is less than the initial",
+			"- Decreases when the open interest state is decreasing",
+			"SHORT HP",
+			"- Increases when the current open interest value is less than the initial",
+			"- Increases when the open interest state is decreasing",
+			"- Decreases when the current open interest value is greater than the initial",
+			"- Decreases when the open interest state is increasing"
 		]);
 	}
 
@@ -160,7 +193,16 @@ export class PositionHealthWeightsFormDialogComponent implements OnInit, IPositi
 
 	public longShortRatioTooltip(): void {
 		this._nav.displayTooltip("Long/Short Ratio", [
-			"",
+			"LONG HP",
+			"- Increases when the current long/short ratio value is greater than the initial",
+			"- Increases when the long/short ratio state is increasing",
+			"- Decreases when the current long/short ratio value is less than the initial",
+			"- Decreases when the long/short ratio state is decreasing",
+			"SHORT HP",
+			"- Increases when the current long/short ratio value is less than the initial",
+			"- Increases when the long/short ratio state is decreasing",
+			"- Decreases when the current long/short ratio value is greater than the initial",
+			"- Decreases when the long/short ratio state is increasing"
 		]);
 	}
 
@@ -168,7 +210,12 @@ export class PositionHealthWeightsFormDialogComponent implements OnInit, IPositi
 
 	public volumeTooltip(): void {
 		this._nav.displayTooltip("Volume", [
-			"",
+			"LONG HP",
+			"Increases when the price is being driven upwards by the volume",
+			"Decreases when the price is being driven downwards by the volume",
+			"SHORT HP",
+			"Increases when the price is being driven downwards by the volume",
+			"Decreases when the price is being driven upwards by the volume",
 		]);
 	}
 

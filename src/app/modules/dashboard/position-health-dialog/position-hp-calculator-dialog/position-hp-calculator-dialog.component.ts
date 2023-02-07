@@ -474,7 +474,7 @@ export class PositionHpCalculatorDialogComponent implements OnInit, IPositionHpC
         // Finally, return the score
 		return {
 			id: `ta_${taInterval}`,
-			name: `TA_${taInterval}`,
+			name: `Technicals ${taInterval}`,
 			points: this.weights[`ta_${taInterval}`] * score,
 			maxPoints: this.weights[`ta_${taInterval}`],
 			percentage: score*100
@@ -814,6 +814,9 @@ export class PositionHpCalculatorDialogComponent implements OnInit, IPositionHpC
 			percentage: score*100
 		};
     }
+
+
+
 
 
 

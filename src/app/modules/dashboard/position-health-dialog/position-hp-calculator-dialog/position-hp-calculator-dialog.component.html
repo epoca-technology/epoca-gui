@@ -5,21 +5,21 @@
     <button mat-icon-button (click)="close()"><mat-icon>close</mat-icon></button>
 </div>
 <div mat-dialog-content>
-    <!-- Loader -->
     <div *ngIf="!loaded">
-        <div class="loader"><div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div></div>
+        <div class="loader"><div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="30"></mat-spinner></div></div>
     </div>
     <div *ngIf="loaded && results.length" class="component fadeIn">
         <div *ngFor="let result of results" class="hp-item">
-            <div fxLayout="row" fxLayoutAlign="center center">
+            <div fxLayout="row" fxLayoutAlign="center center"
+                [ngClass]="{
+                    'error-color': result.percentage < 50,
+                    'light-text': result.percentage >= 50 && result.percentage < 60,
+                    'success-color': result.percentage >= 60,
+                    'strong-item': result.percentage < 50 || result.percentage >= 60
+                }">
                 <p class="truncate">{{result.name}}</p>
                 <span fxFlex></span>
-                <p class="ts-xs" 
-                    [ngClass]="{
-                        'error-color': result.percentage < 50,
-                        'light-text': result.percentage >= 50 && result.percentage < 60,
-                        'success-color': result.percentage >= 60
-                    }">
+                <p class="ts-xs">
                     {{result.points | number: '1.0-2'}} / {{result.maxPoints | number: '1.0-2'}}
                 </p>
             </div>

@@ -2,9 +2,6 @@ import { IBinancePositionSide, IPositionSideHealth } from "../../../../core"
 
 
 export interface IPositionHpCalculatorDialogComponent {
-    // Tooltips
-    
-
     // Misc Helpers
     close(): void
 }
