@@ -102,7 +102,7 @@ export class StrategyFormDialogComponent implements OnInit, IStrategyFormDialogC
 
     /**
      * Prompts the confirmation dialog and if confirmed, it will update
-     * the current GUI Version.
+     * the current Strategy.
      */
 	 public update(): void {
         if (this.form.valid) {
@@ -153,7 +153,7 @@ export class StrategyFormDialogComponent implements OnInit, IStrategyFormDialogC
 						// Set Submission State
 						this.submitting = true;
 						try {
-							// Set new version
+							// Update the strategy
 							await this._position.updateStrategy(this.strategy, otp);
 							await this._app.refreshAppBulk();
 	

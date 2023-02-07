@@ -46,6 +46,7 @@ import { TechnicalAnalysisDialogComponent } from "./technical-analysis-dialog";
 import { SignalPoliciesDialogComponent } from "./signal-policies-dialog";
 import { IPositionHealthDialogData, PositionHealthDialogComponent } from './position-health-dialog';
 import { IDashboardComponent, IPositionCloseChunkSize } from "./interfaces";
+import { PositionHealthWeightsFormDialogComponent } from "./position-health-weights-form-dialog";
 
 @Component({
   selector: "app-dashboard",
@@ -359,7 +360,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         const hp: number = <number>this._utils.outputNumber(h.chp, {dp: 0});
         const hpdd: number = <number>this._utils.outputNumber(h.dd, {dp: 1});
         const gdd: number = <number>this._utils.outputNumber(h.mgdd, {dp: 1});
-        return `${this.layout == 'mobile' ? '': hp + ' HP '}${hpdd}% | ${gdd}%`;
+        return `${this.layout == 'mobile' ? '': hp + ' '}HP ${hpdd}% | ${gdd}%`;
     }
 
 
@@ -1553,6 +1554,22 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             data: this.position.strategy
 		})
 	}
+
+
+
+
+    /**
+     * Displays the position hp weights form dialog.
+     */
+    public displayPositionHealthWeightsFormDialog(): void {
+		this.dialog.open(PositionHealthWeightsFormDialogComponent, {
+			hasBackdrop: this._app.layout.value != "mobile",
+            disableClose: true,
+			panelClass: "small-dialog",
+            data: {}
+		})
+	}
+
 
 
 

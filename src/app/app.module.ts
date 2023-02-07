@@ -121,14 +121,15 @@ import {
 	StrategyFormDialogComponent,
 	TechnicalAnalysisDialogComponent,
 	PositionHealthDialogComponent,
+	PositionHealthWeightsFormDialogComponent,
 	PositionHealthDetailsDialogComponent,
+	PositionHpCalculatorDialogComponent,
 	DashboardComponent, 
 } from "./modules/dashboard";
 
 
 // Core Components
 import { AppComponent } from "./app.component";
-
 
 
 
@@ -148,6 +149,8 @@ import { AppComponent } from "./app.component";
 		TechnicalAnalysisDialogComponent,
 		ActivePositionDialogComponent,
 		PositionHealthDialogComponent,
+		PositionHpCalculatorDialogComponent,
+		PositionHealthWeightsFormDialogComponent,
 		PositionHealthDetailsDialogComponent,
 	],
 	imports: [

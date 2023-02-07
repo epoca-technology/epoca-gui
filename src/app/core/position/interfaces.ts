@@ -1,5 +1,3 @@
-import { IPredictionState } from "../prediction";
-
 
 
 
@@ -13,18 +11,20 @@ export interface IPositionService {
     // Position Strategy
     updateStrategy(newStrategy: IPositionStrategy, otp: string): Promise<void>,
 
+    // Position Health
+    getPositionHealthWeights(): Promise<IPositionHealthWeights>,
+    updatePositionHealthWeights(newWeights: IPositionHealthWeights, otp: string): Promise<void>,
+    getPositionHealthCandlesticks(side: IBinancePositionSide): Promise<IPositionHealthCandlestickRecord[]>,
+
+    // Position Trades
+    listTrades(startAt: number, endAt: number): Promise<IPositionTrade[]>,
+
     // Misc Calculators
     calculatePositionPriceRange(
         side: IBinancePositionSide, 
         leverage: number, 
         trades: IPositionCalculatorTradeItem[]
     ): IPositionPriceRange,
-
-    // Position Health Candlesticks
-    getPositionHealthCandlesticks(side: IBinancePositionSide): Promise<IPositionHealthCandlestickRecord[]>,
-
-    // Position Trades
-    listTrades(startAt: number, endAt: number): Promise<IPositionTrade[]>
 }
 
 
@@ -321,6 +321,13 @@ export interface IPositionHealthWeights {
     // The state of the direction in which the price is being driven by the volume
     volume_direction: number
 }
+
+
+
+
+
+
+
 
 
 

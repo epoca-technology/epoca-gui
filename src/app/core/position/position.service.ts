@@ -10,7 +10,8 @@ import {
     IPositionCalculatorTradeItem,
     IPositionPriceRange,
     IPositionTrade,
-    IPositionHealthCandlestickRecord
+    IPositionHealthCandlestickRecord,
+    IPositionHealthWeights
 } from './interfaces';
 
 @Injectable({
@@ -91,9 +92,14 @@ export class PositionService implements IPositionService {
 
 
 
+
+
+
+
 	/*********************
 	 * Position Strategy *
 	 *********************/
+
 
 
 
@@ -109,6 +115,115 @@ export class PositionService implements IPositionService {
     public updateStrategy(newStrategy: IPositionStrategy, otp: string): Promise<void> { 
         return this._api.request("post","position/updateStrategy", {newStrategy: newStrategy}, true, otp);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+    /*******************
+     * Position Health *
+     *******************/
+
+
+
+
+	/**
+	 * Retrieves the weights used in order to calculate the position HP.
+	 * @param side
+	 * @returns Promise<IPositionHealthWeights>
+	 */
+    public getPositionHealthWeights(): Promise<IPositionHealthWeights> {
+		return this._api.request(
+            "get","position/getPositionHealthWeights", 
+            {}, 
+            true
+        );
+	}
+
+
+
+
+
+    /**
+     * Updates the position health weights.
+     * @param newWeights
+     * @param otp
+     * @returns Promise<void>
+     */
+    public updatePositionHealthWeights(newWeights: IPositionHealthWeights, otp: string): Promise<void> { 
+        return this._api.request("post","position/updatePositionHealthWeights", {newWeights: newWeights}, true, otp);
+    }
+
+
+
+
+
+
+
+
+	/**
+	 * Retrieves the full health history in candlestick format for
+     * a given side.
+	 * @param side
+	 * @returns Promise<IPositionHealthCandlestickRecord[]>
+	 */
+    public getPositionHealthCandlesticks(side: IBinancePositionSide): Promise<IPositionHealthCandlestickRecord[]> {
+		return this._api.request(
+            "get","position/getPositionHealthCandlesticks", 
+            {
+                side: side
+            }, 
+            true
+        );
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+    /*******************
+     * Position Trades *
+     *******************/
+
+
+
+
+	/**
+	 * Lists all the position trades (inclusively) within the date range.
+	 * @param startAt 
+	 * @param endAt 
+	 * @returns Promise<IPositionTrade[]>
+	 */
+     public listTrades(startAt: number, endAt: number): Promise<IPositionTrade[]> {
+		return this._api.request(
+            "get","position/listTrades", 
+            {
+                startAt: startAt,
+                endAt: endAt
+            }, 
+            true
+        );
+	}
+
+
+
+
+
+
 
 
 
@@ -196,71 +311,4 @@ export class PositionService implements IPositionService {
             liquidation: <number>this._utils.outputNumber(liquidation_price)
         }
     }
-
-
-
-
-
-
-
-
-
-    /********************************
-     * Position Health Candlesticks *
-     ********************************/
-
-
-
-
-
-	/**
-	 * Retrieves the full health history in candlestick format for
-     * a given side.
-	 * @param side
-	 * @returns Promise<IPositionHealthCandlestickRecord[]>
-	 */
-    public getPositionHealthCandlesticks(side: IBinancePositionSide): Promise<IPositionHealthCandlestickRecord[]> {
-		return this._api.request(
-            "get","position/getPositionHealthCandlesticks", 
-            {
-                side: side
-            }, 
-            true
-        );
-	}
-
-
-
-
-
-
-
-
-
-
-
-
-    /*******************
-     * Position Trades *
-     *******************/
-
-
-
-
-	/**
-	 * Lists all the position trades (inclusively) within the date range.
-	 * @param startAt 
-	 * @param endAt 
-	 * @returns Promise<IPositionTrade[]>
-	 */
-     public listTrades(startAt: number, endAt: number): Promise<IPositionTrade[]> {
-		return this._api.request(
-            "get","position/listTrades", 
-            {
-                startAt: startAt,
-                endAt: endAt
-            }, 
-            true
-        );
-	}
 }

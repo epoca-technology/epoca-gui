@@ -10,6 +10,7 @@ import {
 } from '../../../core';
 import { PositionHealthDetailsDialogComponent } from './position-health-details-dialog';
 import { IPositionHealthDialogComponent, IPositionHealthDialogData } from './interfaces';
+import { PositionHpCalculatorDialogComponent } from './position-hp-calculator-dialog';
 
 @Component({
   selector: 'app-position-health-dialog',
@@ -137,10 +138,13 @@ export class PositionHealthDialogComponent implements OnInit, IPositionHealthDia
 	 * Displays the position health points dialog.
 	 */
     public displayHealthPointsDialog(): void {
-		this.dialog.open(PositionHealthDetailsDialogComponent, {
+		this.dialog.open(PositionHpCalculatorDialogComponent, {
 			hasBackdrop: true,
 			panelClass: "light-dialog",
-			data: this.health
+			data: {
+				side: this.side,
+				health: this.health
+			}
 		})
 	}
 

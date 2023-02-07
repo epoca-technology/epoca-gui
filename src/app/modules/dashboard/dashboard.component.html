@@ -159,17 +159,35 @@
                     <!-- Adjustments -->
                     <button mat-button 
                             *ngIf="loaded && layout == 'desktop'"
-                            (click)="displayStrategyFormDialog()"
-                            [disabled]="submitting"
-                            matTooltip="Updated: {{position.strategy.ts | date: 'short'}}">
+                            [matMenuTriggerFor]="adjustmentsMenu"
+                            [disabled]="submitting">
                             <mat-icon style="font-size:23px;">tune</mat-icon>&nbsp;Adjustments
                     </button>
                     <button mat-icon-button 
                             *ngIf="loaded && layout == 'mobile'"
-                            (click)="displayStrategyFormDialog()"
+                            [matMenuTriggerFor]="adjustmentsMenu"
                             [disabled]="submitting">
                             <mat-icon style="font-size:22px;">tune</mat-icon>
                     </button>
+                    <mat-menu #adjustmentsMenu="matMenu">
+                        <button mat-menu-item (click)="displayStrategyFormDialog()">
+                            <mat-icon svgIcon="money_bill_transfer"></mat-icon> <span>Trading Strategy</span>
+                        </button>
+                        <button mat-menu-item [matMenuTriggerFor]="signalPoliciesMenu">
+                            <mat-icon>podcasts</mat-icon> <span>Signal Policies</span>
+                        </button>
+                        <button mat-menu-item (click)="displayPositionHealthWeightsFormDialog()">
+                            <mat-icon>monitor_heart</mat-icon> <span>Health Point Weights</span>
+                        </button>
+                    </mat-menu>
+                    <mat-menu #signalPoliciesMenu="matMenu">
+                        <button mat-menu-item (click)="displaySignalPoliciesDialog('LONG')">
+                            <mat-icon>trending_up</mat-icon> <span>Long Policies</span>
+                        </button>
+                        <button mat-menu-item (click)="displaySignalPoliciesDialog('SHORT')">
+                            <mat-icon>trending_down</mat-icon> <span>Short Policies</span>
+                        </button>
+                    </mat-menu>
 
                     <!-- Menu -->
                     <button mat-icon-button 
@@ -447,8 +465,6 @@
                                         fxLayoutAlign="center start" fxLayoutAlign.xs="center center"  fxLayoutAlign.sm="center center" 
                                         class="chart-card-heading badged-header full-width">
                                         <div fxLayout="row"
-                                            class="clickable" role="button"
-                                            [matMenuTriggerFor]="signalMenu"
                                             matTooltip="Pred: {{predLastUpdate}} | TA: {{taLastUpdate}}">
                                             <mat-icon>podcasts</mat-icon>&nbsp;
                                             <h4 *ngIf="!activePrediction">Neutral</h4>
@@ -456,14 +472,6 @@
                                                 {{_prediction.resultNames[signal]}}
                                             </h4>
                                         </div>
-                                        <mat-menu #signalMenu="matMenu">
-                                            <button mat-menu-item (click)="displaySignalPoliciesDialog('LONG')">
-                                                <mat-icon>trending_up</mat-icon> <span>Long Policies</span>
-                                            </button>
-                                            <button mat-menu-item (click)="displaySignalPoliciesDialog('SHORT')">
-                                                <mat-icon>trending_down</mat-icon> <span>Short Policies</span>
-                                            </button>
-                                        </mat-menu>
                                         <span fxFlex class="show-on-desktop"></span>
                                         <div fxLayout="row" fxLayoutAlign="center center" class="prediction-header-indicators">
                                             <div class="clickable" role="button" matRipple 
