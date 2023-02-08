@@ -15,7 +15,7 @@ export interface IDashboardComponent {
     displayPositionDialog(position: IActivePosition): void,
     displayPositionHealthWeightsFormDialog(): void,
     displayHealthDialog(side: IBinancePositionSide): void,
-    displayFeaturesDialog(): void,
+    displayActivePredictionDialog(): void,
     displayTechnicalAnalysisDialog(taInterval: ITAIntervalID): void,
 
     // Tooltips

@@ -513,10 +513,10 @@
                                                     View {{userPreferences.splitTrendChart ? 'Split Chart': 'Sum Chart'}}
                                                 </button>
                                                 <button *ngIf="!displayPredictionCandlesticks" mat-menu-item (click)="activatePredictionCandlesticks()">
-                                                    <mat-icon>candlestick_chart</mat-icon> View last 24 hours
+                                                    <mat-icon>candlestick_chart</mat-icon> View last 32 hours
                                                 </button>
-                                                <button mat-menu-item (click)="displayFeaturesDialog()">
-                                                    <mat-icon>account_tree</mat-icon> View Trend Sum
+                                                <button mat-menu-item (click)="displayActivePredictionDialog()">
+                                                    &nbsp;<mat-icon svgIcon="wand_magic_sparkles" style="max-width:20px;"></mat-icon>&nbsp;Active Prediction
                                                 </button>
                                                 <button mat-menu-item (click)="predictionModelTooltip()">
                                                     <mat-icon>question_mark</mat-icon> More information

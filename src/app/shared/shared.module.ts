@@ -95,8 +95,7 @@ import {
 	PredictionModelConfigDialogComponent,
 	PredictionModelElementComponent,
 	PredictionModelContentComponent,
-	PredictionDialogComponent,
-	FeaturesSumDialogComponent
+	PredictionDialogComponent
 } from "./components/epoch-builder"
 
 // Mobile Tabs
@@ -161,7 +160,6 @@ import { EpochsMenuComponent } from './components/epochs-menu/epochs-menu.compon
 		PredictionModelConfigDialogComponent,
 		PredictionModelElementComponent,
 		PredictionDialogComponent,
-		FeaturesSumDialogComponent,
 
 		// Mobile Tabs
 		MobileTabsComponent,

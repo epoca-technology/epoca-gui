@@ -38,7 +38,6 @@ import {
     ILineChartOptions, 
     NavService 
 } from "../../services";
-import { FeaturesSumDialogComponent, IFeaturesSumDialogData } from "../../shared/components/epoch-builder";
 import { BalanceDialogComponent } from "./balance-dialog";
 import { ActivePositionDialogComponent, IActivePositionDialogData } from "./active-position-dialog";
 import { StrategyFormDialogComponent } from "./strategy-form-dialog";
@@ -698,7 +697,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             // Retrieve the candlesticks
             const candlesticks: IPredictionCandlestick[] = await this._localDB.listPredictionCandlesticks(
                 this.epoch!.id, 
-                moment(this._app.serverTime.value!).subtract(1, "days").valueOf(),
+                moment(this._app.serverTime.value!).subtract(32, "hours").valueOf(),
                 this._app.serverTime.value!,
                 this.epoch!.installed, 
                 this._app.serverTime.value!
@@ -1048,7 +1047,8 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         else if (hp_drawdown <= this.position.strategy.take_profit_2.max_hp_drawdown) { return 2 }
         else if (hp_drawdown <= this.position.strategy.take_profit_3.max_hp_drawdown) { return 3 }
         else if (hp_drawdown <= this.position.strategy.take_profit_4.max_hp_drawdown) { return 4 }
-        else                                                                          { return 5 }
+        else if (hp_drawdown <= this.position.strategy.take_profit_5.max_hp_drawdown) { return 5 }
+        else                                                                          { return 0 }
     }
 
 
@@ -1633,17 +1633,8 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 	 * Displays the features dedicated dialog to gather more information
 	 * about the prediction.
 	 */
-     public displayFeaturesDialog(): void {
-		this.dialog.open(FeaturesSumDialogComponent, {
-			hasBackdrop: true,
-			panelClass: "light-dialog",
-            data: <IFeaturesSumDialogData>{
-                sum: this.activeSum,
-                features: this.activePrediction!.f,
-                result: this.activePrediction!.r,
-                model: this.epoch!.model
-            }
-		})
+     public displayActivePredictionDialog(): void {
+        this._nav.displayPredictionDialog(this.epoch!.model, this.activePrediction!);
 	}
 
 
