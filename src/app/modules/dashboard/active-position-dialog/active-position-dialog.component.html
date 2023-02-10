@@ -55,12 +55,12 @@
                 <div matTooltip="The price in which the position is labeled as 'unsuccessful' and is ready to be closed."
                     class="align-right" 
                     [ngClass]="{
-                        'error-color': !stopLossDistance || (stopLossDistance && stopLossDistance >= -1.5 && stopLossDistance <= 1.5),
+                        'error-color': !stopLossDistance || (stopLossDistance && stopLossDistance >= -0.5 && stopLossDistance <= 0.5),
                         'light-text': stopLossDistance && (
-                            (stopLossDistance > -2.5 && stopLossDistance <= -1.5) || 
-                            (stopLossDistance >= 1.5 && stopLossDistance < 2.5)
+                            (stopLossDistance > -1 && stopLossDistance <= -0.5) || 
+                            (stopLossDistance >= 0.5 && stopLossDistance < 1)
                         ), 
-                        'success-color': stopLossDistance && (stopLossDistance <= -2.5 || stopLossDistance >= 2.5)}">
+                        'success-color': stopLossDistance && (stopLossDistance <= -1 || stopLossDistance >= 1)}">
                     <p>{{position.stop_loss_price | currency}}</p>
                     <p *ngIf="stopLossDistance" class="ts-xs">{{stopLossDistance}}% away</p>
                     <p *ngIf="!stopLossDistance" class="ts-xs">Stop Loss Hit</p>

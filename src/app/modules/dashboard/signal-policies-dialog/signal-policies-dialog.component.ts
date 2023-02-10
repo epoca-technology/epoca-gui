@@ -67,6 +67,11 @@ export class SignalPoliciesDialogComponent implements OnInit, ISignalPoliciesDia
 		if (change.id == "trend_state") {
 			this.policies[change.category][change.policyID].trend_intensity = change.payload.newValue2;
 		}
+
+		// If it is the volume, set the direction as well
+		else if (change.id == "volume") {
+			this.policies[change.category][change.policyID].volume_direction = change.payload.newValue2;
+		}
 	}
 
 
@@ -138,6 +143,7 @@ export class SignalPoliciesDialogComponent implements OnInit, ISignalPoliciesDia
 			`    - Technical Analysis State`,
 			`    - Open Interest State`,
 			`    - Long/Short Ratio State`,
+			`    - Volume State & Direction`,
         ]);
 	}
 

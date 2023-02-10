@@ -258,7 +258,7 @@ export class StrategyFormDialogComponent implements OnInit, IStrategyFormDialogC
 			`5) Open Interest State (8%)`,
 			`6) Current long/short ratio vs initial long/short ratio (5%)`,
 			`7) Long/Short Ratio State (8%)`,
-			`8) Volume Direction (3%)`,
+			`8) Volume State & Direction (3%)`,
 			`The weight% shown above are the default values set when Epoca runs the first time. To modify these weights, go to Adjustments > Health Point Weights.`
 		]);
 	}

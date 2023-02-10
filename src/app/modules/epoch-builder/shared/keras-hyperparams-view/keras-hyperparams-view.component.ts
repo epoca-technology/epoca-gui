@@ -52,7 +52,6 @@ export class KerasHyperparamsViewComponent implements OnInit, OnDestroy, IKerasH
 		"CDNN": 0,
 		"CDNN_MP": 0,
 		"LSTM": 0,
-		"BDLSTM": 0,
 		"CLSTM": 0,
 		"CLSTM_MP": 0,
 		"GRU": 0,
@@ -131,7 +130,6 @@ export class KerasHyperparamsViewComponent implements OnInit, OnDestroy, IKerasH
 			else if (cert.id.includes("DNN")) { this.networkTypeCounter["DNN"] += 1 }
 			else if (cert.id.includes("CLSTM_MP")) { this.networkTypeCounter["CLSTM_MP"] += 1 }
 			else if (cert.id.includes("CLSTM")) { this.networkTypeCounter["CLSTM"] += 1 }
-			else if (cert.id.includes("BDLSTM")) { this.networkTypeCounter["BDLSTM"] += 1 }
 			else if (cert.id.includes("LSTM")) { this.networkTypeCounter["LSTM"] += 1 }
 			else if (cert.id.includes("GRU")) { this.networkTypeCounter["GRU"] += 1 }
 			else { this.networkTypeCounter["Unknown"] += 1 }
@@ -232,13 +230,12 @@ export class KerasHyperparamsViewComponent implements OnInit, OnDestroy, IKerasH
 					{ name: "CDNN", data: [ this.networkTypeCounter["CDNN"] ] },
 					{ name: "CDNN_MP", data: [ this.networkTypeCounter["CDNN_MP"] ] },
 					{ name: "LSTM", data: [ this.networkTypeCounter["LSTM"] ] },
-					{ name: "BDLSTM", data: [ this.networkTypeCounter["BDLSTM"] ] },
 					{ name: "CLSTM", data: [ this.networkTypeCounter["CLSTM"] ] },
 					{ name: "CLSTM_MP", data: [ this.networkTypeCounter["CLSTM_MP"] ] },
 					{ name: "GRU", data: [ this.networkTypeCounter["GRU"] ] },
 					{ name: "Unknown", data: [ this.networkTypeCounter["Unknown"] ] }
 				], 
-				colors: [ "#1e0f38", "#2e1654", "#3d1e70", "#4d268c", "#5c2da8", "#6c35c4", "#7f4ecf", "#936ad6", "#a886de", "#bca2e5", "#9E9E9E" ],
+				colors: [ "#1e0f38", "#2e1654", "#3d1e70", "#4d268c", "#5c2da8", "#6c35c4", "#7f4ecf", "#936ad6", "#a886de", "#9E9E9E" ],
 				xaxis: {categories: [ "Network Type" ], labels: {show: false}},
 				yaxis: {labels: {show: false}},
 				plotOptions: { bar: { horizontal: false, borderRadius: 4, columnWidth: "30%"}},

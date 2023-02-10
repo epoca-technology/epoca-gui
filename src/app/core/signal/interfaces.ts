@@ -38,10 +38,25 @@ export interface IIssuancePolicy {
      *  0: Any Trend Sum
      *  1: > 0
      */
-    trend_sum: -1|0|1,
+    trend_sum: ITrendSumState,
     trend_state: IPredictionState,
     trend_intensity: IPredictionStateIntesity
 }
+
+
+
+/* Individual Issuance */
+
+
+/**
+ * Volume Issuance
+ * Triggers when the volume drives the price towards a clear direction.
+ */
+export interface IVolumeIssuance extends IIssuancePolicy {
+    volume: IStateType,
+    volume_direction: IStateType
+}
+
 
 
 /**
@@ -76,6 +91,58 @@ export interface ILongShortRatioIssuance extends IIssuancePolicy {
     long_short_ratio: IStateType
 }
 
+
+
+
+/* Volume Combination Issuance */
+
+
+
+/**
+ * Volume Technicals Issuance
+ * Triggers when the volume drives the price towards a clear direction aligned
+ * with technicals.
+ */
+export interface IVolumeTechnicalsIssuance extends IIssuancePolicy {
+    volume: IStateType,
+    volume_direction: IStateType,
+    ta_30m: IStateType,
+    ta_1h: IStateType,
+    ta_2h: IStateType,
+    ta_4h: IStateType,
+    ta_1d: IStateType,
+}
+
+
+
+/**
+ * Volume Open Interest Issuance
+ * Triggers when the volume drives the price towards a clear direction aligned
+ * with the open interest.
+ */
+export interface IVolumeOpenInterestIssuance extends IIssuancePolicy {
+    volume: IStateType,
+    volume_direction: IStateType,
+    open_interest: IStateType
+}
+
+
+/**
+ * Volume Long/Short Ratio Issuance
+ * Triggers when the volume drives the price towards a clear direction aligned
+ * with the long/short ratio.
+ */
+export interface IVolumeLongShortRatioIssuance extends IIssuancePolicy {
+    volume: IStateType,
+    volume_direction: IStateType,
+    long_short_ratio: IStateType
+}
+
+
+
+
+
+/* Technicals Combination Issuance */
 
 
 /**
@@ -122,20 +189,34 @@ export interface IOpenInterestLongShortRatioIssuance extends IIssuancePolicy {
  * The object that packs all the issuance policies into a single argument.
  */
 export interface IIssuancePolicies {
+    volume: IVolumeIssuance,
     technicals: ITechnicalsIssuance,
     open_interest: IOpenInterestIssuance,
     long_short_ratio: ILongShortRatioIssuance,
+    volume_technicals: IVolumeTechnicalsIssuance,
+    volume_open_interest: IVolumeOpenInterestIssuance,
+    volume_long_short_ratio: IVolumeLongShortRatioIssuance,
     technicals_open_interest: ITechnicalsOpenInterestIssuance,
     technicals_long_short_ratio: ITechnicalsLongShortRatioIssuance,
     open_interest_long_short_ratio: IOpenInterestLongShortRatioIssuance,
 }
-export type IIssuanceBasedPolicy = ITechnicalsIssuance|IOpenInterestIssuance|ILongShortRatioIssuance|ITechnicalsOpenInterestIssuance|
-ITechnicalsLongShortRatioIssuance|IOpenInterestLongShortRatioIssuance;
+
+export type IIssuanceBasedPolicy = 
+IVolumeIssuance|ITechnicalsIssuance|IOpenInterestIssuance|ILongShortRatioIssuance|
+IVolumeTechnicalsIssuance|IVolumeOpenInterestIssuance|IVolumeLongShortRatioIssuance|
+ITechnicalsOpenInterestIssuance|ITechnicalsLongShortRatioIssuance|IOpenInterestLongShortRatioIssuance;
+
 export type IIssuancePolicyNames = 
-"technicals"|"open_interest"|"long_short_ratio"|
+"volume"|"technicals"|"open_interest"|"long_short_ratio"|
+"volume_technicals"|"volume_open_interest"|"volume_long_short_ratio"|
 "technicals_open_interest"|"technicals_long_short_ratio"|
 "open_interest_long_short_ratio";
-export type ITechnicalsBasedIssuancePolicy = ITechnicalsIssuance|ITechnicalsOpenInterestIssuance|ITechnicalsLongShortRatioIssuance;
+
+export type IVolumeBasedIssuancePolicy = 
+IVolumeIssuance|IVolumeTechnicalsIssuance|IVolumeOpenInterestIssuance|IVolumeOpenInterestIssuance;
+
+export type ITechnicalsBasedIssuancePolicy = 
+ITechnicalsIssuance|IVolumeTechnicalsIssuance|ITechnicalsOpenInterestIssuance|ITechnicalsLongShortRatioIssuance;
 
 
 
@@ -157,6 +238,9 @@ export interface ICancellationPolicy {
 
 
 
+/* Individual Cancellation */
+
+
 /**
  * Window Cancellation
  * Triggers when the market has already moved significantly in favor of
@@ -164,6 +248,19 @@ export interface ICancellationPolicy {
  */
 export interface IWindowCancellation extends ICancellationPolicy {
     window: IStateType
+}
+
+
+
+
+/**
+ * Volume Cancellation
+ * Triggers when the volume is increasing, driving the price in the signal's 
+ * opposite direction.
+ */
+export interface IVolumeCancellation extends ICancellationPolicy {
+    volume: IStateType,
+    volume_direction: IStateType
 }
 
 
@@ -203,6 +300,67 @@ export interface ILongShortRatioCancellation extends ICancellationPolicy {
     long_short_ratio: IStateType
 }
 
+
+
+
+
+
+
+
+
+/* Volume Combination Cancellation */
+
+
+
+
+
+/**
+ * Volume Technicals Cancellation
+ * Triggers when the volume is increasing, driving the price in the signal's 
+ * opposite direction and technicals are also against it.
+ */
+export interface IVolumeTechnicalsCancellation extends ICancellationPolicy {
+    volume: IStateType,
+    volume_direction: IStateType,
+    ta_30m: IStateType,
+    ta_1h: IStateType,
+    ta_2h: IStateType,
+    ta_4h: IStateType,
+    ta_1d: IStateType,
+}
+
+
+
+/**
+ * Volume Open Interest Cancellation
+ * Triggers when the volume is increasing, driving the price in the signal's 
+ * opposite direction as well as the open interest.
+ */
+export interface IVolumeOpenInterestCancellation extends ICancellationPolicy {
+    volume: IStateType,
+    volume_direction: IStateType,
+    open_interest: IStateType
+}
+
+
+/**
+ * Volume Long/Short Ratio Cancellation
+ * Triggers when the volume is increasing, driving the price in the signal's 
+ * opposite direction as well as the long/short ratio.
+ */
+export interface IVolumeLongShortRatioCancellation extends ICancellationPolicy {
+    volume: IStateType,
+    volume_direction: IStateType,
+    long_short_ratio: IStateType
+}
+
+
+
+
+
+
+
+/* Technicals Combination Cancellation */
 
 
 
@@ -259,22 +417,36 @@ export interface IOpenInterestLongShortRatioCancellation extends ICancellationPo
  */
 export interface ICancellationPolicies {
     window: IWindowCancellation,
+    volume: IVolumeCancellation,
     technicals: ITechnicalsCancellation,
     open_interest: IOpenInterestCancellation,
     long_short_ratio: ILongShortRatioCancellation,
+    volume_technicals: IVolumeTechnicalsCancellation,
+    volume_open_interest: IVolumeOpenInterestCancellation,
+    volume_long_short_ratio: IVolumeLongShortRatioCancellation,
     technicals_open_interest: ITechnicalsOpenInterestCancellation,
     technicals_long_short_ratio: ITechnicalsLongShortRatioCancellation,
     open_interest_long_short_ratio: IOpenInterestLongShortRatioCancellation
 }
+
+export type ICancellationBasedPolicy = 
+IWindowCancellation|IVolumeCancellation|ITechnicalsCancellation|IOpenInterestCancellation|ILongShortRatioCancellation|
+IVolumeTechnicalsCancellation|IVolumeOpenInterestCancellation|IVolumeLongShortRatioCancellation|
+ITechnicalsOpenInterestCancellation|ITechnicalsLongShortRatioCancellation|
+IOpenInterestLongShortRatioCancellation;
+
 export type ICancellationPolicyNames = 
-"window"|"technicals"|"open_interest"|"long_short_ratio"|
+"window"|"volume"|"technicals"|"open_interest"|"long_short_ratio"|
+"volume_technicals"|"volume_open_interest"|"volume_long_short_ratio"|
 "technicals_open_interest"|"technicals_long_short_ratio"|
 "open_interest_long_short_ratio";
-export type ICancellationBasedPolicy = IWindowCancellation|ITechnicalsCancellation|IOpenInterestCancellation|ILongShortRatioCancellation|
-ITechnicalsOpenInterestCancellation|ITechnicalsLongShortRatioCancellation|IOpenInterestLongShortRatioCancellation;
-export type ITechnicalsBasedCancellationPolicy = ITechnicalsCancellation|ITechnicalsOpenInterestCancellation|ITechnicalsLongShortRatioCancellation;
 
 
+export type IVolumeBasedCancellationPolicy = 
+IVolumeCancellation|IVolumeTechnicalsCancellation|IVolumeOpenInterestCancellation|IVolumeOpenInterestCancellation;
+
+export type ITechnicalsBasedCancellationPolicy = 
+ITechnicalsCancellation|IVolumeTechnicalsCancellation|ITechnicalsOpenInterestCancellation|ITechnicalsLongShortRatioCancellation;
 
 
 
@@ -363,4 +535,5 @@ export type ISignalPolicyCategory = "issuance"|"cancellation";
 
 
 // Policy Item ID
-export type ISignalPolicyItemID = "trend_sum"|"trend_state"|"ta_30m"|"ta_1h"|"ta_2h"|"ta_4h"|"ta_1d"|"open_interest"|"long_short_ratio"|"window";
+export type ISignalPolicyItemID = 
+"trend_sum"|"trend_state"|"ta_30m"|"ta_1h"|"ta_2h"|"ta_4h"|"ta_1d"|"open_interest"|"long_short_ratio"|"window"|"volume";

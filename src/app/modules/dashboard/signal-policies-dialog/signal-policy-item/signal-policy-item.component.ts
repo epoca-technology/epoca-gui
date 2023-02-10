@@ -50,7 +50,17 @@ export class SignalPolicyItemComponent implements OnInit, ISignalPolicyItemCompo
 		"-1": "Trend Sum < 0",
 		"0": "Any Trend Sum",
 		"1": "Trend Sum > 0"
-	}
+	};
+	public readonly bullishVolText: any = {
+		"0": "Any Volume State",
+		"1": "Bullish Volume",
+		"2": "Strong Bullish Volume",
+	};
+	public readonly bearishVolText: any = {
+		"0": "Any Volume State",
+		"1": "Bearish Volume",
+		"2": "Strong Bearish Volume",
+	};
 
 	constructor(
 		public _ms: MarketStateService

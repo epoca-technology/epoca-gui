@@ -79,6 +79,53 @@
 
             <div class="divider"></div>
 
+            <!-- Volume -->
+            <div [ngClass]="{'inactive': !policies.issuance.volume.enabled}">
+                <div fxLayout="row" fxLayoutAlign="start center">
+                    <h5 class="truncate">Volume</h5>
+                    <span fxFlex></span>
+                    <mat-slide-toggle 
+                        [matTooltip]="policies.issuance.volume.enabled ? 'Enabled': 'Disabled'" 
+                        [(ngModel)]="policies.issuance.volume.enabled"></mat-slide-toggle>
+                </div>
+                <div class="policy-items">
+                    <!-- Trend Sum -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'volume'"
+                        [id]="'trend_sum'" 
+                        [value]="policies.issuance.volume.trend_sum"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Trend State -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'volume'"
+                        [id]="'trend_state'" 
+                        [value]="policies.issuance.volume.trend_state"
+                        [value2]="policies.issuance.volume.trend_intensity"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Volume -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'volume'"
+                        [id]="'volume'" 
+                        [value]="policies.issuance.volume.volume"
+                        [value2]="policies.issuance.volume.volume_direction"
+                        [disableable]="false"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
             <!-- Technicals -->
             <div [ngClass]="{'inactive': !policies.issuance.technicals.enabled}">
                 <div fxLayout="row" fxLayoutAlign="start center">
@@ -252,6 +299,219 @@
                         [value]="policies.issuance.long_short_ratio.long_short_ratio"
                         [disableable]="false"
                         [immutable]="true"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- Volume Technicals -->
+            <div [ngClass]="{'inactive': !policies.issuance.volume_technicals.enabled}">
+                <div fxLayout="row" fxLayoutAlign="start center">
+                    <h5 class="truncate">Volume Technicals</h5>
+                    <span fxFlex></span>
+                    <mat-slide-toggle 
+                        [matTooltip]="policies.issuance.volume_technicals.enabled ? 'Enabled': 'Disabled'" 
+                        [(ngModel)]="policies.issuance.volume_technicals.enabled"></mat-slide-toggle>
+                </div>
+                <div class="policy-items">
+                    <!-- Trend Sum -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'volume_technicals'"
+                        [id]="'trend_sum'" 
+                        [value]="policies.issuance.volume_technicals.trend_sum"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Trend State -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'volume_technicals'"
+                        [id]="'trend_state'" 
+                        [value]="policies.issuance.volume_technicals.trend_state"
+                        [value2]="policies.issuance.volume_technicals.trend_intensity"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Volume -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'volume_technicals'"
+                        [id]="'volume'" 
+                        [value]="policies.issuance.volume_technicals.volume"
+                        [value2]="policies.issuance.volume_technicals.volume_direction"
+                        [disableable]="false"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Technicals 30m -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'volume_technicals'"
+                        [id]="'ta_30m'" 
+                        [value]="policies.issuance.volume_technicals.ta_30m"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Technicals 1h -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'volume_technicals'"
+                        [id]="'ta_1h'" 
+                        [value]="policies.issuance.volume_technicals.ta_1h"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Technicals 2h -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'volume_technicals'"
+                        [id]="'ta_2h'" 
+                        [value]="policies.issuance.volume_technicals.ta_2h"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Technicals 4h -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'volume_technicals'"
+                        [id]="'ta_4h'" 
+                        [value]="policies.issuance.volume_technicals.ta_4h"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Technicals 1d -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'volume_technicals'"
+                        [id]="'ta_1d'" 
+                        [value]="policies.issuance.volume_technicals.ta_1d"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- Volume Open Interest -->
+            <div [ngClass]="{'inactive': !policies.issuance.volume_open_interest.enabled}">
+                <div fxLayout="row" fxLayoutAlign="start center">
+                    <h5 class="truncate">Volume Open Interest</h5>
+                    <span fxFlex></span>
+                    <mat-slide-toggle 
+                        [matTooltip]="policies.issuance.volume_open_interest.enabled ? 'Enabled': 'Disabled'" 
+                        [(ngModel)]="policies.issuance.volume_open_interest.enabled"></mat-slide-toggle>
+                </div>
+                <div class="policy-items">
+                    <!-- Trend Sum -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'volume_open_interest'"
+                        [id]="'trend_sum'" 
+                        [value]="policies.issuance.volume_open_interest.trend_sum"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Trend State -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'volume_open_interest'"
+                        [id]="'trend_state'" 
+                        [value]="policies.issuance.volume_open_interest.trend_state"
+                        [value2]="policies.issuance.volume_open_interest.trend_intensity"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Volume -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'volume_open_interest'"
+                        [id]="'volume'" 
+                        [value]="policies.issuance.volume_open_interest.volume"
+                        [value2]="policies.issuance.volume_open_interest.volume_direction"
+                        [disableable]="false"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Open Interest -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'volume_open_interest'"
+                        [id]="'open_interest'" 
+                        [value]="policies.issuance.volume_open_interest.open_interest"
+                        [disableable]="false"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- Volume Long/Short Ratio -->
+            <div [ngClass]="{'inactive': !policies.issuance.volume_long_short_ratio.enabled}">
+                <div fxLayout="row" fxLayoutAlign="start center">
+                    <h5 class="truncate">Volume Long/Short Ratio</h5>
+                    <span fxFlex></span>
+                    <mat-slide-toggle 
+                        [matTooltip]="policies.issuance.volume_long_short_ratio.enabled ? 'Enabled': 'Disabled'" 
+                        [(ngModel)]="policies.issuance.volume_long_short_ratio.enabled"></mat-slide-toggle>
+                </div>
+                <div class="policy-items">
+                    <!-- Trend Sum -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'volume_long_short_ratio'"
+                        [id]="'trend_sum'" 
+                        [value]="policies.issuance.volume_long_short_ratio.trend_sum"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Trend State -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'volume_long_short_ratio'"
+                        [id]="'trend_state'" 
+                        [value]="policies.issuance.volume_long_short_ratio.trend_state"
+                        [value2]="policies.issuance.volume_long_short_ratio.trend_intensity"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Volume -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'volume_long_short_ratio'"
+                        [id]="'volume'" 
+                        [value]="policies.issuance.volume_long_short_ratio.volume"
+                        [value2]="policies.issuance.volume_long_short_ratio.volume_direction"
+                        [disableable]="false"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Long/Short Ratio -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'issuance'" 
+                        [policyID]="'volume_long_short_ratio'"
+                        [id]="'long_short_ratio'" 
+                        [value]="policies.issuance.volume_long_short_ratio.long_short_ratio"
+                        [disableable]="false"
                         (valueChanged)="valueChanged($event)"></app-signal-policy-item>
                 </div>
             </div>
@@ -551,6 +811,32 @@
 
             <div class="divider"></div>
 
+            <!-- Volume -->
+            <div [ngClass]="{'inactive': !policies.cancellation.volume.enabled}">
+                <div fxLayout="row" fxLayoutAlign="start center">
+                    <h5 class="truncate">Volume</h5>
+                    <span fxFlex></span>
+                    <mat-slide-toggle 
+                        [matTooltip]="policies.cancellation.volume.enabled ? 'Enabled': 'Disabled'" 
+                        [(ngModel)]="policies.cancellation.volume.enabled"></mat-slide-toggle>
+                </div>
+                <div class="policy-items">
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'cancellation'" 
+                        [policyID]="'volume'"
+                        [id]="'volume'" 
+                        [value]="policies.cancellation.volume.volume"
+                        [value2]="policies.cancellation.volume.volume_direction"
+                        [disableable]="false"
+                        [immutable]="true"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
             <!-- Open Interest -->
             <div [ngClass]="{'inactive': !policies.cancellation.open_interest.enabled}">
                 <div fxLayout="row" fxLayoutAlign="start center">
@@ -659,6 +945,156 @@
                         [policyID]="'technicals'"
                         [id]="'ta_1d'" 
                         [value]="policies.cancellation.technicals.ta_1d"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- Volume Technicals -->
+            <div [ngClass]="{'inactive': !policies.cancellation.volume_technicals.enabled}">
+                <div fxLayout="row" fxLayoutAlign="start center">
+                    <h5 class="truncate">Volume Technicals</h5>
+                    <span fxFlex></span>
+                    <mat-slide-toggle 
+                        [matTooltip]="policies.cancellation.volume_technicals.enabled ? 'Enabled': 'Disabled'" 
+                        [(ngModel)]="policies.cancellation.volume_technicals.enabled"></mat-slide-toggle>
+                </div>
+                <div class="policy-items">
+                    <!-- Volume -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'cancellation'" 
+                        [policyID]="'volume_technicals'"
+                        [id]="'volume'" 
+                        [value]="policies.cancellation.volume_technicals.volume"
+                        [value2]="policies.cancellation.volume_technicals.volume_direction"
+                        [disableable]="false"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Technicals 30m -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'cancellation'" 
+                        [policyID]="'volume_technicals'"
+                        [id]="'ta_30m'" 
+                        [value]="policies.cancellation.volume_technicals.ta_30m"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Technicals 1h -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'cancellation'" 
+                        [policyID]="'volume_technicals'"
+                        [id]="'ta_1h'" 
+                        [value]="policies.cancellation.volume_technicals.ta_1h"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Technicals 2h -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'cancellation'" 
+                        [policyID]="'volume_technicals'"
+                        [id]="'ta_2h'" 
+                        [value]="policies.cancellation.volume_technicals.ta_2h"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Technicals 4h -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'cancellation'" 
+                        [policyID]="'volume_technicals'"
+                        [id]="'ta_4h'" 
+                        [value]="policies.cancellation.volume_technicals.ta_4h"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Technicals 1d -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'cancellation'" 
+                        [policyID]="'volume_technicals'"
+                        [id]="'ta_1d'" 
+                        [value]="policies.cancellation.volume_technicals.ta_1d"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- Volume Open Interest -->
+            <div [ngClass]="{'inactive': !policies.cancellation.volume_open_interest.enabled}">
+                <div fxLayout="row" fxLayoutAlign="start center">
+                    <h5 class="truncate">Volume Open Interest</h5>
+                    <span fxFlex></span>
+                    <mat-slide-toggle 
+                        [matTooltip]="policies.cancellation.volume_open_interest.enabled ? 'Enabled': 'Disabled'" 
+                        [(ngModel)]="policies.cancellation.volume_open_interest.enabled"></mat-slide-toggle>
+                </div>
+                <div class="policy-items">
+                    <!-- Volume -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'cancellation'" 
+                        [policyID]="'volume_open_interest'"
+                        [id]="'volume'" 
+                        [value]="policies.cancellation.volume_open_interest.volume"
+                        [value2]="policies.cancellation.volume_open_interest.volume_direction"
+                        [disableable]="false"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Open Interest -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'cancellation'" 
+                        [policyID]="'volume_open_interest'"
+                        [id]="'open_interest'" 
+                        [value]="policies.cancellation.volume_open_interest.open_interest"
+                        [disableable]="false"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+    
+            <!-- Volume Long/Short Ratio -->
+            <div [ngClass]="{'inactive': !policies.cancellation.volume_long_short_ratio.enabled}">
+                <div fxLayout="row" fxLayoutAlign="start center">
+                    <h5 class="truncate">Volume Long/Short Ratio</h5>
+                    <span fxFlex></span>
+                    <mat-slide-toggle 
+                        [matTooltip]="policies.cancellation.volume_long_short_ratio.enabled ? 'Enabled': 'Disabled'" 
+                        [(ngModel)]="policies.cancellation.volume_long_short_ratio.enabled"></mat-slide-toggle>
+                </div>
+                <div class="policy-items">
+                    <!-- Volume -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'cancellation'" 
+                        [policyID]="'volume_long_short_ratio'"
+                        [id]="'volume'" 
+                        [value]="policies.cancellation.volume_long_short_ratio.volume"
+                        [value2]="policies.cancellation.volume_long_short_ratio.volume_direction"
+                        [disableable]="false"
+                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
+
+                    <!-- Long/Short Ratio -->
+                    <app-signal-policy-item 
+                        class="policy-item" 
+                        [side]="side" 
+                        [category]="'cancellation'" 
+                        [policyID]="'volume_long_short_ratio'"
+                        [id]="'long_short_ratio'" 
+                        [value]="policies.cancellation.volume_long_short_ratio.long_short_ratio"
+                        [disableable]="false"
                         (valueChanged)="valueChanged($event)"></app-signal-policy-item>
                 </div>
             </div>

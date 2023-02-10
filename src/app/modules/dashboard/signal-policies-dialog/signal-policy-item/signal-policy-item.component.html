@@ -52,6 +52,67 @@
 
 
 
+<!-- Volume -->
+<div *ngIf="id == 'volume'">
+    <!-- Issuance -->
+    <div *ngIf="category == 'issuance'">
+        <div class="clickable state-badge" role="button" matRipple
+            [matMenuTriggerFor]="volumeMenu"
+            [matTooltip]="value == 0 ? '': _ms.marketStates[value!]"
+            [ngClass]="{
+                'square-badge-success': side == 'LONG',
+                'square-badge-error': side == 'SHORT',
+                'square-badge-neutral': value == 0,
+                'state': value == 1 || value == -1
+            }">
+            <div *ngIf="value == 0">Any Volume State <mat-icon class="state-badge-caret" svgIcon="angle_up"></mat-icon></div>
+            <div *ngIf="value != 0">
+                <mat-icon [svgIcon]="_ms.icons[value!]"></mat-icon> {{side == "LONG" ? bullishVolText[value]: bearishVolText[value]}}<mat-icon 
+                *ngIf="value < 2" 
+                class="state-badge-caret" 
+                svgIcon="angle_up"></mat-icon>
+            </div>
+        </div>
+        <mat-menu #volumeMenu="matMenu">
+            <button mat-menu-item *ngIf="side == 'LONG'" (click)="_valueChanged(2, 2)" [disabled]="immutable || (value == 2 && value2 == 2)">{{bullishVolText[2]}}</button>
+            <button mat-menu-item *ngIf="side == 'LONG'" (click)="_valueChanged(1, 2)" [disabled]="immutable || (value == 1 && value2 == 2)">{{bullishVolText[1]}}</button>
+            <button mat-menu-item *ngIf="disableable" mat-menu-item (click)="_valueChanged(0, 0)" [disabled]="immutable || (value == 0 && value2 == 0)">Any Volume State</button>
+            <button mat-menu-item *ngIf="side == 'SHORT'" (click)="_valueChanged(2, -2)" [disabled]="immutable || (value == 2 && value2 == -2)">{{bearishVolText[2]}}</button>
+            <button mat-menu-item *ngIf="side == 'SHORT'" (click)="_valueChanged(1, -2)" [disabled]="immutable || (value == 1 && value2 == -2)">{{bearishVolText[1]}}</button>
+        </mat-menu>
+    </div>
+
+    <!-- Cancellation -->
+    <div *ngIf="category == 'cancellation'">
+        <div class="clickable state-badge" role="button" matRipple
+            [matMenuTriggerFor]="volumeMenu"
+            [matTooltip]="value == 0 ? '': _ms.marketStates[value!]"
+            [ngClass]="{
+                'square-badge-success': side == 'SHORT',
+                'square-badge-error': side == 'LONG',
+                'square-badge-neutral': value == 0,
+                'state': value == 1 || value == -1
+            }">
+            <div *ngIf="value == 0">Any Volume State <mat-icon class="state-badge-caret" svgIcon="angle_up"></mat-icon></div>
+            <div *ngIf="value != 0">
+                <mat-icon [svgIcon]="_ms.icons[value!]"></mat-icon> {{side == "LONG" ? bearishVolText[value]: bullishVolText[value]}}<mat-icon 
+                *ngIf="value < 2" 
+                class="state-badge-caret" 
+                svgIcon="angle_up"></mat-icon>
+            </div>
+        </div>
+        <mat-menu #volumeMenu="matMenu">
+            <button mat-menu-item *ngIf="side == 'SHORT'" (click)="_valueChanged(2, 2)" [disabled]="immutable || (value == 2 && value2 == 2)">{{bullishVolText[2]}}</button>
+            <button mat-menu-item *ngIf="side == 'SHORT'" (click)="_valueChanged(1, 2)" [disabled]="immutable || (value == 1 && value2 == 2)">{{bullishVolText[1]}}</button>
+            <button mat-menu-item *ngIf="disableable" mat-menu-item (click)="_valueChanged(0, 0)" [disabled]="immutable || (value == 0 && value2 == 0)">Any Volume State</button>
+            <button mat-menu-item *ngIf="side == 'LONG'" (click)="_valueChanged(2, -2)" [disabled]="immutable || (value == 2 && value2 == -2)">{{bearishVolText[2]}}</button>
+            <button mat-menu-item *ngIf="side == 'LONG'" (click)="_valueChanged(1, -2)" [disabled]="immutable || (value == 1 && value2 == -2)">{{bearishVolText[1]}}</button>
+        </mat-menu>
+    </div>
+</div>
+
+
+
 <!-- Technicals -->
 <div *ngIf="isTA">
     <!-- Issuance -->
