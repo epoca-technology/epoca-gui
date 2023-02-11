@@ -9,17 +9,15 @@ import {SharedModule} from "../../shared";
 
 // Component
 import { PositionsComponent } from './positions/positions.component';
-import { PositionDataItemDialogComponent } from './positions/position-data-item-dialog';
-import { PositionDialogComponent, PositionTradeDialogComponent, PositionHistoryDialogComponent } from './positions/position-dialog';
+import { PositionTradeDialogComponent } from './positions/position-trade-dialog';
+import { PositionDataItemDialogComponent } from './positions/position-data-item-dialog/position-data-item-dialog.component';
 
 
 @NgModule({
   declarations: [
     PositionsComponent,
-    PositionDataItemDialogComponent,
-    PositionDialogComponent,
     PositionTradeDialogComponent,
-    PositionHistoryDialogComponent,
+    PositionDataItemDialogComponent
   ],
   imports: [
     CommonModule,

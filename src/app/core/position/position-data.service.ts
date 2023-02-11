@@ -1,42 +1,36 @@
 import { Injectable } from '@angular/core';
 import { PositionService } from './position.service';
 import { UtilsService } from '../utils';
-import { IPositionTrade,  } from './interfaces';
-import { IPositionDataService, IPositionDataItem, IItemElement } from './position-data.interfaces';
+import { IBinancePositionSide, IPositionTrade,  } from './interfaces';
+import { 
+	IPositionDataService, 
+	IPositionDataItem, 
+	IItemElement, 
+	IPosition
+} from './position-data.interfaces';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PositionDataService implements IPositionDataService {
-	// The property holding all the trades ordered by date asc
-	public db: IPositionTrade[] = [];
-
-	// The real date range downloaded from the API
-	public realStart: number = 0;
-	public realEnd: number = 0;
-
-	/* Query Results */
-
-	// The list of trades ordered by date asc
-	public query: IPositionTrade[] = [];
-	public queryReversed: IPositionTrade[] = [];
-	
 	// Date Range
 	public start: number = 0;
 	public end: number = 0;
+
+	// The list of positions ordered by date asc
+	public positions: IPosition[] = [];
+
+	// The reversed list of positions (ordered by date desc)
+	public rPositions: IPosition[] = [];
 
 	// Bottom Line Values
 	public subTotal: number = 0;
 	public feesTotal: number = 0;
 	public netProfit: number = 0;
 
-	// Trades by Side
-	public longTrades: number = 0;
-	public longIncreaseTrades: number = 0;
-	public longCloseTrades: number = 0;
-	public shortTrades: number = 0;
-	public shortIncreaseTrades: number = 0;
-	public shortCloseTrades: number = 0;
+	// Position Count by Side
+	public longPositions: number = 0;
+	public shortPositions: number = 0;
 
 	// Realized PNL
 	public pnl: IPositionDataItem = this.getDefaultItemBuild();
@@ -48,23 +42,15 @@ export class PositionDataService implements IPositionDataService {
 	public longFees: IPositionDataItem = this.getDefaultItemBuild();
 	public shortFees: IPositionDataItem = this.getDefaultItemBuild();
 
-	// Trade Prices
+	// Position Prices
 	public prices: IPositionDataItem = this.getDefaultItemBuild();
 	public longPrices: IPositionDataItem = this.getDefaultItemBuild();
-	public longIncreasePrices: IPositionDataItem = this.getDefaultItemBuild();
-	public longClosePrices: IPositionDataItem = this.getDefaultItemBuild();
 	public shortPrices: IPositionDataItem = this.getDefaultItemBuild();
-	public shortIncreasePrices: IPositionDataItem = this.getDefaultItemBuild();
-	public shortClosePrices: IPositionDataItem = this.getDefaultItemBuild();
 
-	// Trade Amounts in USDT
+	// Position Amounts in USDT
 	public amounts: IPositionDataItem = this.getDefaultItemBuild();
 	public longAmounts: IPositionDataItem = this.getDefaultItemBuild();
-	public longIncreaseAmounts: IPositionDataItem = this.getDefaultItemBuild();
-	public longCloseAmounts: IPositionDataItem = this.getDefaultItemBuild();
 	public shortAmounts: IPositionDataItem = this.getDefaultItemBuild();
-	public shortIncreaseAmounts: IPositionDataItem = this.getDefaultItemBuild();
-	public shortCloseAmounts: IPositionDataItem = this.getDefaultItemBuild();
 
   	constructor(
 		private _position: PositionService,
@@ -74,7 +60,18 @@ export class PositionDataService implements IPositionDataService {
 
 
 
-	/* Initializer */
+
+
+
+
+
+
+
+	/***************
+	 * Initializer *
+	 ***************/
+
+
 
 
 
@@ -85,51 +82,17 @@ export class PositionDataService implements IPositionDataService {
 	 * @returns Promise<void>
 	 */
 	public async initialize(startAt: number, endAt: number): Promise<void> {
-		// Load the entire list of trades
-		this.db = await this._position.listTrades(startAt, endAt);
-		this.realStart = startAt;
-		this.realEnd = endAt;
-	}
+		// Init the date range
+		this.start = startAt;
+		this.end = endAt;
 
-
-
-
-	/**
-	 * Resets the instance to a pristine state.
-	 */
-	public reset(): void {
-		this.db = [];
-	}
-
-
-
-
-
-
-
-
-	/* Resizing Management */
-
-
-
-	/**
-	 * Alters the size of the current subset, does not reload
-	 * the trades.
-	 * @param startAt 
-	 * @param endAt 
-	 */
-	public setSize(startAt: number, endAt: number): void {
-		// Init the current query
-		this.query = this.db.filter((trade) => trade.t >= startAt && trade.t <= endAt);
-		this.queryReversed = this.query.slice().reverse();
+		// Download and build the positions
+		this.positions = await this.downloadAndBuildPositions(startAt, endAt);
+		this.rPositions = this.positions.slice().reverse();
 
 		// Reset the counters
-		this.longTrades = 0;
-		this.longIncreaseTrades = 0;
-		this.longCloseTrades = 0;
-		this.shortTrades = 0;
-		this.shortIncreaseTrades = 0;
-		this.shortCloseTrades = 0;
+		this.longPositions = 0;
+		this.shortPositions = 0;
 
 		// Init the lists that will be built
 		let pnl: IItemElement[] = [];
@@ -140,125 +103,63 @@ export class PositionDataService implements IPositionDataService {
 		let shortFees: IItemElement[] = [];
 		let prices: IItemElement[] = [];
 		let longPrices: IItemElement[] = [];
-		let longIncreasePrices: IItemElement[] = [];
-		let longClosePrices: IItemElement[] = [];
 		let shortPrices: IItemElement[] = [];
-		let shortIncreasePrices: IItemElement[] = [];
-		let shortClosePrices: IItemElement[] = [];
 		let amounts: IItemElement[] = [];
 		let longAmounts: IItemElement[] = [];
-		let longIncreaseAmounts: IItemElement[] = [];
-		let longCloseAmounts: IItemElement[] = [];
 		let shortAmounts: IItemElement[] = [];
-		let shortIncreaseAmounts: IItemElement[] = [];
-		let shortCloseAmounts: IItemElement[] = [];
 
 		// Iterate over each trade
-		for (let trade of this.query) {
+		for (let position of this.positions) {
 			// Add the PNL Item
-			if (trade.rpnl != 0) pnl.push({ x: trade.t, y: trade.rpnl });
+			pnl.push({ x: position.openTime, y: position.pnl });
 
 			// Add the fee item
-			fees.push({ x: trade.t, y: trade.c });
+			fees.push({ x: position.openTime, y: position.fee });
 
 			// Add the price item
-			prices.push({ x: trade.t, y: trade.p });
+			prices.push({ x: position.openTime, y: position.openPrice });
 
 			// Add the amount item
-			amounts.push({ x: trade.t, y: trade.qqty });
+			amounts.push({ x: position.openTime, y: position.openAmount });
 
-			// Handle a long position trade
-			if (trade.ps == "LONG") {
+			// Handle a long position
+			if (position.side == "LONG") {
 				// Increment the position numbers
-				this.longTrades += 1;
+				this.longPositions += 1;
 
 				// Add the Long PNL Item
-				if (trade.rpnl != 0) longPNL.push({ x: trade.t, y: trade.rpnl });
+				longPNL.push({ x: position.openTime, y: position.pnl });
 
 				// Add the Long Fee Item
-				longFees.push({ x: trade.t, y: trade.c });
+				longFees.push({ x: position.openTime, y: position.fee });
 
 				// Add the Long Price Item
-				longPrices.push({ x: trade.t, y: trade.p });
+				longPrices.push({ x: position.openTime, y: position.openPrice });
 
 				// Add the Long Amount Item
-				longAmounts.push({ x: trade.t, y: trade.qqty });
-
-				// The long position was increased
-				if (trade.s == "BUY") {
-					// Increase the counter
-					this.longIncreaseTrades += 1;
-
-					// Add the long increase price item
-					longIncreasePrices.push({ x: trade.t, y: trade.p });
-
-					// Add the long increase amount
-					longIncreaseAmounts.push({ x: trade.t, y: trade.qqty });
-				}
-
-				// The long position was closed
-				else {
-					// Increase the counter
-					this.longCloseTrades += 1;
-
-					// Add the long close price item
-					longClosePrices.push({ x: trade.t, y: trade.p });
-
-					// Add the long close amount
-					longCloseAmounts.push({ x: trade.t, y: trade.qqty });
-				}
+				longAmounts.push({ x: position.openTime, y: position.openAmount });
 			} 
 
 			// Otherwise, handle a short position trade
 			else {
 				// Increment the position numbers
-				this.shortTrades += 1;
+				this.shortPositions += 1;
 
 				// Add the Short PNL Item
-				if (trade.rpnl != 0) shortPNL.push({ x: trade.t, y: trade.rpnl});
+				shortPNL.push({ x: position.openTime, y: position.pnl});
 
 				// Add the Short Fee Item
-				shortFees.push({ x: trade.t, y: trade.c });
+				shortFees.push({ x: position.openTime, y: position.fee });
 
 				// Add the Short Price Item
-				shortPrices.push({ x: trade.t, y: trade.p });
+				shortPrices.push({ x: position.openTime, y: position.openPrice });
 
 				// Add the Short Amount Item
-				shortAmounts.push({ x: trade.t, y: trade.qqty });
-
-				// The short position was increased
-				if (trade.s == "SELL") {
-					// Increment counters
-					this.shortIncreaseTrades += 1;
-
-					// Add the short increase price item
-					shortIncreasePrices.push({ x: trade.t, y: trade.p });
-
-					// Add the short increase amount
-					shortIncreaseAmounts.push({ x: trade.t, y: trade.qqty });
-				}
-
-				// The short position was closed
-				else {
-					// Increment counters
-					this.shortCloseTrades += 1;
-
-					// Add the short close price item
-					shortClosePrices.push({ x: trade.t, y: trade.p });
-
-					// Add the short close amount
-					shortCloseAmounts.push({ x: trade.t, y: trade.qqty });
-				}
+				shortAmounts.push({ x: position.openTime, y: position.openAmount });
 			}
 		}
 
-		/* Finally, render the values */
-
-		// Init the date range
-		this.start = startAt;
-		this.end = endAt;
-
-		// Build the Items
+		// Build the Data Items
 		this.pnl = this.buildItem("PNL", pnl);
 		this.longPNL = this.buildItem("Long PNL", longPNL);
 		this.shortPNL = this.buildItem("Short PNL", shortPNL);
@@ -267,18 +168,10 @@ export class PositionDataService implements IPositionDataService {
 		this.shortFees = this.buildItem("Short Fees", shortFees);
 		this.prices = this.buildItem("Prices", prices, true);
 		this.longPrices = this.buildItem("Long Prices", longPrices, true);
-		this.longIncreasePrices = this.buildItem("Long Incr. Prices", longIncreasePrices, true);
-		this.longClosePrices = this.buildItem("Long Close Prices", longClosePrices, true);
 		this.shortPrices = this.buildItem("Short Prices", shortPrices, true);
-		this.shortIncreasePrices = this.buildItem("Short Incr. Prices", shortIncreasePrices, true);
-		this.shortClosePrices = this.buildItem("Short Close Prices", shortClosePrices, true);
 		this.amounts = this.buildItem("Amounts", amounts);
 		this.longAmounts = this.buildItem("Long Amounts", longAmounts);
-		this.longIncreaseAmounts = this.buildItem("Long Incr. Amounts", longIncreaseAmounts);
-		this.longCloseAmounts = this.buildItem("Long Close Amounts", longCloseAmounts);
 		this.shortAmounts = this.buildItem("Short Amounts", shortAmounts);
-		this.shortIncreaseAmounts = this.buildItem("Short Incr. Amounts", shortIncreaseAmounts);
-		this.shortCloseAmounts = this.buildItem("Short Close Amounts", shortCloseAmounts);
 
 		// Calculate the bottom line
 		this.subTotal = <number>this._utils.outputNumber(this.pnl.lastAccum);
@@ -292,9 +185,216 @@ export class PositionDataService implements IPositionDataService {
 
 
 
+	/**
+	 * Downloads the trades and builds the list of positions within the
+	 * epoch (date range).
+	 * @param startAt 
+	 * @param endAt 
+	 * @returns Promise<IPosition[]>
+	 */
+	private async downloadAndBuildPositions(startAt: number, endAt: number): Promise<IPosition[]> {
+		// Download the list of trades for the range
+		const trades: IPositionTrade[] = await this._position.listTrades(startAt, endAt);
+
+		// Build the positions by side
+		const longs: IPosition[] = this.buildPositionsForSide("LONG", trades.filter((t) => t.ps == "LONG"));
+		const shorts: IPosition[] = this.buildPositionsForSide("SHORT", trades.filter((t) => t.ps == "SHORT"));
+		let positions: IPosition[] = longs.concat(shorts);
+
+		// Sort them by open time ascendingly
+		positions.sort((a, b) => (a.openTime > b.openTime) ? 1 : -1);
+
+		// Finally, return the list
+		return positions;
+	}
 
 
-	/* Misc Helpers */
+
+
+
+	/**
+	 * Builds the positions for a side based on a given list of
+	 * filtered trades
+	 * @param side 
+	 * @param trades 
+	 * @returns IPosition[]
+	 */
+	private buildPositionsForSide(side: IBinancePositionSide, trades: IPositionTrade[]): IPosition[] {
+		// Init the positions
+		let positions: IPosition[] = [];
+
+		// Iterate over each trade building the full positions
+		let openTrades: IPositionTrade[] = [];
+		let closeTrades: IPositionTrade[] = [];
+		for (let i = 0; i < trades.length; i++) {
+			// Handle the long side
+			if (side == "LONG") {
+				/**
+				 * If the close trades have been registered and a new open is found, 
+				 * close the position and open the new one.
+				 */
+				if (closeTrades.length && trades[i].s == "BUY") {
+					// Build the position and add it to the list
+					positions.push(this.buildPosition(side, openTrades, closeTrades));
+
+					// Reset the list and incorporate the new trade into a position
+					openTrades = [trades[i]];
+					closeTrades = [];
+				}
+
+				// Include an open trade
+				else if (trades[i].s == "BUY") { openTrades.push(trades[i]) }
+
+				// if the trade sequence has ended and the last trade is a close, process the position.
+				else if (i == trades.length - 1 && trades[i].s == "SELL") { 
+					// Append the trade to the close
+					closeTrades.push(trades[i]);
+
+					// Build and push the position
+					positions.push(this.buildPosition(side, openTrades, closeTrades));
+
+					// Reset the lists
+					openTrades = [];
+					closeTrades = [];
+				}
+
+				// Include a close trade
+				else { closeTrades.push(trades[i]) }
+			}
+
+			// Handle the short side
+			else {
+				/**
+				 * If the close trades have been registered and a new open is found, 
+				 * close the position and open the new one.
+				 */
+				if (closeTrades.length && trades[i].s == "SELL") {
+					// Build the position and add it to the list
+					positions.push(this.buildPosition(side, openTrades, closeTrades));
+
+					// Reset the list and incorporate the new trade into a position
+					openTrades = [trades[i]];
+					closeTrades = [];
+				}
+
+				// Include an open trade
+				else if (trades[i].s == "SELL") { openTrades.push(trades[i]) }
+
+				// if the trade sequence has ended and the last trade is a close, process the position.
+				else if (i == trades.length - 1 && trades[i].s == "BUY") { 
+					// Append the trade to the close
+					closeTrades.push(trades[i]);
+
+					// Build and push the position
+					positions.push(this.buildPosition(side, openTrades, closeTrades));
+
+					// Reset the lists
+					openTrades = [];
+					closeTrades = [];
+				}
+
+				// Include a close trade
+				else { closeTrades.push(trades[i]) }
+			}
+		}
+
+		// Finally, return the list
+		return positions;
+	}
+
+
+
+
+
+	/**
+	 * Once the trade sequence reaches the end, the position is built.
+	 * @param side 
+	 * @param openTrades 
+	 * @param closeTrades 
+	 * @returns IPosition
+	 */
+	private buildPosition(
+		side: IBinancePositionSide, 
+		openTrades: IPositionTrade[], 
+		closeTrades: IPositionTrade[]
+	): IPosition {
+		// Calculate the open and close prices
+		const { openPrice, closePrice } = this.calculateOpenAndClosePrices(openTrades, closeTrades);
+
+		// Init values
+		let openAmount: number = 0;
+		let closeAmount: number = 0;
+		let pnl: number = 0;
+		let fee: number = 0;
+
+		// Iterate over each open trade
+		for (let trade of openTrades) {
+			openAmount += trade.qqty;
+			pnl += trade.rpnl;
+			fee += trade.c;
+		}
+
+		// Iterate over each close trade
+		for (let trade of closeTrades) {
+			closeAmount += trade.qqty;
+			pnl += trade.rpnl;
+			fee += trade.c;
+		}
+
+		// Finally, return the position
+		return {
+			side: side,
+			openTime: openTrades[0].t,
+			closeTime: closeTrades[closeTrades.length - 1].t,
+			openPrice: openPrice,
+			closePrice: closePrice,
+			openAmount: <number>this._utils.outputNumber(openAmount),
+			closeAmount: <number>this._utils.outputNumber(closeAmount),
+			pnl: <number>this._utils.outputNumber(pnl),
+			fee: <number>this._utils.outputNumber(fee),
+			openTrades: openTrades,
+			closeTrades: closeTrades
+		}
+	}
+
+
+
+
+
+	/**
+	 * Based on a list of open and close trades, it will calculate the weighted 
+	 * open and close prices.
+	 * @param openTrades 
+	 * @param closeTrades 
+	 * @returns {openPrice: number, closePrice: number}
+	 */
+	private calculateOpenAndClosePrices(
+		openTrades: IPositionTrade[], 
+		closeTrades: IPositionTrade[]
+	): {openPrice: number, closePrice: number} {
+		// Calculate the weighted open price
+		const open = this._position.calculatePositionPriceRange(
+			"LONG",	// Placeholder
+			2,		// Placeholder
+			openTrades.map((t) => { return { price: t.p, margin: t.qqty}})
+		);
+
+		// Calculate the weighted close price
+		const close = this._position.calculatePositionPriceRange(
+			"LONG",	// Placeholder
+			2,		// Placeholder
+			closeTrades.map((t) => { return { price: t.p, margin: t.qqty}})
+		);
+
+		// Finally, return the prices
+		return { openPrice: open.entry, closePrice: close.entry}
+	}
+
+
+
+
+
+
 
 
 
@@ -372,30 +472,41 @@ export class PositionDataService implements IPositionDataService {
 
 
 
-	/* Trade Queries */
+
+
+
+
+
+
+
+
+
+	/*******************
+	 * Position Queries
+	 *******************/
 
 
 
 
 	/**
-	 * Returns a trade record based on a given timestamp.
+	 * Returns a position record based on a given timestamp.
 	 * @param timestamp 
-	 * @returns IPositionTrade|undefined
+	 * @returns IPosition|undefined
 	 */
-	public getTradeByTimestamp(timestamp: number): IPositionTrade|undefined {
-		return this.query.filter((t) => t.t == timestamp)[0];
+	public getPositionByTimestamp(timestamp: number): IPosition|undefined {
+		return this.positions.filter((p) => p.openTime == timestamp)[0];
 	}
 
 
 
 
 	/**
-	 * Retrieves a trade based on a timestamp range.
+	 * Retrieves a position based on a timestamp range.
 	 * @param startAt 
 	 * @param endAt 
-	 * @returns IPositionTrade|undefined
+	 * @returns IPosition|undefined
 	 */
-	public getTradeByRange(startAt: number, endAt: number): IPositionTrade|undefined {
-		return this.query.filter((t) => t.t >= startAt || t.t <= endAt)[0];
+	public getPositionByRange(startAt: number, endAt: number): IPosition|undefined {
+		return this.positions.filter((p) => p.openTime >= startAt && p.openTime <= endAt)[0];
 	}
 }

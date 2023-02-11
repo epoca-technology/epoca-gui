@@ -1,0 +1,40 @@
+
+
+p { margin: 0}
+h4 { margin: 0;}
+h5 { margin: 0;}
+
+
+.desktop-sidenav {
+    width: 250px;
+}
+.desktop-sidenav button {
+    text-align: left;
+    width: 100%;
+}
+
+.desktop-card { 
+    //padding:0px!important;
+    .chart-header {
+        //padding: 15px 15px 0 15px;
+    }
+}
+
+
+.loader { margin-top:200px;}
+
+
+/* Responsiveness */
+
+
+/* mobile: sm & xs */
+@media only screen and (max-width: 959px) {
+    .chart-header{ padding:0!important;}
+}
+
+
+
+/* desktop: md */
+@media only screen and (min-width: 960px) {
+    
+}

@@ -1,0 +1,70 @@
+<mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <button mat-icon-button class="show-on-mobile" (click)="close()"><mat-icon>arrow_back</mat-icon></button>
+        <span class="truncate">{{position.side}} Position</span>
+        <span fxFlex></span>
+        <button mat-icon-button matTooltip="Display Position History" 
+            (click)="displayHistory()">
+            <mat-icon>candlestick_chart</mat-icon>
+        </button>
+        <button mat-icon-button matTooltip="Display Trades" 
+            (click)="displayTrades()">
+            <mat-icon>format_list_numbered</mat-icon>
+        </button>
+        <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
+    </div>
+</mat-toolbar>
+<div mat-dialog-content>
+    <!-- Container -->
+    <div class="padding">
+        <!-- Date Range -->
+        <div class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p class="truncate">Open Time</p>
+            <span fxFlex></span>
+            <p>{{position.openTime | date: _app.layout.value == 'desktop' ? 'medium': 'short'}}</p>
+        </div>
+        <div class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p class="truncate">Close Time</p>
+            <span fxFlex></span>
+            <p>{{position.closeTime | date: _app.layout.value == 'desktop' ? 'medium': 'short'}}</p>
+        </div>
+
+        <!-- Open & Close Prices -->
+        <div class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p class="truncate">Open Price</p>
+            <span fxFlex></span>
+            <p>{{position.openPrice | currency}}</p>
+        </div>
+        <div class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p class="truncate">Close Price</p>
+            <span fxFlex></span>
+            <p>{{position.closePrice | currency}}</p>
+        </div>
+
+        <!-- Open & Close Amounts -->
+        <div class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p class="truncate">Open Amount</p>
+            <span fxFlex></span>
+            <p>{{position.openAmount | currency}}</p>
+        </div>
+        <div class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p class="truncate">Close Amount</p>
+            <span fxFlex></span>
+            <p>{{position.closeAmount | currency}}</p>
+        </div>
+
+        <!-- Fee -->
+        <div class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p class="truncate">Fee</p>
+            <span fxFlex></span>
+            <p>{{position.fee | currency}}</p>
+        </div>
+
+        <!-- PNL -->
+        <div class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p class="truncate">PNL</p>
+            <span fxFlex></span>
+            <p [ngClass]="{'success-color': position.pnl > 0, 'error-color': position.pnl < 0}"><strong>{{position.pnl | currency}}</strong></p>
+        </div>
+    </div>
+</div>

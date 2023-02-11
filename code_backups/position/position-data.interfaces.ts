@@ -1,26 +1,35 @@
-import { IBinancePositionSide, IPositionTrade } from "./interfaces";
+import { IPositionTrade } from "./interfaces";
 
 
 // Service
 export interface IPositionDataService {
+    // The property holding all the trades ordered by date asc
+    db: IPositionTrade[],
+
+    // The real date range downloaded from the API
+    realStart: number,
+    realEnd: number,
+
+    // The list of trades ordered by date asc
+    query: IPositionTrade[],
+    queryReversed: IPositionTrade[],
+
     // Date Range
     start: number,
     end: number,
-    
-    // The list of positions ordered by date asc
-    positions: IPosition[],
-
-    // The reversed list of positions (ordered by date desc)
-    rPositions: IPosition[],
 
     // Bottom Line Values
     subTotal: number,
     feesTotal: number,
     netProfit: number,
 
-    // Position Count by Side
-    longPositions: number,
-    shortPositions: number,
+    // Trades by Side
+    longTrades: number,
+    longIncreaseTrades: number,
+    longCloseTrades: number,
+    shortTrades: number,
+    shortIncreaseTrades: number,
+    shortCloseTrades: number,
 
     // Realized PNL
     pnl: IPositionDataItem,
@@ -32,22 +41,34 @@ export interface IPositionDataService {
     longFees: IPositionDataItem,
     shortFees: IPositionDataItem,
 
-    // Position Prices
+    // Trade Prices
     prices: IPositionDataItem,
     longPrices: IPositionDataItem,
+    longIncreasePrices: IPositionDataItem,
+    longClosePrices: IPositionDataItem,
     shortPrices: IPositionDataItem,
+    shortIncreasePrices: IPositionDataItem,
+    shortClosePrices: IPositionDataItem,
 
-    // Position Amounts in USDT
+    // Trade Amounts in USDT
     amounts: IPositionDataItem,
     longAmounts: IPositionDataItem,
+    longIncreaseAmounts: IPositionDataItem,
+    longCloseAmounts: IPositionDataItem,
     shortAmounts: IPositionDataItem,
+    shortIncreaseAmounts: IPositionDataItem,
+    shortCloseAmounts: IPositionDataItem,
 
     // Initializer
     initialize(startAt: number, endAt: number): Promise<void>,
+    reset(): void,
 
-    // Position Queries
-    getPositionByTimestamp(timestamp: number): IPosition|undefined,
-    getPositionByRange(startAt: number, endAt: number): IPosition|undefined
+    // Resizer
+    setSize(startAt: number, endAt: number): void,
+
+    // Trade Queries
+    getTradeByTimestamp(timestamp: number): IPositionTrade|undefined,
+    getTradeByRange(startAt: number, endAt: number): IPositionTrade|undefined
 }
 
 
@@ -59,32 +80,7 @@ export interface IPositionDataService {
  * When Epoca opens and closes positions, trades are stored individually. A single
  * position can have any number of trades within.
  */
-export interface IPosition {
-    // The side of the position
-    side: IBinancePositionSide,
 
-    // The times in which the position opened and closed
-    openTime: number,
-    closeTime: number,
-
-    // The prices in which the position opened and closed
-    openPrice: number,
-    closePrice: number,
-
-    // The amounts that were used when opening and closing the position
-    openAmount: number,
-    closeAmount: number,
-
-    // The position's realized pnl
-    pnl: number,
-
-    // The fees charged by the exchange when opening and closing the positions
-    fee: number,
-
-    // The list of trades that comprise the position
-    openTrades: IPositionTrade[],
-    closeTrades: IPositionTrade[]
-}
 
 
 

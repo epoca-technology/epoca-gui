@@ -1,4 +1,4 @@
-import { IPosition, IPositionDataItem, IPositionTrade } from "../../../core";
+import { IPositionDataItem, IPositionTrade } from "../../../core";
 
 
 // Service
@@ -8,9 +8,18 @@ export interface IPositionsComponent {
 
     // Navigation
     activateSection(sectionID: ISectionID): Promise<void>,
+
+    // View Size Management
+    changeViewSize(): void,
+
+    // History
+    loadFirstHistPage(): Promise<void>,
+    loadPreviousHistPage(): Promise<void>,
+    loadNextHistPage(): Promise<void>,
+    loadLastHistPage(): Promise<void>,
     
     // Misc Helpers
-    displayPosition(query: IPosition|{start: number, end: number}|number|any): void,
+    displayTrade(query: IPositionTrade|{start: number, end: number}|number|any): void,
     displayDataItems(items: IPositionDataItem[]): void
     displayPredictionModel(): void,
 }
@@ -21,7 +30,7 @@ export interface IPositionsComponent {
 /**
  * Navigation
  */
-export type ISectionID = "summary"|"pnl"|"fees"|"amounts"|"prices"|"positions";
+export type ISectionID = "summary"|"pnl"|"fees"|"amounts"|"prices"|"trades"|"history";
 export interface ISection {
     id: ISectionID,
     name: string,
