@@ -819,7 +819,7 @@
                                                     <h4 class="truncate">{{layout == 'desktop' ? 'Balance History': 'Hist.'}}</h4>
                                                     <span fxFlex></span>
                                                     <div class="square-badge" matTooltip="Largest Drawdown%">
-                                                        {{drawDown}}%
+                                                        {{cert.backtest.largest_balance_drawdown}}%
                                                     </div>
                                                     <div class="square-badge" matTooltip="Initial Balance -> Final Balance">
                                                         {{cert.backtest.initial_balance | currency}} -> {{cert.backtest.final_balance | currency}}

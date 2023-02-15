@@ -113,7 +113,6 @@ export class PredictionModelsComponent implements OnInit, OnDestroy, IPrediction
 		outcomes: IPieChartOptions,
 	};
 	public cert?: IPredictionModelCertificate;
-	public drawDown: number = 0;
 	public activeCertTabIndex: number = 0;
 	public visiblePositions: number = 15;
 
@@ -310,7 +309,6 @@ export class PredictionModelsComponent implements OnInit, OnDestroy, IPrediction
 		this.hyperparamsView = undefined;
 		this.certificateView = undefined;
 		this.cert = undefined;
-		this.drawDown = 0;
 		this.activeCertTabIndex = 0;
 		this.visiblePositions = 15;
 	}
@@ -674,9 +672,6 @@ export class PredictionModelsComponent implements OnInit, OnDestroy, IPrediction
 		 // Populate the active certificate
 		this.cert = this._pm.certificates[certIndex];
 
-		 // Calculate the model's largest drawdown
-		this.drawDown = this.calculateDrawdown();
-
 		 // Retrieve the balance history data
 		const { colors, values } = this._chart.getModelBalanceHistoryData(this.cert.backtest.positions);
 		const balanceValues: number[] = values.map(v => v.y);
@@ -780,38 +775,6 @@ export class PredictionModelsComponent implements OnInit, OnDestroy, IPrediction
 	 }
 
 
-
-
-	/**
-	 * Calculates the most significant drawdown the active
-	 * model went through during the backtest.
-	 * @returns number
-	 */
-	private calculateDrawdown(): number {
-		// Initialize the balance history
-		const hist: number[] = this.cert!.backtest.positions.map((p) => p.b);
-
-		// Make sure there are items in the history
-		if (!hist.length) return 0;
-
-		// Initialize the drawdown list
-		let drawdowns: number[] = [];
-
-		// Iterate over each element
-		for (let i = 0; i < hist.length; i++) {
-			// Calculate the smallest value after the current index
-			const smallest: number = <number>this._utils.getMin(hist.slice(i+1, hist.length));
-
-			// Calculate the size and add it to the list
-			drawdowns.push(<number>this._utils.calculatePercentageChange(
-				hist[i],
-				smallest
-			));
-		}
-
-		// Finally, return the largest drawdown
-		return <number>this._utils.getMin(drawdowns);
-	}
 
 
 
