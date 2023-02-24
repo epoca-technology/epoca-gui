@@ -67,7 +67,7 @@ export class SignalPolicyItemComponent implements OnInit, ISignalPolicyItemCompo
 	) { }
 
 	ngOnInit(): void {
-		this.isTA = this.id == "ta_30m" || this.id == "ta_1h" || this.id == "ta_2h" || this.id == "ta_4h" || this.id == "ta_1d";
+		this.isTA = this.id == "ta_15m" || this.id == "ta_30m" || this.id == "ta_1h" || this.id == "ta_2h" || this.id == "ta_4h" || this.id == "ta_1d";
 	}
 
 

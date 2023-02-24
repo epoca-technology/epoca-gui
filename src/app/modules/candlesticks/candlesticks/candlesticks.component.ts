@@ -189,7 +189,7 @@ export class CandlesticksComponent implements OnInit, OnDestroy, ICandlesticksCo
 		return {
 			start: moment(currentTS).subtract(128, "hours").valueOf(),
 			end: currentTS,
-			intervalMinutes: 30
+			intervalMinutes: 15
 		}
     }
 

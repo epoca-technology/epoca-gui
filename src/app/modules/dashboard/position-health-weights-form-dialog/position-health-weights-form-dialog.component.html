@@ -21,7 +21,7 @@
                 <div fxLayout="row" fxLayoutAlign="start center">
                     <h5>Trend</h5>
                     <span fxFlex></span>
-                    <button mat-icon-button (click)="trendTooltip()" matTooltip="More information" type="button"><mat-icon>question_mark</mat-icon></button>
+                    <button mat-icon-button (click)="trendTooltip()" matTooltip="More information" type="button" tabindex="-1"><mat-icon>question_mark</mat-icon></button>
                 </div> 
                 <div fxLayout="row" fxLayoutAlign="start start" class="section-content">
                     <div fxFlex>
@@ -57,9 +57,21 @@
                 <div fxLayout="row" fxLayoutAlign="start center">
                     <h5>Technicals</h5>
                     <span fxFlex></span>
-                    <button mat-icon-button (click)="technicalsTooltip()" matTooltip="More information" type="button"><mat-icon>question_mark</mat-icon></button>
+                    <button mat-icon-button (click)="technicalsTooltip()" matTooltip="More information" type="button" tabindex="-1"><mat-icon>question_mark</mat-icon></button>
                 </div> 
                 <div fxLayout="row" fxLayoutAlign="start start" class="section-content">
+                    <div fxFlex>
+                        <mat-form-field>
+                            <mat-label>TA 15m</mat-label>
+                            <input type="number"
+                                    matInput
+                                    formControlName="ta_15m"
+                                    autocomplete="off"
+                                    [appDisableControl]="submitting"
+                                    placeholder="e.g. 3.5">
+                        </mat-form-field>
+                    </div>
+                    <span fxFlex="5"></span>
                     <div fxFlex>
                         <mat-form-field>
                             <mat-label>TA 30m</mat-label>
@@ -71,7 +83,8 @@
                                     placeholder="e.g. 3.5">
                         </mat-form-field>
                     </div>
-                    <span fxFlex="5"></span>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="start start" class="section-content">
                     <div fxFlex>
                         <mat-form-field>
                             <mat-label>TA 1h</mat-label>
@@ -83,8 +96,7 @@
                                     placeholder="e.g. 10">
                         </mat-form-field>
                     </div>
-                </div>
-                <div fxLayout="row" fxLayoutAlign="start start" class="section-content">
+                    <span fxFlex="5"></span>
                     <div fxFlex>
                         <mat-form-field>
                             <mat-label>TA 2h</mat-label>
@@ -96,7 +108,8 @@
                                     placeholder="e.g. 4.5">
                         </mat-form-field>
                     </div>
-                    <span fxFlex="5"></span>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="start start" class="section-content">
                     <div fxFlex>
                         <mat-form-field>
                             <mat-label>TA 4h</mat-label>
@@ -108,8 +121,7 @@
                                     placeholder="e.g. 4.5">
                         </mat-form-field>
                     </div>
-                </div>
-                <div fxLayout="row" fxLayoutAlign="start start" class="section-content">
+                    <span fxFlex="5"></span>
                     <div fxFlex>
                         <mat-form-field>
                             <mat-label>TA 1d</mat-label>
@@ -121,10 +133,6 @@
                                     placeholder="e.g. 4.5">
                         </mat-form-field>
                     </div>
-                    <span fxFlex="5"></span>
-                    <div fxFlex>
-
-                    </div>
                 </div>
             </div>
 
@@ -135,7 +143,7 @@
                 <div fxLayout="row" fxLayoutAlign="start center">
                     <h5>Open Interest</h5>
                     <span fxFlex></span>
-                    <button mat-icon-button (click)="openInterestTooltip()" matTooltip="More information" type="button"><mat-icon>question_mark</mat-icon></button>
+                    <button mat-icon-button (click)="openInterestTooltip()" matTooltip="More information" type="button" tabindex="-1"><mat-icon>question_mark</mat-icon></button>
                 </div> 
                 <div fxLayout="row" fxLayoutAlign="start start" class="section-content">
                     <div fxFlex>
@@ -171,7 +179,7 @@
                 <div fxLayout="row" fxLayoutAlign="start center">
                     <h5>Long/Short Ratio</h5>
                     <span fxFlex></span>
-                    <button mat-icon-button (click)="longShortRatioTooltip()" matTooltip="More information" type="button"><mat-icon>question_mark</mat-icon></button>
+                    <button mat-icon-button (click)="longShortRatioTooltip()" matTooltip="More information" type="button" tabindex="-1"><mat-icon>question_mark</mat-icon></button>
                 </div> 
                 <div fxLayout="row" fxLayoutAlign="start start" class="section-content">
                     <div fxFlex>
@@ -207,7 +215,7 @@
                 <div fxLayout="row" fxLayoutAlign="start center">
                     <h5>Volume</h5>
                     <span fxFlex></span>
-                    <button mat-icon-button (click)="volumeTooltip()" matTooltip="More information" type="button"><mat-icon>question_mark</mat-icon></button>
+                    <button mat-icon-button (click)="volumeTooltip()" matTooltip="More information" type="button" tabindex="-1"><mat-icon>question_mark</mat-icon></button>
                 </div> 
                 <div fxLayout="row" fxLayoutAlign="start start" class="section-content">
                     <div fxFlex>

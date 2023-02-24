@@ -98,6 +98,7 @@ export class PositionHpCalculatorDialogComponent implements OnInit, IPositionHpC
 		this.results.push(this.evaluateTrendState());
 
 		// Evalute technicals
+		this.results.push(this.evaluateTechnicalAnalysis("15m"));
 		this.results.push(this.evaluateTechnicalAnalysis("30m"));
 		this.results.push(this.evaluateTechnicalAnalysis("1h"));
 		this.results.push(this.evaluateTechnicalAnalysis("2h"));

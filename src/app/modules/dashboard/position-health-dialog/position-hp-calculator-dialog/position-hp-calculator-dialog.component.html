@@ -9,7 +9,7 @@
         <div class="loader"><div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="30"></mat-spinner></div></div>
     </div>
     <div *ngIf="loaded && results.length" class="component fadeIn">
-        <div *ngFor="let result of results" class="hp-item">
+        <div *ngFor="let result of results" class="hp-item" [ngClass]="{'inactive': result.percentage >= 50 && result.percentage < 60}">
             <div fxLayout="row" fxLayoutAlign="center center"
                 [ngClass]="{
                     'error-color': result.percentage < 50,

@@ -9,7 +9,7 @@ import { ICandlestick, ICandlestickService } from "./interfaces";
 export class CandlestickService implements ICandlestickService {
 
 	// The number of minutes on each candlestick interval
-	public readonly predictionCandlestickInterval: number = 30;
+	public readonly predictionCandlestickInterval: number = 15;
 
 	constructor(
 		private _api: ApiService

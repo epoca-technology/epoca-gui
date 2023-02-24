@@ -428,7 +428,7 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 		if (typeof intervalMinutes != "number" || intervalMinutes == this._candlestick.predictionCandlestickInterval) {
 			try {
 				// Make sure the beginning of the range exists
-				const firstRecordEnd: number = moment(start).add(30, "minutes").valueOf() - 1;
+				const firstRecordEnd: number = moment(start).add(15, "minutes").valueOf() - 1;
 				const firstRecord: ILocalData[] = await this.predictionCandlesticks!.where("id").between(start, firstRecordEnd, true, true).sortBy("id");
 				if (firstRecord.length) {
 					// Retrieve the head
@@ -602,7 +602,7 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 
 		try {
 			// Make sure the beginning of the range exists
-			const firstRecordEnd: number = moment(startAt).add(30, "minutes").valueOf() - 1;
+			const firstRecordEnd: number = moment(startAt).add(15, "minutes").valueOf() - 1;
 			const firstRecord: ILocalData[] = await this.epochPredictionCandlesticks!.where("id").between(startAt, firstRecordEnd, true, true).sortBy("id");
 			if (firstRecord.length) {
 				// Retrieve the head

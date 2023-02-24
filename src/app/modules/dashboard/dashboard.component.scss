@@ -97,6 +97,11 @@
 
 
 
+.prediction-candlesticks-container {
+    min-height: 185px;
+}
+
+
 
 /* Responsiveness */
 
@@ -109,12 +114,16 @@
     .divider { margin: 25px 0 25px 0;}
     .chart-card {.chart-card-heading { padding: 0!important}}
 
-    .prediction-header-indicators {margin-top:10px;}
+    //.prediction-header-indicators {margin-top:10px;}
     .long-position-button, .short-position-button { 
         width: 100%;
     }
 
     .submission-status { bottom: 75px;}
+
+    .prediction-candlesticks-container {
+        min-height: 245px;
+    }
 }
 
 

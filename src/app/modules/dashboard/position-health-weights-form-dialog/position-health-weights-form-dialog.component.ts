@@ -39,6 +39,7 @@ export class PositionHealthWeightsFormDialogComponent implements OnInit, IPositi
 		this.form = new FormGroup ({
 			trend_sum: new FormControl(weights.trend_sum, [ Validators.required, Validators.min(0.1), Validators.max(100) ]),
 			trend_state: new FormControl(weights.trend_state, [ Validators.required, Validators.min(0.1), Validators.max(100) ]),
+			ta_15m: new FormControl(weights.ta_15m, [ Validators.required, Validators.min(0.1), Validators.max(100) ]),
 			ta_30m: new FormControl(weights.ta_30m, [ Validators.required, Validators.min(0.1), Validators.max(100) ]),
 			ta_1h: new FormControl(weights.ta_1h, [ Validators.required, Validators.min(0.1), Validators.max(100) ]),
 			ta_2h: new FormControl(weights.ta_2h, [ Validators.required, Validators.min(0.1), Validators.max(100) ]),
@@ -58,6 +59,7 @@ export class PositionHealthWeightsFormDialogComponent implements OnInit, IPositi
     /* Form Getters */
 	get trend_sum(): AbstractControl { return <AbstractControl>this.form.get("trend_sum") }
 	get trend_state(): AbstractControl { return <AbstractControl>this.form.get("trend_state") }
+	get ta_15m(): AbstractControl { return <AbstractControl>this.form.get("ta_15m") }
 	get ta_30m(): AbstractControl { return <AbstractControl>this.form.get("ta_30m") }
 	get ta_1h(): AbstractControl { return <AbstractControl>this.form.get("ta_1h") }
 	get ta_2h(): AbstractControl { return <AbstractControl>this.form.get("ta_2h") }
@@ -136,7 +138,7 @@ export class PositionHealthWeightsFormDialogComponent implements OnInit, IPositi
 			used by the Position Health module are:`,
 			`1) Current trend sum vs initial trend sum`,
 			`2) Trend state and trend intensity`,
-			`3) Technical analysis in the following intervals: 30m, 1h, 2h, 4h, 1d`,
+			`3) Technical analysis in the following intervals: 15m, 30m, 1h, 2h, 4h, 1d`,
 			`4) Current open interest vs initial open interest`,
 			`5) Open Interest State`,
 			`6) Current long/short ratio vs initial long/short ratio`,
@@ -238,6 +240,7 @@ export class PositionHealthWeightsFormDialogComponent implements OnInit, IPositi
 		const weights: IPositionHealthWeights = {
 			trend_sum: this.trend_sum.value,
 			trend_state: this.trend_state.value,
+			ta_15m: this.ta_15m.value,
 			ta_30m: this.ta_30m.value,
 			ta_1h: this.ta_1h.value,
 			ta_2h: this.ta_2h.value,

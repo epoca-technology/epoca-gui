@@ -111,7 +111,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
     // State
     public state!: IMarketState;
-    public readonly taIntervals: ITAIntervalID[] = ["30m", "1h", "2h", "4h", "1d"];
+    public readonly taIntervals: ITAIntervalID[] = ["15m", "30m", "1h", "2h", "4h", "1d"];
     private stateSub!: Subscription;
     private stateLoaded: boolean = false;
     public taLastUpdate: string = "none";
@@ -132,8 +132,8 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     public longShortRatioChart?: ILineChartOptions;
 
     // Desktop Chart height helpers
-    public readonly predictionChartDesktopHeight: number = 305;
-    private readonly marketStateChartDesktopHeight: number = 110;
+    public readonly predictionChartDesktopHeight: number = 270;
+    private readonly marketStateChartDesktopHeight: number = 136;
 
     // Loading State
     public loaded: boolean = false;
@@ -495,11 +495,11 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                             color: predLineColor
                         }
                     ],
-                    stroke: {curve: "straight", width:5},
+                    stroke: {curve: "straight", width:4},
                     annotations: annotations,
                     xaxis: {
                         type: "datetime",
-                        tooltip: {enabled: true, }, 
+                        tooltip: {enabled: false, }, 
                         labels: {datetimeUTC: false, formatter: function(value, opts): string {
                             return moment(value).format("h:mm a")
                         }}
@@ -665,7 +665,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                     annotations: annotations,
                     xaxis: {
                         type: "datetime",
-                        tooltip: {enabled: true, }, 
+                        tooltip: {enabled: false, }, 
                         labels: {datetimeUTC: false, formatter: function(value, opts): string {
                             return moment(value).format("h:mm a")
                         }}
@@ -1114,7 +1114,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             // Update the series
             this.volumeChart.series = [
                 {
-                    name: "USDT Volume Mean", 
+                    name: "USDT", 
                     data: this.state.volume.volumes, 
                     color: lineColor
                 }
@@ -1125,18 +1125,19 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                 { 
                     series: [
                         {
-                            name: "USDT Volume Mean", 
+                            name: "USDT", 
                             data: this.state.volume.volumes, 
                             color: lineColor
                         }
                     ],
-                    stroke: {curve: "smooth", width:5},
+                    stroke: {curve: "straight", width:4},
                 },
-                this.layout == "desktop" ? this.marketStateChartDesktopHeight: 150, 
+                this.layout == "desktop" ? this.marketStateChartDesktopHeight: 200, 
                 true,
                 { max: maxValue, min: minValue}
             );
             this.volumeChart.yaxis.labels = {show: false}
+            this.volumeChart.xaxis.tooltip = {enabled: false}
             this.volumeChart.xaxis.axisTicks = {show: false}
             this.volumeChart.xaxis.axisBorder = {show: false}
         }
@@ -1192,13 +1193,14 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                             color: lineColor
                         }
                     ],
-                    stroke: {curve: "smooth", width:5},
+                    stroke: {curve: "straight", width:4},
                 },
-                this.layout == "desktop" ? this.marketStateChartDesktopHeight: 150, 
+                this.layout == "desktop" ? this.marketStateChartDesktopHeight: 200, 
                 true,
                 { max: maxValue, min: minValue}
             );
             this.networkFeeChart.yaxis.labels = {show: false}
+            this.networkFeeChart.xaxis.tooltip = {enabled: false}
             this.networkFeeChart.xaxis.axisTicks = {show: false}
             this.networkFeeChart.xaxis.axisBorder = {show: false}
         }
@@ -1254,13 +1256,14 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                             color: lineColor
                         }
                     ],
-                    stroke: {curve: "smooth", width:5},
+                    stroke: {curve: "straight", width:4},
                 },
-                this.layout == "desktop" ? this.marketStateChartDesktopHeight: 150, 
+                this.layout == "desktop" ? this.marketStateChartDesktopHeight: 200, 
                 true,
                 { max: maxValue, min: minValue}
             );
             this.openInterestChart.yaxis.labels = {show: false}
+            this.openInterestChart.xaxis.tooltip = {enabled: false}
             this.openInterestChart.xaxis.axisTicks = {show: false}
             this.openInterestChart.xaxis.axisBorder = {show: false}
         }
@@ -1317,13 +1320,14 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                             color: lineColor
                         }
                     ],
-                    stroke: {curve: "smooth", width:5},
+                    stroke: {curve: "straight", width:4},
                 },
-                this.layout == "desktop" ? this.marketStateChartDesktopHeight: 150, 
+                this.layout == "desktop" ? this.marketStateChartDesktopHeight: 200, 
                 true,
                 { max: maxValue, min: minValue}
             );
             this.longShortRatioChart.yaxis.labels = {show: false}
+            this.longShortRatioChart.xaxis.tooltip = {enabled: false}
             this.longShortRatioChart.xaxis.axisTicks = {show: false}
             this.longShortRatioChart.xaxis.axisBorder = {show: false}
         }
@@ -1696,7 +1700,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     // Window
     public windowTooltip(): void {
         this._nav.displayTooltip("Market State Window", [
-            `The market state operates in a moving window of 64 30-minute-interval candlesticks (~32 hours) that is synced 
+            `The market state operates in a moving window of 128 15-minute-interval candlesticks (~32 hours) that is synced 
             every ~4 seconds through Binance Spot's API.`,
             `Additionally, the following market state submodules also make use of this exact window of time:`,
             `1) Volume`,
@@ -1716,13 +1720,13 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             Module for the management of active positions. Since the Bitcoin Market is always changing, a complete 
             recalibration is performed every few months.`,
             `The model predicts every ~10 seconds. Each prediction is broadcast, stored and used to create the 
-            30-minute-interval candlesticks that are then used to calculate the trend state and intensity. The key pieces of 
+            15-minute-interval candlesticks that are then used to calculate the trend state and intensity. The key pieces of 
             information derived from the model are:`,
             `1) Trend Sum: the sum of all the predictions generated by the regressions. This value can range from -8 to 8.`,
             `2) Min Increase Sum: the trend sum at which the up-trend is considered to be very strong.`,
             `3) Min Decrease Sum: the trend sum at which the down-trend is considered to be very strong.`,
-            `4) Prediction State: the number of 30-minute-intervals the trend sum has been increasing or decreasing consistently. 
-            This value can range from -9 to 9.`,
+            `4) Prediction State: the number of 15-minute-intervals the trend sum has been increasing or decreasing consistently. 
+            This value can range from -12 to 12.`,
             `5) Prediction State Intensity: the intensity of the prediction state. This value can range from -2 to 2, if it is 0,
             the trend sum is going sideways.`,
         ]);

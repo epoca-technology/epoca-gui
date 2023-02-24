@@ -189,7 +189,8 @@ export class StrategyFormDialogComponent implements OnInit, IStrategyFormDialogC
 			`The strategy is fully connected to the Signal and Position HP modules. Its core responsibilities are:`,
 			`- When it receives a non-neutral signal, it determines if a position for the given side can be opened and does so`,
 			`- Calculates the size of a position (capital to be allocated)`,
-			`- Closes positions at profit or loss based on the HP & Gain systems`,
+			`- Closes positions at profit or break-even based on the "Profit Optimization Strategy"`,
+			`- Closes positions at loss based on the "Loss Optimization Strategy"`,
 		]);
 	}
 
@@ -251,14 +252,14 @@ export class StrategyFormDialogComponent implements OnInit, IStrategyFormDialogC
 			`How is the HP calculated?`,
 			`When a position is opened, the initial trend sum, open interest and long/short ratio values are stored. Later, these initial values as well as the rest of the components' states are used to 
 			evaluate the position's HP based on its side (long or short). The components used by the Position Health module are:`,
-			`1) Current trend sum vs initial trend sum (40%)`,
+			`1) Current trend sum vs initial trend sum (35%)`,
 			`2) Trend state and trend intensity (10%)`,
-			`3) Technical analysis in the following intervals: 30m, 1h, 2h, 4h, 1d (21%)`,
-			`4) Current open interest vs initial open interest (5%)`,
-			`5) Open Interest State (8%)`,
-			`6) Current long/short ratio vs initial long/short ratio (5%)`,
-			`7) Long/Short Ratio State (8%)`,
-			`8) Volume State & Direction (3%)`,
+			`3) Technical analysis in the following intervals: 15m, 30m, 1h, 2h, 4h, 1d (24%)`,
+			`4) Current open interest vs initial open interest (7%)`,
+			`5) Open Interest State (6%)`,
+			`6) Current long/short ratio vs initial long/short ratio (7%)`,
+			`7) Long/Short Ratio State (6%)`,
+			`8) Volume State & Direction (5%)`,
 			`The weight% shown above are the default values set when Epoca runs the first time. To modify these weights, go to Adjustments > Health Point Weights.`
 		]);
 	}

@@ -461,19 +461,20 @@
                             <div>
                                 <div class="chart-card">
                                     <!-- Heading -->
-                                    <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" 
-                                        fxLayoutAlign="center start" fxLayoutAlign.xs="center center"  fxLayoutAlign.sm="center center" 
+                                    <div fxLayout="row" fxLayoutAlign="center center"
                                         class="chart-card-heading badged-header full-width">
+                                        <!-- Signal -->
                                         <div fxLayout="row"
                                             matTooltip="Pred: {{predLastUpdate}} | TA: {{taLastUpdate}}">
                                             <mat-icon>podcasts</mat-icon>&nbsp;
                                             <h4 *ngIf="!activePrediction">Neutral</h4>
-                                            <h4 *ngIf="activePrediction">
-                                                {{_prediction.resultNames[signal]}}
-                                            </h4>
+                                            <h4 *ngIf="activePrediction">{{_prediction.resultNames[signal]}}</h4>
                                         </div>
-                                        <span fxFlex class="show-on-desktop"></span>
-                                        <div fxLayout="row" fxLayoutAlign="center center" class="prediction-header-indicators">
+
+                                        <span fxFlex></span>
+
+                                        <!-- Desktop Technnicals -->
+                                        <div *ngIf="layout == 'desktop'" fxLayout="row" fxLayoutAlign="center center">
                                             <div class="clickable" role="button" matRipple 
                                                 *ngFor="let taInterval of taIntervals"
                                                 (click)="displayTechnicalAnalysisDialog(taInterval)"
@@ -483,45 +484,63 @@
                                                     'square-badge-neutral': state.technical_analysis[taInterval].s.a == 0,
                                                     'state': state.technical_analysis[taInterval].s.a == 1 || state.technical_analysis[taInterval].s.a == -1,
                                                     'stateless': state.technical_analysis[taInterval].s.a == 0
-                                                }" matTooltip="Osc: {{_ms.taStates[state.technical_analysis[taInterval].o.a]}} | MA: {{_ms.taStates[state.technical_analysis[taInterval].m.a]}}">
+                                                }" [matTooltip]="_ms.taStates[state.technical_analysis[taInterval].s.a]">
                                                 {{taInterval}}
                                             </div>
-                                            <div *ngIf="activePrediction" 
-                                                matTooltip="Trend Sum: {{activeSum | number: '1.0-6'}}" 
-                                                [matMenuTriggerFor]="predictionMenu"
-                                                class="state-badge clickable" role="button" matRipple 
-                                                [ngClass]="{
-                                                    'square-badge-success': activePredictionStateIntensity > 0,
-                                                    'square-badge-error': activePredictionStateIntensity < 0,
-                                                    'square-badge-neutral': activePredictionStateIntensity == 0,
-                                                    'state': activePredictionStateIntensity == 1 || activePredictionStateIntensity == -1,
-                                                    'stateless': activePredictionStateIntensity == 0
-                                                }">
-                                                <mat-icon [svgIcon]="_ms.icons[activePredictionStateIntensity]"></mat-icon>
-                                                {{activeSum | number: '1.0-2'}} 
-                                                <span>
-                                                    | {{activePredictionState! > 0 ? '+': ''}}{{activePredictionState}}
-                                                </span>
-                                            </div>
-                                            <mat-menu #predictionMenu="matMenu">
-                                                <button *ngIf="!displayPredictionCandlesticks" mat-menu-item (click)="toggleTrendChart()">
-                                                    <mat-icon>{{userPreferences.splitTrendChart ? 'timeline': 'ssid_chart'}}</mat-icon> 
-                                                    View {{userPreferences.splitTrendChart ? 'Sum Chart': 'Split Chart'}}
-                                                </button>
-                                                <button *ngIf="displayPredictionCandlesticks" mat-menu-item (click)="deactivatePredictionCandlesticks()">
-                                                    <mat-icon>{{userPreferences.splitTrendChart ? 'ssid_chart': 'timeline'}}</mat-icon> 
-                                                    View {{userPreferences.splitTrendChart ? 'Split Chart': 'Sum Chart'}}
-                                                </button>
-                                                <button *ngIf="!displayPredictionCandlesticks" mat-menu-item (click)="activatePredictionCandlesticks()">
-                                                    <mat-icon>candlestick_chart</mat-icon> View last 32 hours
-                                                </button>
-                                                <button mat-menu-item (click)="displayActivePredictionDialog()">
-                                                    &nbsp;<mat-icon svgIcon="wand_magic_sparkles" style="max-width:20px;"></mat-icon>&nbsp;Active Prediction
-                                                </button>
-                                                <button mat-menu-item (click)="predictionModelTooltip()">
-                                                    <mat-icon>question_mark</mat-icon> More information
-                                                </button>
-                                            </mat-menu>
+                                        </div>
+
+                                        <!-- Trend -->
+                                        <div *ngIf="activePrediction" 
+                                            matTooltip="Trend Sum: {{activeSum | number: '1.0-6'}}" 
+                                            [matMenuTriggerFor]="predictionMenu"
+                                            class="state-badge clickable" role="button" matRipple 
+                                            [ngClass]="{
+                                                'square-badge-success': activePredictionStateIntensity > 0,
+                                                'square-badge-error': activePredictionStateIntensity < 0,
+                                                'square-badge-neutral': activePredictionStateIntensity == 0,
+                                                'state': activePredictionStateIntensity == 1 || activePredictionStateIntensity == -1,
+                                                'stateless': activePredictionStateIntensity == 0
+                                            }">
+                                            <mat-icon [svgIcon]="_ms.icons[activePredictionStateIntensity]"></mat-icon>
+                                            {{activeSum | number: '1.0-2'}} 
+                                            <span>
+                                                | {{activePredictionState! > 0 ? '+': ''}}{{activePredictionState}}
+                                            </span>
+                                        </div>
+                                        <mat-menu #predictionMenu="matMenu">
+                                            <button *ngIf="!displayPredictionCandlesticks" mat-menu-item (click)="toggleTrendChart()">
+                                                <mat-icon>{{userPreferences.splitTrendChart ? 'timeline': 'ssid_chart'}}</mat-icon> 
+                                                View {{userPreferences.splitTrendChart ? 'Sum Chart': 'Split Chart'}}
+                                            </button>
+                                            <button *ngIf="displayPredictionCandlesticks" mat-menu-item (click)="deactivatePredictionCandlesticks()">
+                                                <mat-icon>{{userPreferences.splitTrendChart ? 'ssid_chart': 'timeline'}}</mat-icon> 
+                                                View {{userPreferences.splitTrendChart ? 'Split Chart': 'Sum Chart'}}
+                                            </button>
+                                            <button *ngIf="!displayPredictionCandlesticks" mat-menu-item (click)="activatePredictionCandlesticks()">
+                                                <mat-icon>candlestick_chart</mat-icon> View last 32 hours
+                                            </button>
+                                            <button mat-menu-item (click)="displayActivePredictionDialog()">
+                                                &nbsp;<mat-icon svgIcon="wand_magic_sparkles" style="max-width:20px;"></mat-icon>&nbsp;Active Prediction
+                                            </button>
+                                            <button mat-menu-item (click)="predictionModelTooltip()">
+                                                <mat-icon>question_mark</mat-icon> More information
+                                            </button>
+                                        </mat-menu>
+                                    </div>
+
+                                    <!-- Mobile Technicals-->
+                                    <div *ngIf="layout == 'mobile'" fxLayout="row" fxLayoutAlign="center center" class="badged-header margin-top">
+                                        <div class="clickable" role="button" matRipple 
+                                            *ngFor="let taInterval of taIntervals"
+                                            (click)="displayTechnicalAnalysisDialog(taInterval)"
+                                            [ngClass]="{
+                                                'square-badge-success': state.technical_analysis[taInterval].s.a > 0,
+                                                'square-badge-error': state.technical_analysis[taInterval].s.a < 0,
+                                                'square-badge-neutral': state.technical_analysis[taInterval].s.a == 0,
+                                                'state': state.technical_analysis[taInterval].s.a == 1 || state.technical_analysis[taInterval].s.a == -1,
+                                                'stateless': state.technical_analysis[taInterval].s.a == 0
+                                            }" [matTooltip]="_ms.taStates[state.technical_analysis[taInterval].s.a]">
+                                            {{taInterval}}
                                         </div>
                                     </div>
                 
@@ -559,7 +578,7 @@
                                     </div>
 
                                     <!-- Candlesticks Chart -->
-                                    <div *ngIf="displayPredictionCandlesticks" style="min-height:220px;">
+                                    <div *ngIf="displayPredictionCandlesticks" class="prediction-candlesticks-container">
                                         <div *ngIf="!predictionCandlesticksChart" class="loader">
                                             <div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="35"></mat-spinner></div>
                                         </div>
@@ -592,13 +611,8 @@
                                                     'stateless': state.volume.state == 0
                                                 }">
                                                 <!-- Heading -->
-                                                <div fxLayout="row" fxLayoutAlign="start start" class="chart-card-heading">
-                                                    <div>
-                                                        <h4 matTooltip="Updated: {{state.volume.ts | date: 'short'}}">Volume</h4>
-                                                        <p class="light-text ts-xs show-on-mobile">
-                                                            {{state.volume.ts | date: 'mediumTime'}}
-                                                        </p>
-                                                    </div>
+                                                <div fxLayout="row" fxLayoutAlign="center center" class="chart-card-heading">
+                                                    <h4 matTooltip="Updated: {{state.volume.ts | date: 'short'}}">Volume</h4>
                                                     <span fxFlex></span>
                                                     <div matTooltip="More information"
                                                         (click)="volumeTooltip()"
@@ -638,13 +652,8 @@
                                                     'stateless': state.open_interest.state == 0
                                                 }">
                                                 <!-- Heading -->
-                                                <div fxLayout="row" fxLayoutAlign="start start" class="chart-card-heading">
-                                                    <div>
-                                                        <h4 matTooltip="Updated: {{state.open_interest.ts | date: 'short'}}">Open Interest</h4>
-                                                        <p class="light-text ts-xs show-on-mobile">
-                                                            {{state.open_interest.ts | date: 'mediumTime'}}
-                                                        </p>
-                                                    </div>
+                                                <div fxLayout="row" fxLayoutAlign="center center" class="chart-card-heading">
+                                                    <h4 matTooltip="Updated: {{state.open_interest.ts | date: 'short'}}">Open Interest</h4>
                                                     <span fxFlex></span>
                                                     <div matTooltip="More information"
                                                         (click)="openInterestTooltip()"
@@ -687,13 +696,8 @@
                                                     'stateless': state.long_short_ratio.state == 0
                                                 }">
                                                 <!-- Heading -->
-                                                <div fxLayout="row" fxLayoutAlign="start start" class="chart-card-heading">
-                                                    <div>
-                                                        <h4 matTooltip="Updated: {{state.long_short_ratio.ts | date: 'short'}}">Long/Short Ratio</h4>
-                                                        <p class="light-text ts-xs show-on-mobile">
-                                                            {{state.long_short_ratio.ts | date: 'mediumTime'}}
-                                                        </p>
-                                                    </div>
+                                                <div fxLayout="row" fxLayoutAlign="center center" class="chart-card-heading">
+                                                    <h4 matTooltip="Updated: {{state.long_short_ratio.ts | date: 'short'}}">Long/Short Ratio</h4>
                                                     <span fxFlex></span>
                                                     <div matTooltip="More information"
                                                         (click)="longShortRatioTooltip()" 
@@ -736,13 +740,8 @@
                                                     'stateless': state.network_fee.state == 0
                                                 }">
                                                 <!-- Heading -->
-                                                <div fxLayout="row" fxLayoutAlign="start start" class="chart-card-heading">
-                                                    <div>
-                                                        <h4 matTooltip="Updated: {{state.network_fee.ts | date: 'short'}}">Network Fee</h4>
-                                                        <p class="light-text ts-xs show-on-mobile">
-                                                            {{state.network_fee.ts | date: 'mediumTime'}}
-                                                        </p>
-                                                    </div>
+                                                <div fxLayout="row" fxLayoutAlign="center center" class="chart-card-heading">
+                                                    <h4 matTooltip="Updated: {{state.network_fee.ts | date: 'short'}}">Network Fee</h4>
                                                     <span fxFlex></span>
                                                     <div matTooltip="More information"
                                                         (click)="networkFeeTooltip()"
