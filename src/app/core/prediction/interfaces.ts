@@ -13,18 +13,23 @@ export interface IPredictionService {
     resultIconNames: {[result: string]: IPredictionResultIcon},
     resultImagePaths: {[result: string]: string},
     
-    // Retrievers
-    //getActive(): Promise<IPrediction|undefined>,
+    // Prediction Records
     listPredictions(
       epochID: string,
       startAt: number,
       endAt: number
     ): Promise<IPrediction[]>,
+
+    // Prediction Candlesticks
     listPredictionCandlesticks(
       epochID: string,
       startAt: number,
       endAt: number
-     ): Promise<IPredictionCandlestick[]>
+     ): Promise<IPredictionCandlestick[]>,
+
+    // Prediction State Intensity Configuration
+    getStateIntensityConfig(): Promise<IPredictionStateIntensityConfig>,
+    updateStateIntensityConfig(newConfig: IPredictionStateIntensityConfig, otp: string): Promise<void>,
 }
 
 
@@ -63,6 +68,7 @@ export interface IPredictionCandlestick {
  */
  export type IPredictionState = 12|11|10|9|8|7|6|5|4|3|2|1|0|-1|-2|-3|-4|-5|-6|-7|-8|-9|-10|-11|-12;
 
+ 
 
 
  /**
@@ -70,3 +76,14 @@ export interface IPredictionCandlestick {
   * The intensity of the direction the trend sum is taking.
   */
  export type IPredictionStateIntesity = -2|-1|0|1|2;
+
+
+
+/**
+ * Prediction State Intensity Configuration
+ * The requirements for the state to have a normal or strong intensity.
+ */
+export interface IPredictionStateIntensityConfig {
+    requirement: number,
+    strongRequirement: number
+}

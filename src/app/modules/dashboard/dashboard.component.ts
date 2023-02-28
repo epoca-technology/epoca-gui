@@ -27,7 +27,8 @@ import {
     MarketStateService,
     IPredictionCandlestick,
     IPredictionStateIntesity,
-    IPositionSideHealth
+    IPositionSideHealth,
+    IStateType
 } from "../../core";
 import { 
     AppService, 
@@ -46,6 +47,8 @@ import { SignalPoliciesDialogComponent } from "./signal-policies-dialog";
 import { IPositionHealthDialogData, PositionHealthDialogComponent } from './position-health-dialog';
 import { IDashboardComponent, IPositionCloseChunkSize } from "./interfaces";
 import { PositionHealthWeightsFormDialogComponent } from "./position-health-weights-form-dialog";
+import { PredictionStateIntensityFormDialogComponent } from "./prediction-state-intensity-form-dialog";
+import { MatBottomSheetRef } from "@angular/material/bottom-sheet";
 
 @Component({
   selector: "app-dashboard",
@@ -1130,9 +1133,9 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                             color: lineColor
                         }
                     ],
-                    stroke: {curve: "straight", width:4},
+                    stroke: {curve: "smooth", width:4},
                 },
-                this.layout == "desktop" ? this.marketStateChartDesktopHeight: 200, 
+                this.layout == "desktop" ? this.marketStateChartDesktopHeight - 40: 250, 
                 true,
                 { max: maxValue, min: minValue}
             );
@@ -1193,9 +1196,9 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                             color: lineColor
                         }
                     ],
-                    stroke: {curve: "straight", width:4},
+                    stroke: {curve: "smooth", width:4},
                 },
-                this.layout == "desktop" ? this.marketStateChartDesktopHeight: 200, 
+                this.layout == "desktop" ? this.marketStateChartDesktopHeight - 40: 250, 
                 true,
                 { max: maxValue, min: minValue}
             );
@@ -1214,36 +1217,46 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
      * Triggers whenever a new state is downloaded and builds the open interest chart.
      */
      private updateOpenInterestState(): void {
-        // Init the color of the prediction sum line
-        let lineColor: string = this._chart.neutralColor;
-        if (this.state.open_interest.state > 0) {
-            lineColor = this._chart.upwardColor;
-        } else if (this.state.open_interest.state < 0) {
-            lineColor = this._chart.downwardColor;
-        }
-
-        // Init the min and max values
-        const minValue: number = this.state.open_interest.lower_band.end;
-        const maxValue: number = this.state.open_interest.upper_band.end;
-
         // Build/Update the chart
         if (this.openInterestChart) {
-            // Update the range
-            this.openInterestChart.yaxis = { 
-                tooltip: { enabled: false }, 
-                labels: { show: false},
-                axisTicks: { show: false},
-                axisBorder: { show: false},
-                forceNiceScale: false, min: minValue, max: maxValue
-            };
-
             // Update the series
             this.openInterestChart.series = [
                 {
-                    name: "USDT", 
-                    data: this.state.open_interest.interest, 
-                    color: lineColor
-                }
+                    name: "BIN", 
+                    data: this.normalizeSeries(
+                        this.state.open_interest.interest, 
+                        this.state.open_interest.upper_band.end,
+                        this.state.open_interest.lower_band.end
+                    ), 
+                    color: this.getStateLineColor(this.state.open_interest.state)
+                },
+                {
+                    name: "BYB", 
+                    data: this.normalizeSeries(
+                        this.state.open_interest_bybit.interest, 
+                        this.state.open_interest_bybit.upper_band.end,
+                        this.state.open_interest_bybit.lower_band.end
+                    ), 
+                    color: this.getStateLineColor(this.state.open_interest_bybit.state)
+                },
+                {
+                    name: "OKX", 
+                    data: this.normalizeSeries(
+                        this.state.open_interest_okx.interest, 
+                        this.state.open_interest_okx.upper_band.end,
+                        this.state.open_interest_okx.lower_band.end
+                    ), 
+                    color: this.getStateLineColor(this.state.open_interest_okx.state)
+                },
+                {
+                    name: "HUO", 
+                    data: this.normalizeSeries(
+                        this.state.open_interest_huobi.interest, 
+                        this.state.open_interest_huobi.upper_band.end,
+                        this.state.open_interest_huobi.lower_band.end
+                    ), 
+                    color: this.getStateLineColor(this.state.open_interest_huobi.state)
+                },
             ]
         } else {
             // Create the chart from scratch
@@ -1251,21 +1264,53 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                 { 
                     series: [
                         {
-                            name: "USDT", 
-                            data: this.state.open_interest.interest, 
-                            color: lineColor
-                        }
+                            name: "BIN", 
+                            data: this.normalizeSeries(
+                                this.state.open_interest.interest, 
+                                this.state.open_interest.upper_band.end,
+                                this.state.open_interest.lower_band.end
+                            ), 
+                            color: this.getStateLineColor(this.state.open_interest.state)
+                        },
+                        {
+                            name: "BYB", 
+                            data: this.normalizeSeries(
+                                this.state.open_interest_bybit.interest, 
+                                this.state.open_interest_bybit.upper_band.end,
+                                this.state.open_interest_bybit.lower_band.end
+                            ), 
+                            color: this.getStateLineColor(this.state.open_interest_bybit.state)
+                        },
+                        {
+                            name: "OKX", 
+                            data: this.normalizeSeries(
+                                this.state.open_interest_okx.interest, 
+                                this.state.open_interest_okx.upper_band.end,
+                                this.state.open_interest_okx.lower_band.end
+                            ), 
+                            color: this.getStateLineColor(this.state.open_interest_okx.state)
+                        },
+                        {
+                            name: "HUO", 
+                            data: this.normalizeSeries(
+                                this.state.open_interest_huobi.interest, 
+                                this.state.open_interest_huobi.upper_band.end,
+                                this.state.open_interest_huobi.lower_band.end
+                            ), 
+                            color: this.getStateLineColor(this.state.open_interest_huobi.state)
+                        },
                     ],
-                    stroke: {curve: "straight", width:4},
+                    stroke: {curve: "smooth", width: 3},
                 },
-                this.layout == "desktop" ? this.marketStateChartDesktopHeight: 200, 
+                this.layout == "desktop" ? this.marketStateChartDesktopHeight + 15: 250, 
                 true,
-                { max: maxValue, min: minValue}
+                { max: 1, min: 0}
             );
             this.openInterestChart.yaxis.labels = {show: false}
             this.openInterestChart.xaxis.tooltip = {enabled: false}
             this.openInterestChart.xaxis.axisTicks = {show: false}
             this.openInterestChart.xaxis.axisBorder = {show: false}
+            this.openInterestChart.dataLabels = {enabled: false}
         }
     }
 
@@ -1278,36 +1323,37 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
      * Triggers whenever a new state is downloaded and builds the long/short ratio chart.
      */
      private updateLongShortRatioState(): void {
-        // Init the color of the prediction sum line
-        let lineColor: string = this._chart.neutralColor;
-        if (this.state.long_short_ratio.state > 0) {
-            lineColor = this._chart.upwardColor;
-        } else if (this.state.long_short_ratio.state < 0) {
-            lineColor = this._chart.downwardColor;
-        }
-
-        // Init the min and max values
-        const minValue: number = this.state.long_short_ratio.lower_band.end;
-        const maxValue: number = this.state.long_short_ratio.upper_band.end;
-
         // Build/Update the chart
         if (this.longShortRatioChart) {
-            // Update the range
-            this.longShortRatioChart.yaxis = { 
-                tooltip: { enabled: false }, 
-                labels: { show: false},
-                axisTicks: { show: false},
-                axisBorder: { show: false},
-                forceNiceScale: false, min: minValue, max: maxValue
-            };
-
             // Update the series
             this.longShortRatioChart.series = [
                 {
-                    name: "Long vs Short", 
-                    data: this.state.long_short_ratio.ratio, 
-                    color: lineColor
-                }
+                    name: "Global Ratio",  
+                    data: this.normalizeSeries(
+                        this.state.long_short_ratio.ratio, 
+                        this.state.long_short_ratio.upper_band.end,
+                        this.state.long_short_ratio.lower_band.end
+                    ),
+                    color: this.getStateLineColor(this.state.long_short_ratio.state)
+                },
+                {
+                    name: "TTA Ratio", 
+                    data: this.normalizeSeries(
+                        this.state.long_short_ratio_tta.ratio, 
+                        this.state.long_short_ratio_tta.upper_band.end,
+                        this.state.long_short_ratio_tta.lower_band.end
+                    ),
+                    color: this.getStateLineColor(this.state.long_short_ratio_tta.state)
+                },
+                {
+                    name: "TTP Ratio", 
+                    data: this.normalizeSeries(
+                        this.state.long_short_ratio_ttp.ratio, 
+                        this.state.long_short_ratio_ttp.upper_band.end,
+                        this.state.long_short_ratio_ttp.lower_band.end
+                    ),
+                    color: this.getStateLineColor(this.state.long_short_ratio_ttp.state)
+                },
             ]
         } else {
             // Create the chart from scratch
@@ -1315,16 +1361,38 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                 { 
                     series: [
                         {
-                            name: "Long vs Short", 
-                            data: this.state.long_short_ratio.ratio, 
-                            color: lineColor
-                        }
+                            name: "Global Ratio",  
+                            data: this.normalizeSeries(
+                                this.state.long_short_ratio.ratio, 
+                                this.state.long_short_ratio.upper_band.end,
+                                this.state.long_short_ratio.lower_band.end
+                            ),
+                            color: this.getStateLineColor(this.state.long_short_ratio.state)
+                        },
+                        {
+                            name: "TTA Ratio", 
+                            data: this.normalizeSeries(
+                                this.state.long_short_ratio_tta.ratio, 
+                                this.state.long_short_ratio_tta.upper_band.end,
+                                this.state.long_short_ratio_tta.lower_band.end
+                            ),
+                            color: this.getStateLineColor(this.state.long_short_ratio_tta.state)
+                        },
+                        {
+                            name: "TTP Ratio", 
+                            data: this.normalizeSeries(
+                                this.state.long_short_ratio_ttp.ratio, 
+                                this.state.long_short_ratio_ttp.upper_band.end,
+                                this.state.long_short_ratio_ttp.lower_band.end
+                            ),
+                            color: this.getStateLineColor(this.state.long_short_ratio_ttp.state)
+                        },
                     ],
-                    stroke: {curve: "straight", width:4},
+                    stroke: {curve: "smooth", width:3},
                 },
-                this.layout == "desktop" ? this.marketStateChartDesktopHeight: 200, 
+                this.layout == "desktop" ? this.marketStateChartDesktopHeight + 15: 250, 
                 true,
-                { max: maxValue, min: minValue}
+                { max: 1, min: 0}
             );
             this.longShortRatioChart.yaxis.labels = {show: false}
             this.longShortRatioChart.xaxis.tooltip = {enabled: false}
@@ -1332,6 +1400,41 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             this.longShortRatioChart.xaxis.axisBorder = {show: false}
         }
     }
+
+
+
+
+    /* Chart Misc Helpers */
+
+
+
+    /**
+     * Normalizes a given series so multiple exchanges can be displayed simultaneously.
+     * @param series 
+     * @param max 
+     * @param min 
+     * @returns number[] 
+     */
+    private normalizeSeries(series: number[], max: number, min: number): number[] {
+        return series.map((v) => <number>this._utils.outputNumber((v - min) / (max - min), {dp: 6}))
+    }
+
+
+
+
+    /**
+     * Retrieves the line's color based on the state.
+     * @param state 
+     * @returns string
+     */
+    private getStateLineColor(state: IStateType): string {
+        if      (state == 1) { return "#26A69A" }
+        else if (state == 2) { return "#004D40" }
+        else if (state == -1) { return "#EF5350" }
+        else if (state == -2) { return "#B71C1C" }
+        else { return this._chart.neutralColor }
+    }
+
 
 
 
@@ -1534,15 +1637,39 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
 
     /**
-     * Displays the signal policies dialog.
+     * Displays the prediction state intensity dialog.
      */
-    public displaySignalPoliciesDialog(side: IBinancePositionSide): void {
-		this.dialog.open(SignalPoliciesDialogComponent, {
+    public displayPredictionStateIntensityFormDialog(): void {
+		this.dialog.open(PredictionStateIntensityFormDialogComponent, {
 			hasBackdrop: this._app.layout.value != "mobile",
             disableClose: true,
-			panelClass: "large-dialog",
-            data: side
+			panelClass: "small-dialog",
+            data: {}
 		})
+	}
+
+
+
+
+
+    /**
+     * Displays the signal policies dialog.
+     */
+    public displaySignalPoliciesDialog(): void {
+		const bs: MatBottomSheetRef = this._nav.displayBottomSheetMenu([
+            {icon: 'trending_up', title: 'Long', description: 'Manage issuance & cancellation policies.', response: "LONG"},
+            {icon: 'trending_down', title: 'Short', description: 'Manage issuance & cancellation policies.', response: "SHORT"},
+        ]);
+		bs.afterDismissed().subscribe((response: IBinancePositionSide|undefined) => {
+            if (response) {
+                this.dialog.open(SignalPoliciesDialogComponent, {
+                    hasBackdrop: this._app.layout.value != "mobile",
+                    disableClose: true,
+                    panelClass: "large-dialog",
+                    data: response
+                })
+            }
+		});
 	}
 
 

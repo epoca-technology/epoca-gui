@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { ApiService } from "../api";
 import { IPrediction, IPredictionResultName, IPredictionResultIcon } from "../epoch-builder";
-import { IPredictionCandlestick, IPredictionService } from "./interfaces";
+import { IPredictionCandlestick, IPredictionService, IPredictionStateIntensityConfig } from "./interfaces";
 
 @Injectable({
   providedIn: "root"
@@ -42,22 +42,10 @@ export class PredictionService implements IPredictionService {
 
 
 
-	/* Retrievers */
 
-
-
-
-	/**
-	 * Retrieves the active prediction. If there isn't an active one,
-	 * it returns undefined.
-	 * @returns Promise<IPrediction|undefined>
-	 */
-	/*public getActive(): Promise<IPrediction|undefined> {
-		return this._api.request("get","prediction/getActive", {}, true);
-	}*/
-
-
-
+	/**********************
+	 * Prediction Records *
+	 **********************/
 
 
 
@@ -86,6 +74,16 @@ export class PredictionService implements IPredictionService {
 
 
 
+
+
+
+	/***************************
+	 * Prediction Candlesticks *
+	 ***************************/
+
+
+
+
 	/**
 	 * Retrieves a list of prediction candlesticks based on provided params.
 	 * @returns Promise<IPrediction[]>
@@ -105,4 +103,42 @@ export class PredictionService implements IPredictionService {
 			true
 		);
 	}
+
+
+
+
+
+
+
+
+	/********************************************
+	 * Prediction State Intensity Configuration *
+	 ********************************************/
+
+
+
+	/**
+	 * Retrieves the current state intensity configuration.
+	 * @returns Promise<IPredictionStateIntensityConfig>
+	 */
+	public getStateIntensityConfig(): Promise<IPredictionStateIntensityConfig> {
+		return this._api.request(
+			"get","prediction/getStateIntensityConfig", 
+			{}, 
+			true
+		);
+	}
+
+
+
+
+    /**
+     * Updates the state intensity configuration.
+     * @param newConfig
+     * @param otp
+     * @returns Promise<void>
+     */
+    public updateStateIntensityConfig(newConfig: IPredictionStateIntensityConfig, otp: string): Promise<void> { 
+        return this._api.request("post","prediction/updateStateIntensityConfig", {newConfig: newConfig}, true, otp);
+    }
 }

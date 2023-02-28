@@ -3,8 +3,8 @@
         <button mat-icon-button class="show-on-mobile" (click)="close()"><mat-icon>arrow_back</mat-icon></button>
         <span class="truncate">Position Health Weights</span>
         <span fxFlex></span>
-        <button mat-icon-button *ngIf="loaded && weightsLoaded" [disabled]="form.invalid" (click)="update()" matTooltip="Update Policies"><mat-icon>save</mat-icon></button>
-        <button mat-icon-button *ngIf="loaded && weightsLoaded" (click)="positionHealthSystemTooltip()" matTooltip="More information" type="button"><mat-icon>question_mark</mat-icon></button>
+        <button mat-icon-button *ngIf="loaded && weightsLoaded" [disabled]="form.invalid" (click)="update()" matTooltip="Update Weights"><mat-icon>save</mat-icon></button>
+        <button mat-icon-button *ngIf="loaded && weightsLoaded" (click)="positionHealthSystemTooltip()" matTooltip="More information" type="button" tabindex="-1"><mat-icon>question_mark</mat-icon></button>
         <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
     </div>
 </mat-toolbar>

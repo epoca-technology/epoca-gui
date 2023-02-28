@@ -122,6 +122,7 @@ import {
 	TechnicalAnalysisDialogComponent,
 	PositionHealthDialogComponent,
 	PositionHealthWeightsFormDialogComponent,
+	PredictionStateIntensityFormDialogComponent,
 	PositionHealthDetailsDialogComponent,
 	PositionHpCalculatorDialogComponent,
 	DashboardComponent, 
@@ -151,6 +152,7 @@ import { AppComponent } from "./app.component";
 		PositionHealthDialogComponent,
 		PositionHpCalculatorDialogComponent,
 		PositionHealthWeightsFormDialogComponent,
+		PredictionStateIntensityFormDialogComponent,
 		PositionHealthDetailsDialogComponent,
 	],
 	imports: [

@@ -173,19 +173,17 @@
                         <button mat-menu-item (click)="displayStrategyFormDialog()">
                             <mat-icon svgIcon="money_bill_transfer"></mat-icon> <span>Trading Strategy</span>
                         </button>
-                        <button mat-menu-item [matMenuTriggerFor]="signalPoliciesMenu">
+                        <button mat-menu-item (click)="displaySignalPoliciesDialog()">
                             <mat-icon>podcasts</mat-icon> <span>Signal Policies</span>
+                        </button>
+                        <button mat-menu-item (click)="displayPredictionStateIntensityFormDialog()">
+                            <mat-icon>swap_vert</mat-icon> <span>Pred. State Intensity</span>
+                        </button>
+                        <button mat-menu-item>
+                            <mat-icon>public</mat-icon> <span>Market State</span>
                         </button>
                         <button mat-menu-item (click)="displayPositionHealthWeightsFormDialog()">
                             <mat-icon>monitor_heart</mat-icon> <span>Health Point Weights</span>
-                        </button>
-                    </mat-menu>
-                    <mat-menu #signalPoliciesMenu="matMenu">
-                        <button mat-menu-item (click)="displaySignalPoliciesDialog('LONG')">
-                            <mat-icon>trending_up</mat-icon> <span>Long Policies</span>
-                        </button>
-                        <button mat-menu-item (click)="displaySignalPoliciesDialog('SHORT')">
-                            <mat-icon>trending_down</mat-icon> <span>Short Policies</span>
                         </button>
                     </mat-menu>
 
@@ -601,7 +599,7 @@
 
                             <!-- Global Indicators -->
                             <div class="chart-card">
-                                <!-- Volume & Open Interest -->
+                                <!-- Volume & Network Fee -->
                                 <div>
                                     <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" class="full-width">
                                         <!-- Volume -->
@@ -644,92 +642,6 @@
                     
                                         <span fxFlex></span>
                                         <div class="divider show-on-mobile"></div>
-                    
-                                        <!-- Open Interest -->
-                                        <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
-                                            <div [ngClass]="{
-                                                    'state': state.open_interest.state == 1 || state.open_interest.state == -1,
-                                                    'stateless': state.open_interest.state == 0
-                                                }">
-                                                <!-- Heading -->
-                                                <div fxLayout="row" fxLayoutAlign="center center" class="chart-card-heading">
-                                                    <h4 matTooltip="Updated: {{state.open_interest.ts | date: 'short'}}">Open Interest</h4>
-                                                    <span fxFlex></span>
-                                                    <div matTooltip="More information"
-                                                        (click)="openInterestTooltip()"
-                                                        class="state-badge clickable" role="button" matRipple
-                                                        [ngClass]="{
-                                                            'square-badge-success': state.open_interest.state > 0,
-                                                            'square-badge-error': state.open_interest.state < 0,
-                                                            'square-badge-neutral': state.open_interest.state == 0
-                                                        }">
-                                                        <mat-icon [svgIcon]="_ms.icons[state.open_interest.state]"></mat-icon>
-                                                        {{state.open_interest.state_value > 0 ? '+': ''}}{{state.open_interest.state_value | number: '1.0-1'}}%
-                                                    </div>
-                                                </div>
-                        
-                                                <!-- Chart -->
-                                                <div *ngIf="openInterestChart">
-                                                    <apx-chart
-                                                        [series]="openInterestChart.series"
-                                                        [chart]="openInterestChart.chart"
-                                                        [dataLabels]="openInterestChart.dataLabels"
-                                                        [xaxis]="openInterestChart.xaxis"
-                                                        [yaxis]="openInterestChart.yaxis"
-                                                        [stroke]="openInterestChart.stroke"
-                                                        [grid]="{show: false}"
-                                                    ></apx-chart>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Long/Short Ratio & Network Fee-->
-                                <div>
-                                    <div class="divider show-on-mobile"></div>
-                                    <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" class="full-width">
-                                        <!-- Long/Short Ratio -->
-                                        <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
-                                            <div [ngClass]="{
-                                                    'state': state.long_short_ratio.state == 1 || state.long_short_ratio.state == -1,
-                                                    'stateless': state.long_short_ratio.state == 0
-                                                }">
-                                                <!-- Heading -->
-                                                <div fxLayout="row" fxLayoutAlign="center center" class="chart-card-heading">
-                                                    <h4 matTooltip="Updated: {{state.long_short_ratio.ts | date: 'short'}}">Long/Short Ratio</h4>
-                                                    <span fxFlex></span>
-                                                    <div matTooltip="More information"
-                                                        (click)="longShortRatioTooltip()" 
-                                                        class="state-badge clickable" role="button" matRipple
-                                                        [ngClass]="{
-                                                            'square-badge-success': state.long_short_ratio.state > 0,
-                                                            'square-badge-error': state.long_short_ratio.state < 0,
-                                                            'square-badge-neutral': state.long_short_ratio.state == 0
-                                                        }">
-                                                        <mat-icon [svgIcon]="_ms.icons[state.long_short_ratio.state]"></mat-icon>
-                                                        {{state.long_short_ratio.state_value > 0 ? '+': ''}}{{state.long_short_ratio.state_value | number: '1.0-1'}}%
-                                                    </div>
-                                                </div>
-                        
-                                                <!-- Chart -->
-                                                <div *ngIf="longShortRatioChart">
-                                                    <apx-chart
-                                                        [series]="longShortRatioChart.series"
-                                                        [chart]="longShortRatioChart.chart"
-                                                        [dataLabels]="longShortRatioChart.dataLabels"
-                                                        [xaxis]="longShortRatioChart.xaxis"
-                                                        [yaxis]="longShortRatioChart.yaxis"
-                                                        [stroke]="longShortRatioChart.stroke"
-                                                        [grid]="{show: false}"
-                                                    ></apx-chart>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                    
-                                        <span fxFlex></span>
-                                        <div class="divider show-on-mobile"></div>
 
 
 
@@ -765,6 +677,92 @@
                                                         [xaxis]="networkFeeChart.xaxis"
                                                         [yaxis]="networkFeeChart.yaxis"
                                                         [stroke]="networkFeeChart.stroke"
+                                                        [grid]="{show: false}"
+                                                    ></apx-chart>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Open Interest & Long/Short Ratio-->
+                                <div>
+                                    <div class="divider show-on-mobile"></div>
+                                    <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" class="full-width">
+                                        <!-- Open Interest -->
+                                        <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                                            <div>
+                                                <!-- Heading -->
+                                                <div fxLayout="row" fxLayoutAlign="center center" class="chart-card-heading">
+                                                    <h4 matTooltip="Updated: {{state.open_interest.ts | date: 'short'}}">Open Interest</h4>
+                                                    <span fxFlex></span>
+                                                    <div (click)="openInterestTooltip()"
+                                                        class="state-badge clickable" role="button" matRipple
+                                                        [ngClass]="{
+                                                            'square-badge-success': state.open_interest.state > 0,
+                                                            'square-badge-error': state.open_interest.state < 0,
+                                                            'square-badge-neutral': state.open_interest.state == 0,
+                                                            'state': state.open_interest.state == 1 || state.open_interest.state == -1,
+                                                            'stateless': state.open_interest.state == 0
+                                                        }">
+                                                        <mat-icon [svgIcon]="_ms.icons[state.open_interest.state]"></mat-icon>
+                                                        {{state.open_interest.state_value > 0 ? '+': ''}}{{state.open_interest.state_value | number: '1.0-1'}}%
+                                                    </div>
+                                                </div>
+                        
+                                                <!-- Chart -->
+                                                <div *ngIf="openInterestChart">
+                                                    <apx-chart
+                                                        [series]="openInterestChart.series"
+                                                        [chart]="openInterestChart.chart"
+                                                        [dataLabels]="openInterestChart.dataLabels"
+                                                        [xaxis]="openInterestChart.xaxis"
+                                                        [yaxis]="openInterestChart.yaxis"
+                                                        [stroke]="openInterestChart.stroke"
+                                                        [grid]="{show: false}"
+                                                    ></apx-chart>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                    
+                                        <span fxFlex></span>
+                                        <div class="divider show-on-mobile"></div>
+
+
+
+                                        <!-- Long/Short Ratio -->
+                                        <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                                            <div>
+                                                <!-- Heading -->
+                                                <div fxLayout="row" fxLayoutAlign="center center" class="chart-card-heading">
+                                                    <h4 matTooltip="Updated: {{state.long_short_ratio.ts | date: 'short'}}">Long vs Short</h4>
+                                                    <span fxFlex></span>
+                                                    <div matTooltip="More information"
+                                                        (click)="longShortRatioTooltip()" 
+                                                        class="state-badge clickable" role="button" matRipple
+                                                        [ngClass]="{
+                                                            'square-badge-success': state.long_short_ratio.state > 0,
+                                                            'square-badge-error': state.long_short_ratio.state < 0,
+                                                            'square-badge-neutral': state.long_short_ratio.state == 0,
+                                                            'state': state.long_short_ratio.state == 1 || state.long_short_ratio.state == -1,
+                                                            'stateless': state.long_short_ratio.state == 0
+                                                        }">
+                                                        <mat-icon [svgIcon]="_ms.icons[state.long_short_ratio.state]"></mat-icon>
+                                                        {{state.long_short_ratio.state_value > 0 ? '+': ''}}{{state.long_short_ratio.state_value | number: '1.0-1'}}%
+                                                    </div>
+                                                </div>
+                        
+                                                <!-- Chart -->
+                                                <div *ngIf="longShortRatioChart">
+                                                    <apx-chart
+                                                        [series]="longShortRatioChart.series"
+                                                        [chart]="longShortRatioChart.chart"
+                                                        [dataLabels]="longShortRatioChart.dataLabels"
+                                                        [xaxis]="longShortRatioChart.xaxis"
+                                                        [yaxis]="longShortRatioChart.yaxis"
+                                                        [stroke]="longShortRatioChart.stroke"
                                                         [grid]="{show: false}"
                                                     ></apx-chart>
                                                 </div>

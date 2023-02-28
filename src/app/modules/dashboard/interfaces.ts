@@ -10,6 +10,8 @@ export interface IDashboardComponent {
     togglePositionButtonContent(): Promise<void>,
     activatePredictionCandlesticks(): Promise<void>,
     deactivatePredictionCandlesticks(): void,
+    displayPredictionStateIntensityFormDialog(): void,
+    displaySignalPoliciesDialog(): void,
     displayStrategyFormDialog(): void,
     displayBalanceDialog(): void,
     displayPositionDialog(position: IActivePosition): void,

@@ -524,7 +524,12 @@ export interface IMarketState {
     volume: IVolumeState,
     network_fee: INetworkFeeState,
     open_interest: IOpenInterestState,
+    open_interest_bybit: IOpenInterestState,
+    open_interest_okx: IOpenInterestState,
+    open_interest_huobi: IOpenInterestState,
     long_short_ratio: ILongShortRatioState,
+    long_short_ratio_tta: ILongShortRatioState,
+    long_short_ratio_ttp: ILongShortRatioState,
     technical_analysis: IMinifiedTAState
 }
 

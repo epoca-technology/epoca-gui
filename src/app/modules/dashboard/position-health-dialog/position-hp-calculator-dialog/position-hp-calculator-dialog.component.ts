@@ -128,214 +128,123 @@ export class PositionHpCalculatorDialogComponent implements OnInit, IPositionHpC
     /**
      * Calculates the prediction HP based on the initial and the current
      * sum.
+     * @param side 
+     * @param openSum 
      * @returns IHPResult
      */
     private evaluateTrendSum(): IHPResult {
         // Init the score
         let score: number = 0.5;
 
+        // Calculate the absolute difference
+        const absDiff: number = this.calculateAbsoluteTrendSumDifference(this.health.os, this.pred.s);
+
         // Evaluate a trend sum that is increasing
         if (this.pred.s > this.health.os) {
-            const alterMultiplier: number = this.health.os > 0 ? 1: -1;
-            if        (this.pred.s >= this._utils.alterNumberByPercentage(this.health.os, 95*alterMultiplier)) {
-                score = this.side == "LONG" ? 1: 0;
-            } else if (this.pred.s >= this._utils.alterNumberByPercentage(this.health.os, 93*alterMultiplier)) {
-                score = this.side == "LONG" ? 0.98: 0.02;
-            } else if (this.pred.s >= this._utils.alterNumberByPercentage(this.health.os, 91*alterMultiplier)) {
-                score = this.side == "LONG" ? 0.96: 0.04;
-            } else if (this.pred.s >= this._utils.alterNumberByPercentage(this.health.os, 89*alterMultiplier)) {
-                score = this.side == "LONG" ? 0.95: 0.05;
-            } else if (this.pred.s >= this._utils.alterNumberByPercentage(this.health.os, 87*alterMultiplier)) {
-                score = this.side == "LONG" ? 0.94: 0.06;
-            } else if (this.pred.s >= this._utils.alterNumberByPercentage(this.health.os, 85*alterMultiplier)) {
-                score = this.side == "LONG" ? 0.93: 0.07;
-            } else if (this.pred.s >= this._utils.alterNumberByPercentage(this.health.os, 83*alterMultiplier)) {
-                score = this.side == "LONG" ? 0.92: 0.08;
-            } else if (this.pred.s >= this._utils.alterNumberByPercentage(this.health.os, 81*alterMultiplier)) {
-                score = this.side == "LONG" ? 0.91: 0.09;
-            } else if (this.pred.s >= this._utils.alterNumberByPercentage(this.health.os, 79*alterMultiplier)) {
-                score = this.side == "LONG" ? 0.90: 0.10;
-            } else if (this.pred.s >= this._utils.alterNumberByPercentage(this.health.os, 77*alterMultiplier)) {
-                score = this.side == "LONG" ? 0.89: 0.11;
-            } else if (this.pred.s >= this._utils.alterNumberByPercentage(this.health.os, 75*alterMultiplier)) {
-                score = this.side == "LONG" ? 0.88: 0.12;
-            } else if (this.pred.s >= this._utils.alterNumberByPercentage(this.health.os, 73*alterMultiplier)) {
-                score = this.side == "LONG" ? 0.87: 0.13;
-            } else if (this.pred.s >= this._utils.alterNumberByPercentage(this.health.os, 71*alterMultiplier)) {
-                score = this.side == "LONG" ? 0.86: 0.14;
-            } else if (this.pred.s >= this._utils.alterNumberByPercentage(this.health.os, 69*alterMultiplier)) {
-                score = this.side == "LONG" ? 0.85: 0.15;
-            } else if (this.pred.s >= this._utils.alterNumberByPercentage(this.health.os, 67*alterMultiplier)) {
-                score = this.side == "LONG" ? 0.84: 0.16;
-            } else if (this.pred.s >= this._utils.alterNumberByPercentage(this.health.os, 65*alterMultiplier)) {
-                score = this.side == "LONG" ? 0.83: 0.17;
-            } else if (this.pred.s >= this._utils.alterNumberByPercentage(this.health.os, 63*alterMultiplier)) {
-                score = this.side == "LONG" ? 0.82: 0.18;
-            } else if (this.pred.s >= this._utils.alterNumberByPercentage(this.health.os, 61*alterMultiplier)) {
-                score = this.side == "LONG" ? 0.81: 0.19;
-            } else if (this.pred.s >= this._utils.alterNumberByPercentage(this.health.os, 59*alterMultiplier)) {
-                score = this.side == "LONG" ? 0.80: 0.20;
-            } else if (this.pred.s >= this._utils.alterNumberByPercentage(this.health.os, 57*alterMultiplier)) {
-                score = this.side == "LONG" ? 0.79: 0.21;
-            } else if (this.pred.s >= this._utils.alterNumberByPercentage(this.health.os, 55*alterMultiplier)) {
-                score = this.side == "LONG" ? 0.78: 0.22;
-            } else if (this.pred.s >= this._utils.alterNumberByPercentage(this.health.os, 53*alterMultiplier)) {
-                score = this.side == "LONG" ? 0.77: 0.23;
-            } else if (this.pred.s >= this._utils.alterNumberByPercentage(this.health.os, 51*alterMultiplier)) {
-                score = this.side == "LONG" ? 0.76: 0.24;
-            } else if (this.pred.s >= this._utils.alterNumberByPercentage(this.health.os, 49*alterMultiplier)) {
-                score = this.side == "LONG" ? 0.75: 0.25;
-            } else if (this.pred.s >= this._utils.alterNumberByPercentage(this.health.os, 47*alterMultiplier)) {
-                score = this.side == "LONG" ? 0.74: 0.26;
-            } else if (this.pred.s >= this._utils.alterNumberByPercentage(this.health.os, 45*alterMultiplier)) {
-                score = this.side == "LONG" ? 0.73: 0.27;
-            } else if (this.pred.s >= this._utils.alterNumberByPercentage(this.health.os, 43*alterMultiplier)) {
-                score = this.side == "LONG" ? 0.72: 0.28;
-            } else if (this.pred.s >= this._utils.alterNumberByPercentage(this.health.os, 41*alterMultiplier)) {
-                score = this.side == "LONG" ? 0.71: 0.29;
-            } else if (this.pred.s >= this._utils.alterNumberByPercentage(this.health.os, 39*alterMultiplier)) {
-                score = this.side == "LONG" ? 0.70: 0.30;
-            } else if (this.pred.s >= this._utils.alterNumberByPercentage(this.health.os, 37*alterMultiplier)) {
-                score = this.side == "LONG" ? 0.69: 0.31;
-            } else if (this.pred.s >= this._utils.alterNumberByPercentage(this.health.os, 35*alterMultiplier)) {
-                score = this.side == "LONG" ? 0.68: 0.32;
-            } else if (this.pred.s >= this._utils.alterNumberByPercentage(this.health.os, 33*alterMultiplier)) {
-                score = this.side == "LONG" ? 0.67: 0.33;
-            } else if (this.pred.s >= this._utils.alterNumberByPercentage(this.health.os, 31*alterMultiplier)) {
-                score = this.side == "LONG" ? 0.66: 0.34;
-            } else if (this.pred.s >= this._utils.alterNumberByPercentage(this.health.os, 29*alterMultiplier)) {
-                score = this.side == "LONG" ? 0.65: 0.35;
-            } else if (this.pred.s >= this._utils.alterNumberByPercentage(this.health.os, 27*alterMultiplier)) {
-                score = this.side == "LONG" ? 0.64: 0.36;
-            } else if (this.pred.s >= this._utils.alterNumberByPercentage(this.health.os, 25*alterMultiplier)) {
-                score = this.side == "LONG" ? 0.63: 0.37;
-            } else if (this.pred.s >= this._utils.alterNumberByPercentage(this.health.os, 23*alterMultiplier)) {
-                score = this.side == "LONG" ? 0.62: 0.38;
-            } else if (this.pred.s >= this._utils.alterNumberByPercentage(this.health.os, 21*alterMultiplier)) {
-                score = this.side == "LONG" ? 0.61: 0.39;
-            } else if (this.pred.s >= this._utils.alterNumberByPercentage(this.health.os, 19*alterMultiplier)) {
-                score = this.side == "LONG" ? 0.60: 0.40;
-            } else if (this.pred.s >= this._utils.alterNumberByPercentage(this.health.os, 17*alterMultiplier)) {
-                score = this.side == "LONG" ? 0.59: 0.41;
-            } else if (this.pred.s >= this._utils.alterNumberByPercentage(this.health.os, 15*alterMultiplier)) {
-                score = this.side == "LONG" ? 0.58: 0.42;
-            } else if (this.pred.s >= this._utils.alterNumberByPercentage(this.health.os, 13*alterMultiplier)) {
-                score = this.side == "LONG" ? 0.57: 0.43;
-            } else if (this.pred.s >= this._utils.alterNumberByPercentage(this.health.os, 11*alterMultiplier)) {
-                score = this.side == "LONG" ? 0.56: 0.44;
-            } else if (this.pred.s >= this._utils.alterNumberByPercentage(this.health.os, 9*alterMultiplier)) {
-                score = this.side == "LONG" ? 0.55: 0.45;
-            } else if (this.pred.s >= this._utils.alterNumberByPercentage(this.health.os, 7*alterMultiplier)) {
-                score = this.side == "LONG" ? 0.54: 0.46;
-            } else if (this.pred.s >= this._utils.alterNumberByPercentage(this.health.os, 5*alterMultiplier)) {
-                score = this.side == "LONG" ? 0.53: 0.47;
-            } else if (this.pred.s >= this._utils.alterNumberByPercentage(this.health.os, 3*alterMultiplier)) {
-                score = this.side == "LONG" ? 0.52: 0.48;
-            } else if (this.pred.s >= this._utils.alterNumberByPercentage(this.health.os, 1*alterMultiplier)) {
-                score = this.side == "LONG" ? 0.51: 0.49;
-            }
+            if        (absDiff >= 1.05)   { score = this.side == "LONG" ? 1: 0 } 
+            else if   (absDiff >= 1.01)   { score = this.side == "LONG" ? 0.99: 0.01 }
+            else if   (absDiff >= 0.99)   { score = this.side == "LONG" ? 0.98: 0.02 }
+            else if   (absDiff >= 0.96)   { score = this.side == "LONG" ? 0.97: 0.03 }
+            else if   (absDiff >= 0.93)   { score = this.side == "LONG" ? 0.96: 0.04 }
+            else if   (absDiff >= 0.90)   { score = this.side == "LONG" ? 0.95: 0.05 }
+            else if   (absDiff >= 0.87)   { score = this.side == "LONG" ? 0.94: 0.06 }
+            else if   (absDiff >= 0.84)   { score = this.side == "LONG" ? 0.93: 0.07 }
+            else if   (absDiff >= 0.81)   { score = this.side == "LONG" ? 0.92: 0.08 }
+            else if   (absDiff >= 0.78)   { score = this.side == "LONG" ? 0.91: 0.09 }
+            else if   (absDiff >= 0.75)   { score = this.side == "LONG" ? 0.90: 0.10 }
+            else if   (absDiff >= 0.72)   { score = this.side == "LONG" ? 0.89: 0.11 }
+            else if   (absDiff >= 0.69)   { score = this.side == "LONG" ? 0.88: 0.12 }
+            else if   (absDiff >= 0.66)   { score = this.side == "LONG" ? 0.87: 0.13 }
+            else if   (absDiff >= 0.63)   { score = this.side == "LONG" ? 0.86: 0.14 }
+            else if   (absDiff >= 0.60)   { score = this.side == "LONG" ? 0.85: 0.15 }
+            else if   (absDiff >= 0.57)   { score = this.side == "LONG" ? 0.84: 0.16 }
+            else if   (absDiff >= 0.54)   { score = this.side == "LONG" ? 0.83: 0.17 }
+            else if   (absDiff >= 0.51)   { score = this.side == "LONG" ? 0.82: 0.18 }
+            else if   (absDiff >= 0.48)   { score = this.side == "LONG" ? 0.81: 0.19 }
+            else if   (absDiff >= 0.45)   { score = this.side == "LONG" ? 0.80: 0.20 }
+            else if   (absDiff >= 0.42)   { score = this.side == "LONG" ? 0.79: 0.21 }
+            else if   (absDiff >= 0.39)   { score = this.side == "LONG" ? 0.78: 0.22 }
+            else if   (absDiff >= 0.36)   { score = this.side == "LONG" ? 0.77: 0.23 }
+            else if   (absDiff >= 0.33)   { score = this.side == "LONG" ? 0.76: 0.24 }
+            else if   (absDiff >= 0.30)   { score = this.side == "LONG" ? 0.75: 0.25 }
+            else if   (absDiff >= 0.28)   { score = this.side == "LONG" ? 0.74: 0.26 }
+            else if   (absDiff >= 0.26)   { score = this.side == "LONG" ? 0.73: 0.27 }
+            else if   (absDiff >= 0.24)   { score = this.side == "LONG" ? 0.72: 0.28 }
+            else if   (absDiff >= 0.22)   { score = this.side == "LONG" ? 0.71: 0.29 }
+            else if   (absDiff >= 0.20)   { score = this.side == "LONG" ? 0.70: 0.30 }
+            else if   (absDiff >= 0.19)   { score = this.side == "LONG" ? 0.69: 0.31 }
+            else if   (absDiff >= 0.18)   { score = this.side == "LONG" ? 0.68: 0.32 }
+            else if   (absDiff >= 0.17)   { score = this.side == "LONG" ? 0.67: 0.33 }
+            else if   (absDiff >= 0.16)   { score = this.side == "LONG" ? 0.66: 0.34 }
+            else if   (absDiff >= 0.15)   { score = this.side == "LONG" ? 0.65: 0.35 }
+            else if   (absDiff >= 0.14)   { score = this.side == "LONG" ? 0.64: 0.36 }
+            else if   (absDiff >= 0.13)   { score = this.side == "LONG" ? 0.63: 0.37 }
+            else if   (absDiff >= 0.12)   { score = this.side == "LONG" ? 0.62: 0.38 }
+            else if   (absDiff >= 0.11)   { score = this.side == "LONG" ? 0.61: 0.39 }
+            else if   (absDiff >= 0.10)   { score = this.side == "LONG" ? 0.60: 0.40 }
+            else if   (absDiff >= 0.09)   { score = this.side == "LONG" ? 0.59: 0.41 }
+            else if   (absDiff >= 0.08)   { score = this.side == "LONG" ? 0.58: 0.42 }
+            else if   (absDiff >= 0.07)   { score = this.side == "LONG" ? 0.57: 0.43 }
+            else if   (absDiff >= 0.06)   { score = this.side == "LONG" ? 0.56: 0.44 }
+            else if   (absDiff >= 0.05)   { score = this.side == "LONG" ? 0.55: 0.45 }
+            else if   (absDiff >= 0.04)   { score = this.side == "LONG" ? 0.54: 0.46 }
+            else if   (absDiff >= 0.03)   { score = this.side == "LONG" ? 0.53: 0.47 }
+            else if   (absDiff >= 0.02)   { score = this.side == "LONG" ? 0.52: 0.48 }
+            else if   (absDiff >= 0.01)   { score = this.side == "LONG" ? 0.51: 0.49 }
         }
 
         // Evaluate a trend sum that is decreasing
         else if (this.pred.s < this.health.os) {
-            const alterMultiplier: number = this.health.os < 0 ? 1: -1;
-            if        (this.pred.s <= this._utils.alterNumberByPercentage(this.health.os, 95*alterMultiplier)) {
-                score = this.side == "SHORT" ? 1: 0;
-            } else if (this.pred.s <= this._utils.alterNumberByPercentage(this.health.os, 93*alterMultiplier)) {
-                score = this.side == "SHORT" ? 0.98: 0.02;
-            } else if (this.pred.s <= this._utils.alterNumberByPercentage(this.health.os, 91*alterMultiplier)) {
-                score = this.side == "SHORT" ? 0.96: 0.04;
-            } else if (this.pred.s <= this._utils.alterNumberByPercentage(this.health.os, 89*alterMultiplier)) {
-                score = this.side == "SHORT" ? 0.95: 0.05;
-            } else if (this.pred.s <= this._utils.alterNumberByPercentage(this.health.os, 87*alterMultiplier)) {
-                score = this.side == "SHORT" ? 0.94: 0.06;
-            } else if (this.pred.s <= this._utils.alterNumberByPercentage(this.health.os, 85*alterMultiplier)) {
-                score = this.side == "SHORT" ? 0.93: 0.07;
-            } else if (this.pred.s <= this._utils.alterNumberByPercentage(this.health.os, 83*alterMultiplier)) {
-                score = this.side == "SHORT" ? 0.92: 0.08;
-            } else if (this.pred.s <= this._utils.alterNumberByPercentage(this.health.os, 81*alterMultiplier)) {
-                score = this.side == "SHORT" ? 0.91: 0.09;
-            } else if (this.pred.s <= this._utils.alterNumberByPercentage(this.health.os, 79*alterMultiplier)) {
-                score = this.side == "SHORT" ? 0.90: 0.10;
-            } else if (this.pred.s <= this._utils.alterNumberByPercentage(this.health.os, 77*alterMultiplier)) {
-                score = this.side == "SHORT" ? 0.89: 0.11;
-            } else if (this.pred.s <= this._utils.alterNumberByPercentage(this.health.os, 75*alterMultiplier)) {
-                score = this.side == "SHORT" ? 0.88: 0.12;
-            } else if (this.pred.s <= this._utils.alterNumberByPercentage(this.health.os, 73*alterMultiplier)) {
-                score = this.side == "SHORT" ? 0.87: 0.13;
-            } else if (this.pred.s <= this._utils.alterNumberByPercentage(this.health.os, 71*alterMultiplier)) {
-                score = this.side == "SHORT" ? 0.86: 0.14;
-            } else if (this.pred.s <= this._utils.alterNumberByPercentage(this.health.os, 69*alterMultiplier)) {
-                score = this.side == "SHORT" ? 0.85: 0.15;
-            } else if (this.pred.s <= this._utils.alterNumberByPercentage(this.health.os, 67*alterMultiplier)) {
-                score = this.side == "SHORT" ? 0.84: 0.16;
-            } else if (this.pred.s <= this._utils.alterNumberByPercentage(this.health.os, 65*alterMultiplier)) {
-                score = this.side == "SHORT" ? 0.83: 0.17;
-            } else if (this.pred.s <= this._utils.alterNumberByPercentage(this.health.os, 63*alterMultiplier)) {
-                score = this.side == "SHORT" ? 0.82: 0.18;
-            } else if (this.pred.s <= this._utils.alterNumberByPercentage(this.health.os, 61*alterMultiplier)) {
-                score = this.side == "SHORT" ? 0.81: 0.19;
-            } else if (this.pred.s <= this._utils.alterNumberByPercentage(this.health.os, 59*alterMultiplier)) {
-                score = this.side == "SHORT" ? 0.80: 0.20;
-            } else if (this.pred.s <= this._utils.alterNumberByPercentage(this.health.os, 57*alterMultiplier)) {
-                score = this.side == "SHORT" ? 0.79: 0.21;
-            } else if (this.pred.s <= this._utils.alterNumberByPercentage(this.health.os, 55*alterMultiplier)) {
-                score = this.side == "SHORT" ? 0.78: 0.22;
-            } else if (this.pred.s <= this._utils.alterNumberByPercentage(this.health.os, 53*alterMultiplier)) {
-                score = this.side == "SHORT" ? 0.77: 0.23;
-            } else if (this.pred.s <= this._utils.alterNumberByPercentage(this.health.os, 51*alterMultiplier)) {
-                score = this.side == "SHORT" ? 0.76: 0.24;
-            } else if (this.pred.s <= this._utils.alterNumberByPercentage(this.health.os, 49*alterMultiplier)) {
-                score = this.side == "SHORT" ? 0.75: 0.25;
-            } else if (this.pred.s <= this._utils.alterNumberByPercentage(this.health.os, 47*alterMultiplier)) {
-                score = this.side == "SHORT" ? 0.74: 0.26;
-            } else if (this.pred.s <= this._utils.alterNumberByPercentage(this.health.os, 45*alterMultiplier)) {
-                score = this.side == "SHORT" ? 0.73: 0.27;
-            } else if (this.pred.s <= this._utils.alterNumberByPercentage(this.health.os, 43*alterMultiplier)) {
-                score = this.side == "SHORT" ? 0.72: 0.28;
-            } else if (this.pred.s <= this._utils.alterNumberByPercentage(this.health.os, 41*alterMultiplier)) {
-                score = this.side == "SHORT" ? 0.71: 0.29;
-            } else if (this.pred.s <= this._utils.alterNumberByPercentage(this.health.os, 39*alterMultiplier)) {
-                score = this.side == "SHORT" ? 0.70: 0.30;
-            } else if (this.pred.s <= this._utils.alterNumberByPercentage(this.health.os, 37*alterMultiplier)) {
-                score = this.side == "SHORT" ? 0.69: 0.31;
-            } else if (this.pred.s <= this._utils.alterNumberByPercentage(this.health.os, 35*alterMultiplier)) {
-                score = this.side == "SHORT" ? 0.68: 0.32;
-            } else if (this.pred.s <= this._utils.alterNumberByPercentage(this.health.os, 33*alterMultiplier)) {
-                score = this.side == "SHORT" ? 0.67: 0.33;
-            } else if (this.pred.s <= this._utils.alterNumberByPercentage(this.health.os, 31*alterMultiplier)) {
-                score = this.side == "SHORT" ? 0.66: 0.34;
-            } else if (this.pred.s <= this._utils.alterNumberByPercentage(this.health.os, 29*alterMultiplier)) {
-                score = this.side == "SHORT" ? 0.65: 0.35;
-            } else if (this.pred.s <= this._utils.alterNumberByPercentage(this.health.os, 27*alterMultiplier)) {
-                score = this.side == "SHORT" ? 0.64: 0.36;
-            } else if (this.pred.s <= this._utils.alterNumberByPercentage(this.health.os, 25*alterMultiplier)) {
-                score = this.side == "SHORT" ? 0.63: 0.37;
-            } else if (this.pred.s <= this._utils.alterNumberByPercentage(this.health.os, 23*alterMultiplier)) {
-                score = this.side == "SHORT" ? 0.62: 0.38;
-            } else if (this.pred.s <= this._utils.alterNumberByPercentage(this.health.os, 21*alterMultiplier)) {
-                score = this.side == "SHORT" ? 0.61: 0.39;
-            } else if (this.pred.s <= this._utils.alterNumberByPercentage(this.health.os, 19*alterMultiplier)) {
-                score = this.side == "SHORT" ? 0.60: 0.40;
-            } else if (this.pred.s <= this._utils.alterNumberByPercentage(this.health.os, 17*alterMultiplier)) {
-                score = this.side == "SHORT" ? 0.59: 0.41;
-            } else if (this.pred.s <= this._utils.alterNumberByPercentage(this.health.os, 15*alterMultiplier)) {
-                score = this.side == "SHORT" ? 0.58: 0.42;
-            } else if (this.pred.s <= this._utils.alterNumberByPercentage(this.health.os, 13*alterMultiplier)) {
-                score = this.side == "SHORT" ? 0.57: 0.43;
-            } else if (this.pred.s <= this._utils.alterNumberByPercentage(this.health.os, 11*alterMultiplier)) {
-                score = this.side == "SHORT" ? 0.56: 0.44;
-            } else if (this.pred.s <= this._utils.alterNumberByPercentage(this.health.os, 9*alterMultiplier)) {
-                score = this.side == "SHORT" ? 0.55: 0.45;
-            } else if (this.pred.s <= this._utils.alterNumberByPercentage(this.health.os, 7*alterMultiplier)) {
-                score = this.side == "SHORT" ? 0.54: 0.46;
-            } else if (this.pred.s <= this._utils.alterNumberByPercentage(this.health.os, 5*alterMultiplier)) {
-                score = this.side == "SHORT" ? 0.53: 0.47;
-            } else if (this.pred.s <= this._utils.alterNumberByPercentage(this.health.os, 3*alterMultiplier)) {
-                score = this.side == "SHORT" ? 0.52: 0.48;
-            } else if (this.pred.s <= this._utils.alterNumberByPercentage(this.health.os, 1*alterMultiplier)) {
-                score = this.side == "SHORT" ? 0.51: 0.49;
-            }
+            if        (absDiff >= 1.05)   { score = this.side == "SHORT" ? 1: 0 } 
+            else if   (absDiff >= 1.01)   { score = this.side == "SHORT" ? 0.99: 0.01 }
+            else if   (absDiff >= 0.99)   { score = this.side == "SHORT" ? 0.98: 0.02 }
+            else if   (absDiff >= 0.96)   { score = this.side == "SHORT" ? 0.97: 0.03 }
+            else if   (absDiff >= 0.93)   { score = this.side == "SHORT" ? 0.96: 0.04 }
+            else if   (absDiff >= 0.90)   { score = this.side == "SHORT" ? 0.95: 0.05 }
+            else if   (absDiff >= 0.87)   { score = this.side == "SHORT" ? 0.94: 0.06 }
+            else if   (absDiff >= 0.84)   { score = this.side == "SHORT" ? 0.93: 0.07 }
+            else if   (absDiff >= 0.81)   { score = this.side == "SHORT" ? 0.92: 0.08 }
+            else if   (absDiff >= 0.78)   { score = this.side == "SHORT" ? 0.91: 0.09 }
+            else if   (absDiff >= 0.75)   { score = this.side == "SHORT" ? 0.90: 0.10 }
+            else if   (absDiff >= 0.72)   { score = this.side == "SHORT" ? 0.89: 0.11 }
+            else if   (absDiff >= 0.69)   { score = this.side == "SHORT" ? 0.88: 0.12 }
+            else if   (absDiff >= 0.66)   { score = this.side == "SHORT" ? 0.87: 0.13 }
+            else if   (absDiff >= 0.63)   { score = this.side == "SHORT" ? 0.86: 0.14 }
+            else if   (absDiff >= 0.60)   { score = this.side == "SHORT" ? 0.85: 0.15 }
+            else if   (absDiff >= 0.57)   { score = this.side == "SHORT" ? 0.84: 0.16 }
+            else if   (absDiff >= 0.54)   { score = this.side == "SHORT" ? 0.83: 0.17 }
+            else if   (absDiff >= 0.51)   { score = this.side == "SHORT" ? 0.82: 0.18 }
+            else if   (absDiff >= 0.48)   { score = this.side == "SHORT" ? 0.81: 0.19 }
+            else if   (absDiff >= 0.45)   { score = this.side == "SHORT" ? 0.80: 0.20 }
+            else if   (absDiff >= 0.42)   { score = this.side == "SHORT" ? 0.79: 0.21 }
+            else if   (absDiff >= 0.39)   { score = this.side == "SHORT" ? 0.78: 0.22 }
+            else if   (absDiff >= 0.36)   { score = this.side == "SHORT" ? 0.77: 0.23 }
+            else if   (absDiff >= 0.33)   { score = this.side == "SHORT" ? 0.76: 0.24 }
+            else if   (absDiff >= 0.30)   { score = this.side == "SHORT" ? 0.75: 0.25 }
+            else if   (absDiff >= 0.28)   { score = this.side == "SHORT" ? 0.74: 0.26 }
+            else if   (absDiff >= 0.26)   { score = this.side == "SHORT" ? 0.73: 0.27 }
+            else if   (absDiff >= 0.24)   { score = this.side == "SHORT" ? 0.72: 0.28 }
+            else if   (absDiff >= 0.22)   { score = this.side == "SHORT" ? 0.71: 0.29 }
+            else if   (absDiff >= 0.20)   { score = this.side == "SHORT" ? 0.70: 0.30 }
+            else if   (absDiff >= 0.19)   { score = this.side == "SHORT" ? 0.69: 0.31 }
+            else if   (absDiff >= 0.18)   { score = this.side == "SHORT" ? 0.68: 0.32 }
+            else if   (absDiff >= 0.17)   { score = this.side == "SHORT" ? 0.67: 0.33 }
+            else if   (absDiff >= 0.16)   { score = this.side == "SHORT" ? 0.66: 0.34 }
+            else if   (absDiff >= 0.15)   { score = this.side == "SHORT" ? 0.65: 0.35 }
+            else if   (absDiff >= 0.14)   { score = this.side == "SHORT" ? 0.64: 0.36 }
+            else if   (absDiff >= 0.13)   { score = this.side == "SHORT" ? 0.63: 0.37 }
+            else if   (absDiff >= 0.12)   { score = this.side == "SHORT" ? 0.62: 0.38 }
+            else if   (absDiff >= 0.11)   { score = this.side == "SHORT" ? 0.61: 0.39 }
+            else if   (absDiff >= 0.10)   { score = this.side == "SHORT" ? 0.60: 0.40 }
+            else if   (absDiff >= 0.09)   { score = this.side == "SHORT" ? 0.59: 0.41 }
+            else if   (absDiff >= 0.08)   { score = this.side == "SHORT" ? 0.58: 0.42 }
+            else if   (absDiff >= 0.07)   { score = this.side == "SHORT" ? 0.57: 0.43 }
+            else if   (absDiff >= 0.06)   { score = this.side == "SHORT" ? 0.56: 0.44 }
+            else if   (absDiff >= 0.05)   { score = this.side == "SHORT" ? 0.55: 0.45 }
+            else if   (absDiff >= 0.04)   { score = this.side == "SHORT" ? 0.54: 0.46 }
+            else if   (absDiff >= 0.03)   { score = this.side == "SHORT" ? 0.53: 0.47 }
+            else if   (absDiff >= 0.02)   { score = this.side == "SHORT" ? 0.52: 0.48 }
+            else if   (absDiff >= 0.01)   { score = this.side == "SHORT" ? 0.51: 0.49 }
         }
 
         // Finally, return the score
@@ -347,6 +256,8 @@ export class PositionHpCalculatorDialogComponent implements OnInit, IPositionHpC
 			percentage: score*100
 		};
     }
+
+
 
 
 	
@@ -827,6 +738,38 @@ export class PositionHpCalculatorDialogComponent implements OnInit, IPositionHpC
 
 
 	/* Misc Helpers */
+
+
+
+
+    /**
+     * Calculates the absolute trend sum difference based on an initial and a current trend sum.
+     * @param initialSum 
+     * @param currentSum 
+     * @returns number
+     */
+    public calculateAbsoluteTrendSumDifference(initialSum: number, currentSum: number): number {
+        // Handle an increased trend sum
+        if (currentSum > initialSum) {
+            return Math.abs(currentSum - initialSum);
+        }
+
+        // Handle a decreased trend sum
+        else if (initialSum > currentSum) {
+            return Math.abs(initialSum - currentSum);
+        }
+
+        // Otherwise, there is no difference
+        else {
+            return 0;
+        }
+    }
+
+
+
+
+
+
 
 
 
