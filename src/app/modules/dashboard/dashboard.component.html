@@ -462,8 +462,7 @@
                                     <div fxLayout="row" fxLayoutAlign="center center"
                                         class="chart-card-heading badged-header full-width">
                                         <!-- Signal -->
-                                        <div fxLayout="row"
-                                            matTooltip="Pred: {{predLastUpdate}} | TA: {{taLastUpdate}}">
+                                        <div fxLayout="row">
                                             <mat-icon>podcasts</mat-icon>&nbsp;
                                             <h4 *ngIf="!activePrediction">Neutral</h4>
                                             <h4 *ngIf="activePrediction">{{_prediction.resultNames[signal]}}</h4>
@@ -471,25 +470,15 @@
 
                                         <span fxFlex></span>
 
-                                        <!-- Desktop Technnicals -->
-                                        <div *ngIf="layout == 'desktop'" fxLayout="row" fxLayoutAlign="center center">
-                                            <div class="clickable" role="button" matRipple 
-                                                *ngFor="let taInterval of taIntervals"
-                                                (click)="displayTechnicalAnalysisDialog(taInterval)"
-                                                [ngClass]="{
-                                                    'square-badge-success': state.technical_analysis[taInterval].s.a > 0,
-                                                    'square-badge-error': state.technical_analysis[taInterval].s.a < 0,
-                                                    'square-badge-neutral': state.technical_analysis[taInterval].s.a == 0,
-                                                    'state': state.technical_analysis[taInterval].s.a == 1 || state.technical_analysis[taInterval].s.a == -1,
-                                                    'stateless': state.technical_analysis[taInterval].s.a == 0
-                                                }" [matTooltip]="_ms.taStates[state.technical_analysis[taInterval].s.a]">
-                                                {{taInterval}}
-                                            </div>
+                                        <!-- KeyZones -->
+                                        <div class="state-badge square-badge-neutral stateless clickable" role="button" matRipple
+                                            (click)="displayKeyZonesDialog()">
+                                            KeyZones
                                         </div>
 
                                         <!-- Trend -->
                                         <div *ngIf="activePrediction" 
-                                            matTooltip="Trend Sum: {{activeSum | number: '1.0-6'}}" 
+                                            matTooltip="Updated: {{predLastUpdate}}" 
                                             [matMenuTriggerFor]="predictionMenu"
                                             class="state-badge clickable" role="button" matRipple 
                                             [ngClass]="{
@@ -500,7 +489,7 @@
                                                 'stateless': activePredictionStateIntensity == 0
                                             }">
                                             <mat-icon [svgIcon]="_ms.icons[activePredictionStateIntensity]"></mat-icon>
-                                            {{activeSum | number: '1.0-2'}} 
+                                            {{activeSum | number: '1.0-6'}} 
                                             <span>
                                                 | {{activePredictionState! > 0 ? '+': ''}}{{activePredictionState}}
                                             </span>
@@ -524,22 +513,6 @@
                                                 <mat-icon>question_mark</mat-icon> More information
                                             </button>
                                         </mat-menu>
-                                    </div>
-
-                                    <!-- Mobile Technicals-->
-                                    <div *ngIf="layout == 'mobile'" fxLayout="row" fxLayoutAlign="center center" class="badged-header margin-top">
-                                        <div class="clickable" role="button" matRipple 
-                                            *ngFor="let taInterval of taIntervals"
-                                            (click)="displayTechnicalAnalysisDialog(taInterval)"
-                                            [ngClass]="{
-                                                'square-badge-success': state.technical_analysis[taInterval].s.a > 0,
-                                                'square-badge-error': state.technical_analysis[taInterval].s.a < 0,
-                                                'square-badge-neutral': state.technical_analysis[taInterval].s.a == 0,
-                                                'state': state.technical_analysis[taInterval].s.a == 1 || state.technical_analysis[taInterval].s.a == -1,
-                                                'stateless': state.technical_analysis[taInterval].s.a == 0
-                                            }" [matTooltip]="_ms.taStates[state.technical_analysis[taInterval].s.a]">
-                                            {{taInterval}}
-                                        </div>
                                     </div>
                 
                                     <!-- Sum Chart -->
@@ -604,10 +577,7 @@
                                     <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" class="full-width">
                                         <!-- Volume -->
                                         <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
-                                            <div [ngClass]="{
-                                                    'state': state.volume.state == 1 || state.volume.state == -1,
-                                                    'stateless': state.volume.state == 0
-                                                }">
+                                            <div>
                                                 <!-- Heading -->
                                                 <div fxLayout="row" fxLayoutAlign="center center" class="chart-card-heading">
                                                     <h4 matTooltip="Updated: {{state.volume.ts | date: 'short'}}">Volume</h4>
@@ -618,7 +588,9 @@
                                                         [ngClass]="{
                                                             'square-badge-success': state.volume.state > 0,
                                                             'square-badge-error': state.volume.state < 0,
-                                                            'square-badge-neutral': state.volume.state == 0
+                                                            'square-badge-neutral': state.volume.state == 0,
+                                                            'state': state.volume.state == 1 || state.volume.state == -1,
+                                                            'stateless': state.volume.state == 0
                                                         }">
                                                         <mat-icon [svgIcon]="_ms.icons[state.volume.state]"></mat-icon>
                                                         {{state.volume.state_value > 0 ? '+': ''}}{{state.volume.state_value | number: '1.0-0'}}%
@@ -633,7 +605,6 @@
                                                         [dataLabels]="volumeChart.dataLabels"
                                                         [xaxis]="volumeChart.xaxis"
                                                         [yaxis]="volumeChart.yaxis"
-                                                        [stroke]="volumeChart.stroke"
                                                         [grid]="{show: false}"
                                                     ></apx-chart>
                                                 </div>
@@ -645,40 +616,43 @@
 
 
 
-                                        <!-- Network Fee -->
+                                        <!-- Technicals -->
                                         <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
-                                            <div [ngClass]="{
-                                                    'state': state.network_fee.state == 1 || state.network_fee.state == -1,
-                                                    'stateless': state.network_fee.state == 0
-                                                }">
+                                            <div>
                                                 <!-- Heading -->
                                                 <div fxLayout="row" fxLayoutAlign="center center" class="chart-card-heading">
-                                                    <h4 matTooltip="Updated: {{state.network_fee.ts | date: 'short'}}">Network Fee</h4>
+                                                    <h4 matTooltip="Updated: {{state.technical_analysis.ts | date: 'short'}}">Technicals</h4>
                                                     <span fxFlex></span>
                                                     <div matTooltip="More information"
-                                                        (click)="networkFeeTooltip()"
-                                                        class="state-badge clickable" role="button" matRipple 
+                                                        (click)="technicalsTooltip()"
+                                                        class="state-badge clickable" role="button" matRipple
                                                         [ngClass]="{
-                                                            'square-badge-success': state.network_fee.state > 0,
-                                                            'square-badge-error': state.network_fee.state < 0,
-                                                            'square-badge-neutral': state.network_fee.state == 0
+                                                            'square-badge-success': state.technical_analysis.r > 0,
+                                                            'square-badge-error': state.technical_analysis.r < 0,
+                                                            'square-badge-neutral': state.technical_analysis.r == 0,
+                                                            'state': state.technical_analysis.r == 1 || state.technical_analysis.r == -1,
+                                                            'stateless': state.technical_analysis.r == 0
                                                         }">
-                                                        <mat-icon [svgIcon]="_ms.icons[state.network_fee.state]"></mat-icon>
-                                                        {{state.network_fee.state_value > 0 ? '+': ''}}{{state.network_fee.state_value | number: '1.0-0'}}%
+                                                        {{_ms.taStates[state.technical_analysis.r]}}
                                                     </div>
                                                 </div>
                         
-                                                <!-- Chart -->
-                                                <div *ngIf="networkFeeChart">
-                                                    <apx-chart
-                                                        [series]="networkFeeChart.series"
-                                                        [chart]="networkFeeChart.chart"
-                                                        [dataLabels]="networkFeeChart.dataLabels"
-                                                        [xaxis]="networkFeeChart.xaxis"
-                                                        [yaxis]="networkFeeChart.yaxis"
-                                                        [stroke]="networkFeeChart.stroke"
-                                                        [grid]="{show: false}"
-                                                    ></apx-chart>
+                                                <!-- Grid -->
+                                                <div class="padding margin-top">
+                                                    <mat-grid-list [cols]="3" rowHeight="44px" gutterSize="1px">
+                                                        <mat-grid-tile *ngFor="let taInterval of taIntervals" 
+                                                                        class="clickable" role="button" matRipple
+                                                                        (click)="displayTechnicalAnalysisDialog(taInterval)"
+                                                                        [ngClass]="{
+                                                                            'buy-action-container': state.technical_analysis[taInterval].s.a > 0,
+                                                                            'sell-action-container': state.technical_analysis[taInterval].s.a < 0,
+                                                                            'neutral-action-container': state.technical_analysis[taInterval].s.a == 0,
+                                                                            'state': state.technical_analysis[taInterval].s.a == 1 || state.technical_analysis[taInterval].s.a == -1,
+                                                                            'stateless': state.technical_analysis[taInterval].s.a == 0
+                                                                        }"
+                                                                        [matTooltip]="_ms.taStates[state.technical_analysis[taInterval].s.a]" 
+                                                                        matTooltipPosition="above"><p>{{taInterval}}</p></mat-grid-tile>
+                                                    </mat-grid-list>
                                                 </div>
                                             </div>
                                         </div>
@@ -696,7 +670,8 @@
                                                 <div fxLayout="row" fxLayoutAlign="center center" class="chart-card-heading">
                                                     <h4 matTooltip="Updated: {{state.open_interest.ts | date: 'short'}}">Open Interest</h4>
                                                     <span fxFlex></span>
-                                                    <div (click)="openInterestTooltip()"
+                                                    <div matTooltip="More information"
+                                                        (click)="openInterestTooltip()"
                                                         class="state-badge clickable" role="button" matRipple
                                                         [ngClass]="{
                                                             'square-badge-success': state.open_interest.state > 0,

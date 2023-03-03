@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from "../api";
-import { IMarketStateService, ITAIntervalID, ITAIntervalState } from './interfaces';
+import { IKeyZoneFullState, IMarketStateService, ITAIntervalID, ITAIntervalState } from './interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -59,5 +59,18 @@ export class MarketStateService implements IMarketStateService {
 	 */
 	public getTAIntervalState(intervalID: ITAIntervalID): Promise<ITAIntervalState> { 
 		return this._api.request("get","marketState/getTAIntervalState", {intervalID: intervalID}, true) 
+	}
+
+
+
+		
+
+
+	/**
+	 * Retrieves an up-to-date app bulk from the server.
+	 * @returns Promise<IKeyZoneFullState>
+	 */
+	public calculateKeyZoneState(): Promise<IKeyZoneFullState> { 
+		return this._api.request("get","marketState/calculateKeyZoneState", {}, true) 
 	}
 }

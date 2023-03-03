@@ -131,6 +131,8 @@ import {
 
 // Core Components
 import { AppComponent } from "./app.component";
+import { KeyzonesDialogComponent } from './modules/dashboard/keyzones-dialog/keyzones-dialog.component';
+import { KeyzoneReversalsDialogComponent } from './modules/dashboard/keyzones-dialog/keyzone-reversals-dialog/keyzone-reversals-dialog.component';
 
 
 
@@ -154,6 +156,8 @@ import { AppComponent } from "./app.component";
 		PositionHealthWeightsFormDialogComponent,
 		PredictionStateIntensityFormDialogComponent,
 		PositionHealthDetailsDialogComponent,
+  KeyzonesDialogComponent,
+  KeyzoneReversalsDialogComponent,
 	],
 	imports: [
 		// Core

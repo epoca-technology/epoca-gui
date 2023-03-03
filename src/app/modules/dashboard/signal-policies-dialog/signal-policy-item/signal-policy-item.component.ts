@@ -45,7 +45,6 @@ export class SignalPolicyItemComponent implements OnInit, ISignalPolicyItemCompo
     @Output() valueChanged = new EventEmitter<IPolicyChangePayload>();
 
 	// Helpers
-	public isTA?: boolean;
 	public readonly sumText: any = {
 		"-1": "Trend Sum < 0",
 		"0": "Any Trend Sum",
@@ -67,7 +66,6 @@ export class SignalPolicyItemComponent implements OnInit, ISignalPolicyItemCompo
 	) { }
 
 	ngOnInit(): void {
-		this.isTA = this.id == "ta_15m" || this.id == "ta_30m" || this.id == "ta_1h" || this.id == "ta_2h" || this.id == "ta_4h" || this.id == "ta_1d";
 	}
 
 

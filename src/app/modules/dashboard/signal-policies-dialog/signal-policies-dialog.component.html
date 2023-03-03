@@ -157,64 +157,15 @@
                         [value2]="policies.issuance.technicals.trend_intensity"
                         (valueChanged)="valueChanged($event)"></app-signal-policy-item>
 
-                    <!-- Technicals 15m -->
+                    <!-- Technicals -->
                     <app-signal-policy-item 
                         class="policy-item" 
                         [side]="side" 
                         [category]="'issuance'" 
                         [policyID]="'technicals'"
-                        [id]="'ta_15m'" 
-                        [value]="policies.issuance.technicals.ta_15m"
-                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
-
-                    <!-- Technicals 30m -->
-                    <app-signal-policy-item 
-                        class="policy-item" 
-                        [side]="side" 
-                        [category]="'issuance'" 
-                        [policyID]="'technicals'"
-                        [id]="'ta_30m'" 
-                        [value]="policies.issuance.technicals.ta_30m"
-                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
-
-                    <!-- Technicals 1h -->
-                    <app-signal-policy-item 
-                        class="policy-item" 
-                        [side]="side" 
-                        [category]="'issuance'" 
-                        [policyID]="'technicals'"
-                        [id]="'ta_1h'" 
-                        [value]="policies.issuance.technicals.ta_1h"
-                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
-
-                    <!-- Technicals 2h -->
-                    <app-signal-policy-item 
-                        class="policy-item" 
-                        [side]="side" 
-                        [category]="'issuance'" 
-                        [policyID]="'technicals'"
-                        [id]="'ta_2h'" 
-                        [value]="policies.issuance.technicals.ta_2h"
-                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
-
-                    <!-- Technicals 4h -->
-                    <app-signal-policy-item 
-                        class="policy-item" 
-                        [side]="side" 
-                        [category]="'issuance'" 
-                        [policyID]="'technicals'"
-                        [id]="'ta_4h'" 
-                        [value]="policies.issuance.technicals.ta_4h"
-                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
-
-                    <!-- Technicals 1d -->
-                    <app-signal-policy-item 
-                        class="policy-item" 
-                        [side]="side" 
-                        [category]="'issuance'" 
-                        [policyID]="'technicals'"
-                        [id]="'ta_1d'" 
-                        [value]="policies.issuance.technicals.ta_1d"
+                        [id]="'technicals'" 
+                        [disableable]="false"
+                        [value]="policies.issuance.technicals.technicals"
                         (valueChanged)="valueChanged($event)"></app-signal-policy-item>
                 </div>
             </div>
@@ -358,64 +309,15 @@
                         [disableable]="false"
                         (valueChanged)="valueChanged($event)"></app-signal-policy-item>
 
-                    <!-- Technicals 15m -->
+                    <!-- Technicals -->
                     <app-signal-policy-item 
                         class="policy-item" 
                         [side]="side" 
                         [category]="'issuance'" 
                         [policyID]="'volume_technicals'"
-                        [id]="'ta_15m'" 
-                        [value]="policies.issuance.volume_technicals.ta_15m"
-                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
-
-                    <!-- Technicals 30m -->
-                    <app-signal-policy-item 
-                        class="policy-item" 
-                        [side]="side" 
-                        [category]="'issuance'" 
-                        [policyID]="'volume_technicals'"
-                        [id]="'ta_30m'" 
-                        [value]="policies.issuance.volume_technicals.ta_30m"
-                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
-
-                    <!-- Technicals 1h -->
-                    <app-signal-policy-item 
-                        class="policy-item" 
-                        [side]="side" 
-                        [category]="'issuance'" 
-                        [policyID]="'volume_technicals'"
-                        [id]="'ta_1h'" 
-                        [value]="policies.issuance.volume_technicals.ta_1h"
-                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
-
-                    <!-- Technicals 2h -->
-                    <app-signal-policy-item 
-                        class="policy-item" 
-                        [side]="side" 
-                        [category]="'issuance'" 
-                        [policyID]="'volume_technicals'"
-                        [id]="'ta_2h'" 
-                        [value]="policies.issuance.volume_technicals.ta_2h"
-                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
-
-                    <!-- Technicals 4h -->
-                    <app-signal-policy-item 
-                        class="policy-item" 
-                        [side]="side" 
-                        [category]="'issuance'" 
-                        [policyID]="'volume_technicals'"
-                        [id]="'ta_4h'" 
-                        [value]="policies.issuance.volume_technicals.ta_4h"
-                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
-
-                    <!-- Technicals 1d -->
-                    <app-signal-policy-item 
-                        class="policy-item" 
-                        [side]="side" 
-                        [category]="'issuance'" 
-                        [policyID]="'volume_technicals'"
-                        [id]="'ta_1d'" 
-                        [value]="policies.issuance.volume_technicals.ta_1d"
+                        [id]="'technicals'" 
+                        [disableable]="false"
+                        [value]="policies.issuance.volume_technicals.technicals"
                         (valueChanged)="valueChanged($event)"></app-signal-policy-item>
                 </div>
             </div>
@@ -569,64 +471,15 @@
                         [value2]="policies.issuance.technicals_open_interest.trend_intensity"
                         (valueChanged)="valueChanged($event)"></app-signal-policy-item>
 
-                    <!-- Technicals 15m -->
+                    <!-- Technicals -->
                     <app-signal-policy-item 
                         class="policy-item" 
                         [side]="side" 
                         [category]="'issuance'" 
                         [policyID]="'technicals_open_interest'"
-                        [id]="'ta_15m'" 
-                        [value]="policies.issuance.technicals_open_interest.ta_15m"
-                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
-
-                    <!-- Technicals 30m -->
-                    <app-signal-policy-item 
-                        class="policy-item" 
-                        [side]="side" 
-                        [category]="'issuance'" 
-                        [policyID]="'technicals_open_interest'"
-                        [id]="'ta_30m'" 
-                        [value]="policies.issuance.technicals_open_interest.ta_30m"
-                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
-
-                    <!-- Technicals 1h -->
-                    <app-signal-policy-item 
-                        class="policy-item" 
-                        [side]="side" 
-                        [category]="'issuance'" 
-                        [policyID]="'technicals_open_interest'"
-                        [id]="'ta_1h'" 
-                        [value]="policies.issuance.technicals_open_interest.ta_1h"
-                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
-
-                    <!-- Technicals 2h -->
-                    <app-signal-policy-item 
-                        class="policy-item" 
-                        [side]="side" 
-                        [category]="'issuance'" 
-                        [policyID]="'technicals_open_interest'"
-                        [id]="'ta_2h'" 
-                        [value]="policies.issuance.technicals_open_interest.ta_2h"
-                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
-
-                    <!-- Technicals 4h -->
-                    <app-signal-policy-item 
-                        class="policy-item" 
-                        [side]="side" 
-                        [category]="'issuance'" 
-                        [policyID]="'technicals_open_interest'"
-                        [id]="'ta_4h'" 
-                        [value]="policies.issuance.technicals_open_interest.ta_4h"
-                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
-
-                    <!-- Technicals 1d -->
-                    <app-signal-policy-item 
-                        class="policy-item" 
-                        [side]="side" 
-                        [category]="'issuance'" 
-                        [policyID]="'technicals_open_interest'"
-                        [id]="'ta_1d'" 
-                        [value]="policies.issuance.technicals_open_interest.ta_1d"
+                        [id]="'technicals'" 
+                        [disableable]="false"
+                        [value]="policies.issuance.technicals_open_interest.technicals"
                         (valueChanged)="valueChanged($event)"></app-signal-policy-item>
 
                     <!-- Open Interest -->
@@ -675,64 +528,15 @@
                         [value2]="policies.issuance.technicals_long_short_ratio.trend_intensity"
                         (valueChanged)="valueChanged($event)"></app-signal-policy-item>
 
-                    <!-- Technicals 15m -->
+                    <!-- Technicals -->
                     <app-signal-policy-item 
                         class="policy-item" 
                         [side]="side" 
                         [category]="'issuance'" 
                         [policyID]="'technicals_long_short_ratio'"
-                        [id]="'ta_15m'" 
-                        [value]="policies.issuance.technicals_long_short_ratio.ta_15m"
-                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
-                        
-                    <!-- Technicals 30m -->
-                    <app-signal-policy-item 
-                        class="policy-item" 
-                        [side]="side" 
-                        [category]="'issuance'" 
-                        [policyID]="'technicals_long_short_ratio'"
-                        [id]="'ta_30m'" 
-                        [value]="policies.issuance.technicals_long_short_ratio.ta_30m"
-                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
-
-                    <!-- Technicals 1h -->
-                    <app-signal-policy-item 
-                        class="policy-item" 
-                        [side]="side" 
-                        [category]="'issuance'" 
-                        [policyID]="'technicals_long_short_ratio'"
-                        [id]="'ta_1h'" 
-                        [value]="policies.issuance.technicals_long_short_ratio.ta_1h"
-                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
-
-                    <!-- Technicals 2h -->
-                    <app-signal-policy-item 
-                        class="policy-item" 
-                        [side]="side" 
-                        [category]="'issuance'" 
-                        [policyID]="'technicals_long_short_ratio'"
-                        [id]="'ta_2h'" 
-                        [value]="policies.issuance.technicals_long_short_ratio.ta_2h"
-                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
-
-                    <!-- Technicals 4h -->
-                    <app-signal-policy-item 
-                        class="policy-item" 
-                        [side]="side" 
-                        [category]="'issuance'" 
-                        [policyID]="'technicals_long_short_ratio'"
-                        [id]="'ta_4h'" 
-                        [value]="policies.issuance.technicals_long_short_ratio.ta_4h"
-                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
-
-                    <!-- Technicals 1d -->
-                    <app-signal-policy-item 
-                        class="policy-item" 
-                        [side]="side" 
-                        [category]="'issuance'" 
-                        [policyID]="'technicals_long_short_ratio'"
-                        [id]="'ta_1d'" 
-                        [value]="policies.issuance.technicals_long_short_ratio.ta_1d"
+                        [id]="'technicals'" 
+                        [disableable]="false"
+                        [value]="policies.issuance.technicals_long_short_ratio.technicals"
                         (valueChanged)="valueChanged($event)"></app-signal-policy-item>
 
                     <!-- Long/Short Ratio -->
@@ -937,64 +741,16 @@
                         [(ngModel)]="policies.cancellation.technicals.enabled"></mat-slide-toggle>
                 </div>
                 <div class="policy-items">
-                    <!-- Technicals 15m -->
+                    <!-- Technicals -->
                     <app-signal-policy-item 
                         class="policy-item" 
                         [side]="side" 
                         [category]="'cancellation'" 
                         [policyID]="'technicals'"
-                        [id]="'ta_15m'" 
-                        [value]="policies.cancellation.technicals.ta_15m"
-                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
-
-                    <!-- Technicals 30m -->
-                    <app-signal-policy-item 
-                        class="policy-item" 
-                        [side]="side" 
-                        [category]="'cancellation'" 
-                        [policyID]="'technicals'"
-                        [id]="'ta_30m'" 
-                        [value]="policies.cancellation.technicals.ta_30m"
-                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
-
-                    <!-- Technicals 1h -->
-                    <app-signal-policy-item 
-                        class="policy-item" 
-                        [side]="side" 
-                        [category]="'cancellation'" 
-                        [policyID]="'technicals'"
-                        [id]="'ta_1h'" 
-                        [value]="policies.cancellation.technicals.ta_1h"
-                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
-
-                    <!-- Technicals 2h -->
-                    <app-signal-policy-item 
-                        class="policy-item" 
-                        [side]="side" 
-                        [category]="'cancellation'" 
-                        [policyID]="'technicals'"
-                        [id]="'ta_2h'" 
-                        [value]="policies.cancellation.technicals.ta_2h"
-                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
-
-                    <!-- Technicals 4h -->
-                    <app-signal-policy-item 
-                        class="policy-item" 
-                        [side]="side" 
-                        [category]="'cancellation'" 
-                        [policyID]="'technicals'"
-                        [id]="'ta_4h'" 
-                        [value]="policies.cancellation.technicals.ta_4h"
-                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
-
-                    <!-- Technicals 1d -->
-                    <app-signal-policy-item 
-                        class="policy-item" 
-                        [side]="side" 
-                        [category]="'cancellation'" 
-                        [policyID]="'technicals'"
-                        [id]="'ta_1d'" 
-                        [value]="policies.cancellation.technicals.ta_1d"
+                        [id]="'technicals'" 
+                        [disableable]="false"
+                        [immutable]="true"
+                        [value]="policies.cancellation.technicals.technicals"
                         (valueChanged)="valueChanged($event)"></app-signal-policy-item>
                 </div>
             </div>
@@ -1023,64 +779,15 @@
                         [disableable]="false"
                         (valueChanged)="valueChanged($event)"></app-signal-policy-item>
 
-                    <!-- Technicals 15m -->
+                    <!-- Technicals -->
                     <app-signal-policy-item 
                         class="policy-item" 
                         [side]="side" 
                         [category]="'cancellation'" 
                         [policyID]="'volume_technicals'"
-                        [id]="'ta_15m'" 
-                        [value]="policies.cancellation.volume_technicals.ta_15m"
-                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
-
-                    <!-- Technicals 30m -->
-                    <app-signal-policy-item 
-                        class="policy-item" 
-                        [side]="side" 
-                        [category]="'cancellation'" 
-                        [policyID]="'volume_technicals'"
-                        [id]="'ta_30m'" 
-                        [value]="policies.cancellation.volume_technicals.ta_30m"
-                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
-
-                    <!-- Technicals 1h -->
-                    <app-signal-policy-item 
-                        class="policy-item" 
-                        [side]="side" 
-                        [category]="'cancellation'" 
-                        [policyID]="'volume_technicals'"
-                        [id]="'ta_1h'" 
-                        [value]="policies.cancellation.volume_technicals.ta_1h"
-                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
-
-                    <!-- Technicals 2h -->
-                    <app-signal-policy-item 
-                        class="policy-item" 
-                        [side]="side" 
-                        [category]="'cancellation'" 
-                        [policyID]="'volume_technicals'"
-                        [id]="'ta_2h'" 
-                        [value]="policies.cancellation.volume_technicals.ta_2h"
-                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
-
-                    <!-- Technicals 4h -->
-                    <app-signal-policy-item 
-                        class="policy-item" 
-                        [side]="side" 
-                        [category]="'cancellation'" 
-                        [policyID]="'volume_technicals'"
-                        [id]="'ta_4h'" 
-                        [value]="policies.cancellation.volume_technicals.ta_4h"
-                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
-
-                    <!-- Technicals 1d -->
-                    <app-signal-policy-item 
-                        class="policy-item" 
-                        [side]="side" 
-                        [category]="'cancellation'" 
-                        [policyID]="'volume_technicals'"
-                        [id]="'ta_1d'" 
-                        [value]="policies.cancellation.volume_technicals.ta_1d"
+                        [id]="'technicals'" 
+                        [disableable]="false"
+                        [value]="policies.cancellation.volume_technicals.technicals"
                         (valueChanged)="valueChanged($event)"></app-signal-policy-item>
                 </div>
             </div>
@@ -1171,64 +878,15 @@
                         [(ngModel)]="policies.cancellation.technicals_open_interest.enabled"></mat-slide-toggle>
                 </div>
                 <div class="policy-items">
-                    <!-- Technicals 15m -->
+                    <!-- Technicals -->
                     <app-signal-policy-item 
                         class="policy-item" 
                         [side]="side" 
                         [category]="'cancellation'" 
                         [policyID]="'technicals_open_interest'"
-                        [id]="'ta_15m'" 
-                        [value]="policies.cancellation.technicals_open_interest.ta_15m"
-                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
-
-                    <!-- Technicals 30m -->
-                    <app-signal-policy-item 
-                        class="policy-item" 
-                        [side]="side" 
-                        [category]="'cancellation'" 
-                        [policyID]="'technicals_open_interest'"
-                        [id]="'ta_30m'" 
-                        [value]="policies.cancellation.technicals_open_interest.ta_30m"
-                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
-
-                    <!-- Technicals 1h -->
-                    <app-signal-policy-item 
-                        class="policy-item" 
-                        [side]="side" 
-                        [category]="'cancellation'" 
-                        [policyID]="'technicals_open_interest'"
-                        [id]="'ta_1h'" 
-                        [value]="policies.cancellation.technicals_open_interest.ta_1h"
-                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
-
-                    <!-- Technicals 2h -->
-                    <app-signal-policy-item 
-                        class="policy-item" 
-                        [side]="side" 
-                        [category]="'cancellation'" 
-                        [policyID]="'technicals_open_interest'"
-                        [id]="'ta_2h'" 
-                        [value]="policies.cancellation.technicals_open_interest.ta_2h"
-                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
-
-                    <!-- Technicals 4h -->
-                    <app-signal-policy-item 
-                        class="policy-item" 
-                        [side]="side" 
-                        [category]="'cancellation'" 
-                        [policyID]="'technicals_open_interest'"
-                        [id]="'ta_4h'" 
-                        [value]="policies.cancellation.technicals_open_interest.ta_4h"
-                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
-
-                    <!-- Technicals 1d -->
-                    <app-signal-policy-item 
-                        class="policy-item" 
-                        [side]="side" 
-                        [category]="'cancellation'" 
-                        [policyID]="'technicals_open_interest'"
-                        [id]="'ta_1d'" 
-                        [value]="policies.cancellation.technicals_open_interest.ta_1d"
+                        [id]="'technicals'" 
+                        [disableable]="false"
+                        [value]="policies.cancellation.technicals_open_interest.technicals"
                         (valueChanged)="valueChanged($event)"></app-signal-policy-item>
 
                     <!-- Open Interest -->
@@ -1256,64 +914,15 @@
                         [(ngModel)]="policies.cancellation.technicals_long_short_ratio.enabled"></mat-slide-toggle>
                 </div>
                 <div class="policy-items">
-                    <!-- Technicals 15m -->
+                    <!-- Technicals -->
                     <app-signal-policy-item 
                         class="policy-item" 
                         [side]="side" 
                         [category]="'cancellation'" 
                         [policyID]="'technicals_long_short_ratio'"
-                        [id]="'ta_15m'" 
-                        [value]="policies.cancellation.technicals_long_short_ratio.ta_15m"
-                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
-
-                    <!-- Technicals 30m -->
-                    <app-signal-policy-item 
-                        class="policy-item" 
-                        [side]="side" 
-                        [category]="'cancellation'" 
-                        [policyID]="'technicals_long_short_ratio'"
-                        [id]="'ta_30m'" 
-                        [value]="policies.cancellation.technicals_long_short_ratio.ta_30m"
-                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
-
-                    <!-- Technicals 1h -->
-                    <app-signal-policy-item 
-                        class="policy-item" 
-                        [side]="side" 
-                        [category]="'cancellation'" 
-                        [policyID]="'technicals_long_short_ratio'"
-                        [id]="'ta_1h'" 
-                        [value]="policies.cancellation.technicals_long_short_ratio.ta_1h"
-                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
-
-                    <!-- Technicals 2h -->
-                    <app-signal-policy-item 
-                        class="policy-item" 
-                        [side]="side" 
-                        [category]="'cancellation'" 
-                        [policyID]="'technicals_long_short_ratio'"
-                        [id]="'ta_2h'" 
-                        [value]="policies.cancellation.technicals_long_short_ratio.ta_2h"
-                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
-
-                    <!-- Technicals 4h -->
-                    <app-signal-policy-item 
-                        class="policy-item" 
-                        [side]="side" 
-                        [category]="'cancellation'" 
-                        [policyID]="'technicals_long_short_ratio'"
-                        [id]="'ta_4h'" 
-                        [value]="policies.cancellation.technicals_long_short_ratio.ta_4h"
-                        (valueChanged)="valueChanged($event)"></app-signal-policy-item>
-
-                    <!-- Technicals 1d -->
-                    <app-signal-policy-item 
-                        class="policy-item" 
-                        [side]="side" 
-                        [category]="'cancellation'" 
-                        [policyID]="'technicals_long_short_ratio'"
-                        [id]="'ta_1d'" 
-                        [value]="policies.cancellation.technicals_long_short_ratio.ta_1d"
+                        [id]="'technicals'" 
+                        [disableable]="false"
+                        [value]="policies.cancellation.technicals_long_short_ratio.technicals"
                         (valueChanged)="valueChanged($event)"></app-signal-policy-item>
 
                     <!-- Long/Short Ratio -->

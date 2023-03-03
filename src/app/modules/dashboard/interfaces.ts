@@ -19,14 +19,15 @@ export interface IDashboardComponent {
     displayHealthDialog(side: IBinancePositionSide): void,
     displayActivePredictionDialog(): void,
     displayTechnicalAnalysisDialog(taInterval: ITAIntervalID): void,
+    displayKeyZonesDialog(): void,
 
     // Tooltips
     windowTooltip(): void,
     predictionModelTooltip(): void,
     volumeTooltip(): void,
+    technicalsTooltip(): void,
     openInterestTooltip(): void,
     longShortRatioTooltip(): void,
-    networkFeeTooltip(): void,
     
     // Nav Actions
     createNewInstance(): void,

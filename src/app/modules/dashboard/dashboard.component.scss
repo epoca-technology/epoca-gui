@@ -102,6 +102,29 @@
 }
 
 
+// TA Grid
+.action-container {
+    text-align: center;
+    color:white;
+    p {
+        font-weight:600;
+        font-size:11px!important;
+    }
+}
+.buy-action-container {
+    @extend .action-container;
+    background-color: var(--success-color)!important; 
+}
+.sell-action-container {
+    @extend .action-container;
+    background-color: var(--error-color)!important; 
+}
+.neutral-action-container {
+    @extend .action-container;
+    background-color: var(--neutral-color)!important; 
+}
+
+
 
 /* Responsiveness */
 

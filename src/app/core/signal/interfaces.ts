@@ -64,12 +64,7 @@ export interface IVolumeIssuance extends IIssuancePolicy {
  * Triggers when the trend and all technicals align.
  */
 export interface ITechnicalsIssuance extends IIssuancePolicy {
-    ta_15m: IStateType,
-    ta_30m: IStateType,
-    ta_1h: IStateType,
-    ta_2h: IStateType,
-    ta_4h: IStateType,
-    ta_1d: IStateType
+    technicals: IStateType,
 }
 
 
@@ -107,12 +102,7 @@ export interface ILongShortRatioIssuance extends IIssuancePolicy {
 export interface IVolumeTechnicalsIssuance extends IIssuancePolicy {
     volume: IStateType,
     volume_direction: IStateType,
-    ta_15m: IStateType,
-    ta_30m: IStateType,
-    ta_1h: IStateType,
-    ta_2h: IStateType,
-    ta_4h: IStateType,
-    ta_1d: IStateType,
+    technicals: IStateType,
 }
 
 
@@ -152,12 +142,7 @@ export interface IVolumeLongShortRatioIssuance extends IIssuancePolicy {
  * Triggers when the trend, some technicals and the open interest align.
  */
 export interface ITechnicalsOpenInterestIssuance extends IIssuancePolicy {
-    ta_15m: IStateType,
-    ta_30m: IStateType,
-    ta_1h: IStateType,
-    ta_2h: IStateType,
-    ta_4h: IStateType,
-    ta_1d: IStateType,
+    technicals: IStateType,
     open_interest: IStateType
 }
 
@@ -167,12 +152,7 @@ export interface ITechnicalsOpenInterestIssuance extends IIssuancePolicy {
  * Triggers when the trend, some technicals and the long/short ratio align.
  */
 export interface ITechnicalsLongShortRatioIssuance extends IIssuancePolicy {
-    ta_15m: IStateType,
-    ta_30m: IStateType,
-    ta_1h: IStateType,
-    ta_2h: IStateType,
-    ta_4h: IStateType,
-    ta_1d: IStateType,
+    technicals: IStateType,
     long_short_ratio: IStateType
 }
 
@@ -276,12 +256,7 @@ export interface IVolumeCancellation extends ICancellationPolicy {
  * signal type.
  */
 export interface ITechnicalsCancellation extends ICancellationPolicy {
-    ta_15m: IStateType,
-    ta_30m: IStateType,
-    ta_1h: IStateType,
-    ta_2h: IStateType,
-    ta_4h: IStateType,
-    ta_1d: IStateType
+    technicals: IStateType,
 }
 
 
@@ -327,12 +302,7 @@ export interface ILongShortRatioCancellation extends ICancellationPolicy {
 export interface IVolumeTechnicalsCancellation extends ICancellationPolicy {
     volume: IStateType,
     volume_direction: IStateType,
-    ta_15m: IStateType,
-    ta_30m: IStateType,
-    ta_1h: IStateType,
-    ta_2h: IStateType,
-    ta_4h: IStateType,
-    ta_1d: IStateType,
+    technicals: IStateType,
 }
 
 
@@ -376,12 +346,7 @@ export interface IVolumeLongShortRatioCancellation extends ICancellationPolicy {
  * are against the signal type.
  */
 export interface ITechnicalsOpenInterestCancellation extends ICancellationPolicy {
-    ta_15m: IStateType,
-    ta_30m: IStateType,
-    ta_1h: IStateType,
-    ta_2h: IStateType,
-    ta_4h: IStateType,
-    ta_1d: IStateType,
+    technicals: IStateType,
     open_interest: IStateType
 }
 
@@ -394,12 +359,7 @@ export interface ITechnicalsOpenInterestCancellation extends ICancellationPolicy
  * are against the signal type.
  */
 export interface ITechnicalsLongShortRatioCancellation extends ICancellationPolicy {
-    ta_15m: IStateType,
-    ta_30m: IStateType,
-    ta_1h: IStateType,
-    ta_2h: IStateType,
-    ta_4h: IStateType,
-    ta_1d: IStateType,
+    technicals: IStateType,
     long_short_ratio: IStateType
 }
 
@@ -544,4 +504,4 @@ export type ISignalPolicyCategory = "issuance"|"cancellation";
 
 // Policy Item ID
 export type ISignalPolicyItemID = 
-"trend_sum"|"trend_state"|"ta_15m"|"ta_30m"|"ta_1h"|"ta_2h"|"ta_4h"|"ta_1d"|"open_interest"|"long_short_ratio"|"window"|"volume";
+"trend_sum"|"trend_state"|"technicals"|"open_interest"|"long_short_ratio"|"window"|"volume";

@@ -114,7 +114,7 @@
 
 
 <!-- Technicals -->
-<div *ngIf="isTA">
+<div *ngIf="id == 'technicals'">
     <!-- Issuance -->
     <div *ngIf="category == 'issuance'">
         <div class="clickable" role="button" matRipple
@@ -126,7 +126,7 @@
             'square-badge-neutral': value == 0,
             'state': value == 1 || value == -1
         }">
-            {{id}}<mat-icon *ngIf="value != 2 && value != -2" class="state-badge-caret" svgIcon="{{side == 'LONG' ? 'angle_up': 'angle_down'}}"></mat-icon>
+            Technicals<mat-icon *ngIf="value != 2 && value != -2" class="state-badge-caret" svgIcon="{{side == 'LONG' ? 'angle_up': 'angle_down'}}"></mat-icon>
         </div>
         <mat-menu #taMenu="matMenu">
             <button mat-menu-item *ngIf="side == 'LONG'" (click)="_valueChanged(2)" [disabled]="immutable || value == 2">Strong Buy</button>
@@ -149,7 +149,7 @@
             'square-badge-neutral': value == 0,
             'state': value == 1 || value == -1
         }">
-            {{id}}<mat-icon *ngIf="value != 2 && value != -2" class="state-badge-caret" svgIcon="{{side == 'SHORT' ? 'angle_up': 'angle_down'}}"></mat-icon>
+            Technicals<mat-icon *ngIf="value != 2 && value != -2" class="state-badge-caret" svgIcon="{{side == 'SHORT' ? 'angle_up': 'angle_down'}}"></mat-icon>
         </div>
         <mat-menu #taMenu="matMenu">
             <button mat-menu-item *ngIf="side == 'SHORT'" (click)="_valueChanged(2)" [disabled]="immutable || value == 2">Strong Buy</button>
