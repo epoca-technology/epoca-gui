@@ -179,6 +179,9 @@
                         <button mat-menu-item (click)="displayPredictionStateIntensityFormDialog()">
                             <mat-icon>swap_vert</mat-icon> <span>Pred. State Intensity</span>
                         </button>
+                        <button mat-menu-item>
+                            <mat-icon>public</mat-icon> <span>Market State</span>
+                        </button>
                         <button mat-menu-item (click)="displayPositionHealthWeightsFormDialog()">
                             <mat-icon>monitor_heart</mat-icon> <span>Health Point Weights</span>
                         </button>
@@ -480,8 +483,9 @@
                                         </div>
 
                                         <!-- Trend -->
-                                        <div (click)="displayActivePredictionDialog()"
-                                            matTooltip="Trend"
+                                        <div *ngIf="activePrediction" 
+                                            matTooltip="Updated: {{predLastUpdate}}" 
+                                            [matMenuTriggerFor]="predictionMenu"
                                             class="state-badge clickable" role="button" matRipple 
                                             [ngClass]="{
                                                 'square-badge-success': activePredictionStateIntensity > 0,
@@ -491,21 +495,81 @@
                                                 'stateless': activePredictionStateIntensity == 0
                                             }">
                                             <mat-icon [svgIcon]="_ms.icons[activePredictionStateIntensity]"></mat-icon>
-                                            {{activeSum | number: '1.0-3'}}
+                                            {{activeSum | number: '1.0-6'}} 
+                                            <span>
+                                                | {{activePredictionState! > 0 ? '+': ''}}{{activePredictionState}}
+                                            </span>
+                                        </div>
+                                        <mat-menu #predictionMenu="matMenu">
+                                            <button *ngIf="!displayPredictionCandlesticks" mat-menu-item (click)="toggleTrendChart()">
+                                                <mat-icon>{{userPreferences.splitTrendChart ? 'timeline': 'ssid_chart'}}</mat-icon> 
+                                                View {{userPreferences.splitTrendChart ? 'Sum Chart': 'Split Chart'}}
+                                            </button>
+                                            <button *ngIf="displayPredictionCandlesticks" mat-menu-item (click)="deactivatePredictionCandlesticks()">
+                                                <mat-icon>{{userPreferences.splitTrendChart ? 'ssid_chart': 'timeline'}}</mat-icon> 
+                                                View {{userPreferences.splitTrendChart ? 'Split Chart': 'Sum Chart'}}
+                                            </button>
+                                            <button *ngIf="!displayPredictionCandlesticks" mat-menu-item (click)="activatePredictionCandlesticks()">
+                                                <mat-icon>candlestick_chart</mat-icon> View last 32 hours
+                                            </button>
+                                            <button mat-menu-item (click)="displayActivePredictionDialog()">
+                                                &nbsp;<mat-icon svgIcon="wand_magic_sparkles" style="max-width:20px;"></mat-icon>&nbsp;Active Prediction
+                                            </button>
+                                            <button mat-menu-item (click)="predictionModelTooltip()">
+                                                <mat-icon>question_mark</mat-icon> More information
+                                            </button>
+                                        </mat-menu>
+                                    </div>
+                
+                                    <!-- Sum Chart -->
+                                    <div *ngIf="!userPreferences.splitTrendChart && !displayPredictionCandlesticks">
+                                        <p *ngIf="!predictionsChart" class="light-text ts-m align-center" style="margin: 30px 0 30px 0!important">No data was found</p>
+                                        <div *ngIf="predictionsChart">
+                                            <apx-chart
+                                                [series]="predictionsChart.series"
+                                                [chart]="predictionsChart.chart"
+                                                [dataLabels]="predictionsChart.dataLabels"
+                                                [xaxis]="predictionsChart.xaxis"
+                                                [yaxis]="predictionsChart.yaxis"
+                                                [stroke]="predictionsChart.stroke"
+                                                [annotations]="predictionsChart.annotations"
+                                            ></apx-chart>
                                         </div>
                                     </div>
-                                    
+
+                                    <!-- Split Chart -->
+                                    <div *ngIf="userPreferences.splitTrendChart && !displayPredictionCandlesticks">
+                                        <p *ngIf="!splitPredictionsChart" class="light-text ts-m align-center" style="margin: 30px 0 30px 0!important">No data was found</p>
+                                        <div *ngIf="splitPredictionsChart">
+                                            <apx-chart
+                                                [series]="splitPredictionsChart.series"
+                                                [chart]="splitPredictionsChart.chart"
+                                                [dataLabels]="splitPredictionsChart.dataLabels"
+                                                [xaxis]="splitPredictionsChart.xaxis"
+                                                [yaxis]="splitPredictionsChart.yaxis"
+                                                [stroke]="splitPredictionsChart.stroke"
+                                                [annotations]="splitPredictionsChart.annotations"
+                                                [legend]="{show: false}"
+                                            ></apx-chart>
+                                        </div>
+                                    </div>
+
                                     <!-- Candlesticks Chart -->
-                                    <div class="prediction-candlesticks-container">
-                                        <apx-chart
-                                                [series]="predictionCandlesticksChart!.series!"
-                                                [chart]="predictionCandlesticksChart!.chart!"
-                                                [plotOptions]="predictionCandlesticksChart!.plotOptions!"
-                                                [xaxis]="predictionCandlesticksChart!.xaxis!"
-                                                [yaxis]="predictionCandlesticksChart!.yaxis!"
+                                    <div *ngIf="displayPredictionCandlesticks" class="prediction-candlesticks-container">
+                                        <div *ngIf="!predictionCandlesticksChart" class="loader">
+                                            <div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="35"></mat-spinner></div>
+                                        </div>
+                                        <div *ngIf="predictionCandlesticksChart">
+                                            <apx-chart
+                                                [series]="predictionCandlesticksChart.series!"
+                                                [chart]="predictionCandlesticksChart.chart!"
+                                                [plotOptions]="predictionCandlesticksChart.plotOptions!"
+                                                [xaxis]="predictionCandlesticksChart.xaxis!"
+                                                [yaxis]="predictionCandlesticksChart.yaxis!"
                                                 [annotations]="predictionCandlesticksChart!.annotations!"
-                                                [title]="predictionCandlesticksChart!.title!"
-                                        ></apx-chart>
+                                                [title]="predictionCandlesticksChart.title!"
+                                            ></apx-chart>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

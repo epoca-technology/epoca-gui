@@ -99,7 +99,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     public activeSum?: number;
     public activePredictionState: IPredictionState = 0;
     public activePredictionStateIntensity: IPredictionStateIntesity = 0;
-    //public predictions: IPrediction[] = [];
+    public predictions: IPrediction[] = [];
     private predictionSub!: Subscription;
     private predictionsLoaded: boolean = false;
 
@@ -108,8 +108,11 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     private signalSub?: Subscription;
 
     // Prediction Charts
-    private predictionCandlesticks: IPredictionCandlestick[] = [];
+    public predictionsChart?: ILineChartOptions;
+    public splitPredictionsChart?: ILineChartOptions;
+    public displayPredictionCandlesticks: boolean = false;
     public predictionCandlesticksChart?: ICandlestickChartOptions;
+    public predLastUpdate: string = "none";
 
     // State
     public state!: IMarketState;
@@ -198,8 +201,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         // Subscribe to the active prediction
         this.predictionSub = this._app.prediction.subscribe(
             async (pred: IPrediction|null|undefined) => {
-                if (pred !== null) this.onNewPrediction(pred);
-                /*// Make sure the predictions have been initialized
+                // Make sure the predictions have been initialized
                 if (pred !== null) {
                     if (pred) {
                         // Populate the active epoch
@@ -217,7 +219,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                     // Set loading state
                     this.predictionsLoaded = true;
                     this.checkLoadState();
-                }*/
+                }
             }
         );
 
@@ -383,152 +385,58 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
      * Triggers whenever there is a change in the data and builds
      * all the required data.
      */
-     private async onNewPrediction(pred: IPrediction|null|undefined): Promise<void> {
-        // Ensure a valid prediction was provided
-        if (pred) {
-            // Populate the epoch's record in case it hasn't been
-            if (!this.epoch) this.epoch = this._app.epoch.value!;
+     private onNewPrediction(pred: IPrediction): void {
+        // Calculate the active sum
+        this.activeSum = <number>this._utils.getSum(pred.f, {dp: 8});
 
-            // Calculate the active sum
-            this.activeSum = <number>this._utils.getSum(pred.f, {dp: 6});
+        // Add the new prediction
+        if (!this.predictions.length) { this.predictions = [ {...pred, t: pred.t - 100} ] }
+        this.predictions.push(pred);
+        if (this.predictions.length > 500) this.predictions = this.predictions.slice(-500);
+        this.activePrediction = pred;
+        this.activePredictionState = this._app.predictionState.value!;
+        this.activePredictionStateIntensity = this._app.predictionStateIntensity.value!;
 
-            // Add the new prediction
-            this.activePrediction = pred;
-            this.activePredictionState = this._app.predictionState.value!;
-            this.activePredictionStateIntensity = this._app.predictionStateIntensity.value!;
-        }
-
-        // Otherwise, set default values
-        else {
-            this.predictionCandlesticks = this.getDefaultWindowPredictionCandlesticks();
-        }
+        // Set the last update date
+        this.predLastUpdate = moment(pred.t).format("h:mm:ss a");
 
         // Update the prediction chart
-        await this.updatePredictionCandlesticks();
+        this.updatePredictionChart();
 
-        // Set the component as loaded in case it hasn't been
-        if (!this.predictionsLoaded) {
-            this.predictionsLoaded = true;
-            this.checkLoadState();
-        }
-    }
-
-
-
-
-
-
-    /**
-     * Triggers whenever a new prediction is received through the app bulk.
-     * If the candlesticks have been initialized, it will build the current
-     * candlestick locally. If the current candlestick's close time is 
-     * older than 10 minutes or if they haven't been initialized, they will be 
-     * built from the API.
-     * @returns Promise<void>
-     */
-    private async updatePredictionCandlesticks(): Promise<void> {
-        // Check if the candlesticks need to be built from scratch
-        if (
-            !this.predictionCandlesticks.length ||
-            this.predictionCandlesticks[this.predictionCandlesticks.length - 1].ct < 
-            moment(this.state.window.window[this.state.window.window.length - 1].ct).subtract(10, "minutes").valueOf()
-        ) {
-            try {
-                // Retrieve the candlesticks
-                this.predictionCandlesticks = await this.getWindowPredictionCandlesticks();
-            } catch (e) { 
-                this.predictionCandlesticks = this.getDefaultWindowPredictionCandlesticks();
-                this._app.error(e);
-            }
-        }
-
-        // Otherwise, update the local candlesticks
-        else if(this.activePrediction) {
-            // Check if the latest candlestick's interval ended
-            const ct: number = moment(this.predictionCandlesticks[this.predictionCandlesticks.length - 1].ot).add(15, "minutes").valueOf() - 1;
-            if (this.activePrediction.t > ct) {
-                // Build the new candlestick
-                const candlestick: IPredictionCandlestick = {
-                    ot: this.predictionCandlesticks[this.predictionCandlesticks.length - 1].ct + 1,
-                    ct: this.activePrediction.t,
-                    o: this.activePrediction.s,
-                    h: this.activePrediction.s,
-                    l: this.activePrediction.s,
-                    c: this.activePrediction.s,
-                    sm: 0
-                }
-
-                // Push it to the list and slice it
-                this.predictionCandlesticks.push(candlestick);
-                this.predictionCandlesticks = this.predictionCandlesticks.slice(-128);
-            }
-
-            // Otherwise, update the OHLC of the current item
-            else {
-                const active: IPredictionCandlestick = this.predictionCandlesticks[this.predictionCandlesticks.length - 1];
-                this.predictionCandlesticks[this.predictionCandlesticks.length - 1] = {
-                    ot: active.ot,
-                    ct: this.activePrediction.t,
-                    o: active.o,
-                    h: this.activePrediction.s > active.h ? this.activePrediction.s: active.h,
-                    l: this.activePrediction.s < active.l ? this.activePrediction.s: active.l,
-                    c: this.activePrediction.s,
-                    sm: 0
-                }
-            }
-        }
-
-        // Finally, update the chart
-        if (this.predictionCandlesticksChart) {
-            // Update the series
-            this.predictionCandlesticksChart.series = [
-                {
-                    name: "candle",
-                    data: this._chart.getApexCandlesticks(this.predictionCandlesticks)
-                }
-            ];
-            this.predictionCandlesticksChart.annotations = this.getPredictionCandlestickAnnotations();
-        } else {
-            this.predictionCandlesticksChart = this._chart.getCandlestickChartOptions(
-                this.predictionCandlesticks, 
-                this.getPredictionCandlestickAnnotations(), 
-                false, 
-                //true, 
-                //{min: minValue, max: maxValue}
-            );
-            this.predictionCandlesticksChart.chart!.height = this.layout == "desktop" ? this.predictionChartDesktopHeight: 330;
-            this.predictionCandlesticksChart.chart!.zoom = {enabled: false};
-            this.predictionCandlesticksChart.title = {text: ""};
-            this.predictionCandlesticksChart.yaxis.opposite = true;
-            this.predictionCandlesticksChart.xaxis.labels = {show: false};
-            this.predictionCandlesticksChart.xaxis.axisTicks = {show: false}
-            this.predictionCandlesticksChart.xaxis.axisBorder = {show: false}
-            this.predictionCandlesticksChart.xaxis.tooltip = {enabled: false}
-        }
+        // Update the split prediction chart
+        this.updateSplitPredictionChart();
     }
 
 
 
 
     /**
-     * Builds the annotations to be used on the predictio ncandlestick's chart.
-     * @returns ApexAnnotations
+     * Triggers whenever a new prediction comes into existance. Builds or
+     * updates the chart accordingly.
      */
-    private getPredictionCandlestickAnnotations(): ApexAnnotations {
+    private updatePredictionChart(): void {
+        // Init the color of the prediction sum line
+        let predLineColor: string = this._chart.neutralColor;
+        if (this.activePredictionStateIntensity > 0) {
+            predLineColor = this._chart.upwardColor;
+        } else if (this.activePredictionStateIntensity < 0) {
+            predLineColor = this._chart.downwardColor;
+        }
+
+        // Init the min and max values
         const minValue: number = -this.epoch!.model.regressions.length;
         const maxValue: number = this.epoch!.model.regressions.length;
-        let stateColor: string = this._chart.neutralColor;
-        if (this.activePredictionState > 0) { stateColor = this._chart.upwardColor } 
-        else if (this.activePredictionState < 0) { stateColor = this._chart.downwardColor }
-        return {
+
+        // Build the annotations
+        const { markerSize, markerColor } = this.getPointAnnotationData();
+        const annotations: ApexAnnotations = {
             yaxis: [
                 {
                     y: this.epoch!.model.min_increase_sum,
                     y2: maxValue,
                     borderColor: this._chart.upwardColor,
                     fillColor: this._chart.upwardColor,
-                    strokeDashArray: 3,
-                    borderWidth: 0
+                    strokeDashArray: 0
                 },
                 {
                     y: 0.000001,
@@ -550,22 +458,228 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                     borderColor: "#FFCDD2",
                     fillColor: "#FFCDD2",
                     strokeDashArray: 0
-                },
+                }
+            ],
+            points: [
                 {
-                    y: this.activePrediction ? this.activePrediction.s: 0,
-                    strokeDashArray: 0,
-                    borderColor: stateColor,
-                    fillColor: stateColor,
-                    label: {
-                        borderColor: stateColor,
-                        style: { color: "#fff", background: stateColor, fontSize: "12px", padding: {top: 2, right: 2, left: 2, bottom: 2}},
-                        text: `${this.activePredictionState > 0 ? '+': ''}${this.activePredictionState}`,
-                        position: "right",
-                        offsetY: 0,
-                        offsetX: 19
+                    x: this.predictions[this.predictions.length - 1].t,
+                    y: this.predictions[this.predictions.length - 1].s,
+                    marker: {
+                        size: markerSize,
+                        strokeColor: markerColor,
+                        strokeWidth: markerSize,
+                        shape: "circle", // circle|square
+                        offsetX: -5
                     }
                 }
             ]
+        };
+
+        // Build/Update the chart
+        if (this.predictionsChart) {
+            // Update the series
+            this.predictionsChart.series = [
+                {
+                    name: "Prediction Sum", 
+                    data: this.predictions.map((p) => { return {x: p.t, y: this._utils.outputNumber(p.s, {dp: 6}) } }), 
+                    color: predLineColor
+                }
+            ]
+
+            // Update the current point
+            this.predictionsChart.annotations = annotations;
+        } else {
+            // Create the chart from scratch
+            this.predictionsChart = this._chart.getLineChartOptions(
+                { 
+                    series: [
+                        {
+                            name: "Prediction Sum", 
+                            data: this.predictions.map((p) =>  { return {x: p.t, y: this._utils.outputNumber(p.s, {dp: 6}) } }), 
+                            color: predLineColor
+                        }
+                    ],
+                    stroke: {curve: "straight", width:4},
+                    annotations: annotations,
+                    xaxis: {
+                        type: "datetime",
+                        tooltip: {enabled: false, }, 
+                        labels: {datetimeUTC: false, formatter: function(value, opts): string {
+                            return moment(value).format("h:mm a")
+                        }}
+                    }, 
+                    yaxis: { tooltip: {enabled: true}}
+                },
+                this.layout == "desktop" ? this.predictionChartDesktopHeight: 330, 
+                true,
+                {min: minValue, max: maxValue}
+            );
+        }
+    }
+
+
+
+
+    /**
+     * Builds the metadata that will be used to populate the monitor's
+     * point annotation.
+     * @returns {markerSize: number,markerColor: string}
+     */
+    private getPointAnnotationData(): {markerSize: number, markerColor: string} {
+        // Init values
+        let markerSize: number = 3.5; // Min size
+        let markerColor: string = this._chart.neutralColor;
+
+        // Check if the active epoch is the one being visualized
+        if (this._app.epoch.value && this._app.epoch.value.id == this.epoch!.id) {
+            // Init the marker color
+            if (this.activePredictionState > 0) { markerColor = this._chart.upwardColor }
+            else if (this.activePredictionState < 0) { markerColor = this._chart.downwardColor }
+
+            // Init the marker size
+            markerSize = this.getMarkerSize();
+        }
+
+        // Finally, return the data
+        return { markerSize: markerSize, markerColor: markerColor }
+    }
+
+
+
+
+    /**
+     * Calculates the suggested marker size based on the absolute state 
+     * value.
+     * @returns number
+     */
+    private getMarkerSize(): number {
+        // Init the state and the intensity
+        const state: IPredictionState = this.activePredictionState;
+        const intensity: IPredictionStateIntesity = this.activePredictionStateIntensity;
+
+        // Handle an increasing state
+        if (state > 0 && intensity > 0) {
+            if      (state >= 9)    { return intensity == 1 ? 6.0: 9.0 }
+            else if (state == 8)    { return intensity == 1 ? 5.7: 8.5 }
+            else if (state == 7)    { return intensity == 1 ? 5.4: 8.0 }
+            else if (state == 6)    { return intensity == 1 ? 5.1: 7.5 }
+            else if (state == 5)    { return intensity == 1 ? 4.8: 7.0 }
+            else if (state == 4)    { return intensity == 1 ? 4.5: 6.5 }
+            else if (state == 3)    { return intensity == 1 ? 4.2: 6.0 }
+            else if (state == 2)    { return intensity == 1 ? 3.9: 5.5 }
+            else if (state == 1)    { return intensity == 1 ? 3.7: 5.0 }
+            else                    { return 3.5 }
+        }
+
+        // Handle a decreasing state
+        else if (state < 0 && intensity < 0) {
+            if      (state <= -9)    { return intensity == -1 ? 6.0: 9.0 }
+            else if (state == -8)    { return intensity == -1 ? 5.7: 8.5 }
+            else if (state == -7)    { return intensity == -1 ? 5.4: 8.0 }
+            else if (state == -6)    { return intensity == -1 ? 5.1: 7.5 }
+            else if (state == -5)    { return intensity == -1 ? 4.8: 7.0 }
+            else if (state == -4)    { return intensity == -1 ? 4.5: 6.5 }
+            else if (state == -3)    { return intensity == -1 ? 4.2: 6.0 }
+            else if (state == -2)    { return intensity == -1 ? 3.9: 5.5 }
+            else if (state == -1)    { return intensity == -1 ? 3.7: 5.0 }
+            else                     { return 3.5 }
+        }
+
+        // Handle a neutral state
+        else { return 3.5 }
+    }
+
+
+
+
+
+    /**
+     * Triggers whenever a new prediction comes into existance. Builds or
+     * updates the chart accordingly.
+     */
+     private updateSplitPredictionChart(): void {
+        // Init the series
+        let series: ApexAxisChartSeries = [];
+
+        // Build the list of features
+        const features: Array<{x: number, y: number[]}> = this.predictions.map((p) => { return { x: p.t, y: p.f} });
+
+        // Build the color list based on their active predictions
+        const colors: string[] = this.activePrediction!.f.map((f) => {
+            if (f >= 0.5) { return this._chart.upwardColor }
+            else if (f >= 0.000001 && f < 0.5) { return "#4DB6AC" }
+            else if (f > -0.5 && f <= -0.000001) { return "#E57373" }
+            else if (f <= -0.5) { return this._chart.downwardColor }
+            else { return this._chart.neutralColor}
+        });
+
+        // Iterate over each regression and populate the values
+        for (let i = 0; i < this.epoch!.model.regressions.length; i++) {
+            series.push({
+                name: this.epoch!.model.regressions[i].id.slice(0, 12) + "...",
+                data: features.map((f) => { return {x: f.x, y: f.y[i]}}),
+                color: colors[i]
+            });
+        }
+
+        // Build/Update the chart
+        if (this.splitPredictionsChart) {
+            // Update the series
+            this.splitPredictionsChart.series = series;
+        } else {
+            // Build the annotations
+            const annotations: ApexAnnotations = {
+                yaxis: [
+                    {
+                        y: 0.500000,
+                        y2: 1.000000,
+                        borderColor: this._chart.upwardColor,
+                        fillColor: this._chart.upwardColor,
+                        strokeDashArray: 0
+                    },
+                    {
+                        y: 0.000001,
+                        y2: 0.499999,
+                        borderColor: "#B2DFDB",
+                        fillColor: "#B2DFDB",
+                        strokeDashArray: 0
+                    },
+                    {
+                        y: -0.500000,
+                        y2: -1.000000,
+                        borderColor: this._chart.downwardColor,
+                        fillColor: this._chart.downwardColor,
+                        strokeDashArray: 0
+                    },
+                    {
+                        y: -0.000001,
+                        y2: -0.499999,
+                        borderColor: "#FFCDD2",
+                        fillColor: "#FFCDD2",
+                        strokeDashArray: 0
+                    }
+                ]
+            };
+
+            // Create the chart from scratch
+            this.splitPredictionsChart = this._chart.getLineChartOptions(
+                { 
+                    series: series,
+                    stroke: {curve: "straight", width:3},
+                    annotations: annotations,
+                    xaxis: {
+                        type: "datetime",
+                        tooltip: {enabled: false, }, 
+                        labels: {datetimeUTC: false, formatter: function(value, opts): string {
+                            return moment(value).format("h:mm a")
+                        }}
+                    },
+                    yaxis: { tooltip: {enabled: true}}
+                },
+                this.layout == "desktop" ? this.predictionChartDesktopHeight: 330, 
+                true,
+                {min: -1, max: 1}
+            );
         }
     }
 
@@ -574,53 +688,84 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
 
     /**
-     * Retrieves the Prediction Candlesticks based on the current
-     * window.
-     * @returns Promise<IPredictionCandlestick[]>
+     * Activates the prediction candlesticks chart once the data is
+     * loaded.
+     * @returns Promise<void>
      */
-    private getWindowPredictionCandlesticks(): Promise<IPredictionCandlestick[]> {
-        return this._localDB.listPredictionCandlesticks(
-            this.epoch!.id, 
-            this.state.window.window[0].ot,
-            this.state.window.window[this.state.window.window.length - 1].ct,
-            this.epoch!.installed, 
-            this._app.serverTime.value!
-        );
+    public async activatePredictionCandlesticks(): Promise<void> {
+        try {
+            // Init the section
+            this.displayPredictionCandlesticks = true;
+            this.predictionCandlesticksChart = undefined;
+            
+            // Retrieve the candlesticks
+            const candlesticks: IPredictionCandlestick[] = await this._localDB.listPredictionCandlesticks(
+                this.epoch!.id, 
+                moment(this._app.serverTime.value!).subtract(32, "hours").valueOf(),
+                this._app.serverTime.value!,
+                this.epoch!.installed, 
+                this._app.serverTime.value!
+            );
+
+            // Build the chart
+            const minValue: number = -this.epoch!.model.regressions.length;
+            const maxValue: number = this.epoch!.model.regressions.length;
+            const annotations: ApexAnnotations = {
+                yaxis: [
+                    {
+                        y: this.epoch!.model.min_increase_sum,
+                        y2: maxValue,
+                        borderColor: this._chart.upwardColor,
+                        fillColor: this._chart.upwardColor,
+                        strokeDashArray: 3,
+                        borderWidth: 0
+                    },
+                    {
+                        y: 0.000001,
+                        y2: this.epoch!.model.min_increase_sum,
+                        borderColor: "#B2DFDB",
+                        fillColor: "#B2DFDB",
+                        strokeDashArray: 0
+                    },
+                    {
+                        y: this.epoch!.model.min_decrease_sum,
+                        y2: minValue,
+                        borderColor: this._chart.downwardColor,
+                        fillColor: this._chart.downwardColor,
+                        strokeDashArray: 0
+                    },
+                    {
+                        y: -0.000001,
+                        y2: this.epoch!.model.min_decrease_sum,
+                        borderColor: "#FFCDD2",
+                        fillColor: "#FFCDD2",
+                        strokeDashArray: 0
+                    }
+                ]
+            };
+            this.predictionCandlesticksChart = this._chart.getCandlestickChartOptions(
+                candlesticks, 
+                annotations, 
+                false, 
+                true, 
+                //{min: minValue, max: maxValue}
+            );
+            this.predictionCandlesticksChart.chart!.height = this.layout == "desktop" ? this.predictionChartDesktopHeight: 330;
+            this.predictionCandlesticksChart.chart!.zoom = {enabled: false};
+            this.predictionCandlesticksChart.title = {text: ""};
+        } catch(e) { this._app.error(e) } 
     }
-
-
 
 
 
     /**
-     * Builds the default list of prediction candlesticks.
-     * @returns IPredictionCandlestick[]
+     * Deactivates the prediction candlesticks chart and retores
+     * the active trend chart.
      */
-    private getDefaultWindowPredictionCandlesticks(): IPredictionCandlestick[] {
-        // Init the list
-        let candlesticks: IPredictionCandlestick[] = [];
-
-        // Iterate over each element in the window and build the placeholder
-        for (let wCandlestick of this.state.window.window) {
-            candlesticks.push({
-                ot: wCandlestick.ot,
-                ct: wCandlestick.ct,
-                o: 0,
-                h: 0,
-                l: 0,
-                c: 0,
-                sm: 0
-            })
-        }
-
-        // Finally, return the list
-        return candlesticks;
+    public deactivatePredictionCandlesticks(): void {
+        this.displayPredictionCandlesticks = false;
+        this.predictionCandlesticksChart = undefined;
     }
-
-
-
-
-
 
 
 
@@ -730,17 +875,17 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
      */
     private getWindowStateRange(): IChartRange {
         // Init the values
-        let min: number = <number>this._utils.alterNumberByPercentage(this.state.window.lower_band.end, -0.3);
-        let max: number = <number>this._utils.alterNumberByPercentage(this.state.window.upper_band.end, 0.3);
+        let min: number = <number>this._utils.alterNumberByPercentage(this.state.window.lower_band.end, -0.2);
+        let max: number = <number>this._utils.alterNumberByPercentage(this.state.window.upper_band.end, 0.2);
 
         // Check if there is a long position
-        if (this.position && this.position.long) {
+        if (this.position.long) {
             min = this.position.long.stop_loss_price < min ? this.position.long.stop_loss_price: min;
             max = this.position.long.take_profit_price_5 > max ? this.position.long.take_profit_price_5: max;
         }
 
         // Check if there is a short position
-        if (this.position && this.position.short) {
+        if (this.position.short) {
             min = this.position.short.take_profit_price_5 < min ? this.position.short.take_profit_price_5: min;
             max = this.position.short.stop_loss_price > max ? this.position.short.stop_loss_price: max;
         }
@@ -802,7 +947,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         /* Position Annotations */
         
         // Long Position
-        if (this.position && this.position.long) {
+        if (this.position.long) {
             const tpLevel: 0|1|2|3|4|5 = this.getActiveTakeProfitLevel(this.position.health.long ? this.position.health.long.dd: 0);
             annotations.yaxis!.push(this.buildPositionAnnotation(
                 this.position.long.entry_price,
@@ -849,7 +994,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         }
 
         // Short Position
-        if (this.position && this.position.short) {
+        if (this.position.short) {
             const tpLevel: 0|1|2|3|4|5 = this.getActiveTakeProfitLevel(this.position.health.short ? this.position.health.short.dd: 0);
             annotations.yaxis!.push(this.buildPositionAnnotation(
                 this.position.short.entry_price,
@@ -1503,7 +1648,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 	 * about the prediction.
 	 */
      public displayActivePredictionDialog(): void {
-        if (!this.epoch!.model || !this.activePrediction) return;
         this._nav.displayPredictionDialog(this.epoch!.model, this.activePrediction!);
 	}
 

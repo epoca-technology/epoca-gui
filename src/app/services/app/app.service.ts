@@ -288,6 +288,9 @@ export class AppService implements IAppService{
 		// Unpack the metadata
 		const metadata: IAppBulkMetadata = this.getAppBulkMetadata(bulk);
 
+		// Broadcast the market state
+		this.marketState.next(bulk.marketState);
+
 		// Broadcast the server's time
 		this.serverTime.next(bulk.serverTime);
 
@@ -306,9 +309,6 @@ export class AppService implements IAppService{
 
 		// Broadcast the position summary
 		this.position.next(bulk.position);
-
-		// Broadcast the market state
-		this.marketState.next(bulk.marketState);
 
 		// Broadcast the api errors
 		this.apiErrors.next(bulk.apiErrors);

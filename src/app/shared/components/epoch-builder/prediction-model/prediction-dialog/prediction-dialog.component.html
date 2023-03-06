@@ -1,7 +1,7 @@
 <mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
     <div fxLayout="row" fxLayoutAlign="center center">
         <button mat-icon-button class="show-on-mobile" (click)="close()"><mat-icon>arrow_back</mat-icon></button>
-        <span class="truncate">{{resultName}} Prediction</span>&nbsp;
+        <span class="truncate">Prediction</span>&nbsp;
         <span fxFlex></span>
         <button mat-icon-button matTooltip="Display Model" 
             (click)="_nav.displayPredictionModelConfigDialog(model)">
@@ -11,13 +11,8 @@
     </div>
 </mat-toolbar>
 <div mat-dialog-content>
-    <!-- Loader -->
-    <div *ngIf="!loaded">
-        <div class="section-loader"><div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div></div>
-    </div>
-
     <!-- Content -->
-    <div *ngIf="loaded" class="prediction fadeIn">
+    <div class="prediction fadeIn">
         <!-- Prediction Time -->
         <div fxLayout="row" fxLayoutAlign="start center">
             <p class="light-text">Time</p>
@@ -30,34 +25,29 @@
             <p class="light-text">Trend Sum</p>
             <span fxFlex></span>
             <div [ngClass]="{
-                'square-badge-success': prediction.r == 1,
-                'square-badge-error': prediction.r == -1,
-                'square-badge-neutral': prediction.r == 0
+                'square-badge-success': featuresSum > 0,
+                'square-badge-error': featuresSum < 0,
+                'square-badge-neutral': featuresSum == 0,
+                'stateless': featuresSum == 0,
+                'state': (featuresSum > 0 && featuresSum < model.min_increase_sum) || (featuresSum < 0 && featuresSum > model.min_decrease_sum)
                 }" matTooltip="Features Sum">
-                <mat-icon *ngIf="prediction.r == 1">trending_up</mat-icon>
-                <mat-icon *ngIf="prediction.r == -1">trending_down</mat-icon>
-                <mat-icon *ngIf="prediction.r == 0">trending_flat</mat-icon> 
                 {{featuresSum | number: '1.0-6'}}
             </div>
         </div>
 
         <!-- Features -->
-        <div class="features">
-            <div *ngFor="let reg of model.regressions; index as regIndex" class="feature">
-                <div class="clickable" role="button"
-                    (click)="_nav.displayKerasModelDialog(reg)"
-                    [matTooltip]="reg.id"
-                    [ngClass]="{
-                        'square-badge-success': prediction.f[regIndex] > 0,
-                        'square-badge-error': prediction.f[regIndex] < 0,
-                        'square-badge-neutral': prediction.f[regIndex] == 0
-                    }">
-                    <mat-icon *ngIf="prediction.f[regIndex] > 0">trending_up</mat-icon>
-                    <mat-icon *ngIf="prediction.f[regIndex] < 0">trending_down</mat-icon>
-                    <mat-icon *ngIf="prediction.f[regIndex] == 0">trending_flat</mat-icon>
-                    &nbsp;{{prediction.f[regIndex] | number: '1.0-6'}}
-                </div>
-            </div>
+        <div>
+            <apx-chart
+                [series]="features.series"
+                [chart]="features.chart"
+                [plotOptions]="features.plotOptions"
+                [xaxis]="features.xaxis"
+                [yaxis]="features.yaxis"
+                [dataLabels]="features.dataLabels"
+                [colors]="features.colors"
+                [grid]="features.grid"
+                [legend]="{show: false}"
+            ></apx-chart>
         </div>
     </div>
 </div>

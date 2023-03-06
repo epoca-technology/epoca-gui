@@ -1,7 +1,8 @@
 <mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
     <div fxLayout="row" fxLayoutAlign="center center">
         <button mat-icon-button class="show-on-mobile" (click)="close()"><mat-icon>arrow_back</mat-icon></button>
-        <span class="truncate" matTooltip="Build: {{state.build_ts | date: 'medium'}}">KeyZones</span>
+        <span *ngIf="!loaded">Loading...</span>
+        <span *ngIf="loaded" class="truncate" matTooltip="Build: {{state.build_ts | date: 'medium'}}">KeyZones</span>
         <span fxFlex></span>
         <button mat-icon-button *ngIf="loaded"  (click)="displayTooltip()" matTooltip="More information"><mat-icon>question_mark</mat-icon></button>
         <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
