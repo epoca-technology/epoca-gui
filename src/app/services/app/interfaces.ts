@@ -3,10 +3,8 @@ import {BehaviorSubject} from "rxjs";
 import { 
     IEpochRecord, 
     IMarketState, 
-    IPositionSummary, 
+    IActivePosition, 
     IPrediction, 
-    IPredictionResult, 
-    IPredictionResultIcon, 
     IPredictionState, 
     IPredictionStateIntesity
 } from "../../core";
@@ -27,9 +25,7 @@ export interface IAppService {
     prediction: BehaviorSubject<IPrediction|undefined|null>,
     predictionState: BehaviorSubject<IPredictionState|undefined|null>,
     predictionStateIntensity: BehaviorSubject<IPredictionStateIntesity|undefined|null>,
-    signal: BehaviorSubject<IPredictionResult|undefined|null>,
-    predictionIcon: BehaviorSubject<IPredictionResultIcon|undefined|null>,
-    position: BehaviorSubject<IPositionSummary|undefined|null>,
+    position: BehaviorSubject<IActivePosition|undefined|null>,
     marketState: BehaviorSubject<IMarketState|undefined|null>,
     apiErrors: BehaviorSubject<number|undefined|null>,
     refreshAppBulk(): Promise<void>,
@@ -57,9 +53,3 @@ export type ILayout = "mobile"|"desktop";
 export type ILayoutAlias = "xs"|"sm"|"md"|"lg"|"xl";
 
 
-
-// App Bulk Metadata
-export interface IAppBulkMetadata {
-    predictionIcon: IPredictionResultIcon|undefined,
-
-}

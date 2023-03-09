@@ -5,13 +5,7 @@
              class="tab" role="button" matRipple
              [ngClass]="{'active': activeTab == 0}" (click)="navigate(0)">
             <mat-icon   svgIcon="home"
-                        matBadge="0" 
-                        [appMatBadgeIcon]="_app.predictionIcon.value ? _app.predictionIcon.value: ''"
-                        appMatBadgeIconSize="small"
-                        [matBadgeHidden]="!_app.epoch.value || !_app.predictionIcon.value" 
-                        matBadgePosition="after"
-                        matBadgeSize="small"
-                        matBadgeOverlap="false" style="max-width:20px;"></mat-icon>
+                        style="max-width:20px;"></mat-icon>
         </div>
 
         <!-- Positions -->

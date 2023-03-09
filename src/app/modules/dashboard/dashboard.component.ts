@@ -5,7 +5,7 @@ import {Title} from "@angular/platform-browser";
 import { Subscription } from "rxjs";
 import * as moment from "moment";
 import { BigNumber } from "bignumber.js";
-import { ApexAnnotations, ApexAxisChartSeries, YAxisAnnotations } from "ng-apexcharts";
+import { ApexAnnotations, YAxisAnnotations } from "ng-apexcharts";
 import { 
     IEpochRecord, 
     IMarketState, 
@@ -16,19 +16,15 @@ import {
     UtilsService,
     AuthService,
     IUserPreferences,
-    IPositionSummary,
-    IActivePosition,
     PositionService,
-    IBinancePositionSide,
-    IPositionStrategy,
-    IPositionPriceRange,
     ITAIntervalID,
-    IPredictionResult,
     MarketStateService,
     IPredictionCandlestick,
     IPredictionStateIntesity,
-    IPositionSideHealth,
-    IStateType
+    IActivePosition,
+    ISplitStateID,
+    IExchangeOpenInterestID,
+    IExchangeLongShortRatioID
 } from "../../core";
 import { 
     AppService, 
@@ -41,16 +37,13 @@ import {
     NavService 
 } from "../../services";
 import { BalanceDialogComponent } from "./balance-dialog";
-import { ActivePositionDialogComponent, IActivePositionDialogData } from "./active-position-dialog";
 import { StrategyFormDialogComponent } from "./strategy-form-dialog";
 import { TechnicalAnalysisDialogComponent } from "./technical-analysis-dialog";
-import { SignalPoliciesDialogComponent } from "./signal-policies-dialog";
-import { IPositionHealthDialogData, PositionHealthDialogComponent } from './position-health-dialog';
 import { IDashboardComponent, IPositionCloseChunkSize } from "./interfaces";
-import { PositionHealthWeightsFormDialogComponent } from "./position-health-weights-form-dialog";
 import { PredictionStateIntensityFormDialogComponent } from "./prediction-state-intensity-form-dialog";
 import { MatBottomSheetRef } from "@angular/material/bottom-sheet";
 import { KeyzonesDialogComponent } from "./keyzones-dialog";
+import { IMarketStateDialogConfig, MarketStateDialogComponent } from "./market-state-dialog";
 
 @Component({
   selector: "app-dashboard",
@@ -77,21 +70,9 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     private guiVersionSub?: Subscription;
 
     // Position
-    public position!: IPositionSummary;
-    public canOpenLong: boolean = false;
-    public longChunkSize?: IPositionCloseChunkSize;
-    public canOpenShort: boolean = false;
-    public shortChunkSize?: IPositionCloseChunkSize;
+    public position!: IActivePosition|undefined;
     private positionSub?: Subscription;
     private positionLoaded: boolean = false;
-
-    // PNL Readable States
-    public longPNLState: string = "+0$ | +0%";
-    public shortPNLState: string = "+0$ | +0%";
-
-    // HP Readable States
-    public longHPState: string = "0 HP 0% | 0%";
-    public shortHPState: string = "0 HP 0% | 0%";
 
     // Prediction Lists
     public epoch?: IEpochRecord;
@@ -102,10 +83,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     //public predictions: IPrediction[] = [];
     private predictionSub!: Subscription;
     private predictionsLoaded: boolean = false;
-
-    // Signal
-    public signal: IPredictionResult = 0;
-    private signalSub?: Subscription;
 
     // Prediction Charts
     private predictionCandlesticks: IPredictionCandlestick[] = [];
@@ -121,18 +98,9 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     // Window Chart
     public windowChart?: ICandlestickChartOptions;
 
-    // Volume State Chart
-    public volumeChart?: IBarChartOptions;
-
-    // Open Interest State Chart
-    public openInterestChart?: ILineChartOptions;
-
-    // Long/Short Ratio State Chart
-    public longShortRatioChart?: ILineChartOptions;
-
     // Desktop Chart height helpers
-    public readonly predictionChartDesktopHeight: number = 270;
-    private readonly marketStateChartDesktopHeight: number = 136;
+    public readonly predictionChartDesktopHeight: number = 300;
+    private readonly marketStateChartDesktopHeight: number = 105;
 
     // Loading State
     public loaded: boolean = false;
@@ -173,8 +141,8 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                 if (
                     !prevState || 
                     (
-                        prevState.window.window.length && 
-                        prevState.window.window[prevState.window.window.length - 1].c != this.state.window.window[this.state.window.window.length - 1].c
+                        prevState.window.w.length && 
+                        prevState.window.w[prevState.window.w.length - 1].c != this.state.window.w[this.state.window.w.length - 1].c
                     )
                 ) {
                     this.onStateUpdate();
@@ -188,8 +156,8 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
         // Subscribe to be position summary
         this.positionSub = this._app.position.subscribe((pos) => {
-            if (pos) {
-                this.onActivePositionsUpdate(pos);
+            if (pos !== null) {
+                this.onActivePositionUpdate(pos);
                 this.positionLoaded = true;
                 this.checkLoadState();
             } 
@@ -199,32 +167,8 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         this.predictionSub = this._app.prediction.subscribe(
             async (pred: IPrediction|null|undefined) => {
                 if (pred !== null) this.onNewPrediction(pred);
-                /*// Make sure the predictions have been initialized
-                if (pred !== null) {
-                    if (pred) {
-                        // Populate the active epoch
-                        this.epoch = this._app.epoch.value!;
-
-                        // If it is an actual new prediction, add it to the list
-                        if (
-                            !this.activePrediction || 
-                            (this.activePrediction && pred.t != this.activePrediction.t)
-                        ) {
-                            this.onNewPrediction(pred);
-                        }
-                    }
-
-                    // Set loading state
-                    this.predictionsLoaded = true;
-                    this.checkLoadState();
-                }*/
             }
         );
-
-        // Subscribe to the signal
-        this.signalSub = this._app.signal.subscribe((s: IPredictionResult|undefined|null) => {
-            if (typeof s == "number") this.signal = s; 
-        });
 
         // Subscribe to the current version
         this.guiVersionSub = this._app.guiVersion.subscribe((newVersion: string|undefined|null) => {
@@ -241,10 +185,10 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         if (this.positionSub) this.positionSub.unsubscribe();
         if (this.predictionSub) this.predictionSub.unsubscribe();
         if (this.stateSub) this.stateSub.unsubscribe();
-        if (this.signalSub) this.signalSub.unsubscribe();
         if (this.guiVersionSub) this.guiVersionSub.unsubscribe();
         this.titleService.setTitle("Epoca");
     }
+
 
 
 
@@ -260,108 +204,11 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
      * state.
      * @param summary 
      */
-    private onActivePositionsUpdate(summary: IPositionSummary): void {
+    private onActivePositionUpdate(summary: IActivePosition|undefined): void {
         // Update the local value
         this.position = summary;
 
-        // Check if a long position can be opened
-        /*this.canOpenLong = 
-            !this.position.long && 
-            this.position.balance.available >= this.position.strategy.position_size && 
-            this.position.strategy.long_status;
-            this._app.serverTime.value! >= this.position.strategy.long_idle_until;*/
-        this.canOpenLong = !this.position.long;
-
-        // Check if a short position can be opened
-        /*this.canOpenShort = 
-            !this.position.short && 
-            this.position.balance.available >= this.position.strategy.position_size && 
-            this.position.strategy.short_status;
-            this._app.serverTime.value! >= this.position.strategy.short_idle_until;*/
-        this.canOpenShort = !this.position.short;
-
-        // Reset the close chunk sizes
-        this.longChunkSize = undefined;
-        this.shortChunkSize = undefined;
-        
-        // Build additional meta data for a long position (if any)
-        if (this.position.long) {
-            // Populate the PNL State
-            this.longPNLState = this.buildPNLState(this.position.long);
-
-            // Calculate the Long Close Chunk Sizes
-            this.longChunkSize = this.calculateChunkSizes(this.position.long.isolated_margin);
-        }
-
-        // Build additional meta data for a long position (if any)
-        if (this.position.short) {
-            // Populate the PNL State
-            this.shortPNLState = this.buildPNLState(this.position.short);
-
-            // Calculate the Short Close Chunk Sizes
-            this.shortChunkSize = this.calculateChunkSizes(this.position.short.isolated_margin);
-        }
-
-        // Populate the HP States
-        if (this.position.health && this.position.health.long) {
-            this.longHPState = this.buildHPState(this.position.health.long);
-        } else { this.longHPState = "0 HP 0% | 0%" }
-        if (this.position.health && this.position.health.short) {
-            this.shortHPState = this.buildHPState(this.position.health.short);
-        } else { this.shortHPState = "0 HP 0% | 0%" }
-    }
-
-
-
-
-
-    /**
-     * Calculates the chunk sizes for a position side based on the
-     * isolated margin balance.
-     * @param isolatedMargin 
-     * @returns IPositionCloseChunkSize
-     */
-    private calculateChunkSizes(isolatedMargin: number): IPositionCloseChunkSize {
-        // Initialize the bignumber instance of the margin
-        const margin: BigNumber = new BigNumber(isolatedMargin);
-
-        // Finally, return the build
-        return {
-            1: <number>this._utils.outputNumber(margin),
-            0.75: <number>this._utils.outputNumber(margin.times(0.75)),
-            0.66: <number>this._utils.outputNumber(margin.times(0.66)),
-            0.5: <number>this._utils.outputNumber(margin.times(0.5)),
-            0.33: <number>this._utils.outputNumber(margin.times(0.33)),
-            0.25: <number>this._utils.outputNumber(margin.times(0.25))
-        }
-    }
-
-
-
-
-    /**
-     * Builds the PNL State String for an active position
-     * @param pos 
-     * @returns string
-     */
-    private buildPNLState(pos: IActivePosition): string {
-        const pnl: number = <number>this._utils.outputNumber(pos.unrealized_pnl, {dp: 1});
-        const roe: number = <number>this._utils.outputNumber(pos.roe, {dp: 1});
-        return `${pnl > 0 ? '+': ''}${pnl}$ | ${roe > 0 ? '+': ''}${roe}%`;
-    }
-
-
-
-    /**
-     * Builds the Health State String for an active position
-     * @param pos 
-     * @returns string
-     */
-    private buildHPState(h: IPositionSideHealth): string {
-        const hp: number = <number>this._utils.outputNumber(h.chp, {dp: 0});
-        const hpdd: number = <number>this._utils.outputNumber(h.dd, {dp: 1});
-        const gdd: number = <number>this._utils.outputNumber(h.mgdd, {dp: 1});
-        return `${this.layout == 'mobile' ? '': hp + ' '}HP ${hpdd}% | ${gdd}%`;
+        // ...
     }
 
 
@@ -373,7 +220,19 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
 
 
-    /* New Prediction Event Handler */
+
+
+
+
+
+
+
+
+
+    /********************************
+     * New Prediction Event Handler *
+     ********************************/
+
 
 
 
@@ -431,7 +290,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         if (
             !this.predictionCandlesticks.length ||
             this.predictionCandlesticks[this.predictionCandlesticks.length - 1].ct < 
-            moment(this.state.window.window[this.state.window.window.length - 1].ct).subtract(10, "minutes").valueOf()
+            moment(this.state.window.w[this.state.window.w.length - 1].ct).subtract(10, "minutes").valueOf()
         ) {
             try {
                 // Retrieve the candlesticks
@@ -500,7 +359,8 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             this.predictionCandlesticksChart.chart!.zoom = {enabled: false};
             this.predictionCandlesticksChart.title = {text: ""};
             this.predictionCandlesticksChart.yaxis.opposite = true;
-            this.predictionCandlesticksChart.xaxis.labels = {show: false};
+            this.predictionCandlesticksChart.yaxis.labels = {show: true, align: "right"};
+            //this.predictionCandlesticksChart.xaxis.labels = {show: false};
             this.predictionCandlesticksChart.xaxis.axisTicks = {show: false}
             this.predictionCandlesticksChart.xaxis.axisBorder = {show: false}
             this.predictionCandlesticksChart.xaxis.tooltip = {enabled: false}
@@ -515,11 +375,19 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
      * @returns ApexAnnotations
      */
     private getPredictionCandlestickAnnotations(): ApexAnnotations {
+        // Calculate min & max values
         const minValue: number = -this.epoch!.model.regressions.length;
         const maxValue: number = this.epoch!.model.regressions.length;
+
+        // Set the color of the annotation
         let stateColor: string = this._chart.neutralColor;
         if (this.activePredictionState > 0) { stateColor = this._chart.upwardColor } 
         else if (this.activePredictionState < 0) { stateColor = this._chart.downwardColor }
+
+        // Set the position
+        let annOffset: {x: number, y: number} = {x: 18, y: 0};
+        if (this.activePredictionState <= -10 || this.activePredictionState >= 10) { annOffset.x = 25 }
+        else if (this.activePredictionState == 0) { annOffset.x = 12 }
         return {
             yaxis: [
                 {
@@ -561,8 +429,8 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                         style: { color: "#fff", background: stateColor, fontSize: "12px", padding: {top: 2, right: 2, left: 2, bottom: 2}},
                         text: `${this.activePredictionState > 0 ? '+': ''}${this.activePredictionState}`,
                         position: "right",
-                        offsetY: 0,
-                        offsetX: 19
+                        offsetY: annOffset.y,
+                        offsetX: annOffset.x
                     }
                 }
             ]
@@ -581,8 +449,8 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     private getWindowPredictionCandlesticks(): Promise<IPredictionCandlestick[]> {
         return this._localDB.listPredictionCandlesticks(
             this.epoch!.id, 
-            this.state.window.window[0].ot,
-            this.state.window.window[this.state.window.window.length - 1].ct,
+            this.state.window.w[0].ot,
+            this.state.window.w[this.state.window.w.length - 1].ct,
             this.epoch!.installed, 
             this._app.serverTime.value!
         );
@@ -601,7 +469,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         let candlesticks: IPredictionCandlestick[] = [];
 
         // Iterate over each element in the window and build the placeholder
-        for (let wCandlestick of this.state.window.window) {
+        for (let wCandlestick of this.state.window.w) {
             candlesticks.push({
                 ot: wCandlestick.ot,
                 ct: wCandlestick.ct,
@@ -630,7 +498,12 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
 
 
-    /* State Update Event Handler */
+
+
+
+    /*************************************
+     * Market State Update Event Handler *
+     *************************************/
 
 
 
@@ -641,18 +514,9 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         // Update the window state chart
         this.updateWindowState();
 
-        // Update the volume state chart
-        this.updateVolumeState();
-
-        // Update the open interest state chart
-        this.updateOpenInterestState();
-
-        // Update the long short state chart
-        this.updateLongShortRatioState();
-
         // Update the title
         const price: string = <string>this._utils.outputNumber(
-            this.state.window.window[this.state.window.window.length - 1].c, 
+            this.state.window.w[this.state.window.w.length - 1].c, 
             {dp: 0, of: "s"}
         );
         let newTitle: string = `$${price}`;
@@ -677,19 +541,12 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
      * Triggers whenever a new state is downloaded and builds the window chart.
      */
     private updateWindowState(): void {
-        // Calculate the chart's range
-        const { min, max } = this.getWindowStateRange();
-
         // Build/update the chart
         if (this.windowChart) {
-            // Update the range
-            this.windowChart.yaxis = { tooltip: { enabled: true }, forceNiceScale: false, min: min, max: max, opposite: true};
-
-            // Update the series
             this.windowChart.series = [
                 {
                     name: "candle",
-                    data: this._chart.getApexCandlesticks(this.state.window.window)
+                    data: this._chart.getApexCandlesticks(this.state.window.w)
                 }
             ];
 
@@ -697,58 +554,29 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             this.windowChart.annotations = this.buildWindowAnnotations();
         } else {
             this.windowChart = this._chart.getCandlestickChartOptions(
-                this.state.window.window, 
+                this.state.window.w, 
                 this.buildWindowAnnotations(), 
-                false, 
-                true,
-                { min:  min, max: max }
+                false,
             );
-            this.windowChart.chart!.height = this.layout == "desktop" ? 630: 400;
+            this.windowChart.chart!.height = this.layout == "desktop" ? 615: 400;
             this.windowChart.chart!.zoom = {enabled: false};
             this.windowChart.chart!.toolbar!.show = false;
             this.windowChart.yaxis.opposite = true;
+            this.windowChart.yaxis.labels = {show: true, align: "right"};
         }
 
         // Determine the color of the candlesticks based on the volume direction
         let bullColor: string = "#80CBC4";
         let bearColor: string = "#EF9A9A";
-        if (this.state.volume.direction > 0) {
-            bearColor = this.state.volume.direction == 1 ? "#EF9A9A": "#80CBC4";
+        if (this.state.volume.d > 0) {
+            bearColor = this.state.volume.d == 1 ? "#EF9A9A": "#80CBC4";
             bullColor = "#004D40";
-        } else if (this.state.volume.direction < 0) {
-            bullColor = this.state.volume.direction == -1 ? "#80CBC4": "#EF9A9A";
+        } else if (this.state.volume.d < 0) {
+            bullColor = this.state.volume.d == -1 ? "#80CBC4": "#EF9A9A";
             bearColor = "#B71C1C";
         }
         this.windowChart.plotOptions = {candlestick: {colors: {upward: bullColor, downward: bearColor}}};
     }
-
-
-
-    /**
-     * Calculates the price range the chart should be built on.
-     * @returns IChartRange
-     */
-    private getWindowStateRange(): IChartRange {
-        // Init the values
-        let min: number = <number>this._utils.alterNumberByPercentage(this.state.window.lower_band.end, -0.3);
-        let max: number = <number>this._utils.alterNumberByPercentage(this.state.window.upper_band.end, 0.3);
-
-        // Check if there is a long position
-        if (this.position && this.position.long) {
-            min = this.position.long.stop_loss_price < min ? this.position.long.stop_loss_price: min;
-            max = this.position.long.take_profit_price_5 > max ? this.position.long.take_profit_price_5: max;
-        }
-
-        // Check if there is a short position
-        if (this.position && this.position.short) {
-            min = this.position.short.take_profit_price_5 < min ? this.position.short.take_profit_price_5: min;
-            max = this.position.short.stop_loss_price > max ? this.position.short.stop_loss_price: max;
-        }
-
-        // Finally, return the range
-        return { min: min, max: max }
-    }
-
 
 
 
@@ -799,115 +627,22 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         }
 
 
-        /* Position Annotations */
-        
-        // Long Position
-        if (this.position && this.position.long) {
-            const tpLevel: 0|1|2|3|4|5 = this.getActiveTakeProfitLevel(this.position.health.long ? this.position.health.long.dd: 0);
-            annotations.yaxis!.push(this.buildPositionAnnotation(
-                this.position.long.entry_price,
-                this._chart.upwardColor,
-                "LONG",
-                38
-            ));
-            annotations.yaxis!.push(this.buildPositionAnnotation(
-                this.position.long.take_profit_price_1,
-                tpLevel == 1 ? this._chart.upwardColor: "#26A69A",
-                "TAKE_PROFIT_1",
-                92
-            ));
-            annotations.yaxis!.push(this.buildPositionAnnotation(
-                this.position.long.take_profit_price_2,
-                tpLevel == 2 ? this._chart.upwardColor: "#26A69A",
-                "TAKE_PROFIT_2",
-                92
-            ));
-            annotations.yaxis!.push(this.buildPositionAnnotation(
-                this.position.long.take_profit_price_3,
-                tpLevel == 3 ? this._chart.upwardColor: "#26A69A",
-                "TAKE_PROFIT_3",
-                92
-            ));
-            annotations.yaxis!.push(this.buildPositionAnnotation(
-                this.position.long.take_profit_price_4,
-                tpLevel == 4 ? this._chart.upwardColor: "#26A69A",
-                "TAKE_PROFIT_4",
-                92
-            ));
-            annotations.yaxis!.push(this.buildPositionAnnotation(
-                this.position.long.take_profit_price_5,
-                tpLevel == 5 ? this._chart.upwardColor: "#26A69A",
-                "TAKE_PROFIT_5",
-                92
-            ));
-            annotations.yaxis!.push(this.buildPositionAnnotation(
-                this.position.long.stop_loss_price,
-                this._chart.upwardColor,
-                "STOP_LOSS",
-                71
-            ));
-        }
-
-        // Short Position
-        if (this.position && this.position.short) {
-            const tpLevel: 0|1|2|3|4|5 = this.getActiveTakeProfitLevel(this.position.health.short ? this.position.health.short.dd: 0);
-            annotations.yaxis!.push(this.buildPositionAnnotation(
-                this.position.short.entry_price,
-                this._chart.downwardColor,
-                "SHORT",
-                44
-            ));
-            annotations.yaxis!.push(this.buildPositionAnnotation(
-                this.position.short.take_profit_price_1,
-                tpLevel == 1 ? this._chart.downwardColor: "#EF5350",
-                "TAKE_PROFIT_1",
-                92
-            ));
-            annotations.yaxis!.push(this.buildPositionAnnotation(
-                this.position.short.take_profit_price_2,
-                tpLevel == 2 ? this._chart.downwardColor: "#EF5350",
-                "TAKE_PROFIT_2",
-                92
-            ));
-            annotations.yaxis!.push(this.buildPositionAnnotation(
-                this.position.short.take_profit_price_3,
-                tpLevel == 3 ? this._chart.downwardColor: "#EF5350",
-                "TAKE_PROFIT_3",
-                92
-            ));
-            annotations.yaxis!.push(this.buildPositionAnnotation(
-                this.position.short.take_profit_price_4,
-                tpLevel == 4 ? this._chart.downwardColor: "#EF5350",
-                "TAKE_PROFIT_4",
-                92
-            ));
-            annotations.yaxis!.push(this.buildPositionAnnotation(
-                this.position.short.take_profit_price_5,
-                tpLevel == 5 ? this._chart.downwardColor: "#EF5350",
-                "TAKE_PROFIT_5",
-                92
-            ));
-            annotations.yaxis!.push(this.buildPositionAnnotation(
-                this.position.short.stop_loss_price,
-                this._chart.downwardColor,
-                "STOP_LOSS",
-                71
-            ));
-        }
-
-
 
         /* Window State Annotations */
-        const currentPrice: number = this.state.window.window[this.state.window.window.length - 1].c
+
+        // Prices
+        const openPrice: number = this.state.window.w[this.state.window.w.length - 1].o;
+        const currentPrice: number = this.state.window.w[this.state.window.w.length - 1].c;
+
+        // Window State Color
         let windowStateColor: string = this._chart.neutralColor;
-        //let annOffset: {x: number, y: number} = {x: -15, y: -30};
-        if (this.state.window.state > 0) { 
-            windowStateColor = this.state.window.state == 1 ? "#00796B": "#004D40";
-            //annOffset.y = 30;
-        }
-        else if (this.state.window.state < 0) { 
-            windowStateColor = this.state.window.state == -1 ? "#D32F2F": "#B71C1C";
-        }
+        if (currentPrice > openPrice) { windowStateColor = this._chart.upwardColor }
+        else if (openPrice > currentPrice) { windowStateColor = this._chart.downwardColor }
+
+        // Annotation Offset
+        let annOffset: {x: number, y: number} = {x: 55, y: 0};
+        if (currentPrice < 9999) { annOffset.x = 43 }
+        else if (currentPrice < 99999) { annOffset.x = 49 }
         annotations.yaxis!.push({
             y: currentPrice,
             strokeDashArray: 0,
@@ -915,11 +650,11 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             fillColor: windowStateColor,
             label: {
                 borderColor: windowStateColor,
-                style: { color: "#fff", background: windowStateColor, fontSize: "10px", padding: {top: 2, right: 2, left: 2, bottom: 2}},
-                text: `${this._utils.formatNumber(currentPrice, 0)} ${this.state.window.state_value > 0 ? '+': ''}${this._utils.formatNumber(this.state.window.state_value, 1)}`,
+                style: { color: "#fff", background: windowStateColor, fontSize: "11px", padding: {top: 4, right: 4, left: 4, bottom: 4}},
+                text: `$${this._utils.formatNumber(currentPrice, 0)}`,
                 position: "right",
-                offsetY: 0,
-                offsetX: 60
+                offsetY: annOffset.y,
+                offsetX: annOffset.x
             }
         });
 
@@ -930,48 +665,24 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
 
 
-    /**
-     * Calculates the take profit that will be triggered with current HP conditions.
-     * @param hp_drawdown 
-     * @returns 0|1|2|3|4|5
-     */
-    private getActiveTakeProfitLevel(hp_drawdown: number): 0|1|2|3|4|5 {
-        if      (hp_drawdown <= this.position.strategy.max_hp_drawdown_in_profit)     { return 0 }
-        else if (hp_drawdown <= this.position.strategy.take_profit_1.max_hp_drawdown) { return 1 }
-        else if (hp_drawdown <= this.position.strategy.take_profit_2.max_hp_drawdown) { return 2 }
-        else if (hp_drawdown <= this.position.strategy.take_profit_3.max_hp_drawdown) { return 3 }
-        else if (hp_drawdown <= this.position.strategy.take_profit_4.max_hp_drawdown) { return 4 }
-        else if (hp_drawdown <= this.position.strategy.take_profit_5.max_hp_drawdown) { return 5 }
-        else                                                                          { return 0 }
-    }
 
 
 
-    /**
-     * Builds a position annotation object.
-     * @param y 
-     * @param color 
-     * @param labelText 
-     * @param offsetX 
-     * @returns YAxisAnnotations
-     */
-    private buildPositionAnnotation(y: number, color: string, labelText: string, offsetX: number): YAxisAnnotations {
-        return {
-            y: y,
-            strokeDashArray: 0,
-            borderColor: color,
-            fillColor: color,
-            label: {
-                borderColor: color,
-                style: { color: "#fff", background: color},
-                text: labelText,
-                position: "left",
-                offsetX: offsetX
-            }
-        }
-    }
 
 
+
+
+
+
+    
+
+
+
+
+
+    /**************************
+     * Adjustments Management *
+     **************************/
 
 
 
@@ -979,396 +690,44 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
 
     /**
-     * Triggers whenever a new state is downloaded and builds the volume chart.
+     * Displays the adjustments menu.
      */
-     private updateVolumeState(): void {
-        // Init the color of the prediction sum line
-        let lineColor: string = this._chart.neutralColor;
-        if (this.state.volume.state > 0) {
-            lineColor = this._chart.upwardColor;
-        } else if (this.state.volume.state < 0) {
-            lineColor = this._chart.downwardColor;
-        }
-
-        // Init the min and max values
-        const minValue: number = this.state.volume.lower_band.end;
-        const maxValue: number = this.state.volume.upper_band.end;
-
-        // Build/Update the chart
-        if (this.volumeChart) {
-            // Update the range
-            this.volumeChart.yaxis = { 
-                tooltip: { enabled: false }, 
-                labels: { show: false},
-                axisTicks: { show: false},
-                axisBorder: { show: false},
-                forceNiceScale: false, min: minValue, max: maxValue
-            };
-
-            // Update the series
-            this.volumeChart.series = [
-                {
-                    name: "USDT", 
-                    data: this.state.volume.volumes, 
-                    color: lineColor
-                }
-            ]
-        } else {
-            // Create the chart from scratch
-            this.volumeChart = this._chart.getBarChartOptions(
-                { 
-                    series: [
-                        {
-                            name: "USDT", 
-                            data: this.state.volume.volumes, 
-                            color: lineColor
-                        }
-                    ],
-                    //stroke: {curve: "straight", width:4},
-                },
-                undefined,
-                this.layout == "desktop" ? this.marketStateChartDesktopHeight: 250, 
-                undefined,
-                true,
-                { max: maxValue, min: minValue}
-            );
-            this.volumeChart.yaxis.labels = {show: false}
-            this.volumeChart.xaxis.tooltip = {enabled: false}
-            this.volumeChart.xaxis.labels = {show: false}
-            this.volumeChart.xaxis.axisTicks = {show: false}
-            this.volumeChart.xaxis.axisBorder = {show: false}
-            this.volumeChart.chart.zoom = {enabled: false}
-        }
-    }
-
-
-
+    public displayAdjustmentsMenu(): void {
+		const bs: MatBottomSheetRef = this._nav.displayBottomSheetMenu([
+            {
+                icon: 'money_bill_transfer',  
+                svg: true,
+                title: 'Trading Strategy', 
+                description: 'Configure the way active positions are managed.', 
+                response: "TRADING_STRATEGY"
+            },
+            {
+                icon: 'swap_vert',  
+                title: 'Trend Intensity', 
+                description: 'Configure the requirements for the trend to have a state.', 
+                response: "TREND_INTESITY_CONFIGURATION"
+            },
+        ]);
+		bs.afterDismissed().subscribe((response: string|undefined) => {
+            if (response === "TRADING_STRATEGY") { this.displayStrategyFormDialog() }
+            else if (response === "TREND_INTESITY_CONFIGURATION") { this.displayPredictionStateIntensityFormDialog() }
+		});
+	}
 
 
 
 
     /**
-     * Triggers whenever a new state is downloaded and builds the open interest chart.
+     * Displays the strategy form dialog.
      */
-     private updateOpenInterestState(): void {
-        // Init the color of the prediction sum line
-        let lineColor: string = this._chart.neutralColor;
-        if (this.state.open_interest.state > 0) {
-            lineColor = this._chart.upwardColor;
-        } else if (this.state.open_interest.state < 0) {
-            lineColor = this._chart.downwardColor;
-        }
-
-        // Init the min and max values
-        const minValue: number = this.state.open_interest.lower_band.end;
-        const maxValue: number = this.state.open_interest.upper_band.end;
-
-        // Build/Update the chart
-        if (this.openInterestChart) {
-            // Update the range
-            this.openInterestChart.yaxis = { 
-                tooltip: { enabled: false }, 
-                labels: { show: false},
-                axisTicks: { show: false},
-                axisBorder: { show: false},
-                forceNiceScale: false, min: minValue, max: maxValue
-            };
-
-            // Update the series
-            this.openInterestChart.series = [
-                {
-                    name: "USDT", 
-                    data: this.state.open_interest.interest, 
-                    color: lineColor
-                }
-            ]
-        } else {
-            // Create the chart from scratch
-            this.openInterestChart = this._chart.getLineChartOptions(
-                { 
-                    series: [
-                        {
-                            name: "USDT", 
-                            data: this.state.open_interest.interest, 
-                            color: lineColor
-                        }
-                    ],
-                    stroke: {curve: "straight", width:3},
-                },
-                this.layout == "desktop" ? this.marketStateChartDesktopHeight: 150, 
-                true,
-                { max: maxValue, min: minValue}
-            );
-            this.openInterestChart.yaxis.labels = {show: false}
-            this.openInterestChart.xaxis.tooltip = {enabled: false}
-            this.openInterestChart.xaxis.axisTicks = {show: false}
-            this.openInterestChart.xaxis.axisBorder = {show: false}
-        }
-    }
-
-
-
-
-
-
-    /**
-     * Triggers whenever a new state is downloaded and builds the long/short ratio chart.
-     */
-     private updateLongShortRatioState(): void {
-        // Init the color of the prediction sum line
-        let lineColor: string = this._chart.neutralColor;
-        if (this.state.long_short_ratio.state > 0) {
-            lineColor = this._chart.upwardColor;
-        } else if (this.state.long_short_ratio.state < 0) {
-            lineColor = this._chart.downwardColor;
-        }
-
-        // Init the min and max values
-        const minValue: number = this.state.long_short_ratio.lower_band.end;
-        const maxValue: number = this.state.long_short_ratio.upper_band.end;
-
-        // Build/Update the chart
-        if (this.longShortRatioChart) {
-            // Update the range
-            this.longShortRatioChart.yaxis = { 
-                tooltip: { enabled: false }, 
-                labels: { show: false},
-                axisTicks: { show: false},
-                axisBorder: { show: false},
-                forceNiceScale: false, min: minValue, max: maxValue
-            };
-
-            // Update the series
-            this.longShortRatioChart.series = [
-                {
-                    name: "Ratio", 
-                    data: this.state.long_short_ratio.ratio, 
-                    color: lineColor
-                }
-            ]
-        } else {
-            // Create the chart from scratch
-            this.longShortRatioChart = this._chart.getLineChartOptions(
-                { 
-                    series: [
-                        {
-                            name: "Ratio", 
-                            data: this.state.long_short_ratio.ratio, 
-                            color: lineColor
-                        }
-                    ],
-                    stroke: {curve: "straight", width:3},
-                },
-                this.layout == "desktop" ? this.marketStateChartDesktopHeight: 150, 
-                true,
-                { max: maxValue, min: minValue}
-            );
-            this.longShortRatioChart.yaxis.labels = {show: false}
-            this.longShortRatioChart.xaxis.tooltip = {enabled: false}
-            this.longShortRatioChart.xaxis.axisTicks = {show: false}
-            this.longShortRatioChart.xaxis.axisBorder = {show: false}
-        }
-    }
-
-
-
-
-
-
-
-
-
-
-
-    /* Position Management */
-
-
-
-    /**
-     * Displays the confirmation dialog in order to open
-     * a new position.
-     * @param side 
-     */
-    public openPosition(side: IBinancePositionSide): void {
-        const strat: IPositionStrategy = this.position.strategy;
-        const entry: number = this.state.window.window[this.state.window.window.length - 1].c;
-        const take_profit_price: number = <number>this._utils.alterNumberByPercentage(
-            entry, 
-            side == "LONG" ? strat.take_profit_1.price_change_requirement: -(strat.take_profit_1.price_change_requirement)
-        );
-        const stop_loss_price: number = <number>this._utils.alterNumberByPercentage(
-            entry, 
-            side == "LONG" ? -(strat.stop_loss): strat.stop_loss
-        );
-        const range: IPositionPriceRange = this._position.calculatePositionPriceRange(
-            side, 
-            strat.leverage, 
-            [ { price: entry, margin: strat.position_size} ]
-        );
-        this._nav.displayConfirmationDialog({
-            title: `Open ${side}`,
-            content: `
-                <table class="confirmation-dialog-table bordered">
-                    <tbody>
-                        <tr>
-                            <td><strong>Entry</strong></td>
-                            <td class="align-right">$${entry}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Take Profit 1</strong></td>
-                            <td class="align-right">$${take_profit_price}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Stop Loss</strong></td>
-                            <td class="align-right">$${stop_loss_price}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Liquidation</strong></td>
-                            <td class="align-right">$${range.liquidation}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Margin</strong></td>
-                            <td class="align-right">$${strat.position_size}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            `,
-            otpConfirmation: true
-        }).afterClosed().subscribe(
-            async (otp: string|undefined) => {
-                if (otp) {
-                    // Set Submission State
-                    this.setSubmission(`Opening ${side} Position...`);
-                    try {
-                        // Perform Action
-                        await this._position.open(side, otp);
-                        await this._app.refreshAppBulk();
-
-                        // Notify
-                        this._app.success(`The ${side} position was opened successfully.`);
-
-                        // Set Submission State
-                        this.setSubmission();
-                    } catch(e) { this._app.error(e) }
-
-                    // Set Submission State
-                    this.setSubmission();
-                }
-            }
-        );
-    }
-
-
-
-
-    /**
-     * Displays the confirmation dialog in order to close
-     * an existing position.
-     * @param side 
-     * @param chunkSize 
-     */
-    public closePosition(side: IBinancePositionSide, chunkSize: number): void {
-        // Initialize the position
-        const position: IActivePosition = side == "LONG" ? this.position.long!: this.position.short!;
-
-        // Calculate the PNL's color
-        let pnlClass: string = "light-text";
-        if (position.unrealized_pnl > 0) { pnlClass = "success-color" }
-        else if (position.unrealized_pnl < 0) { pnlClass = "error-color" }
-
-        // Calculate the margin, pnl & row based on the chunk size
-        const margin: number = <number>this._utils.outputNumber(new BigNumber(position.isolated_margin).times(chunkSize), {dp: 2});
-        const pnl: number = <number>this._utils.outputNumber(new BigNumber(position.unrealized_pnl).times(chunkSize), {dp: 2});
-        const roe: number = <number>this._utils.outputNumber(new BigNumber(position.roe).times(chunkSize), {dp: 2});
-
-        let confirmContent: string = `
-            <table class="confirmation-dialog-table bordered">
-                <tbody>
-                    <tr>
-                        <td><strong>Entry</strong></td>
-                        <td class="align-right">$${position.entry_price}</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Exit</strong></td>
-                        <td class="align-right">$${position.mark_price}</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Margin</strong></td>
-                        <td class="align-right">$${margin}</td>
-                    </tr>
-                    <tr>
-                        <td><strong>PNL</strong></td>
-                        <td class="align-right"><strong><span class="${pnlClass}">$${pnl} (${roe}%)</strong></td>
-                    </tr>
-                </tbody>
-            </table>
-        `;
-        if (position.unrealized_pnl < 0) {
-            confirmContent += `
-                <p class="margin-top align-center ts-m error-color">
-                    <strong>Warning:</strong> you're about to close a <strong>${side}</strong> position with a 
-                    <strong>negative PNL</strong>
-                </p>
-            `;
-        }
-        this._nav.displayConfirmationDialog({
-            title: `Close ${side} ${chunkSize * 100}%`,
-            content: confirmContent,
-            otpConfirmation: true
-        }).afterClosed().subscribe(
-            async (otp: string|undefined) => {
-                if (otp) {
-                    // Set Submission State
-                    this.setSubmission(`Closing ${side} Position...`);
-                    try {
-                        // Perform Action
-                        await this._position.close(side, chunkSize, otp);
-                        await this._app.refreshAppBulk();
-
-                        // Notify
-                        this._app.success(`The ${side} position was closed successfully.`);
-
-                        // Set Submission State
-                        this.setSubmission();
-                    } catch(e) { this._app.error(e) }
-
-                    // Set Submission State
-                    this.setSubmission();
-                }
-            }
-        );
-    }
-
-
-
-
-
-
-    /* Misc Helpers */
-
-
-
-    /**
-     * Toggles the kind of trend chart to display.
-     * @returns Promise<void>
-     */
-    public async toggleTrendChart(): Promise<void> {
-        this.userPreferences.splitTrendChart = !this.userPreferences.splitTrendChart;
-        await this._localDB.saveUserPreferences(this.userPreferences);
-    }
-
-
-
-
-
-    /**
-     * Toggles the kind of info to display in the position button.
-     * @returns Promise<void>
-     */
-    public async togglePositionButtonContent(): Promise<void> {
-        this.userPreferences.positionButtonPNL = !this.userPreferences.positionButtonPNL;
-        await this._localDB.saveUserPreferences(this.userPreferences);
-    }
+    private displayStrategyFormDialog(): void {
+		this.dialog.open(StrategyFormDialogComponent, {
+			hasBackdrop: this._app.layout.value != "mobile",
+            disableClose: true,
+			panelClass: "small-dialog",
+            data: {}
+		})
+	}
 
 
 
@@ -1377,7 +736,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     /**
      * Displays the prediction state intensity dialog.
      */
-    public displayPredictionStateIntensityFormDialog(): void {
+    private displayPredictionStateIntensityFormDialog(): void {
 		this.dialog.open(PredictionStateIntensityFormDialogComponent, {
 			hasBackdrop: this._app.layout.value != "mobile",
             disableClose: true,
@@ -1390,55 +749,16 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
 
 
-    /**
-     * Displays the signal policies dialog.
-     */
-    public displaySignalPoliciesDialog(): void {
-		const bs: MatBottomSheetRef = this._nav.displayBottomSheetMenu([
-            {icon: 'trending_up', title: 'Long', description: 'Manage issuance & cancellation policies.', response: "LONG"},
-            {icon: 'trending_down', title: 'Short', description: 'Manage issuance & cancellation policies.', response: "SHORT"},
-        ]);
-		bs.afterDismissed().subscribe((response: IBinancePositionSide|undefined) => {
-            if (response) {
-                this.dialog.open(SignalPoliciesDialogComponent, {
-                    hasBackdrop: this._app.layout.value != "mobile",
-                    disableClose: true,
-                    panelClass: "large-dialog",
-                    data: response
-                })
-            }
-		});
-	}
-
-
-
-    /**
-     * Displays the strategy form dialog.
-     */
-    public displayStrategyFormDialog(): void {
-		this.dialog.open(StrategyFormDialogComponent, {
-			hasBackdrop: this._app.layout.value != "mobile",
-            disableClose: true,
-			panelClass: "small-dialog",
-            data: this.position.strategy
-		})
-	}
 
 
 
 
-    /**
-     * Displays the position hp weights form dialog.
-     */
-    public displayPositionHealthWeightsFormDialog(): void {
-		this.dialog.open(PositionHealthWeightsFormDialogComponent, {
-			hasBackdrop: this._app.layout.value != "mobile",
-            disableClose: true,
-			panelClass: "small-dialog",
-            data: {}
-		})
-	}
 
+
+
+    /****************
+     * Misc Dialogs *
+     ****************/
 
 
 
@@ -1449,52 +769,11 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 		this.dialog.open(BalanceDialogComponent, {
 			hasBackdrop: true,
 			panelClass: "light-dialog",
-			data: this.position.balance
+			data: {}
 		})
 	}
 
 
-
-
-
-	/**
-	 * Displays the position information dialog.
-	 */
-    public displayPositionDialog(position: IActivePosition): void {
-		this.dialog.open(ActivePositionDialogComponent, {
-			hasBackdrop: this._app.layout.value != "mobile",
-            disableClose: false,
-			panelClass: "small-dialog",
-            data: <IActivePositionDialogData> {
-                strategy: this.position.strategy,
-                position: position,
-                health: position.side == "LONG" ? this.position.health.long: this.position.health.short,
-                spotPrice: this.state.window.window[this.state.window.window.length - 1].c
-            }
-		})
-	}
-
-
-
-
-
-
-	/**
-	 * Displays the position health dialog.
-	 */
-    public displayHealthDialog(side: IBinancePositionSide): void {
-		this.dialog.open(PositionHealthDialogComponent, {
-			hasBackdrop: this._app.layout.value != "mobile",
-			panelClass: "large-dialog",
-			data: <IPositionHealthDialogData>{
-				side: side,
-				health: side == "LONG" ? this.position.health.long: this.position.health.short
-			}
-		})
-	}
-
-
-    
 
 
     
@@ -1506,6 +785,90 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         if (!this.epoch!.model || !this.activePrediction) return;
         this._nav.displayPredictionDialog(this.epoch!.model, this.activePrediction!);
 	}
+
+
+
+
+
+
+
+
+
+
+    /************************
+     * Market State Dialogs *
+     ************************/
+
+
+
+	/**
+	 * Displays the window dialog.
+     * @param taInterval
+	 */
+    public displayWindowDialog(id: ISplitStateID): void {
+		this.dialog.open(MarketStateDialogComponent, {
+			hasBackdrop: this._app.layout.value != "mobile",
+			panelClass: "medium-dialog",
+			data: <IMarketStateDialogConfig>{
+                module: "window",
+                split: id,
+                windowState: this.state.window
+            }
+		})
+	}
+
+
+
+	/**
+	 * Displays the Volume Dialog.
+	 */
+    public displayVolumeDialog(): void {
+		this.dialog.open(MarketStateDialogComponent, {
+			hasBackdrop: this._app.layout.value != "mobile",
+			panelClass: "medium-dialog",
+			data: <IMarketStateDialogConfig>{
+                module: "volume"
+            }
+		})
+	}
+
+
+
+
+
+	/**
+	 * Displays the Open Interest Dialog.
+	 */
+    public displayOpenInterestDialog(id: IExchangeOpenInterestID): void {
+		this.dialog.open(MarketStateDialogComponent, {
+			hasBackdrop: this._app.layout.value != "mobile",
+			panelClass: "medium-dialog",
+			data: <IMarketStateDialogConfig>{
+                module: "open_interest",
+                exchangeID: id
+            }
+		})
+	}
+
+
+
+
+
+	/**
+	 * Displays the Long/Short Ratio Dialog.
+	 */
+    public displayLongShortRatioDialog(id: IExchangeLongShortRatioID): void {
+		this.dialog.open(MarketStateDialogComponent, {
+			hasBackdrop: this._app.layout.value != "mobile",
+			panelClass: "medium-dialog",
+			data: <IMarketStateDialogConfig>{
+                module: "long_short_ratio",
+                exchangeID: id
+            }
+		})
+	}
+
+
 
 
 
@@ -1527,9 +890,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
 
 
-
-
-
 	/**
 	 * Displays the KeyZones dialog.
 	 */
@@ -1542,39 +902,29 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
 
 
-    
-
-    /**
-     * Checks if all the required data has been loaded.
-     */
-    private checkLoadState(): void {
-        this.loaded = this.positionLoaded && this.predictionsLoaded && this.stateLoaded;
-    }
 
 
 
 
 
 
-    /**
-     * Enables/Disables the submission state on the component.
-     * @param action 
-     */
-    private setSubmission(action?: string): void {
-        if (typeof action == "string") {
-            this.submittingText = action;
-            this.submitting = true;
-        } else {
-            this.submitting = false;
-        }
-    }
 
 
 
 
 
 
-    /* Tooltips */
+
+
+
+
+
+
+
+    /************
+     * Tooltips *
+     ************/
+
 
 
     // Window
@@ -1586,7 +936,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             `1) Volume`,
             `2) Open Interest`,
             `3) Long/Short Ratio`,
-            `4) Network Fee`,
         ]);
     }
 
@@ -1682,7 +1031,17 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
     
 
-    /* Nav Actions */
+
+
+
+
+
+
+
+
+    /***************
+     * Nav Actions *
+     ***************/
 
 
 
@@ -1718,5 +1077,32 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             }
         );
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /****************
+     * Misc Helpers *
+     ****************/
+
+    
+
+
+
+    /**
+     * Checks if all the required data has been loaded.
+     */
+    private checkLoadState(): void {
+        this.loaded = this.positionLoaded && this.predictionsLoaded && this.stateLoaded;
+    }
 }
 

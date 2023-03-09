@@ -1,4 +1,4 @@
-import { IPosition, IPositionDataItem, IPositionTrade } from "../../../core";
+
 
 
 // Service
@@ -6,13 +6,7 @@ export interface IPositionsComponent {
     // Initializer
     initializeEpochData(epochID?: string): Promise<void>,
 
-    // Navigation
-    activateSection(sectionID: ISectionID): Promise<void>,
-    
-    // Misc Helpers
-    displayPosition(query: IPosition|{start: number, end: number}|number|any): void,
-    displayDataItems(items: IPositionDataItem[]): void
-    displayPredictionModel(): void,
+
 }
 
 

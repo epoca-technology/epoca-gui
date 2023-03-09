@@ -26,7 +26,6 @@ export interface INavService {
 	positions(epochID?: string): Promise<boolean>,
 	predictions(epochID?: string): Promise<boolean>,
 	candlesticks(): Promise<boolean>,
-	orderBook(): Promise<boolean>,
 	server(): Promise<boolean>,
 	users(): Promise<boolean>,
 	guiVersion(): Promise<boolean>,

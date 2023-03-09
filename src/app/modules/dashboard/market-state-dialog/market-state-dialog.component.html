@@ -1,0 +1,60 @@
+<mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <button mat-icon-button class="show-on-mobile" (click)="close()" [disabled]="!loaded"><mat-icon>arrow_back</mat-icon></button>
+        <span *ngIf="!loaded" class="truncate">Loading...</span>
+        <mat-icon *ngIf="loaded" class="show-on-desktop" [svgIcon]="_ms.icons[stateAverage]" style="margin-right:7px;"></mat-icon>
+        <span *ngIf="loaded" class="truncate">{{title}}</span>
+        <span fxFlex></span>
+        <mat-icon *ngIf="loaded"class="show-on-mobile" [svgIcon]="_ms.icons[stateAverage]"></mat-icon>
+        <button mat-icon-button class="show-on-desktop" (click)="close()" [disabled]="!loaded"><mat-icon>close</mat-icon></button>
+    </div>
+</mat-toolbar>
+<div mat-dialog-content>
+    <!-- Loader -->
+    <div *ngIf="!loaded">
+        <div class="section-loader show-on-mobile"><div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div></div>
+        <div class="loader show-on-desktop"><div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div></div>
+    </div>
+    <div *ngIf="loaded" class="padding">
+        <!-- Line Chart Based -->
+        <div *ngIf="lineChart" style="overflow: hidden">
+            <mat-grid-list [cols]="4" rowHeight="45px" gutterSize="2px">
+                <mat-grid-tile *ngFor="let id of _ms.splits" 
+                                class="clickable" role="button" matRipple
+                                (click)="applySplit(id)"
+                                [ngClass]="{
+                                    'buy-action-container': states[id].s > 0,
+                                    'sell-action-container': states[id].s < 0,
+                                    'neutral-action-container': states[id].s == 0,
+                                    'weak-state': states[id].s != 2 && states[id].s != -2,
+                                    'active-split': id == activeSplitID
+                                }">
+                        <div fxLayout="column">
+                            <p style="margin:0;padding:0;font-size:12px!important;">{{states[id].c > 0 ? '+': ''}}{{states[id].c | number: '1.0-1'}}%</p>
+                            <span style="font-size:10px;margin-top:-5px">{{_ms.splitNames[id]}}</span>
+                        </div>
+                </mat-grid-tile>
+            </mat-grid-list>
+            <apx-chart
+                [series]="lineChart.series"
+                [chart]="lineChart.chart"
+                [dataLabels]="lineChart.dataLabels"
+                [xaxis]="lineChart.xaxis"
+                [yaxis]="lineChart.yaxis"
+                [stroke]="lineChart.stroke"
+            ></apx-chart>
+        </div>
+
+        <!-- Volume -->
+        <div *ngIf="volumeChart" style="overflow: hidden">
+            <apx-chart
+                [series]="volumeChart.series"
+                [chart]="volumeChart.chart"
+                [dataLabels]="volumeChart.dataLabels"
+                [xaxis]="volumeChart.xaxis"
+                [yaxis]="volumeChart.yaxis"
+                [annotations]="volumeChart.annotations"
+            ></apx-chart>
+        </div>
+    </div>
+</div>

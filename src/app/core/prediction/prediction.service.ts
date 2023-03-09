@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { ApiService } from "../api";
-import { IPrediction, IPredictionResultName, IPredictionResultIcon } from "../epoch-builder";
+import { IPrediction, IPredictionResultName } from "../epoch-builder";
 import { IPredictionCandlestick, IPredictionService, IPredictionStateIntensityConfig } from "./interfaces";
 
 @Injectable({
@@ -14,13 +14,6 @@ export class PredictionService implements IPredictionService {
 		"-1": "Short",
 		 "0": "Neutral"
 	}
-
-	// Prediction Result Icons
-	public readonly resultIconNames: {[result: string]: IPredictionResultIcon} = {
-		"1": "trending_up",
-	   "-1": "trending_down",
-		"0": "trending_flat"
-   	}
 
 	// Prediction Result Image Paths
 	public readonly resultImagePaths: {[result: string]: string} = {

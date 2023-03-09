@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import * as moment from "moment";
 import { ApexAnnotations, ApexChart, ApexPlotOptions, ApexYAxis, ApexAxisChartSeries, ApexXAxis } from "ng-apexcharts";
-import { IBacktestPosition, ICandlestick, IPositionHealthCandlestick, IPredictionCandlestick, UtilsService } from "../../core";
+import { IBacktestPosition, ICandlestick, IPredictionCandlestick, UtilsService } from "../../core";
 import { AppService, ILayout } from "../app";
 import { 
 	IApexCandlestick, 
@@ -67,7 +67,7 @@ export class ChartService implements IChartService {
      * @returns ICandlestickChartOptions
      */
 	public getCandlestickChartOptions(
-		 candlesticks: Array<ICandlestick|IPredictionCandlestick|IPositionHealthCandlestick>, 
+		 candlesticks: Array<ICandlestick|IPredictionCandlestick>, 
 		 annotations?: ApexAnnotations, 
 		 highlightCurrentPrice?: boolean,
 		 disableNiceScale?: boolean,
@@ -124,7 +124,7 @@ export class ChartService implements IChartService {
 	 * Given a list of raw candlesticks, it will convert them into Apex format.
 	 * @returns IApexCandlestick[]
 	 */
-    public getApexCandlesticks(candlesticks: Array<ICandlestick|IPredictionCandlestick|IPositionHealthCandlestick>): IApexCandlestick[] {
+    public getApexCandlesticks(candlesticks: Array<ICandlestick|IPredictionCandlestick>): IApexCandlestick[] {
 		// Init the final list
 		let final: IApexCandlestick[] = [];
 
@@ -145,7 +145,7 @@ export class ChartService implements IChartService {
 	 * Retrieves the title to be placed in the chart.
 	 * @returns string
 	 */
-     private getCandlesticksTitle(candlesticks: Array<ICandlestick|IPredictionCandlestick|IPositionHealthCandlestick>): string {
+     private getCandlesticksTitle(candlesticks: Array<ICandlestick|IPredictionCandlestick>): string {
 		// Init values
         const l: ILayout = this._app.layout.value;
 		let title: string = "";
@@ -172,7 +172,7 @@ export class ChartService implements IChartService {
 	 * @param candlesticks 
 	 * @returns IChartRange
 	 */
-	private getCandlesticksChartRange(candlesticks: Array<ICandlestick|IPredictionCandlestick|IPositionHealthCandlestick>): IChartRange {
+	private getCandlesticksChartRange(candlesticks: Array<ICandlestick|IPredictionCandlestick>): IChartRange {
 		// Init lists
 		let high: number[] = [];
 		let low: number[] = [];
@@ -271,6 +271,7 @@ export class ChartService implements IChartService {
 		plotOptionsDistributed?: boolean,
 		disableNiceScale?: boolean,
 		range?: IChartRange,
+		annotations?: ApexAnnotations
 	): IBarChartOptions {
 		// Init the default chart
 		let defaultChart: ApexChart = {height: 600, type: "bar",animations: { enabled: false}, toolbar: {show: false}};
@@ -313,7 +314,8 @@ export class ChartService implements IChartService {
 			grid: config.grid ? config.grid: {show: false},
 			fill: config.fill ? config.fill: {},
 			xaxis: xaxis,
-			yaxis: yaxis
+			yaxis: yaxis,
+			annotations: annotations ? annotations: {}
 		}
 	}
 

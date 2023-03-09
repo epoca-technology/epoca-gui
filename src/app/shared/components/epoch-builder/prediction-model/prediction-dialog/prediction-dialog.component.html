@@ -30,7 +30,7 @@
                 'square-badge-neutral': featuresSum == 0,
                 'stateless': featuresSum == 0,
                 'state': (featuresSum > 0 && featuresSum < model.min_increase_sum) || (featuresSum < 0 && featuresSum > model.min_decrease_sum)
-                }" matTooltip="Features Sum">
+                }">
                 {{featuresSum | number: '1.0-6'}}
             </div>
         </div>

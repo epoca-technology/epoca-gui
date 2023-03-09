@@ -45,12 +45,6 @@ const routes: Routes = [
 		loadChildren: () => import("./modules/candlesticks/candlesticks.module").then(m => m.CandlesticksModule),
 	},
 
-	// Order Book
-	{
-		path: "orderBook",
-		loadChildren: () => import("./modules/order-book/order-book.module").then(m => m.OrderBookModule),
-	},
-
 	// Server
 	{
 		path: "server",

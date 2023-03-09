@@ -1,0 +1,485 @@
+<!-- SideNav Container -->
+<mat-drawer-container class="section-container">
+
+    <!-- Sidenav -->
+    <mat-drawer #homeSidenav [(opened)]="sidenavOpened" class="sidenav" position="end" mode="over" autoFocus="false" *ngIf="layout == 'mobile'">
+
+        <!-- Menu Heading Toolbar -->
+        <mat-toolbar color="primary">
+            <div fxLayout="row" fxLayoutAlign="start center">
+                <span>Menu</span>
+                <span fxFlex></span>
+                <button mat-icon-button (click)="signOut()" matTooltip="Sign Out"><mat-icon>logout</mat-icon></button>
+                <button mat-icon-button (click)="createNewInstance()" matTooltip="Create New Instance"><mat-icon>open_in_new</mat-icon></button>
+                <button mat-icon-button (click)="sidenav?.toggle()"><mat-icon>arrow_forward</mat-icon></button>
+            </div>
+        </mat-toolbar>
+
+        <!-- Menu Content -->
+        <mat-list>
+            <!-- Epochs -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.epochs()">
+                    <mat-icon svgIcon="brain"></mat-icon><span>Epochs</span>
+                </button>
+            </mat-list-item>
+
+            <!-- Order Book -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.orderBook()">
+                    <mat-icon>menu_book</mat-icon><span>Order Book</span>
+                </button>
+            </mat-list-item>
+
+            <!-- Users -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.users()">
+                    <mat-icon>people_alt</mat-icon><span>Users</span>
+                </button>
+            </mat-list-item>
+
+            
+            <!-- GUI Version -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.guiVersion()">
+                    <mat-icon>update</mat-icon><span>GUI Version</span>
+                </button>
+            </mat-list-item>
+
+            <!-- IP Blacklist -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.ipBlacklist()">
+                    <mat-icon>vpn_lock</mat-icon><span>IP Blacklist</span>
+                </button>
+            </mat-list-item>
+
+
+
+            <!-- Epoch Builder Menu -->
+            <mat-list-item [ngClass]="{'active-sub-menu': builderExpanded}">
+                <button mat-button class="left-icon-button" (click)="builderExpanded = !builderExpanded">
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <mat-icon svgIcon="compass_drafting" class="compass-drafting"></mat-icon>&nbsp;
+                        <span>Epoch Builder</span>
+                        <span fxFlex></span>
+                        <mat-icon>{{builderExpanded ? 'arrow_drop_up': 'arrow_drop_down'}}</mat-icon>
+                    </div>
+                </button>
+            </mat-list-item>
+
+            <!-- Regression Training Certificates -->
+            <mat-list-item *ngIf="builderExpanded" class="active-sub-menu">
+                <button mat-button (click)="_nav.regressions()">
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <span>Regressions</span>
+                        <span fxFlex></span>
+                        <img src="assets/img/model_logos/Regression.png" alt="Model Logo" class="small-model-logo">
+                    </div>
+                </button>
+            </mat-list-item>
+
+            <!-- Prediction Model Certificates -->
+            <mat-list-item *ngIf="builderExpanded" class="active-sub-menu">
+                <button mat-button (click)="_nav.predictionModels()">
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <span>Prediction Models</span>
+                        <span fxFlex></span>
+                        <img src="assets/img/model_logos/PredictionModel.png" alt="Model Logo" class="small-model-logo">
+                    </div>
+                </button>
+            </mat-list-item>
+            <!-- Epoch Builder Menu -->
+
+
+
+            <!-- PGAdmin -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.openPGAdmin()">
+                    <mat-icon>open_in_new</mat-icon><span>PGAdmin</span>
+                </button>
+            </mat-list-item>
+
+
+            <!-- Dozzle -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.openDozzle()">
+                    <mat-icon>open_in_new</mat-icon><span>Dozzle</span>
+                </button>
+            </mat-list-item>
+
+            <!-- Local Database -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.localDatabase()">
+                    <mat-icon svgIcon="database"></mat-icon><span>Local Database</span>
+                </button>
+            </mat-list-item>
+        </mat-list>
+    </mat-drawer>
+
+
+
+
+    <!-- Section Content -->
+    <mat-drawer-content>
+        <div>
+
+
+            <!-- Section Header -->
+            <mat-toolbar class="secondary-header">
+                <div fxLayout="row" fxLayoutAlign="center center">
+                    <!-- Logo -->
+                    <img *ngIf="!epoch && layout == 'mobile'" src="assets/img/logo.png" alt="Logo">
+                    <img *ngIf="epoch && layout == 'mobile'" src="assets/img/logo.png" alt="Logo" 
+                        matRipple
+                        (click)="_nav.displayPredictionModelConfigDialog(epoch.model)">
+                    <span *ngIf="!epoch && layout == 'desktop'">Dashboard</span>
+                    <span *ngIf="epoch && layout == 'desktop'" 
+                            class="clickable" 
+                            (click)="_nav.displayPredictionModelConfigDialog(epoch.model)">
+                            {{epoch.id}}
+                    </span>
+                    
+                    <span fxFlex></span>
+
+                    <!-- Balance -->
+                    <button mat-button 
+                            *ngIf="loaded && layout == 'desktop'"
+                            (click)="displayBalanceDialog()"
+                            [disabled]="submitting"
+                            matTooltip="Updated: {{position.balance.ts | date: 'short'}}">
+                            <mat-icon style="font-size:22px;">account_balance_wallet</mat-icon>&nbsp;Balance
+                    </button>
+                    <button mat-icon-button 
+                            *ngIf="loaded && layout == 'mobile'"
+                            (click)="displayBalanceDialog()"
+                            [disabled]="submitting">
+                            <mat-icon style="font-size:22px;">account_balance_wallet</mat-icon>
+                    </button>
+
+                    <!-- Adjustments -->
+                    <button mat-button 
+                            *ngIf="loaded && layout == 'desktop'"
+                            (click)="displayAdjustmentsMenu()">
+                            <mat-icon style="font-size:23px;">tune</mat-icon>&nbsp;Adjustments
+                    </button>
+                    <button mat-icon-button 
+                            *ngIf="loaded && layout == 'mobile'"
+                            (click)="displayAdjustmentsMenu()">
+                            <mat-icon style="font-size:22px;">tune</mat-icon>
+                    </button>
+
+                    <!-- Menu -->
+                    <button mat-icon-button 
+                            (click)="sidenav?.toggle()" 
+                            [disabled]="submitting"
+                            class="show-on-mobile"><mat-icon style="font-size:26px;">menu</mat-icon></button>
+                </div>
+            </mat-toolbar>
+
+            <!-- Loader -->
+            <div *ngIf="!loaded" class="section-loader">
+                <div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div>
+            </div>
+
+            <!-- Section Content -->
+            <div *ngIf="loaded" [ngClass]="{'section-content': layout == 'mobile'}">
+                <!-- Component content -->
+                <div class="component padding">
+                    <!-- New Version -->
+                    <div *ngIf="newVersionAvailable" style="margin: 0 0 15px 0;text-align: center;">
+                        <p class="clickable" role="button" (click)="_nav.guiVersion()">
+                            <mat-icon>update</mat-icon> Version <strong>{{newVersionAvailable}}</strong> is now available
+                        </p>
+                    </div>
+
+                    <!-- Dashboard Content-->
+                    <div fxLayout="row" fxLayoutAlign="center start" fxLayout.xs="column" fxLayout.sm="column" class="full-width">
+                        <!-- Window State -->
+                        <div fxFlex="64" fxFlex.xs="100" fxFlex.sm="100" class="chart-card full-width">
+                            <!-- Heading -->
+                            <div fxLayout="row" fxLayoutAlign="start start" fxLayoutAlign.xs="center center" fxLayoutAlign.sm="center center"
+                                class="chart-card-heading">
+                                <div class="show-on-desktop">
+                                    <h4>
+                                        Window 
+                                        <mat-icon style="font-size:14px;" 
+                                                class="clickable" 
+                                                role="button" 
+                                                (click)="windowTooltip()" 
+                                                matTooltip="More information">question_mark</mat-icon>
+                                    </h4>
+                                    <p class="light-text ts-xs">
+                                        {{state.window.ts | date: layout == 'desktop' ? 'medium': 'mediumTime'}}
+                                    </p>
+                                </div>
+                                <span fxFlex class="show-on-desktop"></span>
+                            </div>
+
+                            <!-- Chart -->
+                            <div *ngIf="windowChart">
+                                <apx-chart
+                                    [series]="windowChart.series!"
+                                    [chart]="windowChart.chart!"
+                                    [plotOptions]="windowChart.plotOptions!"
+                                    [xaxis]="windowChart.xaxis!"
+                                    [yaxis]="windowChart.yaxis!"
+                                    [annotations]="windowChart!.annotations!"
+                                ></apx-chart>
+                            </div>
+                        </div>
+
+                        <span fxFlex></span>
+
+                        <!-- Rest of the Indicators -->
+                        <div fxFlex="35" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                            <!-- Trend -->
+                            <div class="divider show-on-mobile"></div>
+                            <div>
+                                <div class="chart-card">
+                                    <!-- Heading -->
+                                    <div fxLayout="row" fxLayoutAlign="center center"
+                                        class="chart-card-heading badged-header full-width">
+                                        <!-- Signal -->
+                                        <h4>Trend</h4>
+
+                                        <span fxFlex></span>
+
+                                        <!-- KeyZones -->
+                                        <div class="state-badge clickable" role="button" matRipple
+                                            matTooltip="KeyZones"
+                                            [ngClass]="{
+                                                'square-badge': state.keyzones.active,
+                                                'square-badge-neutral': !state.keyzones.active,
+                                                'stateless': !state.keyzones.active
+                                            }"
+                                            (click)="displayKeyZonesDialog()">
+                                            <mat-icon style="font-size:17px;">vertical_distribute</mat-icon>
+                                        </div>
+
+                                        <!-- Trend -->
+                                        <div (click)="displayActivePredictionDialog()"
+                                            matTooltip="Display Prediction"
+                                            class="state-badge clickable" role="button" matRipple 
+                                            [ngClass]="{
+                                                'square-badge-success': activePredictionStateIntensity > 0,
+                                                'square-badge-error': activePredictionStateIntensity < 0,
+                                                'square-badge-neutral': activePredictionStateIntensity == 0,
+                                                'state': activePredictionStateIntensity == 1 || activePredictionStateIntensity == -1,
+                                                'stateless': activePredictionStateIntensity == 0
+                                            }">
+                                            <mat-icon [svgIcon]="_ms.icons[activePredictionStateIntensity]"></mat-icon>
+                                            {{activeSum | number: '1.0-3'}}
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Candlesticks Chart -->
+                                    <div class="prediction-candlesticks-container">
+                                        <apx-chart
+                                                [series]="predictionCandlesticksChart!.series!"
+                                                [chart]="predictionCandlesticksChart!.chart!"
+                                                [plotOptions]="predictionCandlesticksChart!.plotOptions!"
+                                                [xaxis]="predictionCandlesticksChart!.xaxis!"
+                                                [yaxis]="predictionCandlesticksChart!.yaxis!"
+                                                [annotations]="predictionCandlesticksChart!.annotations!"
+                                                [title]="predictionCandlesticksChart!.title!"
+                                        ></apx-chart>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="divider show-on-mobile"></div>
+
+                            <!-- Global Indicators -->
+                            <div class="chart-card">
+                                <!-- Volume & Network Fee -->
+                                <div>
+                                    <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" class="full-width">
+                                        <!-- Volume -->
+                                        <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                                            <div>
+                                                <!-- Heading -->
+                                                <div fxLayout="row" fxLayoutAlign="center center" class="chart-card-heading">
+                                                    <h4 matTooltip="Updated: {{state.volume.ts | date: 'short'}}">Volume</h4>
+                                                    <span fxFlex></span>
+                                                    <div matTooltip="More information"
+                                                        (click)="volumeTooltip()"
+                                                        class="state-badge clickable" role="button" matRipple
+                                                        [ngClass]="{
+                                                            'square-badge-success': state.volume.state > 0,
+                                                            'square-badge-error': state.volume.state < 0,
+                                                            'square-badge-neutral': state.volume.state == 0,
+                                                            'state': state.volume.state == 1 || state.volume.state == -1,
+                                                            'stateless': state.volume.state == 0
+                                                        }">
+                                                        <mat-icon [svgIcon]="_ms.icons[state.volume.state]"></mat-icon>
+                                                        {{state.volume.state_value > 0 ? '+': ''}}{{state.volume.state_value | number: '1.0-0'}}%
+                                                    </div>
+                                                </div>
+                        
+                                                <!-- Chart -->
+                                                <div *ngIf="volumeChart">
+                                                    <apx-chart
+                                                        [series]="volumeChart.series"
+                                                        [chart]="volumeChart.chart"
+                                                        [dataLabels]="volumeChart.dataLabels"
+                                                        [xaxis]="volumeChart.xaxis"
+                                                        [yaxis]="volumeChart.yaxis"
+                                                        [grid]="{show: false}"
+                                                    ></apx-chart>
+                                                </div>
+                                            </div>
+                                        </div>
+                    
+                                        <span fxFlex></span>
+                                        <div class="divider show-on-mobile"></div>
+
+
+
+                                        <!-- Technicals -->
+                                        <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                                            <div>
+                                                <!-- Heading -->
+                                                <div fxLayout="row" fxLayoutAlign="center center" class="chart-card-heading">
+                                                    <h4 matTooltip="Updated: {{state.technical_analysis.ts | date: 'short'}}">Technicals</h4>
+                                                    <span fxFlex></span>
+                                                    <div matTooltip="More information"
+                                                        (click)="technicalsTooltip()"
+                                                        class="state-badge clickable" role="button" matRipple
+                                                        [ngClass]="{
+                                                            'square-badge-success': state.technical_analysis.r > 0,
+                                                            'square-badge-error': state.technical_analysis.r < 0,
+                                                            'square-badge-neutral': state.technical_analysis.r == 0,
+                                                            'state': state.technical_analysis.r == 1 || state.technical_analysis.r == -1,
+                                                            'stateless': state.technical_analysis.r == 0
+                                                        }">
+                                                        {{_ms.taStates[state.technical_analysis.r]}}
+                                                    </div>
+                                                </div>
+                        
+                                                <!-- Grid -->
+                                                <div class="padding margin-top">
+                                                    <mat-grid-list [cols]="3" rowHeight="44px" gutterSize="1px">
+                                                        <mat-grid-tile *ngFor="let taInterval of taIntervals" 
+                                                                        class="clickable" role="button" matRipple
+                                                                        (click)="displayTechnicalAnalysisDialog(taInterval)"
+                                                                        [ngClass]="{
+                                                                            'buy-action-container': state.technical_analysis[taInterval].s.a > 0,
+                                                                            'sell-action-container': state.technical_analysis[taInterval].s.a < 0,
+                                                                            'neutral-action-container': state.technical_analysis[taInterval].s.a == 0,
+                                                                            'state': state.technical_analysis[taInterval].s.a == 1 || state.technical_analysis[taInterval].s.a == -1,
+                                                                            'stateless': state.technical_analysis[taInterval].s.a == 0
+                                                                        }"
+                                                                        [matTooltip]="_ms.taStates[state.technical_analysis[taInterval].s.a]" 
+                                                                        matTooltipPosition="above"><p>{{taInterval}}</p></mat-grid-tile>
+                                                    </mat-grid-list>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Open Interest & Long/Short Ratio-->
+                                <div>
+                                    <div class="divider show-on-mobile"></div>
+                                    <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" class="full-width">
+                                        <!-- Open Interest -->
+                                        <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                                            <div>
+                                                <!-- Heading -->
+                                                <div fxLayout="row" fxLayoutAlign="center center" class="chart-card-heading">
+                                                    <h4 matTooltip="Updated: {{state.open_interest.ts | date: 'short'}}">Open Interest</h4>
+                                                    <span fxFlex></span>
+                                                    <div matTooltip="More information"
+                                                        (click)="openInterestTooltip()"
+                                                        class="state-badge clickable" role="button" matRipple
+                                                        [ngClass]="{
+                                                            'square-badge-success': state.open_interest.state > 0,
+                                                            'square-badge-error': state.open_interest.state < 0,
+                                                            'square-badge-neutral': state.open_interest.state == 0,
+                                                            'state': state.open_interest.state == 1 || state.open_interest.state == -1,
+                                                            'stateless': state.open_interest.state == 0
+                                                        }">
+                                                        <mat-icon [svgIcon]="_ms.icons[state.open_interest.state]"></mat-icon>
+                                                        {{state.open_interest.state_value > 0 ? '+': ''}}{{state.open_interest.state_value | number: '1.0-1'}}%
+                                                    </div>
+                                                </div>
+                        
+                                                <!-- Chart -->
+                                                <div *ngIf="openInterestChart">
+                                                    <apx-chart
+                                                        [series]="openInterestChart.series"
+                                                        [chart]="openInterestChart.chart"
+                                                        [dataLabels]="openInterestChart.dataLabels"
+                                                        [xaxis]="openInterestChart.xaxis"
+                                                        [yaxis]="openInterestChart.yaxis"
+                                                        [stroke]="openInterestChart.stroke"
+                                                        [grid]="{show: false}"
+                                                    ></apx-chart>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                    
+                                        <span fxFlex></span>
+                                        <div class="divider show-on-mobile"></div>
+
+
+
+                                        <!-- Long/Short Ratio -->
+                                        <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                                            <div>
+                                                <!-- Heading -->
+                                                <div fxLayout="row" fxLayoutAlign="center center" class="chart-card-heading">
+                                                    <h4 matTooltip="Updated: {{state.long_short_ratio.ts | date: 'short'}}">Long vs Short</h4>
+                                                    <span fxFlex></span>
+                                                    <div matTooltip="More information"
+                                                        (click)="longShortRatioTooltip()" 
+                                                        class="state-badge clickable" role="button" matRipple
+                                                        [ngClass]="{
+                                                            'square-badge-success': state.long_short_ratio.state > 0,
+                                                            'square-badge-error': state.long_short_ratio.state < 0,
+                                                            'square-badge-neutral': state.long_short_ratio.state == 0,
+                                                            'state': state.long_short_ratio.state == 1 || state.long_short_ratio.state == -1,
+                                                            'stateless': state.long_short_ratio.state == 0
+                                                        }">
+                                                        <mat-icon [svgIcon]="_ms.icons[state.long_short_ratio.state]"></mat-icon>
+                                                        {{state.long_short_ratio.state_value > 0 ? '+': ''}}{{state.long_short_ratio.state_value | number: '1.0-1'}}%
+                                                    </div>
+                                                </div>
+                        
+                                                <!-- Chart -->
+                                                <div *ngIf="longShortRatioChart">
+                                                    <apx-chart
+                                                        [series]="longShortRatioChart.series"
+                                                        [chart]="longShortRatioChart.chart"
+                                                        [dataLabels]="longShortRatioChart.dataLabels"
+                                                        [xaxis]="longShortRatioChart.xaxis"
+                                                        [yaxis]="longShortRatioChart.yaxis"
+                                                        [stroke]="longShortRatioChart.stroke"
+                                                        [grid]="{show: false}"
+                                                    ></apx-chart>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submission Card -->
+            <div class="submission-status" fxLayout="row" fxLayoutAlign="center center" *ngIf="submitting">
+                <mat-spinner diameter="25"></mat-spinner><p class="ts-m">{{submittingText}}</p>
+            </div>
+
+            <!-- Mobile Tabs -->
+            <app-mobile-tabs *ngIf="layout == 'mobile'"></app-mobile-tabs>
+        </div>
+    </mat-drawer-content>
+</mat-drawer-container>
+
+
+

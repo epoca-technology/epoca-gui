@@ -60,7 +60,7 @@ export class PredictionDialogComponent implements OnInit, IPredictionDialogCompo
 				colors: colors,
 				xaxis: {categories: [ "Features" ], labels: {show: false}},
 				//yaxis: {labels: {show: false}},
-				plotOptions: { bar: { horizontal: false}},
+				plotOptions: { bar: { horizontal: false, columnWidth: "100%"}},
 			}, 
 			[ "Features" ], 
 			300,

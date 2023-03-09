@@ -77,21 +77,14 @@ import {
 	// Notification
 	NotificationService,
 
-	// Order Book
-	OrderBookService,
-
 	// Position
 	PositionService,
-	PositionDataService,
 
 	// Prediction
 	PredictionService,
 
 	// Server
 	ServerService,
-
-	// Signal
-	SignalService,
 
 	// Utils
 	UtilsService
@@ -114,25 +107,19 @@ import {SharedModule} from "./shared";
 
 // Pre-Loaded Components
 import { 
-	ActivePositionDialogComponent,
 	BalanceDialogComponent, 
-	SignalPoliciesDialogComponent,
-	SignalPolicyItemComponent,
 	StrategyFormDialogComponent,
 	TechnicalAnalysisDialogComponent,
-	PositionHealthDialogComponent,
-	PositionHealthWeightsFormDialogComponent,
 	PredictionStateIntensityFormDialogComponent,
-	PositionHealthDetailsDialogComponent,
-	PositionHpCalculatorDialogComponent,
 	DashboardComponent, 
+	KeyzonesDialogComponent,
+	KeyzoneReversalsDialogComponent,
+	MarketStateDialogComponent
 } from "./modules/dashboard";
 
 
 // Core Components
 import { AppComponent } from "./app.component";
-import { KeyzonesDialogComponent } from './modules/dashboard/keyzones-dialog/keyzones-dialog.component';
-import { KeyzoneReversalsDialogComponent } from './modules/dashboard/keyzones-dialog/keyzone-reversals-dialog/keyzone-reversals-dialog.component';
 
 
 
@@ -146,18 +133,12 @@ import { KeyzoneReversalsDialogComponent } from './modules/dashboard/keyzones-di
 		// Pre-Loaded Components
 		DashboardComponent,
 		BalanceDialogComponent,
-		SignalPoliciesDialogComponent,
-		SignalPolicyItemComponent,
 		StrategyFormDialogComponent,
 		TechnicalAnalysisDialogComponent,
-		ActivePositionDialogComponent,
-		PositionHealthDialogComponent,
-		PositionHpCalculatorDialogComponent,
-		PositionHealthWeightsFormDialogComponent,
 		PredictionStateIntensityFormDialogComponent,
-		PositionHealthDetailsDialogComponent,
-  KeyzonesDialogComponent,
-  KeyzoneReversalsDialogComponent,
+		KeyzonesDialogComponent,
+		KeyzoneReversalsDialogComponent,
+  		MarketStateDialogComponent,
 	],
 	imports: [
 		// Core
@@ -229,21 +210,14 @@ import { KeyzoneReversalsDialogComponent } from './modules/dashboard/keyzones-di
 		// Notification
 		NotificationService,
 
-		// Order Book
-		OrderBookService,
-
 		// Position
 		PositionService,
-		PositionDataService,
 
 		// Prediction
 		PredictionService,
 
 		// Server
 		ServerService,
-
-		// Signal
-		SignalService,
 
 		// Utils
 		UtilsService,

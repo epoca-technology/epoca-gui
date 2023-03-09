@@ -24,13 +24,6 @@
                 </button>
             </mat-list-item>
 
-            <!-- Order Book -->
-            <mat-list-item>
-                <button mat-button class="left-icon-button" (click)="_nav.orderBook()">
-                    <mat-icon>menu_book</mat-icon><span>Order Book</span>
-                </button>
-            </mat-list-item>
-
             <!-- Users -->
             <mat-list-item>
                 <button mat-button class="left-icon-button" (click)="_nav.users()">
@@ -145,8 +138,7 @@
                     <button mat-button 
                             *ngIf="loaded && layout == 'desktop'"
                             (click)="displayBalanceDialog()"
-                            [disabled]="submitting"
-                            matTooltip="Updated: {{position.balance.ts | date: 'short'}}">
+                            [disabled]="submitting">
                             <mat-icon style="font-size:22px;">account_balance_wallet</mat-icon>&nbsp;Balance
                     </button>
                     <button mat-icon-button 
@@ -159,30 +151,14 @@
                     <!-- Adjustments -->
                     <button mat-button 
                             *ngIf="loaded && layout == 'desktop'"
-                            [matMenuTriggerFor]="adjustmentsMenu"
-                            [disabled]="submitting">
+                            (click)="displayAdjustmentsMenu()">
                             <mat-icon style="font-size:23px;">tune</mat-icon>&nbsp;Adjustments
                     </button>
                     <button mat-icon-button 
                             *ngIf="loaded && layout == 'mobile'"
-                            [matMenuTriggerFor]="adjustmentsMenu"
-                            [disabled]="submitting">
+                            (click)="displayAdjustmentsMenu()">
                             <mat-icon style="font-size:22px;">tune</mat-icon>
                     </button>
-                    <mat-menu #adjustmentsMenu="matMenu">
-                        <button mat-menu-item (click)="displayStrategyFormDialog()">
-                            <mat-icon svgIcon="money_bill_transfer"></mat-icon> <span>Trading Strategy</span>
-                        </button>
-                        <button mat-menu-item (click)="displaySignalPoliciesDialog()">
-                            <mat-icon>podcasts</mat-icon> <span>Signal Policies</span>
-                        </button>
-                        <button mat-menu-item (click)="displayPredictionStateIntensityFormDialog()">
-                            <mat-icon>swap_vert</mat-icon> <span>Pred. State Intensity</span>
-                        </button>
-                        <button mat-menu-item (click)="displayPositionHealthWeightsFormDialog()">
-                            <mat-icon>monitor_heart</mat-icon> <span>Health Point Weights</span>
-                        </button>
-                    </mat-menu>
 
                     <!-- Menu -->
                     <button mat-icon-button 
@@ -215,224 +191,39 @@
                             <!-- Heading -->
                             <div fxLayout="row" fxLayoutAlign="start start" fxLayoutAlign.xs="center center" fxLayoutAlign.sm="center center"
                                 class="chart-card-heading">
-                                <div class="show-on-desktop">
-                                    <h4>
-                                        Window 
-                                        <mat-icon style="font-size:14px;" 
-                                                class="clickable" 
-                                                role="button" 
-                                                (click)="windowTooltip()" 
-                                                matTooltip="More information">question_mark</mat-icon>
-                                    </h4>
+                                <div class="show-on-desktop clickable" role="button" (click)="windowTooltip()">
+                                    <div fxLayout="row" fxLayoutAlign="start center">
+                                        <h4>Window</h4>
+                                        <mat-icon style="margin-left:5px;width:16px;height:16px"
+                                            [ngClass]="{
+                                                'success-color': state.window.s > 0,
+                                                'error-color': state.window.s < 0,
+                                                'light-text': state.window.s == 0
+                                            }" 
+                                            [svgIcon]="_ms.icons[state.window.s]"></mat-icon>
+                                    </div>
                                     <p class="light-text ts-xs">
-                                        {{state.window.ts | date: layout == 'desktop' ? 'medium': 'mediumTime'}}
+                                        {{state.window.w[state.window.w.length - 1].ct | date: layout == 'desktop' ? 'medium': 'mediumTime'}}
                                     </p>
                                 </div>
                                 <span fxFlex class="show-on-desktop"></span>
 
-                                <!-- Long Position -->
-                                <div *ngIf="!position.long" 
-                                    class="clickable long-position-button truncate" role="button" matRipple
-                                    [matMenuTriggerFor]="longMenu">
-                                    <div class="hp" style="width:100%;"></div>
-                                    <p>LONG: none</p>
+                                <div fxFlex>
+                                    <mat-grid-list [cols]="4" rowHeight="35px" gutterSize="1px">
+                                        <mat-grid-tile *ngFor="let id of _ms.splits" 
+                                                        class="clickable" role="button" matRipple
+                                                        (click)="displayWindowDialog(id)"
+                                                        [ngClass]="{
+                                                            'buy-action-container': state.window.ss[id].s > 0,
+                                                            'sell-action-container': state.window.ss[id].s < 0,
+                                                            'neutral-action-container': state.window.ss[id].s == 0,
+                                                            'weak-state': state.window.ss[id].s != 2 && state.window.ss[id].s != -2
+                                                        }">
+                                                <p>{{state.window.ss[id].c > 0 ? '+': ''}}{{state.window.ss[id].c | number: '1.0-1'}}%</p>
+                                        </mat-grid-tile>
+                                    </mat-grid-list>
                                 </div>
-                                <div *ngIf="position.long" 
-                                    class="clickable long-position-button truncate" role="button" matRipple
-                                    [matMenuTriggerFor]="longMenu"
-                                    [matTooltip]="userPreferences.positionButtonPNL ? longHPState: longPNLState">
-                                    <div *ngIf="position.health.long" class="hp" 
-                                            [ngStyle]="{'width': -(position.health.long.dd) + '%'}"></div>
-                                    <p class="truncate">LONG: {{userPreferences.positionButtonPNL ? longPNLState: longHPState}}</p>
-                                </div>
-                                <mat-menu #longMenu="matMenu">
-                                    <button mat-menu-item 
-                                            *ngIf="!position.long && canOpenLong"
-                                            (click)="openPosition('LONG')"
-                                            [disabled]="submitting">
-                                        <mat-icon>add</mat-icon>
-                                        <span>Open Long</span>
-                                    </button>
-                                    <button mat-menu-item 
-                                            *ngIf="position.long"
-                                            (click)="togglePositionButtonContent()"
-                                            [disabled]="submitting">
-                                        <mat-icon>visibility</mat-icon>
-                                        <span>{{userPreferences.positionButtonPNL ? longHPState: longPNLState}}</span>
-                                    </button>
-                                    <button mat-menu-item 
-                                            *ngIf="position.long"
-                                            (click)="displayPositionDialog(position.long)"
-                                            [disabled]="submitting || !position.health">
-                                        <mat-icon>info</mat-icon>
-                                        <span>Position Details</span>
-                                    </button>
-                                    <button mat-menu-item 
-                                            *ngIf="position.health && position.health.long"
-                                            (click)="displayHealthDialog('LONG')"
-                                            [disabled]="submitting">
-                                        <mat-icon>monitor_heart</mat-icon>
-                                        <span>Position Health</span>
-                                    </button>
-                                    <button mat-menu-item 
-                                            *ngIf="position.long"
-                                            [matMenuTriggerFor]="closeLongMenu"
-                                            [disabled]="submitting">
-                                        <mat-icon>close</mat-icon>
-                                        <span>Close Long</span>
-                                    </button>
-                                </mat-menu>
-                                <mat-menu #closeLongMenu="matMenu">
-                                    <div *ngIf="longChunkSize">
-                                        <button mat-menu-item (click)="closePosition('LONG', 1)">
-                                            <div fxLayout="row" fxLayoutAlign="center center">
-                                                <strong>100%</strong>&nbsp;&nbsp;
-                                                <span fxFlex></span>
-                                                <span class="light-text ts-xs">{{longChunkSize[1] | currency}}</span>
-                                            </div>
-                                        </button>
-                                        <button mat-menu-item (click)="closePosition('LONG', 0.75)">
-                                            <div fxLayout="row" fxLayoutAlign="center center">
-                                                <strong>75%</strong>
-                                                <span fxFlex></span>
-                                                <span class="light-text ts-xs">{{longChunkSize[0.75] | currency}}</span>
-                                            </div>
-                                        </button>
-                                        <button mat-menu-item (click)="closePosition('LONG', 0.66)">
-                                            <div fxLayout="row" fxLayoutAlign="center center">
-                                                <strong>66%</strong>
-                                                <span fxFlex></span>
-                                                <span class="light-text ts-xs">{{longChunkSize[0.66] | currency}}</span>
-                                            </div>
-                                        </button>
-                                        <button mat-menu-item (click)="closePosition('LONG', 0.5)">
-                                            <div fxLayout="row" fxLayoutAlign="center center">
-                                                <strong>50%</strong>
-                                                <span fxFlex></span>
-                                                <span class="light-text ts-xs">{{longChunkSize[0.5] | currency}}</span>
-                                            </div>
-                                        </button>
-                                        <button mat-menu-item (click)="closePosition('LONG', 0.33)">
-                                            <div fxLayout="row" fxLayoutAlign="center center">
-                                                <strong>33%</strong>
-                                                <span fxFlex></span>
-                                                <span class="light-text ts-xs">{{longChunkSize[0.33] | currency}}</span>
-                                            </div>
-                                        </button>
-                                        <button mat-menu-item (click)="closePosition('LONG', 0.25)">
-                                            <div fxLayout="row" fxLayoutAlign="center center">
-                                                <strong>25%</strong>
-                                                <span fxFlex></span>
-                                                <span class="light-text ts-xs">{{longChunkSize[0.25] | currency}}</span>
-                                            </div>
-                                        </button>
-                                    </div>
-                                </mat-menu>
-
-                                <span fxFlex="1" fxFlex.xs="2" fxFlex.sm="2"></span>
-
-                                <!-- Short Position -->
-                                <div *ngIf="!position.short" 
-                                    class="clickable short-position-button" role="button" matRipple
-                                    [matMenuTriggerFor]="shortMenu">
-                                    <div class="hp" style="width:100%;"></div>
-                                    <p>SHORT: none</p>
-                                </div>
-                                <div *ngIf="position.short" 
-                                    class="clickable short-position-button truncate" role="button" matRipple
-                                    [matMenuTriggerFor]="shortMenu"
-                                    [matTooltip]="userPreferences.positionButtonPNL ? shortHPState: shortPNLState">
-                                    <div *ngIf="position.health.short" class="hp" 
-                                            [ngStyle]="{'width': -(position.health.short.dd)  + '%'}"></div>
-                                    <p>SHORT: {{userPreferences.positionButtonPNL ? shortPNLState: shortHPState}}</p>
-                                </div>
-                                <mat-menu #shortMenu="matMenu">
-                                    <button mat-menu-item 
-                                            *ngIf="!position.short && canOpenShort"
-                                            (click)="openPosition('SHORT')"
-                                            [disabled]="submitting">
-                                        <mat-icon>add</mat-icon>
-                                        <span>Open Short</span>
-                                    </button>
-                                    <button mat-menu-item 
-                                            *ngIf="position.short"
-                                            (click)="togglePositionButtonContent()"
-                                            [disabled]="submitting">
-                                        <mat-icon>visibility</mat-icon>
-                                        <span>{{userPreferences.positionButtonPNL ? shortHPState: shortPNLState}}</span>
-                                    </button>
-                                    <button mat-menu-item 
-                                            *ngIf="position.short"
-                                            (click)="displayPositionDialog(position.short)"
-                                            [disabled]="submitting || !position.health">
-                                        <mat-icon>info</mat-icon>
-                                        <span>Position Details</span>
-                                    </button>
-                                    <button mat-menu-item 
-                                            *ngIf="position.health && position.health.short"
-                                            (click)="displayHealthDialog('SHORT')"
-                                            [disabled]="submitting">
-                                        <mat-icon>monitor_heart</mat-icon>
-                                        <span>Position Health</span>
-                                    </button>
-                                    <button mat-menu-item 
-                                            *ngIf="position.short"
-                                            [matMenuTriggerFor]="closeShortMenu"
-                                            [disabled]="submitting">
-                                        <mat-icon>close</mat-icon>
-                                        <span>Close Short</span>
-                                    </button>
-                                </mat-menu>
-                                <mat-menu #closeShortMenu="matMenu">
-                                    <div *ngIf="shortChunkSize">
-                                        <button mat-menu-item (click)="closePosition('SHORT', 1)">
-                                            <div fxLayout="row" fxLayoutAlign="center center">
-                                                <strong>100%</strong>&nbsp;&nbsp;
-                                                <span fxFlex></span>
-                                                <span class="light-text ts-xs">{{shortChunkSize[1] | currency}}</span>
-                                            </div>
-                                        </button>
-                                        <button mat-menu-item (click)="closePosition('SHORT', 0.75)">
-                                            <div fxLayout="row" fxLayoutAlign="center center">
-                                                <strong>75%</strong>
-                                                <span fxFlex></span>
-                                                <span class="light-text ts-xs">{{shortChunkSize[0.75] | currency}}</span>
-                                            </div>
-                                        </button>
-                                        <button mat-menu-item (click)="closePosition('SHORT', 0.66)">
-                                            <div fxLayout="row" fxLayoutAlign="center center">
-                                                <strong>66%</strong>
-                                                <span fxFlex></span>
-                                                <span class="light-text ts-xs">{{shortChunkSize[0.66] | currency}}</span>
-                                            </div>
-                                        </button>
-                                        <button mat-menu-item (click)="closePosition('SHORT', 0.5)">
-                                            <div fxLayout="row" fxLayoutAlign="center center">
-                                                <strong>50%</strong>
-                                                <span fxFlex></span>
-                                                <span class="light-text ts-xs">{{shortChunkSize[0.5] | currency}}</span>
-                                            </div>
-                                        </button>
-                                        <button mat-menu-item (click)="closePosition('SHORT', 0.33)">
-                                            <div fxLayout="row" fxLayoutAlign="center center">
-                                                <strong>33%</strong>
-                                                <span fxFlex></span>
-                                                <span class="light-text ts-xs">{{shortChunkSize[0.33] | currency}}</span>
-                                            </div>
-                                        </button>
-                                        <button mat-menu-item (click)="closePosition('SHORT', 0.25)">
-                                            <div fxLayout="row" fxLayoutAlign="center center">
-                                                <strong>25%</strong>
-                                                <span fxFlex></span>
-                                                <span class="light-text ts-xs">{{shortChunkSize[0.25] | currency}}</span>
-                                            </div>
-                                        </button>
-                                    </div>
-                                </mat-menu>
                             </div>
-                            <p class="light-text ts-xs align-center show-on-mobile" style="margin-top:3px;">
-                                {{state.window.ts | date: 'mediumTime'}}
-                            </p>
 
                             <!-- Chart -->
                             <div *ngIf="windowChart">
@@ -456,39 +247,44 @@
                             <div>
                                 <div class="chart-card">
                                     <!-- Heading -->
-                                    <div fxLayout="row" fxLayoutAlign="center center"
+                                    <div fxLayout="row" fxLayoutAlign="center start"
                                         class="chart-card-heading badged-header full-width">
-                                        <!-- Signal -->
-                                        <div fxLayout="row">
-                                            <mat-icon>podcasts</mat-icon>&nbsp;
-                                            <h4 *ngIf="!activePrediction">Neutral</h4>
-                                            <h4 *ngIf="activePrediction">{{_prediction.resultNames[signal]}}</h4>
-                                        </div>
+                                        <!-- Trend -->
+                                        <h4 class="clickable" role="button" (click)="predictionModelTooltip()">Trend</h4>
 
                                         <span fxFlex></span>
 
+
                                         <!-- KeyZones -->
                                         <div class="state-badge clickable" role="button" matRipple
-                                            matTooltip="KeyZones"
                                             [ngClass]="{
                                                 'square-badge': state.keyzones.active,
                                                 'square-badge-neutral': !state.keyzones.active,
-                                                'stateless': !state.keyzones.active
+                                                'weak-state': !state.keyzones.active
                                             }"
                                             (click)="displayKeyZonesDialog()">
                                             <mat-icon style="font-size:17px;">vertical_distribute</mat-icon>
                                         </div>
 
+                                        <!-- Volume -->
+                                        <div class="state-badge clickable" role="button" matRipple
+                                            [ngClass]="{
+                                                'square-badge-success': state.volume.s > 0,
+                                                'square-badge-neutral': state.volume.s == 0,
+                                                'weak-state': state.volume.s != 2
+                                            }"
+                                            (click)="displayVolumeDialog()">
+                                            <mat-icon style="font-size:19px;">equalizer</mat-icon>
+                                        </div>
+
                                         <!-- Trend -->
                                         <div (click)="displayActivePredictionDialog()"
-                                            matTooltip="Trend"
                                             class="state-badge clickable" role="button" matRipple 
                                             [ngClass]="{
                                                 'square-badge-success': activePredictionStateIntensity > 0,
                                                 'square-badge-error': activePredictionStateIntensity < 0,
                                                 'square-badge-neutral': activePredictionStateIntensity == 0,
-                                                'state': activePredictionStateIntensity == 1 || activePredictionStateIntensity == -1,
-                                                'stateless': activePredictionStateIntensity == 0
+                                                'weak-state': activePredictionStateIntensity != 2 && activePredictionStateIntensity != -2
                                             }">
                                             <mat-icon [svgIcon]="_ms.icons[activePredictionStateIntensity]"></mat-icon>
                                             {{activeSum | number: '1.0-3'}}
@@ -514,43 +310,12 @@
 
                             <!-- Global Indicators -->
                             <div class="chart-card">
-                                <!-- Volume & Network Fee -->
+                                <!-- Liquidity & Technicals -->
                                 <div>
                                     <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" class="full-width">
-                                        <!-- Volume -->
+                                        <!-- Liquidity -->
                                         <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
-                                            <div>
-                                                <!-- Heading -->
-                                                <div fxLayout="row" fxLayoutAlign="center center" class="chart-card-heading">
-                                                    <h4 matTooltip="Updated: {{state.volume.ts | date: 'short'}}">Volume</h4>
-                                                    <span fxFlex></span>
-                                                    <div matTooltip="More information"
-                                                        (click)="volumeTooltip()"
-                                                        class="state-badge clickable" role="button" matRipple
-                                                        [ngClass]="{
-                                                            'square-badge-success': state.volume.state > 0,
-                                                            'square-badge-error': state.volume.state < 0,
-                                                            'square-badge-neutral': state.volume.state == 0,
-                                                            'state': state.volume.state == 1 || state.volume.state == -1,
-                                                            'stateless': state.volume.state == 0
-                                                        }">
-                                                        <mat-icon [svgIcon]="_ms.icons[state.volume.state]"></mat-icon>
-                                                        {{state.volume.state_value > 0 ? '+': ''}}{{state.volume.state_value | number: '1.0-0'}}%
-                                                    </div>
-                                                </div>
-                        
-                                                <!-- Chart -->
-                                                <div *ngIf="volumeChart">
-                                                    <apx-chart
-                                                        [series]="volumeChart.series"
-                                                        [chart]="volumeChart.chart"
-                                                        [dataLabels]="volumeChart.dataLabels"
-                                                        [xaxis]="volumeChart.xaxis"
-                                                        [yaxis]="volumeChart.yaxis"
-                                                        [grid]="{show: false}"
-                                                    ></apx-chart>
-                                                </div>
-                                            </div>
+
                                         </div>
                     
                                         <span fxFlex></span>
@@ -562,26 +327,24 @@
                                         <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
                                             <div>
                                                 <!-- Heading -->
-                                                <div fxLayout="row" fxLayoutAlign="center center" class="chart-card-heading">
-                                                    <h4 matTooltip="Updated: {{state.technical_analysis.ts | date: 'short'}}">Technicals</h4>
+                                                <div fxLayout="row" fxLayoutAlign="center start" class="chart-card-heading">
+                                                    <h4>Technicals</h4>
                                                     <span fxFlex></span>
-                                                    <div matTooltip="More information"
-                                                        (click)="technicalsTooltip()"
+                                                    <div (click)="technicalsTooltip()"
                                                         class="state-badge clickable" role="button" matRipple
                                                         [ngClass]="{
                                                             'square-badge-success': state.technical_analysis.r > 0,
                                                             'square-badge-error': state.technical_analysis.r < 0,
                                                             'square-badge-neutral': state.technical_analysis.r == 0,
-                                                            'state': state.technical_analysis.r == 1 || state.technical_analysis.r == -1,
-                                                            'stateless': state.technical_analysis.r == 0
+                                                            'weak-state': state.technical_analysis.r != 2 && state.technical_analysis.r != -2
                                                         }">
                                                         {{_ms.taStates[state.technical_analysis.r]}}
                                                     </div>
                                                 </div>
                         
                                                 <!-- Grid -->
-                                                <div class="padding margin-top">
-                                                    <mat-grid-list [cols]="3" rowHeight="44px" gutterSize="1px">
+                                                <div class="padding">
+                                                    <mat-grid-list [cols]="3" rowHeight="40px" gutterSize="1px">
                                                         <mat-grid-tile *ngFor="let taInterval of taIntervals" 
                                                                         class="clickable" role="button" matRipple
                                                                         (click)="displayTechnicalAnalysisDialog(taInterval)"
@@ -589,11 +352,8 @@
                                                                             'buy-action-container': state.technical_analysis[taInterval].s.a > 0,
                                                                             'sell-action-container': state.technical_analysis[taInterval].s.a < 0,
                                                                             'neutral-action-container': state.technical_analysis[taInterval].s.a == 0,
-                                                                            'state': state.technical_analysis[taInterval].s.a == 1 || state.technical_analysis[taInterval].s.a == -1,
-                                                                            'stateless': state.technical_analysis[taInterval].s.a == 0
-                                                                        }"
-                                                                        [matTooltip]="_ms.taStates[state.technical_analysis[taInterval].s.a]" 
-                                                                        matTooltipPosition="above"><p>{{taInterval}}</p></mat-grid-tile>
+                                                                            'weak-state': state.technical_analysis[taInterval].s.a != 2 && state.technical_analysis[taInterval].s.a != -2
+                                                                        }"><p>{{taInterval}}</p></mat-grid-tile>
                                                     </mat-grid-list>
                                                 </div>
                                             </div>
@@ -609,35 +369,34 @@
                                         <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
                                             <div>
                                                 <!-- Heading -->
-                                                <div fxLayout="row" fxLayoutAlign="center center" class="chart-card-heading">
-                                                    <h4 matTooltip="Updated: {{state.open_interest.ts | date: 'short'}}">Open Interest</h4>
+                                                <div fxLayout="row" fxLayoutAlign="center start" class="chart-card-heading">
+                                                    <h4>Open Interest</h4>
                                                     <span fxFlex></span>
-                                                    <div matTooltip="More information"
-                                                        (click)="openInterestTooltip()"
+                                                    <div (click)="openInterestTooltip()"
                                                         class="state-badge clickable" role="button" matRipple
                                                         [ngClass]="{
-                                                            'square-badge-success': state.open_interest.state > 0,
-                                                            'square-badge-error': state.open_interest.state < 0,
-                                                            'square-badge-neutral': state.open_interest.state == 0,
-                                                            'state': state.open_interest.state == 1 || state.open_interest.state == -1,
-                                                            'stateless': state.open_interest.state == 0
+                                                            'square-badge-success': state.open_interest.s > 0,
+                                                            'square-badge-error': state.open_interest.s < 0,
+                                                            'square-badge-neutral': state.open_interest.s == 0,
+                                                            'weak-state': state.open_interest.s != 2 && state.open_interest.s != -2
                                                         }">
-                                                        <mat-icon [svgIcon]="_ms.icons[state.open_interest.state]"></mat-icon>
-                                                        {{state.open_interest.state_value > 0 ? '+': ''}}{{state.open_interest.state_value | number: '1.0-1'}}%
+                                                        <mat-icon [svgIcon]="_ms.icons[state.open_interest.s]"></mat-icon>
                                                     </div>
                                                 </div>
                         
-                                                <!-- Chart -->
-                                                <div *ngIf="openInterestChart">
-                                                    <apx-chart
-                                                        [series]="openInterestChart.series"
-                                                        [chart]="openInterestChart.chart"
-                                                        [dataLabels]="openInterestChart.dataLabels"
-                                                        [xaxis]="openInterestChart.xaxis"
-                                                        [yaxis]="openInterestChart.yaxis"
-                                                        [stroke]="openInterestChart.stroke"
-                                                        [grid]="{show: false}"
-                                                    ></apx-chart>
+                                                <!-- Grid -->
+                                                <div class="padding">
+                                                    <mat-grid-list [cols]="3" rowHeight="40px" gutterSize="1px">
+                                                        <mat-grid-tile *ngFor="let id of _ms.openInterestExchanges" 
+                                                                        class="clickable" role="button" matRipple
+                                                                        (click)="displayOpenInterestDialog(id)"
+                                                                        [ngClass]="{
+                                                                            'buy-action-container': state.open_interest[id] > 0,
+                                                                            'sell-action-container': state.open_interest[id] < 0,
+                                                                            'neutral-action-container': state.open_interest[id] == 0,
+                                                                            'weak-state': state.open_interest[id] != 2 && state.open_interest[id] != -2
+                                                                        }"><p>{{_ms.openInterestExchangeNames[id]}}</p></mat-grid-tile>
+                                                    </mat-grid-list>
                                                 </div>
                                             </div>
                                         </div>
@@ -653,35 +412,34 @@
                                         <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
                                             <div>
                                                 <!-- Heading -->
-                                                <div fxLayout="row" fxLayoutAlign="center center" class="chart-card-heading">
-                                                    <h4 matTooltip="Updated: {{state.long_short_ratio.ts | date: 'short'}}">Long vs Short</h4>
+                                                <div fxLayout="row" fxLayoutAlign="center start" class="chart-card-heading">
+                                                    <h4>Long/Short Ratio</h4>
                                                     <span fxFlex></span>
-                                                    <div matTooltip="More information"
-                                                        (click)="longShortRatioTooltip()" 
+                                                    <div (click)="longShortRatioTooltip()"
                                                         class="state-badge clickable" role="button" matRipple
                                                         [ngClass]="{
-                                                            'square-badge-success': state.long_short_ratio.state > 0,
-                                                            'square-badge-error': state.long_short_ratio.state < 0,
-                                                            'square-badge-neutral': state.long_short_ratio.state == 0,
-                                                            'state': state.long_short_ratio.state == 1 || state.long_short_ratio.state == -1,
-                                                            'stateless': state.long_short_ratio.state == 0
+                                                            'square-badge-success': state.long_short_ratio.s > 0,
+                                                            'square-badge-error': state.long_short_ratio.s < 0,
+                                                            'square-badge-neutral': state.long_short_ratio.s == 0,
+                                                            'weak-state': state.long_short_ratio.s != 2 && state.long_short_ratio.s != -2
                                                         }">
-                                                        <mat-icon [svgIcon]="_ms.icons[state.long_short_ratio.state]"></mat-icon>
-                                                        {{state.long_short_ratio.state_value > 0 ? '+': ''}}{{state.long_short_ratio.state_value | number: '1.0-1'}}%
+                                                        <mat-icon [svgIcon]="_ms.icons[state.long_short_ratio.s]"></mat-icon>
                                                     </div>
                                                 </div>
                         
-                                                <!-- Chart -->
-                                                <div *ngIf="longShortRatioChart">
-                                                    <apx-chart
-                                                        [series]="longShortRatioChart.series"
-                                                        [chart]="longShortRatioChart.chart"
-                                                        [dataLabels]="longShortRatioChart.dataLabels"
-                                                        [xaxis]="longShortRatioChart.xaxis"
-                                                        [yaxis]="longShortRatioChart.yaxis"
-                                                        [stroke]="longShortRatioChart.stroke"
-                                                        [grid]="{show: false}"
-                                                    ></apx-chart>
+                                                <!-- Grid -->
+                                                <div class="padding">
+                                                    <mat-grid-list [cols]="3" rowHeight="40px" gutterSize="1px">
+                                                        <mat-grid-tile *ngFor="let id of _ms.longShortRatioExchanges" 
+                                                                        class="clickable" role="button" matRipple
+                                                                        (click)="displayLongShortRatioDialog(id)"
+                                                                        [ngClass]="{
+                                                                            'buy-action-container': state.long_short_ratio[id] > 0,
+                                                                            'sell-action-container': state.long_short_ratio[id] < 0,
+                                                                            'neutral-action-container': state.long_short_ratio[id] == 0,
+                                                                            'weak-state': state.long_short_ratio[id] != 2 && state.long_short_ratio[id] != -2
+                                                                        }"><p>{{_ms.longShortRatioExchangeNames[id]}}</p></mat-grid-tile>
+                                                    </mat-grid-list>
                                                 </div>
                                             </div>
                                         </div>

@@ -112,9 +112,6 @@ export class NavService implements INavService {
 	// Candlesticks
 	public candlesticks(): Promise<boolean> { return this.navigate("candlesticks") }
 
-	// Order Book
-	public orderBook(): Promise<boolean> { return this.navigate("orderBook") }
-
 	// Server
 	public server(): Promise<boolean> { return this.navigate("server") }
 

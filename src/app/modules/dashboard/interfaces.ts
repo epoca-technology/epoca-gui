@@ -1,23 +1,25 @@
-import { IActivePosition, IBinancePositionSide, ITAIntervalID } from "../../core";
+import { 
+    IExchangeOpenInterestID, 
+    IExchangeLongShortRatioID, 
+    ISplitStateID, 
+    ITAIntervalID 
+} from "../../core";
 
 export interface IDashboardComponent {
-    // Position Management
-    openPosition(side: IBinancePositionSide): void,
-    closePosition(side: IBinancePositionSide, chunkSize: number): void,
+    // Adjustments Management
+    displayAdjustmentsMenu(): void,
 
-    // Misc Helpers
-    toggleTrendChart(): Promise<void>,
-    togglePositionButtonContent(): Promise<void>,
-    displayPredictionStateIntensityFormDialog(): void,
-    displaySignalPoliciesDialog(): void,
-    displayStrategyFormDialog(): void,
+    // Misc Dialogs
     displayBalanceDialog(): void,
-    displayPositionDialog(position: IActivePosition): void,
-    displayPositionHealthWeightsFormDialog(): void,
-    displayHealthDialog(side: IBinancePositionSide): void,
     displayActivePredictionDialog(): void,
+
+    // Market State Dialogs
+    displayWindowDialog(id: ISplitStateID): void,
+    displayVolumeDialog(): void,
     displayTechnicalAnalysisDialog(taInterval: ITAIntervalID): void,
     displayKeyZonesDialog(): void,
+    displayOpenInterestDialog(id: IExchangeOpenInterestID): void,
+    displayLongShortRatioDialog(id: IExchangeLongShortRatioID): void,
 
     // Tooltips
     windowTooltip(): void,

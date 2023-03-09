@@ -22,13 +22,6 @@
                 </button>
             </mat-list-item>
 
-            <!-- Order Book -->
-            <mat-list-item>
-                <button mat-button class="left-icon-button" (click)="_nav.orderBook()" [disabled]="state.module == 'orderBook'">
-                    <mat-icon>menu_book</mat-icon><span>Order Book</span>
-                </button>
-            </mat-list-item>
-
             <!-- Users -->
             <mat-list-item>
                 <button mat-button class="left-icon-button" (click)="_nav.users()" [disabled]="state.module == 'users'">
@@ -138,9 +131,6 @@
                 <!-- Dashboard -->
                 <button mat-button class="left-icon-button" 
                         (click)="_nav.dashboard()" 
-                        matBadge="0" 
-                        [appMatBadgeIcon]="_app.predictionIcon.value ? _app.predictionIcon.value: ''"
-                        [matBadgeHidden]="!_app.epoch.value || !_app.predictionIcon.value" 
                         [disabled]="state.module == 'dashboard'" *ngIf="uid">
                     <mat-icon svgIcon="home" style="max-width:20px;"></mat-icon><span>Dashboard</span>
                 </button>

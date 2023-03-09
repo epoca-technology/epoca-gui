@@ -1,6 +1,7 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
-import { IAccountBalance } from "../../../core";
+import { Component, OnInit } from '@angular/core';
+import {MatDialogRef} from "@angular/material/dialog";
+import { IAccountBalance, PositionService } from "../../../core";
+import { AppService } from '../../../services';
 import { IBalanceDialogComponent } from "./interfaces";
 
 
@@ -10,13 +11,19 @@ import { IBalanceDialogComponent } from "./interfaces";
   styleUrls: ['./balance-dialog.component.scss']
 })
 export class BalanceDialogComponent implements OnInit, IBalanceDialogComponent {
-
+	public balance!: IAccountBalance;
+	public loaded: boolean = false;
 	constructor(
 		public dialogRef: MatDialogRef<BalanceDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public balance: IAccountBalance,
+		private _app: AppService,
+		private _position: PositionService
 	) { }
 
-	ngOnInit(): void {
+	async ngOnInit(): Promise<void> {
+		try {
+			this.balance = await this._position.getBalance();
+		} catch (e) { this._app.error(e) }
+		this.loaded = true;
 	}
 
 	

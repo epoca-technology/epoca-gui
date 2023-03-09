@@ -54,7 +54,6 @@ import { RecaptchaModule, RecaptchaFormsModule, RECAPTCHA_LANGUAGE, RECAPTCHA_SE
 
 // Directives
 import { DisableControlDirective } from "./directives/disable-control/disable-control.directive";
-import { MatBadgeIconDirective } from "./directives/mat-badge-icon/mat-badge-icon.directive";
 
 
 
@@ -122,8 +121,6 @@ import { EpochsMenuComponent } from './components/epochs-menu/epochs-menu.compon
 	declarations: [
 		// Directives
 		DisableControlDirective,
-		MatBadgeIconDirective,
-		MatBadgeIconDirective,
 		
 		// Pipes
         FilesizePipe,
@@ -295,7 +292,6 @@ import { EpochsMenuComponent } from './components/epochs-menu/epochs-menu.compon
 
 		// Directives
 		DisableControlDirective,
-		MatBadgeIconDirective,
 		
 		// Pipes
         FilesizePipe,

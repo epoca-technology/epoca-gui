@@ -85,7 +85,6 @@ export interface IPredictionModelMinifiedConfig {
  */
  export type IPredictionResult = 1|0|-1;
  export type IPredictionResultName = "Long"|"Short"|"Neutral";
- export type IPredictionResultIcon = "trending_up"|"trending_down"|"trending_flat"
  
 
  

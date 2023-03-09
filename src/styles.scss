@@ -889,11 +889,37 @@ form .mat-checkbox-inner-container{
 
 
 /* Market States */
-.stateless { opacity: 0.7; }
-.state { opacity: 0.8; }
-.strong-state { opacity: 1; }
+.weak-state { opacity: 0.8; }
 .state-badge { .mat-icon {max-height:17px;}}
 .state-badge-caret { max-height:15px!important;max-width:18px; }
+
+
+// Grids
+.action-container {
+    text-align: center;
+    color:white;
+    p{ 
+        margin:0;
+        font-weight:600;
+        font-size:11px!important;
+    }
+}
+.buy-action-container {
+    @extend .action-container;
+    background-color: var(--success-color)!important; 
+}
+.sell-action-container {
+    @extend .action-container;
+    background-color: var(--error-color)!important; 
+}
+.neutral-action-container {
+    @extend .action-container;
+    background-color: var(--neutral-color)!important; 
+}
+
+
+
+
 
 
 

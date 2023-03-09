@@ -1,6 +1,6 @@
 import { ICandlestick } from "../candlestick";
 import { IEpochRecord } from "../epoch";
-import { IPrediction, IPredictionModelCertificate, IRegressionTrainingCertificate } from "../epoch-builder";
+import { IPredictionModelCertificate, IRegressionTrainingCertificate } from "../epoch-builder";
 import { IPredictionCandlestick } from "../prediction";
 
 
@@ -57,12 +57,6 @@ export interface ILocalDatabaseService {
 export interface IUserPreferences {
     // If enabled, sound features will be enabled throughout the app
     sound: boolean,
-
-    // If enabled, it will display the split trend chart by default
-    splitTrendChart: boolean,
-
-    // If enabled, it will display the PNL(ROE%) on the position button rather than the Position Health info
-    positionButtonPNL: boolean
 }
 
 

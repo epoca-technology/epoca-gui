@@ -15,16 +15,14 @@ import {
 	ICompressedCandlesticks, 
 	IEpochRecord, 
 	IMarketState, 
-	IPositionSummary, 
+	IActivePosition, 
 	IPrediction, 
-	IPredictionResult, 
-	IPredictionResultIcon, 
 	IPredictionState, 
 	IPredictionStateIntesity, 
 	PredictionService, 
 	UtilsService 
 } from "../../core";
-import {IAppService, ILayout, ILayoutAlias, IAppBulkMetadata} from "./interfaces";
+import {IAppService, ILayout, ILayoutAlias} from "./interfaces";
 
 
 
@@ -70,9 +68,7 @@ export class AppService implements IAppService{
 	public prediction: BehaviorSubject<IPrediction|undefined|null> = new BehaviorSubject<IPrediction|undefined|null>(null);
 	public predictionState: BehaviorSubject<IPredictionState|undefined|null> = new BehaviorSubject<IPredictionState|undefined|null>(null);
 	public predictionStateIntensity: BehaviorSubject<IPredictionStateIntesity|undefined|null> = new BehaviorSubject<IPredictionStateIntesity|undefined|null>(null);
-	public signal: BehaviorSubject<IPredictionResult|undefined|null> = new BehaviorSubject<IPredictionResult|undefined|null>(null);
-	public predictionIcon: BehaviorSubject<IPredictionResultIcon|undefined|null> = new BehaviorSubject<IPredictionResultIcon|undefined|null>(null);
-	public position: BehaviorSubject<IPositionSummary|undefined|null> = new BehaviorSubject<IPositionSummary|undefined|null>(null);
+	public position: BehaviorSubject<IActivePosition|undefined|null> = new BehaviorSubject<IActivePosition|undefined|null>(null);
 	public marketState: BehaviorSubject<IMarketState|undefined|null> = new BehaviorSubject<IMarketState|undefined|null>(null);
 	public apiErrors: BehaviorSubject<number|undefined|null> = new BehaviorSubject<number|undefined|null>(null);
 
@@ -167,8 +163,6 @@ export class AppService implements IAppService{
 		this.prediction.next(undefined);
 		this.predictionState.next(0);
 		this.predictionStateIntensity.next(0);
-		this.signal.next(undefined);
-		this.predictionIcon.next(undefined);
 		this.position.next(undefined);
 		this.marketState.next(undefined);
 		if (typeof this.appBulkStream == "function") this.appBulkStream();
@@ -231,8 +225,7 @@ export class AppService implements IAppService{
 							snapVal.serverTime = this.serverTime.value!;
 							snapVal.guiVersion = this.guiVersion.value!;
 							snapVal.epoch = this.epoch.value!;
-							snapVal.marketState.window.window = this.decompressCandlesticks(snapVal.marketState.window.window);
-							snapVal.position.health = snapVal.position.health ? snapVal.position.health: {};
+							snapVal.marketState.window.w = this.decompressCandlesticks(snapVal.marketState.window.w);
 							this.broadcastAppBulk(snapVal);
 						}
 					});
@@ -257,14 +250,13 @@ export class AppService implements IAppService{
 
 		// Iterate over each candlestick
 		for (let i = 0; i < compressed.ot.length; i++) {
-			candlesticks.push({
+			candlesticks.push(<ICandlestick>{
 				ot: compressed.ot[i],
 				ct: compressed.ct[i],
 				o: compressed.o[i],
 				h: compressed.h[i],
 				l: compressed.l[i],
 				c: compressed.c[i],
-				v: compressed.v[i],
 			});
 		}
 
@@ -285,9 +277,6 @@ export class AppService implements IAppService{
 	 * @param bulk 
 	 */
 	private broadcastAppBulk(bulk: IAppBulk): void {
-		// Unpack the metadata
-		const metadata: IAppBulkMetadata = this.getAppBulkMetadata(bulk);
-
 		// Broadcast the market state
 		this.marketState.next(bulk.marketState);
 
@@ -303,8 +292,6 @@ export class AppService implements IAppService{
 		// Broadcast the active prediction as well as the metadata
 		this.predictionState.next(bulk.predictionState);
 		this.predictionStateIntensity.next(bulk.predictionStateIntesity);
-		this.signal.next(bulk.signal);
-		this.predictionIcon.next(metadata.predictionIcon);
 		this.prediction.next(bulk.prediction);
 
 		// Broadcast the position summary
@@ -313,33 +300,6 @@ export class AppService implements IAppService{
 		// Broadcast the api errors
 		this.apiErrors.next(bulk.apiErrors);
 	}
-
-
-
-
-
-	/**
-	 * Puts together the bulk's metadata that will be broadcasted with the
-	 * main app bulk data.
-	 * @param bulk 
-	 * @returns IAppBulkMetadata
-	 */
-	private getAppBulkMetadata(bulk: IAppBulk): IAppBulkMetadata {
-		// Init values
-		let predictionIcon: IPredictionResultIcon|undefined = undefined;
-
-		// Populate the active prediction icon
-		if (bulk.prediction) { predictionIcon = this._prediction.resultIconNames[bulk.signal]} 
-		else { predictionIcon = undefined }
-
-		// ...
-
-		// Finally, return the packed metadata
-		return {
-			predictionIcon: predictionIcon,
-		}
-	}
-
 
 
 

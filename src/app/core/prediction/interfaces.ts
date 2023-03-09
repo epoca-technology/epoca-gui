@@ -1,5 +1,5 @@
 // Import component required interfaces
-import { IPrediction, IPredictionResultIcon, IPredictionResultName } from "../epoch-builder";
+import { IPrediction, IPredictionResultName } from "../epoch-builder";
 
 
 
@@ -10,7 +10,6 @@ import { IPrediction, IPredictionResultIcon, IPredictionResultName } from "../ep
 export interface IPredictionService {
     // Properties
     resultNames: {[result: string]: IPredictionResultName},
-    resultIconNames: {[result: string]: IPredictionResultIcon},
     resultImagePaths: {[result: string]: string},
     
     // Prediction Records

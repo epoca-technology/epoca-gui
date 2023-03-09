@@ -216,9 +216,7 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 	 */
 	public getDefaultUserPreferences(): IUserPreferences { 
 		return { 
-			sound: false, 
-			splitTrendChart: false,
-			positionButtonPNL: true
+			sound: false,
 		};
 	}
 

@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import { IKeyZoneFullState, IReversal, MarketStateService, UtilsService } from '../../../core';
 import { AppService, NavService } from '../../../services';
-import { IKeyZoneDistance, IKeyZonesDialogComponent } from './interfaces';
 import { KeyzoneReversalsDialogComponent } from './keyzone-reversals-dialog';
+import { IKeyZoneDistance, IKeyZonesDialogComponent } from './interfaces';
 
 @Component({
   selector: 'app-keyzones-dialog',
@@ -43,7 +43,7 @@ export class KeyzonesDialogComponent implements OnInit, IKeyZonesDialogComponent
 	async ngOnInit(): Promise<void> {
 		try {
 			this.state = await this._ms.calculateKeyZoneState();
-			this.currentPrice = this._app.marketState.value!.window.window[this._app.marketState.value!.window.window.length - 1].c;
+			this.currentPrice = this._app.marketState.value!.window.w[this._app.marketState.value!.window.w.length - 1].c;
 			if (this._app.layout.value == "desktop") {
 				this.visibleAbove = this.state.active ? 3: 3;
 				this.visibleBelow = this.state.active ? 3: 3;
