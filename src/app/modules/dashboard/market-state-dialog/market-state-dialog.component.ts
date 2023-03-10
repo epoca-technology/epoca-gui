@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
-import { IExchangeLongShortRatioID, IExchangeLongShortRatioState, IExchangeOpenInterestID, IExchangeOpenInterestState, ISplitStateID, ISplitStates, ISplitStateSeriesItem, IStateType, IVolumeState, MarketStateService } from '../../../core';
+import { IExchangeLongShortRatioID, IExchangeLongShortRatioState, IExchangeOpenInterestID, IExchangeOpenInterestState, ISplitStateID, ISplitStates, ISplitStateSeriesItem, IStateType, IVolumeState, MarketStateService, UtilsService } from '../../../core';
 import { AppService, ChartService, IBarChartOptions, ILayout, ILineChartOptions, NavService } from '../../../services';
 import { IMarketStateDialogComponent, IMarketStateDialogConfig, IMarketStateModule } from './interfaces';
 
@@ -39,7 +39,8 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 		@Inject(MAT_DIALOG_DATA) private config: IMarketStateDialogConfig,
 		private _app: AppService,
 		private _chart: ChartService,
-		public _ms: MarketStateService
+		public _ms: MarketStateService,
+		private _utils: UtilsService
 	) { }
 
 
@@ -151,8 +152,8 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 
 		// Build the series
 		this.seriesName = "Ratio";
-		this.series = state.w;
-
+		this.series = state.w.map(d => { return { x: d.x, y: <number>this._utils.outputNumber(d.y, {dp: 6})}});
+		
 		// Finally, apply the split
 		this.applySplit(this.activeSplitID);
 	}

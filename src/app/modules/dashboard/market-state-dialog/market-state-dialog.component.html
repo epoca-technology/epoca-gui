@@ -5,7 +5,6 @@
         <mat-icon *ngIf="loaded" class="show-on-desktop" [svgIcon]="_ms.icons[stateAverage]" style="margin-right:7px;"></mat-icon>
         <span *ngIf="loaded" class="truncate">{{title}}</span>
         <span fxFlex></span>
-        <mat-icon *ngIf="loaded"class="show-on-mobile" [svgIcon]="_ms.icons[stateAverage]"></mat-icon>
         <button mat-icon-button class="show-on-desktop" (click)="close()" [disabled]="!loaded"><mat-icon>close</mat-icon></button>
     </div>
 </mat-toolbar>

@@ -593,14 +593,16 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         /* KeyZone Annotations */
 
         // Add the keyzones above (if any)
-        for (let resistance of this.state.keyzones.above) {
-            annotations.yaxis!.push({
-				y: resistance.s,
-				y2: resistance.e,
-				strokeDashArray: 0,
-				borderColor: "#80CBC4",
-				fillColor: "#80CBC4"
-			})
+        if (this.state.keyzones.above) {
+            for (let resistance of this.state.keyzones.above) {
+                annotations.yaxis!.push({
+                    y: resistance.s,
+                    y2: resistance.e,
+                    strokeDashArray: 0,
+                    borderColor: "#80CBC4",
+                    fillColor: "#80CBC4"
+                })
+            }
         }
 
         // Check if there is an active zone
@@ -616,14 +618,16 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
 
         // Add the keyzones below (if any)
-        for (let support of this.state.keyzones.below) {
-            annotations.yaxis!.push({
-				y: support.s,
-				y2: support.e,
-				strokeDashArray: 0,
-				borderColor: "#EF9A9A",
-				fillColor: "#EF9A9A"
-			})
+        if (this.state.keyzones.below) {
+            for (let support of this.state.keyzones.below) {
+                annotations.yaxis!.push({
+                    y: support.s,
+                    y2: support.e,
+                    strokeDashArray: 0,
+                    borderColor: "#EF9A9A",
+                    fillColor: "#EF9A9A"
+                })
+            }
         }
 
 

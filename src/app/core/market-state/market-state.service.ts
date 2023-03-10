@@ -93,13 +93,14 @@ export class MarketStateService implements IMarketStateService {
 	 * Long/Short Ratio
 	 * List of exchanges that offer their long/short ratio through public APIs
 	 */
-	public readonly longShortRatioExchanges: IExchangeLongShortRatioID[] = ["binance", "binance_tta", "binance_ttp", "huobi_tta", "huobi_ttp"];
+	public readonly longShortRatioExchanges: IExchangeLongShortRatioID[] = ["binance", "binance_tta", "binance_ttp", "huobi_tta", "huobi_ttp", "okx"];
 	public readonly longShortRatioExchangeNames: {[exchangeID: string]: string} = {
 		binance: "Binance",
 		binance_tta: "Binance TTA",
 		binance_ttp: "Binance TTP",
 		huobi_tta: "Huobi TTA",
 		huobi_ttp: "Huobi TTP",
+		okx: "OKX",
 	};
 
 
