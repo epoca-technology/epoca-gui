@@ -1,11 +1,12 @@
 import {Component, OnInit, OnDestroy, ViewChild} from "@angular/core";
 import {MatSidenav} from "@angular/material/sidenav";
 import { MatDialog } from "@angular/material/dialog";
+import { MatBottomSheetRef } from "@angular/material/bottom-sheet";
 import {Title} from "@angular/platform-browser";
 import { Subscription } from "rxjs";
 import * as moment from "moment";
 import { BigNumber } from "bignumber.js";
-import { ApexAnnotations, YAxisAnnotations } from "ng-apexcharts";
+import { ApexAnnotations, PointAnnotations, YAxisAnnotations } from "ng-apexcharts";
 import { 
     IEpochRecord, 
     IMarketState, 
@@ -24,7 +25,11 @@ import {
     IActivePosition,
     ISplitStateID,
     IExchangeOpenInterestID,
-    IExchangeLongShortRatioID
+    IExchangeLongShortRatioID,
+    ILiquiditySide,
+    ILiquidityIntensity,
+    ILiquidityPriceLevel,
+    IMinifiedLiquidityPriceLevel
 } from "../../core";
 import { 
     AppService, 
@@ -39,11 +44,11 @@ import {
 import { BalanceDialogComponent } from "./balance-dialog";
 import { StrategyFormDialogComponent } from "./strategy-form-dialog";
 import { TechnicalAnalysisDialogComponent } from "./technical-analysis-dialog";
-import { IDashboardComponent, IPositionCloseChunkSize } from "./interfaces";
 import { PredictionStateIntensityFormDialogComponent } from "./prediction-state-intensity-form-dialog";
-import { MatBottomSheetRef } from "@angular/material/bottom-sheet";
 import { KeyzonesDialogComponent } from "./keyzones-dialog";
 import { IMarketStateDialogConfig, MarketStateDialogComponent } from "./market-state-dialog";
+import { LiquidityDialogComponent } from "./liquidity-dialog";
+import { IDashboardComponent } from "./interfaces";
 
 @Component({
   selector: "app-dashboard",
@@ -99,8 +104,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     public windowChart?: ICandlestickChartOptions;
 
     // Desktop Chart height helpers
-    public readonly predictionChartDesktopHeight: number = 300;
-    private readonly marketStateChartDesktopHeight: number = 105;
+    public readonly predictionChartDesktopHeight: number = 315;
 
     // Loading State
     public loaded: boolean = false;
@@ -339,7 +343,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
         // Finally, update the chart
         if (this.predictionCandlesticksChart) {
-            // Update the series
             this.predictionCandlesticksChart.series = [
                 {
                     name: "candle",
@@ -351,18 +354,13 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             this.predictionCandlesticksChart = this._chart.getCandlestickChartOptions(
                 this.predictionCandlesticks, 
                 this.getPredictionCandlestickAnnotations(), 
-                false, 
-                //true, 
-                //{min: minValue, max: maxValue}
+                false
             );
             this.predictionCandlesticksChart.chart!.height = this.layout == "desktop" ? this.predictionChartDesktopHeight: 330;
             this.predictionCandlesticksChart.chart!.zoom = {enabled: false};
             this.predictionCandlesticksChart.title = {text: ""};
             this.predictionCandlesticksChart.yaxis.opposite = true;
             this.predictionCandlesticksChart.yaxis.labels = {show: true, align: "right"};
-            //this.predictionCandlesticksChart.xaxis.labels = {show: false};
-            this.predictionCandlesticksChart.xaxis.axisTicks = {show: false}
-            this.predictionCandlesticksChart.xaxis.axisBorder = {show: false}
             this.predictionCandlesticksChart.xaxis.tooltip = {enabled: false}
         }
     }
@@ -380,45 +378,25 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         const maxValue: number = this.epoch!.model.regressions.length;
 
         // Set the color of the annotation
+        const open: number = this.predictionCandlesticks[this.predictionCandlesticks.length - 1].o;
+        const close: number = this.predictionCandlesticks[this.predictionCandlesticks.length - 1].c;
         let stateColor: string = this._chart.neutralColor;
-        if (this.activePredictionState > 0) { stateColor = this._chart.upwardColor } 
-        else if (this.activePredictionState < 0) { stateColor = this._chart.downwardColor }
+        if (close > open) { stateColor = this._chart.upwardColor } 
+        else if (open > close) { stateColor = this._chart.downwardColor }
 
         // Set the position
-        let annOffset: {x: number, y: number} = {x: 18, y: 0};
-        if (this.activePredictionState <= -10 || this.activePredictionState >= 10) { annOffset.x = 25 }
-        else if (this.activePredictionState == 0) { annOffset.x = 12 }
+        let sumStr: string = typeof this.activeSum == "number" ? <string>this._utils.outputNumber(this.activeSum, {dp: 3, of: "s"}): "0";
+        let annOffset: {x: number, y: number} = {x: 0, y: 0};
+        if (sumStr.length == 1 ) { annOffset.x = 20 }
+        else if (sumStr.length == 3 ) { annOffset.x = 24 }
+        else if (sumStr.length == 4 ) { annOffset.x = 29 }
+        else if (sumStr.length == 5 ) { annOffset.x = 36 }
         return {
             yaxis: [
-                {
-                    y: this.epoch!.model.min_increase_sum,
-                    y2: maxValue,
-                    borderColor: this._chart.upwardColor,
-                    fillColor: this._chart.upwardColor,
-                    strokeDashArray: 3,
-                    borderWidth: 0
-                },
-                {
-                    y: 0.000001,
-                    y2: this.epoch!.model.min_increase_sum,
-                    borderColor: "#B2DFDB",
-                    fillColor: "#B2DFDB",
-                    strokeDashArray: 0
-                },
-                {
-                    y: this.epoch!.model.min_decrease_sum,
-                    y2: minValue,
-                    borderColor: this._chart.downwardColor,
-                    fillColor: this._chart.downwardColor,
-                    strokeDashArray: 0
-                },
-                {
-                    y: -0.000001,
-                    y2: this.epoch!.model.min_decrease_sum,
-                    borderColor: "#FFCDD2",
-                    fillColor: "#FFCDD2",
-                    strokeDashArray: 0
-                },
+                this.buildTrendSumAnnotation(this.epoch!.model.min_increase_sum, maxValue, this._chart.upwardColor),
+                this.buildTrendSumAnnotation(0.000001, this.epoch!.model.min_increase_sum, "#B2DFDB"),
+                this.buildTrendSumAnnotation(this.epoch!.model.min_decrease_sum, minValue, this._chart.downwardColor),
+                this.buildTrendSumAnnotation(-0.000001, this.epoch!.model.min_decrease_sum, "#FFCDD2"),
                 {
                     y: this.activePrediction ? this.activePrediction.s: 0,
                     strokeDashArray: 0,
@@ -426,8 +404,8 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                     fillColor: stateColor,
                     label: {
                         borderColor: stateColor,
-                        style: { color: "#fff", background: stateColor, fontSize: "12px", padding: {top: 2, right: 2, left: 2, bottom: 2}},
-                        text: `${this.activePredictionState > 0 ? '+': ''}${this.activePredictionState}`,
+                        style: { color: "#fff", background: stateColor, fontSize: "11px", padding: {top: 4, right: 4, left: 4, bottom: 4}},
+                        text: sumStr,
                         position: "right",
                         offsetY: annOffset.y,
                         offsetX: annOffset.x
@@ -437,6 +415,27 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         }
     }
 
+
+
+
+    /**
+     * Builds a yaxis annotation for the trend sum chart signaling the 
+     * predicted trend.
+     * @param y 
+     * @param y2 
+     * @param color 
+     * @param strokeDashArray 
+     * @returns YAxisAnnotations
+     */
+    private buildTrendSumAnnotation(y: number, y2: number, color: string): YAxisAnnotations {
+        return {
+            y: y,
+            y2: y2,
+            borderColor: color,
+            fillColor: color,
+            strokeDashArray: 0
+        };
+    }
 
 
 
@@ -521,10 +520,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         );
         let newTitle: string = `$${price}`;
         if (this.activeSum) {
-            newTitle += `: ${this._utils.outputNumber(this.activeSum, {dp: 1})}`;
-            if (this.activePredictionState) {
-                newTitle += ` ${this.activePredictionState > 0 ? '+':''}${this.activePredictionState}`;
-            }
+            newTitle += `: ${this._utils.outputNumber(this.activeSum, {dp: 2})}`;
             this.titleService.setTitle(newTitle);
         } else {
             this.titleService.setTitle(newTitle);
@@ -542,7 +538,11 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
      */
     private updateWindowState(): void {
         // Build/update the chart
+        const price: number = this.state.window.w[this.state.window.w.length - 1].c;
+        const min: number = <number>this._utils.alterNumberByPercentage(price, -2);
+        const max: number = <number>this._utils.alterNumberByPercentage(price, 2);
         if (this.windowChart) {
+            this.windowChart.yaxis = { tooltip: { enabled: true }, forceNiceScale: false, min: min, max: max, opposite: true, labels: {show: true, align: "right"}};
             this.windowChart.series = [
                 {
                     name: "candle",
@@ -557,6 +557,8 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                 this.state.window.w, 
                 this.buildWindowAnnotations(), 
                 false,
+                true,
+                { min: min, max: max}
             );
             this.windowChart.chart!.height = this.layout == "desktop" ? 615: 400;
             this.windowChart.chart!.zoom = {enabled: false};
@@ -587,7 +589,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
      */
     private buildWindowAnnotations(): ApexAnnotations {
         // Init the annotations
-        let annotations: ApexAnnotations = { yaxis: [] };
+        let annotations: ApexAnnotations = { yaxis: [], points: [] };
 
 
         /* KeyZone Annotations */
@@ -599,8 +601,8 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                     y: resistance.s,
                     y2: resistance.e,
                     strokeDashArray: 0,
-                    borderColor: "#80CBC4",
-                    fillColor: "#80CBC4"
+                    borderColor: this._ms.kzAbove[resistance.vi],
+                    fillColor: this._ms.kzAbove[resistance.vi]
                 })
             }
         }
@@ -624,8 +626,8 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                     y: support.s,
                     y2: support.e,
                     strokeDashArray: 0,
-                    borderColor: "#EF9A9A",
-                    fillColor: "#EF9A9A"
+                    borderColor: this._ms.kzBelow[support.vi],
+                    fillColor: this._ms.kzBelow[support.vi]
                 })
             }
         }
@@ -662,8 +664,99 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             }
         });
 
+        
+        /* Liquidity Annotations */
+        const x: number = this.state.window.w[0].ot;
+
+        // Build the Asks (If any)
+        if (this.state.liquidity.a) {
+            for (let ask of this.state.liquidity.a) {
+                annotations.points!.push(this.buildLiquidityAnnotation("asks", x, ask));
+            }
+        }
+
+        // Build the Bids (If any)
+        if (this.state.liquidity.b) {
+            for (let bid of this.state.liquidity.b) {
+                annotations.points!.push(this.buildLiquidityAnnotation("bids", x, bid));
+            }
+        }
+
         // Finally, return the annotations
         return annotations;
+    }
+
+
+
+
+    /**
+     * Builds a liquidity level annotation for a given side.
+     * @param side 
+     * @param x 
+     * @param level 
+     * @returns PointAnnotations
+     */
+    private buildLiquidityAnnotation(
+        side: ILiquiditySide,
+        x: number,
+        level: IMinifiedLiquidityPriceLevel
+    ): PointAnnotations {
+        // Calculate the metadata
+        const { color, width } = this.getLiquidityLevelMetadata(side, level.li);
+
+        // Finally, return the annotation
+        return {
+            x: x,
+            y: level.p,
+            marker: {size: 0},
+            label: {
+                text: ".",
+                borderWidth: 0,
+                borderRadius: 0,
+                offsetY: 1,
+                style: {
+                    background: color,
+                    color: '#FFFFFF',
+                    fontSize: "1px",
+                    padding: {
+                        left: 0,
+                        right: width,
+                        top: 1,
+                        bottom: 1,
+                      }
+                }
+            }
+        }
+    }
+
+
+
+    /**
+     * Retrieves the color and the width of a liquidity bar based on the side and
+     * the intensity.
+     * @param side 
+     * @param intensity 
+     * @returns {color: string, width: number}
+     */
+    private getLiquidityLevelMetadata(side: ILiquiditySide, intensity: ILiquidityIntensity): {color: string, width: number} {
+        // Init values
+        let color: string;
+        let width: number;
+
+        // Set the values based on the intensity
+        if (intensity == 3) {
+            color = side == "asks" ? "#B71C1C": "#004D40";
+            width = this.layout == "desktop" ? 250: 100;
+        } else if (intensity == 2) {
+            color = side == "asks" ? "#F44336": "#009688";
+            width = this.layout == "desktop" ? 150: 60;
+        } else {
+            color = side == "asks" ? "#EF9A9A": "#80CBC4";
+            width = this.layout == "desktop" ? 75: 30;
+        }
+        
+        // Finally, pack and return the values
+        return { color: color, width: width };
     }
 
 
@@ -672,13 +765,9 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
 
 
-
-
-
-
-
-
     
+
+
 
 
 
@@ -895,6 +984,19 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
 
 	/**
+	 * Displays the Liquidity dialog.
+	 */
+    public displayLiquidityDialog(): void {
+		this.dialog.open(LiquidityDialogComponent, {
+			hasBackdrop: this._app.layout.value != "mobile",
+			panelClass: "medium-dialog"
+		})
+	}
+
+
+
+
+	/**
 	 * Displays the KeyZones dialog.
 	 */
     public displayKeyZonesDialog(): void {
@@ -945,25 +1047,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
 
 
-    // Prediction Model
-    public predictionModelTooltip(): void {
-        this._nav.displayTooltip("Prediction Model", [
-            `The prediction model is an ensemble of regressions trained to predict the near-future trend. It is used by 
-            the Signal Policies Module to generate non-neutral signals, and is also used by the Position Health Points 
-            Module for the management of active positions. Since the Bitcoin Market is always changing, a complete 
-            recalibration is performed every few months.`,
-            `The model predicts every ~10 seconds. Each prediction is broadcast, stored and used to create the 
-            15-minute-interval candlesticks that are then used to calculate the trend state and intensity. The key pieces of 
-            information derived from the model are:`,
-            `1) Trend Sum: the sum of all the predictions generated by the regressions. This value can range from -8 to 8.`,
-            `2) Min Increase Sum: the trend sum at which the up-trend is considered to be very strong.`,
-            `3) Min Decrease Sum: the trend sum at which the down-trend is considered to be very strong.`,
-            `4) Prediction State: the number of 15-minute-intervals the trend sum has been increasing or decreasing consistently. 
-            This value can range from -12 to 12.`,
-            `5) Prediction State Intensity: the intensity of the prediction state. This value can range from -2 to 2, if it is 0,
-            the trend sum is going sideways.`,
-        ]);
-    }
+
 
 
     // Volume

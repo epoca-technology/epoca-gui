@@ -139,6 +139,7 @@ export type IBarChartOptions = {
 	xaxis: ApexXAxis;
 	yaxis: ApexYAxis;
 	annotations: ApexAnnotations;
+	legend: ApexLegend;
 };
 
 

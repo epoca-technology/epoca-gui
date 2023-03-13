@@ -6,6 +6,7 @@ import {
 	IExchangeOpenInterestID,
 	IExchangeOpenInterestState,
 	IKeyZoneFullState, 
+	ILiquidityState, 
 	IMarketStateService, 
 	ISplitStateID, 
 	ITAIntervalID, 
@@ -106,6 +107,14 @@ export class MarketStateService implements IMarketStateService {
 
 
 
+	/**
+	 * KeyZone Colors
+	 * The colors are based on the position from the price and the intensity
+	 * of the volume.
+	 */
+	public readonly kzAbove: {[volIntensity: number]: string} = { 0: "#B2DFDB", 1: "#26A69A", 2: "#004D40" }
+	public readonly kzBelow: {[volIntensity: number]: string} = { 0: "#FFCDD2", 1: "#F44336", 2: "#B71C1C" }
+
 
 
 
@@ -137,11 +146,23 @@ export class MarketStateService implements IMarketStateService {
 
 
 
+
+
+
+	/**
+	 * Retrieves the liquidity state from the server
+	 * @returns Promise<IKeyZoneFullState>
+	 */
+	public getLiquidityState(): Promise<ILiquidityState> { 
+		return this._api.request("get","marketState/getLiquidityState", {}, true) 
+	}
+
+
 		
 
 
 	/**
-	 * Retrieves an up-to-date app bulk from the server.
+	 * Retrieves the keyzone state from the server.
 	 * @returns Promise<IKeyZoneFullState>
 	 */
 	public calculateKeyZoneState(): Promise<IKeyZoneFullState> { 

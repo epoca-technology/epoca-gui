@@ -315,7 +315,8 @@ export class ChartService implements IChartService {
 			fill: config.fill ? config.fill: {},
 			xaxis: xaxis,
 			yaxis: yaxis,
-			annotations: annotations ? annotations: {}
+			annotations: annotations ? annotations: {},
+			legend: config.legend ? config.legend: {}
 		}
 	}
 

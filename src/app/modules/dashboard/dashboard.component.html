@@ -249,45 +249,39 @@
                                     <!-- Heading -->
                                     <div fxLayout="row" fxLayoutAlign="center start"
                                         class="chart-card-heading badged-header full-width">
-                                        <!-- Trend -->
-                                        <h4 class="clickable" role="button" (click)="predictionModelTooltip()">Trend</h4>
-
-                                        <span fxFlex></span>
-
-
-                                        <!-- KeyZones -->
-                                        <div class="state-badge clickable" role="button" matRipple
-                                            [ngClass]="{
-                                                'square-badge': state.keyzones.active,
-                                                'square-badge-neutral': !state.keyzones.active,
-                                                'weak-state': !state.keyzones.active
-                                            }"
-                                            (click)="displayKeyZonesDialog()">
-                                            <mat-icon style="font-size:17px;">vertical_distribute</mat-icon>
+                                        <div class="show-on-desktop clickable" role="button" (click)="displayActivePredictionDialog()">
+                                            <div fxLayout="row" fxLayoutAlign="start center">
+                                                <h4>Prediction</h4>
+                                                <mat-icon style="margin-left:5px;width:16px;height:16px"
+                                                    [ngClass]="{
+                                                        'success-color': activePredictionStateIntensity > 0,
+                                                        'error-color': activePredictionStateIntensity < 0,
+                                                        'light-text': activePredictionStateIntensity == 0
+                                                    }" 
+                                                    [svgIcon]="_ms.icons[activePredictionStateIntensity]"></mat-icon>
+                                            </div>
+                                            <p *ngIf="activePrediction" class="light-text ts-xs">
+                                                {{activePrediction.t | date: layout == 'desktop' ? 'medium': 'mediumTime'}}
+                                            </p>
+                                            <p *ngIf="!activePrediction" class="light-text ts-xs">Unknown</p>
                                         </div>
-
-                                        <!-- Volume -->
-                                        <div class="state-badge clickable" role="button" matRipple
-                                            [ngClass]="{
-                                                'square-badge-success': state.volume.s > 0,
-                                                'square-badge-neutral': state.volume.s == 0,
-                                                'weak-state': state.volume.s != 2
-                                            }"
-                                            (click)="displayVolumeDialog()">
-                                            <mat-icon style="font-size:19px;">equalizer</mat-icon>
-                                        </div>
+                                        <span fxFlex class="show-on-desktop"></span>
 
                                         <!-- Trend -->
-                                        <div (click)="displayActivePredictionDialog()"
-                                            class="state-badge clickable" role="button" matRipple 
-                                            [ngClass]="{
-                                                'square-badge-success': activePredictionStateIntensity > 0,
-                                                'square-badge-error': activePredictionStateIntensity < 0,
-                                                'square-badge-neutral': activePredictionStateIntensity == 0,
-                                                'weak-state': activePredictionStateIntensity != 2 && activePredictionStateIntensity != -2
-                                            }">
-                                            <mat-icon [svgIcon]="_ms.icons[activePredictionStateIntensity]"></mat-icon>
-                                            {{activeSum | number: '1.0-3'}}
+                                        <div fxFlex>
+                                            <mat-grid-list [cols]="4" [rowHeight]="layout == 'desktop' ? '23px': '35px'" gutterSize="1px">
+                                                <mat-grid-tile *ngFor="let id of _ms.splits" 
+                                                                class="clickable" role="button" matRipple
+                                                                (click)="displayWindowDialog(id)"
+                                                                [ngClass]="{
+                                                                    'buy-action-container': activePredictionStateIntensity > 0,
+                                                                    'sell-action-container': activePredictionStateIntensity < 0,
+                                                                    'neutral-action-container': activePredictionStateIntensity == 0,
+                                                                    'weak-state': activePredictionStateIntensity != 2 && activePredictionStateIntensity != -2
+                                                                }">
+                                                        <p style="font-size:8.5px!important;">{{activePredictionStateIntensity > 0 ? '+': '-'}}{{0 | number: '1.0-2'}}</p>
+                                                </mat-grid-tile>
+                                            </mat-grid-list>
                                         </div>
                                     </div>
                                     
@@ -310,137 +304,167 @@
 
                             <!-- Global Indicators -->
                             <div class="chart-card">
-                                <!-- Liquidity & Technicals -->
-                                <div>
-                                    <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" class="full-width">
-                                        <!-- Liquidity -->
-                                        <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
 
+                                <!-- Container -->
+                                <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" class="full-width">
+
+                                    <!-- General & Technicals -->
+                                    <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+                                        <!-- General -->
+                                        <div>
+                                            <!-- Grid -->
+                                            <div class="padding">
+                                                <mat-grid-list [cols]="3" rowHeight="41.5px" gutterSize="1px">
+                                                    <!-- Volume -->
+                                                    <mat-grid-tile class="clickable" role="button" matRipple
+                                                                   (click)="displayVolumeDialog()"
+                                                                    [ngClass]="{
+                                                                        'buy-action-container': state.volume.s > 0,
+                                                                        'sell-action-container': state.volume.s < 0,
+                                                                        'neutral-action-container': state.volume.s == 0,
+                                                                        'weak-state': state.volume.s != 2 && state.volume.s != -2
+                                                                    }"><p>Volume</p></mat-grid-tile>
+
+                                                    <!-- KeyZones -->
+                                                    <mat-grid-tile class="clickable" role="button" matRipple
+                                                                   (click)="displayKeyZonesDialog()"
+                                                                    [ngClass]="{
+                                                                        'action-container': state.keyzones.active,
+                                                                        'neutral-action-container': !state.keyzones.active,
+                                                                        'weak-state': !state.keyzones.active
+                                                                    }"><p>KeyZones</p></mat-grid-tile>
+
+                                                    <!-- Liquidity -->
+                                                    <mat-grid-tile class="clickable" role="button" matRipple
+                                                                   (click)="displayLiquidityDialog()"
+                                                                    [ngClass]="{
+                                                                        'buy-action-container': state.liquidity.d > 0,
+                                                                        'sell-action-container': state.liquidity.d < 0,
+                                                                        'neutral-action-container': state.liquidity.d == 0,
+                                                                        'weak-state': state.liquidity.d != 2 && state.liquidity.d != -2
+                                                                    }"><p>Liquidity</p></mat-grid-tile>
+
+                                                    <!-- Placeholder -->
+                                                    <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
+                                                    <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
+                                                    <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
+                                                    <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
+                                                    <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
+                                                    <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
+                                                </mat-grid-list>
+                                            </div>
                                         </div>
-                    
-                                        <span fxFlex></span>
-                                        <div class="divider show-on-mobile"></div>
-
-
 
                                         <!-- Technicals -->
-                                        <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
-                                            <div>
-                                                <!-- Heading -->
-                                                <div fxLayout="row" fxLayoutAlign="center start" class="chart-card-heading">
-                                                    <h4>Technicals</h4>
-                                                    <span fxFlex></span>
-                                                    <div (click)="technicalsTooltip()"
-                                                        class="state-badge clickable" role="button" matRipple
-                                                        [ngClass]="{
-                                                            'square-badge-success': state.technical_analysis.r > 0,
-                                                            'square-badge-error': state.technical_analysis.r < 0,
-                                                            'square-badge-neutral': state.technical_analysis.r == 0,
-                                                            'weak-state': state.technical_analysis.r != 2 && state.technical_analysis.r != -2
-                                                        }">
-                                                        {{_ms.taStates[state.technical_analysis.r]}}
-                                                    </div>
+                                        <div class="divider show-on-mobile"></div>
+                                        <div>
+                                            <!-- Heading -->
+                                            <div fxLayout="row" fxLayoutAlign="center start" class="chart-card-heading">
+                                                <h4>Technicals</h4>
+                                                <span fxFlex></span>
+                                                <div (click)="technicalsTooltip()"
+                                                    class="state-badge clickable" role="button" matRipple
+                                                    [ngClass]="{
+                                                        'square-badge-success': state.technical_analysis.r > 0,
+                                                        'square-badge-error': state.technical_analysis.r < 0,
+                                                        'square-badge-neutral': state.technical_analysis.r == 0,
+                                                        'weak-state': state.technical_analysis.r != 2 && state.technical_analysis.r != -2
+                                                    }">
+                                                    <mat-icon [svgIcon]="_ms.icons[state.technical_analysis.r]"></mat-icon>
                                                 </div>
-                        
-                                                <!-- Grid -->
-                                                <div class="padding">
-                                                    <mat-grid-list [cols]="3" rowHeight="40px" gutterSize="1px">
-                                                        <mat-grid-tile *ngFor="let taInterval of taIntervals" 
-                                                                        class="clickable" role="button" matRipple
-                                                                        (click)="displayTechnicalAnalysisDialog(taInterval)"
-                                                                        [ngClass]="{
-                                                                            'buy-action-container': state.technical_analysis[taInterval].s.a > 0,
-                                                                            'sell-action-container': state.technical_analysis[taInterval].s.a < 0,
-                                                                            'neutral-action-container': state.technical_analysis[taInterval].s.a == 0,
-                                                                            'weak-state': state.technical_analysis[taInterval].s.a != 2 && state.technical_analysis[taInterval].s.a != -2
-                                                                        }"><p>{{taInterval}}</p></mat-grid-tile>
-                                                    </mat-grid-list>
-                                                </div>
+                                            </div>
+                    
+                                            <!-- Grid -->
+                                            <div class="padding">
+                                                <mat-grid-list [cols]="3" rowHeight="40px" gutterSize="1px">
+                                                    <mat-grid-tile *ngFor="let taInterval of taIntervals" 
+                                                                    class="clickable" role="button" matRipple
+                                                                    (click)="displayTechnicalAnalysisDialog(taInterval)"
+                                                                    [ngClass]="{
+                                                                        'buy-action-container': state.technical_analysis[taInterval].s.a > 0,
+                                                                        'sell-action-container': state.technical_analysis[taInterval].s.a < 0,
+                                                                        'neutral-action-container': state.technical_analysis[taInterval].s.a == 0,
+                                                                        'weak-state': state.technical_analysis[taInterval].s.a != 2 && state.technical_analysis[taInterval].s.a != -2
+                                                                    }"><p>{{taInterval}}</p></mat-grid-tile>
+                                                </mat-grid-list>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <!-- Open Interest & Long/Short Ratio-->
-                                <div>
-                                    <div class="divider show-on-mobile"></div>
-                                    <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" class="full-width">
+
+                                    <span fxFlex class="show-on-desktop"></span>
+
+                                    <!-- Open Interest & Long/Short Ratio-->
+                                    <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
                                         <!-- Open Interest -->
-                                        <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
-                                            <div>
-                                                <!-- Heading -->
-                                                <div fxLayout="row" fxLayoutAlign="center start" class="chart-card-heading">
-                                                    <h4>Open Interest</h4>
-                                                    <span fxFlex></span>
-                                                    <div (click)="openInterestTooltip()"
-                                                        class="state-badge clickable" role="button" matRipple
-                                                        [ngClass]="{
-                                                            'square-badge-success': state.open_interest.s > 0,
-                                                            'square-badge-error': state.open_interest.s < 0,
-                                                            'square-badge-neutral': state.open_interest.s == 0,
-                                                            'weak-state': state.open_interest.s != 2 && state.open_interest.s != -2
-                                                        }">
-                                                        <mat-icon [svgIcon]="_ms.icons[state.open_interest.s]"></mat-icon>
-                                                    </div>
+                                        <div class="divider show-on-mobile"></div>
+                                        <div>
+                                            <!-- Heading -->
+                                            <div fxLayout="row" fxLayoutAlign="center start" class="chart-card-heading">
+                                                <h4>Open Interest</h4>
+                                                <span fxFlex></span>
+                                                <div (click)="openInterestTooltip()"
+                                                    class="state-badge clickable" role="button" matRipple
+                                                    [ngClass]="{
+                                                        'square-badge-success': state.open_interest.s > 0,
+                                                        'square-badge-error': state.open_interest.s < 0,
+                                                        'square-badge-neutral': state.open_interest.s == 0,
+                                                        'weak-state': state.open_interest.s != 2 && state.open_interest.s != -2
+                                                    }">
+                                                    <mat-icon [svgIcon]="_ms.icons[state.open_interest.s]"></mat-icon>
                                                 </div>
-                        
-                                                <!-- Grid -->
-                                                <div class="padding">
-                                                    <mat-grid-list [cols]="3" rowHeight="40px" gutterSize="1px">
-                                                        <mat-grid-tile *ngFor="let id of _ms.openInterestExchanges" 
-                                                                        class="clickable" role="button" matRipple
-                                                                        (click)="displayOpenInterestDialog(id)"
-                                                                        [ngClass]="{
-                                                                            'buy-action-container': state.open_interest[id] > 0,
-                                                                            'sell-action-container': state.open_interest[id] < 0,
-                                                                            'neutral-action-container': state.open_interest[id] == 0,
-                                                                            'weak-state': state.open_interest[id] != 2 && state.open_interest[id] != -2
-                                                                        }"><p>{{_ms.openInterestExchangeNames[id]}}</p></mat-grid-tile>
-                                                    </mat-grid-list>
-                                                </div>
+                                            </div>
+                    
+                                            <!-- Grid -->
+                                            <div class="padding">
+                                                <mat-grid-list [cols]="3" rowHeight="40px" gutterSize="1px">
+                                                    <mat-grid-tile *ngFor="let id of _ms.openInterestExchanges" 
+                                                                    class="clickable" role="button" matRipple
+                                                                    (click)="displayOpenInterestDialog(id)"
+                                                                    [ngClass]="{
+                                                                        'buy-action-container': state.open_interest[id] > 0,
+                                                                        'sell-action-container': state.open_interest[id] < 0,
+                                                                        'neutral-action-container': state.open_interest[id] == 0,
+                                                                        'weak-state': state.open_interest[id] != 2 && state.open_interest[id] != -2
+                                                                    }"><p>{{_ms.openInterestExchangeNames[id]}}</p></mat-grid-tile>
+                                                    <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
+                                                    <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
+                                                </mat-grid-list>
                                             </div>
                                         </div>
 
-
-                    
-                                        <span fxFlex></span>
-                                        <div class="divider show-on-mobile"></div>
-
-
-
                                         <!-- Long/Short Ratio -->
-                                        <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
-                                            <div>
-                                                <!-- Heading -->
-                                                <div fxLayout="row" fxLayoutAlign="center start" class="chart-card-heading">
-                                                    <h4>Long/Short Ratio</h4>
-                                                    <span fxFlex></span>
-                                                    <div (click)="longShortRatioTooltip()"
-                                                        class="state-badge clickable" role="button" matRipple
-                                                        [ngClass]="{
-                                                            'square-badge-success': state.long_short_ratio.s > 0,
-                                                            'square-badge-error': state.long_short_ratio.s < 0,
-                                                            'square-badge-neutral': state.long_short_ratio.s == 0,
-                                                            'weak-state': state.long_short_ratio.s != 2 && state.long_short_ratio.s != -2
-                                                        }">
-                                                        <mat-icon [svgIcon]="_ms.icons[state.long_short_ratio.s]"></mat-icon>
-                                                    </div>
+                                        <div class="divider show-on-mobile"></div>
+                                        <div>
+                                            <!-- Heading -->
+                                            <div fxLayout="row" fxLayoutAlign="center start" class="chart-card-heading">
+                                                <h4>Long/Short Ratio</h4>
+                                                <span fxFlex></span>
+                                                <div (click)="longShortRatioTooltip()"
+                                                    class="state-badge clickable" role="button" matRipple
+                                                    [ngClass]="{
+                                                        'square-badge-success': state.long_short_ratio.s > 0,
+                                                        'square-badge-error': state.long_short_ratio.s < 0,
+                                                        'square-badge-neutral': state.long_short_ratio.s == 0,
+                                                        'weak-state': state.long_short_ratio.s != 2 && state.long_short_ratio.s != -2
+                                                    }">
+                                                    <mat-icon [svgIcon]="_ms.icons[state.long_short_ratio.s]"></mat-icon>
                                                 </div>
-                        
-                                                <!-- Grid -->
-                                                <div class="padding">
-                                                    <mat-grid-list [cols]="3" rowHeight="40px" gutterSize="1px">
-                                                        <mat-grid-tile *ngFor="let id of _ms.longShortRatioExchanges" 
-                                                                        class="clickable" role="button" matRipple
-                                                                        (click)="displayLongShortRatioDialog(id)"
-                                                                        [ngClass]="{
-                                                                            'buy-action-container': state.long_short_ratio[id] > 0,
-                                                                            'sell-action-container': state.long_short_ratio[id] < 0,
-                                                                            'neutral-action-container': state.long_short_ratio[id] == 0,
-                                                                            'weak-state': state.long_short_ratio[id] != 2 && state.long_short_ratio[id] != -2
-                                                                        }"><p>{{_ms.longShortRatioExchangeNames[id]}}</p></mat-grid-tile>
-                                                    </mat-grid-list>
-                                                </div>
+                                            </div>
+                    
+                                            <!-- Grid -->
+                                            <div class="padding">
+                                                <mat-grid-list [cols]="3" rowHeight="40px" gutterSize="1px">
+                                                    <mat-grid-tile *ngFor="let id of _ms.longShortRatioExchanges" 
+                                                                    class="clickable" role="button" matRipple
+                                                                    (click)="displayLongShortRatioDialog(id)"
+                                                                    [ngClass]="{
+                                                                        'buy-action-container': state.long_short_ratio[id] > 0,
+                                                                        'sell-action-container': state.long_short_ratio[id] < 0,
+                                                                        'neutral-action-container': state.long_short_ratio[id] == 0,
+                                                                        'weak-state': state.long_short_ratio[id] != 2 && state.long_short_ratio[id] != -2
+                                                                    }"><p>{{_ms.longShortRatioExchangeNames[id]}}</p></mat-grid-tile>
+                                                </mat-grid-list>
                                             </div>
                                         </div>
                                     </div>

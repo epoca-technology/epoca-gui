@@ -113,8 +113,9 @@ import {
 	PredictionStateIntensityFormDialogComponent,
 	DashboardComponent, 
 	KeyzonesDialogComponent,
-	KeyzoneReversalsDialogComponent,
-	MarketStateDialogComponent
+	KeyzoneDetailsDialogComponent,
+	MarketStateDialogComponent,
+	LiquidityDialogComponent
 } from "./modules/dashboard";
 
 
@@ -137,8 +138,9 @@ import { AppComponent } from "./app.component";
 		TechnicalAnalysisDialogComponent,
 		PredictionStateIntensityFormDialogComponent,
 		KeyzonesDialogComponent,
-		KeyzoneReversalsDialogComponent,
+    	KeyzoneDetailsDialogComponent,
   		MarketStateDialogComponent,
+    	LiquidityDialogComponent,
 	],
 	imports: [
 		// Core

@@ -1,9 +1,9 @@
-import { IReversal } from "../../../core"
+import { IKeyZone } from "../../../core"
 
 
 export interface IKeyZonesDialogComponent {
     showMore(above?: boolean): void,
-    displayReversals(reversals: IReversal[]): void,
+    displayKeyZone(zone: IKeyZone): void,
     close(): void
 }
 

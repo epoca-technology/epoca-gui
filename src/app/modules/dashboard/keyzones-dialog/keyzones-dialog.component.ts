@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
-import { IKeyZoneFullState, IReversal, MarketStateService, UtilsService } from '../../../core';
-import { AppService, NavService } from '../../../services';
-import { KeyzoneReversalsDialogComponent } from './keyzone-reversals-dialog';
+import { IKeyZone, IKeyZoneFullState, IReversal, MarketStateService, UtilsService } from '../../../core';
+import { AppService, ILayout, NavService } from '../../../services';
+import { KeyzoneDetailsDialogComponent } from './keyzone-details-dialog';
 import { IKeyZoneDistance, IKeyZonesDialogComponent } from './interfaces';
 
 @Component({
@@ -11,6 +11,9 @@ import { IKeyZoneDistance, IKeyZonesDialogComponent } from './interfaces';
   styleUrls: ['./keyzones-dialog.component.scss']
 })
 export class KeyzonesDialogComponent implements OnInit, IKeyZonesDialogComponent {
+	// Layout
+	public layout: ILayout = this._app.layout.value;
+
 	// Full State
 	public state!: IKeyZoneFullState;
 
@@ -18,6 +21,7 @@ export class KeyzonesDialogComponent implements OnInit, IKeyZonesDialogComponent
 	public currentPrice!: number;
 
 	// Visibility
+	private pageSize!: number;
 	public visibleAbove!: number;
 	public hasMoreAbove!: boolean;
 	public visibleBelow!: number;
@@ -44,13 +48,9 @@ export class KeyzonesDialogComponent implements OnInit, IKeyZonesDialogComponent
 		try {
 			this.state = await this._ms.calculateKeyZoneState();
 			this.currentPrice = this._app.marketState.value!.window.w[this._app.marketState.value!.window.w.length - 1].c;
-			if (this._app.layout.value == "desktop") {
-				this.visibleAbove = this.state.active ? 3: 3;
-				this.visibleBelow = this.state.active ? 3: 3;
-			}else {
-				this.visibleAbove = this.state.active ? 1: 2;
-				this.visibleBelow = this.state.active ? 1: 2;
-			}
+			this.pageSize = this.layout == "desktop" ? 11: 7;
+			this.visibleAbove = this.pageSize;
+			this.visibleBelow = this.pageSize;
 			this.hasMoreAbove = this.state.above.length > this.visibleAbove;
 			this.hasMoreBelow = this.state.below.length > this.visibleBelow;
 			this.calculateDistances();
@@ -91,12 +91,13 @@ export class KeyzonesDialogComponent implements OnInit, IKeyZonesDialogComponent
 	 * @param above 
 	 */
 	public showMore(above?: boolean): void {
+		const increment: number = this.pageSize * 2;
 		if (above) {
-			this.visibleAbove = this.state.above.length;
-			this.hasMoreAbove = false;
+			this.visibleAbove = this.visibleAbove + increment;
+			this.hasMoreAbove = this.state.above.length > this.visibleAbove;
 		} else {
-			this.visibleBelow = this.state.below.length;
-			this.hasMoreBelow = false;
+			this.visibleBelow = this.visibleBelow + increment;
+			this.hasMoreBelow = this.state.below.length > this.visibleBelow;
 		}
 	}
 
@@ -121,13 +122,13 @@ export class KeyzonesDialogComponent implements OnInit, IKeyZonesDialogComponent
 
 	/**
 	 * Opens the reversals dialog.
-	 * @param reversals 
+	 * @param zone 
 	 */
-	public displayReversals(reversals: IReversal[]): void {
-		this.dialog.open(KeyzoneReversalsDialogComponent, {
+	public displayKeyZone(zone: IKeyZone): void {
+		this.dialog.open(KeyzoneDetailsDialogComponent, {
 			hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
 			panelClass: "small-dialog",
-			data: reversals
+			data: zone
 		})
 	}
 

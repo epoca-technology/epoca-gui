@@ -4,32 +4,67 @@
 
 
 .component {
-    padding:15px;
+    //padding:15px;
     h4 { margin:0}
     p {margin:0}
-    .keyzone {
-        margin: 15px 0 15px 0;
-        padding:10px;
-        background: #FFFFFF;
-    }
-    .active { 
-        @extend .keyzone;
-        @include mat.elevation(6);
-        border-left:5px solid #000000;
-    }
-    .above {
-        @extend .keyzone;
-        @include mat.elevation(3);
-        border-left:5px solid var(--success-color);
-    }
-    .above:first-child { margin-top:0!important;}
-    .below {
-        @extend .keyzone;
-        @include mat.elevation(3);
-        border-left:5px solid var(--error-color);
-    }
-    .below:last-child { margin-bottom:0!important;}
-
     .m-right { margin-right:5px;}
 
+
+
+    .keyzone {
+        margin: 1px 0 1px 0;
+        padding:1px 5px 1px 5px;
+        p {
+            font-size: 11px!important;
+            font-weight: 600;
+            color: #FFFFFF;
+        }
+    }
+    .keyzone:first-child { margin-top:0px!important}
+    .keyzone:last-child { margin-bottom:0px!important}
+    .keyzone:hover { filter: brightness(75%); }
+
+
+    .active { 
+        @extend .keyzone;
+        background-color:  #000000;
+        margin: 1px 0 1px 0;
+    }
+    .active:first-child { margin-top:1px!important}
+    .active:last-child { margin-bottom:1px!important}
+    .market { 
+        @extend .keyzone;
+        background-color:  #78909C;
+        margin: 1px 0 1px 0;
+    }
+    .market:first-child { margin-top:1px!important}
+    .market:last-child { margin-bottom:1px!important}
+
+
+    .above-0 {
+        @extend .keyzone;
+        background-color: #4DB6AC;
+    }
+    .above-1 {
+        @extend .keyzone;
+        background-color: #00897B;
+    }
+    .above-2 {
+        @extend .keyzone;
+        background-color: #004D40;
+    }
+    //.above:first-child { margin-top:0!important;}
+    .below-0 {
+        @extend .keyzone;
+        background-color: #E57373;
+    }
+    .below-1 {
+        @extend .keyzone;
+        background-color: #E53935;
+    }
+    .below-2 {
+        @extend .keyzone;
+        background-color: #B71C1C;
+    }
+    //.below:last-child { margin-bottom:0!important;}
 }

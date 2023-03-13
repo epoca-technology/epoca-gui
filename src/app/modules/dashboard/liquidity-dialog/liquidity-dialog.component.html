@@ -1,0 +1,126 @@
+<mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <button mat-icon-button class="show-on-mobile" (click)="close()"><mat-icon>arrow_back</mat-icon></button>
+        <span *ngIf="!loaded || !state">Loading...</span>
+        <mat-icon *ngIf="loaded && state" class="show-on-desktop" [svgIcon]="_ms.icons[state.d]" style="margin-right:7px;"></mat-icon>
+        <span *ngIf="loaded && state" 
+            class="truncate" 
+            matTooltip="Updated: {{state.ts | date: 'shortTime'}}">Liquidity</span>
+        <span fxFlex></span>
+        <button mat-icon-button *ngIf="loaded"  (click)="displayTooltip()" matTooltip="More information"><mat-icon>question_mark</mat-icon></button>
+        <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
+    </div>
+</mat-toolbar>
+<div mat-dialog-content>
+    <!-- Loader -->
+    <div *ngIf="!loaded">
+        <div class="section-loader show-on-mobile"><div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div></div>
+        <div class="loader show-on-desktop"><div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div></div>
+    </div>
+    <div *ngIf="loaded && state">
+        <!-- Tabs Navigation-->
+        <mat-tab-group [selectedIndex]="activeTab" 
+            (selectedIndexChange)="activeTab = $event"
+            mat-align-tabs="center" 
+            mat-stretch-tabs 
+            backgroundColor="primary">
+            <mat-tab><ng-template mat-tab-label><span>SUMMARY</span></ng-template></mat-tab>
+            <mat-tab><ng-template mat-tab-label><span>ASKS</span></ng-template></mat-tab>
+            <mat-tab><ng-template mat-tab-label><span>BIDS</span></ng-template></mat-tab>
+        </mat-tab-group>
+
+        <!-- Summary -->
+        <div *ngIf="activeTab == 0" class="padding" style="overflow: hidden">
+            <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" fxLayoutAlign="center center" class="full-width">
+                <!-- Dominance -->
+                <div fxFlex>
+                    <h6 class="show-on-mobile">Dominance</h6>
+                    <div fxLayout="row" fxLayoutAlign="center center" class="full-width">
+                        <apx-chart
+                            [series]="dominance.series"
+                            [chart]="dominance.chart"
+                            [labels]="dominance.labels"
+                            [colors]="dominance.colors"
+                            [legend]="dominance.legend"
+                            [responsive]="dominance.responsive"
+                        ></apx-chart>
+                    </div>
+                </div>
+
+                <span fxFlex="3" class="show-on-desktop"></span>
+
+                <!-- Liquidity Levels -->
+                <div fxFlex>
+                    <!-- Asks -->
+                    <div class="divider show-on-mobile"></div>
+                    <div>
+                        <div fxLayout="row" fxLayoutAlign="center start">
+                            <h6>Asks</h6>
+                            <span fxFlex></span>
+                            <div class="square-badge-error">{{state.a.length}}</div>
+                        </div>
+                        
+                        <apx-chart
+                            [series]="askConcentration.series"
+                            [chart]="askConcentration.chart"
+                            [plotOptions]="askConcentration.plotOptions"
+                            [xaxis]="askConcentration.xaxis"
+                            [yaxis]="askConcentration.yaxis"
+                            [dataLabels]="askConcentration.dataLabels"
+                            [colors]="askConcentration.colors"
+                            [grid]="askConcentration.grid"
+                            [legend]="askConcentration.legend"
+                        ></apx-chart>
+                    </div>
+
+                    <div class="divider show-on-mobile"></div>
+
+                    <!-- Bids -->
+                    <div>
+                        <div fxLayout="row" fxLayoutAlign="center start">
+                            <h6>Bids</h6>
+                            <span fxFlex></span>
+                            <div class="square-badge-success">{{state.b.length}}</div>
+                        </div>
+                        
+                        <apx-chart
+                            [series]="bidConcentration.series"
+                            [chart]="bidConcentration.chart"
+                            [plotOptions]="bidConcentration.plotOptions"
+                            [xaxis]="bidConcentration.xaxis"
+                            [yaxis]="bidConcentration.yaxis"
+                            [dataLabels]="bidConcentration.dataLabels"
+                            [colors]="bidConcentration.colors"
+                            [grid]="bidConcentration.grid"
+                            [legend]="bidConcentration.legend"
+                        ></apx-chart>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Asks -->
+        <div *ngIf="activeTab == 1" class="padding" style="overflow: hidden">
+            <apx-chart
+                [series]="asks.series"
+                [chart]="asks.chart"
+                [dataLabels]="asks.dataLabels"
+                [xaxis]="asks.xaxis"
+                [yaxis]="asks.yaxis"
+                [annotations]="asks.annotations"
+            ></apx-chart>
+        </div>
+
+        <!-- Bids -->
+        <div *ngIf="activeTab == 2" class="padding" style="overflow: hidden">
+            <apx-chart
+                [series]="bids.series"
+                [chart]="bids.chart"
+                [dataLabels]="bids.dataLabels"
+                [xaxis]="bids.xaxis"
+                [yaxis]="bids.yaxis"
+                [annotations]="bids.annotations"
+            ></apx-chart>
+        </div>
+    </div>
+</div>

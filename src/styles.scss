@@ -898,6 +898,7 @@ form .mat-checkbox-inner-container{
 .action-container {
     text-align: center;
     color:white;
+	background-color: #000000;
     p{ 
         margin:0;
         font-weight:600;
@@ -917,6 +918,10 @@ form .mat-checkbox-inner-container{
     background-color: var(--neutral-color)!important; 
 }
 
+.placeholder-action-container {
+    @extend .action-container;
+    background-color: #ECEFF1!important; 
+}
 
 
 

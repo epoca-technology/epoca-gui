@@ -1,0 +1,62 @@
+<mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <button mat-icon-button class="show-on-mobile" (click)="close()"><mat-icon>arrow_back</mat-icon></button>
+        <span class="truncate">KeyZone</span>&nbsp;
+        <span fxFlex></span>
+        <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
+    </div>
+</mat-toolbar>
+<div mat-dialog-content>
+    <div class="component">
+        <!-- Kind -->
+        <div fxLayout="row" fxLayoutAlign="center center">
+            <p class="light-text ts-m">Kind</p>
+            <span fxFlex></span>
+            <div *ngIf="zone.m" class="square-badge">Mutation</div>
+            <div *ngIf="!zone.m && zone.r[0].t == 's'" class="square-badge-error">Support</div>
+            <div *ngIf="!zone.m && zone.r[0].t == 'r'" class="square-badge-success">Resistance</div>
+        </div>
+
+        <!-- Price Range -->
+        <div class="margin-top" fxLayout="row" fxLayoutAlign="center start">
+            <p class="light-text ts-m">Range ({{zoneSize}}%)</p>
+            <span fxFlex></span>
+            <div>
+                <p>{{zone.s | currency}}</p>
+                <p>{{zone.e | currency}}</p>
+            </div>
+        </div>
+
+        <!-- Volume Mean -->
+        <div class="margin-top" fxLayout="row" fxLayoutAlign="center center">
+            <p class="light-text ts-m">Vol. Mean</p>
+            <span fxFlex></span>
+            <p>{{zone.vm | currency}}</p>
+            <mat-icon *ngIf="zone.vi == 0">battery_1_bar</mat-icon>
+            <mat-icon *ngIf="zone.vi == 1">battery_4_bar</mat-icon>
+            <mat-icon *ngIf="zone.vi == 2">battery_full</mat-icon>
+        </div>
+
+        <!-- Reversals -->
+        <div class="margin-top">
+            <div fxLayout="row" fxLayoutAlign="center start">
+                <p class="light-text ts-m">Reversals</p>
+                <span fxFlex></span>
+                <p>{{zone.r.length}}</p>
+            </div>
+            <table class="highlight">
+                <tbody>
+                    <tr *ngFor="let reversal of zone.r">
+                        <td [ngClass]="{'success-color': reversal.t == 'r', 'error-color': reversal.t == 's'}">
+                            <p class="ts-s">{{reversal.id | date: 'medium'}}</p>
+                            <p class="ts-xxs">{{reversal.v | currency}}</p>
+                        </td>
+                        <td class="align-right" [ngClass]="{'success-color': reversal.t == 'r', 'error-color': reversal.t == 's'}">
+                            <p class="ts-s">{{reversal.t == 'r' ? 'RESISTANCE': 'SUPPORT'}}</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

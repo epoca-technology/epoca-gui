@@ -1,6 +1,18 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
-import { IExchangeLongShortRatioID, IExchangeLongShortRatioState, IExchangeOpenInterestID, IExchangeOpenInterestState, ISplitStateID, ISplitStates, ISplitStateSeriesItem, IStateType, IVolumeState, MarketStateService, UtilsService } from '../../../core';
+import { 
+	IExchangeLongShortRatioID, 
+	IExchangeLongShortRatioState, 
+	IExchangeOpenInterestID, 
+	IExchangeOpenInterestState, 
+	ISplitStateID, 
+	ISplitStates, 
+	ISplitStateSeriesItem, 
+	IStateType, 
+	IVolumeState, 
+	MarketStateService, 
+	UtilsService 
+} from '../../../core';
 import { AppService, ChartService, IBarChartOptions, ILayout, ILineChartOptions, NavService } from '../../../services';
 import { IMarketStateDialogComponent, IMarketStateDialogConfig, IMarketStateModule } from './interfaces';
 
@@ -206,9 +218,18 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 	 * @returns string
 	 */
 	private getChartColor(state: IStateType): string { 
-		if (state > 0) { return this._chart.upwardColor }
-		else if (state < 0) { return this._chart.downwardColor }
-		else { return this._chart.neutralColor }
+		switch (state) {
+			case 2:
+				return this._chart.upwardColor;
+			case 1:
+				return "#26A69A";
+			case -1:
+				return "#EF5350";
+			case -2:
+				return this._chart.downwardColor
+			default:
+				return this._chart.neutralColor
+		}
 	}
 
 
@@ -265,35 +286,48 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 		// Set the state average
 		this.stateAverage = this.volumeState.s;
 
-        // Init the color of the prediction sum line
-        const color: string = this.volumeState.s > 0 ? this._chart.upwardColor: this._chart.neutralColor;
-
         // Build the chart
+		let volumes: number[] = [];
+		let seriesData: ISplitStateSeriesItem[] = [];
+		for (let vol of this.volumeState.w) {
+			volumes.push(vol.y);
+			seriesData.push({ 
+				x: vol.x,
+				y: <number>this._utils.outputNumber(vol.y, {dp: 0})
+			});
+		}
+		const min: number = <number>this._utils.getMin(volumes);
+		const max: number = <number>this._utils.getMax(volumes);
 		this.volumeChart = this._chart.getBarChartOptions(
 			{ 
-				series: [ { name: "USDT", data: this.volumeState.w, color: color}],
-				xaxis: {type: "datetime",tooltip: {enabled: true}, labels: {datetimeUTC: false}}
+				series: [ { 
+					name: "USDT", 
+					data: seriesData, 
+					color: this.getChartColor(this.volumeState.s)
+				}],
+				xaxis: {type: "datetime",tooltip: {enabled: true}, labels: {datetimeUTC: false}},
+				yaxis: { tooltip: { enabled: true}, axisBorder: { show: true}, axisTicks: {show: true}}
 			},
 			undefined,
 			this.layout == "desktop" ? 400: 350,
 			undefined,
-			undefined,
-			undefined,
+			true,
+			{min: min, max: max},
 			{
 				yaxis: [
 					{
 						y: this.volumeState.m,
 						borderColor: this._chart.upwardColor,
 						fillColor: this._chart.upwardColor,
-						strokeDashArray: 3,
-						borderWidth: 2
+						strokeDashArray: 2,
+						borderWidth: 1
 					},
 					{
 						y: this.volumeState.mh,
 						borderColor: this._chart.upwardColor,
 						fillColor: this._chart.upwardColor,
 						strokeDashArray: 0,
-						borderWidth: 2
+						borderWidth: 1
 					},
 				]
 			}
