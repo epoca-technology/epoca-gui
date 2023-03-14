@@ -109,7 +109,6 @@ import {SharedModule} from "./shared";
 import { 
 	BalanceDialogComponent, 
 	StrategyFormDialogComponent,
-	TechnicalAnalysisDialogComponent,
 	DashboardComponent, 
 	KeyzonesDialogComponent,
 	KeyzoneDetailsDialogComponent,
@@ -134,7 +133,6 @@ import { AppComponent } from "./app.component";
 		DashboardComponent,
 		BalanceDialogComponent,
 		StrategyFormDialogComponent,
-		TechnicalAnalysisDialogComponent,
 		KeyzonesDialogComponent,
     	KeyzoneDetailsDialogComponent,
   		MarketStateDialogComponent,

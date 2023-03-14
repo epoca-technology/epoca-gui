@@ -210,7 +210,7 @@
                                 <span fxFlex class="show-on-desktop"></span>
 
                                 <div fxFlex>
-                                    <mat-grid-list [cols]="4" rowHeight="35px" gutterSize="1px">
+                                    <mat-grid-list [cols]="4" [rowHeight]="layout == 'desktop' ? '35px': '50px'" gutterSize="1px">
                                         <mat-grid-tile *ngFor="let id of _ms.splits" 
                                                         class="clickable" role="button" matRipple
                                                         (click)="displayWindowDialog(id)"
@@ -270,17 +270,17 @@
 
                                         <!-- Trend -->
                                         <div fxFlex>
-                                            <mat-grid-list [cols]="4" [rowHeight]="layout == 'desktop' ? '30px': '35px'" gutterSize="1px">
+                                            <mat-grid-list [cols]="4" [rowHeight]="layout == 'desktop' ? '30px': '50px'" gutterSize="1px" class="trend-grid">
                                                 <mat-grid-tile *ngFor="let id of _ms.splits" 
                                                                 class="clickable" role="button" matRipple
-                                                                (click)="displayWindowDialog(id)"
+                                                                (click)="displayTrendDialog(id)"
                                                                 [ngClass]="{
                                                                     'buy-action-container': state.trend.ss[id].s > 0,
                                                                     'sell-action-container': state.trend.ss[id].s < 0,
                                                                     'neutral-action-container': state.trend.ss[id].s == 0,
                                                                     'weak-state': state.trend.ss[id].s != 2 && state.trend.ss[id].s != -2
                                                                 }">
-                                                        <p style="font-size:9px!important;">
+                                                        <p>
                                                             {{state.trend.ss[id].s > 0 ? '+': '-'}}{{state.trend.ss[id].c | number: '1.0-2'}}
                                                         </p>
                                                 </mat-grid-tile>
@@ -306,188 +306,108 @@
                             <div class="divider show-on-mobile"></div>
 
                             <!-- Global Indicators -->
-                            <div class="chart-card">
+                            <div class="global-indicators">
 
                                 <!-- Container -->
                                 <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" class="full-width">
 
-                                    <!-- General & Technicals -->
-                                    <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
-                                        <!-- Altcoins -->
-                                        <div>
-                                            <!-- Grid -->
-                                            <h4 class="show-on-mobile margin-bottom">Altcoins</h4>
-                                            <div class="padding">
-                                                <mat-grid-list [cols]="5" [rowHeight]="layout == 'desktop' ? '31.5px': '40px'" gutterSize="1px" class="altcoin-grid">
-                                                    <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>CFX</p></mat-grid-tile>
-                                                    <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>FIL</p></mat-grid-tile>
-                                                    <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>OP</p></mat-grid-tile>
-                                                    <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>APT</p></mat-grid-tile>
-                                                    <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>MATIC</p></mat-grid-tile>
-                                                    <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>DYDX</p></mat-grid-tile>
-                                                    <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>AGIX</p></mat-grid-tile>
-                                                    <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>GALA</p></mat-grid-tile>
-                                                    <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>NEO</p></mat-grid-tile>
-                                                    <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>EOS</p></mat-grid-tile>
-                                                    <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>ACH</p></mat-grid-tile>
-                                                    <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>ANKR</p></mat-grid-tile>
-                                                    <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>GMX</p></mat-grid-tile>
-                                                    <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>STX</p></mat-grid-tile>
-                                                    <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
-                                                </mat-grid-list>
-                                            </div>
+                                    <!-- Positions & General Indicators -->
+                                    <div fxFlex="50" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
+
+                                        <!-- Positions -->
+                                        <div class="global-indicators-section">
+                                            <mat-grid-list [cols]="3" [rowHeight]="layout == 'desktop' ? '43px': '50px'" gutterSize="1px">
+                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
+                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
+                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
+                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
+                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
+                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
+                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
+                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
+                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
+                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
+                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
+                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
+                                            </mat-grid-list>
                                         </div>
 
-                                        <!-- General -->
                                         <div class="divider show-on-mobile"></div>
-                                        <div>
-                                            <!-- Grid -->
-                                            <h4 class="show-on-mobile margin-bottom">General</h4>
-                                            <div class="padding">
-                                                <mat-grid-list [cols]="3" [rowHeight]="layout == 'desktop' ? '40px': '40px'" rowHeight="41.5px" gutterSize="1px">
-                                                    <!-- Volume -->
-                                                    <mat-grid-tile class="clickable" role="button" matRipple
-                                                                   (click)="displayVolumeDialog()"
-                                                                    [ngClass]="{
-                                                                        'buy-action-container': state.volume.s > 0,
-                                                                        'sell-action-container': state.volume.s < 0,
-                                                                        'neutral-action-container': state.volume.s == 0,
-                                                                        'weak-state': state.volume.s != 2 && state.volume.s != -2
-                                                                    }"><p>Volume</p></mat-grid-tile>
 
-                                                    <!-- KeyZones -->
-                                                    <mat-grid-tile class="clickable" role="button" matRipple
-                                                                   (click)="displayKeyZonesDialog()"
-                                                                    [ngClass]="{
-                                                                        'action-container': state.keyzones.active,
-                                                                        'neutral-action-container': !state.keyzones.active,
-                                                                        'weak-state': !state.keyzones.active
-                                                                    }"><p>KeyZones</p></mat-grid-tile>
+                                        <!-- General Indicators -->
+                                        <div class="global-indicators-section">
+                                            <mat-grid-list [cols]="3" [rowHeight]="layout == 'desktop' ? '50px': '50px'" gutterSize="1px">
+                                                <!-- Volume -->
+                                                <mat-grid-tile class="clickable" role="button" matRipple
+                                                               (click)="displayVolumeDialog()"
+                                                                [ngClass]="{
+                                                                    'buy-action-container': state.volume.s > 0,
+                                                                    'sell-action-container': state.volume.s < 0,
+                                                                    'neutral-action-container': state.volume.s == 0,
+                                                                    'weak-state': state.volume.s != 2 && state.volume.s != -2
+                                                                }"><p>Volume</p></mat-grid-tile>
 
-                                                    <!-- Liquidity -->
-                                                    <mat-grid-tile class="clickable" role="button" matRipple
-                                                                   (click)="displayLiquidityDialog()"
-                                                                    [ngClass]="{
-                                                                        'buy-action-container': state.liquidity.d > 0,
-                                                                        'sell-action-container': state.liquidity.d < 0,
-                                                                        'neutral-action-container': state.liquidity.d == 0,
-                                                                        'weak-state': state.liquidity.d != 2 && state.liquidity.d != -2
-                                                                    }"><p>Liquidity</p></mat-grid-tile>
-                                                </mat-grid-list>
-                                            </div>
-                                        </div>
+                                                <!-- KeyZones -->
+                                                <mat-grid-tile class="clickable" role="button" matRipple
+                                                               (click)="displayKeyZonesDialog()"
+                                                                [ngClass]="{
+                                                                    'action-container': state.keyzones.active,
+                                                                    'neutral-action-container': !state.keyzones.active,
+                                                                    'weak-state': !state.keyzones.active
+                                                                }"><p>KeyZones</p></mat-grid-tile>
 
-                                        <!-- Technicals -->
-                                        <div class="divider show-on-mobile"></div>
-                                        <div>
-                                            <!-- Heading -->
-                                            <div fxLayout="row" fxLayoutAlign="center start" class="chart-card-heading">
-                                                <h4>Technicals</h4>
-                                                <span fxFlex></span>
-                                                <div (click)="technicalsTooltip()"
-                                                    class="state-badge clickable" role="button" matRipple
-                                                    [ngClass]="{
-                                                        'square-badge-success': state.technical_analysis.r > 0,
-                                                        'square-badge-error': state.technical_analysis.r < 0,
-                                                        'square-badge-neutral': state.technical_analysis.r == 0,
-                                                        'weak-state': state.technical_analysis.r != 2 && state.technical_analysis.r != -2
-                                                    }">
-                                                    <mat-icon [svgIcon]="_ms.icons[state.technical_analysis.r]"></mat-icon>
-                                                </div>
-                                            </div>
-                    
-                                            <!-- Grid -->
-                                            <div class="padding">
-                                                <mat-grid-list [cols]="6" [rowHeight]="layout == 'desktop' ? '40px': '40px'" gutterSize="1px" class="ta-grid">
-                                                    <mat-grid-tile *ngFor="let taInterval of taIntervals" 
-                                                                    class="clickable" role="button" matRipple
-                                                                    (click)="displayTechnicalAnalysisDialog(taInterval)"
-                                                                    [ngClass]="{
-                                                                        'buy-action-container': state.technical_analysis[taInterval].s.a > 0,
-                                                                        'sell-action-container': state.technical_analysis[taInterval].s.a < 0,
-                                                                        'neutral-action-container': state.technical_analysis[taInterval].s.a == 0,
-                                                                        'weak-state': state.technical_analysis[taInterval].s.a != 2 && state.technical_analysis[taInterval].s.a != -2
-                                                                    }"><p>{{taInterval}}</p></mat-grid-tile>
-                                                </mat-grid-list>
-                                            </div>
+                                                <!-- Liquidity -->
+                                                <mat-grid-tile class="clickable" role="button" matRipple
+                                                               (click)="displayLiquidityDialog()"
+                                                                [ngClass]="{
+                                                                    'buy-action-container': state.liquidity.d > 0,
+                                                                    'sell-action-container': state.liquidity.d < 0,
+                                                                    'neutral-action-container': state.liquidity.d == 0,
+                                                                    'weak-state': state.liquidity.d != 2 && state.liquidity.d != -2
+                                                                }"><p>Liquidity</p></mat-grid-tile>
+                                            </mat-grid-list>
                                         </div>
                                     </div>
 
 
-                                    <span fxFlex class="show-on-desktop"></span>
-
-                                    <!-- Open Interest & Long/Short Ratio-->
-                                    <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
-                                        <!-- Open Interest -->
+                                    <!-- Altcoins -->
+                                    <div fxFlex="50" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
                                         <div class="divider show-on-mobile"></div>
-                                        <div>
-                                            <!-- Heading -->
-                                            <div fxLayout="row" fxLayoutAlign="center start" class="chart-card-heading">
-                                                <h4>Open Interest</h4>
-                                                <span fxFlex></span>
-                                                <div (click)="openInterestTooltip()"
-                                                    class="state-badge clickable" role="button" matRipple
-                                                    [ngClass]="{
-                                                        'square-badge-success': state.open_interest.s > 0,
-                                                        'square-badge-error': state.open_interest.s < 0,
-                                                        'square-badge-neutral': state.open_interest.s == 0,
-                                                        'weak-state': state.open_interest.s != 2 && state.open_interest.s != -2
-                                                    }">
-                                                    <mat-icon [svgIcon]="_ms.icons[state.open_interest.s]"></mat-icon>
-                                                </div>
-                                            </div>
-                    
-                                            <!-- Grid -->
-                                            <div class="padding">
-                                                <mat-grid-list [cols]="3" rowHeight="40px" gutterSize="1px">
-                                                    <mat-grid-tile *ngFor="let id of _ms.openInterestExchanges" 
-                                                                    class="clickable" role="button" matRipple
-                                                                    (click)="displayOpenInterestDialog(id)"
-                                                                    [ngClass]="{
-                                                                        'buy-action-container': state.open_interest[id] > 0,
-                                                                        'sell-action-container': state.open_interest[id] < 0,
-                                                                        'neutral-action-container': state.open_interest[id] == 0,
-                                                                        'weak-state': state.open_interest[id] != 2 && state.open_interest[id] != -2
-                                                                    }"><p>{{_ms.openInterestExchangeNames[id]}}</p></mat-grid-tile>
-                                                    <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
-                                                    <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
-                                                </mat-grid-list>
-                                            </div>
-                                        </div>
-
-                                        <!-- Long/Short Ratio -->
-                                        <div class="divider show-on-mobile"></div>
-                                        <div>
-                                            <!-- Heading -->
-                                            <div fxLayout="row" fxLayoutAlign="center start" class="chart-card-heading">
-                                                <h4>Long/Short Ratio</h4>
-                                                <span fxFlex></span>
-                                                <div (click)="longShortRatioTooltip()"
-                                                    class="state-badge clickable" role="button" matRipple
-                                                    [ngClass]="{
-                                                        'square-badge-success': state.long_short_ratio.s > 0,
-                                                        'square-badge-error': state.long_short_ratio.s < 0,
-                                                        'square-badge-neutral': state.long_short_ratio.s == 0,
-                                                        'weak-state': state.long_short_ratio.s != 2 && state.long_short_ratio.s != -2
-                                                    }">
-                                                    <mat-icon [svgIcon]="_ms.icons[state.long_short_ratio.s]"></mat-icon>
-                                                </div>
-                                            </div>
-                    
-                                            <!-- Grid -->
-                                            <div class="padding">
-                                                <mat-grid-list [cols]="3" rowHeight="40px" gutterSize="1px">
-                                                    <mat-grid-tile *ngFor="let id of _ms.longShortRatioExchanges" 
-                                                                    class="clickable" role="button" matRipple
-                                                                    (click)="displayLongShortRatioDialog(id)"
-                                                                    [ngClass]="{
-                                                                        'buy-action-container': state.long_short_ratio[id] > 0,
-                                                                        'sell-action-container': state.long_short_ratio[id] < 0,
-                                                                        'neutral-action-container': state.long_short_ratio[id] == 0,
-                                                                        'weak-state': state.long_short_ratio[id] != 2 && state.long_short_ratio[id] != -2
-                                                                    }"><p>{{_ms.longShortRatioExchangeNames[id]}}</p></mat-grid-tile>
-                                                </mat-grid-list>
-                                            </div>
+                                        <div class="global-indicators-section">
+                                            <mat-grid-list [cols]="5" [rowHeight]="layout == 'desktop' ? '41.7px': '50px'" gutterSize="1px">
+                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>CFX</p></mat-grid-tile>
+                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>FIL</p></mat-grid-tile>
+                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>OP</p></mat-grid-tile>
+                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>APT</p></mat-grid-tile>
+                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>MATIC</p></mat-grid-tile>
+                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>DYDX</p></mat-grid-tile>
+                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>AGIX</p></mat-grid-tile>
+                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>GALA</p></mat-grid-tile>
+                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>NEO</p></mat-grid-tile>
+                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>EOS</p></mat-grid-tile>
+                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>ACH</p></mat-grid-tile>
+                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>ANKR</p></mat-grid-tile>
+                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>GMX</p></mat-grid-tile>
+                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>STX</p></mat-grid-tile>
+                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>XRP</p></mat-grid-tile>
+                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>LQTY</p></mat-grid-tile>
+                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>FTM</p></mat-grid-tile>
+                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>AVAX</p></mat-grid-tile>
+                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>LINK</p></mat-grid-tile>
+                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>MASK</p></mat-grid-tile>
+                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>ATOM</p></mat-grid-tile>
+                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>DOT</p></mat-grid-tile>
+                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>SNX</p></mat-grid-tile>
+                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>SAND</p></mat-grid-tile>
+                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>FET</p></mat-grid-tile>
+                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>MAGIC</p></mat-grid-tile>
+                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>HOOK</p></mat-grid-tile>
+                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>IMX</p></mat-grid-tile>
+                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>GRT</p></mat-grid-tile>
+                                                <mat-grid-tile class="clickable action-container" role="button" matRipple>
+                                                    <mat-icon>arrow_right_alt</mat-icon>
+                                                </mat-grid-tile>
+                                            </mat-grid-list>
                                         </div>
                                     </div>
                                 </div>

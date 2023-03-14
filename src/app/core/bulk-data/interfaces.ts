@@ -4,11 +4,8 @@ import { IServerData, IServerResources } from "../server"
 import { IPrediction } from "../epoch-builder"
 import { 
     IKeyZoneState,
-    ILongShortRatioState, 
     IMarketState, 
     IMinifiedLiquidityState, 
-    IMinifiedTAState, 
-    IOpenInterestState, 
     ISplitStates, 
     IStateType, 
     ITrendState, 
@@ -103,9 +100,6 @@ export interface IAppBulkStream {
 export interface ICompressedMarketState {
     window: ICompressedWindowState,
     volume: IVolumeState,
-    open_interest: IOpenInterestState,
-    long_short_ratio: ILongShortRatioState,
-    technical_analysis: IMinifiedTAState,
     liquidity: IMinifiedLiquidityState,
     keyzones: IKeyZoneState,
     trend: ITrendState

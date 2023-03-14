@@ -17,31 +17,23 @@ import {
     AuthService,
     IUserPreferences,
     PositionService,
-    ITAIntervalID,
     MarketStateService,
     IPredictionCandlestick,
     IActivePosition,
     ISplitStateID,
-    IExchangeOpenInterestID,
-    IExchangeLongShortRatioID,
     ILiquiditySide,
     ILiquidityIntensity,
-    ILiquidityPriceLevel,
     IMinifiedLiquidityPriceLevel
 } from "../../core";
 import { 
     AppService, 
     ChartService, 
-    IBarChartOptions, 
     ICandlestickChartOptions, 
-    IChartRange, 
     ILayout, 
-    ILineChartOptions, 
     NavService 
 } from "../../services";
 import { BalanceDialogComponent } from "./balance-dialog";
 import { StrategyFormDialogComponent } from "./strategy-form-dialog";
-import { TechnicalAnalysisDialogComponent } from "./technical-analysis-dialog";
 import { KeyzonesDialogComponent } from "./keyzones-dialog";
 import { IMarketStateDialogConfig, MarketStateDialogComponent } from "./market-state-dialog";
 import { LiquidityDialogComponent } from "./liquidity-dialog";
@@ -90,10 +82,8 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
     // State
     public state!: IMarketState;
-    public readonly taIntervals: ITAIntervalID[] = ["15m", "30m", "1h", "2h", "4h", "1d"];
     private stateSub!: Subscription;
     private stateLoaded: boolean = false;
-    public taLastUpdate: string = "none";
 
     // Window Chart
     public windowChart?: ICandlestickChartOptions;
@@ -107,7 +97,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     ];
 
     // Desktop Chart height helpers
-    public readonly predictionChartDesktopHeight: number = 315;
+    public readonly predictionChartDesktopHeight: number = 330;
 
     // Loading State
     public loaded: boolean = false;
@@ -523,9 +513,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         } else {
             this.titleService.setTitle(newTitle);
         }
-
-        // Update the last technicals update
-        this.taLastUpdate = moment(this.state.technical_analysis.ts).format("h:mm:ss a");
     }
 
 
@@ -966,6 +953,25 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
 
 	/**
+	 * Displays the trend dialog.
+     * @param taInterval
+	 */
+    public displayTrendDialog(id: ISplitStateID): void {
+		this.dialog.open(MarketStateDialogComponent, {
+			hasBackdrop: this._app.layout.value != "mobile",
+			panelClass: "medium-dialog",
+			data: <IMarketStateDialogConfig>{
+                module: "trend",
+                split: id,
+                trendState: this.state.trend,
+                trendWindow: this.predictionCandlesticks
+            }
+		})
+	}
+
+
+
+	/**
 	 * Displays the Volume Dialog.
 	 */
     public displayVolumeDialog(): void {
@@ -981,58 +987,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
 
 
-
-	/**
-	 * Displays the Open Interest Dialog.
-	 */
-    public displayOpenInterestDialog(id: IExchangeOpenInterestID): void {
-		this.dialog.open(MarketStateDialogComponent, {
-			hasBackdrop: this._app.layout.value != "mobile",
-			panelClass: "medium-dialog",
-			data: <IMarketStateDialogConfig>{
-                module: "open_interest",
-                exchangeID: id
-            }
-		})
-	}
-
-
-
-
-
-	/**
-	 * Displays the Long/Short Ratio Dialog.
-	 */
-    public displayLongShortRatioDialog(id: IExchangeLongShortRatioID): void {
-		this.dialog.open(MarketStateDialogComponent, {
-			hasBackdrop: this._app.layout.value != "mobile",
-			panelClass: "medium-dialog",
-			data: <IMarketStateDialogConfig>{
-                module: "long_short_ratio",
-                exchangeID: id
-            }
-		})
-	}
-
-
-
-
-
     
-
-	/**
-	 * Displays the features dedicated dialog to gather more information
-	 * about the prediction.
-     * @param taInterval
-	 */
-    public displayTechnicalAnalysisDialog(taInterval: ITAIntervalID): void {
-		this.dialog.open(TechnicalAnalysisDialogComponent, {
-			hasBackdrop: this._app.layout.value != "mobile",
-			panelClass: "medium-dialog",
-			data: taInterval
-		})
-	}
-
 
 
 
@@ -1113,58 +1068,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             `The volume and the volume direction indicator are synced every ~4 seconds through Binance Spot's API.`
         ]);
     }
-
-
-    // Technicals
-	public technicalsTooltip(): void {
-		this._nav.displayTooltip("Technical Analysis", [
-            `Epoca calculates a series of oscillators and moving averages for the most popular intervals every 
-			~10 seconds. The results of these calculations are put through an interpreter based on TradingView. 
-			The possible outputs are:`,
-			`-2 = Strong Sell`,
-			`-1 = Sell`,
-			` 0 = Neutral`,
-			` 1 = Buy`,
-			` 2 = Strong Buy`,
-        ]);
-	}
-
-
-    // Open Interest
-    public openInterestTooltip(): void {
-        this._nav.displayTooltip("Open Interest", [
-            `Volume and open interest are related concepts. Volume accounts for all contracts that have been traded in a given period, 
-            while open interest considers the total number of open positions held by market participants at any given time. Regardless 
-            of long or short positions, open interest adds up all opened trades and subtracts the trades that have been closed on Binance Futures. `,
-            `Why Open Interest Matters`,
-            `In traditional futures markets, traders closely monitor changes in open interest as an indicator to determine market sentiment and the 
-            strength behind price trends. `,
-            `Open interest indicates capital flowing in and out of the market. As capital flows into a futures contract, open interest increases. 
-            Conversely,  as capital flows out of the derivatives markets, open interest declines. For this reason, increasing open interest is often 
-            considered as one of the many factors that can serve as confirmation of a bull market, whereas decreasing open interest signals a bear market.`,
-            `The open interest is synced every ~10 seconds through Binance Futures' API.`
-        ]);
-    }
-
-
-    // Long Short Ratio
-    public longShortRatioTooltip(): void {
-        this._nav.displayTooltip("Long Short Ratio", [
-            `The long/short ratio indicates the number of long positions relative to short positions for a particular instrument. The long/short ratio is 
-            considered a barometer of investor expectations, with a high long/short ratio indicating positive investor expectations. For example, a 
-            long/short ratio that has increased in recent months indicates that more long positions are being held relative to short positions. 
-            This could be because of various factors ranging from market conditions to geo-political events. The long/short ratio is used by many as 
-            a leading indicator of market health and direction including as a precursor to what the spot markets will soon be experiencing.`,
-            `The long/short ratio is calculated by dividing the long positions by the short positions. This gives a ratio representing the number of 
-            long positions to short positions. For example, the BTCUSDT instrument on Binance on August 29 2022 shows a ratio of 1.8145, a long position 
-            of 0.6447 and a short position of 0.3553. Simply put, the long/short ratio of 1.8145 means that there are 1.8145 as many long positions as 
-            short positions. This would be considered a bullish signal.`,
-            `The long/short ratio is synced every ~10 seconds through Binance Futures' API.`
-        ]);
-    }
-
-
-
 
 
 

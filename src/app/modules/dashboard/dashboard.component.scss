@@ -102,9 +102,15 @@
 }
 
 
-.altcoin-grid { p { font-size:8.5px!important; font-weight: 700!important}}
+.trend-grid { p { font-size:9.5px!important; font-weight: 700!important}}
 
-.ta-grid { p { font-size:10px!important; font-weight: 700!important}}
+
+
+.global-indicators {
+    .global-indicators-section { padding: 15px; }
+}
+
+
 
 
 
@@ -128,6 +134,13 @@
 
     .prediction-candlesticks-container {
 
+    }
+
+
+    .trend-grid { p { font-size:11px!important; font-weight: 600!important}}
+
+    .global-indicators {
+        .global-indicators-section { padding: 0px; }
     }
 }
 

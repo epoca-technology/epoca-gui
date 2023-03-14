@@ -1,16 +1,10 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from "../api";
 import { 
-	IExchangeLongShortRatioID,
-	IExchangeLongShortRatioState,
-	IExchangeOpenInterestID,
-	IExchangeOpenInterestState,
 	IKeyZoneFullState, 
 	ILiquidityState, 
 	IMarketStateService, 
 	ISplitStateID, 
-	ITAIntervalID, 
-	ITAIntervalState, 
 	IVolumeState 
 } from './interfaces';
 
@@ -20,19 +14,6 @@ import {
   providedIn: 'root'
 })
 export class MarketStateService implements IMarketStateService {
-
-    /**
-	 * Technical Analysis States
-	 * The names of each technical analysis suggested action.
-	 */
-    public readonly taStates: {[result: string|number]: string} = {
-      "0": "Neutral",
-      "1": "Buy",
-      "2": "Strong Buy",
-      "-1": "Sell",
-      "-2": "Strong Sell"
-    }
-
 	/**
 	 * Market States
 	 * The names of the states each submodule can have when compared to
@@ -77,34 +58,6 @@ export class MarketStateService implements IMarketStateService {
     }
 
 
-	/**
-	 * Open Interest
-	 * List of exchanges that offer their open interest through public APIs
-	 */
-	public readonly openInterestExchanges: IExchangeOpenInterestID[] = ["binance", "bybit", "huobi", "okx"];
-	public readonly openInterestExchangeNames: {[exchangeID: string]: string} = {
-		binance: "Binance",
-		bybit: "ByBit",
-		huobi: "Huobi",
-		okx: "OKX",
-	};
-
-
-	/**
-	 * Long/Short Ratio
-	 * List of exchanges that offer their long/short ratio through public APIs
-	 */
-	public readonly longShortRatioExchanges: IExchangeLongShortRatioID[] = ["binance", "binance_tta", "binance_ttp", "huobi_tta", "huobi_ttp", "okx"];
-	public readonly longShortRatioExchangeNames: {[exchangeID: string]: string} = {
-		binance: "Binance",
-		binance_tta: "Binance TTA",
-		binance_ttp: "Binance TTP",
-		huobi_tta: "Huobi TTA",
-		huobi_ttp: "Huobi TTP",
-		okx: "OKX",
-	};
-
-
 
 
 	/**
@@ -135,15 +88,6 @@ export class MarketStateService implements IMarketStateService {
 
 
 
-	
-	/**
-	 * Retrieves the current technicals for a given interval.
-	 * @returns Promise<ITAIntervalState>
-	 */
-	public getTAIntervalState(intervalID: ITAIntervalID): Promise<ITAIntervalState> { 
-		return this._api.request("get","marketState/getTAIntervalState", {intervalID: intervalID}, true) 
-	}
-
 
 
 
@@ -167,31 +111,5 @@ export class MarketStateService implements IMarketStateService {
 	 */
 	public calculateKeyZoneState(): Promise<IKeyZoneFullState> { 
 		return this._api.request("get","marketState/calculateKeyZoneState", {}, true) 
-	}
-		
-
-
-
-
-	/**
-	 * Retrieves the open interest state for a given exchange.
-	 * @param exchangeID
-	 * @returns Promise<IExchangeOpenInterestState>
-	 */
-	public getOpenInterestStateForExchange(exchangeID: IExchangeOpenInterestID): Promise<IExchangeOpenInterestState> { 
-		return this._api.request("get","marketState/getOpenInterestStateForExchange", {exchangeID: exchangeID}, true) 
-	}
-		
-
-
-
-
-	/**
-	 * Retrieves the long/short ratio state for a given exchange.
-	 * @param exchangeID
-	 * @returns Promise<IExchangeLongShortRatioState>
-	 */
-	public getLongShortRatioStateForExchange(exchangeID: IExchangeLongShortRatioID): Promise<IExchangeLongShortRatioState> { 
-		return this._api.request("get","marketState/getLongShortRatioStateForExchange", {exchangeID: exchangeID}, true) 
 	}
 }

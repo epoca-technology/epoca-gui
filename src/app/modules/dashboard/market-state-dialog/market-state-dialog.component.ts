@@ -1,10 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
+import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
+import { ApexAnnotations, YAxisAnnotations } from 'ng-apexcharts';
 import { 
-	IExchangeLongShortRatioID, 
-	IExchangeLongShortRatioState, 
-	IExchangeOpenInterestID, 
-	IExchangeOpenInterestState, 
 	ISplitStateID, 
 	ISplitStates, 
 	ISplitStateSeriesItem, 
@@ -67,9 +64,8 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 			
 			// Initialize the component based on the module
 			if (this.module == "window") { this.initWindow() }
+			else if (this.module == "trend") { this.initTrend() }
 			else if (this.module == "volume") { await this.initVolume() }
-			else if (this.module == "open_interest") { await this.initOpenInterest() }
-			else if (this.module == "long_short_ratio") { await this.initLongShortRatio() }
 		} catch (e) {
 			this._app.error(e);
 			setTimeout(() => { this.close() }, 500);
@@ -113,27 +109,29 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 
 
 
-	/*****************
-	 * Open Interest *
-	 *****************/
 
 
-	private async initOpenInterest(): Promise<void> {
+	/*********
+	 * Trend *
+	 *********/
+
+
+
+
+
+	private initTrend(): void {
 		// Set the title
-		this.title = `${this._ms.openInterestExchangeNames[this.config.exchangeID]} Open Interest`;
-
-		// Retrieve the state
-		const state: IExchangeOpenInterestState = await this._ms.getOpenInterestStateForExchange(<IExchangeOpenInterestID>this.config.exchangeID);
+		this.title = "Trend";
 
 		// Set the state average
-		this.stateAverage = state.s;
+		this.stateAverage = this.config.trendState!.s;
 
 		// Set the splits
-		this.states = state.ss;
+		this.states = this.config.trendState!.ss;
 
 		// Build the series
-		this.seriesName = "USDT";
-		this.series = state.w.map(item => { return { x: item.x, y: Math.round(item.y)}});
+		this.seriesName = "Trend Sum";
+		this.series = this.config.trendWindow!.map((c) => { return { x: c.ot, y: c.c }});
 
 		// Finally, apply the split
 		this.applySplit(this.activeSplitID);
@@ -142,33 +140,31 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 
 
 
-
-
-	/********************
-	 * Long/Short Ratio *
-	 ********************/
-
-
-	private async initLongShortRatio(): Promise<void> {
-		// Set the title
-		this.title = `${this._ms.longShortRatioExchangeNames[this.config.exchangeID]} Long/Short Ratio`;
-
-		// Retrieve the state
-		const state: IExchangeLongShortRatioState = await this._ms.getLongShortRatioStateForExchange(<IExchangeLongShortRatioID>this.config.exchangeID);
-
-		// Set the state average
-		this.stateAverage = state.s;
-
-		// Set the splits
-		this.states = state.ss;
-
-		// Build the series
-		this.seriesName = "Ratio";
-		this.series = state.w.map(d => { return { x: d.x, y: <number>this._utils.outputNumber(d.y, {dp: 6})}});
-		
-		// Finally, apply the split
-		this.applySplit(this.activeSplitID);
+	/**
+	 * Builds the annotations for the trend chart.
+	 * @returns ApexAnnotations
+	 */
+	private buildTrendAnnotations(): ApexAnnotations {
+		const minValue: number = -this._app.epoch.value!.model.regressions.length;
+        const maxValue: number = this._app.epoch.value!.model.regressions.length;
+		const min_increase_sum: number = this._app.epoch.value!.model.min_increase_sum;
+		const min_decrease_sum: number = this._app.epoch.value!.model.min_decrease_sum;
+		return { yaxis: [
+			this.buildTrendSumAnnotation(min_increase_sum, maxValue, this._chart.upwardColor),
+			this.buildTrendSumAnnotation(0.000001, min_increase_sum, "#B2DFDB"),
+			this.buildTrendSumAnnotation(min_decrease_sum, minValue, this._chart.downwardColor),
+			this.buildTrendSumAnnotation(-0.000001, min_decrease_sum, "#FFCDD2"),
+		]}
 	}
+    private buildTrendSumAnnotation(y: number, y2: number, color: string): YAxisAnnotations {
+        return {
+            y: y,
+            y2: y2,
+            borderColor: color,
+            fillColor: color,
+            strokeDashArray: 0
+        };
+    }
 
 
 
@@ -177,9 +173,9 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 
 
 
-	/****************
-	 * Series Split *
-	 ****************/
+
+
+	/* Series Split */
 
 
 
@@ -206,6 +202,7 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 			undefined
 		);
 		this.activeSplitID = id;
+		if (this.module == "trend") this.lineChart!.annotations = this.buildTrendAnnotations();
 	}
 
 

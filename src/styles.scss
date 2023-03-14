@@ -920,8 +920,13 @@ form .mat-checkbox-inner-container{
 
 .placeholder-action-container {
     @extend .action-container;
-    background-color: #ECEFF1!important; 
+    background-color: #CFD8DC!important; 
 }
+
+/*.pagination-action-container {
+    @extend .action-container;
+    background-color: #607D8B!important; 
+}*/
 
 
 

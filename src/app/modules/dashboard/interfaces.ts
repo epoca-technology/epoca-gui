@@ -1,8 +1,5 @@
 import { 
-    IExchangeOpenInterestID, 
-    IExchangeLongShortRatioID, 
     ISplitStateID, 
-    ITAIntervalID 
 } from "../../core";
 
 export interface IDashboardComponent {
@@ -18,20 +15,14 @@ export interface IDashboardComponent {
 
     // Market State Dialogs
     displayWindowDialog(id: ISplitStateID): void,
+    displayTrendDialog(id: ISplitStateID): void,
     displayVolumeDialog(): void,
-    displayTechnicalAnalysisDialog(taInterval: ITAIntervalID): void,
     displayLiquidityDialog(): void,
     displayKeyZonesDialog(): void,
-    displayOpenInterestDialog(id: IExchangeOpenInterestID): void,
-    displayLongShortRatioDialog(id: IExchangeLongShortRatioID): void,
 
     // Tooltips
     windowTooltip(): void,
-    //predictionModelTooltip(): void,
     volumeTooltip(): void,
-    technicalsTooltip(): void,
-    openInterestTooltip(): void,
-    longShortRatioTooltip(): void,
     
     // Nav Actions
     createNewInstance(): void,

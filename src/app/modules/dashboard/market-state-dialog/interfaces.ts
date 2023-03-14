@@ -1,4 +1,9 @@
-import { IExchangeLongShortRatioID, IExchangeOpenInterestID, ISplitStateID, IWindowState } from "../../../core";
+import { 
+    IPredictionCandlestick, 
+    ISplitStateID, 
+    ITrendState, 
+    IWindowState 
+} from "../../../core";
 
 
 
@@ -12,12 +17,13 @@ export interface IMarketStateDialogComponent {
 
 
 
-export type IMarketStateModule = "window"|"volume"|"open_interest"|"long_short_ratio";
+export type IMarketStateModule = "window"|"trend"|"volume";
 
 
 export interface IMarketStateDialogConfig {
     module: IMarketStateModule,
     split?: ISplitStateID,
     windowState?: IWindowState,
-    exchangeID: IExchangeOpenInterestID|IExchangeLongShortRatioID
+    trendState?: ITrendState,
+    trendWindow?: IPredictionCandlestick[]
 }
