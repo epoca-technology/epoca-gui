@@ -191,9 +191,10 @@
                             <!-- Heading -->
                             <div fxLayout="row" fxLayoutAlign="start start" fxLayoutAlign.xs="center center" fxLayoutAlign.sm="center center"
                                 class="chart-card-heading">
-                                <div class="show-on-desktop clickable" role="button" (click)="windowTooltip()">
+                                <div class="show-on-desktop clickable" role="button" (click)="displayZoomMenu()">
                                     <div fxLayout="row" fxLayoutAlign="start center">
-                                        <h4>Window</h4>
+                                        <h4 *ngIf="!activeZoom">Window</h4>
+                                        <h4 *ngIf="activeZoom">Window {{activeZoom.id | uppercase}}</h4>
                                         <mat-icon style="margin-left:5px;width:16px;height:16px"
                                             [ngClass]="{
                                                 'success-color': state.window.s > 0,
@@ -310,11 +311,38 @@
 
                                     <!-- General & Technicals -->
                                     <div fxFlex="48" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
-                                        <!-- General -->
+                                        <!-- Altcoins -->
                                         <div>
                                             <!-- Grid -->
+                                            <h4 class="show-on-mobile margin-bottom">Altcoins</h4>
                                             <div class="padding">
-                                                <mat-grid-list [cols]="3" rowHeight="41.5px" gutterSize="1px">
+                                                <mat-grid-list [cols]="5" [rowHeight]="layout == 'desktop' ? '31.5px': '40px'" gutterSize="1px" class="altcoin-grid">
+                                                    <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>CFX</p></mat-grid-tile>
+                                                    <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>FIL</p></mat-grid-tile>
+                                                    <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>OP</p></mat-grid-tile>
+                                                    <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>APT</p></mat-grid-tile>
+                                                    <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>MATIC</p></mat-grid-tile>
+                                                    <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>DYDX</p></mat-grid-tile>
+                                                    <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>AGIX</p></mat-grid-tile>
+                                                    <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>GALA</p></mat-grid-tile>
+                                                    <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>NEO</p></mat-grid-tile>
+                                                    <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>EOS</p></mat-grid-tile>
+                                                    <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>ACH</p></mat-grid-tile>
+                                                    <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>ANKR</p></mat-grid-tile>
+                                                    <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>GMX</p></mat-grid-tile>
+                                                    <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>STX</p></mat-grid-tile>
+                                                    <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
+                                                </mat-grid-list>
+                                            </div>
+                                        </div>
+
+                                        <!-- General -->
+                                        <div class="divider show-on-mobile"></div>
+                                        <div>
+                                            <!-- Grid -->
+                                            <h4 class="show-on-mobile margin-bottom">General</h4>
+                                            <div class="padding">
+                                                <mat-grid-list [cols]="3" [rowHeight]="layout == 'desktop' ? '40px': '40px'" rowHeight="41.5px" gutterSize="1px">
                                                     <!-- Volume -->
                                                     <mat-grid-tile class="clickable" role="button" matRipple
                                                                    (click)="displayVolumeDialog()"
@@ -343,14 +371,6 @@
                                                                         'neutral-action-container': state.liquidity.d == 0,
                                                                         'weak-state': state.liquidity.d != 2 && state.liquidity.d != -2
                                                                     }"><p>Liquidity</p></mat-grid-tile>
-
-                                                    <!-- Placeholder -->
-                                                    <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
-                                                    <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
-                                                    <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
-                                                    <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
-                                                    <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
-                                                    <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
                                                 </mat-grid-list>
                                             </div>
                                         </div>
@@ -376,7 +396,7 @@
                     
                                             <!-- Grid -->
                                             <div class="padding">
-                                                <mat-grid-list [cols]="3" rowHeight="40px" gutterSize="1px">
+                                                <mat-grid-list [cols]="6" [rowHeight]="layout == 'desktop' ? '40px': '40px'" gutterSize="1px" class="ta-grid">
                                                     <mat-grid-tile *ngFor="let taInterval of taIntervals" 
                                                                     class="clickable" role="button" matRipple
                                                                     (click)="displayTechnicalAnalysisDialog(taInterval)"

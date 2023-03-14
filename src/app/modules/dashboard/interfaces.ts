@@ -6,6 +6,9 @@ import {
 } from "../../core";
 
 export interface IDashboardComponent {
+    // Window Management
+    displayZoomMenu(): void,
+
     // Adjustments Management
     displayAdjustmentsMenu(): void,
 
@@ -40,15 +43,23 @@ export interface IDashboardComponent {
 
 
 
-
 /**
- * The position close chunk sizes.
+ * Window Zoom
  */
-export interface IPositionCloseChunkSize {
-    1: number,
-    0.75: number,
-    0.66: number,
-    0.5: number,
-    0.33: number,
-    0.25: number
+export type IWindowZoomID = "xs"|"s"|"m"|"l"|"xl";
+export interface IWindowZoomPrices {
+    // The highest & lowest prices that should be displayed
+    highest: number,
+    lowest: number,
+
+    // The high and low prices in which the range will be recalculated
+    highLimit: number,
+    lowLimit: number,
+}
+export interface IWindowZoom extends IWindowZoomPrices {
+    // The identifier of the zoom
+    id: IWindowZoomID,
+    
+    // The Size of the zoom
+    size: number,
 }

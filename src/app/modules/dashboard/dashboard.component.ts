@@ -48,7 +48,8 @@ import { PredictionStateIntensityFormDialogComponent } from "./prediction-state-
 import { KeyzonesDialogComponent } from "./keyzones-dialog";
 import { IMarketStateDialogConfig, MarketStateDialogComponent } from "./market-state-dialog";
 import { LiquidityDialogComponent } from "./liquidity-dialog";
-import { IDashboardComponent } from "./interfaces";
+import { IDashboardComponent, IWindowZoom, IWindowZoomID, IWindowZoomPrices } from "./interfaces";
+import { IBottomSheetMenuItem } from "src/app/shared/components/bottom-sheet-menu";
 
 @Component({
   selector: "app-dashboard",
@@ -102,6 +103,14 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
     // Window Chart
     public windowChart?: ICandlestickChartOptions;
+    public activeZoom: IWindowZoom|undefined = undefined;
+    private readonly zooms: IWindowZoom[] = [
+        { id: "xs", size: 0.75, highest: 0, lowest: 0, highLimit: 0, lowLimit: 0},
+        { id: "s", size: 1.25, highest: 0, lowest: 0, highLimit: 0, lowLimit: 0},
+        { id: "m", size: 2, highest: 0, lowest: 0, highLimit: 0, lowLimit: 0},
+        { id: "l", size: 3.5, highest: 0, lowest: 0, highLimit: 0, lowLimit: 0},
+        { id: "xl", size: 5, highest: 0, lowest: 0, highLimit: 0, lowLimit: 0},
+    ];
 
     // Desktop Chart height helpers
     public readonly predictionChartDesktopHeight: number = 315;
@@ -538,11 +547,19 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
      */
     private updateWindowState(): void {
         // Build/update the chart
-        const price: number = this.state.window.w[this.state.window.w.length - 1].c;
-        const min: number = <number>this._utils.alterNumberByPercentage(price, -2);
-        const max: number = <number>this._utils.alterNumberByPercentage(price, 2);
         if (this.windowChart) {
-            this.windowChart.yaxis = { tooltip: { enabled: true }, forceNiceScale: false, min: min, max: max, opposite: true, labels: {show: true, align: "right"}};
+            // Handle the Zoom
+            if (this.activeZoom) {
+                const price: number = this.state.window.w[this.state.window.w.length - 1].c;
+                if (price >= this.activeZoom.highLimit || price <= this.activeZoom.lowLimit) {
+                    this.activeZoom = { ...this.activeZoom, ...this.calculateZoomPrices(this.activeZoom.size)}
+                }
+                this.windowChart.yaxis = { tooltip: { enabled: true }, forceNiceScale: false, min: this.activeZoom.lowest, max: this.activeZoom.highest, opposite: true, labels: {show: true, align: "right"}};
+            } else {
+                this.windowChart.yaxis = { tooltip: { enabled: true }, forceNiceScale: true, opposite: true, labels: {show: true, align: "right"}};
+            }
+
+            // Update the series
             this.windowChart.series = [
                 {
                     name: "candle",
@@ -556,9 +573,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             this.windowChart = this._chart.getCandlestickChartOptions(
                 this.state.window.w, 
                 this.buildWindowAnnotations(), 
-                false,
-                true,
-                { min: min, max: max}
+                false
             );
             this.windowChart.chart!.height = this.layout == "desktop" ? 615: 400;
             this.windowChart.chart!.zoom = {enabled: false};
@@ -763,6 +778,74 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
 
 
+
+
+
+
+
+    /* Window Zoom */
+
+
+
+    /**
+     * Displays the zoom menu and handles the action (if any).
+     */
+    public displayZoomMenu(): void {
+        const activeID: IWindowZoomID|undefined = this.activeZoom ? this.activeZoom.id: undefined;
+        let menu: IBottomSheetMenuItem[] = this.zooms.filter((z) => !activeID || z.id != activeID).map((z) => { 
+            return {
+                icon: 'zoom_in_map',  
+                title: `Zoom ${z.id.toUpperCase()}`, 
+                description: `Limit the view to a distance of +- ${z.size}%`, 
+                response: z.id
+            }
+        });
+        if (activeID) {
+            menu.push({
+                icon: 'zoom_out_map',  
+                title: 'Disable Zoom', 
+                description: 'Disable the zoom and view original window.', 
+                response: "DISABLE_ZOOM"
+            });
+        }
+        menu.push({
+            icon: 'question_mark',  
+            title: 'Information', 
+            description: 'Understand how the window module works.', 
+            response: "INFORMATION"
+        });
+        const bs: MatBottomSheetRef = this._nav.displayBottomSheetMenu(menu);
+		bs.afterDismissed().subscribe((response: string|undefined) => {
+            if (typeof response == "string") {
+                if (response == "DISABLE_ZOOM") { this.activeZoom = undefined }
+                else if (response == "INFORMATION") { this.windowTooltip() }
+                else { 
+                    const activeZoom: IWindowZoom = this.zooms.filter((z) => z.id == response)[0];
+                    const zoomPrices: IWindowZoomPrices = this.calculateZoomPrices(activeZoom.size);
+                    this.activeZoom = {...activeZoom, ...zoomPrices};
+                }
+            }
+		});
+    }
+
+
+
+
+
+
+    /**
+     * Calculates the zoom prices for activation.
+     * @returns IWindowZoomPrices
+     */
+    private calculateZoomPrices(zoomSize: number): IWindowZoomPrices {
+        const price: number = this.state.window.w[this.state.window.w.length - 1].c;
+        return {
+            highest: <number>this._utils.alterNumberByPercentage(price, zoomSize),
+            lowest: <number>this._utils.alterNumberByPercentage(price, -(zoomSize)),
+            highLimit: <number>this._utils.alterNumberByPercentage(price, (zoomSize / 2)),
+            lowLimit: <number>this._utils.alterNumberByPercentage(price, -((zoomSize / 2))),
+        }
+    }
 
 
     
