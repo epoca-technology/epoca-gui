@@ -57,11 +57,6 @@
                     <span fxFlex></span>
                     <p>{{candlestick.c | number: '1.0-6'}}</p>
                 </div>
-                <div class="row" fxLayout="row" fxLayoutAlign="start center">
-                    <p>Sum Mean</p>
-                    <span fxFlex></span>
-                    <p>{{candlestick.sm | number: '1.0-6'}}</p>
-                </div>
             </div>
 
 
@@ -83,13 +78,7 @@
                         <table class="highlight bordered preds">
                             <tbody>
                                 <tr *ngFor="let pred of preds;" 
-                                    class="clickable" role="button" (click)="displayPrediction(pred)"
-                                    [ngClass]="{
-                                        'success-color': pred.r == 1,
-                                        'error-color': pred.r == -1,
-                                        'light-text': pred.r == 0,
-                                        'non-neutral': pred.r != 0
-                                    }">
+                                    class="clickable" role="button" (click)="displayPrediction(pred)">
                                     <td><p>{{pred.t | date: 'medium'}}</p></td>
                                     <td class="align-right"><p>{{pred.s | number: '1.0-6'}}</p></td>
                                 </tr>

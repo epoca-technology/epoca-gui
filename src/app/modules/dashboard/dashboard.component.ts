@@ -11,7 +11,6 @@ import {
     IEpochRecord, 
     IMarketState, 
     IPrediction, 
-    IPredictionState, 
     LocalDatabaseService, 
     PredictionService, 
     UtilsService,
@@ -21,7 +20,6 @@ import {
     ITAIntervalID,
     MarketStateService,
     IPredictionCandlestick,
-    IPredictionStateIntesity,
     IActivePosition,
     ISplitStateID,
     IExchangeOpenInterestID,
@@ -44,7 +42,6 @@ import {
 import { BalanceDialogComponent } from "./balance-dialog";
 import { StrategyFormDialogComponent } from "./strategy-form-dialog";
 import { TechnicalAnalysisDialogComponent } from "./technical-analysis-dialog";
-import { PredictionStateIntensityFormDialogComponent } from "./prediction-state-intensity-form-dialog";
 import { KeyzonesDialogComponent } from "./keyzones-dialog";
 import { IMarketStateDialogConfig, MarketStateDialogComponent } from "./market-state-dialog";
 import { LiquidityDialogComponent } from "./liquidity-dialog";
@@ -84,9 +81,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     public epoch?: IEpochRecord;
     public activePrediction?: IPrediction;
     public activeSum?: number;
-    public activePredictionState: IPredictionState = 0;
-    public activePredictionStateIntensity: IPredictionStateIntesity = 0;
-    //public predictions: IPrediction[] = [];
     private predictionSub!: Subscription;
     private predictionsLoaded: boolean = false;
 
@@ -266,8 +260,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
             // Add the new prediction
             this.activePrediction = pred;
-            this.activePredictionState = this._app.predictionState.value!;
-            this.activePredictionStateIntensity = this._app.predictionStateIntensity.value!;
         }
 
         // Otherwise, set default values
@@ -326,8 +318,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                     o: this.activePrediction.s,
                     h: this.activePrediction.s,
                     l: this.activePrediction.s,
-                    c: this.activePrediction.s,
-                    sm: 0
+                    c: this.activePrediction.s
                 }
 
                 // Push it to the list and slice it
@@ -344,8 +335,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                     o: active.o,
                     h: this.activePrediction.s > active.h ? this.activePrediction.s: active.h,
                     l: this.activePrediction.s < active.l ? this.activePrediction.s: active.l,
-                    c: this.activePrediction.s,
-                    sm: 0
+                    c: this.activePrediction.s
                 }
             }
         }
@@ -484,8 +474,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                 o: 0,
                 h: 0,
                 l: 0,
-                c: 0,
-                sm: 0
+                c: 0
             })
         }
 
@@ -877,16 +866,9 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                 description: 'Configure the way active positions are managed.', 
                 response: "TRADING_STRATEGY"
             },
-            {
-                icon: 'swap_vert',  
-                title: 'Trend Intensity', 
-                description: 'Configure the requirements for the trend to have a state.', 
-                response: "TREND_INTESITY_CONFIGURATION"
-            },
         ]);
 		bs.afterDismissed().subscribe((response: string|undefined) => {
             if (response === "TRADING_STRATEGY") { this.displayStrategyFormDialog() }
-            else if (response === "TREND_INTESITY_CONFIGURATION") { this.displayPredictionStateIntensityFormDialog() }
 		});
 	}
 
@@ -908,18 +890,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
 
 
-
-    /**
-     * Displays the prediction state intensity dialog.
-     */
-    private displayPredictionStateIntensityFormDialog(): void {
-		this.dialog.open(PredictionStateIntensityFormDialogComponent, {
-			hasBackdrop: this._app.layout.value != "mobile",
-            disableClose: true,
-			panelClass: "small-dialog",
-            data: {}
-		})
-	}
 
 
 

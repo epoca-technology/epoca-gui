@@ -1,7 +1,6 @@
 import { IApiError } from "../api-error"
 import { IEpochRecord } from "../epoch"
 import { IServerData, IServerResources } from "../server"
-import { IPredictionState, IPredictionStateIntesity } from "../prediction"
 import { IPrediction } from "../epoch-builder"
 import { 
     IKeyZoneState,
@@ -12,6 +11,7 @@ import {
     IOpenInterestState, 
     ISplitStates, 
     IStateType, 
+    ITrendState, 
     IVolumeState 
 } from "../market-state"
 import { IActivePosition } from "../position"
@@ -59,12 +59,6 @@ export interface IAppBulk {
     // The active prediction. If there isn't one, or an epoch isn't active, it will be undefined
     prediction: IPrediction|undefined,
 
-    // The active prediction state. If there isn't one, or an epoch isn't active, it will be 0
-    predictionState: IPredictionState,
-
-    // The active prediction state intensity. If there isn't one, or an epoch isn't active, it will be 0
-    predictionStateIntesity: IPredictionStateIntesity, 
-
     // The position summary object
     position: IActivePosition|null,
 
@@ -87,12 +81,6 @@ export interface IAppBulk {
 export interface IAppBulkStream {
     // The active prediction. If there isn't one, or an epoch isn't active, it will be undefined
     prediction: IPrediction|undefined,
-
-    // The active prediction state. If there isn't one, or an epoch isn't active, it will be 0
-    predictionState: IPredictionState,    
-    
-    // The active prediction state intensity. If there isn't one, or an epoch isn't active, it will be 0
-    predictionStateIntesity: IPredictionStateIntesity, 
 
     // The current position summary
     position: IActivePosition|null,
@@ -119,7 +107,8 @@ export interface ICompressedMarketState {
     long_short_ratio: ILongShortRatioState,
     technical_analysis: IMinifiedTAState,
     liquidity: IMinifiedLiquidityState,
-    keyzones: IKeyZoneState
+    keyzones: IKeyZoneState,
+    trend: ITrendState
 }
 
 export interface ICompressedWindowState {

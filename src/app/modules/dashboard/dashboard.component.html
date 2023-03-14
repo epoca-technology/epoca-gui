@@ -255,11 +255,11 @@
                                                 <h4>Prediction</h4>
                                                 <mat-icon style="margin-left:5px;width:16px;height:16px"
                                                     [ngClass]="{
-                                                        'success-color': activePredictionStateIntensity > 0,
-                                                        'error-color': activePredictionStateIntensity < 0,
-                                                        'light-text': activePredictionStateIntensity == 0
+                                                        'success-color': state.trend.s > 0,
+                                                        'error-color': state.trend.s < 0,
+                                                        'light-text': state.trend.s == 0
                                                     }" 
-                                                    [svgIcon]="_ms.icons[activePredictionStateIntensity]"></mat-icon>
+                                                    [svgIcon]="_ms.icons[state.trend.s]"></mat-icon>
                                             </div>
                                             <p *ngIf="activePrediction" class="light-text ts-xs">
                                                 {{activePrediction.t | date: layout == 'desktop' ? 'medium': 'mediumTime'}}
@@ -270,17 +270,19 @@
 
                                         <!-- Trend -->
                                         <div fxFlex>
-                                            <mat-grid-list [cols]="4" [rowHeight]="layout == 'desktop' ? '23px': '35px'" gutterSize="1px">
+                                            <mat-grid-list [cols]="4" [rowHeight]="layout == 'desktop' ? '30px': '35px'" gutterSize="1px">
                                                 <mat-grid-tile *ngFor="let id of _ms.splits" 
                                                                 class="clickable" role="button" matRipple
                                                                 (click)="displayWindowDialog(id)"
                                                                 [ngClass]="{
-                                                                    'buy-action-container': activePredictionStateIntensity > 0,
-                                                                    'sell-action-container': activePredictionStateIntensity < 0,
-                                                                    'neutral-action-container': activePredictionStateIntensity == 0,
-                                                                    'weak-state': activePredictionStateIntensity != 2 && activePredictionStateIntensity != -2
+                                                                    'buy-action-container': state.trend.ss[id].s > 0,
+                                                                    'sell-action-container': state.trend.ss[id].s < 0,
+                                                                    'neutral-action-container': state.trend.ss[id].s == 0,
+                                                                    'weak-state': state.trend.ss[id].s != 2 && state.trend.ss[id].s != -2
                                                                 }">
-                                                        <p style="font-size:8.5px!important;">{{activePredictionStateIntensity > 0 ? '+': '-'}}{{0 | number: '1.0-2'}}</p>
+                                                        <p style="font-size:9px!important;">
+                                                            {{state.trend.ss[id].s > 0 ? '+': '-'}}{{state.trend.ss[id].c | number: '1.0-2'}}
+                                                        </p>
                                                 </mat-grid-tile>
                                             </mat-grid-list>
                                         </div>

@@ -17,8 +17,6 @@ import {
 	IMarketState, 
 	IActivePosition, 
 	IPrediction, 
-	IPredictionState, 
-	IPredictionStateIntesity, 
 	PredictionService, 
 	UtilsService 
 } from "../../core";
@@ -66,8 +64,6 @@ export class AppService implements IAppService{
 	public guiVersion: BehaviorSubject<string|undefined|null> = new BehaviorSubject<string|undefined|null>(null);
 	public epoch: BehaviorSubject<IEpochRecord|undefined|null> = new BehaviorSubject<IEpochRecord|undefined|null>(null);
 	public prediction: BehaviorSubject<IPrediction|undefined|null> = new BehaviorSubject<IPrediction|undefined|null>(null);
-	public predictionState: BehaviorSubject<IPredictionState|undefined|null> = new BehaviorSubject<IPredictionState|undefined|null>(null);
-	public predictionStateIntensity: BehaviorSubject<IPredictionStateIntesity|undefined|null> = new BehaviorSubject<IPredictionStateIntesity|undefined|null>(null);
 	public position: BehaviorSubject<IActivePosition|undefined|null> = new BehaviorSubject<IActivePosition|undefined|null>(null);
 	public marketState: BehaviorSubject<IMarketState|undefined|null> = new BehaviorSubject<IMarketState|undefined|null>(null);
 	public apiErrors: BehaviorSubject<number|undefined|null> = new BehaviorSubject<number|undefined|null>(null);
@@ -161,8 +157,6 @@ export class AppService implements IAppService{
 		this.guiVersion.next(undefined);
 		this.epoch.next(undefined);
 		this.prediction.next(undefined);
-		this.predictionState.next(0);
-		this.predictionStateIntensity.next(0);
 		this.position.next(undefined);
 		this.marketState.next(undefined);
 		if (typeof this.appBulkStream == "function") this.appBulkStream();
@@ -289,9 +283,7 @@ export class AppService implements IAppService{
 		// Broadcast the active epoch record if applies
 		if (bulk.epoch != "keep") this.epoch.next(bulk.epoch);
 
-		// Broadcast the active prediction as well as the metadata
-		this.predictionState.next(bulk.predictionState);
-		this.predictionStateIntensity.next(bulk.predictionStateIntesity);
+		// Broadcast the active prediction
 		this.prediction.next(bulk.prediction);
 
 		// Broadcast the position summary

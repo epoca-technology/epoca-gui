@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { ApiService } from "../api";
 import { IPrediction, IPredictionResultName } from "../epoch-builder";
-import { IPredictionCandlestick, IPredictionService, IPredictionStateIntensityConfig } from "./interfaces";
+import { IPredictionCandlestick, IPredictionService } from "./interfaces";
 
 @Injectable({
   providedIn: "root"
@@ -96,42 +96,4 @@ export class PredictionService implements IPredictionService {
 			true
 		);
 	}
-
-
-
-
-
-
-
-
-	/********************************************
-	 * Prediction State Intensity Configuration *
-	 ********************************************/
-
-
-
-	/**
-	 * Retrieves the current state intensity configuration.
-	 * @returns Promise<IPredictionStateIntensityConfig>
-	 */
-	public getStateIntensityConfig(): Promise<IPredictionStateIntensityConfig> {
-		return this._api.request(
-			"get","prediction/getStateIntensityConfig", 
-			{}, 
-			true
-		);
-	}
-
-
-
-
-    /**
-     * Updates the state intensity configuration.
-     * @param newConfig
-     * @param otp
-     * @returns Promise<void>
-     */
-    public updateStateIntensityConfig(newConfig: IPredictionStateIntensityConfig, otp: string): Promise<void> { 
-        return this._api.request("post","prediction/updateStateIntensityConfig", {newConfig: newConfig}, true, otp);
-    }
 }
