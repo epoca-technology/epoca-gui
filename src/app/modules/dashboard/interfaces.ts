@@ -19,6 +19,11 @@ export interface IDashboardComponent {
     displayVolumeDialog(): void,
     displayLiquidityDialog(): void,
     displayKeyZonesDialog(): void,
+    displayCoinDialog(symbol: string): void,
+
+    // Coins Grid Management
+    activateFirstCoinsPage(symbols?: string[]): void,
+    activateNextCoinsPage(): void,
 
     // Tooltips
     windowTooltip(): void,
@@ -54,3 +59,6 @@ export interface IWindowZoom extends IWindowZoomPrices {
     // The Size of the zoom
     size: number,
 }
+
+
+

@@ -281,7 +281,7 @@
                                                                     'weak-state': state.trend.ss[id].s != 2 && state.trend.ss[id].s != -2
                                                                 }">
                                                         <p>
-                                                            {{state.trend.ss[id].s > 0 ? '+': '-'}}{{state.trend.ss[id].c | number: '1.0-2'}}
+                                                            {{state.trend.ss[id].s > 0 ? '+': ''}}{{state.trend.ss[id].s < 0 ? '-': ''}}{{state.trend.ss[id].c | number: '1.0-2'}}
                                                         </p>
                                                 </mat-grid-tile>
                                             </mat-grid-list>
@@ -345,7 +345,7 @@
                                                                     'sell-action-container': state.volume.s < 0,
                                                                     'neutral-action-container': state.volume.s == 0,
                                                                     'weak-state': state.volume.s != 2 && state.volume.s != -2
-                                                                }"><p>Volume</p></mat-grid-tile>
+                                                                }"><p>VOLUME</p></mat-grid-tile>
 
                                                 <!-- KeyZones -->
                                                 <mat-grid-tile class="clickable" role="button" matRipple
@@ -354,7 +354,7 @@
                                                                     'action-container': state.keyzones.active,
                                                                     'neutral-action-container': !state.keyzones.active,
                                                                     'weak-state': !state.keyzones.active
-                                                                }"><p>KeyZones</p></mat-grid-tile>
+                                                                }"><p>KEYZONES</p></mat-grid-tile>
 
                                                 <!-- Liquidity -->
                                                 <mat-grid-tile class="clickable" role="button" matRipple
@@ -364,7 +364,7 @@
                                                                     'sell-action-container': state.liquidity.d < 0,
                                                                     'neutral-action-container': state.liquidity.d == 0,
                                                                     'weak-state': state.liquidity.d != 2 && state.liquidity.d != -2
-                                                                }"><p>Liquidity</p></mat-grid-tile>
+                                                                }"><p>LIQUIDITY</p></mat-grid-tile>
                                             </mat-grid-list>
                                         </div>
                                     </div>
@@ -374,38 +374,37 @@
                                     <div fxFlex="50" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
                                         <div class="divider show-on-mobile"></div>
                                         <div class="global-indicators-section">
-                                            <mat-grid-list [cols]="5" [rowHeight]="layout == 'desktop' ? '41.7px': '50px'" gutterSize="1px">
-                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>CFX</p></mat-grid-tile>
-                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>FIL</p></mat-grid-tile>
-                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>OP</p></mat-grid-tile>
-                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>APT</p></mat-grid-tile>
-                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>MATIC</p></mat-grid-tile>
-                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>DYDX</p></mat-grid-tile>
-                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>AGIX</p></mat-grid-tile>
-                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>GALA</p></mat-grid-tile>
-                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>NEO</p></mat-grid-tile>
-                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>EOS</p></mat-grid-tile>
-                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>ACH</p></mat-grid-tile>
-                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>ANKR</p></mat-grid-tile>
-                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>GMX</p></mat-grid-tile>
-                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>STX</p></mat-grid-tile>
-                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>XRP</p></mat-grid-tile>
-                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>LQTY</p></mat-grid-tile>
-                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>FTM</p></mat-grid-tile>
-                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>AVAX</p></mat-grid-tile>
-                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>LINK</p></mat-grid-tile>
-                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>MASK</p></mat-grid-tile>
-                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>ATOM</p></mat-grid-tile>
-                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>DOT</p></mat-grid-tile>
-                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>SNX</p></mat-grid-tile>
-                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>SAND</p></mat-grid-tile>
-                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>FET</p></mat-grid-tile>
-                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>MAGIC</p></mat-grid-tile>
-                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>HOOK</p></mat-grid-tile>
-                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>IMX</p></mat-grid-tile>
-                                                <mat-grid-tile class="clickable buy-action-container" role="button" matRipple><p>GRT</p></mat-grid-tile>
-                                                <mat-grid-tile class="clickable action-container" role="button" matRipple>
-                                                    <mat-icon>arrow_right_alt</mat-icon>
+                                            <mat-grid-list [cols]="4" [rowHeight]="layout == 'desktop' ? '41.7px': '50px'" gutterSize="1px">
+                                                <!-- Previous Navigation -->
+                                                <mat-grid-tile *ngIf="activeCoinPage > 1" class="clickable action-container" role="button" matRipple 
+                                                    (click)="activateFirstCoinsPage()">
+                                                    <mat-icon>navigate_before</mat-icon>
+                                                </mat-grid-tile>
+
+                                                <!-- Coins -->
+                                                <mat-grid-tile *ngFor="let symbol of visibleSymbols" 
+                                                                class="clickable" role="button" matRipple fxLayout="row" fxLayoutAlign="center center"
+                                                                [ngClass]="{
+                                                                    'buy-action-container': state.coins[symbol].s > 0,
+                                                                    'sell-action-container': state.coins[symbol].s < 0,
+                                                                    'neutral-action-container': state.coins[symbol].s == 0,
+                                                                    'weak-state': state.coins[symbol].s != 2 && state.coins[symbol].s != -2
+                                                                }" 
+                                                                (click)="displayCoinDialog(symbol)">
+                                                    <mat-icon *ngIf="state.coins[symbol].e == 'n'" class="state-icon" [svgIcon]="_ms.icons[state.coins[symbol].s]"></mat-icon>
+                                                    <mat-icon *ngIf="state.coins[symbol].e == 'sr'" class="state-icon" [svgIcon]="'rotate_left'"></mat-icon>
+                                                    <mat-icon *ngIf="state.coins[symbol].e == 'rr'" class="state-icon" [svgIcon]="'rotate_right'"></mat-icon>
+                                                    <p style="max-width:30px" class="truncate">{{symbol | baseAssetName}}</p>
+                                                </mat-grid-tile>
+
+
+                                                <!-- Placeholders -->
+                                                <mat-grid-tile *ngFor="let placeholder of coinPlaceholders" class="placeholder-action-container"></mat-grid-tile>
+                                                
+                                                <!-- Next Navigation -->
+                                                <mat-grid-tile *ngIf="activeCoinPage < totalCoinPages" class="clickable action-container" role="button" matRipple 
+                                                    (click)="activateNextCoinsPage()">
+                                                    <mat-icon>navigate_next</mat-icon>
                                                 </mat-grid-tile>
                                             </mat-grid-list>
                                         </div>

@@ -3,6 +3,7 @@ import { IEpochRecord } from "../epoch"
 import { IServerData, IServerResources } from "../server"
 import { IPrediction } from "../epoch-builder"
 import { 
+    ICoinsState,
     IKeyZoneState,
     IMarketState, 
     IMinifiedLiquidityState, 
@@ -102,7 +103,8 @@ export interface ICompressedMarketState {
     volume: IVolumeState,
     liquidity: IMinifiedLiquidityState,
     keyzones: IKeyZoneState,
-    trend: ITrendState
+    trend: ITrendState,
+    coins: ICoinsState
 }
 
 export interface ICompressedWindowState {

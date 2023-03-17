@@ -113,7 +113,8 @@ import {
 	KeyzonesDialogComponent,
 	KeyzoneDetailsDialogComponent,
 	MarketStateDialogComponent,
-	LiquidityDialogComponent
+	LiquidityDialogComponent,
+	CoinsDialogComponent
 } from "./modules/dashboard";
 
 
@@ -137,6 +138,7 @@ import { AppComponent } from "./app.component";
     	KeyzoneDetailsDialogComponent,
   		MarketStateDialogComponent,
     	LiquidityDialogComponent,
+     	CoinsDialogComponent,
 	],
 	imports: [
 		// Core

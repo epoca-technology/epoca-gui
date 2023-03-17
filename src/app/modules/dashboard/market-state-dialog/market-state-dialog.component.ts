@@ -2,6 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
 import { ApexAnnotations, YAxisAnnotations } from 'ng-apexcharts';
 import { 
+	ICoinState,
 	ISplitStateID, 
 	ISplitStates, 
 	ISplitStateSeriesItem, 
@@ -66,6 +67,7 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 			if (this.module == "window") { this.initWindow() }
 			else if (this.module == "trend") { this.initTrend() }
 			else if (this.module == "volume") { await this.initVolume() }
+			else if (this.module == "coin") { await this.initCoin() }
 		} catch (e) {
 			this._app.error(e);
 			setTimeout(() => { this.close() }, 500);
@@ -165,6 +167,51 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
             strokeDashArray: 0
         };
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	/********
+	 * Coin *
+	 ********/
+
+
+
+
+
+	private async initCoin(): Promise<void> {
+		// Set the title
+		this.title = this.config.symbol!;
+
+		// Retrieve the coin's state
+		const state: ICoinState = await this._ms.getCoinFullState(this.config.symbol!);
+
+		// Set the state average
+		this.stateAverage = state.s;
+
+		// Set the splits
+		this.states = state.ss;
+
+		// Build the series
+		this.seriesName = "USDT";
+		this.series = state.w;
+
+		// Finally, apply the split
+		this.applySplit(this.activeSplitID);
+	}
+
+
+
 
 
 

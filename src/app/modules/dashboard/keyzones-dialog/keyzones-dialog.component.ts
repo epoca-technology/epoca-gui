@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
-import { IKeyZone, IKeyZoneFullState, IReversal, MarketStateService, UtilsService } from '../../../core';
+import { IKeyZone, IKeyZoneFullState, MarketStateService, UtilsService } from '../../../core';
 import { AppService, ILayout, NavService } from '../../../services';
 import { KeyzoneDetailsDialogComponent } from './keyzone-details-dialog';
 import { IKeyZoneDistance, IKeyZonesDialogComponent } from './interfaces';

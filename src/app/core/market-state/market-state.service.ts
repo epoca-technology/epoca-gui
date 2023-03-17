@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from "../api";
 import { 
+	ICoinsSummary,
+	ICoinState,
 	IKeyZoneFullState, 
 	ILiquidityState, 
 	IMarketStateService, 
@@ -77,10 +79,19 @@ export class MarketStateService implements IMarketStateService {
 
 
 
+
+
+
+
+	/**********************
+	 * General Retrievers *
+	 **********************/
+
+
 	
 	/**
 	 * Retrieves the current volume state.
-	 * @returns Promise<ITAIntervalState>
+	 * @returns Promise<IVolumeState>
 	 */
 	public getFullVolumeState(): Promise<IVolumeState> { 
 		return this._api.request("get","marketState/getFullVolumeState", {}, true) 
@@ -95,7 +106,7 @@ export class MarketStateService implements IMarketStateService {
 
 	/**
 	 * Retrieves the liquidity state from the server
-	 * @returns Promise<IKeyZoneFullState>
+	 * @returns Promise<ILiquidityState>
 	 */
 	public getLiquidityState(): Promise<ILiquidityState> { 
 		return this._api.request("get","marketState/getLiquidityState", {}, true) 
@@ -111,5 +122,90 @@ export class MarketStateService implements IMarketStateService {
 	 */
 	public calculateKeyZoneState(): Promise<IKeyZoneFullState> { 
 		return this._api.request("get","marketState/calculateKeyZoneState", {}, true) 
+	}
+
+
+
+
+
+
+
+
+
+
+	/********************
+	 * Coins Management *
+	 ********************/
+
+
+
+
+
+
+	/**
+	 * Retrieves Coins Summary including all supported and installed coins
+	 * @returns Promise<ICoinsSummary>
+	 */
+	public getCoinsSummary(): Promise<ICoinsSummary> { 
+		return this._api.request("get","marketState/getCoinsSummary", {}, true) 
+	}
+
+
+
+
+
+    /**
+     * Installs a coin into the system by symbol.
+     * @param symbol 
+     * @param otp 
+     * @returns Promise<ICoinsSummary>
+     */
+    public installCoin(symbol: string, otp: string): Promise<ICoinsSummary> { 
+        return this._api.request("post", "marketState/installCoin", {symbol: symbol}, true, otp);
+    }
+
+
+
+
+
+
+    /**
+     * Uninstalls a coin from the system by symbol.
+     * @param symbol 
+     * @param otp 
+     * @returns Promise<ICoinsSummary>
+     */
+    public uninstallCoin(symbol: string, otp: string): Promise<ICoinsSummary> { 
+        return this._api.request("post", "marketState/uninstallCoin", {symbol: symbol}, true, otp);
+    }
+
+
+
+
+
+
+
+	/**
+	 * Retrieves the full state of a coin by symbol.
+	 * @param symbol
+	 * @returns Promise<ICoinState>
+	 */
+	public getCoinFullState(symbol: string): Promise<ICoinState> { 
+		return this._api.request("get","marketState/getCoinFullState", {symbol: symbol}, true) 
+	}
+
+
+
+
+	/**
+	 * Retrieves the base asset name based on the symbol.
+	 * F.e: BTCUSDT -> BTC
+	 * @param symbol 
+	 * @returns string
+	 */
+	public getBaseAssetName(symbol: string): string {
+		if (typeof symbol == "string" && symbol.length >= 5) {
+			return symbol.replace("USDT", "");
+		} else { return symbol }
 	}
 }

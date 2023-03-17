@@ -904,6 +904,8 @@ form .mat-checkbox-inner-container{
         font-weight:600;
         font-size:11px!important;
     }
+	
+	.state-icon { width: 17px;max-height:15px;margin-right:3px;}
 }
 .buy-action-container {
     @extend .action-container;

@@ -17,7 +17,7 @@ export interface IMarketStateDialogComponent {
 
 
 
-export type IMarketStateModule = "window"|"trend"|"volume";
+export type IMarketStateModule = "window"|"trend"|"volume"|"coin";
 
 
 export interface IMarketStateDialogConfig {
@@ -25,5 +25,6 @@ export interface IMarketStateDialogConfig {
     split?: ISplitStateID,
     windowState?: IWindowState,
     trendState?: ITrendState,
-    trendWindow?: IPredictionCandlestick[]
+    trendWindow?: IPredictionCandlestick[],
+    symbol?: string
 }

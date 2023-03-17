@@ -39,6 +39,7 @@ import { IMarketStateDialogConfig, MarketStateDialogComponent } from "./market-s
 import { LiquidityDialogComponent } from "./liquidity-dialog";
 import { IDashboardComponent, IWindowZoom, IWindowZoomID, IWindowZoomPrices } from "./interfaces";
 import { IBottomSheetMenuItem } from "src/app/shared/components/bottom-sheet-menu";
+import { CoinsDialogComponent } from "./coins-dialog";
 
 @Component({
   selector: "app-dashboard",
@@ -95,6 +96,16 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         { id: "l", size: 3.5, highest: 0, lowest: 0, highLimit: 0, lowLimit: 0},
         { id: "xl", size: 5, highest: 0, lowest: 0, highLimit: 0, lowLimit: 0},
     ];
+
+    // Coins Grid
+    public symbols: string[] = [];
+    public activeCoinPage: number = 1;
+    public visibleSymbols: string[] = [];
+    public coinsPerPage: number = 24;
+    public totalCoinPages: number = 1;
+    public coinPlaceholders: number[] = [];
+    public activeSliceStart: number = 0;
+    public activeSliceEnd: number = 0;
 
     // Desktop Chart height helpers
     public readonly predictionChartDesktopHeight: number = 330;
@@ -380,6 +391,8 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         else if (sumStr.length == 3 ) { annOffset.x = 24 }
         else if (sumStr.length == 4 ) { annOffset.x = 29 }
         else if (sumStr.length == 5 ) { annOffset.x = 36 }
+        else if (sumStr.length == 6 ) { annOffset.x = 41 }
+        else if (sumStr.length == 7 ) { annOffset.x = 46 }
         return {
             yaxis: [
                 this.buildTrendSumAnnotation(this.epoch!.model.min_increase_sum, maxValue, this._chart.upwardColor),
@@ -500,6 +513,9 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     private onStateUpdate(): void {
         // Update the window state chart
         this.updateWindowState();
+
+        // Update the coins state
+        this.updateCoinsState();
 
         // Update the title
         const price: string = <string>this._utils.outputNumber(
@@ -824,7 +840,110 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     }
 
 
-    
+
+
+
+
+
+
+
+    /* Coins State */
+
+
+
+
+    /**
+     * Handles the coin state updates. If the items in the list change,
+     * the first page will be activated.
+     */
+    private updateCoinsState(): void {
+        // Populate the symbols
+        let symbols: string[] = Object.keys(this.state.coins || {});
+        symbols.sort();
+
+        // Calculate the total number of pages
+        this.totalCoinPages = Math.ceil(symbols.length / this.coinsPerPage);
+
+        // If the number of symbols is different to the previous one, activate the first page
+        if (!this.symbols.length || this.symbols.length != symbols.length) {
+            this.activateFirstCoinsPage(symbols);
+        }
+
+        // Set the symbols
+        this.symbols = symbols;
+    }
+
+
+
+
+    /**
+     * Activates the first coins page. This is a safe method as it starts
+     * from the beginning.
+     * @param symbols 
+     */
+    public activateFirstCoinsPage(symbols?: string[]): void {
+        // Populate the symbols
+        symbols = Array.isArray(symbols) ? symbols: this.symbols;
+
+        // Init the slice
+        let sliceStart: number = 0;
+        let sliceEnd: number = this.coinsPerPage;
+
+        // If there are more items than coinsPerPage, leave room for the paginator
+        if (symbols.length > this.coinsPerPage) sliceEnd -= 1;
+
+        // If there are less items than coinsPerPage, fill the blanks with placeholders
+        if (symbols.length < this.coinsPerPage) {
+            this.coinPlaceholders = Array(this.coinsPerPage - symbols.length).fill(0);
+        } else {
+            this.coinPlaceholders = [];
+        }
+
+        // Apply the slice to the symbols
+        this.visibleSymbols = symbols.slice(sliceStart, sliceEnd);
+
+        // Set the active page and slice
+        this.activeCoinPage = 1;
+        this.activeSliceStart = sliceStart;
+        this.activeSliceEnd = sliceEnd;
+    }
+
+
+
+
+
+    /**
+     * Activates the next coins page based on the active slice range.
+     */
+    public activateNextCoinsPage(): void {
+        // Init the slice
+        let sliceStart: number = this.activeSliceEnd;
+        let sliceEnd: number = sliceStart + this.coinsPerPage;
+
+        // Deduct the previous pagination button
+        sliceEnd -= 1;
+
+        // If there are more symbols than the end of the slice, leave room for the paginator
+        if (this.symbols.length > sliceEnd) sliceEnd -= 1;
+
+        // If there are less symbols than sliceEnd, fill the blanks with placeholders
+        if (this.symbols.length < sliceEnd) {
+            this.coinPlaceholders = Array(sliceEnd - this.symbols.length).fill(0);
+        } else {
+            this.coinPlaceholders = [];
+        }
+
+        // Apply the slice to the symbols
+        this.visibleSymbols = this.symbols.slice(sliceStart, sliceEnd);
+
+        // Set the active page and slice
+        this.activeCoinPage += 1;
+        this.activeSliceStart = sliceStart;
+        this.activeSliceEnd = sliceEnd;
+    }
+
+
+
 
 
 
@@ -847,6 +966,12 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     public displayAdjustmentsMenu(): void {
 		const bs: MatBottomSheetRef = this._nav.displayBottomSheetMenu([
             {
+                icon: 'currency_bitcoin',  
+                title: 'Coins', 
+                description: 'Install & uninstall coin based futures contracts.', 
+                response: "COINS"
+            },
+            {
                 icon: 'money_bill_transfer',  
                 svg: true,
                 title: 'Trading Strategy', 
@@ -855,10 +980,23 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             },
         ]);
 		bs.afterDismissed().subscribe((response: string|undefined) => {
-            if (response === "TRADING_STRATEGY") { this.displayStrategyFormDialog() }
+            if      (response === "COINS") { this.displayCoinsDialog() }
+            else if (response === "TRADING_STRATEGY") { this.displayStrategyFormDialog() }
 		});
 	}
 
+
+
+	/**
+	 * Displays the Coins dialog.
+	 */
+    private displayCoinsDialog(): void {
+		this.dialog.open(CoinsDialogComponent, {
+			hasBackdrop: this._app.layout.value != "mobile",
+            disableClose: true,
+			panelClass: "large-dialog"
+		})
+	}
 
 
 
@@ -987,9 +1125,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
 
 
-    
-
-
 
 	/**
 	 * Displays the Liquidity dialog.
@@ -1009,8 +1144,25 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 	 */
     public displayKeyZonesDialog(): void {
 		this.dialog.open(KeyzonesDialogComponent, {
-			hasBackdrop: true,
+			hasBackdrop: this._app.layout.value != "mobile",
 			panelClass: "large-dialog"
+		})
+	}
+
+
+
+    /**
+	 * Displays the coin dialog.
+     * @param symbol
+	 */
+    public displayCoinDialog(symbol: string): void {
+		this.dialog.open(MarketStateDialogComponent, {
+			hasBackdrop: this._app.layout.value != "mobile",
+			panelClass: "medium-dialog",
+			data: <IMarketStateDialogConfig>{
+                module: "coin",
+                symbol: symbol
+            }
 		})
 	}
 
@@ -1045,11 +1197,10 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     public windowTooltip(): void {
         this._nav.displayTooltip("Market State Window", [
             `The market state operates in a moving window of 128 15-minute-interval candlesticks (~32 hours) that is synced 
-            every ~4 seconds through Binance Spot's API.`,
+            every ~3 seconds through Binance Spot's API.`,
             `Additionally, the following market state submodules also make use of this exact window of time:`,
             `1) Volume`,
-            `2) Open Interest`,
-            `3) Long/Short Ratio`,
+            `2) Trend`,
         ]);
     }
 
@@ -1065,7 +1216,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             measurement of the number of individual units of an asset that changed hands during that period.`,
             `Each transaction involves a buyer and a seller. When they reach an agreement at a specific price, 
             the transaction is recorded by the facilitating exchange. This data is then used to calculate the trading volume.`,
-            `The volume and the volume direction indicator are synced every ~4 seconds through Binance Spot's API.`
+            `The volume and the volume direction indicator are synced every ~3 seconds through Binance Spot's API.`
         ]);
     }
 

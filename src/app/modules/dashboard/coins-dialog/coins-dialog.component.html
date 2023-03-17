@@ -1,0 +1,94 @@
+<mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <button mat-icon-button class="show-on-mobile" (click)="close()"><mat-icon>arrow_back</mat-icon></button>
+        <span *ngIf="!loaded">Loading...</span>
+        <span *ngIf="loaded" class="truncate">Coins</span>
+        <span fxFlex></span>
+        <button mat-icon-button *ngIf="loaded && activeTab == 0 && installedNum > 5 && installedSearchVisible" (click)="activateInstalledSearch()"><mat-icon>search</mat-icon></button>
+        <button mat-icon-button *ngIf="loaded && activeTab == 1 && !availableSearchVisible" (click)="activateAvailableSearch()"><mat-icon>search</mat-icon></button>
+        <button mat-icon-button *ngIf="loaded" (click)="displayTooltip()" matTooltip="More information"><mat-icon>question_mark</mat-icon></button>
+        <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
+    </div>
+</mat-toolbar>
+<div mat-dialog-content>
+    <!-- Loader -->
+    <div *ngIf="!loaded">
+        <div class="section-loader"><div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div></div>
+    </div>
+    <div *ngIf="loaded">
+        <!-- Tabs Navigation-->
+        <mat-tab-group [selectedIndex]="activeTab" 
+            (selectedIndexChange)="activeTab = $event"
+            mat-align-tabs="center" 
+            mat-stretch-tabs 
+            backgroundColor="primary">
+            <mat-tab><ng-template mat-tab-label><span>{{layout == 'desktop' ? 'INSTALLED': 'INST'}}: {{installedNum}}</span></ng-template></mat-tab>
+            <mat-tab><ng-template mat-tab-label><span>{{layout == 'desktop' ? 'AVAILABLE': 'AVAIL'}}: {{availableNum}}</span></ng-template></mat-tab>
+        </mat-tab-group>
+
+        <!-- Installed -->
+        <div *ngIf="activeTab == 0" class="padding">
+            <div *ngIf="installedSearchVisible" class="margin-bottom">
+                <div fxLayout="row" fxLayoutAlign="start center">
+                    <div fxFlex>
+                        <mat-form-field>
+                            <mat-label>Search for a coin</mat-label>
+                            <input type="text"
+                                   matInput
+                                   [(ngModel)]="availableSearch"
+                                   autocomplete="off"
+                                   placeholder="e.g. ETH" 
+                                   #installedSearchControl>
+                        </mat-form-field>
+                    </div>
+                    <button type="button" mat-icon-button color="primary" tabindex="-1"
+                            (click)="deactivateInstalledSearch()">
+                        <mat-icon>search_off</mat-icon>
+                    </button>
+                </div>
+            </div>
+            <p class="light-text margin-top-x3 align-center ts-m" *ngIf="installedNum == 0">No coins have been installed</p>
+            <mat-grid-list [cols]="layout == 'desktop' ? 10: 5" [rowHeight]="layout == 'desktop' ? '50px': '50px'" gutterSize="2px">
+                <mat-grid-tile *ngFor="let item of installed | keyvalue | filter: installedSearch"
+                    class="clickable" role="button" matRipple fxLayout="row" fxLayoutAlign="center center"
+                    (click)="uninstallCoin(item.value)"
+                    [ngClass]="{
+                        'buy-action-container': !installedUnsupported[item.key],
+                        'sell-action-container': installedUnsupported[item.key]
+                    }">
+                    <p style="max-width:40px" class="truncate">{{item.key | baseAssetName}}</p>
+                </mat-grid-tile>
+            </mat-grid-list>
+        </div>
+
+        <!-- Available -->
+        <div *ngIf="activeTab == 1" class="padding">
+            <div *ngIf="availableSearchVisible" class="margin-bottom">
+                <div fxLayout="row" fxLayoutAlign="start center">
+                    <div fxFlex>
+                        <mat-form-field class="full-width">
+                            <mat-label>Search for a coin</mat-label>
+                            <input type="text"
+                                   matInput
+                                   [(ngModel)]="availableSearch"
+                                   autocomplete="off"
+                                   placeholder="e.g. XRP" 
+                                   #availableSearchControl>
+                        </mat-form-field>
+                    </div>
+                    <button type="button" mat-icon-button color="primary" tabindex="-1"
+                            (click)="deactivateAvailableSearch()">
+                        <mat-icon>search_off</mat-icon>
+                    </button>
+                </div>
+            </div>
+            <mat-grid-list [cols]="layout == 'desktop' ? 10: 5" [rowHeight]="layout == 'desktop' ? '50px': '50px'" gutterSize="2px">
+                <mat-grid-tile *ngFor="let item of available | keyvalue | filter: availableSearch"
+                    class="clickable neutral-action-container" role="button" matRipple fxLayout="row" fxLayoutAlign="center center"
+                    (click)="installCoin(item.value)">
+                    <p style="max-width:40px" class="truncate">{{item.key | baseAssetName}}</p>
+                </mat-grid-tile>
+            </mat-grid-list>
+        </div>
+    </div>
+</div>

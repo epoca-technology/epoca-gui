@@ -13,10 +13,17 @@ export interface IMarketStateService {
     kzAbove: {[volIntensity: number]: string},
     kzBelow: {[volIntensity: number]: string},
 
-    // Retrievers
+    // General Retrievers
     getFullVolumeState(): Promise<IVolumeState>,
     getLiquidityState(): Promise<ILiquidityState>,
     calculateKeyZoneState(): Promise<IKeyZoneFullState>,
+
+    // Coins Management
+    getCoinsSummary(): Promise<ICoinsSummary>,
+    installCoin(symbol: string, otp: string): Promise<ICoinsSummary>,
+    uninstallCoin(symbol: string, otp: string): Promise<ICoinsSummary>,
+    getCoinFullState(symbol: string): Promise<ICoinState>,
+    getBaseAssetName(symbol: string): string
 }
 
 
@@ -517,6 +524,98 @@ export interface ITrendState {
 
 
 
+
+
+/********************************************************************************
+ * COINS                                                                        *
+ * The purpose of the coin state submodule is to have a deep understanding of   *
+ * the price movement for each installed coin, as well as keeping the state     *
+ * updated.                                                                     *
+ ********************************************************************************/
+
+
+/* Coins */
+
+
+// The record of a coin
+export interface ICoin {
+    // The symbol|pair that identifies the coin.
+    symbol: string, // "BTCUSDT"|"ETHUSDT"|"BCHUSDT"...
+
+    // The decimal precision to be applied to the coin's price
+    pricePrecision: number, // BTC: 2
+
+    // The decimal precision to be applied to the coin's quantity
+    quantityPrecision: number // BTC: 3
+}
+
+
+// The object containing all supported or installed coins
+export interface ICoinsObject {
+    [symbol: string]: ICoin
+}
+
+
+// The object containing the installed & supported coins
+export interface ICoinsSummary {
+    installed: ICoinsObject,
+    supported: ICoinsObject
+}
+
+
+
+
+
+/* State */
+
+
+/**
+ * State Event
+ * The state of a coin provides a brief description of the price's direction. By making
+ * use of this, we can derive "events" that can be combined with KeyZone events in order
+ * to open positions.
+ * sr: Support Reversal     -> The price has been decreasing and started reversing
+ * rr: Resistance Reversal  -> The price has been increasing and started reversing
+ * n:  No event is present
+ */
+export type ICoinStateEvent = "sr"|"rr"|"n";
+
+
+// Full Coin State
+export interface ICoinState {
+    // The state of the coin
+    s: IStateType,
+
+    // The split states payload
+    ss: ISplitStates,
+
+    // The event present in the state (If any)
+    e: ICoinStateEvent,
+
+    // The coin prices within the window
+    w: ISplitStateSeriesItem[]
+}
+
+
+// Minified Coin State
+export interface IMinifiedCoinState {
+    // The state of the coin
+    s: IStateType,
+
+    // The event present in the state (If any)
+    e: ICoinStateEvent
+}
+
+
+// State Object
+export interface ICoinsState {
+    [symbol: string]: IMinifiedCoinState
+}
+
+
+
+
+
  
  
  
@@ -532,7 +631,8 @@ export interface IMarketState {
     volume: IMinifiedVolumeState,
     liquidity: IMinifiedLiquidityState,
     keyzones: IKeyZoneState,
-    trend: ITrendState
+    trend: ITrendState,
+    coins: ICoinsState
 }
 
 
