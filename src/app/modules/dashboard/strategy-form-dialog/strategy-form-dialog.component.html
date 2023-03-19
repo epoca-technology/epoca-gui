@@ -18,10 +18,100 @@
         <!-- Form -->
         <div *ngIf="form">
             <form [formGroup]="form" (ngSubmit)="update()">
+                <!-- Long & Short Status -->
+                <div>
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <h5>Status</h5>
+                        <span fxFlex></span>
+                        <button mat-icon-button (click)="statusTooltip()" matTooltip="More information" type="button" tabindex="-1"><mat-icon>question_mark</mat-icon></button>
+                    </div> 
+                    <div fxLayout="row" fxLayoutAlign="start start" class="section-container">
+                        <div fxFlex>
+                            <div fxLayout="row" fxLayoutAlign="center start">
+                                <div>
+                                    <h6>Long</h6>
+                                    <p *ngIf="long_status.value" class="success-color ts-s">Running</p>
+                                    <p *ngIf="!long_status.value" class="light-text ts-s truncate">Not running</p>
+                                </div>
+                                <span fxFlex></span>
+                                <mat-slide-toggle 
+                                    formControlName="long_status"
+                                    [appDisableControl]="submitting">
+                                </mat-slide-toggle>
+                            </div>
+                        </div>
+                        <span fxFlex="5"></span>
+                        <div fxFlex>
+                            <div fxLayout="row" fxLayoutAlign="center start">
+                                <div>
+                                    <h6>Short</h6>
+                                    <p *ngIf="short_status.value" class="success-color ts-s">Running</p>
+                                    <p *ngIf="!short_status.value" class="light-text ts-s">Not running</p>
+                                </div>
+                                <span fxFlex></span>
+                                <mat-slide-toggle 
+                                    formControlName="short_status"
+                                    [appDisableControl]="submitting">
+                                </mat-slide-toggle>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- General -->
+                <div>
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <h5>General</h5>
+                        <span fxFlex></span>
+                        <button mat-icon-button (click)="generalTooltip()" matTooltip="More information" type="button" tabindex="-1"><mat-icon>question_mark</mat-icon></button>
+                    </div> 
+                    <div fxLayout="row" fxLayoutAlign="start start" class="section-container">
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Leverage</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="leverage"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 3">
+                            </mat-form-field>
+                        </div>
+                        <span fxFlex="5"></span>
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Position Size</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="position_size"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 1500">
+                            </mat-form-field>
+                        </div>
+                        <span fxFlex="5"></span>
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Positions Limit</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="positions_limit"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 3">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
                 <!-- Profit Optimization -->
                 <div>
                     <div fxLayout="row" fxLayoutAlign="start center">
-                        <h6>Profit Optimization Strategy</h6>
+                        <h5>Profit Optimization Strategy</h5>
                         <span fxFlex></span>
                         <button mat-icon-button (click)="profitOptimizationTooltip()" matTooltip="More information" type="button" tabindex="-1"><mat-icon>question_mark</mat-icon></button>
                     </div>
@@ -127,15 +217,17 @@
                 </div>
 
 
+                <div class="divider"></div>
+
 
                 <!-- Stop Loss -->
                 <div class="margin-top">
                     <div fxLayout="row" fxLayoutAlign="start center">
-                        <h6>Loss Optimization Strategy</h6>
+                        <h5>Loss Optimization Strategy</h5>
                         <span fxFlex></span>
                         <button mat-icon-button (click)="lossOptimizationTooltip()" matTooltip="More information" type="button" tabindex="-1"><mat-icon>question_mark</mat-icon></button>
                     </div>
-                    <div fxLayout="row" fxLayoutAlign="start start" class="section-content">
+                    <div fxLayout="row" fxLayoutAlign="start start" class="section-container">
                         <div fxFlex>
                             <mat-form-field>
                                 <mat-label>Stop Loss%</mat-label>

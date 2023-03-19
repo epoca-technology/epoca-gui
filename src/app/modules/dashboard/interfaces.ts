@@ -17,7 +17,6 @@ export interface IDashboardComponent {
     displayWindowDialog(id: ISplitStateID): void,
     displayTrendDialog(id: ISplitStateID): void,
     displayVolumeDialog(): void,
-    displayLiquidityDialog(): void,
     displayKeyZonesDialog(): void,
     displayCoinDialog(symbol: string): void,
 

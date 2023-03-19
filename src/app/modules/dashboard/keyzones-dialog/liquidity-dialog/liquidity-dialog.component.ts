@@ -1,7 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import {MatDialogRef} from "@angular/material/dialog";
-import { ILiquidityIntensityRequirements, ILiquidityPriceLevel, ILiquiditySide, ILiquidityState, MarketStateService, UtilsService } from '../../../core';
-import { AppService, ChartService, IBarChartOptions, ILayout, IPieChartOptions, NavService } from '../../../services';
+import { 
+	ILiquidityIntensityRequirements, 
+	ILiquidityPriceLevel, 
+	ILiquiditySide, 
+	ILiquidityState, 
+	MarketStateService, 
+	UtilsService 
+} from '../../../../core';
+import { 
+	AppService, 
+	ChartService, 
+	IBarChartOptions, 
+	ILayout, 
+	IPieChartOptions, 
+	NavService 
+} from '../../../../services';
 import { ILiquidityDialogComponent } from './interfaces';
 
 @Component({

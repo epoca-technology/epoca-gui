@@ -8,10 +8,12 @@ export interface IMarketStateService {
     // Properties
     marketStates: {[result: string|number]: string},
     icons: {[result: string|number]: string},
+    coinStateIcons: {[result: string|number]: string},
     splits: ISplitStateID[],
     splitNames: {[splitID: string]: string},
     kzAbove: {[volIntensity: number]: string},
     kzBelow: {[volIntensity: number]: string},
+    kzVolIntensityIcons: {[volIntensity: number]: string},
 
     // General Retrievers
     getFullVolumeState(): Promise<IVolumeState>,
@@ -186,23 +188,10 @@ export interface IVolumeState {
     m: number,
     mh: number,
 
-    // The direction in which the volume is driving the price and its value
-    d: IStateType,
-    dv: number,
-
     // The list of grouped volumes
     w: ISplitStateSeriesItem[]
 }
 
-
-// Minified State
-export interface IMinifiedVolumeState {
-    // The state of the volume
-    s: IStateType,
-
-    // The direction in which the volume is driving the price and its value
-    d: IStateType
-}
  
  
 
@@ -242,7 +231,7 @@ export type IReversalType = "r"|"s"; // r = Resistance | s = Support
  * Volume Intensity
  * The intensity of the volume within the KeyZone.
  */
-export type IKeyZoneVolumeIntensity = 0|1|2;
+export type IKeyZoneVolumeIntensity = 0|1|2|3|4;
 
 
 
@@ -326,8 +315,14 @@ export interface IKeyZoneFullState {
     // The list of keyzones below the current price
     below: IKeyZone[],
 
-    // The mean of all the keyzone volumes
+    /**
+     * The mean of all the keyzone volumes used as requirements in order to calculate 
+     * the intensities
+     */
     volume_mean: number,
+    volume_mean_low: number,
+    volume_mean_medium: number,
+    volume_mean_high: number,
 
     // The timestamp in which the build was generated
     build_ts: number
@@ -569,17 +564,6 @@ export interface ICoinsSummary {
 /* State */
 
 
-/**
- * State Event
- * The state of a coin provides a brief description of the price's direction. By making
- * use of this, we can derive "events" that can be combined with KeyZone events in order
- * to open positions.
- * sr: Support Reversal     -> The price has been decreasing and started reversing
- * rr: Resistance Reversal  -> The price has been increasing and started reversing
- * n:  No event is present
- */
-export type ICoinStateEvent = "sr"|"rr"|"n";
-
 
 // Full Coin State
 export interface ICoinState {
@@ -589,8 +573,18 @@ export interface ICoinState {
     // The split states payload
     ss: ISplitStates,
 
-    // The event present in the state (If any)
-    e: ICoinStateEvent,
+    /**
+     * State Event
+     * This event refers to a coin's price starting a reversal. When the price is dropping
+     * and suddently starts rising, it is known as a "Support Reversal". On the contrary, 
+     * when the price has been rising and starts dropping, it is known as a "Resistance Reversal".
+     * Moreover, when an event is detected, it also has an intensity based on how hard the price
+     * had decreased/increased prior to reversing. 
+     * Support Reversals can be -2 (reversal occurred after a strong crash) or a -1.
+     * Resistance Reversals can be 2 (reversal occurred after a strong increase) or 1.
+     * If the state event of a coin is 0, means there is no event at all.
+     */
+    se: IStateType,
 
     // The coin prices within the window
     w: ISplitStateSeriesItem[]
@@ -602,8 +596,8 @@ export interface IMinifiedCoinState {
     // The state of the coin
     s: IStateType,
 
-    // The event present in the state (If any)
-    e: ICoinStateEvent
+    // The state event
+    se: IStateType,
 }
 
 
@@ -611,6 +605,7 @@ export interface IMinifiedCoinState {
 export interface ICoinsState {
     [symbol: string]: IMinifiedCoinState
 }
+
 
 
 
@@ -628,7 +623,7 @@ export interface ICoinsState {
   *********************************************************************************/
 export interface IMarketState {
     window: IWindowState,
-    volume: IMinifiedVolumeState,
+    volume: IStateType,
     liquidity: IMinifiedLiquidityState,
     keyzones: IKeyZoneState,
     trend: ITrendState,

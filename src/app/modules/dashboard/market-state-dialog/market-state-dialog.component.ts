@@ -1,6 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
 import { ApexAnnotations, YAxisAnnotations } from 'ng-apexcharts';
+import * as moment from "moment";
 import { 
 	ICoinState,
 	ISplitStateID, 
@@ -30,6 +31,7 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 	public activeSplitID: ISplitStateID = "s100";
 	public stateAverage!: IStateType;
 	public states!: ISplitStates;
+	public stateEvent?: IStateType;
 	private series!: ISplitStateSeriesItem[];
 	private seriesName!: string;
 	public lineChart?: ILineChartOptions;
@@ -50,7 +52,8 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 		private _app: AppService,
 		private _chart: ChartService,
 		public _ms: MarketStateService,
-		private _utils: UtilsService
+		private _utils: UtilsService,
+		private _nav: NavService
 	) { }
 
 
@@ -201,6 +204,9 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 
 		// Set the splits
 		this.states = state.ss;
+
+		// Set the state event
+		this.stateEvent = state.se;
 
 		// Build the series
 		this.seriesName = "USDT";
@@ -390,6 +396,62 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 	/****************
 	 * Misc Helpers *
 	 ****************/
+
+
+
+
+
+
+	/**
+	 * Displays the Info Tooltip.
+	 */
+	public displayInfoTooltip(): void {
+		// Init values
+		let windowStart: number = 0;
+		let windowEnd: number = 0;
+		let itemsInWindow: number = 0;
+		let currentValue: number = 0;
+
+		// Handle the volume
+		if (this.module == "volume") {
+			windowStart = this.volumeState!.w[0].x;
+			windowEnd = this.volumeState!.w[this.volumeState!.w.length - 1].x;
+			itemsInWindow = this.volumeState!.w.length;
+			currentValue = this.volumeState!.w[this.volumeState!.w.length - 1].y;
+		} 
+		
+		// Handle the rest
+		else {
+			windowStart = this.series[0].x;
+			windowEnd = this.series[this.series.length - 1].x;
+			itemsInWindow = this.series.length;
+			currentValue = this.series[this.series.length - 1].y;
+		}
+
+		// Finally, display the tooltip
+        this._nav.displayTooltip(this.title, [
+			`CURRENT VALUE`,
+			this._utils.formatNumber(currentValue),
+			`------`,
+			`RANGE (${itemsInWindow} items)`,
+			`${moment(windowStart).format("dddd, MMMM Do, h:mm:ss a")}`,
+			`${moment(windowEnd).format("dddd, MMMM Do, h:mm:ss a")}`,
+        ]);
+	}
+
+
+
+	/**
+	 * Displays the Keyzones Module Tooltip.
+	 */
+	public displayTooltip(): void {
+        this._nav.displayTooltip("Market State", [
+			`@TODO`,
+        ]);
+	}
+
+
+
 
 
 	// Close Dialog

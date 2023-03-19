@@ -36,7 +36,6 @@ import { BalanceDialogComponent } from "./balance-dialog";
 import { StrategyFormDialogComponent } from "./strategy-form-dialog";
 import { KeyzonesDialogComponent } from "./keyzones-dialog";
 import { IMarketStateDialogConfig, MarketStateDialogComponent } from "./market-state-dialog";
-import { LiquidityDialogComponent } from "./liquidity-dialog";
 import { IDashboardComponent, IWindowZoom, IWindowZoomID, IWindowZoomPrices } from "./interfaces";
 import { IBottomSheetMenuItem } from "src/app/shared/components/bottom-sheet-menu";
 import { CoinsDialogComponent } from "./coins-dialog";
@@ -573,18 +572,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             this.windowChart.yaxis.opposite = true;
             this.windowChart.yaxis.labels = {show: true, align: "right"};
         }
-
-        // Determine the color of the candlesticks based on the volume direction
-        let bullColor: string = "#80CBC4";
-        let bearColor: string = "#EF9A9A";
-        if (this.state.volume.d > 0) {
-            bearColor = this.state.volume.d == 1 ? "#EF9A9A": "#80CBC4";
-            bullColor = "#004D40";
-        } else if (this.state.volume.d < 0) {
-            bullColor = this.state.volume.d == -1 ? "#80CBC4": "#EF9A9A";
-            bearColor = "#B71C1C";
-        }
-        this.windowChart.plotOptions = {candlestick: {colors: {upward: bullColor, downward: bearColor}}};
     }
 
 
@@ -966,17 +953,17 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     public displayAdjustmentsMenu(): void {
 		const bs: MatBottomSheetRef = this._nav.displayBottomSheetMenu([
             {
-                icon: 'currency_bitcoin',  
-                title: 'Coins', 
-                description: 'Install & uninstall coin based futures contracts.', 
-                response: "COINS"
-            },
-            {
                 icon: 'money_bill_transfer',  
                 svg: true,
                 title: 'Trading Strategy', 
                 description: 'Configure the way active positions are managed.', 
                 response: "TRADING_STRATEGY"
+            },
+            {
+                icon: 'currency_bitcoin',  
+                title: 'Coins', 
+                description: 'Install & uninstall coin based futures contracts.', 
+                response: "COINS"
             },
         ]);
 		bs.afterDismissed().subscribe((response: string|undefined) => {
@@ -1124,17 +1111,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
 
 
-
-
-	/**
-	 * Displays the Liquidity dialog.
-	 */
-    public displayLiquidityDialog(): void {
-		this.dialog.open(LiquidityDialogComponent, {
-			hasBackdrop: this._app.layout.value != "mobile",
-			panelClass: "medium-dialog"
-		})
-	}
 
 
 

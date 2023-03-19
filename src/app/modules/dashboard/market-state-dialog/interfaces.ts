@@ -12,6 +12,8 @@ export interface IMarketStateDialogComponent {
     applySplit(id: ISplitStateID): void,
 
     // Misc Helpers
+    displayInfoTooltip(): void,
+    displayTooltip(): void,
     close(): void
 }
 

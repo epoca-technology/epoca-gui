@@ -42,6 +42,19 @@ export class MarketStateService implements IMarketStateService {
 		"-2": "arrow_turn_down"
 	}
 
+
+	/**
+	 * Coin State Icons
+	 * The names of the svg icons that represent coin state events.
+	 */
+	public readonly coinStateIcons: {[result: string|number]: string} = {
+		"0": "",
+		"1": "rotate_right",
+		"2": "rotate_right",
+		"-1": "rotate_left",
+		"-2": "rotate_left"
+	}
+
 	
 	/**
 	 * Split IDs
@@ -63,13 +76,19 @@ export class MarketStateService implements IMarketStateService {
 
 
 	/**
-	 * KeyZone Colors
+	 * KeyZones
 	 * The colors are based on the position from the price and the intensity
 	 * of the volume.
 	 */
-	public readonly kzAbove: {[volIntensity: number]: string} = { 0: "#B2DFDB", 1: "#26A69A", 2: "#004D40" }
-	public readonly kzBelow: {[volIntensity: number]: string} = { 0: "#FFCDD2", 1: "#F44336", 2: "#B71C1C" }
-
+	public readonly kzAbove: {[volIntensity: number]: string} = { 0: "#E0F2F1", 1: "#80CBC4", 2: "#26A69A", 3: "#00897B", 4: "#004D40" }
+	public readonly kzBelow: {[volIntensity: number]: string} = { 0: "#FFEBEE", 1: "#EF9A9A", 2: "#EF5350", 3: "#E53935", 4: "#B71C1C" }
+	public readonly kzVolIntensityIcons: {[volIntensity: number]: string} = {
+		0: "battery_empty",
+		1: "battery_quarter",
+		2: "battery_half",
+		3: "battery_three_quarters",
+		4: "battery_full",
+	};
 
 
 

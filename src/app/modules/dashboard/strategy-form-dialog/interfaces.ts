@@ -7,12 +7,9 @@ export interface IStrategyFormDialogComponent {
     // Tooltips
     tradingStrategyTooltip(): void,
     statusTooltip(): void,
-    tradingModeTooltip(): void,
-    positionSizeTooltip(): void,
-    healthPointsTooltip(): void,
+    generalTooltip(): void
     profitOptimizationTooltip(): void,
     lossOptimizationTooltip(): void,
-    idlingTooltip(): void,
 
     // Misc Helpers
     cancel(): void,

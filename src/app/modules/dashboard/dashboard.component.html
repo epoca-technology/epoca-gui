@@ -316,10 +316,7 @@
 
                                         <!-- Positions -->
                                         <div class="global-indicators-section">
-                                            <mat-grid-list [cols]="3" [rowHeight]="layout == 'desktop' ? '43px': '50px'" gutterSize="1px">
-                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
-                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
-                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
+                                            <mat-grid-list [cols]="3" [rowHeight]="layout == 'desktop' ? '42px': '50px'" gutterSize="1px">
                                                 <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
                                                 <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
                                                 <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
@@ -336,15 +333,15 @@
 
                                         <!-- General Indicators -->
                                         <div class="global-indicators-section">
-                                            <mat-grid-list [cols]="3" [rowHeight]="layout == 'desktop' ? '50px': '50px'" gutterSize="1px">
+                                            <mat-grid-list [cols]="3" [rowHeight]="layout == 'desktop' ? '49px': '50px'" gutterSize="1px">
                                                 <!-- Volume -->
                                                 <mat-grid-tile class="clickable" role="button" matRipple
                                                                (click)="displayVolumeDialog()"
                                                                 [ngClass]="{
-                                                                    'buy-action-container': state.volume.s > 0,
-                                                                    'sell-action-container': state.volume.s < 0,
-                                                                    'neutral-action-container': state.volume.s == 0,
-                                                                    'weak-state': state.volume.s != 2 && state.volume.s != -2
+                                                                    'buy-action-container': state.volume > 0,
+                                                                    'sell-action-container': state.volume < 0,
+                                                                    'neutral-action-container': state.volume == 0,
+                                                                    'weak-state': state.volume != 2 && state.volume != -2
                                                                 }"><p>VOLUME</p></mat-grid-tile>
 
                                                 <!-- KeyZones -->
@@ -356,15 +353,11 @@
                                                                     'weak-state': !state.keyzones.active
                                                                 }"><p>KEYZONES</p></mat-grid-tile>
 
-                                                <!-- Liquidity -->
-                                                <mat-grid-tile class="clickable" role="button" matRipple
-                                                               (click)="displayLiquidityDialog()"
-                                                                [ngClass]="{
-                                                                    'buy-action-container': state.liquidity.d > 0,
-                                                                    'sell-action-container': state.liquidity.d < 0,
-                                                                    'neutral-action-container': state.liquidity.d == 0,
-                                                                    'weak-state': state.liquidity.d != 2 && state.liquidity.d != -2
-                                                                }"><p>LIQUIDITY</p></mat-grid-tile>
+                                                <!-- Placeholders -->
+                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
+                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
+                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
+                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
                                             </mat-grid-list>
                                         </div>
                                     </div>
@@ -374,7 +367,7 @@
                                     <div fxFlex="50" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
                                         <div class="divider show-on-mobile"></div>
                                         <div class="global-indicators-section">
-                                            <mat-grid-list [cols]="4" [rowHeight]="layout == 'desktop' ? '41.7px': '50px'" gutterSize="1px">
+                                            <mat-grid-list class="coin-grid" [cols]="4" [rowHeight]="layout == 'desktop' ? '42px': '50px'" gutterSize="1px">
                                                 <!-- Previous Navigation -->
                                                 <mat-grid-tile *ngIf="activeCoinPage > 1" class="clickable action-container" role="button" matRipple 
                                                     (click)="activateFirstCoinsPage()">
@@ -391,10 +384,8 @@
                                                                     'weak-state': state.coins[symbol].s != 2 && state.coins[symbol].s != -2
                                                                 }" 
                                                                 (click)="displayCoinDialog(symbol)">
-                                                    <mat-icon *ngIf="state.coins[symbol].e == 'n'" class="state-icon" [svgIcon]="_ms.icons[state.coins[symbol].s]"></mat-icon>
-                                                    <mat-icon *ngIf="state.coins[symbol].e == 'sr'" class="state-icon" [svgIcon]="'rotate_left'"></mat-icon>
-                                                    <mat-icon *ngIf="state.coins[symbol].e == 'rr'" class="state-icon" [svgIcon]="'rotate_right'"></mat-icon>
-                                                    <p style="max-width:30px" class="truncate">{{symbol | baseAssetName}}</p>
+                                                    <mat-icon *ngIf="state.coins[symbol].se != 0" class="state-icon" [svgIcon]="_ms.coinStateIcons[state.coins[symbol].se]"></mat-icon>
+                                                    <p style="max-width:35px" class="truncate">{{symbol | baseAssetName}}</p>
                                                 </mat-grid-tile>
 
 

@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
+import * as moment from "moment";
 import { IKeyZone, IKeyZoneFullState, MarketStateService, UtilsService } from '../../../core';
 import { AppService, ILayout, NavService } from '../../../services';
 import { KeyzoneDetailsDialogComponent } from './keyzone-details-dialog';
 import { IKeyZoneDistance, IKeyZonesDialogComponent } from './interfaces';
+import { LiquidityDialogComponent } from './liquidity-dialog';
 
 @Component({
   selector: 'app-keyzones-dialog',
@@ -31,6 +33,9 @@ export class KeyzonesDialogComponent implements OnInit, IKeyZonesDialogComponent
 	public aboveDistances: IKeyZoneDistance = {};
 	public belowDistances: IKeyZoneDistance = {};
 
+	// Tabs
+	public activeTab: number = 0;
+
 	// Load state
 	public loaded: boolean = false;
 
@@ -56,6 +61,22 @@ export class KeyzonesDialogComponent implements OnInit, IKeyZonesDialogComponent
 			this.calculateDistances();
 		} catch (e) { this._app.error(e) }
 		this.loaded = true;
+	}
+
+
+
+
+
+
+
+
+	/* Tab Management */
+
+
+
+
+	public async tabChanged(newIndex: number): Promise<void> { 
+		this.activeTab = newIndex;
 	}
 
 
@@ -112,6 +133,14 @@ export class KeyzonesDialogComponent implements OnInit, IKeyZonesDialogComponent
 
 
 
+
+
+
+
+
+
+
+
 	/* Misc Helpers */
 
 
@@ -136,9 +165,43 @@ export class KeyzonesDialogComponent implements OnInit, IKeyZonesDialogComponent
 
 
 
+	/**
+	 * Displays the liquidity dialog.
+	 */
+	public displayLiquidityDialog(): void {
+		this.dialog.open(LiquidityDialogComponent, {
+			hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
+			panelClass: "medium-dialog",
+			data: {}
+		})
+	}
+
+
+
+
+
+
 
 	/**
-	 * Displays the Signal Module Tooltip.
+	 * Displays the Info Tooltip.
+	 */
+	public displayInfoTooltip(): void {
+        this._nav.displayTooltip("KeyZones", [
+			`BUILD`,
+			`${moment(this.state.build_ts).format("dddd, MMMM Do, h:mm:ss a")}`,
+			`-----`,
+			`VOLUME REQUIREMENTS`,
+			`Mean Low: $${this._utils.formatNumber(this.state.volume_mean_low)}`,
+			`Mean: $${this._utils.formatNumber(this.state.volume_mean)}`,
+			`Mean Medium: $${this._utils.formatNumber(this.state.volume_mean_medium)}`,
+			`Mean High: $${this._utils.formatNumber(this.state.volume_mean_high)}`,
+        ]);
+	}
+
+
+
+	/**
+	 * Displays the Keyzones Module Tooltip.
 	 */
 	public displayTooltip(): void {
         this._nav.displayTooltip("KeyZones", [

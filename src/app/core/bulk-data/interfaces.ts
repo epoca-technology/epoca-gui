@@ -10,7 +10,6 @@ import {
     ISplitStates, 
     IStateType, 
     ITrendState, 
-    IVolumeState 
 } from "../market-state"
 import { IActivePosition } from "../position"
 
@@ -100,7 +99,7 @@ export interface IAppBulkStream {
  */
 export interface ICompressedMarketState {
     window: ICompressedWindowState,
-    volume: IVolumeState,
+    volume: IStateType,
     liquidity: IMinifiedLiquidityState,
     keyzones: IKeyZoneState,
     trend: ITrendState,

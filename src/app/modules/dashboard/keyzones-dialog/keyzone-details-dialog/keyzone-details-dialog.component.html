@@ -8,17 +8,8 @@
 </mat-toolbar>
 <div mat-dialog-content>
     <div class="component">
-        <!-- Kind -->
-        <div fxLayout="row" fxLayoutAlign="center center">
-            <p class="light-text ts-m">Kind</p>
-            <span fxFlex></span>
-            <div *ngIf="zone.m" class="square-badge">Mutation</div>
-            <div *ngIf="!zone.m && zone.r[0].t == 's'" class="square-badge-error">Support</div>
-            <div *ngIf="!zone.m && zone.r[0].t == 'r'" class="square-badge-success">Resistance</div>
-        </div>
-
         <!-- Price Range -->
-        <div class="margin-top" fxLayout="row" fxLayoutAlign="center start">
+        <div fxLayout="row" fxLayoutAlign="center start">
             <p class="light-text ts-m">Range ({{zoneSize}}%)</p>
             <span fxFlex></span>
             <div>
@@ -32,9 +23,7 @@
             <p class="light-text ts-m">Vol. Mean</p>
             <span fxFlex></span>
             <p>{{zone.vm | currency}}</p>
-            <mat-icon *ngIf="zone.vi == 0">battery_1_bar</mat-icon>
-            <mat-icon *ngIf="zone.vi == 1">battery_4_bar</mat-icon>
-            <mat-icon *ngIf="zone.vi == 2">battery_full</mat-icon>
+            <mat-icon style="margin-left:4px;" [svgIcon]="_ms.kzVolIntensityIcons[zone.vi]"></mat-icon>
         </div>
 
         <!-- Reversals -->
@@ -42,9 +31,11 @@
             <div fxLayout="row" fxLayoutAlign="center start">
                 <p class="light-text ts-m">Reversals</p>
                 <span fxFlex></span>
-                <p>{{zone.r.length}}</p>
+                <div *ngIf="zone.m" class="square-badge">Mutation: {{zone.r.length}}</div>
+                <div *ngIf="!zone.m && zone.r[0].t == 's'" class="square-badge-error">Support: {{zone.r.length}}</div>
+                <div *ngIf="!zone.m && zone.r[0].t == 'r'" class="square-badge-success">Resistance: {{zone.r.length}}</div>
             </div>
-            <table class="highlight">
+            <table class="bordered">
                 <tbody>
                     <tr *ngFor="let reversal of zone.r">
                         <td [ngClass]="{'success-color': reversal.t == 'r', 'error-color': reversal.t == 's'}">

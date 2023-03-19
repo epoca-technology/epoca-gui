@@ -80,6 +80,10 @@ export class CoinsDialogComponent implements OnInit, ICoinsDialogComponent {
 				<p><strong>Symbol:</strong> ${coin.symbol}</p>
 				<p><strong>Price Precision:</strong> ${coin.pricePrecision}</p>
 				<p><strong>Quantity Precision:</strong> ${coin.quantityPrecision}</p>
+				<p class='margin-top ts-s light-text'>
+					Before proceeding, ensure the coin's <strong>margin mode</strong> is set to "Isolated" and the 
+					<strong>leverage</strong> matches the value in the Trading Strategy.
+				</p>
 			`,
 			otpConfirmation: true
 		}).afterClosed().subscribe(
@@ -94,7 +98,7 @@ export class CoinsDialogComponent implements OnInit, ICoinsDialogComponent {
 
 						// Notify
 						this._app.success(`The coin ${coin.symbol} has been installed successfully.`);
-						this.activeTab = 0;
+						//this.activeTab = 0;
 					} catch(e) { this._app.error(e) }
 
 					// Set Submission State
@@ -226,6 +230,11 @@ export class CoinsDialogComponent implements OnInit, ICoinsDialogComponent {
 	}
 
 
+
+	private deactivateSearch(): void {
+		this.deactivateInstalledSearch();
+		this.deactivateAvailableSearch();
+	}
 
 
 

@@ -2,9 +2,12 @@
     <div fxLayout="row" fxLayoutAlign="center center">
         <button mat-icon-button class="show-on-mobile" (click)="close()" [disabled]="!loaded"><mat-icon>arrow_back</mat-icon></button>
         <span *ngIf="!loaded" class="truncate">Loading...</span>
-        <mat-icon *ngIf="loaded" class="show-on-desktop" [svgIcon]="_ms.icons[stateAverage]" style="margin-right:7px;"></mat-icon>
+        <mat-icon *ngIf="loaded && !stateEvent" class="show-on-desktop" [svgIcon]="_ms.icons[stateAverage]" style="margin-right:7px;"></mat-icon>
+        <mat-icon *ngIf="loaded && stateEvent" class="show-on-desktop" [svgIcon]="_ms.coinStateIcons[stateAverage]" style="margin-right:7px;"></mat-icon>
         <span *ngIf="loaded" class="truncate">{{title}}</span>
         <span fxFlex></span>
+        <button mat-icon-button *ngIf="loaded" (click)="displayInfoTooltip()" matTooltip="More information"><mat-icon class="info-icon" svgIcon="info"></mat-icon></button>
+        <button mat-icon-button *ngIf="loaded"  (click)="displayTooltip()" matTooltip="What is this?"><mat-icon>question_mark</mat-icon></button>
         <button mat-icon-button class="show-on-desktop" (click)="close()" [disabled]="!loaded"><mat-icon>close</mat-icon></button>
     </div>
 </mat-toolbar>

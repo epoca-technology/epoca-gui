@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
-import {  IKeyZone, UtilsService } from '../../../../core';
+import {  IKeyZone, MarketStateService, UtilsService } from '../../../../core';
 import { IKeyZoneDetailsDialogComponent } from './interfaces';
 
 @Component({
@@ -13,7 +13,8 @@ export class KeyzoneDetailsDialogComponent implements OnInit, IKeyZoneDetailsDia
 	constructor(
 		public dialogRef: MatDialogRef<KeyzoneDetailsDialogComponent>,
 		@Inject(MAT_DIALOG_DATA) public zone: IKeyZone,
-		private _utils: UtilsService
+		private _utils: UtilsService,
+		public _ms: MarketStateService
 	) { 
 		this.zoneSize = <number>this._utils.calculatePercentageChange(this.zone.s, this.zone.e);
 	}
