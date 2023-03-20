@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
+import * as moment from "moment";
 import { ICoin, ICoinsObject, ICoinsSummary, MarketStateService, UtilsService } from '../../../core';
 import { AppService, ILayout, NavService } from '../../../services';
 import { ICoinsDialogComponent } from './interfaces';
@@ -241,6 +242,10 @@ export class CoinsDialogComponent implements OnInit, ICoinsDialogComponent {
 	/****************
 	 * Misc Helpers *
 	 ****************/
+
+
+
+
 
 
 

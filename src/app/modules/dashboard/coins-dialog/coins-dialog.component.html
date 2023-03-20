@@ -4,9 +4,9 @@
         <span *ngIf="!loaded">Loading...</span>
         <span *ngIf="loaded" class="truncate">Coins</span>
         <span fxFlex></span>
+        <button mat-icon-button *ngIf="loaded" (click)="displayTooltip()" matTooltip="What is this?"><mat-icon>question_mark</mat-icon></button>
         <button mat-icon-button *ngIf="loaded && activeTab == 0 && installedNum > 5 && !installedSearchVisible" (click)="activateInstalledSearch()"><mat-icon>search</mat-icon></button>
         <button mat-icon-button *ngIf="loaded && activeTab == 1 && !availableSearchVisible" (click)="activateAvailableSearch()"><mat-icon>search</mat-icon></button>
-        <button mat-icon-button *ngIf="loaded" (click)="displayTooltip()" matTooltip="More information"><mat-icon>question_mark</mat-icon></button>
         <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
     </div>
 </mat-toolbar>

@@ -124,12 +124,11 @@ export class MarketStateService implements IMarketStateService {
 
 
 	/**
-	 * Retrieves the liquidity state from the server.
-	 * @param currentPrice
+	 * Retrieves the liquidity state from the server
 	 * @returns Promise<ILiquidityState>
 	 */
-	public getLiquidityState(currentPrice: number): Promise<ILiquidityState> { 
-		return this._api.request("get","marketState/getLiquidityState", {currentPrice: currentPrice}, true) 
+	public getLiquidityState(): Promise<ILiquidityState> { 
+		return this._api.request("get","marketState/getLiquidityState", {}, true) 
 	}
 
 

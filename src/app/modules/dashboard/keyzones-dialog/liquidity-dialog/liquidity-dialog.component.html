@@ -1,13 +1,10 @@
 <mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
     <div fxLayout="row" fxLayoutAlign="center center">
         <button mat-icon-button class="show-on-mobile" (click)="close()"><mat-icon>arrow_back</mat-icon></button>
-        <span *ngIf="!loaded || !state">Loading...</span>
-        <mat-icon *ngIf="loaded && state" class="show-on-desktop" [svgIcon]="_ms.icons[state.d]" style="margin-right:7px;"></mat-icon>
-        <span *ngIf="loaded && state" 
-            class="truncate" 
-            matTooltip="Updated: {{state.ts | date: 'shortTime'}}">Liquidity</span>
-        <span fxFlex></span>
-        <button mat-icon-button *ngIf="loaded"  (click)="displayTooltip()" matTooltip="More information"><mat-icon>question_mark</mat-icon></button>
+        <span class="truncate">Liquidity</span>
+        <span fxFlex></span>        
+        <button mat-icon-button *ngIf="loaded" (click)="displayInfoTooltip()" matTooltip="More information"><mat-icon class="info-icon" svgIcon="info"></mat-icon></button>
+        <button mat-icon-button *ngIf="loaded"  (click)="displayTooltip()" matTooltip="What is this?"><mat-icon>question_mark</mat-icon></button>
         <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
     </div>
 </mat-toolbar>
@@ -21,12 +18,12 @@
         <!-- Tabs Navigation-->
         <mat-tab-group [selectedIndex]="activeTab" 
             (selectedIndexChange)="activeTab = $event"
-            mat-align-tabs="center" 
             mat-stretch-tabs 
             backgroundColor="primary">
-            <mat-tab><ng-template mat-tab-label><span>SUMMARY</span></ng-template></mat-tab>
-            <mat-tab><ng-template mat-tab-label><span>ASKS</span></ng-template></mat-tab>
-            <mat-tab><ng-template mat-tab-label><span>BIDS</span></ng-template></mat-tab>
+            <mat-tab><ng-template mat-tab-label><mat-icon>dashboard</mat-icon><span class="show-on-desktop" style="margin-left:2px;">Summary</span></ng-template></mat-tab>
+            <mat-tab><ng-template mat-tab-label><mat-icon>bar_chart</mat-icon><span class="show-on-desktop" style="margin-left:2px;">Peaks</span></ng-template></mat-tab>
+            <mat-tab><ng-template mat-tab-label><mat-icon>move_down</mat-icon><span class="show-on-desktop" style="margin-left:2px;">Asks</span></ng-template></mat-tab>
+            <mat-tab><ng-template mat-tab-label><mat-icon>move_up</mat-icon><span class="show-on-desktop" style="margin-left:2px;">Bids</span></ng-template></mat-tab>
         </mat-tab-group>
 
         <!-- Summary -->
@@ -57,7 +54,7 @@
                         <div fxLayout="row" fxLayoutAlign="center center">
                             <h6>Asks</h6>
                             <span fxFlex></span>
-                            <div class="square-badge-error">{{state.a.length}}</div>
+                            <div class="square-badge-error">{{state.a.l.length}}</div>
                         </div>
                         
                         <apx-chart
@@ -80,7 +77,7 @@
                         <div fxLayout="row" fxLayoutAlign="center center">
                             <h6>Bids</h6>
                             <span fxFlex></span>
-                            <div class="square-badge-success">{{state.b.length}}</div>
+                            <div class="square-badge-success">{{state.b.l.length}}</div>
                         </div>
                         
                         <apx-chart
@@ -99,8 +96,21 @@
             </div>
         </div>
 
-        <!-- Asks -->
+        <!-- Summary -->
         <div *ngIf="activeTab == 1" class="padding" style="overflow: hidden">
+            <apx-chart
+                [series]="peaks.series"
+                [chart]="peaks.chart"
+                [dataLabels]="peaks.dataLabels"
+                [xaxis]="peaks.xaxis"
+                [yaxis]="peaks.yaxis"
+                [stroke]="peaks.stroke"
+                [annotations]="peaks.annotations"
+            ></apx-chart>
+        </div>
+
+        <!-- Asks -->
+        <div *ngIf="activeTab == 2" class="padding" style="overflow: hidden">
             <apx-chart
                 [series]="asks.series"
                 [chart]="asks.chart"
@@ -112,7 +122,7 @@
         </div>
 
         <!-- Bids -->
-        <div *ngIf="activeTab == 2" class="padding" style="overflow: hidden">
+        <div *ngIf="activeTab == 3" class="padding" style="overflow: hidden">
             <apx-chart
                 [series]="bids.series"
                 [chart]="bids.chart"

@@ -22,6 +22,8 @@ import {
     IActivePosition,
     ISplitStateID,
     ILiquiditySide,
+    ILiquidityIntensity,
+    IMinifiedLiquidityPriceLevel
 } from "../../core";
 import { 
     AppService, 
@@ -656,6 +658,24 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             }
         });
 
+        
+        /* Liquidity Annotations */
+        const x: number = this.state.window.w[0].ot;
+
+        // Build the Asks (If any)
+        if (this.state.liquidity.a) {
+            for (let ask of this.state.liquidity.a) {
+                annotations.points!.push(this.buildLiquidityAnnotation("asks", x, ask));
+            }
+        }
+
+        // Build the Bids (If any)
+        if (this.state.liquidity.b) {
+            for (let bid of this.state.liquidity.b) {
+                annotations.points!.push(this.buildLiquidityAnnotation("bids", x, bid));
+            }
+        }
+
         // Finally, return the annotations
         return annotations;
     }
@@ -663,7 +683,77 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
 
 
-    
+    /**
+     * Builds a liquidity level annotation for a given side.
+     * @param side 
+     * @param x 
+     * @param level 
+     * @returns PointAnnotations
+     */
+    private buildLiquidityAnnotation(
+        side: ILiquiditySide,
+        x: number,
+        level: IMinifiedLiquidityPriceLevel
+    ): PointAnnotations {
+        // Calculate the metadata
+        const { color, width } = this.getLiquidityLevelMetadata(side, level.li);
+
+        // Finally, return the annotation
+        return {
+            x: x,
+            y: level.p,
+            marker: {size: 0},
+            label: {
+                text: ".",
+                borderWidth: 0,
+                borderRadius: 0,
+                offsetY: 1,
+                style: {
+                    background: color,
+                    color: '#FFFFFF',
+                    fontSize: "1px",
+                    padding: {
+                        left: 0,
+                        right: width,
+                        top: 1,
+                        bottom: 1,
+                      }
+                }
+            }
+        }
+    }
+
+
+
+    /**
+     * Retrieves the color and the width of a liquidity bar based on the side and
+     * the intensity.
+     * @param side 
+     * @param intensity 
+     * @returns {color: string, width: number}
+     */
+    private getLiquidityLevelMetadata(side: ILiquiditySide, intensity: ILiquidityIntensity): {color: string, width: number} {
+        // Init values
+        let color: string;
+        let width: number;
+
+        // Set the values based on the intensity
+        if (intensity == 3) {
+            color = side == "asks" ? "#B71C1C": "#004D40";
+            width = this.layout == "desktop" ? 250: 100;
+        } else if (intensity == 2) {
+            color = side == "asks" ? "#F44336": "#009688";
+            width = this.layout == "desktop" ? 150: 60;
+        } else {
+            color = side == "asks" ? "#EF9A9A": "#80CBC4";
+            width = this.layout == "desktop" ? 75: 30;
+        }
+        
+        // Finally, pack and return the values
+        return { color: color, width: width };
+    }
+
+
 
 
 
