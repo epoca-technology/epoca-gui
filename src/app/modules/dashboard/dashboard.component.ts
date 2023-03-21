@@ -22,21 +22,22 @@ import {
     IActivePosition,
     ISplitStateID,
     ILiquiditySide,
+    IMinifiedKeyZone
 } from "../../core";
 import { 
     AppService, 
     ChartService, 
     ICandlestickChartOptions, 
     ILayout, 
-    NavService 
+    NavService,
 } from "../../services";
 import { BalanceDialogComponent } from "./balance-dialog";
 import { StrategyFormDialogComponent } from "./strategy-form-dialog";
 import { KeyzonesDialogComponent } from "./keyzones-dialog";
 import { IMarketStateDialogConfig, MarketStateDialogComponent } from "./market-state-dialog";
-import { IDashboardComponent, IWindowZoom, IWindowZoomID, IWindowZoomPrices } from "./interfaces";
-import { IBottomSheetMenuItem } from "src/app/shared/components/bottom-sheet-menu";
+import { IBottomSheetMenuItem } from "../../shared/components/bottom-sheet-menu";
 import { CoinsDialogComponent } from "./coins-dialog";
+import { IDashboardComponent, IWindowZoom, IWindowZoomID, IWindowZoomPrices } from "./interfaces";
 
 @Component({
   selector: "app-dashboard",
@@ -589,38 +590,20 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         // Add the keyzones above (if any)
         if (this.state.keyzones.above) {
             for (let resistance of this.state.keyzones.above) {
-                annotations.yaxis!.push({
-                    y: resistance.s,
-                    y2: resistance.e,
-                    strokeDashArray: 0,
-                    borderColor: this._ms.kzAbove[resistance.vi],
-                    fillColor: this._ms.kzAbove[resistance.vi]
-                })
+                annotations.yaxis!.push(this.buildKeyZoneAnnotation(resistance, "above"));
             }
         }
 
         // Check if there is an active zone
         if (this.state.keyzones.active) {
-            annotations.yaxis!.push({
-				y: this.state.keyzones.active.s,
-				y2: this.state.keyzones.active.e,
-				strokeDashArray: 0,
-				borderColor: "#000000",
-				fillColor: "#000000"
-			})
+            annotations.yaxis!.push(this.buildKeyZoneAnnotation(this.state.keyzones.active, "active"));
         }
 
 
         // Add the keyzones below (if any)
         if (this.state.keyzones.below) {
             for (let support of this.state.keyzones.below) {
-                annotations.yaxis!.push({
-                    y: support.s,
-                    y2: support.e,
-                    strokeDashArray: 0,
-                    borderColor: this._ms.kzBelow[support.vi],
-                    fillColor: this._ms.kzBelow[support.vi]
-                })
+                annotations.yaxis!.push(this.buildKeyZoneAnnotation(support, "below"));
             }
         }
 
@@ -663,7 +646,50 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
 
 
+
+
+    /* KeyZone Annotations */
     
+
+
+    /**
+     * Builds a KeyZone Annotation based on its kind.
+     * @param kz 
+     * @param kind 
+     * @returns YAxisAnnotations
+     */
+    private buildKeyZoneAnnotation(kz: IMinifiedKeyZone, kind: "active"|"above"|"below"): YAxisAnnotations {
+        // Initialize the color
+        const color: string = kind == "active" ? "#000000": this.getKeyZoneAnnotationColorFromScore(kz.scr, kind);
+
+        // Finally, return the build
+        return {
+            y: kz.s,
+            y2: kz.e,
+            strokeDashArray: 0,
+            borderColor: color,
+            fillColor: color
+        }
+    }
+
+
+
+
+    /**
+     * Retrieves the annotation's color based on the score and the kind.
+     * @param score 
+     * @param kind 
+     * @returns string
+     */
+    private getKeyZoneAnnotationColorFromScore(score: number, kind: "above"|"below"): string {
+        if      (score >= 9)    { return kind == "above" ? "#004D40": "#B71C1C" } 
+        else if (score >= 8)    { return kind == "above" ? "#00796B": "#D32F2F" }
+        else if (score >= 7)    { return kind == "above" ? "#009688": "#F44336" }
+        else if (score >= 6)    { return kind == "above" ? "#4DB6AC": "#E57373" }
+        else if (score >= 5)    { return kind == "above" ? "#80CBC4": "#EF9A9A" }
+        else                    { return kind == "above" ? "#E0F2F1": "#FFEBEE" }
+    }
+
 
 
 

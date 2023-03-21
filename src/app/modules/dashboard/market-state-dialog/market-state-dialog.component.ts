@@ -428,15 +428,26 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 			currentValue = this.series[this.series.length - 1].y;
 		}
 
-		// Finally, display the tooltip
-        this._nav.displayTooltip(this.title, [
+		// Init the content
+		let content: string[] = [
 			`CURRENT VALUE`,
 			this._utils.formatNumber(currentValue),
 			`------`,
 			`RANGE (${itemsInWindow} items)`,
 			`${moment(windowStart).format("dddd, MMMM Do, h:mm:ss a")}`,
 			`${moment(windowEnd).format("dddd, MMMM Do, h:mm:ss a")}`,
-        ]);
+		];
+
+		// If it is the volume, add the mean and mean high values
+		if (this.volumeState) {
+			content.push("-----");
+			content.push("VOLUME REQUIREMENTS");
+			content.push(`Mean: $${this._utils.formatNumber(this.volumeState.m)}`);
+			content.push(`Mean High: $${this._utils.formatNumber(this.volumeState.mh)}`);
+		}
+
+		// Finally, display the tooltip
+        this._nav.displayTooltip(this.title, content);
 	}
 
 

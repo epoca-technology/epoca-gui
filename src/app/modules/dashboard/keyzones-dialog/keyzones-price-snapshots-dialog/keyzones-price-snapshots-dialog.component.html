@@ -1,0 +1,17 @@
+<div mat-dialog-title fxLayout="row" fxLayoutAlign="start center">
+    <h1 class="truncate">Price Snapshots</h1>
+    <span fxFlex></span>
+    <button mat-icon-button (click)="dialogRef.close()"><mat-icon>close</mat-icon></button>
+</div>
+<div mat-dialog-content>
+    <div class="snapshots-chart">
+        <apx-chart
+            [series]="snapshots.series!"
+            [chart]="snapshots.chart!"
+            [plotOptions]="snapshots.plotOptions!"
+            [xaxis]="snapshots.xaxis!"
+            [yaxis]="snapshots.yaxis!"
+            [annotations]="snapshots!.annotations!"
+        ></apx-chart>
+    </div>
+</div>

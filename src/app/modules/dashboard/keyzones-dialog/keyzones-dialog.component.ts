@@ -1,23 +1,32 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import * as moment from "moment";
-import { IKeyZone, IKeyZoneFullState, MarketStateService, UtilsService } from '../../../core';
+import { Subscription } from 'rxjs';
+import { IKeyZone, IKeyZoneFullState, IMarketState, IMinifiedKeyZone, MarketStateService, UtilsService } from '../../../core';
 import { AppService, ILayout, NavService } from '../../../services';
 import { KeyzoneDetailsDialogComponent } from './keyzone-details-dialog';
-import { IKeyZoneDistance, IKeyZonesDialogComponent } from './interfaces';
 import { LiquidityDialogComponent } from './liquidity-dialog';
+import { KeyzonesPriceSnapshotsDialogComponent } from './keyzones-price-snapshots-dialog';
+import { IKeyZoneDistance, IKeyZonesDialogComponent } from './interfaces';
 
 @Component({
   selector: 'app-keyzones-dialog',
   templateUrl: './keyzones-dialog.component.html',
   styleUrls: ['./keyzones-dialog.component.scss']
 })
-export class KeyzonesDialogComponent implements OnInit, IKeyZonesDialogComponent {
+export class KeyzonesDialogComponent implements OnInit, OnDestroy, IKeyZonesDialogComponent {
 	// Layout
 	public layout: ILayout = this._app.layout.value;
 
+	// Market State
+	public marketState!: IMarketState;
+	public scoresAbove: number[] = [];
+	public scoresBelow: number[] = [];
+	private marketStateSub!: Subscription;
+
 	// Full State
-	public state!: IKeyZoneFullState;
+	public state?: IKeyZoneFullState;
+	public loadingState: boolean = false;
 
 	// Current Price
 	public currentPrice!: number;
@@ -50,20 +59,31 @@ export class KeyzonesDialogComponent implements OnInit, IKeyZonesDialogComponent
 	) { }
 
 	async ngOnInit(): Promise<void> {
-		try {
-			this.state = await this._ms.calculateKeyZoneState();
-			this.currentPrice = this._app.marketState.value!.window.w[this._app.marketState.value!.window.w.length - 1].c;
-			this.pageSize = this.layout == "desktop" ? 11: 7;
-			this.visibleAbove = this.pageSize;
-			this.visibleBelow = this.pageSize;
-			this.hasMoreAbove = this.state.above.length > this.visibleAbove;
-			this.hasMoreBelow = this.state.below.length > this.visibleBelow;
-			this.calculateDistances();
-		} catch (e) { this._app.error(e) }
-		this.loaded = true;
+        this.marketStateSub = this._app.marketState.subscribe((state: IMarketState|undefined|null) => {
+            if (state) {
+                this.marketState = state;
+				this.scoresAbove = [];
+				this.scoresBelow = [];
+				if (this.marketState.keyzones.above && this.marketState.keyzones.above.length) {
+					for (let resistance of this.marketState.keyzones.above) {
+						this.scoresAbove.push(Math.ceil(resistance.scr * 10));
+					}
+					this.scoresAbove.reverse();
+				}
+				if (this.marketState.keyzones.below && this.marketState.keyzones.below.length) {
+					for (let support of this.marketState.keyzones.below) {
+						this.scoresBelow.push(Math.ceil(support.scr * 10));
+					}
+				}
+				this.loaded = true;
+            }
+        });
 	}
 
 
+	ngOnDestroy(): void {
+		if (this.marketStateSub) this.marketStateSub.unsubscribe();
+	}
 
 
 
@@ -75,13 +95,56 @@ export class KeyzonesDialogComponent implements OnInit, IKeyZonesDialogComponent
 
 
 
-	public async tabChanged(newIndex: number): Promise<void> { 
+
+	/**
+	 * Triggers whenever the tab changes. If the full state
+	 * tab is activated and the data has not been yet loaded,
+	 * it does so.
+	 * @param newIndex 
+	 * @returns Promise<void>
+	 */
+	public async tabChanged(newIndex: number): Promise<void> {
 		this.activeTab = newIndex;
+		if (newIndex == 1 && !this.state) {
+			await this.loadKeyZonesFullState();
+		}
 	}
 
 
 
 
+
+
+
+
+
+
+	/* KeyZone Full State */
+
+
+
+
+
+	/**
+	 * Loads the keyzones full state.
+	 * @returns Promise<void>
+	 */
+	private async loadKeyZonesFullState(): Promise<void> {
+		this.loadingState = true;
+		try {
+			this.state = await this._ms.calculateKeyZoneState();
+			this.currentPrice = this.marketState.window.w[this.marketState.window.w.length - 1].c;
+			this.pageSize = this.layout == "desktop" ? 11: 7;
+			this.visibleAbove = this.pageSize;
+			this.visibleBelow = this.pageSize;
+			this.hasMoreAbove = this.state.above.length > this.visibleAbove;
+			this.hasMoreBelow = this.state.below.length > this.visibleBelow;
+			this.calculateDistances();
+		} catch (e) {
+			this._app.error(e);
+		}
+		this.loadingState = false;
+	}
 
 
 
@@ -93,12 +156,12 @@ export class KeyzonesDialogComponent implements OnInit, IKeyZonesDialogComponent
 	 */
 	private calculateDistances(): void {
 		// Calculate distances for the zones above
-		this.state.above.forEach((kz) => {
+		this.state!.above.forEach((kz) => {
 			this.aboveDistances[kz.id] = <number>this._utils.calculatePercentageChange(this.currentPrice, kz.s) 
 		});
 
 		// Calculate distances for the zones below
-		this.state.below.forEach((kz) => {
+		this.state!.below.forEach((kz) => {
 			this.belowDistances[kz.id] = <number>this._utils.calculatePercentageChange(this.currentPrice, kz.e) 
 		});
 	}
@@ -115,10 +178,10 @@ export class KeyzonesDialogComponent implements OnInit, IKeyZonesDialogComponent
 		const increment: number = this.pageSize * 2;
 		if (above) {
 			this.visibleAbove = this.visibleAbove + increment;
-			this.hasMoreAbove = this.state.above.length > this.visibleAbove;
+			this.hasMoreAbove = this.state!.above.length > this.visibleAbove;
 		} else {
 			this.visibleBelow = this.visibleBelow + increment;
-			this.hasMoreBelow = this.state.below.length > this.visibleBelow;
+			this.hasMoreBelow = this.state!.below.length > this.visibleBelow;
 		}
 	}
 
@@ -146,6 +209,19 @@ export class KeyzonesDialogComponent implements OnInit, IKeyZonesDialogComponent
 
 
 
+	/**
+	 * Displays the Info Tooltip.
+	 */
+	public displayStateKeyZoneTooltip(keyzone: IMinifiedKeyZone, kind: "above"|"below"): void {
+		this._nav.displayTooltip(kind == "above" ? "Resistance": "Support", [
+			`Start: $${this._utils.formatNumber(keyzone.s)}`,
+			`End: $${this._utils.formatNumber(keyzone.e)}`,
+			`Volume Intensity: ${keyzone.vi}`,
+			`Liq. Share: ${keyzone.ls}%`,
+			`Score: ${keyzone.scr}%`,
+		]);
+	}
+
 
 
 
@@ -158,6 +234,21 @@ export class KeyzonesDialogComponent implements OnInit, IKeyZonesDialogComponent
 			hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
 			panelClass: "small-dialog",
 			data: zone
+		})
+	}
+
+
+
+
+
+	/**
+	 * Displays the price snapshots dialog.
+	 */
+	public displayPriceSnapshotsDialog(): void {
+		this.dialog.open(KeyzonesPriceSnapshotsDialogComponent, {
+			hasBackdrop: true, // Mobile optimization
+			panelClass: "light-dialog",
+			data: this.state!.price_snapshots
 		})
 	}
 
@@ -188,13 +279,13 @@ export class KeyzonesDialogComponent implements OnInit, IKeyZonesDialogComponent
 	public displayInfoTooltip(): void {
         this._nav.displayTooltip("KeyZones", [
 			`BUILD`,
-			`${moment(this.state.build_ts).format("dddd, MMMM Do, h:mm:ss a")}`,
+			`${moment(this.state!.build_ts).format("dddd, MMMM Do, h:mm:ss a")}`,
 			`-----`,
 			`VOLUME REQUIREMENTS`,
-			`Mean Low: $${this._utils.formatNumber(this.state.volume_mean_low)}`,
-			`Mean: $${this._utils.formatNumber(this.state.volume_mean)}`,
-			`Mean Medium: $${this._utils.formatNumber(this.state.volume_mean_medium)}`,
-			`Mean High: $${this._utils.formatNumber(this.state.volume_mean_high)}`,
+			`Mean Low: $${this._utils.formatNumber(this.state!.volume_mean_low)}`,
+			`Mean: $${this._utils.formatNumber(this.state!.volume_mean)}`,
+			`Mean Medium: $${this._utils.formatNumber(this.state!.volume_mean_medium)}`,
+			`Mean High: $${this._utils.formatNumber(this.state!.volume_mean_high)}`,
         ]);
 	}
 

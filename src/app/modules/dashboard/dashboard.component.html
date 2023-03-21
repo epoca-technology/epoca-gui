@@ -345,14 +345,25 @@
                                                                 }"><p>VOLUME</p></mat-grid-tile>
 
                                                 <!-- KeyZones -->
-                                                <mat-grid-tile class="clickable" role="button" matRipple
+                                                <mat-grid-tile *ngIf="!state.keyzones.event" 
+                                                                class="clickable" role="button" matRipple
                                                                (click)="displayKeyZonesDialog()"
                                                                 [ngClass]="{
                                                                     'action-container': state.keyzones.active,
                                                                     'neutral-action-container': !state.keyzones.active,
                                                                     'weak-state': !state.keyzones.active
                                                                 }"><p>KEYZONES</p></mat-grid-tile>
-
+                                                <mat-grid-tile *ngIf="state.keyzones.event && state.keyzones.event.k == 's'" 
+                                                        class="clickable sell-action-container" role="button" matRipple
+                                                        (click)="displayKeyZonesDialog()">
+                                                            <mat-icon>vertical_align_bottom</mat-icon> <p>SUP.</p>
+                                                    </mat-grid-tile>
+                                                <mat-grid-tile *ngIf="state.keyzones.event && state.keyzones.event.k == 'r'" 
+                                                        class="clickable buy-action-container" role="button" matRipple
+                                                        (click)="displayKeyZonesDialog()">
+                                                            <mat-icon>vertical_align_top</mat-icon> <p>RES.</p>
+                                                </mat-grid-tile>
+                                                
                                                 <!-- Placeholders -->
                                                 <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
                                                 <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>

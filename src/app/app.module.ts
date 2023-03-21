@@ -112,6 +112,7 @@ import {
 	DashboardComponent, 
 	KeyzonesDialogComponent,
 	KeyzoneDetailsDialogComponent,
+	KeyzonesPriceSnapshotsDialogComponent,
 	MarketStateDialogComponent,
 	LiquidityDialogComponent,
 	CoinsDialogComponent
@@ -136,6 +137,7 @@ import { AppComponent } from "./app.component";
 		StrategyFormDialogComponent,
 		KeyzonesDialogComponent,
     	KeyzoneDetailsDialogComponent,
+		KeyzonesPriceSnapshotsDialogComponent,
   		MarketStateDialogComponent,
     	LiquidityDialogComponent,
      	CoinsDialogComponent,

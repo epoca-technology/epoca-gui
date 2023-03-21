@@ -11,6 +11,40 @@
 
 
 
+    /* State KeyZone */
+    .state-keyzone {
+        margin: 1px 0 1px 0;
+        padding:3px 5px 3px 5px;
+        p {
+            font-size: 12px!important;
+            font-weight: 700;
+            color: #FFFFFF;
+        }
+        .mat-icon {
+            color: #FFFFFF;
+        }
+    }
+    .state-keyzone:first-child { margin-top:0px!important}
+    .state-keyzone:last-child { margin-bottom:0px!important}
+    .state-keyzone:hover { filter: brightness(75%); }
+
+
+
+
+    @for $i from 0 through 100 {
+        $width: $i * 1%;
+        .state-keyzone-above-#{$i} {
+            background: linear-gradient(90deg, #004D40 $width, #4DB6AC $width);
+        }
+        .state-keyzone-below-#{$i} {
+            background: linear-gradient(90deg, #B71C1C  $width, #E57373 $width);
+        }
+    }
+
+
+
+
+    /* Full State KeyZone */
     .keyzone {
         margin: 1px 0 1px 0;
         padding:1px 5px 1px 5px;
