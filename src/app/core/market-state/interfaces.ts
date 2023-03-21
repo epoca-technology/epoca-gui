@@ -322,25 +322,11 @@ export interface ILiquidityState {
 
 
 
-
 /*****************************************************************************
  * KEYZONES STATE                                                            *
  * The purpose of the keyzones state is to enable programatic understanding  *
  * of nearby supports and resistances for building more efficient strategies *
  *****************************************************************************/
-
-
-// Service
-export interface IKeyZonesStateService {
-    // Initializer
-    initialize(): Promise<void>,
-    stop(): void,
-
-    // State Calculation
-    calculateState(fullState?: boolean): IKeyZoneState|IKeyZoneFullState,
-    getDefaultState(): IKeyZoneState,
-}
-
 
 
 
@@ -390,6 +376,17 @@ export interface IKeyZoneScoreWeights {
 
 
 /**
+ * Idle KeyZones
+ * When an event is detected on a KeyZone, this one becomes idle for a period
+ * of time. While idling, a KeyZone cannot emmit events.
+ */
+export interface IIdleKeyZones {
+    [keyzoneID: number]: number // KeyZone ID: Idle Until Timestamp
+}
+
+
+
+/**
  * KeyZone Price Range
  * The price range that comprises a KeyZone.
  */
@@ -404,6 +401,9 @@ export interface IKeyZonePriceRange {
  * A keyzone is a price range in which the price will likely reverse.
  */
 export interface IMinifiedKeyZone extends IKeyZonePriceRange {
+    // The date in which the keyzone was first detected
+    id: number,
+
     // Volume Intensity
     vi: IKeyZoneVolumeIntensity,
 
@@ -488,6 +488,9 @@ export interface IKeyZoneFullState {
     // The price snapshots
     price_snapshots: ICandlestick[],
 
+    // Idle KeyZones
+    idle: IIdleKeyZones,
+
     /**
      * The mean of all the keyzone volumes used as requirements in order to calculate 
      * the intensities
@@ -500,8 +503,6 @@ export interface IKeyZoneFullState {
     // The timestamp in which the build was generated
     build_ts: number
 }
-
-
 
 
 

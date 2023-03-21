@@ -20,8 +20,10 @@ export class KeyzonesDialogComponent implements OnInit, OnDestroy, IKeyZonesDial
 
 	// Market State
 	public marketState!: IMarketState;
-	public scoresAbove: number[] = [];
-	public scoresBelow: number[] = [];
+	public scoresAbove: {[keyzoneID: number]: number} = {};
+	public distancesAbove: {[keyzoneID: number]: number} = {};
+	public scoresBelow: {[keyzoneID: number]: number} = {};
+	public distancesBelow: {[keyzoneID: number]: number} = {};
 	private marketStateSub!: Subscription;
 
 	// Full State
@@ -62,17 +64,19 @@ export class KeyzonesDialogComponent implements OnInit, OnDestroy, IKeyZonesDial
         this.marketStateSub = this._app.marketState.subscribe((state: IMarketState|undefined|null) => {
             if (state) {
                 this.marketState = state;
+				const currentPrice: number = this.marketState.window.w[this.marketState.window.w.length - 1].c;
 				this.scoresAbove = [];
 				this.scoresBelow = [];
 				if (this.marketState.keyzones.above && this.marketState.keyzones.above.length) {
 					for (let resistance of this.marketState.keyzones.above) {
-						this.scoresAbove.push(Math.ceil(resistance.scr * 10));
+						this.scoresAbove[resistance.id] = Math.ceil(resistance.scr * 10);
+						this.distancesAbove[resistance.id] = <number>this._utils.calculatePercentageChange(currentPrice, resistance.s);
 					}
-					this.scoresAbove.reverse();
 				}
 				if (this.marketState.keyzones.below && this.marketState.keyzones.below.length) {
 					for (let support of this.marketState.keyzones.below) {
-						this.scoresBelow.push(Math.ceil(support.scr * 10));
+						this.scoresBelow[support.id] = Math.ceil(support.scr * 10);
+						this.distancesBelow[support.id] = <number>this._utils.calculatePercentageChange(currentPrice, support.e);
 					}
 				}
 				this.loaded = true;
@@ -213,12 +217,18 @@ export class KeyzonesDialogComponent implements OnInit, OnDestroy, IKeyZonesDial
 	 * Displays the Info Tooltip.
 	 */
 	public displayStateKeyZoneTooltip(keyzone: IMinifiedKeyZone, kind: "above"|"below"): void {
-		this._nav.displayTooltip(kind == "above" ? "Resistance": "Support", [
-			`Start: $${this._utils.formatNumber(keyzone.s)}`,
-			`End: $${this._utils.formatNumber(keyzone.e)}`,
-			`Volume Intensity: ${keyzone.vi}`,
-			`Liq. Share: ${keyzone.ls}%`,
-			`Score: ${keyzone.scr}%`,
+		const zoneSize: number = <number>this._utils.calculatePercentageChange(keyzone.s, keyzone.e);
+		let title: string = kind == "above" ? "Resistance": "Support";
+		this._nav.displayTooltip(`${title}: ${keyzone.scr}/10`, [
+			`ID: ${keyzone.id}`,
+			`${moment(keyzone.id).format("dddd, MMMM Do, h:mm:ss a")}`,
+			`-----`,
+			`RANGE ${zoneSize}%`,
+			`$${this._utils.formatNumber(keyzone.s)} - $${this._utils.formatNumber(keyzone.e)}`,
+			`-----`,
+			`VOL. INTENSITY: ${keyzone.vi}/4`,
+			`-----`,
+			`LIQ. SHARE: ${keyzone.ls}%/100%`,
 		]);
 	}
 
@@ -277,7 +287,8 @@ export class KeyzonesDialogComponent implements OnInit, OnDestroy, IKeyZonesDial
 	 * Displays the Info Tooltip.
 	 */
 	public displayInfoTooltip(): void {
-        this._nav.displayTooltip("KeyZones", [
+		// Init the content
+		let content: string[] = [
 			`BUILD`,
 			`${moment(this.state!.build_ts).format("dddd, MMMM Do, h:mm:ss a")}`,
 			`-----`,
@@ -286,7 +297,17 @@ export class KeyzonesDialogComponent implements OnInit, OnDestroy, IKeyZonesDial
 			`Mean: $${this._utils.formatNumber(this.state!.volume_mean)}`,
 			`Mean Medium: $${this._utils.formatNumber(this.state!.volume_mean_medium)}`,
 			`Mean High: $${this._utils.formatNumber(this.state!.volume_mean_high)}`,
-        ]);
+			`-----`,
+			`IDLE KEYZONES`
+        ];
+
+		// Iterate over idle zones
+		for (let zoneID in this.state!.idle) {
+			content.push(`${zoneID}: ${moment(this.state!.idle[zoneID]).format("h:mm:ss a")}`)
+		}
+
+		// Finally, display the info
+        this._nav.displayTooltip("KeyZones", content);
 	}
 
 

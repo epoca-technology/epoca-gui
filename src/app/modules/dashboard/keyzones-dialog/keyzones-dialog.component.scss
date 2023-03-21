@@ -16,13 +16,17 @@
         margin: 1px 0 1px 0;
         padding:3px 5px 3px 5px;
         p {
-            font-size: 12px!important;
+            font-size: 13px!important;
             font-weight: 700;
             color: #FFFFFF;
         }
         .mat-icon {
             color: #FFFFFF;
         }
+        .liquidity-icon {
+            margin:4px 2px 0 0;font-size:20px;
+        }
+        .distance { font-size: 10px!important;margin-left:5px; font-weight: 900!important;}
     }
     .state-keyzone:first-child { margin-top:0px!important}
     .state-keyzone:last-child { margin-bottom:0px!important}
