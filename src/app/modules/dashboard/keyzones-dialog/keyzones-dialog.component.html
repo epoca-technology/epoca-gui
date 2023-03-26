@@ -33,6 +33,9 @@
                 <div *ngIf="marketState.keyzones.above && marketState.keyzones.above.length">
                     <div *ngFor="let zone of marketState.keyzones.above.reverse(); index as aboveIndex"
                         class="state-keyzone state-keyzone-above-{{scoresAbove[zone.id]}} clickable" role="button" matRipple 
+                        [ngClass]="{
+                            'inactive': zone.scr < 5
+                        }"
                         (click)="displayStateKeyZoneTooltip(zone, 'above')">
                         <div fxLayout="row" fxLayoutAlign="start center">
                             <p>{{zone.s | currency}}</p>
@@ -56,7 +59,7 @@
                         <mat-icon>vertical_align_top</mat-icon>
                         <p>RESISTANCE</p>
                         <span fxFlex></span>
-                        <p class="ts-xs">Until {{marketState.keyzones.event.e | date: 'mediumTime'}}</p>
+                        <p class="distance">Until {{marketState.keyzones.event.e | date: 'mediumTime'}}</p>
                     </div>
                 </div>
 
@@ -68,7 +71,7 @@
                         <mat-icon>vertical_align_bottom</mat-icon>
                         <p>SUPPORT</p>
                         <span fxFlex></span>
-                        <p class="ts-xs">Until {{marketState.keyzones.event.e | date: 'mediumTime'}}</p>
+                        <p class="distance">Until {{marketState.keyzones.event.e | date: 'mediumTime'}}</p>
                     </div>
                 </div>
 
@@ -79,6 +82,9 @@
                 <div *ngIf="marketState.keyzones.below && marketState.keyzones.below.length">
                     <div *ngFor="let zone of marketState.keyzones.below; index as belowIndex"
                         class="state-keyzone state-keyzone-below-{{scoresBelow[zone.id]}} clickable" role="button" matRipple 
+                        [ngClass]="{
+                            'inactive': zone.scr < 5
+                        }"
                         (click)="displayStateKeyZoneTooltip(zone, 'below')">
                         <div fxLayout="row" fxLayoutAlign="start center">
                             <p>{{zone.e | currency}}</p>

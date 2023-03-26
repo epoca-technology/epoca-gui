@@ -5,8 +5,7 @@ import { MatBottomSheetRef } from "@angular/material/bottom-sheet";
 import {Title} from "@angular/platform-browser";
 import { Subscription } from "rxjs";
 import * as moment from "moment";
-import { BigNumber } from "bignumber.js";
-import { ApexAnnotations, PointAnnotations, YAxisAnnotations } from "ng-apexcharts";
+import { ApexAnnotations, YAxisAnnotations } from "ng-apexcharts";
 import { 
     IEpochRecord, 
     IMarketState, 
@@ -22,7 +21,8 @@ import {
     IActivePosition,
     ISplitStateID,
     ILiquiditySide,
-    IMinifiedKeyZone
+    IMinifiedKeyZone,
+    ISignalRecord
 } from "../../core";
 import { 
     AppService, 
@@ -37,6 +37,7 @@ import { KeyzonesDialogComponent } from "./keyzones-dialog";
 import { IMarketStateDialogConfig, MarketStateDialogComponent } from "./market-state-dialog";
 import { IBottomSheetMenuItem } from "../../shared/components/bottom-sheet-menu";
 import { CoinsDialogComponent } from "./coins-dialog";
+import { SignalPoliciesDialogComponent, SignalRecordsDialogComponent } from "./signal";
 import { IDashboardComponent, IWindowZoom, IWindowZoomID, IWindowZoomPrices } from "./interfaces";
 
 @Component({
@@ -108,6 +109,10 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     // Desktop Chart height helpers
     public readonly predictionChartDesktopHeight: number = 330;
 
+    // Signal
+    public activeSignal: ISignalRecord|undefined|null;
+    private activeSignalSub?: Subscription;
+
     // Loading State
     public loaded: boolean = false;
 
@@ -176,6 +181,9 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             }
         );
 
+        // Subscribe to the signal
+        this.activeSignalSub = this._app.signal.subscribe((s) => { this.activeSignal = s });
+
         // Subscribe to the current version
         this.guiVersionSub = this._app.guiVersion.subscribe((newVersion: string|undefined|null) => {
             if (typeof newVersion == "string" && this._app.version != newVersion) {
@@ -191,6 +199,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         if (this.positionSub) this.positionSub.unsubscribe();
         if (this.predictionSub) this.predictionSub.unsubscribe();
         if (this.stateSub) this.stateSub.unsubscribe();
+        if (this.activeSignalSub) this.activeSignalSub.unsubscribe();
         if (this.guiVersionSub) this.guiVersionSub.unsubscribe();
         this.titleService.setTitle("Epoca");
     }
@@ -892,8 +901,14 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                 icon: 'money_bill_transfer',  
                 svg: true,
                 title: 'Trading Strategy', 
-                description: 'Configure the way active positions are managed.', 
+                description: 'Configure the way positions are managed.', 
                 response: "TRADING_STRATEGY"
+            },
+            {
+                icon: 'podcasts',  
+                title: 'Signal Policies', 
+                description: 'Manage issuance and cancellation policies for both sides.', 
+                response: "SIGNAL_POLICIES"
             },
             {
                 icon: 'currency_bitcoin',  
@@ -904,6 +919,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         ]);
 		bs.afterDismissed().subscribe((response: string|undefined) => {
             if      (response === "COINS") { this.displayCoinsDialog() }
+            else if (response === "SIGNAL_POLICIES") { this.displaySignalPoliciesDialog() }
             else if (response === "TRADING_STRATEGY") { this.displayStrategyFormDialog() }
 		});
 	}
@@ -938,6 +954,17 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
 
 
+    /**
+     * Displays the signal policies dialog.
+     */
+    private displaySignalPoliciesDialog(): void {
+		this.dialog.open(SignalPoliciesDialogComponent, {
+			hasBackdrop: this._app.layout.value != "mobile",
+            disableClose: true,
+			panelClass: "large-dialog",
+            data: {}
+		})
+	}
 
 
 
@@ -983,6 +1010,23 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
 
 
+
+
+    /**
+     * Displays the signal records dialog.
+     */
+    public displaySignalRecordsDialog(): void {
+		this.dialog.open(SignalRecordsDialogComponent, {
+			hasBackdrop: this._app.layout.value != "mobile",
+			panelClass: "medium-dialog",
+			data: <ISignalRecord>this.activeSignal
+		})
+    }
+
+
+
+
+    
 
 
 

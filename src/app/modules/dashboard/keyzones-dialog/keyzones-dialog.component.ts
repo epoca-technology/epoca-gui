@@ -138,7 +138,7 @@ export class KeyzonesDialogComponent implements OnInit, OnDestroy, IKeyZonesDial
 		try {
 			this.state = await this._ms.calculateKeyZoneState();
 			this.currentPrice = this.marketState.window.w[this.marketState.window.w.length - 1].c;
-			this.pageSize = this.layout == "desktop" ? 11: 7;
+			this.pageSize = this.layout == "desktop" ? 10: 7;
 			this.visibleAbove = this.pageSize;
 			this.visibleBelow = this.pageSize;
 			this.hasMoreAbove = this.state.above.length > this.visibleAbove;
@@ -228,7 +228,7 @@ export class KeyzonesDialogComponent implements OnInit, OnDestroy, IKeyZonesDial
 			`-----`,
 			`VOL. INTENSITY: ${keyzone.vi}/4`,
 			`-----`,
-			`LIQ. SHARE: ${keyzone.ls}%/100%`,
+			`LIQ. SHARE: ${keyzone.ls}%`,
 		]);
 	}
 

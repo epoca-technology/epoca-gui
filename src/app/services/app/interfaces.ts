@@ -5,6 +5,7 @@ import {
     IMarketState, 
     IActivePosition, 
     IPrediction,
+    ISignalRecord
 } from "../../core";
 
 
@@ -23,6 +24,7 @@ export interface IAppService {
     prediction: BehaviorSubject<IPrediction|undefined|null>,
     position: BehaviorSubject<IActivePosition|undefined|null>,
     marketState: BehaviorSubject<IMarketState|undefined|null>,
+    signal: BehaviorSubject<ISignalRecord|undefined|null>,
     apiErrors: BehaviorSubject<number|undefined|null>,
     refreshAppBulk(): Promise<void>,
 

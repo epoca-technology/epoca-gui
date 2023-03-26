@@ -86,6 +86,9 @@ import {
 	// Server
 	ServerService,
 
+	// Signal
+	SignalService,
+
 	// Utils
 	UtilsService
 } from "./core";
@@ -114,6 +117,8 @@ import {
 	KeyzoneDetailsDialogComponent,
 	KeyzonesPriceSnapshotsDialogComponent,
 	MarketStateDialogComponent,
+	SignalRecordsDialogComponent,
+	SignalPoliciesDialogComponent,
 	LiquidityDialogComponent,
 	CoinsDialogComponent
 } from "./modules/dashboard";
@@ -139,6 +144,8 @@ import { AppComponent } from "./app.component";
     	KeyzoneDetailsDialogComponent,
 		KeyzonesPriceSnapshotsDialogComponent,
   		MarketStateDialogComponent,
+		SignalRecordsDialogComponent,
+		SignalPoliciesDialogComponent,
     	LiquidityDialogComponent,
      	CoinsDialogComponent,
 	],
@@ -221,6 +228,9 @@ import { AppComponent } from "./app.component";
 		// Server
 		ServerService,
 
+		// Signal
+		SignalService,
+		
 		// Utils
 		UtilsService,
 

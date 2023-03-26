@@ -12,6 +12,7 @@ export interface IDashboardComponent {
     // Misc Dialogs
     displayBalanceDialog(): void,
     displayActivePredictionDialog(): void,
+    displaySignalRecordsDialog(): void,
 
     // Market State Dialogs
     displayWindowDialog(id: ISplitStateID): void,
