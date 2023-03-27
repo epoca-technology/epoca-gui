@@ -671,10 +671,18 @@ export interface ICoinsObject {
 }
 
 
+// The object containing all the scores by symbol
+export type ICoinScore = 1|2|3|4|5;
+export interface ICoinsScores {
+    [symbol: string]: ICoinScore
+}
+
+
 // The object containing the installed & supported coins
 export interface ICoinsSummary {
     installed: ICoinsObject,
-    supported: ICoinsObject
+    supported: ICoinsObject,
+    scores: ICoinsScores
 }
 
 

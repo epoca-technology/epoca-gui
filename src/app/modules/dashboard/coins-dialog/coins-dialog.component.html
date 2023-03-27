@@ -53,8 +53,10 @@
                     class="clickable" role="button" matRipple fxLayout="row" fxLayoutAlign="center center"
                     (click)="uninstallCoin(item.value)"
                     [ngClass]="{
-                        'buy-action-container': !installedUnsupported[item.key],
-                        'sell-action-container': installedUnsupported[item.key]
+                        'buy-action-container': scores[item.key] >= 4,
+                        'neutral-action-container': scores[item.key] == 3,
+                        'sell-action-container': installedUnsupported[item.key] || scores[item.key] <= 2,
+                        'weak-state': scores[item.key] != 1 && scores[item.key] != 5 && !installedUnsupported[item.key]
                     }">
                     <p style="max-width:40px" class="truncate">{{item.key | baseAssetName}}</p>
                 </mat-grid-tile>
@@ -84,7 +86,13 @@
             </div>
             <mat-grid-list [cols]="layout == 'desktop' ? 10: 5" [rowHeight]="layout == 'desktop' ? '50px': '50px'" gutterSize="2px">
                 <mat-grid-tile *ngFor="let item of available | keyvalue | filter: availableSearch"
-                    class="clickable neutral-action-container" role="button" matRipple fxLayout="row" fxLayoutAlign="center center"
+                    class="clickable" role="button" matRipple fxLayout="row" fxLayoutAlign="center center"
+                    [ngClass]="{
+                        'buy-action-container': scores[item.key] >= 4,
+                        'neutral-action-container': scores[item.key] == 3,
+                        'sell-action-container': scores[item.key] <= 2,
+                        'weak-state': scores[item.key] != 1 && scores[item.key] != 5
+                    }"
                     (click)="installCoin(item.value)">
                     <p style="max-width:40px" class="truncate">{{item.key | baseAssetName}}</p>
                 </mat-grid-tile>

@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
-import * as moment from "moment";
-import { ICoin, ICoinsObject, ICoinsSummary, MarketStateService, UtilsService } from '../../../core';
+import { ICoin, ICoinsObject, ICoinsScores, ICoinsSummary, MarketStateService, UtilsService } from '../../../core';
 import { AppService, ILayout, NavService } from '../../../services';
 import { ICoinsDialogComponent } from './interfaces';
 
@@ -25,6 +24,7 @@ export class CoinsDialogComponent implements OnInit, ICoinsDialogComponent {
 	public available: ICoinsObject = {};
 	public availableNum: number = 0;
 	public installedUnsupported: {[symbol: string]: boolean} = {};
+	public scores!: ICoinsScores;
 
 	// Search
 	public installedSearch: string = "";
@@ -164,6 +164,7 @@ export class CoinsDialogComponent implements OnInit, ICoinsDialogComponent {
 		// Set the core objects
 		this.installed = summary.installed;
 		this.supported = summary.supported;
+		this.scores = summary.scores;
 
 		// Iterate over the installed symbols, looking for ones that have become unsupported
 		this.installedUnsupported = {};
