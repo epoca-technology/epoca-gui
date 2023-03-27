@@ -82,7 +82,7 @@ export class SignalPoliciesDialogComponent implements OnInit, ISignalPoliciesDia
 					Are you sure that you wish to <strong>update</strong> the current Issuance & Cancellation Policies for
 					both position sides?
 				</p>
-				<p class="light-text ts-m margin-top align-center">Keep in mind changes will take effect inmediately.</p>
+				<p class="light-text ts-m margin-top align-center">Keep in mind changes will take effect immediately.</p>
 			`,
 			otpConfirmation: true
 		}).afterClosed().subscribe(

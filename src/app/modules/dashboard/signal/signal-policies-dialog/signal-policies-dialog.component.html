@@ -245,7 +245,7 @@
                         [ngClass]="{
                             'square-badge-error': policies.short.issuance.keyzone_reversal.trend_sum < 0,
                             'square-badge-neutral': policies.short.issuance.keyzone_reversal.trend_sum == 0,
-                            'weak-state': policies.short.issuance.keyzone_reversal.trend_sum > -0.5
+                            'weak-state': policies.short.issuance.keyzone_reversal.trend_sum < 0 && policies.short.issuance.keyzone_reversal.trend_sum > -0.5
                         }">
                         {{policies.short.issuance.keyzone_reversal.trend_sum < 0 ? "Trend Sum <= " + policies.short.issuance.keyzone_reversal.trend_sum: "Any Trend Sum"}}
                     </div>

@@ -33,7 +33,7 @@ import {
 } from "../../services";
 import { BalanceDialogComponent } from "./balance-dialog";
 import { StrategyFormDialogComponent } from "./strategy-form-dialog";
-import { KeyzonesDialogComponent } from "./keyzones-dialog";
+import { KeyzonesConfigFormDialogComponent, KeyzonesDialogComponent } from "./keyzones";
 import { IMarketStateDialogConfig, MarketStateDialogComponent } from "./market-state-dialog";
 import { IBottomSheetMenuItem } from "../../shared/components/bottom-sheet-menu";
 import { CoinsDialogComponent } from "./coins-dialog";
@@ -911,6 +911,12 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                 response: "SIGNAL_POLICIES"
             },
             {
+                icon: 'vertical_distribute',  
+                title: 'KeyZones Configuration', 
+                description: 'Manage how the zones are built and issue events.', 
+                response: "KEYZONES_CONFIG"
+            },
+            {
                 icon: 'currency_bitcoin',  
                 title: 'Coins', 
                 description: 'Install & uninstall coin based futures contracts.', 
@@ -920,6 +926,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 		bs.afterDismissed().subscribe((response: string|undefined) => {
             if      (response === "COINS") { this.displayCoinsDialog() }
             else if (response === "SIGNAL_POLICIES") { this.displaySignalPoliciesDialog() }
+            else if (response === "KEYZONES_CONFIG") { this.displayKeyZonesConfigFormDialog() }
             else if (response === "TRADING_STRATEGY") { this.displayStrategyFormDialog() }
 		});
 	}
@@ -967,6 +974,20 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 	}
 
 
+
+
+
+    /**
+     * Displays the keyzones config form dialog.
+     */
+    private displayKeyZonesConfigFormDialog(): void {
+		this.dialog.open(KeyzonesConfigFormDialogComponent, {
+			hasBackdrop: this._app.layout.value != "mobile",
+            disableClose: true,
+			panelClass: "small-dialog",
+            data: {}
+		})
+	}
 
 
 

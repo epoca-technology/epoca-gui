@@ -1,4 +1,4 @@
-import { IKeyZone, IMinifiedKeyZone } from "../../../core"
+import { IKeyZone, IMinifiedKeyZone } from "../../../../core"
 
 
 export interface IKeyZonesDialogComponent {

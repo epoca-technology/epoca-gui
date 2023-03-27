@@ -2,8 +2,15 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import * as moment from "moment";
 import { Subscription } from 'rxjs';
-import { IKeyZone, IKeyZoneFullState, IMarketState, IMinifiedKeyZone, MarketStateService, UtilsService } from '../../../core';
-import { AppService, ILayout, NavService } from '../../../services';
+import { 
+	IKeyZone, 
+	IKeyZoneFullState, 
+	IMarketState, 
+	IMinifiedKeyZone, 
+	MarketStateService, 
+	UtilsService 
+} from '../../../../core';
+import { AppService, ILayout, NavService } from '../../../../services';
 import { KeyzoneDetailsDialogComponent } from './keyzone-details-dialog';
 import { LiquidityDialogComponent } from './liquidity-dialog';
 import { KeyzonesPriceSnapshotsDialogComponent } from './keyzones-price-snapshots-dialog';

@@ -4,6 +4,7 @@ import {
 	ICoinsSummary,
 	ICoinState,
 	IKeyZoneFullState, 
+	IKeyZonesConfiguration, 
 	ILiquidityState, 
 	IMarketStateService, 
 	ISplitStateID, 
@@ -133,6 +134,27 @@ export class MarketStateService implements IMarketStateService {
 	}
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+	/***********************
+	 * KeyZones Management *
+	 ***********************/
+
+
+
 		
 
 
@@ -143,6 +165,39 @@ export class MarketStateService implements IMarketStateService {
 	public calculateKeyZoneState(): Promise<IKeyZoneFullState> { 
 		return this._api.request("get","marketState/calculateKeyZoneState", {}, true) 
 	}
+
+
+
+
+
+
+	/**
+	 * Retrieves the keyzones configuration from the server.
+	 * @returns Promise<IKeyZonesConfiguration>
+	 */
+	public getKeyZonesConfiguration(): Promise<IKeyZonesConfiguration> { 
+		return this._api.request("get","marketState/getKeyZonesConfiguration", {}, true) 
+	}
+
+
+
+
+
+
+    /**
+     * Updates the KeyZones' configuration.
+     * @param newConfiguration 
+     * @param otp 
+     * @returns Promise<void>
+     */
+    public updateKeyZonesConfiguration(newConfiguration: IKeyZonesConfiguration, otp: string): Promise<ICoinsSummary> { 
+        return this._api.request("post", "marketState/updateKeyZonesConfiguration", {newConfiguration: newConfiguration}, true, otp);
+    }
+
+
+
+
+
 
 
 

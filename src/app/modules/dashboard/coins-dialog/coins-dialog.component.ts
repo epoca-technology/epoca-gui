@@ -28,9 +28,9 @@ export class CoinsDialogComponent implements OnInit, ICoinsDialogComponent {
 
 	// Search
 	public installedSearch: string = "";
-	public installedSearchVisible: boolean = false;
+	public installedSearchVisible: boolean = true;
 	public availableSearch: string = "";
-	public availableSearchVisible: boolean = false;
+	public availableSearchVisible: boolean = true;
 
 	// Tabs
 	public activeTab: number = 0;

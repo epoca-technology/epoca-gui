@@ -41,8 +41,8 @@
                             <p>{{zone.s | currency}}</p>
                             <p class="distance">+{{distancesAbove[zone.id]}}% away</p>
                             <span fxFlex></span>
-                            <mat-icon *ngIf="zone.ls >= 3.5 && zone.ls < 7.5" class="liquidity-icon">invert_colors</mat-icon>
-                            <mat-icon *ngIf="zone.ls >= 7.5" class="liquidity-icon">water_drop</mat-icon>
+                            <mat-icon *ngIf="zone.ls >= 3.5 && zone.ls < 10" class="liquidity-icon">invert_colors</mat-icon>
+                            <mat-icon *ngIf="zone.ls >= 10" class="liquidity-icon">water_drop</mat-icon>
                             <mat-icon [svgIcon]="_ms.kzVolIntensityIcons[zone.vi]"></mat-icon>
                         </div>
                     </div>
@@ -90,8 +90,8 @@
                             <p>{{zone.e | currency}}</p>
                             <p class="distance">{{distancesBelow[zone.id]}}% away</p>
                             <span fxFlex></span>
-                            <mat-icon *ngIf="zone.ls >= 3.5 && zone.ls < 7.5" class="liquidity-icon">invert_colors</mat-icon>
-                            <mat-icon *ngIf="zone.ls >= 7.5" class="liquidity-icon">water_drop</mat-icon>
+                            <mat-icon *ngIf="zone.ls >= 3.5 && zone.ls < 10" class="liquidity-icon">invert_colors</mat-icon>
+                            <mat-icon *ngIf="zone.ls >= 10" class="liquidity-icon">water_drop</mat-icon>
                             <mat-icon [svgIcon]="_ms.kzVolIntensityIcons[zone.vi]"></mat-icon>
                         </div>
                     </div>

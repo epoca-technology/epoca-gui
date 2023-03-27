@@ -9,7 +9,7 @@ import {
 	ILiquidityState, 
 	MarketStateService, 
 	UtilsService 
-} from '../../../../core';
+} from '../../../../../core';
 import { 
 	AppService, 
 	ChartService, 
@@ -18,7 +18,7 @@ import {
 	ILineChartOptions, 
 	IPieChartOptions, 
 	NavService,
-} from '../../../../services';
+} from '../../../../../services';
 import { 
 	ILiquidityDialogComponent,
 	ILiquidityIntensity,

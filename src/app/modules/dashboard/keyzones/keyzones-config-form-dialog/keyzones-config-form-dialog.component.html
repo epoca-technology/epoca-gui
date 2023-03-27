@@ -1,0 +1,203 @@
+<mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <button mat-icon-button class="show-on-mobile" (click)="cancel()" [disabled]="submitting"><mat-icon>arrow_back</mat-icon></button>
+        <span class="truncate">KeyZones Configuration</span>
+        <span fxFlex></span>
+        <button mat-icon-button [disabled]="submitting" (click)="generalTooltip()" matTooltip="What is this?" type="button" tabindex="-1"><mat-icon>question_mark</mat-icon></button>
+        <button mat-icon-button (click)="update()" [disabled]="submitting || (!form || form.invalid)" matTooltip="Update Config"><mat-icon>save</mat-icon></button>
+        <button mat-icon-button class="show-on-desktop" (click)="cancel()" [disabled]="submitting"><mat-icon>close</mat-icon></button>
+    </div>
+</mat-toolbar>
+<div mat-dialog-content>
+    <!-- Loader -->
+    <div *ngIf="!loaded">
+        <div class="section-loader show-on-mobile"><div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div></div>
+        <div class="loader show-on-desktop"><div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div></div>
+    </div>
+    <div *ngIf="loaded && config" class="padding fadeIn">
+        <!-- Form -->
+        <div *ngIf="form">
+            <form [formGroup]="form" (ngSubmit)="update()">
+                <!-- KeyZones Build -->
+                <div>
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <h5>Build</h5>
+                        <span fxFlex></span>
+                        <button mat-icon-button (click)="buildTooltip()" matTooltip="More information" type="button" tabindex="-1"><mat-icon>question_mark</mat-icon></button>
+                    </div> 
+                    <div fxLayout="row" fxLayoutAlign="start start" class="section-container">
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Build Frequency Hours</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="buildFrequencyHours"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 6">
+                            </mat-form-field>
+                        </div>
+                        <span fxFlex="5"></span>
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Build Lookback Size</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="buildLookbackSize"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 2880">
+                            </mat-form-field>
+                        </div>
+                    </div>
+
+                    <div fxLayout="row" fxLayoutAlign="start start" class="section-container">
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Zone Size</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="zoneSize"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 0.1">
+                            </mat-form-field>
+                        </div>
+                        <span fxFlex="5"></span>
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Zone Merge Distance</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="zoneMergeDistanceLimit"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 0.05">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+
+                <!-- KeyZones Score Weights -->
+                <div>
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <h5>Score Weights</h5>
+                        <span fxFlex></span>
+                        <button mat-icon-button (click)="scoreWeightsTooltip()" matTooltip="More information" type="button" tabindex="-1"><mat-icon>question_mark</mat-icon></button>
+                    </div> 
+                    <div fxLayout="row" fxLayoutAlign="start start" class="section-container">
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Volume Intensity</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="volumeIntensityWeight"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 6">
+                            </mat-form-field>
+                        </div>
+                        <span fxFlex="5"></span>
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Liquidity Share</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="liquidityShareWeight"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 4">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+
+                <!-- KeyZones State -->
+                <div>
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <h5>State</h5>
+                        <span fxFlex></span>
+                        <button mat-icon-button (click)="stateTooltip()" matTooltip="More information" type="button" tabindex="-1"><mat-icon>question_mark</mat-icon></button>
+                    </div> 
+                    <div fxLayout="row" fxLayoutAlign="start start" class="section-container">
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>State Limit</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="stateLimit"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 10">
+                            </mat-form-field>
+                        </div>
+                        <span fxFlex="5"></span>
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Price Snapshots Limit</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="priceSnapshotsLimit"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 5">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="start start" class="section-container">
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Event Duration Seconds</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="eventDurationSeconds"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 35">
+                            </mat-form-field>
+                        </div>
+                        <span fxFlex="5"></span>
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>KeyZone Idle Minutes (On event)</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="keyzoneIdleOnEventMinutes"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 60">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="start start" class="section-container">
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Event Score Requirement</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="eventScoreRequirement"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 5">
+                            </mat-form-field>
+                        </div>
+                        <span fxFlex="5"></span>
+                        <div fxFlex>
+
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+            </form>
+        </div>
+    </div>
+</div>
