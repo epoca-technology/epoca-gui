@@ -62,9 +62,6 @@ export interface IAppBulk {
     // The active market state.
     marketState: IMarketState,
 
-    // The active signal record
-    signal: ISignalRecord|null,
-
     // The number of api errors in existance
     apiErrors: number,
 }
@@ -87,9 +84,6 @@ export interface IAppBulkStream {
 
     // The active market state.
     marketState: ICompressedMarketState,
-
-    // The active signal record
-    signal: ISignalRecord|null,
 
     // The number of api errors in existance
     apiErrors: number,

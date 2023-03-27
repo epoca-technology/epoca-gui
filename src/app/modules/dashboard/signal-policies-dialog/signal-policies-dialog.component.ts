@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
-import { SignalService, ISignalPolicies, MarketStateService } from '../../../../core';
-import { AppService, ILayout, NavService } from '../../../../services';
+import { MatDialogRef, MatDialog } from '@angular/material/dialog';
+import { SignalService, ISignalPolicies, MarketStateService } from '../../../core';
+import { AppService, ILayout, NavService } from '../../../services';
+import { SignalRecordsDialogComponent } from './signal-records-dialog';
 import { ISignalPoliciesDialogComponent } from './interfaces';
 
 @Component({
@@ -52,7 +53,8 @@ export class SignalPoliciesDialogComponent implements OnInit, ISignalPoliciesDia
 		public _app: AppService,
 		private _signal: SignalService,
 		public _nav: NavService,
-		public _ms: MarketStateService
+		public _ms: MarketStateService,
+        private dialog: MatDialog,
 	) { }
 
 	async ngOnInit(): Promise<void> {
@@ -115,6 +117,20 @@ export class SignalPoliciesDialogComponent implements OnInit, ISignalPoliciesDia
 
 
 	/* Misc Helpers */
+
+
+
+
+    /**
+     * Displays the signal records dialog.
+     */
+    public displaySignalRecordsDialog(): void {
+		this.dialog.open(SignalRecordsDialogComponent, {
+			hasBackdrop: this._app.layout.value != "mobile",
+			panelClass: "medium-dialog",
+			data: {}
+		})
+    }
 
 
 

@@ -37,7 +37,7 @@ import { KeyzonesConfigFormDialogComponent, KeyzonesDialogComponent } from "./ke
 import { IMarketStateDialogConfig, MarketStateDialogComponent } from "./market-state-dialog";
 import { IBottomSheetMenuItem } from "../../shared/components/bottom-sheet-menu";
 import { CoinsDialogComponent } from "./coins-dialog";
-import { SignalPoliciesDialogComponent, SignalRecordsDialogComponent } from "./signal";
+import { SignalPoliciesDialogComponent } from "./signal-policies-dialog";
 import { IDashboardComponent, IWindowZoom, IWindowZoomID, IWindowZoomPrices } from "./interfaces";
 
 @Component({
@@ -109,10 +109,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     // Desktop Chart height helpers
     public readonly predictionChartDesktopHeight: number = 330;
 
-    // Signal
-    public activeSignal: ISignalRecord|undefined|null;
-    private activeSignalSub?: Subscription;
-
     // Loading State
     public loaded: boolean = false;
 
@@ -181,9 +177,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             }
         );
 
-        // Subscribe to the signal
-        this.activeSignalSub = this._app.signal.subscribe((s) => { this.activeSignal = s });
-
         // Subscribe to the current version
         this.guiVersionSub = this._app.guiVersion.subscribe((newVersion: string|undefined|null) => {
             if (typeof newVersion == "string" && this._app.version != newVersion) {
@@ -199,7 +192,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         if (this.positionSub) this.positionSub.unsubscribe();
         if (this.predictionSub) this.predictionSub.unsubscribe();
         if (this.stateSub) this.stateSub.unsubscribe();
-        if (this.activeSignalSub) this.activeSignalSub.unsubscribe();
         if (this.guiVersionSub) this.guiVersionSub.unsubscribe();
         this.titleService.setTitle("Epoca");
     }
@@ -1031,18 +1023,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
 
 
-
-
-    /**
-     * Displays the signal records dialog.
-     */
-    public displaySignalRecordsDialog(): void {
-		this.dialog.open(SignalRecordsDialogComponent, {
-			hasBackdrop: this._app.layout.value != "mobile",
-			panelClass: "medium-dialog",
-			data: <ISignalRecord>this.activeSignal
-		})
-    }
 
 
 

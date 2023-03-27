@@ -237,7 +237,7 @@ export class LiquidityDialogComponent implements OnInit, ILiquidityDialogCompone
 				legend: {show: false}
 			}, 
 			["Asks BTC", "Bids BTC"], 
-			this.layout == "desktop" ? 285: 270
+			this.layout == "desktop" ? 320: 270
 		)
 	}
 
@@ -309,7 +309,7 @@ export class LiquidityDialogComponent implements OnInit, ILiquidityDialogCompone
 				xaxis: {type: "datetime",tooltip: {enabled: true}, labels: {datetimeUTC: false}},
 				yaxis: { labels: { show: true},tooltip: {enabled: true}  }
 			},
-			this.layout == "desktop" ? 400: 400,
+			this.layout == "desktop" ? 600: 400,
 			undefined,
 			undefined
 		);
@@ -464,7 +464,7 @@ export class LiquidityDialogComponent implements OnInit, ILiquidityDialogCompone
 				yaxis: { labels: {show: true}, tooltip: { enabled: true}, axisBorder: { show: true}, axisTicks: {show: true}, crosshairs: {show: true}}
 			},
 			undefined,
-			this.layout == "desktop" ? 400: 400,
+			this.layout == "desktop" ? 600: 400,
 			undefined,
 			true,
 			{min: min, max: max},

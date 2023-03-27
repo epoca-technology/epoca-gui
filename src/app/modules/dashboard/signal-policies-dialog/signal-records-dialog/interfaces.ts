@@ -1,7 +1,6 @@
 
 
 export interface ISignalRecordsDialogComponent {
-    tabChanged(newIndex: number): void,
     loadHist(range: IRecordHistoryRange): Promise<void>,
     displayTooltip(): void,
     close(): void

@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef } from '@angular/material/dialog';
 import * as moment from "moment";
 import { ISignalRecord, SignalService } from '../../../../core';
 import { AppService, NavService } from '../../../../services';
@@ -11,7 +11,6 @@ import { ISignalRecordsDialogComponent, IRecordHistoryRange, IIRecordHistoryRang
   styleUrls: ['./signal-records-dialog.component.scss']
 })
 export class SignalRecordsDialogComponent implements OnInit, ISignalRecordsDialogComponent {
-
 	// Signals History
 	public hist: ISignalRecord[] = [];
 	public histMenu: IRecordHistoryRange[] = [
@@ -23,43 +22,23 @@ export class SignalRecordsDialogComponent implements OnInit, ISignalRecordsDialo
 		{id: "1m", name: "Last month"},
 	];
 	public activeHistMenuItem: IRecordHistoryRange = this.histMenu[0];
-	public loadingHist: boolean = false;
 
-	// Tab Management
-	public activeTab: number = 0;
-
-
+	// Load State
+	public loaded: boolean = false;
 
 	constructor(
 		public dialogRef: MatDialogRef<SignalRecordsDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public active: ISignalRecord,
 		public _nav: NavService,
 		public _app: AppService,
 		private _signal: SignalService
 	) { }
 
 	ngOnInit(): void {
+		this.loadHist(this.histMenu[0]);
 	}
 
 
 
-
-
-
-
-	/**
-	 * Handles the tab change event, if the history tab
-	 * is activated and the data has not been initialized,
-	 * it does so.
-	 * @param newIndex 
-	 */
-	public tabChanged(newIndex: number): void {
-		// Activate the new tab
-		this.activeTab = newIndex;
-
-		// Activate the signals history in case they haven't been loaded
-		if (!this.hist.length) this.loadHist(this.histMenu[0]);
-	}
 
 
 
@@ -76,12 +55,12 @@ export class SignalRecordsDialogComponent implements OnInit, ISignalRecordsDialo
 		const {startAt, endAt } = this.calculateDateRange(range.id);
 
 		// Download the data
-		this.loadingHist = true;
+		this.loaded = false;
 		try {
 			this.hist = await this._signal.getSignalRecords(startAt, endAt);
 			this.activeHistMenuItem = range;
 		} catch (e) { this._app.error(e) }
-		this.loadingHist = false;
+		this.loaded = true;
 	}
 
 
@@ -97,7 +76,7 @@ export class SignalRecordsDialogComponent implements OnInit, ISignalRecordsDialo
 	 */
 	private calculateDateRange(id: IIRecordHistoryRangeID): {startAt: number, endAt: number} { 
 		// Init values
-		const endAt: number = this._app.serverTime.value!;
+		const endAt: number = this._app.marketState.value?.window.w[this._app.marketState.value?.window.w.length - 1].ct || this._app.serverTime.value!;
 		let startAt: number;
 
 		// Calculate the starting point

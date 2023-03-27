@@ -21,7 +21,6 @@ import {
 	UtilsService 
 } from "../../core";
 import {IAppService, ILayout, ILayoutAlias} from "./interfaces";
-import { ISignalRecord } from "src/app/core/signal/interfaces";
 
 
 
@@ -67,7 +66,6 @@ export class AppService implements IAppService{
 	public prediction: BehaviorSubject<IPrediction|undefined|null> = new BehaviorSubject<IPrediction|undefined|null>(null);
 	public position: BehaviorSubject<IActivePosition|undefined|null> = new BehaviorSubject<IActivePosition|undefined|null>(null);
 	public marketState: BehaviorSubject<IMarketState|undefined|null> = new BehaviorSubject<IMarketState|undefined|null>(null);
-	public signal: BehaviorSubject<ISignalRecord|undefined|null> = new BehaviorSubject<ISignalRecord|undefined|null>(null);
 	public apiErrors: BehaviorSubject<number|undefined|null> = new BehaviorSubject<number|undefined|null>(null);
 
 
@@ -161,7 +159,6 @@ export class AppService implements IAppService{
 		this.prediction.next(undefined);
 		this.position.next(undefined);
 		this.marketState.next(undefined);
-		this.signal.next(undefined);
 		if (typeof this.appBulkStream == "function") this.appBulkStream();
 		this.appBulkStream = undefined;
 	}
@@ -276,9 +273,6 @@ export class AppService implements IAppService{
 	private broadcastAppBulk(bulk: IAppBulk): void {
 		// Broadcast the market state
 		this.marketState.next(bulk.marketState);
-
-		// Broadcast the signal
-		this.signal.next(bulk.signal);
 
 		// Broadcast the server's time
 		this.serverTime.next(bulk.serverTime);

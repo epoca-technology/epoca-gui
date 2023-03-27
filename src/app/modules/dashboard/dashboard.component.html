@@ -363,25 +363,9 @@
                                                         (click)="displayKeyZonesDialog()">
                                                             <mat-icon>vertical_align_top</mat-icon> <p>RES.</p>
                                                 </mat-grid-tile>
-
-
-                                                <!-- Signal -->
-                                                <mat-grid-tile class="clickable" role="button" matRipple
-                                                               (click)="displaySignalRecordsDialog()"
-                                                                [ngClass]="{
-                                                                    'buy-action-container': activeSignal && activeSignal.r == 1,
-                                                                    'sell-action-container': activeSignal && activeSignal.r == -1,
-                                                                    'neutral-action-container': !activeSignal,
-                                                                    'weak-state': !activeSignal
-                                                                }">
-                                                                <p [matBadgeHidden]="!activeSignal" 
-                                                                    matBadgePosition="above"
-                                                                    matBadgeSize="small"
-                                                                    matBadgeOverlap="false"
-                                                                    [matBadge]="activeSignal ? activeSignal.s.length: 0">SIGNAL</p>
-                                                </mat-grid-tile>
                                                 
                                                 <!-- Placeholders -->
+                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
                                                 <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
                                                 <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
                                                 <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>

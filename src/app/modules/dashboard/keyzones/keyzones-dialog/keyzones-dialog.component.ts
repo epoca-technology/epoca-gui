@@ -279,7 +279,7 @@ export class KeyzonesDialogComponent implements OnInit, OnDestroy, IKeyZonesDial
 	public displayLiquidityDialog(): void {
 		this.dialog.open(LiquidityDialogComponent, {
 			hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
-			panelClass: "medium-dialog",
+			panelClass: "large-dialog",
 			data: {}
 		})
 	}
