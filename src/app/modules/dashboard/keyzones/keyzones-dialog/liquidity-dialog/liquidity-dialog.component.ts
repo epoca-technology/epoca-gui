@@ -502,7 +502,8 @@ export class LiquidityDialogComponent implements OnInit, ILiquidityDialogCompone
 			}
 		);
 		chart.chart.zoom = {enabled: false};
-		chart.xaxis.labels = {rotateAlways: true}
+		chart.xaxis.labels = {rotateAlways: true};
+		if (side == "bids") chart.yaxis.opposite = true;
 		return chart
 	}
 

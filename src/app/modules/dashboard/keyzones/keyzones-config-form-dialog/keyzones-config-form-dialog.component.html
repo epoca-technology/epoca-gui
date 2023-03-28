@@ -153,16 +153,29 @@
                     <div fxLayout="row" fxLayoutAlign="start start" class="section-container">
                         <div fxFlex>
                             <mat-form-field>
-                                <mat-label>Event Duration Seconds</mat-label>
+                                <mat-label>Sup. Event Duration Seconds</mat-label>
                                 <input type="number"
                                        matInput
-                                       formControlName="eventDurationSeconds"
+                                       formControlName="supportEventDurationSeconds"
                                        autocomplete="off"
                                        [appDisableControl]="submitting"
-                                       placeholder="e.g. 35">
+                                       placeholder="e.g. 60">
                             </mat-form-field>
                         </div>
                         <span fxFlex="5"></span>
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Res. Event Duration Seconds</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="resistanceEventDurationSeconds"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 90">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="start start" class="section-container">
                         <div fxFlex>
                             <mat-form-field>
                                 <mat-label>KeyZone Idle Minutes (On event)</mat-label>
@@ -174,8 +187,7 @@
                                        placeholder="e.g. 60">
                             </mat-form-field>
                         </div>
-                    </div>
-                    <div fxLayout="row" fxLayoutAlign="start start" class="section-container">
+                        <span fxFlex="5"></span>
                         <div fxFlex>
                             <mat-form-field>
                                 <mat-label>Event Score Requirement</mat-label>
@@ -186,10 +198,6 @@
                                        [appDisableControl]="submitting"
                                        placeholder="e.g. 5">
                             </mat-form-field>
-                        </div>
-                        <span fxFlex="5"></span>
-                        <div fxFlex>
-
                         </div>
                     </div>
                 </div>

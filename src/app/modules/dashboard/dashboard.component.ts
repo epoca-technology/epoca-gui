@@ -988,6 +988,57 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
 
 
+    /*****************
+     * Business Menu *
+     *****************/
+
+
+
+    /**
+     * Displays the business menu.
+     */
+    public displayBusinessMenu(): void {
+		const bs: MatBottomSheetRef = this._nav.displayBottomSheetMenu([
+            {
+                icon: 'money_bill_transfer',  
+                svg: true,
+                title: 'Positions', 
+                description: 'View the list of active and closed positions.', 
+                response: "POSITIONS"
+            },
+            {
+                icon: 'account_balance_wallet',  
+                title: 'Balance', 
+                description: 'View the USDT Balance held in the Futures Wallet.', 
+                response: "ACCOUNT_BALANCE"
+            },
+        ]);
+		bs.afterDismissed().subscribe((response: string|undefined) => {
+            if      (response === "POSITIONS") { this.displayBalanceDialog() }
+            else if (response === "ACCOUNT_BALANCE") { this.displayBalanceDialog() }
+		});
+	}
+
+
+
+
+
+
+	/**
+	 * Displays the balance dialog.
+	 */
+    private displayBalanceDialog(): void {
+		this.dialog.open(BalanceDialogComponent, {
+			hasBackdrop: true,
+			panelClass: "light-dialog",
+			data: {}
+		})
+	}
+
+
+
+
+
 
 
     /****************
@@ -995,17 +1046,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
      ****************/
 
 
-
-	/**
-	 * Displays the balance dialog.
-	 */
-    public displayBalanceDialog(): void {
-		this.dialog.open(BalanceDialogComponent, {
-			hasBackdrop: true,
-			panelClass: "light-dialog",
-			data: {}
-		})
-	}
 
 
 

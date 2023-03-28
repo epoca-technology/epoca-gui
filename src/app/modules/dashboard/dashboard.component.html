@@ -134,18 +134,18 @@
                     
                     <span fxFlex></span>
 
-                    <!-- Balance -->
+                    <!-- Business -->
                     <button mat-button 
                             *ngIf="loaded && layout == 'desktop'"
-                            (click)="displayBalanceDialog()"
+                            (click)="displayBusinessMenu()"
                             [disabled]="submitting">
-                            <mat-icon style="font-size:22px;">account_balance_wallet</mat-icon>&nbsp;Balance
+                            <mat-icon>storefront</mat-icon>&nbsp;Business
                     </button>
                     <button mat-icon-button 
                             *ngIf="loaded && layout == 'mobile'"
-                            (click)="displayBalanceDialog()"
+                            (click)="displayBusinessMenu()"
                             [disabled]="submitting">
-                            <mat-icon style="font-size:22px;">account_balance_wallet</mat-icon>
+                            <mat-icon>storefront</mat-icon>
                     </button>
 
                     <!-- Adjustments -->

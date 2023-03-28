@@ -43,7 +43,8 @@ export class KeyzonesConfigFormDialogComponent implements OnInit, IKeyZonesConfi
 				volumeIntensityWeight: new FormControl(this.config.scoreWeights.volume_intensity, [ Validators.required, Validators.min(1), Validators.max(10) ]),
 				liquidityShareWeight: new FormControl(this.config.scoreWeights.liquidity_share, [ Validators.required, Validators.min(1), Validators.max(10) ]),
 				priceSnapshotsLimit: new FormControl(this.config.priceSnapshotsLimit, [ Validators.required, Validators.min(3), Validators.max(50) ]),
-				eventDurationSeconds: new FormControl(this.config.eventDurationSeconds, [ Validators.required, Validators.min(5), Validators.max(3600) ]),
+				supportEventDurationSeconds: new FormControl(this.config.supportEventDurationSeconds, [ Validators.required, Validators.min(5), Validators.max(3600) ]),
+				resistanceEventDurationSeconds: new FormControl(this.config.resistanceEventDurationSeconds, [ Validators.required, Validators.min(5), Validators.max(3600) ]),
 				keyzoneIdleOnEventMinutes: new FormControl(this.config.keyzoneIdleOnEventMinutes, [ Validators.required, Validators.min(1), Validators.max(1440) ]),
 				eventScoreRequirement: new FormControl(this.config.eventScoreRequirement, [ Validators.required, Validators.min(1), Validators.max(10) ]),
 			});
@@ -65,7 +66,8 @@ export class KeyzonesConfigFormDialogComponent implements OnInit, IKeyZonesConfi
 	get volumeIntensityWeight(): AbstractControl { return <AbstractControl>this.form.get("volumeIntensityWeight") }
 	get liquidityShareWeight(): AbstractControl { return <AbstractControl>this.form.get("liquidityShareWeight") }
 	get priceSnapshotsLimit(): AbstractControl { return <AbstractControl>this.form.get("priceSnapshotsLimit") }
-	get eventDurationSeconds(): AbstractControl { return <AbstractControl>this.form.get("eventDurationSeconds") }
+	get supportEventDurationSeconds(): AbstractControl { return <AbstractControl>this.form.get("supportEventDurationSeconds") }
+	get resistanceEventDurationSeconds(): AbstractControl { return <AbstractControl>this.form.get("resistanceEventDurationSeconds") }
 	get keyzoneIdleOnEventMinutes(): AbstractControl { return <AbstractControl>this.form.get("keyzoneIdleOnEventMinutes") }
 	get eventScoreRequirement(): AbstractControl { return <AbstractControl>this.form.get("eventScoreRequirement") }
 
@@ -109,7 +111,8 @@ export class KeyzonesConfigFormDialogComponent implements OnInit, IKeyZonesConfi
 							liquidity_share: this.liquidityShareWeight.value,
 						}
 						this.config.priceSnapshotsLimit = this.priceSnapshotsLimit.value;
-						this.config.eventDurationSeconds = this.eventDurationSeconds.value;
+						this.config.supportEventDurationSeconds = this.supportEventDurationSeconds.value;
+						this.config.resistanceEventDurationSeconds = this.resistanceEventDurationSeconds.value;
 						this.config.keyzoneIdleOnEventMinutes = this.keyzoneIdleOnEventMinutes.value;
 						this.config.eventScoreRequirement = this.eventScoreRequirement.value;
 

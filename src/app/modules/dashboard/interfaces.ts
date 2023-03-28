@@ -9,8 +9,10 @@ export interface IDashboardComponent {
     // Adjustments Management
     displayAdjustmentsMenu(): void,
 
+    // Business Menu
+    displayBusinessMenu(): void,
+
     // Misc Dialogs
-    displayBalanceDialog(): void,
     displayActivePredictionDialog(): void,
 
     // Market State Dialogs

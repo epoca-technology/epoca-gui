@@ -125,14 +125,12 @@ export class ChartService implements IChartService {
 	 * @returns IApexCandlestick[]
 	 */
     public getApexCandlesticks(candlesticks: Array<ICandlestick|IPredictionCandlestick>): IApexCandlestick[] {
-		// Init the final list
-		let final: IApexCandlestick[] = [];
-
-		// Build the candlesticks
-		candlesticks.forEach((c) => { final.push({x: c.ot, y: [c.o, c.h, c.l, c.c]}) });
-
-		// Return the final list
-		return final;
+		return candlesticks.map((c) => {
+			return {
+				x: c.ot,
+				y: [c.o, c.h, c.l, c.c]
+			}
+		});
 	}
 
 

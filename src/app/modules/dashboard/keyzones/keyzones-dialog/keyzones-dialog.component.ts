@@ -310,7 +310,7 @@ export class KeyzonesDialogComponent implements OnInit, OnDestroy, IKeyZonesDial
 
 		// Iterate over idle zones
 		for (let zoneID in this.state!.idle) {
-			content.push(`${zoneID}: ${moment(this.state!.idle[zoneID]).format("h:mm:ss a")}`)
+			content.push(`${zoneID}: ${moment(this.state!.idle[zoneID]).format("dddd, MMMM Do, h:mm:ss a")}`)
 		}
 
 		// Finally, display the info
