@@ -27,6 +27,7 @@ export class KeyzonesDialogComponent implements OnInit, OnDestroy, IKeyZonesDial
 
 	// Market State
 	public marketState!: IMarketState;
+	public reversedKeyZonesAbove: IMinifiedKeyZone[] = [];
 	public scoresAbove: {[keyzoneID: number]: number} = {};
 	public distancesAbove: {[keyzoneID: number]: number} = {};
 	public scoresBelow: {[keyzoneID: number]: number} = {};
@@ -72,8 +73,8 @@ export class KeyzonesDialogComponent implements OnInit, OnDestroy, IKeyZonesDial
             if (state) {
                 this.marketState = state;
 				const currentPrice: number = this.marketState.window.w[this.marketState.window.w.length - 1].c;
-				this.scoresAbove = [];
-				this.scoresBelow = [];
+				this.scoresAbove = {};
+				this.scoresBelow = {};
 				if (this.marketState.keyzones.above && this.marketState.keyzones.above.length) {
 					for (let resistance of this.marketState.keyzones.above) {
 						this.scoresAbove[resistance.id] = Math.ceil(resistance.scr * 10);
@@ -86,6 +87,9 @@ export class KeyzonesDialogComponent implements OnInit, OnDestroy, IKeyZonesDial
 						this.distancesBelow[support.id] = <number>this._utils.calculatePercentageChange(currentPrice, support.e);
 					}
 				}
+				let keyzonesAbove: IMinifiedKeyZone[] = this.marketState.keyzones.above.slice();
+				keyzonesAbove.reverse();
+				this.reversedKeyZonesAbove = keyzonesAbove;
 				this.loaded = true;
             }
         });

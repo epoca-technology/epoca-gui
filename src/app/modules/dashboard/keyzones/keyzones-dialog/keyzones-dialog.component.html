@@ -31,7 +31,7 @@
             <div *ngIf="activeTab == 0">
                 <!-- State KeyZones Above-->
                 <div *ngIf="marketState.keyzones.above && marketState.keyzones.above.length">
-                    <div *ngFor="let zone of marketState.keyzones.above.reverse(); index as aboveIndex"
+                    <div *ngFor="let zone of reversedKeyZonesAbove; index as aboveIndex"
                         class="state-keyzone state-keyzone-above-{{scoresAbove[zone.id]}} clickable" role="button" matRipple 
                         [ngClass]="{
                             'inactive': zone.scr < 5

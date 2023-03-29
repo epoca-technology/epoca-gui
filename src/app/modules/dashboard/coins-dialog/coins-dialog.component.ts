@@ -98,6 +98,8 @@ export class CoinsDialogComponent implements OnInit, ICoinsDialogComponent {
 						this.updateCoins(sum);
 
 						// Notify
+						this.installedSearch = "";
+						this.availableSearch = "";
 						this._app.success(`The coin ${coin.symbol} has been installed successfully.`);
 						//this.activeTab = 0;
 					} catch(e) { this._app.error(e) }
@@ -140,6 +142,8 @@ export class CoinsDialogComponent implements OnInit, ICoinsDialogComponent {
 						this.updateCoins(sum);
 
 						// Notify
+						this.installedSearch = "";
+						this.availableSearch = "";
 						this._app.success(`The coin ${coin.symbol} has been uninstalled successfully.`);
 					} catch(e) { this._app.error(e) }
 
