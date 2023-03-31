@@ -10,6 +10,7 @@ import {
 import {IConfirmationDialogData} from "../../shared/components/confirmation-dialog";
 import {IBottomSheetMenuItem} from "../../shared/components/bottom-sheet-menu";
 import { IDialogMenuItem } from "../../shared/components/dialog-menu";
+import { IDateRangeConfig } from "../../shared/components/date-range-form-dialog";
 
 
 
@@ -36,6 +37,7 @@ export interface INavService {
 	
 	// Dialogs
     displayConfirmationDialog(data?: IConfirmationDialogData): MatDialogRef<any>,
+	displayDateRangeDialog(data?: IDateRangeConfig): MatDialogRef<any>,
 	displayDataDialog(name: string, value: any): MatDialogRef<any>,
 	displayDialogMenu(title: string, items: IDialogMenuItem[]): MatDialogRef<any>,
 	displayTooltip(title: string, content: string|string[]): MatDialogRef<any>,

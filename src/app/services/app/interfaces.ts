@@ -3,8 +3,8 @@ import {BehaviorSubject} from "rxjs";
 import { 
     IEpochRecord, 
     IMarketState, 
-    IActivePosition, 
     IPrediction,
+    IPositionHeadline,
 } from "../../core";
 
 
@@ -21,7 +21,7 @@ export interface IAppService {
     guiVersion: BehaviorSubject<string|undefined|null>,
     epoch: BehaviorSubject<IEpochRecord|undefined|null>,
     prediction: BehaviorSubject<IPrediction|undefined|null>,
-    position: BehaviorSubject<IActivePosition|undefined|null>,
+    positions: BehaviorSubject<IPositionHeadline[]|undefined|null>,
     marketState: BehaviorSubject<IMarketState|undefined|null>,
     apiErrors: BehaviorSubject<number|undefined|null>,
     refreshAppBulk(): Promise<void>,

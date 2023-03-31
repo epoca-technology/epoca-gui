@@ -1,6 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import * as moment from "moment";
+import { IDateRangeConfig } from 'src/app/shared/components/date-range-form-dialog';
 import { ISignalRecord, SignalService } from '../../../../core';
 import { AppService, NavService } from '../../../../services';
 import { ISignalRecordsDialogComponent, IRecordHistoryRange, IIRecordHistoryRangeID } from './interfaces';
@@ -20,8 +21,10 @@ export class SignalRecordsDialogComponent implements OnInit, ISignalRecordsDialo
 		{id: "1w", name: "Last week"},
 		{id: "2w", name: "Last 2 weeks"},
 		{id: "1m", name: "Last month"},
+		{id: "custom", name: "Custom Date Range"},
 	];
 	public activeHistMenuItem: IRecordHistoryRange = this.histMenu[0];
+	private activeRange!: IDateRangeConfig;
 
 	// Load State
 	public loaded: boolean = false;
@@ -52,12 +55,12 @@ export class SignalRecordsDialogComponent implements OnInit, ISignalRecordsDialo
 	 */
 	public async loadHist(range: IRecordHistoryRange): Promise<void> {
 		// Calculate the range of the query
-		const {startAt, endAt } = this.calculateDateRange(range.id);
+		this.activeRange = await this.calculateDateRange(range.id);
 
 		// Download the data
 		this.loaded = false;
 		try {
-			this.hist = await this._signal.getSignalRecords(startAt, endAt);
+			this.hist = await this._signal.getSignalRecords(this.activeRange.startAt, this.activeRange.endAt);
 			this.activeHistMenuItem = range;
 		} catch (e) { this._app.error(e) }
 		this.loaded = true;
@@ -74,26 +77,47 @@ export class SignalRecordsDialogComponent implements OnInit, ISignalRecordsDialo
 	 * @param id
 	 * @returns {startAt: number, endAt: number}
 	 */
-	private calculateDateRange(id: IIRecordHistoryRangeID): {startAt: number, endAt: number} { 
-		// Init values
-		const endAt: number = this._app.marketState.value?.window.w[this._app.marketState.value?.window.w.length - 1].ct || this._app.serverTime.value!;
-		let startAt: number;
+	private calculateDateRange(id: IIRecordHistoryRangeID): Promise<IDateRangeConfig> { 
+		return new Promise((resolve, reject) => {
+			// Init the end
+			const endAt: number = this._app.marketState.value?.window.w[this._app.marketState.value?.window.w.length - 1].ct || this._app.serverTime.value!;
 
-		// Calculate the starting point
-		if 		(id == "24h") { startAt = moment(endAt).subtract(24, "hours").valueOf() }
-		else if (id == "48h") { startAt = moment(endAt).subtract(48, "hours").valueOf() }
-		else if (id == "72h") { startAt = moment(endAt).subtract(72, "hours").valueOf() }
-		else if (id == "1w") { startAt = moment(endAt).subtract(1, "week").valueOf() }
-		else if (id == "2w") { startAt = moment(endAt).subtract(2, "weeks").valueOf() }
-		else if (id == "1m") { startAt = moment(endAt).subtract(1, "month").valueOf() }
-		else { throw new Error("Invalid History Range ID.") }
+			// Handle a custom date range
+			if (id == "custom") {
+				this._nav.displayDateRangeDialog(this.activeRange).afterClosed().subscribe(
+					(response) => {
+						if (response) {
+							resolve(response);
+						} else {
+							resolve({startAt: moment(endAt).subtract(24, "hours").valueOf(), endAt: endAt})
+						}
+					}
+				);
+			} else {
+				// Init values
+				let startAt: number;
+
+				// Calculate the starting point
+				if 		(id == "24h") { startAt = moment(endAt).subtract(24, "hours").valueOf() }
+				else if (id == "48h") { startAt = moment(endAt).subtract(48, "hours").valueOf() }
+				else if (id == "72h") { startAt = moment(endAt).subtract(72, "hours").valueOf() }
+				else if (id == "1w") { startAt = moment(endAt).subtract(1, "week").valueOf() }
+				else if (id == "2w") { startAt = moment(endAt).subtract(2, "weeks").valueOf() }
+				else if (id == "1m") { startAt = moment(endAt).subtract(1, "month").valueOf() }
+				else { throw new Error("Invalid History Range ID.") }
 
 
-		// Finally, return the range
-		return {startAt: startAt, endAt: endAt};
+				// Finally, return the range
+				resolve({startAt: startAt, endAt: endAt});
+			}
+		});
 	}
 
 	
+
+
+
+
 
 
 

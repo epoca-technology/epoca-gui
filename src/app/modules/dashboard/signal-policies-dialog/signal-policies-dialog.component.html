@@ -12,7 +12,7 @@
 <div mat-dialog-content>
     <!-- Loader -->
     <div *ngIf="!loaded">
-        <div class="loader"><div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div></div>
+        <div class="section-loader"><div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div></div>
     </div>
     <div *ngIf="loaded && policies">
         <!-- Tabs Navigation-->
@@ -56,6 +56,35 @@
                                 (click)="policies.long.issuance.keyzone_reversal.coin_state_event = -2" 
                                 [disabled]="policies.long.issuance.keyzone_reversal.coin_state_event == -2">
                                 Strong Coin Reversal
+                        </button>
+                    </mat-menu>
+
+                    <!-- Volume State -->
+                    <div class="policy-item clickable state-badge" role="button" matRipple [matMenuTriggerFor]="longVolStateMenu"
+                        [ngClass]="{
+                            'square-badge-success': policies.long.issuance.keyzone_reversal.volume_state > 0,
+                            'square-badge-neutral': policies.long.issuance.keyzone_reversal.volume_state == 0,
+                            'weak-state': policies.long.issuance.keyzone_reversal.volume_state == 1
+                        }">
+                        <mat-icon *ngIf="policies.long.issuance.keyzone_reversal.volume_state != 0" 
+                                    [svgIcon]="_ms.icons[policies.long.issuance.keyzone_reversal.volume_state]"></mat-icon> 
+                                    {{policies.long.issuance.keyzone_reversal.volume_state == 0 ? 'Any Volume State': 'Volume State'}}
+                    </div>
+                    <mat-menu #longVolStateMenu="matMenu">
+                        <button mat-menu-item 
+                                (click)="policies.long.issuance.keyzone_reversal.volume_state = 0" 
+                                [disabled]="policies.long.issuance.keyzone_reversal.volume_state == 0">
+                                Any Volume State
+                        </button>
+                        <button mat-menu-item 
+                                (click)="policies.long.issuance.keyzone_reversal.volume_state = 1" 
+                                [disabled]="policies.long.issuance.keyzone_reversal.volume_state == 1">
+                                Increasing
+                        </button>
+                        <button mat-menu-item 
+                                (click)="policies.long.issuance.keyzone_reversal.volume_state = 2" 
+                                [disabled]="policies.long.issuance.keyzone_reversal.volume_state == 2">
+                                Increasing Strongly
                         </button>
                     </mat-menu>
 
@@ -105,35 +134,6 @@
                                 Increasing Strongly
                         </button>
                     </mat-menu>
-
-                    <!-- Volume State -->
-                    <div class="policy-item clickable state-badge" role="button" matRipple [matMenuTriggerFor]="longVolStateMenu"
-                        [ngClass]="{
-                            'square-badge-success': policies.long.issuance.keyzone_reversal.volume_state > 0,
-                            'square-badge-neutral': policies.long.issuance.keyzone_reversal.volume_state == 0,
-                            'weak-state': policies.long.issuance.keyzone_reversal.volume_state == 1
-                        }">
-                        <mat-icon *ngIf="policies.long.issuance.keyzone_reversal.volume_state != 0" 
-                                    [svgIcon]="_ms.icons[policies.long.issuance.keyzone_reversal.volume_state]"></mat-icon> 
-                                    {{policies.long.issuance.keyzone_reversal.volume_state == 0 ? 'Any Volume State': 'Volume State'}}
-                    </div>
-                    <mat-menu #longVolStateMenu="matMenu">
-                        <button mat-menu-item 
-                                (click)="policies.long.issuance.keyzone_reversal.volume_state = 0" 
-                                [disabled]="policies.long.issuance.keyzone_reversal.volume_state == 0">
-                                Any Volume State
-                        </button>
-                        <button mat-menu-item 
-                                (click)="policies.long.issuance.keyzone_reversal.volume_state = 1" 
-                                [disabled]="policies.long.issuance.keyzone_reversal.volume_state == 1">
-                                Increasing
-                        </button>
-                        <button mat-menu-item 
-                                (click)="policies.long.issuance.keyzone_reversal.volume_state = 2" 
-                                [disabled]="policies.long.issuance.keyzone_reversal.volume_state == 2">
-                                Increasing Strongly
-                        </button>
-                    </mat-menu>
                 </div>
             </div>
 
@@ -172,29 +172,57 @@
                 </div>
 
 
-                <!-- Trend State Cancellation -->
-                <div class="margin-top-x3" [ngClass]="{'inactive': !policies.long.cancellation.trend_state.enabled}">
+                <!-- Trend Cancellation -->
+                <div class="margin-top-x3" [ngClass]="{'inactive': !policies.long.cancellation.trend.enabled}">
                     <div fxLayout="row" fxLayoutAlign="start center">
-                        <h5 class="truncate">Trend State</h5>
+                        <h5 class="truncate">Trend</h5>
                         <span fxFlex></span>
-                        <mat-slide-toggle [(ngModel)]="policies.long.cancellation.trend_state.enabled"></mat-slide-toggle>
+                        <mat-slide-toggle [(ngModel)]="policies.long.cancellation.trend.enabled"></mat-slide-toggle>
                     </div>
                     <div class="policy-items">
-                        <div class="policy-item clickable state-badge square-badge-error" role="button" matRipple [matMenuTriggerFor]="longTrendStateCancelMenu"
+                        <!-- Trend Sum -->
+                        <div class="policy-item clickable" role="button" matRipple [matMenuTriggerFor]="longTrendSumCancelMenu"
                             [ngClass]="{
-                                'weak-state': policies.long.cancellation.trend_state.trend_state == -1
+                                'square-badge-error': policies.long.cancellation.trend.trend_sum < 0,
+                                'square-badge-neutral': policies.long.cancellation.trend.trend_sum == 0,
+                                'weak-state': policies.long.cancellation.trend.trend_sum < 0 && policies.long.cancellation.trend.trend_sum > -0.5
                             }">
-                            <mat-icon [svgIcon]="_ms.icons[policies.long.cancellation.trend_state.trend_state]"></mat-icon> Trend State
+                            {{policies.long.cancellation.trend.trend_sum  < 0 ? "Trend Sum <= " + policies.long.cancellation.trend.trend_sum: "Any Trend Sum"}}
+                        </div>
+                        <mat-menu #longTrendSumCancelMenu="matMenu">
+                            <button mat-menu-item 
+                                    *ngFor="let item of longCancellationTrendSumMenuItems"
+                                    (click)="policies.long.cancellation.trend.trend_sum = item.value" 
+                                    [disabled]="policies.long.cancellation.trend.trend_sum == item.value">
+                                    {{item.name}}
+                            </button>
+                        </mat-menu>
+
+                        <!-- Trend State -->
+                        <div class="policy-item clickable state-badge" role="button" matRipple [matMenuTriggerFor]="longTrendStateCancelMenu"
+                            [ngClass]="{
+                                'square-badge-error': policies.long.cancellation.trend.trend_state < 0,
+                                'square-badge-neutral': policies.long.cancellation.trend.trend_state == 0,
+                                'weak-state': policies.long.cancellation.trend.trend_state == -1
+                            }">
+                            <mat-icon *ngIf="policies.long.cancellation.trend.trend_state != 0" 
+                                    [svgIcon]="_ms.icons[policies.long.cancellation.trend.trend_state]"></mat-icon> 
+                                    {{policies.long.cancellation.trend.trend_state == 0 ? 'Any Trend State': 'Trend State'}}
                         </div>
                         <mat-menu #longTrendStateCancelMenu="matMenu">
                             <button mat-menu-item 
-                                    (click)="policies.long.cancellation.trend_state.trend_state = -1" 
-                                    [disabled]="policies.long.cancellation.trend_state.trend_state == -1">
+                                    (click)="policies.long.cancellation.trend.trend_state = 0" 
+                                    [disabled]="policies.long.cancellation.trend.trend_state == 0">
+                                    Any Trend State
+                            </button>
+                            <button mat-menu-item 
+                                    (click)="policies.long.cancellation.trend.trend_state = -1" 
+                                    [disabled]="policies.long.cancellation.trend.trend_state == -1">
                                     Decreasing
                             </button>
                             <button mat-menu-item 
-                                    (click)="policies.long.cancellation.trend_state.trend_state = -2" 
-                                    [disabled]="policies.long.cancellation.trend_state.trend_state == -2">
+                                    (click)="policies.long.cancellation.trend.trend_state = -2" 
+                                    [disabled]="policies.long.cancellation.trend.trend_state == -2">
                                     Decreasing Strongly
                             </button>
                         </mat-menu>
@@ -238,6 +266,35 @@
                                 (click)="policies.short.issuance.keyzone_reversal.coin_state_event = 2" 
                                 [disabled]="policies.short.issuance.keyzone_reversal.coin_state_event == 2">
                                 Strong Coin Reversal
+                        </button>
+                    </mat-menu>
+
+                    <!-- Volume State -->
+                    <div class="policy-item clickable state-badge" role="button" matRipple [matMenuTriggerFor]="shortVolStateMenu"
+                        [ngClass]="{
+                            'square-badge-success': policies.short.issuance.keyzone_reversal.volume_state > 0,
+                            'square-badge-neutral': policies.short.issuance.keyzone_reversal.volume_state == 0,
+                            'weak-state': policies.short.issuance.keyzone_reversal.volume_state == 1
+                        }">
+                        <mat-icon *ngIf="policies.short.issuance.keyzone_reversal.volume_state != 0" 
+                                    [svgIcon]="_ms.icons[policies.short.issuance.keyzone_reversal.volume_state]"></mat-icon> 
+                                    {{policies.short.issuance.keyzone_reversal.volume_state == 0 ? 'Any Volume State': 'Volume State'}}
+                    </div>
+                    <mat-menu #shortVolStateMenu="matMenu">
+                        <button mat-menu-item 
+                                (click)="policies.short.issuance.keyzone_reversal.volume_state = 0" 
+                                [disabled]="policies.short.issuance.keyzone_reversal.volume_state == 0">
+                                Any Volume State
+                        </button>
+                        <button mat-menu-item 
+                                (click)="policies.short.issuance.keyzone_reversal.volume_state = 1" 
+                                [disabled]="policies.short.issuance.keyzone_reversal.volume_state == 1">
+                                Increasing
+                        </button>
+                        <button mat-menu-item 
+                                (click)="policies.short.issuance.keyzone_reversal.volume_state = 2" 
+                                [disabled]="policies.short.issuance.keyzone_reversal.volume_state == 2">
+                                Increasing Strongly
                         </button>
                     </mat-menu>
 
@@ -287,35 +344,6 @@
                                 Decreasing Strongly
                         </button>
                     </mat-menu>
-
-                    <!-- Volume State -->
-                    <div class="policy-item clickable state-badge" role="button" matRipple [matMenuTriggerFor]="shortVolStateMenu"
-                        [ngClass]="{
-                            'square-badge-success': policies.short.issuance.keyzone_reversal.volume_state > 0,
-                            'square-badge-neutral': policies.short.issuance.keyzone_reversal.volume_state == 0,
-                            'weak-state': policies.short.issuance.keyzone_reversal.volume_state == 1
-                        }">
-                        <mat-icon *ngIf="policies.short.issuance.keyzone_reversal.volume_state != 0" 
-                                    [svgIcon]="_ms.icons[policies.short.issuance.keyzone_reversal.volume_state]"></mat-icon> 
-                                    {{policies.short.issuance.keyzone_reversal.volume_state == 0 ? 'Any Volume State': 'Volume State'}}
-                    </div>
-                    <mat-menu #shortVolStateMenu="matMenu">
-                        <button mat-menu-item 
-                                (click)="policies.short.issuance.keyzone_reversal.volume_state = 0" 
-                                [disabled]="policies.short.issuance.keyzone_reversal.volume_state == 0">
-                                Any Volume State
-                        </button>
-                        <button mat-menu-item 
-                                (click)="policies.short.issuance.keyzone_reversal.volume_state = 1" 
-                                [disabled]="policies.short.issuance.keyzone_reversal.volume_state == 1">
-                                Increasing
-                        </button>
-                        <button mat-menu-item 
-                                (click)="policies.short.issuance.keyzone_reversal.volume_state = 2" 
-                                [disabled]="policies.short.issuance.keyzone_reversal.volume_state == 2">
-                                Increasing Strongly
-                        </button>
-                    </mat-menu>
                 </div>
             </div>
 
@@ -354,29 +382,58 @@
                 </div>
 
 
-                <!-- Trend State Cancellation -->
-                <div class="margin-top-x3" [ngClass]="{'inactive': !policies.short.cancellation.trend_state.enabled}">
+                <!-- Trend Cancellation -->
+                <div class="margin-top-x3" [ngClass]="{'inactive': !policies.short.cancellation.trend.enabled}">
                     <div fxLayout="row" fxLayoutAlign="start center">
-                        <h5 class="truncate">Trend State</h5>
+                        <h5 class="truncate">Trend</h5>
                         <span fxFlex></span>
-                        <mat-slide-toggle [(ngModel)]="policies.short.cancellation.trend_state.enabled"></mat-slide-toggle>
+                        <mat-slide-toggle [(ngModel)]="policies.short.cancellation.trend.enabled"></mat-slide-toggle>
                     </div>
                     <div class="policy-items">
-                        <div class="policy-item clickable state-badge square-badge-success" role="button" matRipple [matMenuTriggerFor]="shortTrendStateCancelMenu"
+
+                        <!-- Trend Sum -->
+                        <div class="policy-item clickable" role="button" matRipple [matMenuTriggerFor]="shortTrendSumCancelMenu"
                             [ngClass]="{
-                                'weak-state': policies.short.cancellation.trend_state.trend_state == 1
+                                'square-badge-success': policies.short.cancellation.trend.trend_sum > 0,
+                                'square-badge-neutral': policies.short.cancellation.trend.trend_sum == 0,
+                                'weak-state': policies.short.cancellation.trend.trend_sum > 0 && policies.short.cancellation.trend.trend_sum < 0.5
                             }">
-                            <mat-icon [svgIcon]="_ms.icons[policies.short.cancellation.trend_state.trend_state]"></mat-icon> Trend State
+                            {{policies.short.cancellation.trend.trend_sum > 0 ? "Trend Sum >= " + policies.short.cancellation.trend.trend_sum: "Any Trend Sum"}}
+                        </div>
+                        <mat-menu #shortTrendSumCancelMenu="matMenu">
+                            <button mat-menu-item 
+                                    *ngFor="let item of shortCancellationTrendSumMenuItems"
+                                    (click)="policies.short.cancellation.trend.trend_sum = item.value" 
+                                    [disabled]="policies.short.cancellation.trend.trend_sum == item.value">
+                                    {{item.name}}
+                            </button>
+                        </mat-menu>
+
+                        <!-- Trend State -->
+                        <div class="policy-item clickable state-badge " role="button" matRipple [matMenuTriggerFor]="shortTrendStateCancelMenu"
+                            [ngClass]="{
+                                'square-badge-success': policies.short.cancellation.trend.trend_state > 0,
+                                'square-badge-neutral': policies.short.cancellation.trend.trend_state == 0,
+                                'weak-state': policies.short.cancellation.trend.trend_state == 1
+                            }">
+                            <mat-icon *ngIf="policies.short.cancellation.trend.trend_state != 0" 
+                                        [svgIcon]="_ms.icons[policies.short.cancellation.trend.trend_state]"></mat-icon> 
+                                        {{policies.short.cancellation.trend.trend_state == 0 ? 'Any Trend State': 'Trend State'}}
                         </div>
                         <mat-menu #shortTrendStateCancelMenu="matMenu">
                             <button mat-menu-item 
-                                    (click)="policies.short.cancellation.trend_state.trend_state = 1" 
-                                    [disabled]="policies.short.cancellation.trend_state.trend_state == 1">
+                                    (click)="policies.short.cancellation.trend.trend_state = 0" 
+                                    [disabled]="policies.short.cancellation.trend.trend_state == 0">
+                                    Any Trend State
+                            </button>
+                            <button mat-menu-item 
+                                    (click)="policies.short.cancellation.trend.trend_state = 1" 
+                                    [disabled]="policies.short.cancellation.trend.trend_state == 1">
                                     Increasing
                             </button>
                             <button mat-menu-item 
-                                    (click)="policies.short.cancellation.trend_state.trend_state = 2" 
-                                    [disabled]="policies.short.cancellation.trend_state.trend_state == 2">
+                                    (click)="policies.short.cancellation.trend.trend_state = 2" 
+                                    [disabled]="policies.short.cancellation.trend.trend_state == 2">
                                     Increasing Strongly
                             </button>
                         </mat-menu>

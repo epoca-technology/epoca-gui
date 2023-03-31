@@ -1,0 +1,40 @@
+<mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <button mat-icon-button class="show-on-mobile" (click)="cancel()"><mat-icon>arrow_back</mat-icon></button>
+        <span class="truncate">Date Range</span>
+        <span fxFlex></span>
+        <button mat-icon-button class="show-on-desktop" (click)="cancel()"><mat-icon>close</mat-icon></button>
+    </div>
+</mat-toolbar>
+<div mat-dialog-content>
+    <!-- Container -->
+    <div class="padding">
+
+        <!-- Form -->
+        <div *ngIf="form">
+            <form [formGroup]="form" (ngSubmit)="submitConfig()">
+                <div>
+                    <mat-form-field>
+                        <mat-label>Start At</mat-label>
+                        <input matInput [ngxMatDatetimePicker]="startDatePicker" placeholder="Choose the start date" formControlName="startAt">
+                        <mat-datepicker-toggle matSuffix [for]="$any(startDatePicker)"></mat-datepicker-toggle>
+                        <ngx-mat-datetime-picker #startDatePicker [showSeconds]="true"></ngx-mat-datetime-picker>
+                    </mat-form-field>
+                </div>
+
+                <div>
+                    <mat-form-field>
+                        <mat-label>End At</mat-label>
+                        <input matInput [ngxMatDatetimePicker]="endDatePicker" placeholder="Choose the end date" formControlName="endAt">
+                        <mat-datepicker-toggle matSuffix [for]="$any(endDatePicker)"></mat-datepicker-toggle>
+                        <ngx-mat-datetime-picker #endDatePicker [showSeconds]="true"></ngx-mat-datetime-picker>
+                    </mat-form-field>
+                </div>
+
+                <div class="actions">
+                    <button type="submit" mat-raised-button color="primary" [disabled]="form.invalid">SUBMIT RANGE</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

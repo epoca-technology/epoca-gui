@@ -18,11 +18,9 @@ import {
     PositionService,
     MarketStateService,
     IPredictionCandlestick,
-    IActivePosition,
     ISplitStateID,
-    ILiquiditySide,
     IMinifiedKeyZone,
-    ISignalRecord
+    IPositionHeadline
 } from "../../core";
 import { 
     AppService, 
@@ -65,9 +63,9 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     private guiVersionSub?: Subscription;
 
     // Position
-    public position!: IActivePosition|undefined;
-    private positionSub?: Subscription;
-    private positionLoaded: boolean = false;
+    public positions: IPositionHeadline[] = [];
+    private positionsSub?: Subscription;
+    private positionsLoaded: boolean = false;
 
     // Prediction Lists
     public epoch?: IEpochRecord;
@@ -162,10 +160,10 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         });
 
         // Subscribe to be position summary
-        this.positionSub = this._app.position.subscribe((pos) => {
+        this.positionsSub = this._app.positions.subscribe((pos) => {
             if (pos !== null) {
-                this.onActivePositionUpdate(pos);
-                this.positionLoaded = true;
+                this.onActivePositionsUpdate(pos || []);
+                this.positionsLoaded = true;
                 this.checkLoadState();
             } 
         });
@@ -189,7 +187,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
     ngOnDestroy(): void {
         if (this.layoutSub) this.layoutSub.unsubscribe();
-        if (this.positionSub) this.positionSub.unsubscribe();
+        if (this.positionsSub) this.positionsSub.unsubscribe();
         if (this.predictionSub) this.predictionSub.unsubscribe();
         if (this.stateSub) this.stateSub.unsubscribe();
         if (this.guiVersionSub) this.guiVersionSub.unsubscribe();
@@ -209,11 +207,11 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     /**
      * Populates all the position values adjusted to the current
      * state.
-     * @param summary 
+     * @param headlines 
      */
-    private onActivePositionUpdate(summary: IActivePosition|undefined): void {
+    private onActivePositionsUpdate(headlines: IPositionHeadline[]): void {
         // Update the local value
-        this.position = summary;
+        this.positions = headlines;
 
         // ...
     }
@@ -1294,7 +1292,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
      * Checks if all the required data has been loaded.
      */
     private checkLoadState(): void {
-        this.loaded = this.positionLoaded && this.predictionsLoaded && this.stateLoaded;
+        this.loaded = this.positionsLoaded && this.predictionsLoaded && this.stateLoaded;
     }
 }
 

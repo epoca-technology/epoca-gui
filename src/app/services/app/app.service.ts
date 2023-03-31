@@ -15,7 +15,7 @@ import {
 	ICompressedCandlesticks, 
 	IEpochRecord, 
 	IMarketState, 
-	IActivePosition, 
+	IPositionHeadline, 
 	IPrediction, 
 	PredictionService, 
 	UtilsService 
@@ -64,7 +64,7 @@ export class AppService implements IAppService{
 	public guiVersion: BehaviorSubject<string|undefined|null> = new BehaviorSubject<string|undefined|null>(null);
 	public epoch: BehaviorSubject<IEpochRecord|undefined|null> = new BehaviorSubject<IEpochRecord|undefined|null>(null);
 	public prediction: BehaviorSubject<IPrediction|undefined|null> = new BehaviorSubject<IPrediction|undefined|null>(null);
-	public position: BehaviorSubject<IActivePosition|undefined|null> = new BehaviorSubject<IActivePosition|undefined|null>(null);
+	public positions: BehaviorSubject<IPositionHeadline[]|undefined|null> = new BehaviorSubject<IPositionHeadline[]|undefined|null>(null);
 	public marketState: BehaviorSubject<IMarketState|undefined|null> = new BehaviorSubject<IMarketState|undefined|null>(null);
 	public apiErrors: BehaviorSubject<number|undefined|null> = new BehaviorSubject<number|undefined|null>(null);
 
@@ -157,7 +157,7 @@ export class AppService implements IAppService{
 		this.guiVersion.next(undefined);
 		this.epoch.next(undefined);
 		this.prediction.next(undefined);
-		this.position.next(undefined);
+		this.positions.next(undefined);
 		this.marketState.next(undefined);
 		if (typeof this.appBulkStream == "function") this.appBulkStream();
 		this.appBulkStream = undefined;
@@ -286,8 +286,8 @@ export class AppService implements IAppService{
 		// Broadcast the active prediction
 		this.prediction.next(bulk.prediction);
 
-		// Broadcast the position summary
-		this.position.next(bulk.position);
+		// Broadcast the position headlines
+		this.positions.next(bulk.positions);
 
 		// Broadcast the api errors
 		this.apiErrors.next(bulk.apiErrors);

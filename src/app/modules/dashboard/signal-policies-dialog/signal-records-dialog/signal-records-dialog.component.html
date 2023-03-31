@@ -4,13 +4,13 @@
         <span class="truncate">Signal Records</span>
         <span fxFlex></span>
         <button mat-icon-button (click)="displayTooltip()" matTooltip="What is this?"><mat-icon>question_mark</mat-icon></button>
-        <button mat-button [matMenuTriggerFor]="menu" [disabled]="!loaded">
-            {{activeHistMenuItem.id}}
+        <button mat-icon-button [matMenuTriggerFor]="menu" [disabled]="!loaded">
+            <mat-icon>date_range</mat-icon>
         </button>
         <mat-menu #menu="matMenu">
             <button mat-menu-item 
                     *ngFor="let item of histMenu" 
-                    [disabled]="item.id == activeHistMenuItem.id" 
+                    [disabled]="item.id == activeHistMenuItem.id && item.id != 'custom'" 
                     (click)="loadHist(item)">{{item.name}}</button>
         </mat-menu>
         <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
@@ -20,7 +20,7 @@
     <div class="component">
         <!-- Loader -->
         <div *ngIf="!loaded">
-            <div class="section-loader"><div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div></div>
+            <div class="loader"><div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div></div>
         </div>
         <div *ngIf="loaded">
             <p *ngIf="!hist.length" class="no-records">No records were found</p>

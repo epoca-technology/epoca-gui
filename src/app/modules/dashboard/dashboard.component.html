@@ -189,9 +189,11 @@
                         <!-- Window State -->
                         <div fxFlex="64" fxFlex.xs="100" fxFlex.sm="100" class="chart-card full-width">
                             <!-- Heading -->
-                            <div fxLayout="row" fxLayoutAlign="start start" fxLayoutAlign.xs="center center" fxLayoutAlign.sm="center center"
+                            <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" 
+                                fxLayoutAlign="start start" fxLayoutAlign.xs="center center" fxLayoutAlign.sm="center center"
                                 class="chart-card-heading">
-                                <div class="show-on-desktop clickable" role="button" (click)="displayZoomMenu()">
+                                <div class="clickable" role="button" (click)="displayZoomMenu()"
+                                    [ngClass]="{'margin-bottom': layout == 'mobile', 'full-width': layout == 'mobile'}">
                                     <div fxLayout="row" fxLayoutAlign="start center">
                                         <h4 *ngIf="!activeZoom">Window</h4>
                                         <h4 *ngIf="activeZoom">Window {{activeZoom.id | uppercase}}</h4>
@@ -202,15 +204,20 @@
                                                 'light-text': state.window.s == 0
                                             }" 
                                             [svgIcon]="_ms.icons[state.window.s]"></mat-icon>
+
+                                            <span fxFlex class="show-on-mobile"></span>                                    
+                                            <p class="light-text ts-xs show-on-mobile">
+                                                {{state.window.w[state.window.w.length - 1].ct | date: 'mediumTime'}}
+                                            </p>
                                     </div>
-                                    <p class="light-text ts-xs">
-                                        {{state.window.w[state.window.w.length - 1].ct | date: layout == 'desktop' ? 'medium': 'mediumTime'}}
+                                    <p class="light-text ts-xs show-on-desktop">
+                                        {{state.window.w[state.window.w.length - 1].ct | date: 'medium'}}
                                     </p>
                                 </div>
                                 <span fxFlex class="show-on-desktop"></span>
 
-                                <div fxFlex>
-                                    <mat-grid-list [cols]="4" [rowHeight]="layout == 'desktop' ? '35px': '50px'" gutterSize="1px">
+                                <div fxFlex class="full-width">
+                                    <mat-grid-list [cols]="4" [rowHeight]="layout == 'desktop' ? '35px': '35px'" gutterSize="1px">
                                         <mat-grid-tile *ngFor="let id of _ms.splits" 
                                                         class="clickable" role="button" matRipple
                                                         (click)="displayWindowDialog(id)"
@@ -248,9 +255,11 @@
                             <div>
                                 <div class="chart-card">
                                     <!-- Heading -->
-                                    <div fxLayout="row" fxLayoutAlign="center start"
+                                    <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" 
+                                        fxLayoutAlign="start start" fxLayoutAlign.xs="center center" fxLayoutAlign.sm="center center"
                                         class="chart-card-heading badged-header full-width">
-                                        <div class="show-on-desktop clickable" role="button" (click)="displayActivePredictionDialog()">
+                                        <div class="clickable" role="button" (click)="displayActivePredictionDialog()"
+                                            [ngClass]="{'margin-bottom': layout == 'mobile', 'full-width': layout == 'mobile'}">
                                             <div fxLayout="row" fxLayoutAlign="start center">
                                                 <h4>Prediction</h4>
                                                 <mat-icon style="margin-left:5px;width:16px;height:16px"
@@ -260,17 +269,25 @@
                                                         'light-text': state.trend.s == 0
                                                     }" 
                                                     [svgIcon]="_ms.icons[state.trend.s]"></mat-icon>
+
+                                                <span fxFlex class="show-on-mobile"></span>
+                                                <p *ngIf="activePrediction" class="light-text ts-xs show-on-mobile">
+                                                    {{activePrediction.t | date: 'mediumTime'}}
+                                                </p>
+                                                <p *ngIf="!activePrediction" class="light-text ts-xs show-on-mobile">
+                                                    Unknown
+                                                </p>
                                             </div>
-                                            <p *ngIf="activePrediction" class="light-text ts-xs">
-                                                {{activePrediction.t | date: layout == 'desktop' ? 'medium': 'mediumTime'}}
+                                            <p *ngIf="activePrediction" class="light-text ts-xs show-on-desktop">
+                                                {{activePrediction.t | date: 'medium'}}
                                             </p>
-                                            <p *ngIf="!activePrediction" class="light-text ts-xs">Unknown</p>
+                                            <p *ngIf="!activePrediction" class="light-text ts-xs show-on-desktop">Unknown</p>
                                         </div>
                                         <span fxFlex class="show-on-desktop"></span>
 
                                         <!-- Trend -->
-                                        <div fxFlex>
-                                            <mat-grid-list [cols]="4" [rowHeight]="layout == 'desktop' ? '30px': '50px'" gutterSize="1px" class="trend-grid">
+                                        <div fxFlex class="full-width">
+                                            <mat-grid-list [cols]="4" [rowHeight]="layout == 'desktop' ? '30px': '35px'" gutterSize="1px" class="trend-grid">
                                                 <mat-grid-tile *ngFor="let id of _ms.splits" 
                                                                 class="clickable" role="button" matRipple
                                                                 (click)="displayTrendDialog(id)"

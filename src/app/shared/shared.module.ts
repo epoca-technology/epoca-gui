@@ -110,6 +110,9 @@ import { TooltipDialogComponent } from "./components/tooltip-dialog/tooltip-dial
 // Epochs Menu
 import { EpochsMenuComponent } from './components/epochs-menu/epochs-menu.component';
 
+// Date Range Form
+import { DateRangeFormDialogComponent } from './components/date-range-form-dialog/date-range-form-dialog.component';
+
 
 
 
@@ -171,6 +174,9 @@ import { EpochsMenuComponent } from './components/epochs-menu/epochs-menu.compon
 
 		// Epochs Menu
    		EpochsMenuComponent,
+
+		// Date Range
+   		DateRangeFormDialogComponent,
 	],
 	imports: [
 		CommonModule,

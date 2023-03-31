@@ -18,6 +18,7 @@ import {ConfirmationDialogComponent, IConfirmationDialogData} from "../../shared
 import {DataDialogComponent, IDataDialogData} from "../../shared/components/data-dialog";
 import {DialogMenuComponent, IDialogMenuData, IDialogMenuItem} from "../../shared/components/dialog-menu";
 import { ITooltipData, TooltipDialogComponent } from "../../shared/components/tooltip-dialog";
+import { IDateRangeConfig, DateRangeFormDialogComponent } from "../../shared/components/date-range-form-dialog";
 import {
 	ModelSelectionDialogComponent,
 	KerasModelDialogComponent,
@@ -194,6 +195,26 @@ export class NavService implements INavService {
 	}
 
 	
+	
+
+
+	
+	/*
+	* Opens the date range dialog.
+	* @param data?
+	* @returns MatDialogRef<any>
+	* */
+	public displayDateRangeDialog(data?: IDateRangeConfig): MatDialogRef<any> {
+		return this.dialog.open(DateRangeFormDialogComponent, {
+			disableClose: true,
+			hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
+			panelClass: "small-dialog",
+			data: data
+		});
+	}
+
+
+
 		
 	
 	/*
@@ -350,6 +371,14 @@ export class NavService implements INavService {
 
 	
 	
+	
+
+
+
+
+
+
+
 	
 	
 	/* Bottom Sheets */
