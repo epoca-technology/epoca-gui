@@ -113,6 +113,13 @@ import { EpochsMenuComponent } from './components/epochs-menu/epochs-menu.compon
 // Date Range Form
 import { DateRangeFormDialogComponent } from './components/date-range-form-dialog/date-range-form-dialog.component';
 
+// Position Dialogs
+import { 
+	PositionRecordDialogComponent, 
+	PositionInfoDialogComponent,
+	TradeExecutionPayloadDialogComponent
+} from './components/positions';
+
 
 
 
@@ -177,6 +184,11 @@ import { DateRangeFormDialogComponent } from './components/date-range-form-dialo
 
 		// Date Range
    		DateRangeFormDialogComponent,
+
+		// Position Record
+   		PositionRecordDialogComponent,
+   		PositionInfoDialogComponent,
+     	TradeExecutionPayloadDialogComponent,
 	],
 	imports: [
 		CommonModule,

@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import * as moment from "moment";
 import { ApexAnnotations, ApexChart, ApexPlotOptions, ApexYAxis, ApexAxisChartSeries, ApexXAxis } from "ng-apexcharts";
-import { IBacktestPosition, ICandlestick, IPredictionCandlestick, UtilsService } from "../../core";
+import { IBacktestPosition, ICandlestick, IPositionCandlestick, IPredictionCandlestick, UtilsService } from "../../core";
 import { AppService, ILayout } from "../app";
 import { 
 	IApexCandlestick, 
@@ -67,7 +67,7 @@ export class ChartService implements IChartService {
      * @returns ICandlestickChartOptions
      */
 	public getCandlestickChartOptions(
-		 candlesticks: Array<ICandlestick|IPredictionCandlestick>, 
+		 candlesticks: Array<ICandlestick|IPredictionCandlestick|IPositionCandlestick|any>, 
 		 annotations?: ApexAnnotations, 
 		 highlightCurrentPrice?: boolean,
 		 disableNiceScale?: boolean,
@@ -124,7 +124,7 @@ export class ChartService implements IChartService {
 	 * Given a list of raw candlesticks, it will convert them into Apex format.
 	 * @returns IApexCandlestick[]
 	 */
-    public getApexCandlesticks(candlesticks: Array<ICandlestick|IPredictionCandlestick>): IApexCandlestick[] {
+    public getApexCandlesticks(candlesticks: Array<ICandlestick|IPredictionCandlestick|IPositionCandlestick>): IApexCandlestick[] {
 		return candlesticks.map((c) => {
 			return {
 				x: c.ot,

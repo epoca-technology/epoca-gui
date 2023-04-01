@@ -14,6 +14,7 @@ export interface IDashboardComponent {
 
     // Misc Dialogs
     displayActivePredictionDialog(): void,
+    displayPositionRecordDialog(id: string): void,
 
     // Market State Dialogs
     displayWindowDialog(id: ISplitStateID): void,

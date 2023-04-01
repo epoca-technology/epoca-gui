@@ -12,6 +12,10 @@ import {
 	IUserPreferences,
 	ILocalTableInfo
 } from "./interfaces";
+import { IPositionRecord, PositionService } from "../position";
+
+
+
 
 @Injectable({
   providedIn: "root"
@@ -34,6 +38,7 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 	private regressionCertificates?: Dexie.Table;
 	private predictionCandlesticks?: Dexie.Table;
 	private epochPredictionCandlesticks?: Dexie.Table;
+	private positionRecords?: Dexie.Table;
 
 
 
@@ -41,6 +46,7 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 		private _epoch: EpochService,
 		private _candlestick: CandlestickService,
 		private _prediction: PredictionService,
+		private _position: PositionService,
 		private _utils: UtilsService
 	) { }
 
@@ -74,6 +80,7 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 					regressionCertificates: "id",
 					predictionCandlesticks: "id",
 					epochPredictionCandlesticks: "id",
+					positionRecords: "id",
 				});
 				
 				// Open the database
@@ -86,6 +93,7 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 				this.regressionCertificates = this.db.table("regressionCertificates");
 				this.predictionCandlesticks = this.db.table("predictionCandlesticks");
 				this.epochPredictionCandlesticks = this.db.table("epochPredictionCandlesticks");
+				this.positionRecords = this.db.table("positionRecords");
 
 				// Update the init state
 				this.initialized = true;
@@ -146,6 +154,7 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 			{ name: "regressionCertificates", records: await this.regressionCertificates!.count()},
 			{ name: "predictionCandlesticks", records: await this.predictionCandlesticks!.count()},
 			{ name: "epochPredictionCandlesticks", records: await this.epochPredictionCandlesticks!.count()},
+			{ name: "positionRecords", records: await this.positionRecords!.count()},
 		];
 	}
 
@@ -742,6 +751,73 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 			// Check if there are candlesticks that should be saved
 			if (saveable.length) await this.epochPredictionCandlesticks!.bulkPut(saveable);
 		} catch (e) { console.log(e) }
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	/******************************
+	 * Position Record Management *
+	 ******************************/
+
+
+
+
+
+	/**
+	 * Retrieves, stores and returns a position record. Note that it 
+	 * is only stored if the position has been closed.
+	 * @param id 
+	 * @returns Promise<IPredictionModelCertificate>
+	 */
+	public async getPositionRecord(id: string): Promise<IPositionRecord> {
+		// Attempt to initialize the db in case it hadn't been
+		if (!this.initialized) await this.initialize();
+
+		// If it is not compatible, return the original call right away
+		if (!this.initialized) return this._position.getPositionRecord(id);
+
+		/**
+		 * Check if the record is currently stored, in the case of an error when interacting
+		 * with the db, handle it and return the original call.
+		 */
+		try {
+			// Read the data and return it if found
+			const localData: ILocalData = await this.positionRecords!.where("id").equals(id).first();
+			if (localData && localData.data) { return localData.data } 
+
+			// If it isn't found, retrieve it, store it and return it
+			else { 
+				// Perform the request
+				const record: IPositionRecord = await this._position.getPositionRecord(id);
+
+				// Attempt to save it if the position has been closed
+				if (record.close) {
+					try {
+						await this.positionRecords!.put(<ILocalData> { id: id, data: record });
+					} catch (e) { console.error(e) }
+				}
+
+				// Finally, return it
+				return record; 
+			}
+		} catch (e) {
+			console.error(e);
+			return this._position.getPositionRecord(id);
+		}
 	}
 
 }

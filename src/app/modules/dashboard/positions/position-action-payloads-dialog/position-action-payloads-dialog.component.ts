@@ -1,20 +1,20 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import * as moment from "moment";
-import { ISignalRecord, SignalService } from '../../../../core';
+import { IPositionActionRecord, PositionService } from '../../../../core';
 import { AppService, NavService } from '../../../../services';
 import { IDateRangeConfig } from '../../../../shared/components/date-range-form-dialog';
-import { ISignalRecordsDialogComponent, IRecordHistoryRange, IIRecordHistoryRangeID } from './interfaces';
+import { IPosPRecordHistoryRangeID, IPositionActionPayloadsDialogComponent, IPosPRecordHistoryRange } from './interfaces';
 
 @Component({
-  selector: 'app-signal-records-dialog',
-  templateUrl: './signal-records-dialog.component.html',
-  styleUrls: ['./signal-records-dialog.component.scss']
+  selector: 'app-position-action-payloads-dialog',
+  templateUrl: './position-action-payloads-dialog.component.html',
+  styleUrls: ['./position-action-payloads-dialog.component.scss']
 })
-export class SignalRecordsDialogComponent implements OnInit, ISignalRecordsDialogComponent {
-	// Signals History
-	public hist: ISignalRecord[] = [];
-	public histMenu: IRecordHistoryRange[] = [
+export class PositionActionPayloadsDialogComponent implements OnInit, IPositionActionPayloadsDialogComponent {
+	// History
+	public hist: IPositionActionRecord[] = [];
+	public histMenu: IPosPRecordHistoryRange[] = [
 		{id: "24h", name: "Last 24 hours"},
 		{id: "48h", name: "Last 48 hours"},
 		{id: "72h", name: "Last 72 hours"},
@@ -23,17 +23,20 @@ export class SignalRecordsDialogComponent implements OnInit, ISignalRecordsDialo
 		{id: "1m", name: "Last month"},
 		{id: "custom", name: "Custom Date Range"},
 	];
-	public activeHistMenuItem: IRecordHistoryRange = this.histMenu[0];
+	public activeHistMenuItem: IPosPRecordHistoryRange = this.histMenu[0];
 	private activeRange!: IDateRangeConfig;
+
+	// Tab
+	public activeTab: number = 0;
 
 	// Load State
 	public loaded: boolean = false;
 
 	constructor(
-		public dialogRef: MatDialogRef<SignalRecordsDialogComponent>,
+		public dialogRef: MatDialogRef<PositionActionPayloadsDialogComponent>,
 		public _nav: NavService,
 		public _app: AppService,
-		private _signal: SignalService
+		private _position: PositionService
 	) { }
 
 	ngOnInit(): void {
@@ -41,6 +44,18 @@ export class SignalRecordsDialogComponent implements OnInit, ISignalRecordsDialo
 	}
 
 
+
+
+
+
+	/**
+	 * Triggers whenever the tab changes.
+	 * @param newIndex 
+	 */
+	public tabChanged(newIndex: number): void {
+		this.activeTab = newIndex;
+		this.loadHist(this.histMenu[0]);
+	}
 
 
 
@@ -53,18 +68,24 @@ export class SignalRecordsDialogComponent implements OnInit, ISignalRecordsDialo
 	 * @param range 
 	 * @returns Promise<void>
 	 */
-	public async loadHist(range: IRecordHistoryRange): Promise<void> {
+	public async loadHist(range: IPosPRecordHistoryRange): Promise<void> {
 		// Calculate the range of the query
 		const newRange: IDateRangeConfig|undefined = await this.calculateDateRange(range.id);
 
 		// Proceed if a new range has been selected
 		if (newRange) {
+			// Activate the range
 			this.activeRange = newRange
 
 			// Download the data
 			this.loaded = false;
 			try {
-				this.hist = await this._signal.getSignalRecords(this.activeRange.startAt, this.activeRange.endAt);
+				this.hist = await this._position.listPositionActionPayloads(
+					this.activeTab == 0 ? "POSITION_OPEN": "POSITION_CLOSE",
+					this.activeRange.startAt, 
+					this.activeRange.endAt
+				);
+				this.hist.reverse();
 				this.activeHistMenuItem = range;
 			} catch (e) { this._app.error(e) }
 			this.loaded = true;
@@ -82,7 +103,7 @@ export class SignalRecordsDialogComponent implements OnInit, ISignalRecordsDialo
 	 * @param id
 	 * @returns {startAt: number, endAt: number}
 	 */
-	private calculateDateRange(id: IIRecordHistoryRangeID): Promise<IDateRangeConfig|undefined> { 
+	private calculateDateRange(id: IPosPRecordHistoryRangeID): Promise<IDateRangeConfig|undefined> { 
 		return new Promise((resolve, reject) => {
 			// Init the end
 			const endAt: number = this._app.marketState.value?.window.w[this._app.marketState.value?.window.w.length - 1].ct || this._app.serverTime.value!;
@@ -130,10 +151,10 @@ export class SignalRecordsDialogComponent implements OnInit, ISignalRecordsDialo
 
 
 	/**
-	 * Displays the Keyzones Module Tooltip.
+	 * Displays the Position Action Payloads Module Tooltip.
 	 */
 	public displayTooltip(): void {
-        this._nav.displayTooltip("Signal Records", [
+        this._nav.displayTooltip("Position Action Payloads", [
 			`@TODO`,
         ]);
 	}

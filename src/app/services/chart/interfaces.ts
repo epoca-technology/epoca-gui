@@ -1,4 +1,4 @@
-import { IBacktestPosition, ICandlestick, IPredictionCandlestick } from "../../core";
+import { IBacktestPosition, ICandlestick, IPositionCandlestick, IPredictionCandlestick } from "../../core";
 import {
 	ApexAxisChartSeries,
 	ApexChart,
@@ -31,7 +31,7 @@ export interface IChartService {
 	
     // Candlesticks
     getCandlestickChartOptions(
-		candlesticks: Array<ICandlestick|IPredictionCandlestick>, 
+		candlesticks: Array<ICandlestick|IPredictionCandlestick|IPositionCandlestick|any>, 
 		annotations?: ApexAnnotations, 
 		highlightCurrentPrice?: boolean,
 		disableNiceScale?: boolean,

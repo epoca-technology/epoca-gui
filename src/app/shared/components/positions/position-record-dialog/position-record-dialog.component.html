@@ -1,0 +1,63 @@
+<mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <button mat-icon-button class="show-on-mobile" (click)="close()"><mat-icon>arrow_back</mat-icon></button>
+        <span *ngIf="!loaded" class="truncate">Loading...</span>
+        <span *ngIf="loaded" class="truncate">
+            {{record.coin.symbol | baseAssetName}} {{record.side}}: 
+            {{record.unrealized_pnl > 0 ? '+': ''}}{{record.unrealized_pnl | currency}} | 
+            {{record.gain > 0 ? '+': ''}}{{record.gain}}% | {{record.gain_drawdown}}%
+        </span>
+        <span fxFlex></span>
+        <button mat-icon-button [disabled]="submitting" (click)="displayTooltip()" matTooltip="What is this?"><mat-icon>question_mark</mat-icon></button>
+        <app-refresh-button *ngIf="loaded && !record.close" [disabled]="submitting" (refresh)="refreshPositionRecord()" [intervalSeconds]="8"></app-refresh-button>
+        <button mat-icon-button [disabled]="submitting" (click)="displayPositionInfoDialog()" matTooltip="More Information"><mat-icon>info</mat-icon></button>
+        <button *ngIf="loaded && !record.close" mat-icon-button [disabled]="submitting" (click)="closePosition()" matTooltip="Close Position"><mat-icon>mobiledata_off</mat-icon></button>
+        <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
+    </div>
+</mat-toolbar>
+<div mat-dialog-content>
+    <!-- Loader -->
+    <div *ngIf="!loaded">
+        <div class="section-loader"><div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div></div>
+    </div>
+    <div *ngIf="loaded && record" class="padding" style="overflow:hidden;">
+        <!-- Mark Price Chart -->
+        <div *ngIf="markPriceChart">
+            <apx-chart
+                [series]="markPriceChart.series!"
+                [chart]="markPriceChart.chart!"
+                [plotOptions]="markPriceChart.plotOptions!"
+                [xaxis]="markPriceChart.xaxis!"
+                [yaxis]="markPriceChart.yaxis!"
+                [annotations]="markPriceChart.annotations!"
+                [title]="markPriceChart.title!"
+            ></apx-chart>
+        </div>
+
+        <!-- Gain% Chart -->
+        <div *ngIf="gainChart" class="margin-top">
+            <apx-chart
+                [series]="gainChart.series!"
+                [chart]="gainChart.chart!"
+                [plotOptions]="gainChart.plotOptions!"
+                [xaxis]="gainChart.xaxis!"
+                [yaxis]="gainChart.yaxis!"
+                [annotations]="gainChart!.annotations!"
+                [title]="gainChart.title!"
+            ></apx-chart>
+        </div>
+
+        <!-- Gain Drawdown% Chart -->
+        <div *ngIf="gainDrawdownChart" class="margin-top">
+            <apx-chart
+                [series]="gainDrawdownChart.series!"
+                [chart]="gainDrawdownChart.chart!"
+                [plotOptions]="gainDrawdownChart.plotOptions!"
+                [xaxis]="gainDrawdownChart.xaxis!"
+                [yaxis]="gainDrawdownChart.yaxis!"
+                [annotations]="gainDrawdownChart!.annotations!"
+                [title]="gainDrawdownChart.title!"
+            ></apx-chart>
+        </div>
+    </div>
+</div>

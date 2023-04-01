@@ -1,7 +1,7 @@
 <mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
     <div fxLayout="row" fxLayoutAlign="center center">
         <button mat-icon-button class="show-on-mobile" (click)="close()"><mat-icon>arrow_back</mat-icon></button>
-        <span class="truncate">Signal Records</span>
+        <span class="truncate">Position Headlines</span>
         <span fxFlex></span>
         <button mat-icon-button (click)="displayTooltip()" matTooltip="What is this?"><mat-icon>question_mark</mat-icon></button>
         <button mat-icon-button [matMenuTriggerFor]="menu" [disabled]="!loaded">
@@ -25,22 +25,19 @@
         </div>
         <div *ngIf="loaded">
             <p *ngIf="!hist.length" class="no-records">No records were found</p>
-            <div *ngFor="let record of hist; last as lastRecord">
+            <div *ngFor="let pos of hist; last as lastRecord" class="clickable" role="button" (click)="_nav.displayPositionRecordDialog(pos.id)">
                 <div fxLayout="row" fxLayoutAlign="center start">
                     <div fxFlex>
-                        <h5>{{record.r == 1 ? "Long": "Short"}}</h5>
-                        <p class="light-text ts-s">{{record.t | date: _app.layout.value == 'desktop' ? 'medium': 'short'}}</p>
+                        <h6>{{pos.s | baseAssetName}} {{pos.sd}}</h6>
+                        <p class="light-text ts-s">{{pos.o | date: _app.layout.value == 'desktop' ? 'medium': 'short'}}</p>
                     </div>
                     <span fxFlex="2"></span>
-                    <div fxFlex="50" class="symbols">
-                        <div *ngFor="let symbol of record.s" 
-                            class="symbol"
-                            [ngClass]="{
-                                'square-badge-success': record.r == 1,
-                                'square-badge-error': record.r == -1
-                            }">
-                            {{symbol | baseAssetName}}
-                        </div>
+                    <div [ngClass]="{
+                            'square-badge-success': pos.g > 0,
+                            'square-badge-error': pos.g < 0,
+                            'square-badge-neutral': pos.g == 0
+                        }">
+                        {{pos.g > 0 ? '+': ''}}{{pos.g}}%
                     </div>
                 </div>
                 <div *ngIf="!lastRecord" class="divider"></div>

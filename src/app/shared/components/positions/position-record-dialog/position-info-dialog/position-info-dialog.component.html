@@ -1,0 +1,153 @@
+<mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <button mat-icon-button class="show-on-mobile" (click)="close()"><mat-icon>arrow_back</mat-icon></button>
+        <span class="truncate">
+            {{record.coin.symbol | baseAssetName}} {{record.side}}: 
+            {{record.unrealized_pnl > 0 ? '+': ''}}{{record.unrealized_pnl | currency}} | 
+            {{record.gain > 0 ? '+': ''}}{{record.gain}}%
+        </span>
+        <span fxFlex></span>
+        <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
+    </div>
+</mat-toolbar>
+<div mat-dialog-content>
+    <!-- Container -->
+    <div class="component">
+        <!-- Position Details-->
+        <div class="padding">
+            <!-- Open -->
+            <div fxLayout="row" fxLayoutAlign="start start">
+                <p class="light-text ts-m truncate">Open</p>
+                <span fxFlex></span>
+                <p matTooltip="The time at which the Position was first detected.">
+                    {{record.open | date: 'medium'}}
+                </p>
+            </div>
+
+            <!-- Close -->
+            <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
+                <p class="light-text ts-m truncate">Close</p>
+                <span fxFlex></span>
+                <p *ngIf="record.close" matTooltip="The time at which the Position was closed.">
+                    {{record.close | date: 'medium'}}
+                </p>
+                <p *ngIf="!record.close" class="success-color ts-m">Running...</p>
+            </div>
+
+            <!-- Mark Price -->
+            <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
+                <p class="light-text ts-m truncate">Mark Price</p>
+                <span fxFlex></span>
+                <p matTooltip="The latest mark price provided by the exchange.">
+                    {{record.mark_price | currency: 'USD' : 'symbol' : '1.0-' + record.coin.pricePrecision}}
+                </p>
+            </div>
+
+            <!-- Entry Price -->
+            <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
+                <p class="light-text ts-m truncate">Entry Price</p>
+                <span fxFlex></span>
+                <p matTooltip="The weighted entry price based on all the trades within the position.">
+                    {{record.entry_price | currency: 'USD' : 'symbol' : '1.0-' + record.coin.pricePrecision}}
+                </p>
+            </div>
+
+            <!-- Stop Loss Price -->
+            <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
+                <p class="light-text ts-m truncate">Stop Loss</p>
+                <mat-icon *ngIf="record.stop_loss_order"
+                            matTooltip="STOP_MARKET Enabled"
+                            class="success-color" 
+                            style="font-size:16px;margin: 1px 0 0 3px;">shield</mat-icon>
+                <span fxFlex></span>
+                <div matTooltip="The price in which the position is labeled as 'unsuccessful' and is ready to be closed."
+                    (click)="displayStopLossOrder()"
+                    class="align-right clickable" role="button" 
+                    [ngClass]="{
+                        'error-color': !stopLossDistance || (stopLossDistance && stopLossDistance >= -0.25 && stopLossDistance <= 0.25),
+                        'light-text': stopLossDistance && (
+                            (stopLossDistance > -0.4 && stopLossDistance <= -0.25) || 
+                            (stopLossDistance >= 0.25 && stopLossDistance < 0.4)
+                        ), 
+                        'success-color': stopLossDistance && (stopLossDistance <= -0.4 || stopLossDistance >= 0.4)}">
+                    <p>{{record.stop_loss_price | currency: 'USD' : 'symbol' : '1.0-' + record.coin.pricePrecision}}</p>
+                    <p *ngIf="stopLossDistance" class="ts-xs">{{stopLossDistance}}% away</p>
+                    <p *ngIf="!stopLossDistance" class="ts-xs">Stop Loss Hit</p>
+                </div>
+            </div>
+
+            <!-- Take Profit Price 1 -->
+            <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
+                <p class="light-text ts-m truncate">Take Profit 1</p>
+                <span fxFlex></span>
+                <div matTooltip="Take Profit Level 1"
+                    class="align-right" 
+                    [ngClass]="{'success-color': !takeProfit1Distance, 'light-text': takeProfit1Distance}">
+                    <p>{{record.take_profit_price_1 | currency: 'USD' : 'symbol' : '1.0-' + record.coin.pricePrecision}}</p>
+                    <p *ngIf="takeProfit1Distance" class="ts-xs">{{takeProfit1Distance}}% away</p>
+                </div>
+            </div>
+
+            <!-- Take Profit Price 2 -->
+            <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
+                <p class="light-text ts-m truncate">Take Profit 2</p>
+                <span fxFlex></span>
+                <div matTooltip="Take Profit Level 2"
+                    class="align-right" 
+                    [ngClass]="{'success-color': !takeProfit2Distance, 'light-text': takeProfit2Distance}">
+                    <p>{{record.take_profit_price_2 | currency: 'USD' : 'symbol' : '1.0-' + record.coin.pricePrecision}}</p>
+                    <p *ngIf="takeProfit2Distance" class="ts-xs">{{takeProfit2Distance}}% away</p>
+                </div>
+            </div>
+
+            <!-- Take Profit Price 3 -->
+            <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
+                <p class="light-text ts-m truncate">Take Profit 3</p>
+                <span fxFlex></span>
+                <div matTooltip="Take Profit Level 3"
+                    class="align-right" 
+                    [ngClass]="{'success-color': !takeProfit3Distance, 'light-text': takeProfit3Distance}">
+                    <p>{{record.take_profit_price_3 | currency: 'USD' : 'symbol' : '1.0-' + record.coin.pricePrecision}}</p>
+                    <p *ngIf="takeProfit3Distance" class="ts-xs">{{takeProfit3Distance}}% away</p>
+                </div>
+            </div>
+
+            <!-- Liquidation-->
+            <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
+                <p class="light-text ts-m truncate">Liquidation</p>
+                <span fxFlex></span>
+                <div matTooltip="Liquidation Price (Distance)" class="align-right" 
+                    [ngClass]="{'success-color': liquidationDistance >= 10,'error-color': liquidationDistance < 5}">
+                    <p>{{record.liquidation_price | currency: 'USD' : 'symbol' : '1.0-' + record.coin.pricePrecision}}</p>
+                    <p class="ts-xs">{{liquidationDistance}}% away</p>
+                </div>
+            </div>
+
+            <!-- Margin -->
+            <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
+                <p *ngIf="record.margin_type == 'isolated'" class="light-text ts-m truncate">Isolated Margin x{{record.leverage}}</p>
+                <p *ngIf="record.margin_type == 'cross'" class="error-color ts-m truncate">Cross Margin x{{record.leverage}}</p>
+                <span fxFlex></span>
+                <div class="align-right" >
+                    <p matTooltip="The total margin (USDT) put into the position.">
+                        {{record.isolated_wallet | currency}}
+                    </p>
+                    <p class="ts-xs light-text" 
+                        matTooltip="The current value of the isolated_wallet + unrealized_pnl.">
+                        ~{{record.isolated_margin | currency}}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Position Amount -->
+            <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
+                <p class="light-text ts-m truncate">Position Amount</p>
+                <span fxFlex></span>
+                <div matTooltip="Position Amount (BTC) and Notional (USDT)" class="align-right" >
+                    <p>{{record.position_amount | number: '1.0-' + record.coin.quantityPrecision}} {{record.coin.symbol | baseAssetName}}</p>
+                    <p class="ts-xs light-text">{{record.notional | currency}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

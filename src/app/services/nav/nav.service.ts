@@ -10,7 +10,8 @@ import {
 	IPredictionModelConfig, 
 	IPrediction,
 	IRegressionConfig,
-	IEpochRecord, 
+	IEpochRecord,
+	IBinanceTradeExecutionPayload, 
 } from "../../core";
 import {AppService} from "../app";
 import {BottomSheetMenuComponent, IBottomSheetMenuItem} from "../../shared/components/bottom-sheet-menu";
@@ -19,6 +20,7 @@ import {DataDialogComponent, IDataDialogData} from "../../shared/components/data
 import {DialogMenuComponent, IDialogMenuData, IDialogMenuItem} from "../../shared/components/dialog-menu";
 import { ITooltipData, TooltipDialogComponent } from "../../shared/components/tooltip-dialog";
 import { IDateRangeConfig, DateRangeFormDialogComponent } from "../../shared/components/date-range-form-dialog";
+import { PositionRecordDialogComponent, TradeExecutionPayloadDialogComponent } from "../../shared/components/positions";
 import {
 	ModelSelectionDialogComponent,
 	KerasModelDialogComponent,
@@ -372,6 +374,46 @@ export class NavService implements INavService {
 	
 	
 	
+
+
+
+
+
+	/*
+	* Opens the dialog that contains the full position record
+	* @param id
+	* @returns MatDialogRef<any>
+	* */
+	public displayPositionRecordDialog(id: string): MatDialogRef<any> {
+		return this.dialog.open(PositionRecordDialogComponent, {
+			hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
+			panelClass: "large-dialog",
+			data: id
+		});
+	}
+
+
+
+
+
+
+
+	/*
+	* Opens the dialog that contains a trade execution payload.
+	* @param payload
+	* @returns MatDialogRef<any>
+	* */
+	public displayTradeExecutionPayloadDialog(payload: IBinanceTradeExecutionPayload): MatDialogRef<any> {
+		return this.dialog.open(TradeExecutionPayloadDialogComponent, {
+			hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
+			panelClass: "small-dialog",
+			data: payload
+		});
+	}
+
+
+
+
 
 
 

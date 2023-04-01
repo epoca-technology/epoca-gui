@@ -1,0 +1,104 @@
+<mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <button mat-icon-button class="show-on-mobile" (click)="close()"><mat-icon>arrow_back</mat-icon></button>
+        <span>Trade Execution Payload</span>
+        <span fxFlex></span>
+        <button mat-icon-button *ngIf="payload" (click)="_nav.displayDataDialog('Trade Exeuction Payload', payload)"><mat-icon>text_snippet</mat-icon></button>
+        <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
+    </div>
+</mat-toolbar>
+<div mat-dialog-content>
+    <!-- Container -->
+    <div *ngIf="payload" class="padding">
+        <div *ngIf="payload.updateTime" class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p>Update Time</p>
+            <span fxFlex></span>
+            <p>{{payload.updateTime | date: 'medium'}}</p>
+        </div>
+        <div *ngIf="payload.symbol" class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p class="truncate">Symbol</p>
+            <span fxFlex></span>
+            <p>{{payload.symbol}}</p>
+        </div>
+        <div *ngIf="payload.status" class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p class="truncate">Status</p>
+            <span fxFlex></span>
+            <p>{{payload.status}}</p>
+        </div>
+        <div *ngIf="payload.type" class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p class="truncate">Type</p>
+            <span fxFlex></span>
+            <p>{{payload.type}}</p>
+        </div>
+        <div *ngIf="payload.origType" class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p class="truncate">Orig. Type</p>
+            <span fxFlex></span>
+            <p>{{payload.origType}}</p>
+        </div>
+        <div *ngIf="payload.workingType" class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p class="truncate">Working Type</p>
+            <span fxFlex></span>
+            <p>{{payload.workingType}}</p>
+        </div>
+        <div *ngIf="payload.side" class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p class="truncate">Side</p>
+            <span fxFlex></span>
+            <p>{{payload.side}}</p>
+        </div>
+        <div class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p class="truncate">Reduce Only</p>
+            <span fxFlex></span>
+            <p>{{payload.reduceOnly}}</p>
+        </div>
+        <div *ngIf="payload.price" class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p class="truncate">Price</p>
+            <span fxFlex></span>
+            <p>{{payload.price}}</p>
+        </div>
+        <div *ngIf="payload.avgPrice" class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p class="truncate">Avg. Price</p>
+            <span fxFlex></span>
+            <p>{{payload.avgPrice}}</p>
+        </div>
+        <div *ngIf="payload.stopPrice" class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p class="truncate">Stop Price</p>
+            <span fxFlex></span>
+            <p>{{payload.stopPrice}}</p>
+        </div>
+        <div *ngIf="payload.origQty" class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p class="truncate">Orig. Quantity</p>
+            <span fxFlex></span>
+            <p>{{payload.origQty}}</p>
+        </div>
+        <div *ngIf="payload.executedQty" class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p class="truncate">Exec. Quantity</p>
+            <span fxFlex></span>
+            <p>{{payload.executedQty}}</p>
+        </div>
+        <div *ngIf="payload.cumQty" class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p class="truncate">Cum. Quantity</p>
+            <span fxFlex></span>
+            <p>{{payload.cumQty}}</p>
+        </div>
+        <div *ngIf="payload.cumQuote" class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p class="truncate">Cum. Quote</p>
+            <span fxFlex></span>
+            <p>{{payload.cumQuote}}</p>
+        </div>
+        <div *ngIf="payload.timeInForce" class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p class="truncate">Time In Force</p>
+            <span fxFlex></span>
+            <p>{{payload.timeInForce}}</p>
+        </div>
+        <div class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p class="truncate">Price Protect</p>
+            <span fxFlex></span>
+            <p>{{payload.priceProtect}}</p>
+        </div>
+        <div *ngIf="payload.clientOrderId" class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p class="truncate">Order ID</p>
+            <span fxFlex></span>
+            <p>{{payload.clientOrderId}}</p>
+        </div>
+    </div>
+</div>

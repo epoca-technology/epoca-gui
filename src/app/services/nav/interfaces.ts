@@ -6,6 +6,7 @@ import {
 	IPrediction,
 	IPredictionModelConfig,
 	IEpochRecord,
+	IBinanceTradeExecutionPayload,
 } from "../../core";
 import {IConfirmationDialogData} from "../../shared/components/confirmation-dialog";
 import {IBottomSheetMenuItem} from "../../shared/components/bottom-sheet-menu";
@@ -45,6 +46,8 @@ export interface INavService {
 	displayModelSelectionDialog(): MatDialogRef<any>,
 	displayPredictionModelConfigDialog(modelConfig: IPredictionModelConfig): MatDialogRef<any>
 	displayPredictionDialog(model: IPredictionModelConfig, pred: IPrediction): MatDialogRef<any>,
+	displayPositionRecordDialog(id: string): MatDialogRef<any>,
+	displayTradeExecutionPayloadDialog(payload: IBinanceTradeExecutionPayload): MatDialogRef<any>,
 	
 	// Bottom Sheets
 	displayBottomSheetMenu(data: IBottomSheetMenuItem[]): MatBottomSheetRef<any>,

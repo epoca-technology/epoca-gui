@@ -334,15 +334,20 @@
                                         <!-- Positions -->
                                         <div class="global-indicators-section">
                                             <mat-grid-list [cols]="3" [rowHeight]="layout == 'desktop' ? '42px': '50px'" gutterSize="1px">
-                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
-                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
-                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
-                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
-                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
-                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
-                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
-                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
-                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
+                                                <!-- Active Positions -->
+                                                <mat-grid-tile *ngFor="let pos of positions" class="clickable" role="button" matRipple
+                                                    (click)="displayPositionRecordDialog(pos.id)"
+                                                    [ngClass]="{
+                                                        'buy-action-container': pos.sd == 'LONG',
+                                                        'sell-action-container': pos.sd == 'SHORT',
+                                                        'weak-state': pos.g > 0 && pos.g < 0.35,
+                                                        'very-weak-state': pos.g <= 0
+                                                    }">
+                                                    <p>{{pos.s | baseAssetName}} {{pos.g > 0 ? '+': ''}}{{pos.g | number:'1.0-1'}}%</p>
+                                                </mat-grid-tile>
+
+                                                <!-- Placeholders -->
+                                                <mat-grid-tile *ngFor="let placeholder of positionsPlaceholders" class="placeholder-action-container"></mat-grid-tile>
                                             </mat-grid-list>
                                         </div>
 

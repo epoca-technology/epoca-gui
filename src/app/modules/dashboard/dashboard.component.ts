@@ -15,7 +15,6 @@ import {
     UtilsService,
     AuthService,
     IUserPreferences,
-    PositionService,
     MarketStateService,
     IPredictionCandlestick,
     ISplitStateID,
@@ -36,6 +35,7 @@ import { IMarketStateDialogConfig, MarketStateDialogComponent } from "./market-s
 import { IBottomSheetMenuItem } from "../../shared/components/bottom-sheet-menu";
 import { CoinsDialogComponent } from "./coins-dialog";
 import { SignalPoliciesDialogComponent } from "./signal-policies-dialog";
+import { PositionActionPayloadsDialogComponent, PositionHeadlinesDialogComponent } from "./positions";
 import { IDashboardComponent, IWindowZoom, IWindowZoomID, IWindowZoomPrices } from "./interfaces";
 
 @Component({
@@ -64,6 +64,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
     // Position
     public positions: IPositionHeadline[] = [];
+    public positionsPlaceholders: number[] = [];
     private positionsSub?: Subscription;
     private positionsLoaded: boolean = false;
 
@@ -124,7 +125,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         public _prediction: PredictionService,
         private _utils: UtilsService,
         private _auth: AuthService,
-        private _position: PositionService,
         public _ms: MarketStateService
     ) { }
 
@@ -162,7 +162,8 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         // Subscribe to be position summary
         this.positionsSub = this._app.positions.subscribe((pos) => {
             if (pos !== null) {
-                this.onActivePositionsUpdate(pos || []);
+                this.positions = pos || [];
+                this.positionsPlaceholders = Array(9 - this.positions.length).fill(0);
                 this.positionsLoaded = true;
                 this.checkLoadState();
             } 
@@ -193,37 +194,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         if (this.guiVersionSub) this.guiVersionSub.unsubscribe();
         this.titleService.setTitle("Epoca");
     }
-
-
-
-
-
-
-    /* Position Update Event Handler */
-
-
-
-
-    /**
-     * Populates all the position values adjusted to the current
-     * state.
-     * @param headlines 
-     */
-    private onActivePositionsUpdate(headlines: IPositionHeadline[]): void {
-        // Update the local value
-        this.positions = headlines;
-
-        // ...
-    }
-
-
-
-
-
-
-
-
-
 
 
 
@@ -340,12 +310,13 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
         // Finally, update the chart
         if (this.predictionCandlesticksChart) {
-            this.predictionCandlesticksChart.series = [
+            /*this.predictionCandlesticksChart.series = [
                 {
                     name: "candle",
                     data: this._chart.getApexCandlesticks(this.predictionCandlesticks)
                 }
-            ];
+            ];*/
+            this.predictionCandlesticksChart.series = [{data: this._chart.getApexCandlesticks(this.predictionCandlesticks)}]
             this.predictionCandlesticksChart.annotations = this.getPredictionCandlestickAnnotations();
         } else {
             this.predictionCandlesticksChart = this._chart.getCandlestickChartOptions(
@@ -385,6 +356,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         let sumStr: string = typeof this.activeSum == "number" ? <string>this._utils.outputNumber(this.activeSum, {dp: 3, of: "s"}): "0";
         let annOffset: {x: number, y: number} = {x: 0, y: 0};
         if (sumStr.length == 1 ) { annOffset.x = 20 }
+        else if (sumStr.length == 2 ) { annOffset.x = 22 }
         else if (sumStr.length == 3 ) { annOffset.x = 24 }
         else if (sumStr.length == 4 ) { annOffset.x = 29 }
         else if (sumStr.length == 5 ) { annOffset.x = 36 }
@@ -549,12 +521,13 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             }
 
             // Update the series
-            this.windowChart.series = [
+            /*this.windowChart.series = [
                 {
                     name: "candle",
                     data: this._chart.getApexCandlesticks(this.state.window.w)
                 }
-            ];
+            ];*/
+            this.windowChart.series = [{data: this._chart.getApexCandlesticks(this.state.window.w)}]
 
             // Update the annotations
             this.windowChart.annotations = this.buildWindowAnnotations();
@@ -1000,9 +973,15 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             {
                 icon: 'money_bill_transfer',  
                 svg: true,
-                title: 'Positions', 
+                title: 'Position Headlines', 
                 description: 'View the list of active and closed positions.', 
-                response: "POSITIONS"
+                response: "POSITION_HEADLINES"
+            },
+            {
+                icon: 'receipt_long',  
+                title: 'Position Actions', 
+                description: 'View the list of payloads stored when interacting with positions.', 
+                response: "POSITION_ACTION_PAYLOADS"
             },
             {
                 icon: 'account_balance_wallet',  
@@ -1012,9 +991,41 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             },
         ]);
 		bs.afterDismissed().subscribe((response: string|undefined) => {
-            if      (response === "POSITIONS") { this.displayBalanceDialog() }
+            if      (response === "POSITION_HEADLINES") { this.displayPositionHeadlinesDialog() }
+            else if (response === "POSITION_ACTION_PAYLOADS") { this.displayPositionActionPayloadsDialog() }
             else if (response === "ACCOUNT_BALANCE") { this.displayBalanceDialog() }
 		});
+	}
+
+
+
+
+	/**
+	 * Displays the position headlines dialog.
+     * @param taInterval
+	 */
+    private displayPositionHeadlinesDialog(): void {
+		this.dialog.open(PositionHeadlinesDialogComponent, {
+			hasBackdrop: this._app.layout.value != "mobile",
+			panelClass: "small-dialog",
+			data: {}
+		})
+	}
+    
+
+
+
+
+	/**
+	 * Displays the position action payloads dialog.
+     * @param taInterval
+	 */
+    private displayPositionActionPayloadsDialog(): void {
+		this.dialog.open(PositionActionPayloadsDialogComponent, {
+			hasBackdrop: this._app.layout.value != "mobile",
+			panelClass: "small-dialog",
+			data: {}
+		})
 	}
 
 
@@ -1053,7 +1064,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 	 * Displays the features dedicated dialog to gather more information
 	 * about the prediction.
 	 */
-     public displayActivePredictionDialog(): void {
+    public displayActivePredictionDialog(): void {
         if (!this.epoch!.model || !this.activePrediction) return;
         this._nav.displayPredictionDialog(this.epoch!.model, this.activePrediction!);
 	}
@@ -1061,7 +1072,15 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
 
 
+    
 
+    /**
+     * Displays the position record dialog.
+     * @param id 
+     */
+    public displayPositionRecordDialog(id: string): void {
+        this._nav.displayPositionRecordDialog(id);
+	}
 
 
 

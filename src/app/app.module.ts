@@ -121,12 +121,16 @@ import {
 	SignalRecordsDialogComponent,
 	SignalPoliciesDialogComponent,
 	LiquidityDialogComponent,
-	CoinsDialogComponent
+	CoinsDialogComponent,
+	PositionHeadlinesDialogComponent,
+	PositionActionPayloadsDialogComponent
 } from "./modules/dashboard";
 
 
 // Core Components
 import { AppComponent } from "./app.component";
+
+
 
 
 
@@ -150,6 +154,8 @@ import { AppComponent } from "./app.component";
 		SignalPoliciesDialogComponent,
     	LiquidityDialogComponent,
      	CoinsDialogComponent,
+		PositionHeadlinesDialogComponent,
+		PositionActionPayloadsDialogComponent,
 	],
 	imports: [
 		// Core

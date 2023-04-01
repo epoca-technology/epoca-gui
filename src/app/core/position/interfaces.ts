@@ -5,7 +5,13 @@ import { ICoin } from "../market-state";
 
 // Service
 export interface IPositionService {
+    // Position Retrievers
+    getPositionRecord(id: string): Promise<IPositionRecord>,
+    listPositionHeadlines(startAt: number, endAt: number): Promise<IPositionHeadline[]>,
+    listPositionActionPayloads(kind: IPositionActionKind, startAt: number, endAt: number): Promise<IPositionActionRecord[]>,
 
+    // Position Actions
+    closePosition(symbol: string, otp: string): Promise<void>,
 
     // Position Strategy
     getStrategy(): Promise<IPositionStrategy>,
@@ -174,6 +180,7 @@ export interface IPositionStrategy {
 }
 
 
+
 /**
  * Position Exit Strategy
  * The exit prices calculated when a new position is detected.
@@ -190,7 +197,25 @@ export interface IPositionExitStrategy {
 
 
 
+/**
+ * Position Gain State
+ * Whenever an active position refreshes, its gain state changes as
+ * prices are constantly fluctuating.
+ */
+export interface IPositionGainState {
+    // Gain%
+    gain: number,
 
+    // Highest Gain%
+    highest_gain: number,
+
+    /**
+     * The percentual difference between highest_gain and gain. If 
+     * gain is less than take_profit_1.price_change_requirement, this
+     * value will be 0. Otherwise, it will always be a negative number.
+     */
+    gain_drawdown: number
+}
 
 
 
@@ -286,6 +311,15 @@ export interface IPositionRecord {
     take_profit_price_2: number,
     take_profit_price_3: number,
 
+    // The price in which the position is labeled as "unsuccessful" and is ready to be closed.
+    stop_loss_price: number,
+
+    /**
+     * The stop-loss order currently shielding the position. If it hasn't been created, this value will 
+     * be undefined.
+     */
+    stop_loss_order: IBinanceTradeExecutionPayload|undefined,
+
     // The % the price has moved in favor or against. If losing, the value will be a negative number
     gain: number,
 
@@ -295,15 +329,6 @@ export interface IPositionRecord {
      */
     highest_gain: number,
     gain_drawdown: number,
-
-    // The price in which the position is labeled as "unsuccessful" and is ready to be closed.
-    stop_loss_price: number,
-
-    /**
-     * The stop-loss order currently shielding the position. If it hasn't been created, this value will 
-     * be undefined.
-     */
-    stop_loss_order: object|undefined,
 
 
 
@@ -506,7 +531,6 @@ export interface IAccountBalance {
     // The time in which the balance data was last updated by Binance
     ts: number
 }
-
 
 
 

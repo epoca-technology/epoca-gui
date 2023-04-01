@@ -2,47 +2,54 @@ import { Injectable } from '@angular/core';
 import { ApiService } from "../api";
 import { UtilsService } from '../utils';
 import { 
-    IBinancePositionSide, 
-    IPositionService, 
-    IPositionStrategy, 
-    IAccountBalance
+IPositionService, 
+IPositionStrategy, 
+IAccountBalance,
+IPositionRecord,
+IPositionHeadline,
+IPositionActionKind,
+IPositionActionRecord
 } from './interfaces';
 
 @Injectable({
-  providedIn: 'root'
+providedIn: 'root'
 })
 export class PositionService implements IPositionService {
-    
 
 
 
 
 
-    constructor(
-        private _api: ApiService,
-        private _utils: UtilsService
-    ) { }
+
+	constructor(
+		private _api: ApiService,
+		private _utils: UtilsService
+	) { }
+
+
+
+
+
+
+
 
 
 
 	/***********************
-	 * Position Management *
+	 * Position Retrievers *
 	 ***********************/
 
 
 
 
-
-
-    /**
-     * Opens a brand new position on a given side.
-     * @param side
-     * @param otp
-     * @returns Promise<void>
-     */
-    public open(side: IBinancePositionSide, otp: string): Promise<void> { 
-        return this._api.request("post","position/open", {side: side}, true, otp);
-    }
+	/**
+	 * Retrieves a position record by ID.
+	 * @param id
+	 * @returns Promise<IPositionRecord>
+	 */
+	public getPositionRecord(id: string): Promise<IPositionRecord> {
+		return this._api.request("get","position/getPositionRecord", {id: id}, true);
+	}
 
 
 
@@ -51,17 +58,64 @@ export class PositionService implements IPositionService {
 
 
 
+	/**
+	 * Retrieves a list of headlines based on given date range.
+	 * @param startAt
+	 * @param endAt
+	 * @returns Promise<IPositionHeadline[]>
+	 */
+	public listPositionHeadlines(startAt: number, endAt: number): Promise<IPositionHeadline[]> {
+		return this._api.request("get","position/listPositionHeadlines", {startAt: startAt, endAt: endAt}, true);
+	}
 
-    /**
-     * Closes an existing position based on a given side.
-     * @param side
-     * @param chunkSize
-     * @param otp
-     * @returns Promise<void>
-     */
-    public close(side: IBinancePositionSide, chunkSize: number, otp: string): Promise<void> { 
-        return this._api.request("post","position/close", {side: side, chunkSize: chunkSize}, true, otp);
-    }
+
+
+
+
+
+	/**
+	 * Retrieves a list of position action payloads based on given kind & date range.
+	 * @param kind
+	 * @param startAt
+	 * @param endAt
+	 * @returns Promise<IPositionActionRecord[]>
+	 */
+	public listPositionActionPayloads(kind: IPositionActionKind, startAt: number, endAt: number): Promise<IPositionActionRecord[]> {
+		return this._api.request("get","position/listPositionActionPayloads", {kind: kind, startAt: startAt, endAt: endAt}, true);
+	}
+
+
+
+
+
+
+
+
+
+
+
+	/********************
+	 * Position Actions *
+	 ********************/
+
+
+
+
+	/**
+	 * Closes an active position for the given symbol.
+	 * @param symbol
+	 * @param otp
+	 * @returns Promise<void>
+	 */
+	public closePosition(symbol: string, otp: string): Promise<void> { 
+		return this._api.request("post","position/closePosition", {symbol: symbol}, true, otp);
+	}
+
+
+
+
+
+
 
 
 
@@ -84,29 +138,24 @@ export class PositionService implements IPositionService {
 
 	/**
 	 * Retrieves the current position strategy.
-	 * @param side
 	 * @returns Promise<IPositionStrategy>
 	 */
-    public getStrategy(): Promise<IPositionStrategy> {
-		return this._api.request(
-            "get","position/getStrategy", 
-            {}, 
-            true
-        );
+	public getStrategy(): Promise<IPositionStrategy> {
+		return this._api.request("get","position/getStrategy", {}, true);
 	}
 
 
 
 
-    /**
-     * Updates the trading strategy.
-     * @param newStrategy
-     * @param otp
-     * @returns Promise<void>
-     */
-    public updateStrategy(newStrategy: IPositionStrategy, otp: string): Promise<void> { 
-        return this._api.request("post","position/updateStrategy", {newStrategy: newStrategy}, true, otp);
-    }
+	/**
+	 * Updates the trading strategy.
+	 * @param newStrategy
+	 * @param otp
+	 * @returns Promise<void>
+	 */
+	public updateStrategy(newStrategy: IPositionStrategy, otp: string): Promise<void> { 
+		return this._api.request("post","position/updateStrategy", {newStrategy: newStrategy}, true, otp);
+	}
 
 
 
@@ -131,15 +180,10 @@ export class PositionService implements IPositionService {
 
 
 	/**
-	 * Retrieves the current position strategy.
-	 * @param side
+	 * Retrieves the current account balance.
 	 * @returns Promise<IAccountBalance>
 	 */
-    public getBalance(): Promise<IAccountBalance> {
-		return this._api.request(
-            "get","position/getBalance", 
-            {}, 
-            true
-        );
+	public getBalance(): Promise<IAccountBalance> {
+		return this._api.request("get","position/getBalance", {}, true);
 	}
 }
