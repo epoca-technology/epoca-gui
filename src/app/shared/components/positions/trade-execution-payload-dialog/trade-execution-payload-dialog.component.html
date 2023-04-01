@@ -50,6 +50,11 @@
             <span fxFlex></span>
             <p>{{payload.reduceOnly}}</p>
         </div>
+        <div *ngIf="payload.timeInForce" class="row" fxLayout="row" fxLayoutAlign="start center">
+            <p class="truncate">Time In Force</p>
+            <span fxFlex></span>
+            <p>{{payload.timeInForce}}</p>
+        </div>
         <div *ngIf="payload.price" class="row" fxLayout="row" fxLayoutAlign="start center">
             <p class="truncate">Price</p>
             <span fxFlex></span>
@@ -84,11 +89,6 @@
             <p class="truncate">Cum. Quote</p>
             <span fxFlex></span>
             <p>{{payload.cumQuote}}</p>
-        </div>
-        <div *ngIf="payload.timeInForce" class="row" fxLayout="row" fxLayoutAlign="start center">
-            <p class="truncate">Time In Force</p>
-            <span fxFlex></span>
-            <p>{{payload.timeInForce}}</p>
         </div>
         <div class="row" fxLayout="row" fxLayoutAlign="start center">
             <p class="truncate">Price Protect</p>
