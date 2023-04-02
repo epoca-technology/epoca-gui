@@ -199,7 +199,7 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 
 		// Retrieve the coin's state
 		const state: ICoinState = await this._ms.getCoinFullState(this.config.symbol!);
-
+		
 		// Set the state average
 		this.stateAverage = state.s;
 

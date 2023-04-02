@@ -3,7 +3,7 @@
         <button mat-icon-button class="show-on-mobile" (click)="close()" [disabled]="!loaded"><mat-icon>arrow_back</mat-icon></button>
         <span *ngIf="!loaded" class="truncate">Loading...</span>
         <mat-icon *ngIf="loaded && !stateEvent" class="show-on-desktop" [svgIcon]="_ms.icons[stateAverage]" style="margin-right:7px;"></mat-icon>
-        <mat-icon *ngIf="loaded && stateEvent" class="show-on-desktop" [svgIcon]="_ms.coinStateIcons[stateAverage]" style="margin-right:7px;"></mat-icon>
+        <mat-icon *ngIf="loaded && stateEvent" class="show-on-desktop" [svgIcon]="_ms.coinStateIcons[stateEvent]" style="margin-right:7px;"></mat-icon>
         <span *ngIf="loaded" class="truncate">{{title}}</span>
         <span fxFlex></span>
         <button mat-icon-button *ngIf="loaded" (click)="displayInfoTooltip()" matTooltip="More information"><mat-icon class="info-icon" svgIcon="info"></mat-icon></button>

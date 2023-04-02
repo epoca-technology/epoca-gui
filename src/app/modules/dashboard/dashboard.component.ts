@@ -111,10 +111,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     // Loading State
     public loaded: boolean = false;
 
-    // Submission State
-    public submitting: boolean = false;
-    public submittingText: string = "";
-
     constructor(
         public _nav: NavService,
         private _localDB: LocalDatabaseService,
@@ -154,8 +150,10 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                 }
 
                 // Set loading state
-                this.stateLoaded = true;
-                this.checkLoadState();
+                if (!this.stateLoaded) {
+                    this.stateLoaded = true;
+                    this.checkLoadState();
+                }
             }
         });
 
@@ -164,8 +162,10 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             if (pos !== null) {
                 this.positions = pos || [];
                 this.positionsPlaceholders = Array(9 - this.positions.length).fill(0);
-                this.positionsLoaded = true;
-                this.checkLoadState();
+                if (!this.positionsLoaded) {
+                    this.positionsLoaded = true;
+                    this.checkLoadState();
+                }
             } 
         });
 
@@ -742,7 +742,10 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
 
 
-    /* Coins State */
+
+    /***************
+     * Coins State *
+     ***************/
 
 
 
@@ -844,6 +847,11 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
 
 
+
+
+
+
+    
 
 
     /**************************

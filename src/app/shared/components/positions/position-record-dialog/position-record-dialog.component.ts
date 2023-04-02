@@ -13,6 +13,7 @@ import {
 	AppService, 
 	ChartService, 
 	ICandlestickChartOptions, 
+	IChartRange, 
 	ILayout, 
 	NavService 
 } from '../../../../services';
@@ -104,6 +105,9 @@ export class PositionRecordDialogComponent implements OnInit, IPositionRecordDia
 		// Unpack the candlesticks
 		const { markPrice, gain, gainDrawdown } = this.unpackCandlesticks();
 
+		// Calculate the mark price chart range
+		const { min, max } = this.calculateMarkPriceRange(markPrice);
+
 		// Check if the charts already exist
 		if (this.markPriceChart && this.gainChart && this.gainDrawdownChart) {
 			/*this.markPriceChart.series = [
@@ -112,7 +116,9 @@ export class PositionRecordDialogComponent implements OnInit, IPositionRecordDia
 					data: this._chart.getApexCandlesticks(markPrice)
 				}
 			];*/
-			this.markPriceChart.series = [ {data: this._chart.getApexCandlesticks(markPrice)}]
+			this.markPriceChart.series = [ {data: this._chart.getApexCandlesticks(markPrice)}];
+			this.markPriceChart.yaxis.min = min;
+			this.markPriceChart.yaxis.max = max;
 			/*this.gainChart.series = [
 				{
 					name: "candle",
@@ -136,14 +142,13 @@ export class PositionRecordDialogComponent implements OnInit, IPositionRecordDia
 			// Mark Price Chart
 			this.markPriceChart = this._chart.getCandlestickChartOptions(
 				markPrice, 
-				undefined, 
+				this.buildMarkPriceAnnotations(), 
 				false, 
-				false,
-				undefined,
+				true,
+				{ min: min, max: max},
 				this.layout == "desktop" ? 400: 330,
 				"Mark Price"
 			);
-			this.markPriceChart.annotations = this.buildMarkPriceAnnotations();
 			this.markPriceChart.chart!.toolbar = {show: true,tools: {selection: true,zoom: true,zoomin: true,zoomout: true,download: false}};
 			this.markPriceChart.chart!.zoom = {enabled: true, type: "xy"};
 			//this.markPriceChart.chart!.zoom = {enabled: false};
@@ -200,6 +205,35 @@ export class PositionRecordDialogComponent implements OnInit, IPositionRecordDia
 
 
 
+
+	/**
+	 * Calculates the range that should be applied to the mark price chart.
+	 * @param candlesticks 
+	 * @returns IChartRange
+	 */
+	private calculateMarkPriceRange(candlesticks: IPositionCandlestick[]): IChartRange {
+		// Init values
+		let min: number = 0;
+		let max: number = 0;
+
+		// Iterate over each candlestick and populate the min and max values
+		for (let candlestick of candlesticks) {
+			min = min == 0 || candlestick.l < 0 ? candlestick.l: min;
+			max = candlestick.h > max ? candlestick.h: max;
+		}
+
+		// Update the values based on the exit combinations.
+		if (this.record.side == "LONG") {
+			max = this.record.take_profit_price_3 > max ? this.record.take_profit_price_3: max;
+			min = this.record.stop_loss_price < min ? this.record.stop_loss_price: min;
+		} else {
+			max = this.record.stop_loss_price > max ? this.record.stop_loss_price: max;
+			min = this.record.take_profit_price_3 < min ? this.record.take_profit_price_3: min;
+		}
+
+		// Finally, return the range
+		return { min: min, max: max };
+	}
 
 
 

@@ -137,14 +137,12 @@
                     <!-- Business -->
                     <button mat-button 
                             *ngIf="loaded && layout == 'desktop'"
-                            (click)="displayBusinessMenu()"
-                            [disabled]="submitting">
+                            (click)="displayBusinessMenu()">
                             <mat-icon>storefront</mat-icon>&nbsp;Business
                     </button>
                     <button mat-icon-button 
                             *ngIf="loaded && layout == 'mobile'"
-                            (click)="displayBusinessMenu()"
-                            [disabled]="submitting">
+                            (click)="displayBusinessMenu()">
                             <mat-icon>storefront</mat-icon>
                     </button>
 
@@ -163,7 +161,6 @@
                     <!-- Menu -->
                     <button mat-icon-button 
                             (click)="sidenav?.toggle()" 
-                            [disabled]="submitting"
                             class="show-on-mobile"><mat-icon style="font-size:26px;">menu</mat-icon></button>
                 </div>
             </mat-toolbar>
@@ -400,7 +397,7 @@
                                     <div fxFlex="50" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
                                         <div class="divider show-on-mobile"></div>
                                         <div class="global-indicators-section">
-                                            <mat-grid-list class="coin-grid" [cols]="4" [rowHeight]="layout == 'desktop' ? '42px': '50px'" gutterSize="1px">
+                                            <mat-grid-list [cols]="4" [rowHeight]="layout == 'desktop' ? '42px': '80px'" gutterSize="1px">
                                                 <!-- Previous Navigation -->
                                                 <mat-grid-tile *ngIf="activeCoinPage > 1" class="clickable action-container" role="button" matRipple 
                                                     (click)="activateFirstCoinsPage()">
@@ -438,11 +435,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <!-- Submission Card -->
-            <div class="submission-status" fxLayout="row" fxLayoutAlign="center center" *ngIf="submitting">
-                <mat-spinner diameter="25"></mat-spinner><p class="ts-m">{{submittingText}}</p>
             </div>
 
             <!-- Mobile Tabs -->

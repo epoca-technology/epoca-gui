@@ -15,59 +15,7 @@
     }
 
 
-    .long-position-button { 
-        border-radius: 7px;
-        min-width: 100px;
-        max-width:100%;
-        height:35px;
-        background-color: #26A69A;
-        .hp {
-            top:0;
-            left:0;
-            position: absolute;
-            height:35px;
-            background-color: #004D40;
-        }
-        p {
-            position: relative;
-            padding:7px;
-            text-align: center;
-            height:35px;
-            font-weight: 600;
-            font-size:12px!important;
-            color:#FFFFFF;
-        }
-    }
 
-    .short-position-button { 
-        border-radius: 7px;
-        min-width: 100px;
-        max-width:100%;
-        height:35px;
-        background-color: #EF5350;
-        .hp {
-            top:0;
-            left:0;
-            position: absolute;
-            height:35px;
-            background-color: #B71C1C;
-        }
-        p {
-            position: relative;
-            padding:7px;
-            text-align: center;
-            height:35px;
-            font-weight: 600;
-            font-size:12px!important;
-            color:#FFFFFF;
-        }
-    }
-
-
-    .close-position-menu {
-        max-width:15px!important;
-        .mat-menu-item { max-width:15px!important;}
-    }
     .inactive { opacity: 0.65;}
 
     .state-badge { .mat-icon {max-height:17px;}}
@@ -76,24 +24,6 @@
 
 }
 
-
-
-/* Submission */
-.submission-status {
-	position: fixed;
-	bottom: 25px;
-	left: 50%;
-	width: 250px;
-	margin-left:-125px;
-	z-index:2;
-	background:white;
-	padding:10px;
-	min-height:45px;
-	@include mat.elevation(3);
-}
-.submission-status p{
-	margin: 0 0 0 6px;
-}
 
 
 
@@ -112,8 +42,6 @@
 
 
 
-.coin-grid { border:0px!important; .mat-grid-tile { border: 0px!important;box-sizing: border-box!important;}}
-
 
 /* Responsiveness */
 
@@ -126,12 +54,6 @@
     .divider { margin: 25px 0 25px 0;}
     .chart-card {.chart-card-heading { padding: 0!important}}
 
-    //.prediction-header-indicators {margin-top:10px;}
-    .long-position-button, .short-position-button { 
-        width: 100%;
-    }
-
-    .submission-status { bottom: 75px;}
 
     .prediction-candlesticks-container {
 
