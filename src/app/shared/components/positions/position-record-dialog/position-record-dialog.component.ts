@@ -216,21 +216,21 @@ export class PositionRecordDialogComponent implements OnInit, IPositionRecordDia
 		// Add the take profit levels
 		annotations.yaxis!.push({
             y: this.record.entry_price,
-            y2: this.record.take_profit_price_1 + (this.record.side == "LONG" ? 0.001: -0.001),
+            y2: this.record.take_profit_price_1,
             borderColor: "#B2DFDB",
             fillColor: "#B2DFDB",
             strokeDashArray: 0
         });
 		annotations.yaxis!.push({
             y: this.record.take_profit_price_1,
-            y2: this.record.take_profit_price_2 + (this.record.side == "LONG" ? 0.001: -0.001),
+            y2: this.record.take_profit_price_2,
             borderColor: "#4DB6AC",
             fillColor: "#4DB6AC",
             strokeDashArray: 0
         });
 		annotations.yaxis!.push({
             y: this.record.take_profit_price_2,
-            y2: this.record.take_profit_price_3 + (this.record.side == "LONG" ? 0.001: -0.001),
+            y2: this.record.take_profit_price_3,
             borderColor: "#009688",
             fillColor: "#009688",
             strokeDashArray: 0

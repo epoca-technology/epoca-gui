@@ -1,4 +1,4 @@
-import { ICoinsState, IKeyZoneStateEventKind, IStateType } from "../market-state";
+import { ICoinsState, IKeyZoneStateEvent, IStateType } from "../market-state";
 
 
 export interface ISignalService {
@@ -201,5 +201,5 @@ export interface ISignalDataset {
     coinsState: ICoinsState,
 
     // The state event of the KeyZones (if any)
-    keyzoneStateEvent: IKeyZoneStateEventKind|undefined
+    keyzoneStateEvent: IKeyZoneStateEvent|undefined
 }

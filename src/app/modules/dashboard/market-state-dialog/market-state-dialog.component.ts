@@ -32,6 +32,7 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 	public stateAverage!: IStateType;
 	public states!: ISplitStates;
 	public stateEvent?: IStateType;
+	public stateEventTime: number|null = null; // <- Only used by the coin module
 	private series!: ISplitStateSeriesItem[];
 	private seriesName!: string;
 	public lineChart?: ILineChartOptions;
@@ -207,6 +208,7 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 
 		// Set the state event
 		this.stateEvent = state.se;
+		this.stateEventTime = state.set;
 
 		// Build the series
 		this.seriesName = "USDT";
@@ -444,7 +446,20 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 			content.push("VOLUME REQUIREMENTS");
 			content.push(`Mean: $${this._utils.formatNumber(this.volumeState.m)}`);
 			content.push(`Mean High: $${this._utils.formatNumber(this.volumeState.mh)}`);
-		}
+		};
+
+		// If it is a coin, add the state event
+		if (this.module == "coin") {
+			content.push("-----");
+			content.push("COIN STATE EVENT");
+			let kind: string = "None";
+			if 		(this.stateEvent == 2) { kind = "Strong Resistance Reversal"}
+			else if (this.stateEvent == 1) { kind = "Resistance Reversal"}
+			else if (this.stateEvent == -1) { kind = "Support Reversal"}
+			else if (this.stateEvent == -2) { kind = "Strong Support Reversal"}
+			content.push(`Kind: ${kind}`);
+			content.push(`Issued: ${this.stateEventTime ? moment(this.stateEventTime).format("dddd, MMMM Do, h:mm:ss a"): 'None'}`);
+		};
 
 		// Finally, display the tooltip
         this._nav.displayTooltip(this.title, content);
