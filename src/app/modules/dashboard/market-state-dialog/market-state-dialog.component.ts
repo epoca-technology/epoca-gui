@@ -193,7 +193,7 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 
 
 
-	private async initCoin(): Promise<void> {
+	public async initCoin(): Promise<void> {
 		// Set the title
 		this.title = this.config.symbol!;
 
@@ -239,7 +239,7 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 	 * @param id 
 	 */
 	public applySplit(id: ISplitStateID): void {
-		if (this.lineChart && this.activeSplitID == id) return;
+		//if (this.lineChart && this.activeSplitID == id) return;
 		this.lineChart = this._chart.getLineChartOptions(
 			{ 
 				series: [

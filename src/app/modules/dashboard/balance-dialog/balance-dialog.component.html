@@ -1,7 +1,8 @@
 <div mat-dialog-title fxLayout="row" fxLayoutAlign="start center">
     <h1>Balance</h1>
     <span fxFlex></span>
-    <button mat-icon-button (click)="dialogRef.close()"><mat-icon>close</mat-icon></button>
+    <button mat-icon-button [disabled]="!loaded" (click)="refreshBalance()"><mat-icon>refresh</mat-icon></button>
+    <button mat-icon-button (click)="close()"><mat-icon>close</mat-icon></button>
 </div>
 <div mat-dialog-content>
     <div *ngIf="!loaded">

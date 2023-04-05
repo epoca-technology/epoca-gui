@@ -5,7 +5,8 @@
         <mat-icon *ngIf="loaded && !stateEvent" class="show-on-desktop" [svgIcon]="_ms.icons[stateAverage]" style="margin-right:7px;"></mat-icon>
         <mat-icon *ngIf="loaded && stateEvent" class="show-on-desktop" [svgIcon]="_ms.coinStateIcons[stateEvent]" style="margin-right:7px;"></mat-icon>
         <span *ngIf="loaded" class="truncate">{{title}}</span>
-        <span fxFlex></span>
+        <span fxFlex></span>        
+        <app-refresh-button *ngIf="loaded && module == 'coin'" style="display: none;" (refresh)="initCoin()" [intervalSeconds]="6"></app-refresh-button>
         <button mat-icon-button *ngIf="loaded" (click)="displayInfoTooltip()" matTooltip="More information"><mat-icon class="info-icon" svgIcon="info"></mat-icon></button>
         <button mat-icon-button *ngIf="loaded"  (click)="displayTooltip()" matTooltip="What is this?"><mat-icon>question_mark</mat-icon></button>
         <button mat-icon-button class="show-on-desktop" (click)="close()" [disabled]="!loaded"><mat-icon>close</mat-icon></button>

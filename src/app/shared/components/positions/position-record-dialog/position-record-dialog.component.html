@@ -8,8 +8,8 @@
             {{record.gain > 0 ? '+': ''}}{{record.gain}}% | {{record.gain_drawdown}}%
         </span>
         <span fxFlex></span>
+        <app-refresh-button *ngIf="loaded && !record.close" style="display: none;" [disabled]="submitting" (refresh)="refreshPositionRecord()" [intervalSeconds]="5"></app-refresh-button>
         <button mat-icon-button [disabled]="submitting" (click)="displayTooltip()" matTooltip="What is this?"><mat-icon>question_mark</mat-icon></button>
-        <app-refresh-button *ngIf="loaded && !record.close" [disabled]="submitting" (refresh)="refreshPositionRecord()" [intervalSeconds]="8"></app-refresh-button>
         <button mat-icon-button [disabled]="submitting" (click)="displayPositionInfoDialog()" matTooltip="More Information"><mat-icon>info</mat-icon></button>
         <button *ngIf="loaded && !record.close" mat-icon-button [disabled]="submitting" (click)="closePosition()" matTooltip="Close Position"><mat-icon>mobiledata_off</mat-icon></button>
         <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>

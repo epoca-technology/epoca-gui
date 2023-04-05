@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import {MatDialogRef, MAT_DIALOG_DATA, MatDialog} from "@angular/material/dialog";
-import { ApexAnnotations } from 'ng-apexcharts';
+import { ApexAnnotations, YAxisAnnotations } from 'ng-apexcharts';
 import { 
 	IPositionCandlestick, 
 	IPositionRecord, 
@@ -78,7 +78,6 @@ export class PositionRecordDialogComponent implements OnInit, IPositionRecordDia
 	 * @returns Promise<void>
 	 */
 	public async refreshPositionRecord(): Promise<void> {
-		this.submitting = true;
 		try {
 			// Retrieve the record from the server
 			this.record = await this._localDB.getPositionRecord(this.id);
@@ -89,7 +88,6 @@ export class PositionRecordDialogComponent implements OnInit, IPositionRecordDia
 			console.log(this.record);
 			this._app.error(e);
 		}
-		this.submitting = false;
 	}
 
 
@@ -116,6 +114,7 @@ export class PositionRecordDialogComponent implements OnInit, IPositionRecordDia
 					data: this._chart.getApexCandlesticks(markPrice)
 				}
 			];*/
+			//this.markPriceChart.annotations = this.buildMarkPriceAnnotations(markPrice[markPrice.length - 1]);
 			this.markPriceChart.series = [ {data: this._chart.getApexCandlesticks(markPrice)}];
 			this.markPriceChart.yaxis.min = min;
 			this.markPriceChart.yaxis.max = max;
@@ -126,6 +125,7 @@ export class PositionRecordDialogComponent implements OnInit, IPositionRecordDia
 				}
 			];*/
 			//this.gainChart.series[0].data = this._chart.getApexCandlesticks(gain);
+			//this.gainChart.annotations = { yaxis: [this.getCurrentValueAnnotation(gain[gain.length - 1])]};
 			this.gainChart.series = [ {data: this._chart.getApexCandlesticks(gain)}]
 			/*this.gainDrawdownChart.series = [
 				{
@@ -134,7 +134,9 @@ export class PositionRecordDialogComponent implements OnInit, IPositionRecordDia
 				}
 			];*/
 			//this.gainDrawdownChart.series[0].data = this._chart.getApexCandlesticks(gainDrawdown);
-			this.gainDrawdownChart.series = [ {data: this._chart.getApexCandlesticks(gainDrawdown)}]
+			//this.gainDrawdownChart.annotations = { yaxis: [this.getCurrentValueAnnotation(gainDrawdown[gainDrawdown.length - 1])]};
+			this.gainDrawdownChart.series = [ {data: this._chart.getApexCandlesticks(gainDrawdown)}];
+
 		}
 
 		// Otherwise, create them from scratch
@@ -142,7 +144,7 @@ export class PositionRecordDialogComponent implements OnInit, IPositionRecordDia
 			// Mark Price Chart
 			this.markPriceChart = this._chart.getCandlestickChartOptions(
 				markPrice, 
-				this.buildMarkPriceAnnotations(), 
+				this.buildMarkPriceAnnotations(markPrice[markPrice.length - 1]), 
 				false, 
 				true,
 				{ min: min, max: max},
@@ -163,24 +165,7 @@ export class PositionRecordDialogComponent implements OnInit, IPositionRecordDia
 				this.layout == "desktop" ? 400: 330,
 				"Gain%"
 			);
-			this.gainChart.annotations = {
-				yaxis: [
-					{
-						y: 0,
-						y2: 100,
-						borderColor: "#B2DFDB",
-						fillColor: "#B2DFDB",
-						strokeDashArray: 0
-					},
-					{
-						y: 0,
-						y2: -100,
-						borderColor: "#FFCDD2",
-						fillColor: "#FFCDD2",
-						strokeDashArray: 0
-					}
-				]
-			}
+			//this.gainChart.annotations = {yaxis: [this.getCurrentValueAnnotation(gain[gain.length - 1])]}
 			this.gainChart.chart!.toolbar = {show: true,tools: {selection: true,zoom: true,zoomin: true,zoomout: true,download: false}};
 			this.gainChart.chart!.zoom = {enabled: true, type: "xy"};
 			//this.gainChart.chart!.zoom = {enabled: false};
@@ -197,6 +182,7 @@ export class PositionRecordDialogComponent implements OnInit, IPositionRecordDia
 			);
 			this.gainDrawdownChart.chart!.toolbar = {show: true,tools: {selection: true,zoom: true,zoomin: true,zoomout: true,download: false}};
 			this.gainDrawdownChart.chart!.zoom = {enabled: true, type: "xy"};
+			//this.gainDrawdownChart.annotations = { yaxis: [this.getCurrentValueAnnotation(gainDrawdown[gainDrawdown.length - 1])]}
 			//this.gainDrawdownChart.chart!.zoom = {enabled: false};
 		}
 	}
@@ -243,7 +229,7 @@ export class PositionRecordDialogComponent implements OnInit, IPositionRecordDia
 	 * Builds the annotations for the mark price chart.
 	 * @returns ApexAnnotations
 	 */
-	private buildMarkPriceAnnotations(): ApexAnnotations {
+	private buildMarkPriceAnnotations(current: IPositionCandlestick): ApexAnnotations {
 		// Init the annotations
 		let annotations: ApexAnnotations = { yaxis: []};
 
@@ -293,10 +279,31 @@ export class PositionRecordDialogComponent implements OnInit, IPositionRecordDia
 			borderWidth: 1
         });
 
+		// Add the current price
+		//annotations.yaxis!.push(this.getCurrentValueAnnotation(current));
+
 		// Finally, return the annotations
 		return annotations;
 	}
 
+
+
+
+
+	/**
+	 * Builds the current value's annotation.
+	 * @param current 
+	 * @returns YAxisAnnotations
+	 */
+	private getCurrentValueAnnotation(current: IPositionCandlestick): YAxisAnnotations {
+		return {
+            y: current.c,
+            borderColor: current.o > current.c ? this._chart.downwardColor: this._chart.upwardColor,
+            fillColor: current.o > current.c ? this._chart.downwardColor: this._chart.upwardColor,
+            strokeDashArray: 0,
+			borderWidth: 1
+        }
+	}
 
 
 

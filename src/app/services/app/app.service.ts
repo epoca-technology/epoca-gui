@@ -12,7 +12,6 @@ import {
 	IAppBulk, 
 	IAppBulkStream, 
 	ICandlestick, 
-	ICompressedCandlesticks, 
 	IEpochRecord, 
 	IMarketState, 
 	IPositionHeadline, 
@@ -68,6 +67,8 @@ export class AppService implements IAppService{
 	public marketState: BehaviorSubject<IMarketState|undefined|null> = new BehaviorSubject<IMarketState|undefined|null>(null);
 	public apiErrors: BehaviorSubject<number|undefined|null> = new BehaviorSubject<number|undefined|null>(null);
 
+	// App Bulk Local Properties
+	public keyzoneEventScoreRequirement: number = 6;
 
 
 
@@ -219,7 +220,8 @@ export class AppService implements IAppService{
 							snapVal.serverTime = this.serverTime.value!;
 							snapVal.guiVersion = this.guiVersion.value!;
 							snapVal.epoch = this.epoch.value!;
-							snapVal.marketState.window.w = this.decompressCandlesticks(snapVal.marketState.window.w);
+							snapVal.marketState.window.w = this.buildUpdatedWindowCandlesticks(snapVal.marketState.window.w);
+							snapVal.keyzoneEventScoreRequirement = this.keyzoneEventScoreRequirement;
 							this.broadcastAppBulk(snapVal);
 						}
 					});
@@ -233,29 +235,35 @@ export class AppService implements IAppService{
 
 
 	/**
-	 * Decompresses the candlesticks attached to the AppBulk
-	 * and builds the standard candlesticks.
-	 * @param compressed 
+	 * Builds the updated window candlesticks based on the active one.
+	 * @param active 
 	 * @returns ICandlestick[]
 	 */
-	private decompressCandlesticks(compressed: ICompressedCandlesticks): ICandlestick[] {
-		// Initialize the list
-		let candlesticks: ICandlestick[] = [];
+	private buildUpdatedWindowCandlesticks(active: ICandlestick): ICandlestick[] {
+		// Create a copy of the current window
+		let window: ICandlestick[] = this.marketState.value!.window.w.slice();
 
-		// Iterate over each candlestick
-		for (let i = 0; i < compressed.ot.length; i++) {
-			candlesticks.push(<ICandlestick>{
-				ot: compressed.ot[i],
-				ct: compressed.ct[i],
-				o: compressed.o[i],
-				h: compressed.h[i],
-				l: compressed.l[i],
-				c: compressed.c[i],
-			});
+		// Check if the last candlestick ended
+		if (active.ot != window[window.length - 1].ot) {
+			window.push(active);
+			window = window.slice(0, 128);
 		}
 
-		// Finally, return the list
-		return candlesticks;
+		// Otherwise, update the values
+		else {
+			window[window.length - 1] = {
+				ot: active.ot,
+				ct: active.ct,
+				o: active.o,
+				h: active.h > window[window.length - 1].h ? active.h: window[window.length - 1].h,
+				l: active.l < window[window.length - 1].l ? active.l: window[window.length - 1].l,
+				c: active.c,
+				v: active.v
+			}
+		}
+
+		// Finally, return the updated window
+		return window;
 	}
 
 
@@ -291,6 +299,9 @@ export class AppService implements IAppService{
 
 		// Broadcast the api errors
 		this.apiErrors.next(bulk.apiErrors);
+
+		// Set the KeyZone's event score requirement
+		this.keyzoneEventScoreRequirement = bulk.keyzoneEventScoreRequirement;
 	}
 
 

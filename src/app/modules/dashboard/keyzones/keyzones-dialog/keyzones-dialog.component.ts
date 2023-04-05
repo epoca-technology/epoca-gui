@@ -303,12 +303,6 @@ export class KeyzonesDialogComponent implements OnInit, OnDestroy, IKeyZonesDial
 			`BUILD`,
 			`${moment(this.state!.build_ts).format("dddd, MMMM Do, h:mm:ss a")}`,
 			`-----`,
-			`VOLUME REQUIREMENTS`,
-			`Mean Low: $${this._utils.formatNumber(this.state!.volume_mean_low)}`,
-			`Mean: $${this._utils.formatNumber(this.state!.volume_mean)}`,
-			`Mean Medium: $${this._utils.formatNumber(this.state!.volume_mean_medium)}`,
-			`Mean High: $${this._utils.formatNumber(this.state!.volume_mean_high)}`,
-			`-----`,
 			`IDLE KEYZONES`
         ];
 

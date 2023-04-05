@@ -18,6 +18,7 @@ export interface IPositionService {
     updateStrategy(newStrategy: IPositionStrategy, otp: string): Promise<void>,
 
     // Futures Account Balance
+    refreshBalance(otp: string): Promise<IAccountBalance>,
     getBalance(): Promise<IAccountBalance>
 }
 

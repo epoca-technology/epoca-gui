@@ -26,6 +26,9 @@ export interface IAppService {
     apiErrors: BehaviorSubject<number|undefined|null>,
     refreshAppBulk(): Promise<void>,
 
+    // App Bulk Local Properties
+    keyzoneEventScoreRequirement: number,
+
     // Snackbars
     success(message: string, action: boolean): MatSnackBarRef<TextOnlySnackBar>,
 	info(message: string, action: boolean): MatSnackBarRef<TextOnlySnackBar>,

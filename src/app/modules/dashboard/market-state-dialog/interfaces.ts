@@ -8,6 +8,9 @@ import {
 
 
 export interface IMarketStateDialogComponent {
+    // Coin Initializer
+    initCoin(): Promise<void>,
+
     // Series Split
     applySplit(id: ISplitStateID): void,
 

@@ -180,6 +180,19 @@ export class PositionService implements IPositionService {
 
 
 	/**
+	 * Refreshes the futures account balance and retrieves an updated copy.
+	 * @param otp
+	 * @returns Promise<IAccountBalance>
+	 */
+	public refreshBalance(otp: string): Promise<IAccountBalance> { 
+		return this._api.request("post","position/refreshBalance", {}, true, otp);
+	}
+
+
+
+
+
+	/**
 	 * Retrieves the current account balance.
 	 * @returns Promise<IAccountBalance>
 	 */

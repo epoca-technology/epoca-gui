@@ -654,12 +654,18 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
      * @returns string
      */
     private getKeyZoneAnnotationColorFromScore(score: number, kind: "above"|"below"): string {
-        if      (score >= 9)    { return kind == "above" ? "#004D40": "#B71C1C" } 
-        else if (score >= 8)    { return kind == "above" ? "#00796B": "#D32F2F" }
-        else if (score >= 7)    { return kind == "above" ? "#009688": "#F44336" }
-        else if (score >= 6)    { return kind == "above" ? "#4DB6AC": "#E57373" }
-        else if (score >= 5)    { return kind == "above" ? "#80CBC4": "#EF9A9A" }
-        else                    { return kind == "above" ? "#E0F2F1": "#FFEBEE" }
+        // Make sure the keyzone score is higher than the requirement
+        if (score >= this._app.keyzoneEventScoreRequirement) {
+            if      (score >= 9)    { return kind == "above" ? "#004D40": "#B71C1C" } 
+            else if (score >= 8)    { return kind == "above" ? "#00796B": "#D32F2F" }
+            else if (score >= 7)    { return kind == "above" ? "#009688": "#F44336" }
+            else if (score >= 6)    { return kind == "above" ? "#4DB6AC": "#E57373" }
+            else                    { return kind == "above" ? "#80CBC4": "#EF9A9A" }
+        }
+
+        // Otherwise, return the inactive color
+        else { return kind == "above" ? "#E0F2F1": "#FFEBEE" }
+
     }
 
 
