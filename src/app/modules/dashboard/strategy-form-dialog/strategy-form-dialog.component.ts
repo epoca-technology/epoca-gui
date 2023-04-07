@@ -37,14 +37,17 @@ export class StrategyFormDialogComponent implements OnInit, IStrategyFormDialogC
 			this.form = new FormGroup ({
 				long_status: new FormControl(this.strategy.long_status, [ Validators.required ]),
 				short_status: new FormControl(this.strategy.short_status, [ Validators.required ]),
-				leverage: new FormControl(this.strategy.leverage, [ Validators.required, Validators.min(2), Validators.max(20) ]),
+				leverage: new FormControl(this.strategy.leverage, [ Validators.required, Validators.min(2), Validators.max(125) ]),
 				position_size: new FormControl(this.strategy.position_size, [ Validators.required, Validators.min(1), Validators.max(10000) ]),
 				positions_limit: new FormControl(this.strategy.positions_limit, [ Validators.required, Validators.min(1), Validators.max(9) ]),
 				take_profit_1_pcr: new FormControl(this.strategy.take_profit_1.price_change_requirement, [ Validators.required, Validators.min(0.05), Validators.max(10) ]),
+				take_profit_1_ao: new FormControl(this.strategy.take_profit_1.activation_offset, [ Validators.required, Validators.min(0.01), Validators.max(5) ]),
 				take_profit_1_gdd: new FormControl(this.strategy.take_profit_1.max_gain_drawdown, [ Validators.required, Validators.min(-100), Validators.max(-0.01) ]),
 				take_profit_2_pcr: new FormControl(this.strategy.take_profit_2.price_change_requirement, [ Validators.required, Validators.min(0.05), Validators.max(10) ]),
+				take_profit_2_ao: new FormControl(this.strategy.take_profit_2.activation_offset, [ Validators.required, Validators.min(0.01), Validators.max(5) ]),
 				take_profit_2_gdd: new FormControl(this.strategy.take_profit_2.max_gain_drawdown, [ Validators.required, Validators.min(-100), Validators.max(-0.01) ]),
 				take_profit_3_pcr: new FormControl(this.strategy.take_profit_3.price_change_requirement, [ Validators.required, Validators.min(0.05), Validators.max(10) ]),
+				take_profit_3_ao: new FormControl(this.strategy.take_profit_3.activation_offset, [ Validators.required, Validators.min(0.01), Validators.max(5) ]),
 				take_profit_3_gdd: new FormControl(this.strategy.take_profit_3.max_gain_drawdown, [ Validators.required, Validators.min(-100), Validators.max(-0.01) ]),
 				stop_loss: new FormControl(this.strategy.stop_loss, [ Validators.required, Validators.min(0.1), Validators.max(20) ]),
 			});
@@ -64,10 +67,13 @@ export class StrategyFormDialogComponent implements OnInit, IStrategyFormDialogC
 	get position_size(): AbstractControl { return <AbstractControl>this.form.get("position_size") }
 	get positions_limit(): AbstractControl { return <AbstractControl>this.form.get("positions_limit") }
 	get take_profit_1_pcr(): AbstractControl { return <AbstractControl>this.form.get("take_profit_1_pcr") }
+	get take_profit_1_ao(): AbstractControl { return <AbstractControl>this.form.get("take_profit_1_ao") }
 	get take_profit_1_gdd(): AbstractControl { return <AbstractControl>this.form.get("take_profit_1_gdd") }
 	get take_profit_2_pcr(): AbstractControl { return <AbstractControl>this.form.get("take_profit_2_pcr") }
+	get take_profit_2_ao(): AbstractControl { return <AbstractControl>this.form.get("take_profit_2_ao") }
 	get take_profit_2_gdd(): AbstractControl { return <AbstractControl>this.form.get("take_profit_2_gdd") }
 	get take_profit_3_pcr(): AbstractControl { return <AbstractControl>this.form.get("take_profit_3_pcr") }
+	get take_profit_3_ao(): AbstractControl { return <AbstractControl>this.form.get("take_profit_3_ao") }
 	get take_profit_3_gdd(): AbstractControl { return <AbstractControl>this.form.get("take_profit_3_gdd") }
 	get stop_loss(): AbstractControl { return <AbstractControl>this.form.get("stop_loss") }
 
@@ -96,14 +102,17 @@ export class StrategyFormDialogComponent implements OnInit, IStrategyFormDialogC
 						this.strategy.positions_limit = this.positions_limit.value;
 						this.strategy.take_profit_1 = {
 							price_change_requirement: this.take_profit_1_pcr.value,
+							activation_offset: this.take_profit_1_ao.value,
 							max_gain_drawdown: this.take_profit_1_gdd.value,
 						};
 						this.strategy.take_profit_2 = {
 							price_change_requirement: this.take_profit_2_pcr.value,
+							activation_offset: this.take_profit_2_ao.value,
 							max_gain_drawdown: this.take_profit_2_gdd.value,
 						};
 						this.strategy.take_profit_3 = {
 							price_change_requirement: this.take_profit_3_pcr.value,
+							activation_offset: this.take_profit_3_ao.value,
 							max_gain_drawdown: this.take_profit_3_gdd.value,
 						};
 						this.strategy.stop_loss = this.stop_loss.value;

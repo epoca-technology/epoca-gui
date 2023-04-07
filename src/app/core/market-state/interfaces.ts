@@ -733,9 +733,14 @@ export interface IMinifiedCoinState {
 }
 
 
+
 // State Object
 export interface ICoinsState {
-    [symbol: string]: IMinifiedCoinState
+    // States By Symbol
+    sbs: {[symbol: string]: IMinifiedCoinState},
+
+    // Coins Direction
+    cd: IStateType
 }
 
 

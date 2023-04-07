@@ -21,7 +21,9 @@
     .state-badge { .mat-icon {max-height:17px;}}
 
 
-
+    .very-strong-state {
+        filter: brightness(80%);
+    }
 }
 
 

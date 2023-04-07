@@ -762,7 +762,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
      */
     private updateCoinsState(): void {
         // Populate the symbols
-        let symbols: string[] = Object.keys(this.state.coins || {});
+        let symbols: string[] = Object.keys(this.state.coins.sbs || {});
         symbols.sort();
 
         // Calculate the total number of pages

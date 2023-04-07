@@ -408,13 +408,14 @@
                                                 <mat-grid-tile *ngFor="let symbol of visibleSymbols" 
                                                                 class="clickable" role="button" matRipple fxLayout="row" fxLayoutAlign="center center"
                                                                 [ngClass]="{
-                                                                    'buy-action-container': state.coins[symbol].s > 0,
-                                                                    'sell-action-container': state.coins[symbol].s < 0,
-                                                                    'neutral-action-container': state.coins[symbol].s == 0,
-                                                                    'weak-state': state.coins[symbol].s != 2 && state.coins[symbol].s != -2
+                                                                    'buy-action-container': state.coins.sbs[symbol].s > 0,
+                                                                    'sell-action-container': state.coins.sbs[symbol].s < 0,
+                                                                    'neutral-action-container': state.coins.sbs[symbol].s == 0,
+                                                                    'weak-state': state.coins.sbs[symbol].s != 2 && state.coins.sbs[symbol].s != -2,
+                                                                    'very-strong-state': state.coins.sbs[symbol].se == 2 || state.coins.sbs[symbol].se == -2
                                                                 }" 
                                                                 (click)="displayCoinDialog(symbol)">
-                                                    <mat-icon *ngIf="state.coins[symbol].se != 0" class="state-icon" [svgIcon]="_ms.coinStateIcons[state.coins[symbol].se]"></mat-icon>
+                                                    <mat-icon *ngIf="state.coins.sbs[symbol].se != 0" class="state-icon" [svgIcon]="_ms.coinStateIcons[state.coins.sbs[symbol].se]"></mat-icon>
                                                     <p style="max-width:35px" class="truncate">{{symbol | baseAssetName}}</p>
                                                 </mat-grid-tile>
 

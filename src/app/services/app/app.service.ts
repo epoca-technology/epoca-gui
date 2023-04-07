@@ -246,7 +246,7 @@ export class AppService implements IAppService{
 		// Check if the last candlestick ended
 		if (active.ot != window[window.length - 1].ot) {
 			window.push(active);
-			window = window.slice(0, 128);
+			window = window.slice(-128);
 		}
 
 		// Otherwise, update the values
