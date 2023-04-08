@@ -1197,6 +1197,19 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
 
 
+    /**
+     * Displays the coins indicators dialog.
+     */
+    public displayCoinsIndicatorDialog(): void {
+        this._nav.displayTooltip("Coins", [
+            `@TODO`,
+        ]);
+    }
+
+
+
+
+
 
 
 

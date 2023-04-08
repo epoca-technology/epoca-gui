@@ -382,9 +382,18 @@
                                                         (click)="displayKeyZonesDialog()">
                                                             <mat-icon>vertical_align_top</mat-icon> <p>RES.</p>
                                                 </mat-grid-tile>
+
+                                                <!-- Coins -->
+                                                <mat-grid-tile class="clickable" role="button" matRipple
+                                                               (click)="displayCoinsIndicatorDialog()"
+                                                                [ngClass]="{
+                                                                    'buy-action-container': state.coins.cd > 0,
+                                                                    'sell-action-container': state.coins.cd < 0,
+                                                                    'neutral-action-container': state.coins.cd == 0,
+                                                                    'weak-state': state.coins.cd != 2 && state.coins.cd != -2
+                                                                }"><p>COINS</p></mat-grid-tile>
                                                 
                                                 <!-- Placeholders -->
-                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
                                                 <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
                                                 <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
                                                 <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
