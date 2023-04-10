@@ -64,12 +64,12 @@
                     (click)="displayStopLossOrder()"
                     class="align-right clickable" role="button" 
                     [ngClass]="{
-                        'error-color': !stopLossDistance || (stopLossDistance && stopLossDistance >= -0.15 && stopLossDistance <= 0.15),
+                        'error-color': !stopLossDistance || (stopLossDistance && stopLossDistance >= -0.075 && stopLossDistance <= 0.075),
                         'light-text': stopLossDistance && (
-                            (stopLossDistance > -0.25 && stopLossDistance <= -0.15) || 
-                            (stopLossDistance >= 0.15 && stopLossDistance < 0.25)
+                            (stopLossDistance > -0.15 && stopLossDistance <= -0.075) || 
+                            (stopLossDistance >= 0.075 && stopLossDistance < 0.15)
                         ), 
-                        'success-color': stopLossDistance && (stopLossDistance <= -0.25 || stopLossDistance >= 0.25)}">
+                        'success-color': stopLossDistance && (stopLossDistance <= -0.15 || stopLossDistance >= 0.15)}">
                     <p>{{record.stop_loss_price | currency: 'USD' : 'symbol' : '1.0-' + record.coin.pricePrecision}}</p>
                     <p *ngIf="stopLossDistance" class="ts-xs">{{stopLossDistance}}% away</p>
                     <p *ngIf="!stopLossDistance" class="ts-xs">Stop Loss Hit</p>
@@ -118,9 +118,9 @@
                 <span fxFlex></span>
                 <div matTooltip="Liquidation Price (Distance)" class="align-right" 
                     [ngClass]="{
-                        'success-color': liquidationDistance >= 4,
-                        'light-text': liquidationDistance >= 3 && liquidationDistance < 4,
-                        'error-color': liquidationDistance < 3
+                        'success-color': liquidationDistance >= 1,
+                        'light-text': liquidationDistance >= 0.7 && liquidationDistance < 1,
+                        'error-color': liquidationDistance < 0.7
                     }">
                     <p>{{record.liquidation_price | currency: 'USD' : 'symbol' : '1.0-' + record.coin.pricePrecision}}</p>
                     <p class="ts-xs">{{liquidationDistance}}% away</p>

@@ -103,9 +103,6 @@ export class PositionRecordDialogComponent implements OnInit, IPositionRecordDia
 		// Unpack the candlesticks
 		const { markPrice, gain, gainDrawdown } = this.unpackCandlesticks();
 
-		// Calculate the mark price chart range
-		const { min, max } = this.calculateMarkPriceRange(markPrice);
-
 		// Check if the charts already exist
 		if (this.markPriceChart && this.gainChart && this.gainDrawdownChart) {
 			/*this.markPriceChart.series = [
@@ -116,8 +113,6 @@ export class PositionRecordDialogComponent implements OnInit, IPositionRecordDia
 			];*/
 			//this.markPriceChart.annotations = this.buildMarkPriceAnnotations(markPrice[markPrice.length - 1]);
 			this.markPriceChart.series = [ {data: this._chart.getApexCandlesticks(markPrice)}];
-			this.markPriceChart.yaxis.min = min;
-			this.markPriceChart.yaxis.max = max;
 			/*this.gainChart.series = [
 				{
 					name: "candle",
@@ -144,10 +139,10 @@ export class PositionRecordDialogComponent implements OnInit, IPositionRecordDia
 			// Mark Price Chart
 			this.markPriceChart = this._chart.getCandlestickChartOptions(
 				markPrice, 
-				this.buildMarkPriceAnnotations(markPrice[markPrice.length - 1]), 
+				this.buildMarkPriceAnnotations(), 
 				false, 
-				true,
-				{ min: min, max: max},
+				false,
+				undefined,
 				this.layout == "desktop" ? 400: 330,
 				"Mark Price"
 			);
@@ -158,7 +153,12 @@ export class PositionRecordDialogComponent implements OnInit, IPositionRecordDia
 			// Gain Chart
 			this.gainChart = this._chart.getCandlestickChartOptions(
 				gain, 
-				undefined, 
+				{
+					yaxis: [
+						{y: 0,y2: 100,borderColor: "#B2DFDB",fillColor: "#B2DFDB",strokeDashArray: 0},
+						{y: 0,y2: -100,borderColor: "#FFCDD2",fillColor: "#FFCDD2",strokeDashArray: 0},
+					]
+				}, 
 				false, 
 				false,
 				undefined,
@@ -192,44 +192,12 @@ export class PositionRecordDialogComponent implements OnInit, IPositionRecordDia
 
 
 
-	/**
-	 * Calculates the range that should be applied to the mark price chart.
-	 * @param candlesticks 
-	 * @returns IChartRange
-	 */
-	private calculateMarkPriceRange(candlesticks: IPositionCandlestick[]): IChartRange {
-		// Init values
-		let min: number = 0;
-		let max: number = 0;
-
-		// Iterate over each candlestick and populate the min and max values
-		for (let candlestick of candlesticks) {
-			min = min == 0 || candlestick.l < 0 ? candlestick.l: min;
-			max = candlestick.h > max ? candlestick.h: max;
-		}
-
-		// Update the values based on the exit combinations.
-		if (this.record.side == "LONG") {
-			max = this.record.take_profit_price_3 > max ? this.record.take_profit_price_3: max;
-			min = this.record.stop_loss_price < min ? this.record.stop_loss_price: min;
-		} else {
-			max = this.record.stop_loss_price > max ? this.record.stop_loss_price: max;
-			min = this.record.take_profit_price_3 < min ? this.record.take_profit_price_3: min;
-		}
-
-		// Finally, return the range
-		return { min: min, max: max };
-	}
-
-
-
-
 
 	/**
 	 * Builds the annotations for the mark price chart.
 	 * @returns ApexAnnotations
 	 */
-	private buildMarkPriceAnnotations(current: IPositionCandlestick): ApexAnnotations {
+	private buildMarkPriceAnnotations(): ApexAnnotations {
 		// Init the annotations
 		let annotations: ApexAnnotations = { yaxis: []};
 
@@ -279,9 +247,6 @@ export class PositionRecordDialogComponent implements OnInit, IPositionRecordDia
 			borderWidth: 1
         });
 
-		// Add the current price
-		//annotations.yaxis!.push(this.getCurrentValueAnnotation(current));
-
 		// Finally, return the annotations
 		return annotations;
 	}
@@ -290,22 +255,16 @@ export class PositionRecordDialogComponent implements OnInit, IPositionRecordDia
 
 
 
-	/**
-	 * Builds the current value's annotation.
-	 * @param current 
-	 * @returns YAxisAnnotations
-	 */
-	private getCurrentValueAnnotation(current: IPositionCandlestick): YAxisAnnotations {
-		return {
-            y: current.c,
-            borderColor: current.o > current.c ? this._chart.downwardColor: this._chart.upwardColor,
-            fillColor: current.o > current.c ? this._chart.downwardColor: this._chart.upwardColor,
-            strokeDashArray: 0,
-			borderWidth: 1
-        }
-	}
 
 
+
+
+
+
+
+
+
+	/* Candlesticks Unpacker */
 
 
 

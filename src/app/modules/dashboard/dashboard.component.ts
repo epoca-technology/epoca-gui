@@ -341,47 +341,33 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
      * @returns ApexAnnotations
      */
     private getPredictionCandlestickAnnotations(): ApexAnnotations {
-        // Calculate min & max values
-        const minValue: number = -this.epoch!.model.regressions.length;
-        const maxValue: number = this.epoch!.model.regressions.length;
 
-        // Set the color of the annotation
-        const open: number = this.predictionCandlesticks[this.predictionCandlesticks.length - 1].o;
-        const close: number = this.predictionCandlesticks[this.predictionCandlesticks.length - 1].c;
-        let stateColor: string = this._chart.neutralColor;
-        if (close > open) { stateColor = this._chart.upwardColor } 
-        else if (open > close) { stateColor = this._chart.downwardColor }
-
-        // Set the position
-        let sumStr: string = typeof this.activeSum == "number" ? <string>this._utils.outputNumber(this.activeSum, {dp: 3, of: "s"}): "0";
-        let annOffset: {x: number, y: number} = {x: 0, y: 0};
-        if (sumStr.length == 1 ) { annOffset.x = 20 }
-        else if (sumStr.length == 2 ) { annOffset.x = 22 }
-        else if (sumStr.length == 3 ) { annOffset.x = 24 }
-        else if (sumStr.length == 4 ) { annOffset.x = 29 }
-        else if (sumStr.length == 5 ) { annOffset.x = 36 }
-        else if (sumStr.length == 6 ) { annOffset.x = 41 }
-        else if (sumStr.length == 7 ) { annOffset.x = 46 }
         return {
             yaxis: [
-                this.buildTrendSumAnnotation(this.epoch!.model.min_increase_sum, maxValue, this._chart.upwardColor),
-                this.buildTrendSumAnnotation(0.000001, this.epoch!.model.min_increase_sum, "#B2DFDB"),
-                this.buildTrendSumAnnotation(this.epoch!.model.min_decrease_sum, minValue, this._chart.downwardColor),
-                this.buildTrendSumAnnotation(-0.000001, this.epoch!.model.min_decrease_sum, "#FFCDD2"),
-                {
-                    y: this.activePrediction ? this.activePrediction.s: 0,
-                    strokeDashArray: 0,
-                    borderColor: stateColor,
-                    fillColor: stateColor,
-                    label: {
-                        borderColor: stateColor,
-                        style: { color: "#fff", background: stateColor, fontSize: "11px", padding: {top: 4, right: 4, left: 4, bottom: 4}},
-                        text: sumStr,
-                        position: "right",
-                        offsetY: annOffset.y,
-                        offsetX: annOffset.x
-                    }
-                }
+                // Current sum annotation
+                this.buildCurrentTrendSumAnnotation(),
+
+                // Uptrend backgrounds
+                this.buildTrendSumAnnotation(0, 0.5, "#E0F2F1"),
+                this.buildTrendSumAnnotation(0.5, 1, "#B2DFDB"),
+                this.buildTrendSumAnnotation(1, 1.5, "#80CBC4"),
+                this.buildTrendSumAnnotation(1.5, 2, "#4DB6AC"),
+                this.buildTrendSumAnnotation(2, 2.5, "#26A69A"),
+                this.buildTrendSumAnnotation(2.5, 3, "#009688"),
+                this.buildTrendSumAnnotation(3, 4, "#00897B"),
+                this.buildTrendSumAnnotation(4, 5, "#00695C"),
+                this.buildTrendSumAnnotation(5, 8, "#004D40"),
+
+                // Downtrend Backgrounds
+                this.buildTrendSumAnnotation(0, -0.5, "#FFEBEE"),
+                this.buildTrendSumAnnotation(-0.5, -1, "#FFCDD2"),
+                this.buildTrendSumAnnotation(-1, -1.5, "#EF9A9A"),
+                this.buildTrendSumAnnotation(-1.5, -2, "#E57373"),
+                this.buildTrendSumAnnotation(-2, -2.5, "#EF5350"),
+                this.buildTrendSumAnnotation(-2.5, -3, "#F44336"),
+                this.buildTrendSumAnnotation(-3, -4, "#E53935"),
+                this.buildTrendSumAnnotation(-4, -5, "#D32F2F"),
+                this.buildTrendSumAnnotation(-5, -8, "#B71C1C")
             ]
         }
     }
@@ -407,6 +393,48 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             strokeDashArray: 0
         };
     }
+
+
+
+
+    /**
+     * Builds the current trend sum annotation.
+     * @returns YAxisAnnotations
+     */
+    private buildCurrentTrendSumAnnotation(): YAxisAnnotations {
+        // Set the color of the annotation
+        const open: number = this.predictionCandlesticks[this.predictionCandlesticks.length - 1].o;
+        const close: number = this.predictionCandlesticks[this.predictionCandlesticks.length - 1].c;
+        let stateColor: string = this._chart.neutralColor;
+        if (close > open) { stateColor = this._chart.upwardColor } 
+        else if (open > close) { stateColor = this._chart.downwardColor }
+
+        // Build the annotations
+        let sumStr: string = typeof this.activeSum == "number" ? <string>this._utils.outputNumber(this.activeSum, {dp: 3, of: "s"}): "0";
+        let annOffset: {x: number, y: number} = {x: 0, y: 0};
+        if (sumStr.length == 1 ) { annOffset.x = 20 }
+        else if (sumStr.length == 2 ) { annOffset.x = 22 }
+        else if (sumStr.length == 3 ) { annOffset.x = 24 }
+        else if (sumStr.length == 4 ) { annOffset.x = 29 }
+        else if (sumStr.length == 5 ) { annOffset.x = 36 }
+        else if (sumStr.length == 6 ) { annOffset.x = 41 }
+        else if (sumStr.length == 7 ) { annOffset.x = 46 }
+        return {
+            y: this.activePrediction ? this.activePrediction.s: 0,
+            strokeDashArray: 0,
+            borderColor: stateColor,
+            fillColor: stateColor,
+            label: {
+                borderColor: stateColor,
+                style: { color: "#fff", background: stateColor, fontSize: "11px", padding: {top: 4, right: 4, left: 4, bottom: 4}},
+                text: sumStr,
+                position: "right",
+                offsetY: annOffset.y,
+                offsetX: annOffset.x
+            }
+        }
+    } 
+
 
 
 

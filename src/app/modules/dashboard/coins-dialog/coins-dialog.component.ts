@@ -81,6 +81,7 @@ export class CoinsDialogComponent implements OnInit, ICoinsDialogComponent {
 				<p><strong>Symbol:</strong> ${coin.symbol}</p>
 				<p><strong>Price Precision:</strong> ${coin.pricePrecision}</p>
 				<p><strong>Quantity Precision:</strong> ${coin.quantityPrecision}</p>
+				<p><strong>Score:</strong> ${this.scores[coin.symbol]}/5</p>
 				<p class='margin-top ts-s light-text'>
 					Before proceeding, ensure the coin's <strong>margin mode</strong> is set to "Isolated" and the 
 					<strong>leverage</strong> matches the value in the Trading Strategy.
@@ -129,6 +130,7 @@ export class CoinsDialogComponent implements OnInit, ICoinsDialogComponent {
 				<p><strong>Symbol:</strong> ${coin.symbol}</p>
 				<p><strong>Price Precision:</strong> ${coin.pricePrecision}</p>
 				<p><strong>Quantity Precision:</strong> ${coin.quantityPrecision}</p>
+				<p><strong>Score:</strong> ${this.scores[coin.symbol]}/5</p>
 			`,
 			otpConfirmation: true
 		}).afterClosed().subscribe(
