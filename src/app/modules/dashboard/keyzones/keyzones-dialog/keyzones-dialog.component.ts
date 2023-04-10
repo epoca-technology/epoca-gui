@@ -80,6 +80,9 @@ export class KeyzonesDialogComponent implements OnInit, OnDestroy, IKeyZonesDial
 						this.scoresAbove[resistance.id] = Math.ceil(resistance.scr * 10);
 						this.distancesAbove[resistance.id] = <number>this._utils.calculatePercentageChange(currentPrice, resistance.s);
 					}
+					let keyzonesAbove: IMinifiedKeyZone[] = this.marketState.keyzones.above.slice();
+					keyzonesAbove.reverse();
+					this.reversedKeyZonesAbove = keyzonesAbove;
 				}
 				if (this.marketState.keyzones.below && this.marketState.keyzones.below.length) {
 					for (let support of this.marketState.keyzones.below) {
@@ -87,9 +90,6 @@ export class KeyzonesDialogComponent implements OnInit, OnDestroy, IKeyZonesDial
 						this.distancesBelow[support.id] = <number>this._utils.calculatePercentageChange(currentPrice, support.e);
 					}
 				}
-				let keyzonesAbove: IMinifiedKeyZone[] = this.marketState.keyzones.above.slice();
-				keyzonesAbove.reverse();
-				this.reversedKeyZonesAbove = keyzonesAbove;
 				this.loaded = true;
             }
         });
