@@ -151,15 +151,30 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 	 * @returns ApexAnnotations
 	 */
 	private buildTrendAnnotations(): ApexAnnotations {
-		const minValue: number = -this._app.epoch.value!.model.regressions.length;
-        const maxValue: number = this._app.epoch.value!.model.regressions.length;
-		const min_increase_sum: number = this._app.epoch.value!.model.min_increase_sum;
-		const min_decrease_sum: number = this._app.epoch.value!.model.min_decrease_sum;
 		return { yaxis: [
-			this.buildTrendSumAnnotation(min_increase_sum, maxValue, this._chart.upwardColor),
-			this.buildTrendSumAnnotation(0.000001, min_increase_sum, "#B2DFDB"),
-			this.buildTrendSumAnnotation(min_decrease_sum, minValue, this._chart.downwardColor),
-			this.buildTrendSumAnnotation(-0.000001, min_decrease_sum, "#FFCDD2"),
+				// Uptrend backgrounds
+				this.buildTrendSumAnnotation(0, 0.5, "#E0F2F1"),
+				this.buildTrendSumAnnotation(0.5, 1, "#B2DFDB"),
+				this.buildTrendSumAnnotation(1, 1.5, "#80CBC4"),
+				this.buildTrendSumAnnotation(1.5, 2, "#4DB6AC"),
+				this.buildTrendSumAnnotation(2, 2.5, "#26A69A"),
+				this.buildTrendSumAnnotation(2.5, 3, "#009688"),
+				this.buildTrendSumAnnotation(3, 3.5, "#00897B"),
+				this.buildTrendSumAnnotation(3.5, 4, "#00796B"),
+				this.buildTrendSumAnnotation(4, 5, "#00695C"),
+				this.buildTrendSumAnnotation(5, 8, "#004D40"),
+
+				// Downtrend Backgrounds
+				this.buildTrendSumAnnotation(0, -0.5, "#FFEBEE"),
+				this.buildTrendSumAnnotation(-0.5, -1, "#FFCDD2"),
+				this.buildTrendSumAnnotation(-1, -1.5, "#EF9A9A"),
+				this.buildTrendSumAnnotation(-1.5, -2, "#E57373"),
+				this.buildTrendSumAnnotation(-2, -2.5, "#EF5350"),
+				this.buildTrendSumAnnotation(-2.5, -3, "#F44336"),
+				this.buildTrendSumAnnotation(-3, -3.5, "#E53935"),
+				this.buildTrendSumAnnotation(-3.5, -4, "#D32F2F"),
+				this.buildTrendSumAnnotation(-4, -5, "#C62828"),
+				this.buildTrendSumAnnotation(-5, -8, "#B71C1C")
 		]}
 	}
     private buildTrendSumAnnotation(y: number, y2: number, color: string): YAxisAnnotations {

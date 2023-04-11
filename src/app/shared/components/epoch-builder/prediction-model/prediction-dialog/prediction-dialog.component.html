@@ -1,13 +1,13 @@
 <mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
     <div fxLayout="row" fxLayoutAlign="center center">
         <button mat-icon-button class="show-on-mobile" (click)="close()"><mat-icon>arrow_back</mat-icon></button>
-        <span class="truncate">Prediction</span>&nbsp;
+        <span class="truncate">Trend Prediction</span>&nbsp;
         <span fxFlex></span>
+        <button mat-icon-button (click)="displayTooltip()" matTooltip="What is this?"><mat-icon>question_mark</mat-icon></button>
         <button mat-icon-button matTooltip="Display Model" 
             (click)="_nav.displayPredictionModelConfigDialog(model)">
             <mat-icon svgIcon="brain"></mat-icon>
         </button>        
-        <button mat-icon-button (click)="displayTooltip()" matTooltip="What is this?"><mat-icon>question_mark</mat-icon></button>
         <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
     </div>
 </mat-toolbar>

@@ -330,7 +330,7 @@
 
                                         <!-- Positions -->
                                         <div class="global-indicators-section">
-                                            <mat-grid-list [cols]="3" [rowHeight]="layout == 'desktop' ? '42px': '50px'" gutterSize="1px">
+                                            <mat-grid-list [cols]="3" [rowHeight]="layout == 'desktop' ? '44px': '50px'" gutterSize="1px">
                                                 <!-- Active Positions -->
                                                 <mat-grid-tile *ngFor="let pos of positions" class="clickable" role="button" matRipple
                                                     (click)="displayPositionRecordDialog(pos.id)"
@@ -352,17 +352,7 @@
 
                                         <!-- General Indicators -->
                                         <div class="global-indicators-section">
-                                            <mat-grid-list [cols]="3" [rowHeight]="layout == 'desktop' ? '49px': '50px'" gutterSize="1px">
-                                                <!-- Volume -->
-                                                <mat-grid-tile class="clickable" role="button" matRipple
-                                                               (click)="displayVolumeDialog()"
-                                                                [ngClass]="{
-                                                                    'buy-action-container': state.volume > 0,
-                                                                    'sell-action-container': state.volume < 0,
-                                                                    'neutral-action-container': state.volume == 0,
-                                                                    'weak-state': state.volume != 2 && state.volume != -2
-                                                                }"><p>VOLUME</p></mat-grid-tile>
-
+                                            <mat-grid-list [cols]="3" [rowHeight]="layout == 'desktop' ? '45px': '50px'" gutterSize="1px">
                                                 <!-- KeyZones -->
                                                 <mat-grid-tile *ngIf="!state.keyzones.event" 
                                                                 class="clickable" role="button" matRipple
@@ -383,17 +373,34 @@
                                                             <mat-icon>vertical_align_top</mat-icon> <p>RES.</p>
                                                 </mat-grid-tile>
 
-                                                <!-- Coins -->
+                                                <!-- Volume -->
                                                 <mat-grid-tile class="clickable" role="button" matRipple
+                                                               (click)="displayVolumeDialog()"
+                                                                [ngClass]="{
+                                                                    'buy-action-container': state.volume > 0,
+                                                                    'sell-action-container': state.volume < 0,
+                                                                    'neutral-action-container': state.volume == 0,
+                                                                    'weak-state': state.volume != 2 && state.volume != -2
+                                                                }"><p>VOLUME</p></mat-grid-tile>
+
+                                                <!-- Coins -->
+                                                <!--<mat-grid-tile class="clickable" role="button" matRipple
                                                                (click)="displayCoinsIndicatorDialog()"
                                                                 [ngClass]="{
                                                                     'buy-action-container': state.coins.cd > 0,
                                                                     'sell-action-container': state.coins.cd < 0,
                                                                     'neutral-action-container': state.coins.cd == 0,
                                                                     'weak-state': state.coins.cd != 2 && state.coins.cd != -2
-                                                                }"><p>COINS</p></mat-grid-tile>
+                                                                }"><p>COINS</p></mat-grid-tile>-->
                                                 
                                                 <!-- Placeholders -->
+                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
+                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
+                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
+                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
+                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
+                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
+                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
                                                 <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
                                                 <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
                                                 <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>

@@ -3,6 +3,7 @@
 
 export interface IPositionHeadlinesDialogComponent {
     loadHist(range: IPosRecordHistoryRange): Promise<void>,
+    displayPositionActionPayloadsDialog(): void,
     displayTooltip(): void,
     close(): void
 }

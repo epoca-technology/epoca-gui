@@ -57,6 +57,20 @@ export class BalanceDialogComponent implements OnInit, IBalanceDialogComponent {
 
 
 	
+
+
+
+	/* Trading Strategy */
+	public displayTooltip(): void {
+		this._nav.displayTooltip("Balance", [
+			`@TODO`,
+		]);
+	}
+
+
+
+
+
 	/*
 	* Closes the dialog.
 	* @returns void

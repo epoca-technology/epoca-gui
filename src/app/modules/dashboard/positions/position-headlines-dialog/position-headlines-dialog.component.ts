@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 import * as moment from "moment";
 import { IPositionHeadline, PositionService } from '../../../../core';
 import { AppService, NavService } from '../../../../services';
 import { IDateRangeConfig } from '../../../../shared/components/date-range-form-dialog';
+import { PositionActionPayloadsDialogComponent } from '../position-action-payloads-dialog';
 import { IIPosRecordHistoryRangeID, IPositionHeadlinesDialogComponent, IPosRecordHistoryRange } from './interfaces';
 
 @Component({
@@ -33,7 +34,8 @@ export class PositionHeadlinesDialogComponent implements OnInit, IPositionHeadli
 		public dialogRef: MatDialogRef<PositionHeadlinesDialogComponent>,
 		public _nav: NavService,
 		public _app: AppService,
-		private _position: PositionService
+		private _position: PositionService,
+		private dialog: MatDialog
 	) { }
 
 	ngOnInit(): void {
@@ -120,6 +122,27 @@ export class PositionHeadlinesDialogComponent implements OnInit, IPositionHeadli
 	}
 
 	
+
+
+
+
+
+
+
+
+
+	/**
+	 * Displays the position action payloads dialog.
+     * @param taInterval
+	 */
+    public displayPositionActionPayloadsDialog(): void {
+		this.dialog.open(PositionActionPayloadsDialogComponent, {
+			hasBackdrop: this._app.layout.value != "mobile",
+			panelClass: "small-dialog",
+			data: {}
+		})
+	}
+
 
 
 

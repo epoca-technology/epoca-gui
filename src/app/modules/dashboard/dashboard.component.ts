@@ -161,7 +161,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         this.positionsSub = this._app.positions.subscribe((pos) => {
             if (pos !== null) {
                 this.positions = pos || [];
-                this.positionsPlaceholders = Array(9 - this.positions.length).fill(0);
+                this.positionsPlaceholders = Array(3 - this.positions.length).fill(0);
                 if (!this.positionsLoaded) {
                     this.positionsLoaded = true;
                     this.checkLoadState();
@@ -222,9 +222,9 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         if (pred) {
             // Populate the epoch's record in case it hasn't been
             if (!this.epoch) this.epoch = this._app.epoch.value!;
-
+            
             // Calculate the active sum
-            this.activeSum = <number>this._utils.getSum(pred.f, {dp: 6});
+            this.activeSum = pred.s;
 
             // Add the new prediction
             this.activePrediction = pred;
@@ -354,7 +354,8 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                 this.buildTrendSumAnnotation(1.5, 2, "#4DB6AC"),
                 this.buildTrendSumAnnotation(2, 2.5, "#26A69A"),
                 this.buildTrendSumAnnotation(2.5, 3, "#009688"),
-                this.buildTrendSumAnnotation(3, 4, "#00897B"),
+                this.buildTrendSumAnnotation(3, 3.5, "#00897B"),
+                this.buildTrendSumAnnotation(3.5, 4, "#00796B"),
                 this.buildTrendSumAnnotation(4, 5, "#00695C"),
                 this.buildTrendSumAnnotation(5, 8, "#004D40"),
 
@@ -365,8 +366,9 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                 this.buildTrendSumAnnotation(-1.5, -2, "#E57373"),
                 this.buildTrendSumAnnotation(-2, -2.5, "#EF5350"),
                 this.buildTrendSumAnnotation(-2.5, -3, "#F44336"),
-                this.buildTrendSumAnnotation(-3, -4, "#E53935"),
-                this.buildTrendSumAnnotation(-4, -5, "#D32F2F"),
+                this.buildTrendSumAnnotation(-3, -3.5, "#E53935"),
+                this.buildTrendSumAnnotation(-3.5, -4, "#D32F2F"),
+                this.buildTrendSumAnnotation(-4, -5, "#C62828"),
                 this.buildTrendSumAnnotation(-5, -8, "#B71C1C")
             ]
         }
@@ -917,8 +919,8 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             },
             {
                 icon: 'vertical_distribute',  
-                title: 'KeyZones Configuration', 
-                description: 'Manage how the zones are built and issue events.', 
+                title: 'KeyZones', 
+                description: 'Configure how the zones are built and events are issued.', 
                 response: "KEYZONES_CONFIG"
             },
             {
@@ -1020,12 +1022,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                 response: "POSITION_HEADLINES"
             },
             {
-                icon: 'receipt_long',  
-                title: 'Position Actions', 
-                description: 'View the list of payloads stored when interacting with positions.', 
-                response: "POSITION_ACTION_PAYLOADS"
-            },
-            {
                 icon: 'account_balance_wallet',  
                 title: 'Balance', 
                 description: 'View the USDT Balance held in the Futures Wallet.', 
@@ -1034,7 +1030,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         ]);
 		bs.afterDismissed().subscribe((response: string|undefined) => {
             if      (response === "POSITION_HEADLINES") { this.displayPositionHeadlinesDialog() }
-            else if (response === "POSITION_ACTION_PAYLOADS") { this.displayPositionActionPayloadsDialog() }
             else if (response === "ACCOUNT_BALANCE") { this.displayBalanceDialog() }
 		});
 	}
@@ -1049,7 +1044,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     private displayPositionHeadlinesDialog(): void {
 		this.dialog.open(PositionHeadlinesDialogComponent, {
 			hasBackdrop: this._app.layout.value != "mobile",
-			panelClass: "small-dialog",
+			panelClass: "medium-dialog",
 			data: {}
 		})
 	}
@@ -1058,17 +1053,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
 
 
-	/**
-	 * Displays the position action payloads dialog.
-     * @param taInterval
-	 */
-    private displayPositionActionPayloadsDialog(): void {
-		this.dialog.open(PositionActionPayloadsDialogComponent, {
-			hasBackdrop: this._app.layout.value != "mobile",
-			panelClass: "small-dialog",
-			data: {}
-		})
-	}
 
 
 
