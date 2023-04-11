@@ -137,7 +137,7 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 
 		// Build the series
 		this.seriesName = "Trend Sum";
-		this.series = this.config.trendWindow!.map((c) => { return { x: c.ot, y: c.c }});
+		this.series = this.config.trendState!.w.map((c) => { return { x: c.ot, y: c.c }});
 
 		// Finally, apply the split
 		this.applySplit(this.activeSplitID);
@@ -152,29 +152,25 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 	 */
 	private buildTrendAnnotations(): ApexAnnotations {
 		return { yaxis: [
-				// Uptrend backgrounds
-				this.buildTrendSumAnnotation(0, 0.5, "#E0F2F1"),
-				this.buildTrendSumAnnotation(0.5, 1, "#B2DFDB"),
-				this.buildTrendSumAnnotation(1, 1.5, "#80CBC4"),
-				this.buildTrendSumAnnotation(1.5, 2, "#4DB6AC"),
-				this.buildTrendSumAnnotation(2, 2.5, "#26A69A"),
-				this.buildTrendSumAnnotation(2.5, 3, "#009688"),
-				this.buildTrendSumAnnotation(3, 3.5, "#00897B"),
-				this.buildTrendSumAnnotation(3.5, 4, "#00796B"),
-				this.buildTrendSumAnnotation(4, 5, "#00695C"),
-				this.buildTrendSumAnnotation(5, 8, "#004D40"),
+                // Uptrend backgrounds
+                this.buildTrendSumAnnotation(0, 1, "#E0F2F1"),
+                this.buildTrendSumAnnotation(1, 2, "#80CBC4"),
+                this.buildTrendSumAnnotation(2, 3, "#4DB6AC"),
+                this.buildTrendSumAnnotation(3, 4, "#26A69A"),
+                this.buildTrendSumAnnotation(4, 5, "#009688"),
+                this.buildTrendSumAnnotation(5, 6, "#00897B"),
+                this.buildTrendSumAnnotation(6, 7, "#00796B"),
+                this.buildTrendSumAnnotation(7, 8, "#004D40"),
 
-				// Downtrend Backgrounds
-				this.buildTrendSumAnnotation(0, -0.5, "#FFEBEE"),
-				this.buildTrendSumAnnotation(-0.5, -1, "#FFCDD2"),
-				this.buildTrendSumAnnotation(-1, -1.5, "#EF9A9A"),
-				this.buildTrendSumAnnotation(-1.5, -2, "#E57373"),
-				this.buildTrendSumAnnotation(-2, -2.5, "#EF5350"),
-				this.buildTrendSumAnnotation(-2.5, -3, "#F44336"),
-				this.buildTrendSumAnnotation(-3, -3.5, "#E53935"),
-				this.buildTrendSumAnnotation(-3.5, -4, "#D32F2F"),
-				this.buildTrendSumAnnotation(-4, -5, "#C62828"),
-				this.buildTrendSumAnnotation(-5, -8, "#B71C1C")
+                // Downtrend Backgrounds
+                this.buildTrendSumAnnotation(0, -1, "#FFEBEE"),
+                this.buildTrendSumAnnotation(-1, -2, "#EF9A9A"),
+                this.buildTrendSumAnnotation(-2, -3, "#E57373"),
+                this.buildTrendSumAnnotation(-3, -4, "#EF5350"),
+                this.buildTrendSumAnnotation(-4, -5, "#F44336"),
+                this.buildTrendSumAnnotation(-5, -6, "#E53935"),
+                this.buildTrendSumAnnotation(-6, -7, "#D32F2F"),
+                this.buildTrendSumAnnotation(-7, -8, "#B71C1C")
 		]}
 	}
     private buildTrendSumAnnotation(y: number, y2: number, color: string): YAxisAnnotations {

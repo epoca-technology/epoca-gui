@@ -91,7 +91,8 @@
                                        placeholder="e.g. 1500">
                             </mat-form-field>
                         </div>
-                        <span fxFlex="5"></span>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="start start" class="section-container">
                         <div fxFlex>
                             <mat-form-field>
                                 <mat-label>Positions Limit</mat-label>
@@ -102,6 +103,15 @@
                                        [appDisableControl]="submitting"
                                        placeholder="e.g. 3">
                             </mat-form-field>
+                        </div>
+                        <span fxFlex="5"></span>
+                        <div fxFlex>
+                            <mat-slide-toggle 
+                                style="margin-top:15px;"
+                                formControlName="bitcoin_only"
+                                [appDisableControl]="submitting">
+                                {{bitcoin_only.value ? 'Bitcoin Only': 'Multi Coin'}}
+                            </mat-slide-toggle>
                         </div>
                     </div>
                 </div>

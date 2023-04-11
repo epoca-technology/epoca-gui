@@ -3,8 +3,8 @@ import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute } from "@angular/router";
 import { Subscription } from "rxjs";
 import { 
+    EpochService,
     IEpochRecord, 
-    LocalDatabaseService, 
     UtilsService 
 } from "../../../core";
 import { 
@@ -46,7 +46,7 @@ export class EpochsComponent implements OnInit, OnDestroy, IEpochsComponent {
         public _app: AppService,
         private _validations: ValidationsService,
         private route: ActivatedRoute,
-        private _localDB: LocalDatabaseService,
+        private _epoch: EpochService,
         private dialog: MatDialog,
         private _utils: UtilsService
     ) { }
@@ -121,7 +121,7 @@ export class EpochsComponent implements OnInit, OnDestroy, IEpochsComponent {
         // If it isn"t the active epoch, retrieve the summary from the API
         else {
             try {
-                const rec: IEpochRecord|undefined = await this._localDB.getEpochRecord(<string>epochID);
+                const rec: IEpochRecord|undefined = await this._epoch.getEpochRecord(<string>epochID);
                 if (!rec) { throw new Error(`The epoch ${epochID} was not found in the database.`)}
                 this.epoch = rec;
             } catch (e) { this._app.error(e) }

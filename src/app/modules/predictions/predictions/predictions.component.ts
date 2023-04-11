@@ -7,6 +7,7 @@ import { Subscription } from "rxjs";
 import { ApexAnnotations } from "ng-apexcharts";
 import * as moment from "moment";
 import { 
+    EpochService,
     IEpochRecord, 
     IPredictionCandlestick, 
     LocalDatabaseService, 
@@ -63,6 +64,7 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
         private titleService: Title,
         public _prediction: PredictionService,
         private dialog: MatDialog,
+        private _epoch: EpochService
     ) { }
 
     async ngOnInit(): Promise<void> {
@@ -144,7 +146,7 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
         // If it isn"t the active epoch, retrieve the summary from the API
         else {
             try {
-                epochSummary = await this._localDB.getEpochRecord(<string>epochID);
+                epochSummary = await this._epoch.getEpochRecord(<string>epochID);
             } catch (e) { this._app.error(e) }
         }
 
@@ -239,12 +241,10 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
         try {
             // Retrieve the candlesticks
             const endAt: number = this.epoch!.uninstalled ? this.epoch!.uninstalled: this._app.serverTime.value!
-            this.candlesticks = await this._localDB.listPredictionCandlesticks(
+            this.candlesticks = await this._prediction.listPredictionCandlesticks(
                 this.epoch!.id, 
                 moment(endAt).subtract(days, "days").valueOf(),
-                endAt,
-                this.epoch!.installed, 
-                this._app.serverTime.value!
+                endAt
             );
 
             // Build the chart

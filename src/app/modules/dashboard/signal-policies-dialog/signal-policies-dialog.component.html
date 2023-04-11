@@ -182,6 +182,36 @@
                         </mat-menu>
                     </div>
                 </div>
+
+
+                <!-- Coins Direction Cancellation -->
+                <div class="margin-top-x3" [ngClass]="{'inactive': !policies.long.cancellation.coins_direction.enabled}">
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <h5 class="truncate">Coins Direction</h5>
+                        <span fxFlex></span>
+                        <mat-slide-toggle [(ngModel)]="policies.long.cancellation.coins_direction.enabled"></mat-slide-toggle>
+                    </div>
+                    <div class="policy-items">
+                        <div class="policy-item clickable state-badge square-badge-error" role="button" matRipple [matMenuTriggerFor]="longCoinsDirectionMenu"
+                            [ngClass]="{
+                                'weak-state': policies.long.cancellation.coins_direction.coins_direction == -1
+                            }">
+                            <mat-icon [svgIcon]="_ms.icons[policies.long.cancellation.coins_direction.coins_direction]"></mat-icon> Coins Direction
+                        </div>
+                        <mat-menu #longCoinsDirectionMenu="matMenu">
+                            <button mat-menu-item 
+                                    (click)="policies.long.cancellation.coins_direction.coins_direction = -1" 
+                                    [disabled]="policies.long.cancellation.coins_direction.coins_direction == -1">
+                                    Decreasing
+                            </button>
+                            <button mat-menu-item 
+                                    (click)="policies.long.cancellation.coins_direction.coins_direction = -2" 
+                                    [disabled]="policies.long.cancellation.coins_direction.coins_direction == -2">
+                                    Decreasing Strongly
+                            </button>
+                        </mat-menu>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -342,6 +372,36 @@
                             <button mat-menu-item 
                                     (click)="policies.short.cancellation.trend.trend_state = 2" 
                                     [disabled]="policies.short.cancellation.trend.trend_state == 2">
+                                    Increasing Strongly
+                            </button>
+                        </mat-menu>
+                    </div>
+                </div>
+
+
+                <!-- Coins Direction Cancellation -->
+                <div class="margin-top-x3" [ngClass]="{'inactive': !policies.short.cancellation.coins_direction.enabled}">
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <h5 class="truncate">Coins Direction</h5>
+                        <span fxFlex></span>
+                        <mat-slide-toggle [(ngModel)]="policies.short.cancellation.coins_direction.enabled"></mat-slide-toggle>
+                    </div>
+                    <div class="policy-items">
+                        <div class="policy-item clickable state-badge square-badge-success" role="button" matRipple [matMenuTriggerFor]="shortCoinsDirectionMenu"
+                            [ngClass]="{
+                                'weak-state': policies.short.cancellation.coins_direction.coins_direction == 1
+                            }">
+                            <mat-icon [svgIcon]="_ms.icons[policies.short.cancellation.coins_direction.coins_direction]"></mat-icon> Coins Direction
+                        </div>
+                        <mat-menu #shortCoinsDirectionMenu="matMenu">
+                            <button mat-menu-item 
+                                    (click)="policies.short.cancellation.coins_direction.coins_direction = 1" 
+                                    [disabled]="policies.short.cancellation.coins_direction.coins_direction == 1">
+                                    Increasing
+                            </button>
+                            <button mat-menu-item 
+                                    (click)="policies.short.cancellation.coins_direction.coins_direction = 2" 
+                                    [disabled]="policies.short.cancellation.coins_direction.coins_direction == 2">
                                     Increasing Strongly
                             </button>
                         </mat-menu>

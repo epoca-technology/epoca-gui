@@ -2,14 +2,14 @@ import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import {Title} from "@angular/platform-browser";
 import {MatDialog} from "@angular/material/dialog";
 import * as moment from "moment";
+import { Subscription } from "rxjs";
 import { ChartComponent } from "ng-apexcharts";
-import { ICandlestick, LocalDatabaseService } from "../../../core";
+import { CandlestickService, ICandlestick } from "../../../core";
 import { AppService, ChartService, ICandlestickChartOptions, ILayout, NavService } from "../../../services";
 import { CandlestickFilesDialogComponent } from "./candlestick-files-dialog/candlestick-files-dialog.component";
 import { CandlesticksConfigDialogComponent } from "./candlesticks-config-dialog/candlesticks-config-dialog.component";
 import { CandlestickDialogComponent } from "../../../shared/components/candlestick";
 import { ICandlesticksComponent, ICandlesticksConfig} from "./interfaces";
-import { Subscription } from "rxjs";
 
 
 @Component({
@@ -45,7 +45,7 @@ export class CandlesticksComponent implements OnInit, OnDestroy, ICandlesticksCo
         private dialog: MatDialog,
         private _app: AppService,
         private titleService: Title,
-        private _localDB: LocalDatabaseService
+        private _candlestick: CandlestickService
     ) { }
 
     ngOnInit(): void {
@@ -85,10 +85,9 @@ export class CandlesticksComponent implements OnInit, OnDestroy, ICandlesticksCo
         // Build the candlesticks
 		try {
 			// Retrieve the raw candlesticks
-			this.rawCandlesticks = await this._localDB.getCandlesticksForPeriod(
+			this.rawCandlesticks = await this._candlestick.getForPeriod(
 				this.config.start, 
 				this.config.end, 
-                this.serverTime,
 				this.config.intervalMinutes
 			);
 

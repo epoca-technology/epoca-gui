@@ -1,6 +1,6 @@
 import { Component, Output, OnInit, EventEmitter, ViewChild, ElementRef } from "@angular/core";
 import {AbstractControl, FormControl, FormGroup} from '@angular/forms';
-import { EpochService, IEpochListItem, IEpochRecord, LocalDatabaseService } from "../../../core";
+import { EpochService, IEpochListItem, IEpochRecord } from "../../../core";
 import { AppService, ValidationsService } from "../../../services";
 
 
@@ -34,7 +34,6 @@ export class EpochsMenuComponent implements OnInit {
 
 	constructor(
 		private _epoch: EpochService,
-		private _localDB: LocalDatabaseService,
 		private _app: AppService,
 		private _validations: ValidationsService
 	) { }
@@ -148,7 +147,7 @@ export class EpochsMenuComponent implements OnInit {
 			const epochID: string = this.searchQuery.value.toUpperCase();
 
 			// Retrieve the record
-			const record: IEpochRecord|undefined = await this._localDB.getEpochRecord(epochID);
+			const record: IEpochRecord|undefined = await this._epoch.getEpochRecord(epochID);
 
 			// If the record exists, activate it right away. Otherwise, display an error
 			if (record) { this.activateEpoch(record.id) }

@@ -4,6 +4,7 @@ import { MatSidenav } from "@angular/material/sidenav";
 import { MatDialog } from "@angular/material/dialog";
 import { Subscription } from "rxjs";
 import { 
+    EpochService,
     IEpochRecord, 
     LocalDatabaseService, 
     PredictionService,
@@ -71,6 +72,7 @@ export class PositionsComponent implements OnInit, OnDestroy, IPositionsComponen
         private _chart: ChartService,
         public _prediction: PredictionService,
         private dialog: MatDialog,
+        private _epoch: EpochService,
         private _utils: UtilsService
     ) { }
 
@@ -157,7 +159,7 @@ export class PositionsComponent implements OnInit, OnDestroy, IPositionsComponen
         // If it isn"t the active epoch, retrieve the summary from the API
         else {
             try {
-                epochSummary = await this._localDB.getEpochRecord(<string>epochID);
+                epochSummary = await this._epoch.getEpochRecord(<string>epochID);
             } catch (e) { this._app.error(e) }
         }
 

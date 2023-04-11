@@ -35,7 +35,7 @@ import { IMarketStateDialogConfig, MarketStateDialogComponent } from "./market-s
 import { IBottomSheetMenuItem } from "../../shared/components/bottom-sheet-menu";
 import { CoinsDialogComponent } from "./coins-dialog";
 import { SignalPoliciesDialogComponent } from "./signal-policies-dialog";
-import { PositionActionPayloadsDialogComponent, PositionHeadlinesDialogComponent } from "./positions";
+import { PositionHeadlinesDialogComponent } from "./positions";
 import { IDashboardComponent, IWindowZoom, IWindowZoomID, IWindowZoomPrices } from "./interfaces";
 
 @Component({
@@ -71,12 +71,10 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     // Prediction Lists
     public epoch?: IEpochRecord;
     public activePrediction?: IPrediction;
-    public activeSum?: number;
     private predictionSub!: Subscription;
     private predictionsLoaded: boolean = false;
 
     // Prediction Charts
-    private predictionCandlesticks: IPredictionCandlestick[] = [];
     public predictionCandlesticksChart?: ICandlestickChartOptions;
 
     // State
@@ -222,17 +220,9 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         if (pred) {
             // Populate the epoch's record in case it hasn't been
             if (!this.epoch) this.epoch = this._app.epoch.value!;
-            
-            // Calculate the active sum
-            this.activeSum = pred.s;
 
             // Add the new prediction
             this.activePrediction = pred;
-        }
-
-        // Otherwise, set default values
-        else {
-            this.predictionCandlesticks = this.getDefaultWindowPredictionCandlesticks();
         }
 
         // Update the prediction chart
@@ -259,68 +249,16 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
      * @returns Promise<void>
      */
     private async updatePredictionCandlesticks(): Promise<void> {
-        // Check if the candlesticks need to be built from scratch
-        if (
-            !this.predictionCandlesticks.length ||
-            this.predictionCandlesticks[this.predictionCandlesticks.length - 1].ct < 
-            moment(this.state.window.w[this.state.window.w.length - 1].ct).subtract(10, "minutes").valueOf()
-        ) {
-            try {
-                // Retrieve the candlesticks
-                this.predictionCandlesticks = await this.getWindowPredictionCandlesticks();
-            } catch (e) { 
-                this.predictionCandlesticks = this.getDefaultWindowPredictionCandlesticks();
-                this._app.error(e);
-            }
-        }
-
-        // Otherwise, update the local candlesticks
-        else if(this.activePrediction) {
-            // Check if the latest candlestick's interval ended
-            const ct: number = moment(this.predictionCandlesticks[this.predictionCandlesticks.length - 1].ot).add(15, "minutes").valueOf() - 1;
-            if (this.activePrediction.t > ct) {
-                // Build the new candlestick
-                const candlestick: IPredictionCandlestick = {
-                    ot: this.predictionCandlesticks[this.predictionCandlesticks.length - 1].ct + 1,
-                    ct: this.activePrediction.t,
-                    o: this.activePrediction.s,
-                    h: this.activePrediction.s,
-                    l: this.activePrediction.s,
-                    c: this.activePrediction.s
-                }
-
-                // Push it to the list and slice it
-                this.predictionCandlesticks.push(candlestick);
-                this.predictionCandlesticks = this.predictionCandlesticks.slice(-128);
-            }
-
-            // Otherwise, update the OHLC of the current item
-            else {
-                const active: IPredictionCandlestick = this.predictionCandlesticks[this.predictionCandlesticks.length - 1];
-                this.predictionCandlesticks[this.predictionCandlesticks.length - 1] = {
-                    ot: active.ot,
-                    ct: this.activePrediction.t,
-                    o: active.o,
-                    h: this.activePrediction.s > active.h ? this.activePrediction.s: active.h,
-                    l: this.activePrediction.s < active.l ? this.activePrediction.s: active.l,
-                    c: this.activePrediction.s
-                }
-            }
-        }
+        // Init the candlesticks
+        const candlesticks: IPredictionCandlestick[] = this.state.trend.w.length ? this.state.trend.w: this.getDefaultWindowPredictionCandlesticks();
 
         // Finally, update the chart
         if (this.predictionCandlesticksChart) {
-            /*this.predictionCandlesticksChart.series = [
-                {
-                    name: "candle",
-                    data: this._chart.getApexCandlesticks(this.predictionCandlesticks)
-                }
-            ];*/
-            this.predictionCandlesticksChart.series = [{data: this._chart.getApexCandlesticks(this.predictionCandlesticks)}]
+            this.predictionCandlesticksChart.series = [{data: this._chart.getApexCandlesticks(candlesticks)}]
             this.predictionCandlesticksChart.annotations = this.getPredictionCandlestickAnnotations();
         } else {
             this.predictionCandlesticksChart = this._chart.getCandlestickChartOptions(
-                this.predictionCandlesticks, 
+                candlesticks, 
                 this.getPredictionCandlestickAnnotations(), 
                 false
             );
@@ -348,28 +286,24 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                 this.buildCurrentTrendSumAnnotation(),
 
                 // Uptrend backgrounds
-                this.buildTrendSumAnnotation(0, 0.5, "#E0F2F1"),
-                this.buildTrendSumAnnotation(0.5, 1, "#B2DFDB"),
-                this.buildTrendSumAnnotation(1, 1.5, "#80CBC4"),
-                this.buildTrendSumAnnotation(1.5, 2, "#4DB6AC"),
-                this.buildTrendSumAnnotation(2, 2.5, "#26A69A"),
-                this.buildTrendSumAnnotation(2.5, 3, "#009688"),
-                this.buildTrendSumAnnotation(3, 3.5, "#00897B"),
-                this.buildTrendSumAnnotation(3.5, 4, "#00796B"),
-                this.buildTrendSumAnnotation(4, 5, "#00695C"),
-                this.buildTrendSumAnnotation(5, 8, "#004D40"),
+                this.buildTrendSumAnnotation(0, 1, "#E0F2F1"),
+                this.buildTrendSumAnnotation(1, 2, "#80CBC4"),
+                this.buildTrendSumAnnotation(2, 3, "#4DB6AC"),
+                this.buildTrendSumAnnotation(3, 4, "#26A69A"),
+                this.buildTrendSumAnnotation(4, 5, "#009688"),
+                this.buildTrendSumAnnotation(5, 6, "#00897B"),
+                this.buildTrendSumAnnotation(6, 7, "#00796B"),
+                this.buildTrendSumAnnotation(7, 8, "#004D40"),
 
                 // Downtrend Backgrounds
-                this.buildTrendSumAnnotation(0, -0.5, "#FFEBEE"),
-                this.buildTrendSumAnnotation(-0.5, -1, "#FFCDD2"),
-                this.buildTrendSumAnnotation(-1, -1.5, "#EF9A9A"),
-                this.buildTrendSumAnnotation(-1.5, -2, "#E57373"),
-                this.buildTrendSumAnnotation(-2, -2.5, "#EF5350"),
-                this.buildTrendSumAnnotation(-2.5, -3, "#F44336"),
-                this.buildTrendSumAnnotation(-3, -3.5, "#E53935"),
-                this.buildTrendSumAnnotation(-3.5, -4, "#D32F2F"),
-                this.buildTrendSumAnnotation(-4, -5, "#C62828"),
-                this.buildTrendSumAnnotation(-5, -8, "#B71C1C")
+                this.buildTrendSumAnnotation(0, -1, "#FFEBEE"),
+                this.buildTrendSumAnnotation(-1, -2, "#EF9A9A"),
+                this.buildTrendSumAnnotation(-2, -3, "#E57373"),
+                this.buildTrendSumAnnotation(-3, -4, "#EF5350"),
+                this.buildTrendSumAnnotation(-4, -5, "#F44336"),
+                this.buildTrendSumAnnotation(-5, -6, "#E53935"),
+                this.buildTrendSumAnnotation(-6, -7, "#D32F2F"),
+                this.buildTrendSumAnnotation(-7, -8, "#B71C1C")
             ]
         }
     }
@@ -405,14 +339,18 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
      */
     private buildCurrentTrendSumAnnotation(): YAxisAnnotations {
         // Set the color of the annotation
-        const open: number = this.predictionCandlesticks[this.predictionCandlesticks.length - 1].o;
-        const close: number = this.predictionCandlesticks[this.predictionCandlesticks.length - 1].c;
+        let open: number = 0;
+        let close: number = 0;
+        if (this.state.trend.w.length) {
+            open = this.state.trend.w[this.state.trend.w.length - 1].o;
+            close = this.state.trend.w[this.state.trend.w.length - 1].c;
+        }
         let stateColor: string = this._chart.neutralColor;
         if (close > open) { stateColor = this._chart.upwardColor } 
         else if (open > close) { stateColor = this._chart.downwardColor }
 
         // Build the annotations
-        let sumStr: string = typeof this.activeSum == "number" ? <string>this._utils.outputNumber(this.activeSum, {dp: 3, of: "s"}): "0";
+        let sumStr: string = <string>this._utils.outputNumber(close, {dp: 3, of: "s"});
         let annOffset: {x: number, y: number} = {x: 0, y: 0};
         if (sumStr.length == 1 ) { annOffset.x = 20 }
         else if (sumStr.length == 2 ) { annOffset.x = 22 }
@@ -422,7 +360,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         else if (sumStr.length == 6 ) { annOffset.x = 41 }
         else if (sumStr.length == 7 ) { annOffset.x = 46 }
         return {
-            y: this.activePrediction ? this.activePrediction.s: 0,
+            y: close,
             strokeDashArray: 0,
             borderColor: stateColor,
             fillColor: stateColor,
@@ -436,26 +374,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             }
         }
     } 
-
-
-
-
-
-    /**
-     * Retrieves the Prediction Candlesticks based on the current
-     * window.
-     * @returns Promise<IPredictionCandlestick[]>
-     */
-    private getWindowPredictionCandlesticks(): Promise<IPredictionCandlestick[]> {
-        return this._localDB.listPredictionCandlesticks(
-            this.epoch!.id, 
-            this.state.window.w[0].ot,
-            this.state.window.w[this.state.window.w.length - 1].ct,
-            this.epoch!.installed, 
-            this._app.serverTime.value!
-        );
-    }
-
 
 
 
@@ -522,8 +440,8 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             {dp: 0, of: "s"}
         );
         let newTitle: string = `$${price}`;
-        if (this.activeSum) {
-            newTitle += `: ${this._utils.outputNumber(this.activeSum, {dp: 2})}`;
+        if (this.activePrediction) {
+            newTitle += `: ${this._utils.outputNumber(this.activePrediction.s, {dp: 2})}`;
             this.titleService.setTitle(newTitle);
         } else {
             this.titleService.setTitle(newTitle);
@@ -551,12 +469,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             }
 
             // Update the series
-            /*this.windowChart.series = [
-                {
-                    name: "candle",
-                    data: this._chart.getApexCandlesticks(this.state.window.w)
-                }
-            ];*/
             this.windowChart.series = [{data: this._chart.getApexCandlesticks(this.state.window.w)}]
 
             // Update the annotations
@@ -1152,8 +1064,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 			data: <IMarketStateDialogConfig>{
                 module: "trend",
                 split: id,
-                trendState: this.state.trend,
-                trendWindow: this.predictionCandlesticks
+                trendState: this.state.trend
             }
 		})
 	}

@@ -15,7 +15,8 @@ import {
 	IBacktestPosition,
 	LocalDatabaseService,
 	ICandlestick,
-	PredictionService
+	PredictionService,
+	CandlestickService
 } from '../../../core';
 import { 
 	AppService, 
@@ -135,7 +136,8 @@ export class PredictionModelsComponent implements OnInit, OnDestroy, IPrediction
         private route: ActivatedRoute,
 		private _validations: ValidationsService,
 		private _localDB: LocalDatabaseService,
-		private _prediction: PredictionService
+		private _prediction: PredictionService,
+		private _candlestick: CandlestickService
 	) { }
 
 
@@ -948,10 +950,9 @@ export class PredictionModelsComponent implements OnInit, OnDestroy, IPrediction
 	 */
 	private async buildHistoryCandlesticks(pageIndex: number): Promise<void> {
 		// Retrieve the candlesticks
-		const candlesticks: ICandlestick[] = await this._localDB.getCandlesticksForPeriod(
+		const candlesticks: ICandlestick[] = await this._candlestick.getForPeriod(
 			this.histPages[pageIndex].start,
-			this.histPages[pageIndex].end,
-			<number>this._app.serverTime.value
+			this.histPages[pageIndex].end
 		);
 
 		// If there are no candlesticks, don't build the chart

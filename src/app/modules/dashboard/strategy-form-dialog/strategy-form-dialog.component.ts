@@ -37,6 +37,7 @@ export class StrategyFormDialogComponent implements OnInit, IStrategyFormDialogC
 			this.form = new FormGroup ({
 				long_status: new FormControl(this.strategy.long_status, [ Validators.required ]),
 				short_status: new FormControl(this.strategy.short_status, [ Validators.required ]),
+				bitcoin_only: new FormControl(this.strategy.bitcoin_only, [ Validators.required ]),
 				leverage: new FormControl(this.strategy.leverage, [ Validators.required, Validators.min(2), Validators.max(125) ]),
 				position_size: new FormControl(this.strategy.position_size, [ Validators.required, Validators.min(1), Validators.max(10000) ]),
 				positions_limit: new FormControl(this.strategy.positions_limit, [ Validators.required, Validators.min(1), Validators.max(3) ]),
@@ -63,6 +64,7 @@ export class StrategyFormDialogComponent implements OnInit, IStrategyFormDialogC
     /* Form Getters */
 	get long_status(): AbstractControl { return <AbstractControl>this.form.get("long_status") }
 	get short_status(): AbstractControl { return <AbstractControl>this.form.get("short_status") }
+	get bitcoin_only(): AbstractControl { return <AbstractControl>this.form.get("bitcoin_only") }
 	get leverage(): AbstractControl { return <AbstractControl>this.form.get("leverage") }
 	get position_size(): AbstractControl { return <AbstractControl>this.form.get("position_size") }
 	get positions_limit(): AbstractControl { return <AbstractControl>this.form.get("positions_limit") }
@@ -97,6 +99,7 @@ export class StrategyFormDialogComponent implements OnInit, IStrategyFormDialogC
 						// Build the new strategy
 						this.strategy.long_status = this.long_status.value;
 						this.strategy.short_status = this.short_status.value;
+						this.strategy.bitcoin_only = this.bitcoin_only.value;
 						this.strategy.leverage = this.leverage.value;
 						this.strategy.position_size = this.position_size.value;
 						this.strategy.positions_limit = this.positions_limit.value;

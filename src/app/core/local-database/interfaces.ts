@@ -25,24 +25,9 @@ export interface ILocalDatabaseService {
 
     /* Data Caching */
 
-    // Epoch
-    getEpochRecord(epochID: string): Promise<IEpochRecord|undefined>,
-
     // Certificates
     getPredictionModelCertificate(id: string): Promise<IPredictionModelCertificate>,
     getRegressionCertificate(id: string): Promise<IRegressionTrainingCertificate>,
-
-    // Candlesticks
-    getCandlesticksForPeriod(start: number, end: number, serverTime: number, intervalMinutes?: number): Promise<ICandlestick[]>,
-
-    // Epoch Prediction Candlesticks
-    listPredictionCandlesticks(
-		epochID: string, 
-		startAt: number, 
-		endAt: number, 
-		epochInstalled: number,
-		serverTime: number
-	): Promise<IPredictionCandlestick[]>,
 
     // Position Record Management
     getPositionRecord(id: string): Promise<IPositionRecord>,

@@ -1,5 +1,4 @@
 import { 
-    IPredictionCandlestick, 
     ISplitStateID, 
     ITrendState, 
     IWindowState 
@@ -30,6 +29,5 @@ export interface IMarketStateDialogConfig {
     split?: ISplitStateID,
     windowState?: IWindowState,
     trendState?: ITrendState,
-    trendWindow?: IPredictionCandlestick[],
     symbol?: string
 }
