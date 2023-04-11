@@ -16,6 +16,7 @@ import {
 	IMarketState, 
 	IPositionHeadline, 
 	IPrediction, 
+	IPredictionCandlestick, 
 	PredictionService, 
 	UtilsService 
 } from "../../core";
@@ -221,6 +222,7 @@ export class AppService implements IAppService{
 							snapVal.guiVersion = this.guiVersion.value!;
 							snapVal.epoch = this.epoch.value!;
 							snapVal.marketState.window.w = this.buildUpdatedWindowCandlesticks(snapVal.marketState.window.w);
+							snapVal.marketState.trend.w = this.buildUpdatedTrendWindowCandlesticks(snapVal.marketState.trend.w);
 							snapVal.keyzoneEventScoreRequirement = this.keyzoneEventScoreRequirement;
 							this.broadcastAppBulk(snapVal);
 						}
@@ -265,6 +267,44 @@ export class AppService implements IAppService{
 		// Finally, return the updated window
 		return window;
 	}
+
+
+
+
+
+	/**
+	 * Builds the updated trend window candlesticks based on the active one.
+	 * @param active 
+	 * @returns IPredictionCandlestick[]
+	 */
+	private buildUpdatedTrendWindowCandlesticks(active: IPredictionCandlestick): IPredictionCandlestick[] {
+		// Create a copy of the current window
+		let window: IPredictionCandlestick[] = this.marketState.value!.trend.w.slice();
+
+		// Check if the last candlestick ended
+		if (active.ot != window[window.length - 1].ot) {
+			window.push(active);
+			window = window.slice(-128);
+		}
+
+		// Otherwise, update the values
+		else {
+			window[window.length - 1] = {
+				ot: active.ot,
+				ct: active.ct,
+				o: active.o,
+				h: active.h > window[window.length - 1].h ? active.h: window[window.length - 1].h,
+				l: active.l < window[window.length - 1].l ? active.l: window[window.length - 1].l,
+				c: active.c
+			}
+		}
+
+		// Finally, return the updated window
+		return window;
+	}
+
+
+
 
 
 

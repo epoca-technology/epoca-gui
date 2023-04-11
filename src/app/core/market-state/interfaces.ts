@@ -1,4 +1,5 @@
 import { ICandlestick } from "../candlestick";
+import { IPredictionCandlestick } from "../prediction";
 
 
 
@@ -622,7 +623,10 @@ export interface ITrendState {
     s: IStateType,
 
     // The split states payload
-    ss: ISplitStates
+    ss: ISplitStates,
+
+    // The candlesticks that comprise the window
+    w: IPredictionCandlestick[]
 }
 
 
