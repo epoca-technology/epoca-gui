@@ -1,13 +1,13 @@
 <mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
     <div fxLayout="row" fxLayoutAlign="center center">
-        <button mat-icon-button class="show-on-mobile" (click)="close()"><mat-icon>arrow_back</mat-icon></button>
+        <button mat-icon-button class="show-on-mobile" (click)="close()" [disabled]="!loaded"><mat-icon>arrow_back</mat-icon></button>
         <span *ngIf="!loaded">Loading...</span>
         <span *ngIf="loaded" class="truncate">Coins</span>
         <span fxFlex></span>
-        <button mat-icon-button *ngIf="loaded" (click)="displayTooltip()" matTooltip="What is this?"><mat-icon>question_mark</mat-icon></button>
-        <button mat-icon-button *ngIf="loaded && activeTab == 0 && installedNum > 5 && !installedSearchVisible" (click)="activateInstalledSearch()"><mat-icon>search</mat-icon></button>
-        <button mat-icon-button *ngIf="loaded && activeTab == 1 && !availableSearchVisible" (click)="activateAvailableSearch()"><mat-icon>search</mat-icon></button>
-        <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
+        <button mat-icon-button (click)="displayTooltip()" [disabled]="!loaded" matTooltip="What is this?"><mat-icon>question_mark</mat-icon></button>
+        <button mat-icon-button *ngIf="activeTab == 0 && installedNum > 5 && !installedSearchVisible" [disabled]="!loaded" (click)="activateInstalledSearch()"><mat-icon>search</mat-icon></button>
+        <button mat-icon-button *ngIf="activeTab == 1 && !availableSearchVisible" [disabled]="!loaded" (click)="activateAvailableSearch()"><mat-icon>search</mat-icon></button>
+        <button mat-icon-button class="show-on-desktop" (click)="close()" [disabled]="!loaded"><mat-icon>close</mat-icon></button>
     </div>
 </mat-toolbar>
 <div mat-dialog-content>

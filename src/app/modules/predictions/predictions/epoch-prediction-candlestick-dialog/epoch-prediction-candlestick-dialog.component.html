@@ -1,13 +1,13 @@
 <mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
     <div fxLayout="row" fxLayoutAlign="center center">
-        <button mat-icon-button class="show-on-mobile" (click)="close()"><mat-icon>arrow_back</mat-icon></button>
+        <button mat-icon-button class="show-on-mobile" (click)="close()" [disabled]="loadingPreds"><mat-icon>arrow_back</mat-icon></button>
         <span class="truncate">Prediction Candlestick</span>&nbsp;
         <span fxFlex></span>
         <button mat-icon-button matTooltip="Display Model" 
-            (click)="_nav.displayPredictionModelConfigDialog(epoch.model)">
+            (click)="_nav.displayPredictionModelConfigDialog(epoch.model)" [disabled]="loadingPreds">
             <mat-icon svgIcon="brain"></mat-icon>
         </button>
-        <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
+        <button mat-icon-button class="show-on-desktop" (click)="close()" [disabled]="loadingPreds"><mat-icon>close</mat-icon></button>
     </div>
 </mat-toolbar>
 <div mat-dialog-content>
@@ -79,8 +79,14 @@
                             <tbody>
                                 <tr *ngFor="let pred of preds;" 
                                     class="clickable" role="button" (click)="displayPrediction(pred)">
-                                    <td><p>{{pred.t | date: 'medium'}}</p></td>
-                                    <td class="align-right"><p>{{pred.s | number: '1.0-6'}}</p></td>
+                                    <td><p class="ts-s">{{pred.t | date: 'medium'}}</p></td>
+                                    <td class="align-right">
+                                        <p [ngClass]="{
+                                            'success-color': pred.s > 0,
+                                            'error-color': pred.s < 0,
+                                            'light-text': pred.s == 0
+                                        }">{{pred.s | number: '1.0-6'}}</p>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>

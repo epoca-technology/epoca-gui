@@ -1,16 +1,13 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import {Title} from "@angular/platform-browser";
-import { MatBottomSheetRef } from "@angular/material/bottom-sheet";
 import { MatDialog } from "@angular/material/dialog";
 import { Subscription } from "rxjs";
-import { ApexAnnotations } from "ng-apexcharts";
+import { ApexAnnotations, YAxisAnnotations } from "ng-apexcharts";
 import * as moment from "moment";
 import { 
     EpochService,
     IEpochRecord, 
     IPredictionCandlestick, 
-    LocalDatabaseService, 
     PredictionService
 } from "../../../core";
 import { 
@@ -22,8 +19,8 @@ import {
     ValidationsService 
 } from "../../../services";
 import { EpochPredictionCandlestickDialogComponent, IPredictionCandlestickDialogData } from "./epoch-prediction-candlestick-dialog";
-import { IBottomSheetMenuItem } from "src/app/shared/components/bottom-sheet-menu";
-import { IPredictionsComponent } from "./interfaces";
+import { IPredictionsComponent, IPredsHistoryRange, IPredsHistoryRangeID } from "./interfaces";
+import { IDateRangeConfig } from "src/app/shared/components/date-range-form-dialog";
 
 @Component({
   selector: "app-predictions",
@@ -41,8 +38,19 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
 
     // Prediction Candlesticks
     public candlesticks: IPredictionCandlestick[] = [];
+    public histMenu: IPredsHistoryRange[] = [
+		{id: "24h", name: "Last 24 hours"},
+		{id: "48h", name: "Last 48 hours"},
+		{id: "72h", name: "Last 72 hours"},
+		{id: "1w", name: "Last week"},
+		{id: "2w", name: "Last 2 weeks"},
+		{id: "1m", name: "Last month"},
+		{id: "3m", name: "Last 3 months"},
+		{id: "custom", name: "Custom Date Range"},
+	];
+    public activeHistMenuItem: IPredsHistoryRange = this.histMenu[0];
+    private activeRange!: IDateRangeConfig;
     public candlesticksChart?: ICandlestickChartOptions;
-    private displayDays: number = 1;
 
     // Initialization State
     public initializing: boolean = false;
@@ -50,18 +58,13 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
 
     // Epoch Data Loading State
     public loaded: boolean = false;
-
-    // Submission State
-    public submitting: boolean = false;
     
     constructor(
         public _nav: NavService,
         public _app: AppService,
         private _validations: ValidationsService,
         private route: ActivatedRoute,
-        private _localDB: LocalDatabaseService,
         private _chart: ChartService,
-        private titleService: Title,
         public _prediction: PredictionService,
         private dialog: MatDialog,
         private _epoch: EpochService
@@ -105,7 +108,6 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
     ngOnDestroy(): void {
         if (this.layoutSub) this.layoutSub.unsubscribe();
         if (this.epochSub) this.epochSub.unsubscribe();
-        this.titleService.setTitle("Epoca");
     }
 
 
@@ -161,7 +163,7 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
         this.epoch = epochSummary;
 
         // Load the candlesticks
-        await this.loadCandlesticks(1);
+        await this.loadCandlesticks(this.histMenu[0]);
 
         // Set the loading state
         this.loaded = true;
@@ -184,123 +186,143 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
 
 
     /**
-     * Activates the candlesticks for a given amount of days. If none 
-     * are provided, it will prompt the menu.
-     * @param days?
+     * Loads the candlesticks data based on a given range.
+     * @param range
      * @returns Promise<void>
      */
-    public async activateCandlesticks(days?: number): Promise<void> {
-        // If the days were provided, load the data right away
-        if (typeof days == "number") {
-            this.loaded = false;
-            this.displayDays = days;
-            await this.loadCandlesticks(days);
+    public async loadCandlesticks(range: IPredsHistoryRange): Promise<void> {
+        // Calculate the date range
+        const dateRange: IDateRangeConfig|undefined = await this.calculateDateRange(range.id);
+
+        // Only proceed if a date range was derived
+        if (dateRange) {
+            try {
+                this.loaded = false;
+                // Retrieve the candlesticks
+                this.candlesticks = await this._prediction.listPredictionCandlesticks(
+                    this.epoch!.id, 
+                    dateRange.startAt,
+                    dateRange.endAt
+                );
+
+                // Build the chart
+                this.candlesticksChart = this._chart.getCandlestickChartOptions(
+                    this.candlesticks, 
+                    {
+                        yaxis: [
+                            // Uptrend backgrounds
+                            this.buildTrendSumAnnotation(0, 1, "#E0F2F1"),
+                            this.buildTrendSumAnnotation(1, 2, "#80CBC4"),
+                            this.buildTrendSumAnnotation(2, 3, "#4DB6AC"),
+                            this.buildTrendSumAnnotation(3, 4, "#26A69A"),
+                            this.buildTrendSumAnnotation(4, 5, "#009688"),
+                            this.buildTrendSumAnnotation(5, 6, "#00897B"),
+                            this.buildTrendSumAnnotation(6, 7, "#00796B"),
+                            this.buildTrendSumAnnotation(7, 8, "#004D40"),
+    
+                            // Downtrend Backgrounds
+                            this.buildTrendSumAnnotation(0, -1, "#FFEBEE"),
+                            this.buildTrendSumAnnotation(-1, -2, "#EF9A9A"),
+                            this.buildTrendSumAnnotation(-2, -3, "#E57373"),
+                            this.buildTrendSumAnnotation(-3, -4, "#EF5350"),
+                            this.buildTrendSumAnnotation(-4, -5, "#F44336"),
+                            this.buildTrendSumAnnotation(-5, -6, "#E53935"),
+                            this.buildTrendSumAnnotation(-6, -7, "#D32F2F"),
+                            this.buildTrendSumAnnotation(-7, -8, "#B71C1C")
+                        ]
+                    }
+                );
+                this.candlesticksChart.chart!.height = this.layout == "desktop" ? 600: 400;
+                this.candlesticksChart.chart!.zoom = {enabled: true, type: "xy"};
+                const self = this;
+                this.candlesticksChart.chart!.events = {
+                    click: function(event, chartContext, config) {
+                        if (self.candlesticks![config.dataPointIndex]) self.displayPredictionCandlestick(self.candlesticks![config.dataPointIndex]);
+                    }
+                }
+
+                // Set the current range
+                this.activeHistMenuItem = range;
+                this.activeRange = dateRange;
+            } catch (e) {
+                this._app.error(e);
+            }
             this.loaded = true;
         }
-        
-        // Otherwise, prompt the menu with the options
-        else {
-            // Display the bottom sheet and handle the action
-            const menu: IBottomSheetMenuItem[] = [
-                {icon: "calendar_month", title: "Last Day", description: "View 24 hours worth of data", response: "1"},
-                {icon: "calendar_month", title: "Last 2 Days", description: "View 48 hours worth of data", response: "2"},
-                {icon: "calendar_month", title: "Last 3 Days", description: "View 3 days worth of data", response: "3"},
-                {icon: "calendar_month", title: "Last 7 Days", description: "View 1 week worth of data", response: "7"},
-                {icon: "calendar_month", title: "Last 14 Days", description: "View 2 weeks worth of data", response: "14"},
-                {icon: "calendar_month", title: "Last 21 Days", description: "View 3 weeks worth of data", response: "21"},
-                {icon: "calendar_month", title: "Last Month", description: "View 30 days worth of data", response: "30"},
-                {icon: "calendar_month", title: "Last 1.5 Months", description: "View 45 days worth of data", response: "45"},
-                {icon: "calendar_month", title: "Last 2 Months", description: "View 60 days worth of data", response: "60"},
-                {icon: "calendar_month", title: "Last 3 Months", description: "View 90 days worth of data", response: "90"},
-                {icon: "calendar_month", title: "Last 6 Months", description: "View 120 days worth of data", response: "120"},
-            ];
-            const bs: MatBottomSheetRef = this._nav.displayBottomSheetMenu(menu.filter((mi) => Number(mi.response) != this.displayDays));
-            bs.afterDismissed().subscribe(async (response: string|undefined) => {
-                if (response) {
-                    this.loaded = false;
-                    this.displayDays = Number(response);
-                    await this.loadCandlesticks(this.displayDays);
-                    this.loaded = true;
-                }
-            });
-        }
-
     }
-
-
-
 
 
 
     /**
-     * Loads the candlesticks data based on a given number of days.
-     * @param days 
-     * @returns Promise<void>
+     * Builds a yaxis annotation for the trend sum chart signaling the 
+     * predicted trend.
+     * @param y 
+     * @param y2 
+     * @param color 
+     * @param strokeDashArray 
+     * @returns YAxisAnnotations
      */
-    private async loadCandlesticks(days: number): Promise<void> {
-        try {
-            // Retrieve the candlesticks
-            const endAt: number = this.epoch!.uninstalled ? this.epoch!.uninstalled: this._app.serverTime.value!
-            this.candlesticks = await this._prediction.listPredictionCandlesticks(
-                this.epoch!.id, 
-                moment(endAt).subtract(days, "days").valueOf(),
-                endAt
-            );
-
-            // Build the chart
-            const minValue: number = -this.epoch!.model.regressions.length;
-            const maxValue: number = this.epoch!.model.regressions.length;
-            const annotations: ApexAnnotations = {
-                yaxis: [
-                    {
-                        y: this.epoch!.model.min_increase_sum,
-                        y2: maxValue,
-                        borderColor: this._chart.upwardColor,
-                        fillColor: this._chart.upwardColor,
-                        strokeDashArray: 3,
-                        borderWidth: 0
-                    },
-                    {
-                        y: 0.000001,
-                        y2: this.epoch!.model.min_increase_sum,
-                        borderColor: "#B2DFDB",
-                        fillColor: "#B2DFDB",
-                        strokeDashArray: 0
-                    },
-                    {
-                        y: this.epoch!.model.min_decrease_sum,
-                        y2: minValue,
-                        borderColor: this._chart.downwardColor,
-                        fillColor: this._chart.downwardColor,
-                        strokeDashArray: 0
-                    },
-                    {
-                        y: -0.000001,
-                        y2: this.epoch!.model.min_decrease_sum,
-                        borderColor: "#FFCDD2",
-                        fillColor: "#FFCDD2",
-                        strokeDashArray: 0
-                    }
-                ]
-            };
-            this.candlesticksChart = this._chart.getCandlestickChartOptions(
-                this.candlesticks, 
-                annotations, 
-                false, 
-                false, 
-                //{min: minValue, max: maxValue}
-            );
-            this.candlesticksChart.chart!.height = this.layout == "desktop" ? 600: 400;
-            this.candlesticksChart.chart!.zoom = {enabled: true, type: "xy"};
-            const self = this;
-            this.candlesticksChart.chart!.events = {
-                click: function(event, chartContext, config) {
-                    if (self.candlesticks![config.dataPointIndex]) self.displayPredictionCandlestick(self.candlesticks![config.dataPointIndex]);
-                }
-            }
-        } catch(e) { this._app.error(e) } 
+    private buildTrendSumAnnotation(y: number, y2: number, color: string): YAxisAnnotations {
+        return {
+            y: y,
+            y2: y2,
+            borderColor: color,
+            fillColor: color,
+            strokeDashArray: 0
+        };
     }
 
+
+
+
+
+
+
+
+
+
+	/**
+	 * Calculates the date range of the history based
+	 * on the range id.
+	 * @param id
+	 * @returns {startAt: number, endAt: number}
+	 */
+	private calculateDateRange(id: IPredsHistoryRangeID): Promise<IDateRangeConfig|undefined> { 
+		return new Promise((resolve, reject) => {
+			// Init the end
+			const endAt: number = this.epoch!.uninstalled ? this.epoch!.uninstalled: this._app.serverTime.value!
+
+			// Handle a custom date range
+			if (id == "custom") {
+				this._nav.displayDateRangeDialog(this.activeRange).afterClosed().subscribe(
+					(response) => {
+						if (response) {
+							resolve(response);
+						} else {
+							resolve(undefined)
+						}
+					}
+				);
+			} else {
+				// Init values
+				let startAt: number;
+
+				// Calculate the starting point
+				if 		(id == "24h") { startAt = moment(endAt).subtract(24, "hours").valueOf() }
+				else if (id == "48h") { startAt = moment(endAt).subtract(48, "hours").valueOf() }
+				else if (id == "72h") { startAt = moment(endAt).subtract(72, "hours").valueOf() }
+				else if (id == "1w") { startAt = moment(endAt).subtract(1, "week").valueOf() }
+				else if (id == "2w") { startAt = moment(endAt).subtract(2, "weeks").valueOf() }
+				else if (id == "1m") { startAt = moment(endAt).subtract(1, "month").valueOf() }
+				else if (id == "3m") { startAt = moment(endAt).subtract(3, "months").valueOf() }
+				else { throw new Error("Invalid History Range ID.") }
+
+
+				// Finally, return the range
+				resolve({startAt: startAt, endAt: endAt});
+			}
+		});
+	}
 
 
 

@@ -383,7 +383,7 @@
                                                                     'weak-state': state.volume != 2 && state.volume != -2
                                                                 }"><p>VOLUME</p></mat-grid-tile>
 
-                                                <!-- Coins -->
+                                                <!-- Coins Direction -->
                                                 <mat-grid-tile class="clickable" role="button" matRipple
                                                                (click)="displayCoinsIndicatorDialog()"
                                                                 [ngClass]="{
@@ -391,59 +391,84 @@
                                                                     'sell-action-container': state.coins.cd < 0,
                                                                     'neutral-action-container': state.coins.cd == 0,
                                                                     'weak-state': state.coins.cd != 2 && state.coins.cd != -2
-                                                                }"><p>COINS</p></mat-grid-tile>
+                                                                }"><p>COINS D.</p></mat-grid-tile>
                                                 
                                                 <!-- Placeholders -->
-                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
-                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
-                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
-                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
-                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
-                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
-                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
-                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
-                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
+                                                <mat-grid-tile *ngIf="layout == 'desktop'" class="placeholder-action-container"></mat-grid-tile>
+                                                <mat-grid-tile *ngIf="layout == 'desktop'" class="placeholder-action-container"></mat-grid-tile>
+                                                <mat-grid-tile *ngIf="layout == 'desktop'" class="placeholder-action-container"></mat-grid-tile>
+                                                <mat-grid-tile *ngIf="layout == 'desktop'" class="placeholder-action-container"></mat-grid-tile>
+                                                <mat-grid-tile *ngIf="layout == 'desktop'" class="placeholder-action-container"></mat-grid-tile>
+                                                <mat-grid-tile *ngIf="layout == 'desktop'" class="placeholder-action-container"></mat-grid-tile>
+                                                <mat-grid-tile *ngIf="layout == 'desktop'" class="placeholder-action-container"></mat-grid-tile>
+                                                <mat-grid-tile *ngIf="layout == 'desktop'" class="placeholder-action-container"></mat-grid-tile>
+                                                <mat-grid-tile *ngIf="layout == 'desktop'" class="placeholder-action-container"></mat-grid-tile>
                                             </mat-grid-list>
                                         </div>
                                     </div>
 
 
-                                    <!-- Altcoins -->
+                                    <!-- Coins -->
                                     <div fxFlex="50" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
-                                        <div class="divider show-on-mobile"></div>
-                                        <div class="global-indicators-section">
-                                            <mat-grid-list [cols]="4" [rowHeight]="layout == 'desktop' ? '42px': '80px'" gutterSize="1px">
-                                                <!-- Previous Navigation -->
-                                                <mat-grid-tile *ngIf="activeCoinPage > 1" class="clickable action-container" role="button" matRipple 
-                                                    (click)="activateFirstCoinsPage()">
-                                                    <mat-icon>navigate_before</mat-icon>
-                                                </mat-grid-tile>
+                                        <!-- Desktop View -->
+                                        <div *ngIf="layout == 'desktop'">
+                                            <div class="global-indicators-section">
+                                                <mat-grid-list [cols]="4" [rowHeight]="'42px'" gutterSize="1px">
+                                                    <!-- Previous Navigation -->
+                                                    <mat-grid-tile *ngIf="activeCoinPage > 1" class="clickable action-container" role="button" matRipple 
+                                                        (click)="activateFirstCoinsPage()">
+                                                        <mat-icon>navigate_before</mat-icon>
+                                                    </mat-grid-tile>
+    
+                                                    <!-- Coins -->
+                                                    <mat-grid-tile *ngFor="let symbol of visibleSymbols" 
+                                                                    class="clickable" role="button" matRipple fxLayout="row" fxLayoutAlign="center center"
+                                                                    [ngClass]="{
+                                                                        'buy-action-container': state.coins.sbs[symbol].s > 0,
+                                                                        'sell-action-container': state.coins.sbs[symbol].s < 0,
+                                                                        'neutral-action-container': state.coins.sbs[symbol].s == 0,
+                                                                        'weak-state': state.coins.sbs[symbol].s != 2 && state.coins.sbs[symbol].s != -2,
+                                                                        'very-strong-state': state.coins.sbs[symbol].se == 2 || state.coins.sbs[symbol].se == -2
+                                                                    }" 
+                                                                    (click)="displayCoinDialog(symbol)">
+                                                        <mat-icon *ngIf="state.coins.sbs[symbol].se != 0" class="state-icon" [svgIcon]="_ms.coinStateIcons[state.coins.sbs[symbol].se]"></mat-icon>
+                                                        <p style="max-width:35px" class="truncate">{{symbol | baseAssetName}}</p>
+                                                    </mat-grid-tile>
+    
+    
+                                                    <!-- Placeholders -->
+                                                    <mat-grid-tile *ngFor="let placeholder of coinPlaceholders" class="placeholder-action-container"></mat-grid-tile>
+                                                    
+                                                    <!-- Next Navigation -->
+                                                    <mat-grid-tile *ngIf="activeCoinPage < totalCoinPages" class="clickable action-container" role="button" matRipple 
+                                                        (click)="activateNextCoinsPage()">
+                                                        <mat-icon>navigate_next</mat-icon>
+                                                    </mat-grid-tile>
+                                                </mat-grid-list>
+                                            </div>
+                                        </div>
 
-                                                <!-- Coins -->
-                                                <mat-grid-tile *ngFor="let symbol of visibleSymbols" 
-                                                                class="clickable" role="button" matRipple fxLayout="row" fxLayoutAlign="center center"
-                                                                [ngClass]="{
-                                                                    'buy-action-container': state.coins.sbs[symbol].s > 0,
-                                                                    'sell-action-container': state.coins.sbs[symbol].s < 0,
-                                                                    'neutral-action-container': state.coins.sbs[symbol].s == 0,
-                                                                    'weak-state': state.coins.sbs[symbol].s != 2 && state.coins.sbs[symbol].s != -2,
-                                                                    'very-strong-state': state.coins.sbs[symbol].se == 2 || state.coins.sbs[symbol].se == -2
-                                                                }" 
-                                                                (click)="displayCoinDialog(symbol)">
-                                                    <mat-icon *ngIf="state.coins.sbs[symbol].se != 0" class="state-icon" [svgIcon]="_ms.coinStateIcons[state.coins.sbs[symbol].se]"></mat-icon>
-                                                    <p style="max-width:35px" class="truncate">{{symbol | baseAssetName}}</p>
-                                                </mat-grid-tile>
 
-
-                                                <!-- Placeholders -->
-                                                <mat-grid-tile *ngFor="let placeholder of coinPlaceholders" class="placeholder-action-container"></mat-grid-tile>
-                                                
-                                                <!-- Next Navigation -->
-                                                <mat-grid-tile *ngIf="activeCoinPage < totalCoinPages" class="clickable action-container" role="button" matRipple 
-                                                    (click)="activateNextCoinsPage()">
-                                                    <mat-icon>navigate_next</mat-icon>
-                                                </mat-grid-tile>
-                                            </mat-grid-list>
+                                        <!-- Mobile View -->
+                                        <div *ngIf="layout == 'mobile'">
+                                            <div class="divider"></div>
+                                            <div class="global-indicators-section">
+                                                <mat-grid-list [cols]="4" [rowHeight]="'50px'" gutterSize="1px">
+                                                    <mat-grid-tile *ngFor="let symbol of symbols" 
+                                                                    class="clickable" role="button" matRipple fxLayout="row" fxLayoutAlign="center center"
+                                                                    [ngClass]="{
+                                                                        'buy-action-container': state.coins.sbs[symbol].s > 0,
+                                                                        'sell-action-container': state.coins.sbs[symbol].s < 0,
+                                                                        'neutral-action-container': state.coins.sbs[symbol].s == 0,
+                                                                        'weak-state': state.coins.sbs[symbol].s != 2 && state.coins.sbs[symbol].s != -2,
+                                                                        'very-strong-state': state.coins.sbs[symbol].se == 2 || state.coins.sbs[symbol].se == -2
+                                                                    }" 
+                                                                    (click)="displayCoinDialog(symbol)">
+                                                        <mat-icon *ngIf="state.coins.sbs[symbol].se != 0" class="state-icon" [svgIcon]="_ms.coinStateIcons[state.coins.sbs[symbol].se]"></mat-icon>
+                                                        <p style="max-width:35px" class="truncate">{{symbol | baseAssetName}}</p>
+                                                    </mat-grid-tile>
+                                                </mat-grid-list>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

@@ -10,9 +10,9 @@ export interface IKeyZonesDialogComponent {
     // Misc Helpers
     displayStateKeyZoneTooltip(keyzone: IMinifiedKeyZone, kind: "above"|"below"): void,
     displayKeyZone(zone: IKeyZone): void,
-    displayPriceSnapshotsDialog(): void,
+    displayPriceSnapshotsDialog(): Promise<void>,
     displayLiquidityDialog(): void,
-    displayInfoTooltip(): void,
+    displayInfoTooltip(): Promise<void>,
     displayTooltip(): void,
     close(): void
 }

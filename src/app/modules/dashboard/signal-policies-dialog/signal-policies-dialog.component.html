@@ -1,12 +1,12 @@
 <mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
     <div fxLayout="row" fxLayoutAlign="center center">
-        <button mat-icon-button class="show-on-mobile" (click)="close()"><mat-icon>arrow_back</mat-icon></button>
+        <button mat-icon-button class="show-on-mobile" (click)="close()" [disabled]="!loaded || submitting"><mat-icon>arrow_back</mat-icon></button>
         <span class="truncate">Signal Policies</span>
         <span fxFlex></span>
-        <button mat-icon-button *ngIf="loaded"  (click)="displayTooltip()" matTooltip="What is this?"><mat-icon>question_mark</mat-icon></button>
-        <button mat-icon-button *ngIf="loaded"  (click)="displaySignalRecordsDialog()" matTooltip="View history"><mat-icon>history</mat-icon></button>
-        <button mat-icon-button *ngIf="loaded" [disabled]="submitting" (click)="updatePolicies()" matTooltip="Update Policies"><mat-icon>save</mat-icon></button>
-        <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
+        <button mat-icon-button (click)="displayTooltip()" [disabled]="!loaded || submitting" matTooltip="What is this?"><mat-icon>question_mark</mat-icon></button>
+        <button mat-icon-button (click)="displaySignalRecordsDialog()" [disabled]="!loaded || submitting" matTooltip="View history"><mat-icon>history</mat-icon></button>
+        <button mat-icon-button (click)="updatePolicies()" [disabled]="!loaded || submitting" matTooltip="Update Policies"><mat-icon>save</mat-icon></button>
+        <button mat-icon-button class="show-on-desktop" (click)="close()" [disabled]="!loaded || submitting"><mat-icon>close</mat-icon></button>
     </div>
 </mat-toolbar>
 <div mat-dialog-content>

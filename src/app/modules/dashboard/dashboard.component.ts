@@ -19,7 +19,8 @@ import {
     IPredictionCandlestick,
     ISplitStateID,
     IMinifiedKeyZone,
-    IPositionHeadline
+    IPositionHeadline,
+    IKeyZoneStateEvent
 } from "../../core";
 import { 
     AppService, 
@@ -498,7 +499,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         // Init the annotations
         let annotations: ApexAnnotations = { yaxis: [], points: [] };
 
-
         /* KeyZone Annotations */
 
         // Add the keyzones above (if any)
@@ -572,17 +572,46 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
      * @param kind 
      * @returns YAxisAnnotations
      */
-    private buildKeyZoneAnnotation(kz: IMinifiedKeyZone, kind: "active"|"above"|"below"): YAxisAnnotations {
-        // Initialize the color
-        const color: string = kind == "active" ? "#000000": this.getKeyZoneAnnotationColorFromScore(kz.scr, kind);
+    private buildKeyZoneAnnotation(
+        kz: IMinifiedKeyZone, 
+        kind: "active"|"above"|"below"
+    ): YAxisAnnotations {
+        // Check if the provided zone has an active event
+        if (this.state.keyzones.event && kz.id == this.state.keyzones.event.kz.id) {
+            // Initialize the color
+            const color: string = this.state.keyzones.event.k == "s" ? "#870505": "#083d34";
 
-        // Finally, return the build
-        return {
-            y: kz.s,
-            y2: kz.e,
-            strokeDashArray: 0,
-            borderColor: color,
-            fillColor: color
+            // Finally, return the build
+            return {
+                y: kz.s,
+                y2: kz.e,
+                strokeDashArray: 0,
+                borderColor: color,
+                fillColor: color,
+                label: {
+                    borderColor: color,
+                    style: { color: "#fff", background: color, fontSize: "9px", padding: {top: 1, right: 1, left: 1, bottom: 1}},
+                    text: "ACTIVE",
+                    position: "left",
+                    offsetY: 0,
+                    offsetX: 34
+                }
+            }
+        }
+        
+        // Otherwise, put together the traditional build
+        else {
+            // Initialize the color
+            const color: string = kind == "active" ? "#000000": this.getKeyZoneAnnotationColorFromScore(kz.scr, kind);
+
+            // Finally, return the build
+            return {
+                y: kz.s,
+                y2: kz.e,
+                strokeDashArray: 0,
+                borderColor: color,
+                fillColor: color
+            }
         }
     }
 
@@ -1124,7 +1153,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
      * Displays the coins indicators dialog.
      */
     public displayCoinsIndicatorDialog(): void {
-        this._nav.displayTooltip("Coins", [
+        this._nav.displayTooltip("Coins Direction", [
             `@TODO`,
         ]);
     }

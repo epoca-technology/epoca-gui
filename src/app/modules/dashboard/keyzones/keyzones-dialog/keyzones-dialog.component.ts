@@ -265,7 +265,9 @@ export class KeyzonesDialogComponent implements OnInit, OnDestroy, IKeyZonesDial
 	/**
 	 * Displays the price snapshots dialog.
 	 */
-	public displayPriceSnapshotsDialog(): void {
+	public async displayPriceSnapshotsDialog(): Promise<void> {
+		if (!this.state) await this.loadKeyZonesFullState();
+		if (!this.state) return;
 		this.dialog.open(KeyzonesPriceSnapshotsDialogComponent, {
 			hasBackdrop: true, // Mobile optimization
 			panelClass: "light-dialog",
@@ -297,7 +299,9 @@ export class KeyzonesDialogComponent implements OnInit, OnDestroy, IKeyZonesDial
 	/**
 	 * Displays the Info Tooltip.
 	 */
-	public displayInfoTooltip(): void {
+	public async displayInfoTooltip(): Promise<void> {
+		if (!this.state) await this.loadKeyZonesFullState();
+		if (!this.state) return;
 		// Init the content
 		let content: string[] = [
 			`BUILD`,

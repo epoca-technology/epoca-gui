@@ -10,16 +10,20 @@
         <span fxFlex></span>
         
         <!-- Chart Settings -->
-        <button mat-icon-button 
-                *ngIf="initialized && epoch && loaded" 
-                [disabled]="submitting"
-                matTooltip="Date Range"
-                (click)="activateCandlesticks()"><mat-icon>calendar_month</mat-icon></button>
+        <button mat-icon-button *ngIf="initialized && epoch" [matMenuTriggerFor]="menu" [disabled]="!loaded" matTooltip="Set custom date range">
+            <mat-icon>date_range</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+            <button mat-menu-item 
+                    *ngFor="let item of histMenu" 
+                    [disabled]="item.id == activeHistMenuItem.id && item.id != 'custom'" 
+                    (click)="loadCandlesticks(item)">{{item.name}}</button>
+        </mat-menu>
 
         <!-- Close Epoch-->
         <button mat-icon-button 
-                *ngIf="epoch && loaded"
-                [disabled]="submitting"
+                *ngIf="epoch"
+                [disabled]="!loaded"
                 matTooltip="Close {{epoch.id}}"
                 (click)="initializeEpochData()"><mat-icon>close</mat-icon></button>
     </div>

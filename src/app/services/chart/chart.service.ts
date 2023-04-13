@@ -101,7 +101,7 @@ export class ChartService implements IChartService {
 			plotOptions: {candlestick: {colors: {upward: this.upwardColor,downward: this.downwardColor}}},
             annotations: this.getCandlesticksAnnotations(
 				annotations, 
-				highlightCurrentPrice === false ? undefined: candlesticks[candlesticks.length -1].c
+				highlightCurrentPrice ? candlesticks[candlesticks.length -1].c: undefined
 			),
             title: {
 				text: title ? title: this.getCandlesticksTitle(candlesticks), 
