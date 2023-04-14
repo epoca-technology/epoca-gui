@@ -5,7 +5,7 @@
         <span fxFlex></span>
         <app-refresh-button class="show-on-desktop" [disabled]="!loaded" (refresh)="refresh()"></app-refresh-button>
         <button class="show-on-desktop" matTooltip="Candlestick Files" mat-icon-button [disabled]="!loaded" (click)="displayCandlestickFiles()"><mat-icon svgIcon="file_csv"></mat-icon></button>
-        <button class="show-on-desktop" mat-icon-button [disabled]="!loaded" (click)="updateConfig()"><mat-icon>settings</mat-icon></button>
+        <button class="show-on-desktop" mat-icon-button [disabled]="!loaded" (click)="updateConfig()" matTooltip="View Configuration"><mat-icon>settings</mat-icon></button>
         <button class="show-on-mobile" mat-icon-button [matMenuTriggerFor]="menu" [disabled]="!loaded"><mat-icon>more_vert</mat-icon></button>
         <mat-menu #menu="matMenu">
             <button mat-menu-item (click)="refresh()">

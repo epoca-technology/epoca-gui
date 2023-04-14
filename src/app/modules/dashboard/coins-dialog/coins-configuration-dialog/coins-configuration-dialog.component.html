@@ -1,0 +1,114 @@
+<mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <button mat-icon-button class="show-on-mobile" (click)="cancel()" [disabled]="!loaded || submitting"><mat-icon>arrow_back</mat-icon></button>
+        <span class="truncate">Coins Configuration</span>
+        <span fxFlex></span>
+        <button mat-icon-button [disabled]="!loaded || submitting" (click)="generalTooltip()" matTooltip="What is this?" type="button" tabindex="-1"><mat-icon>question_mark</mat-icon></button>
+        <button mat-icon-button (click)="update()" [disabled]="!loaded || submitting || (!form || form.invalid)" matTooltip="Update Config"><mat-icon>save</mat-icon></button>
+        <button mat-icon-button class="show-on-desktop" (click)="cancel()" [disabled]="!loaded || submitting"><mat-icon>close</mat-icon></button>
+    </div>
+</mat-toolbar>
+<div mat-dialog-content>
+    <!-- Loader -->
+    <div *ngIf="!loaded">
+        <div class="section-loader show-on-mobile"><div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div></div>
+        <div class="loader show-on-desktop"><div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div></div>
+    </div>
+    <div *ngIf="loaded && config" class="padding fadeIn">
+        <!-- Form -->
+        <div *ngIf="form">
+            <form [formGroup]="form" (ngSubmit)="update()">
+                <!-- KeyZones Build -->
+                <div>
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <h5>Build</h5>
+                        <span fxFlex></span>
+                        <button mat-icon-button (click)="buildTooltip()" matTooltip="More information" type="button" tabindex="-1"><mat-icon>question_mark</mat-icon></button>
+                    </div> 
+                    <div fxLayout="row" fxLayoutAlign="start start" class="section-container">
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Price Window Size</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="priceWindowSize"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 128">
+                            </mat-form-field>
+                        </div>
+                        <span fxFlex="5"></span>
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Price Interval Seconds</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="priceIntervalSeconds"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 30">
+                            </mat-form-field>
+                        </div>
+                    </div>
+
+                    <div fxLayout="row" fxLayoutAlign="start start" class="section-container">
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Supported Coins Interval Hours</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="supportedCoinsIntervalHours"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 8">
+                            </mat-form-field>
+                        </div>
+                        <span fxFlex="5"></span>
+                        <div fxFlex>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+
+                <!-- State Requirements -->
+                <div>
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <h5>State Requirements</h5>
+                        <span fxFlex></span>
+                        <button mat-icon-button (click)="stateTooltip()" matTooltip="More information" type="button" tabindex="-1"><mat-icon>question_mark</mat-icon></button>
+                    </div> 
+                    <div fxLayout="row" fxLayoutAlign="start start" class="section-container">
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Requirement%</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="requirement"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 0.025">
+                            </mat-form-field>
+                        </div>
+                        <span fxFlex="5"></span>
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Strong Requirement</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="strongRequirement"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 0.25">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+
+
+            </form>
+        </div>
+    </div>
+</div>

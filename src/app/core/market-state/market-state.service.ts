@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from "../api";
 import { 
+	ICoinsConfiguration,
 	ICoinsSummary,
 	ICoinState,
 	IKeyZoneFullState, 
@@ -8,7 +9,9 @@ import {
 	ILiquidityState, 
 	IMarketStateService, 
 	ISplitStateID, 
-	IVolumeState 
+	ITrendStateConfiguration, 
+	IVolumeState, 
+	IWindowStateConfiguration
 } from './interfaces';
 
 
@@ -146,6 +149,46 @@ export class MarketStateService implements IMarketStateService {
 
 
 
+
+	/*********************
+	 * Window Management *
+	 *********************/
+
+
+
+
+
+	/**
+	 * Retrieves the window configuration from the server.
+	 * @returns Promise<IWindowStateConfiguration>
+	 */
+	public getWindowConfiguration(): Promise<IWindowStateConfiguration> { 
+		return this._api.request("get","marketState/getWindowConfiguration", {}, true) 
+	}
+
+
+
+
+
+
+    /**
+     * Updates the Window's configuration.
+     * @param newConfiguration 
+     * @param otp 
+     * @returns Promise<void>
+     */
+    public updateWindowConfiguration(newConfiguration: IWindowStateConfiguration, otp: string): Promise<void> { 
+        return this._api.request("post", "marketState/updateWindowConfiguration", {newConfiguration: newConfiguration}, true, otp);
+    }
+
+
+
+
+
+
+
+
+
 	
 
 
@@ -190,9 +233,51 @@ export class MarketStateService implements IMarketStateService {
      * @param otp 
      * @returns Promise<void>
      */
-    public updateKeyZonesConfiguration(newConfiguration: IKeyZonesConfiguration, otp: string): Promise<ICoinsSummary> { 
+    public updateKeyZonesConfiguration(newConfiguration: IKeyZonesConfiguration, otp: string): Promise<void> { 
         return this._api.request("post", "marketState/updateKeyZonesConfiguration", {newConfiguration: newConfiguration}, true, otp);
     }
+
+
+
+
+
+
+
+
+
+
+
+	/*********************
+	 * Trend Management *
+	 *********************/
+
+
+
+
+
+	/**
+	 * Retrieves the trend configuration from the server.
+	 * @returns Promise<ITrendStateConfiguration>
+	 */
+	public getTrendConfiguration(): Promise<ITrendStateConfiguration> { 
+		return this._api.request("get","marketState/getTrendConfiguration", {}, true) 
+	}
+
+
+
+
+
+
+    /**
+     * Updates the Trend's configuration.
+     * @param newConfiguration 
+     * @param otp 
+     * @returns Promise<void>
+     */
+    public updateTrendConfiguration(newConfiguration: ITrendStateConfiguration, otp: string): Promise<void> { 
+        return this._api.request("post", "marketState/updateTrendConfiguration", {newConfiguration: newConfiguration}, true, otp);
+    }
+
 
 
 
@@ -272,6 +357,39 @@ export class MarketStateService implements IMarketStateService {
 
 
 
+
+
+
+
+
+	/**
+	 * Retrieves the coins' configuration from the server.
+	 * @returns Promise<ICoinsConfiguration>
+	 */
+	public getCoinsConfiguration(): Promise<ICoinsConfiguration> { 
+		return this._api.request("get","marketState/getCoinsConfiguration", {}, true) 
+	}
+
+
+
+
+
+
+    /**
+     * Updates the Coins's configuration.
+     * @param newConfiguration 
+     * @param otp 
+     * @returns Promise<void>
+     */
+    public updateCoinsConfiguration(newConfiguration: ICoinsConfiguration, otp: string): Promise<void> { 
+        return this._api.request("post", "marketState/updateCoinsConfiguration", {newConfiguration: newConfiguration}, true, otp);
+    }
+
+
+
+
+
+
 	/**
 	 * Retrieves the base asset name based on the symbol.
 	 * F.e: BTCUSDT -> BTC
@@ -283,4 +401,5 @@ export class MarketStateService implements IMarketStateService {
 			return symbol.replace("USDT", "");
 		} else { return symbol }
 	}
+
 }

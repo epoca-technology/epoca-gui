@@ -329,30 +329,60 @@
                                     <div fxFlex="50" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
 
                                         <!-- Positions -->
-                                        <div class="global-indicators-section">
-                                            <mat-grid-list [cols]="3" [rowHeight]="layout == 'desktop' ? '44px': '50px'" gutterSize="1px">
-                                                <!-- Active Positions -->
-                                                <mat-grid-tile *ngFor="let pos of positions" class="clickable" role="button" matRipple
-                                                    (click)="displayPositionRecordDialog(pos.id)"
-                                                    [ngClass]="{
-                                                        'buy-action-container': pos.sd == 'LONG',
-                                                        'sell-action-container': pos.sd == 'SHORT',
-                                                        'weak-state': pos.g > 0 && pos.g < 0.35,
-                                                        'very-weak-state': pos.g <= 0
-                                                    }">
-                                                    <p>{{pos.s | baseAssetName}} {{pos.g > 0 ? '+': ''}}{{pos.g | number:'1.0-1'}}%</p>
-                                                </mat-grid-tile>
+                                        <div>
+                                            <!-- Desktop View -->
+                                            <div *ngIf="layout == 'desktop'">
+                                                <div class="global-indicators-section">
+                                                    <mat-grid-list [cols]="3" [rowHeight]="'46px'" gutterSize="1px">
+                                                        <!-- Active Positions -->
+                                                        <mat-grid-tile *ngFor="let pos of positions" class="clickable" role="button" matRipple
+                                                            (click)="displayPositionRecordDialog(pos.id)"
+                                                            [ngClass]="{
+                                                                'buy-action-container': pos.sd == 'LONG',
+                                                                'sell-action-container': pos.sd == 'SHORT',
+                                                                'weak-state': pos.g > 0 && pos.g < 0.35,
+                                                                'very-weak-state': pos.g <= 0
+                                                            }">
+                                                            <p>{{pos.s | baseAssetName}} {{pos.g > 0 ? '+': ''}}{{pos.g | number:'1.0-1'}}%</p>
+                                                        </mat-grid-tile>
+        
+                                                        <!-- Placeholders -->
+                                                        <mat-grid-tile *ngFor="let placeholder of positionsPlaceholders" class="placeholder-action-container"></mat-grid-tile>
+                                                    </mat-grid-list>
+                                                </div>
+                                            </div>
 
-                                                <!-- Placeholders -->
-                                                <mat-grid-tile *ngFor="let placeholder of positionsPlaceholders" class="placeholder-action-container"></mat-grid-tile>
-                                            </mat-grid-list>
+
+                                            <!-- Mobile View -->
+                                            <div *ngIf="layout == 'mobile'">
+                                                <div class="global-indicators-section">
+                                                    <mat-grid-list [cols]="3" [rowHeight]="'50px'" gutterSize="1px">
+                                                        <!-- Active Positions -->
+                                                        <mat-grid-tile *ngFor="let pos of positions" class="clickable" role="button" matRipple
+                                                            (click)="displayPositionRecordDialog(pos.id)"
+                                                            [ngClass]="{
+                                                                'buy-action-container': pos.sd == 'LONG',
+                                                                'sell-action-container': pos.sd == 'SHORT',
+                                                                'weak-state': pos.g > 0 && pos.g < 0.35,
+                                                                'very-weak-state': pos.g <= 0
+                                                            }">
+                                                            <p>{{pos.s | baseAssetName}} {{pos.g > 0 ? '+': ''}}{{pos.g | number:'1.0-1'}}%</p>
+                                                        </mat-grid-tile>
+        
+                                                        <!-- Placeholders -->
+                                                        <mat-grid-tile *ngIf="!positions.length" class="placeholder-action-container"></mat-grid-tile>
+                                                        <mat-grid-tile *ngIf="!positions.length" class="placeholder-action-container"></mat-grid-tile>
+                                                        <mat-grid-tile *ngIf="!positions.length" class="placeholder-action-container"></mat-grid-tile>
+                                                    </mat-grid-list>
+                                                </div>
+                                            </div>
                                         </div>
 
                                         <div class="divider show-on-mobile"></div>
 
                                         <!-- General Indicators -->
                                         <div class="global-indicators-section">
-                                            <mat-grid-list [cols]="3" [rowHeight]="layout == 'desktop' ? '45px': '50px'" gutterSize="1px">
+                                            <mat-grid-list [cols]="3" [rowHeight]="layout == 'desktop' ? '44px': '50px'" gutterSize="1px">
                                                 <!-- KeyZones -->
                                                 <mat-grid-tile *ngIf="!state.keyzones.event" 
                                                                 class="clickable" role="button" matRipple
@@ -394,9 +424,6 @@
                                                                 }"><p>COINS D.</p></mat-grid-tile>
                                                 
                                                 <!-- Placeholders -->
-                                                <mat-grid-tile *ngIf="layout == 'desktop'" class="placeholder-action-container"></mat-grid-tile>
-                                                <mat-grid-tile *ngIf="layout == 'desktop'" class="placeholder-action-container"></mat-grid-tile>
-                                                <mat-grid-tile *ngIf="layout == 'desktop'" class="placeholder-action-container"></mat-grid-tile>
                                                 <mat-grid-tile *ngIf="layout == 'desktop'" class="placeholder-action-container"></mat-grid-tile>
                                                 <mat-grid-tile *ngIf="layout == 'desktop'" class="placeholder-action-container"></mat-grid-tile>
                                                 <mat-grid-tile *ngIf="layout == 'desktop'" class="placeholder-action-container"></mat-grid-tile>

@@ -8,6 +8,7 @@ export interface ICoinsDialogComponent {
     deactivateInstalledSearch(): void,
     activateAvailableSearch(): void,
     deactivateAvailableSearch(): void,
+    displayCoinsConfigurationDialog(): void,
     displayTooltip(): void,
     close(): void
 }

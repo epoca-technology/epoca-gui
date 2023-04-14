@@ -3,6 +3,7 @@ import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import { ICoin, ICoinsObject, ICoinsScores, ICoinsSummary, MarketStateService, UtilsService } from '../../../core';
 import { AppService, ILayout, NavService } from '../../../services';
 import { ICoinsDialogComponent } from './interfaces';
+import { CoinsConfigurationDialogComponent } from './coins-configuration-dialog';
 
 @Component({
   selector: 'app-coins-dialog',
@@ -246,6 +247,17 @@ export class CoinsDialogComponent implements OnInit, ICoinsDialogComponent {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
 	/****************
 	 * Misc Helpers *
 	 ****************/
@@ -254,6 +266,18 @@ export class CoinsDialogComponent implements OnInit, ICoinsDialogComponent {
 
 
 
+
+    /**
+     * Displays the coins config form dialog.
+     */
+    public displayCoinsConfigurationDialog(): void {
+		this.dialog.open(CoinsConfigurationDialogComponent, {
+			hasBackdrop: this._app.layout.value != "mobile",
+            disableClose: true,
+			panelClass: "small-dialog",
+            data: {}
+		})
+	}
 
 
 

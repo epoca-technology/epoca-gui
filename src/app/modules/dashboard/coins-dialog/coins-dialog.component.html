@@ -7,6 +7,7 @@
         <button mat-icon-button (click)="displayTooltip()" [disabled]="!loaded" matTooltip="What is this?"><mat-icon>question_mark</mat-icon></button>
         <button mat-icon-button *ngIf="activeTab == 0 && installedNum > 5 && !installedSearchVisible" [disabled]="!loaded" (click)="activateInstalledSearch()"><mat-icon>search</mat-icon></button>
         <button mat-icon-button *ngIf="activeTab == 1 && !availableSearchVisible" [disabled]="!loaded" (click)="activateAvailableSearch()"><mat-icon>search</mat-icon></button>
+        <button mat-icon-button (click)="displayCoinsConfigurationDialog()" [disabled]="!loaded" matTooltip="Configuration Form"><mat-icon>settings</mat-icon></button>
         <button mat-icon-button class="show-on-desktop" (click)="close()" [disabled]="!loaded"><mat-icon>close</mat-icon></button>
     </div>
 </mat-toolbar>

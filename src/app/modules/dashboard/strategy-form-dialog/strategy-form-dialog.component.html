@@ -106,12 +106,9 @@
                         </div>
                         <span fxFlex="5"></span>
                         <div fxFlex>
-                            <mat-slide-toggle 
-                                style="margin-top:15px;"
-                                formControlName="bitcoin_only"
-                                [appDisableControl]="submitting">
-                                {{bitcoin_only.value ? 'Bitcoin Only': 'Multi Coin'}}
-                            </mat-slide-toggle>
+                            <mat-checkbox   formControlName="bitcoin_only"
+                                            [appDisableControl]="submitting" 
+                                            style="margin-top:15px;">Bitcoin Only</mat-checkbox>
                         </div>
                     </div>
                 </div>

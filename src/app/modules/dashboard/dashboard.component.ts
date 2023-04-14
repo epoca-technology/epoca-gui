@@ -31,6 +31,7 @@ import {
 } from "../../services";
 import { BalanceDialogComponent } from "./balance-dialog";
 import { StrategyFormDialogComponent } from "./strategy-form-dialog";
+import { WindowConfigurationDialogComponent } from "./window-configuration-dialog";
 import { KeyzonesConfigFormDialogComponent, KeyzonesDialogComponent } from "./keyzones";
 import { IMarketStateDialogConfig, MarketStateDialogComponent } from "./market-state-dialog";
 import { IBottomSheetMenuItem } from "../../shared/components/bottom-sheet-menu";
@@ -38,6 +39,7 @@ import { CoinsDialogComponent } from "./coins-dialog";
 import { SignalPoliciesDialogComponent } from "./signal-policies-dialog";
 import { PositionHeadlinesDialogComponent } from "./positions";
 import { IDashboardComponent, IWindowZoom, IWindowZoomID, IWindowZoomPrices } from "./interfaces";
+import { TrendConfigurationDialogComponent } from "./trend-configuration-dialog";
 
 @Component({
   selector: "app-dashboard",
@@ -160,7 +162,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         this.positionsSub = this._app.positions.subscribe((pos) => {
             if (pos !== null) {
                 this.positions = pos || [];
-                this.positionsPlaceholders = Array(3 - this.positions.length).fill(0);
+                this.positionsPlaceholders = Array(6 - this.positions.length).fill(0);
                 if (!this.positionsLoaded) {
                     this.positionsLoaded = true;
                     this.checkLoadState();
@@ -859,22 +861,37 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                 response: "SIGNAL_POLICIES"
             },
             {
+                icon: 'waterfall_chart',  
+                title: 'Window', 
+                description: 'Configure the requirements for the window splits to be stateful.', 
+                response: "WINDOW_CONFIG"
+            },
+            {
                 icon: 'vertical_distribute',  
                 title: 'KeyZones', 
                 description: 'Configure how the zones are built and events are issued.', 
                 response: "KEYZONES_CONFIG"
             },
             {
+                icon: 'wand_magic_sparkles',  
+                svg: true,
+                title: 'Trend', 
+                description: 'Configure the requirements for the trend splits to be stateful.', 
+                response: "TREND_CONFIG"
+            },
+            {
                 icon: 'currency_bitcoin',  
                 title: 'Coins', 
-                description: 'Install & uninstall coin based futures contracts.', 
+                description: 'Configure, install & uninstall coin based futures contracts.', 
                 response: "COINS"
             },
         ]);
 		bs.afterDismissed().subscribe((response: string|undefined) => {
             if      (response === "COINS") { this.displayCoinsDialog() }
             else if (response === "SIGNAL_POLICIES") { this.displaySignalPoliciesDialog() }
+            else if (response === "WINDOW_CONFIG") { this.displayWindowConfigFormDialog() }
             else if (response === "KEYZONES_CONFIG") { this.displayKeyZonesConfigFormDialog() }
+            else if (response === "TREND_CONFIG") { this.displayTrendConfigFormDialog() }
             else if (response === "TRADING_STRATEGY") { this.displayStrategyFormDialog() }
 		});
 	}
@@ -923,6 +940,18 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
 
 
+    /**
+     * Displays the window config form dialog.
+     */
+    private displayWindowConfigFormDialog(): void {
+		this.dialog.open(WindowConfigurationDialogComponent, {
+			hasBackdrop: this._app.layout.value != "mobile",
+            disableClose: true,
+			panelClass: "small-dialog",
+            data: {}
+		})
+	}
+
 
 
     /**
@@ -930,6 +959,20 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
      */
     private displayKeyZonesConfigFormDialog(): void {
 		this.dialog.open(KeyzonesConfigFormDialogComponent, {
+			hasBackdrop: this._app.layout.value != "mobile",
+            disableClose: true,
+			panelClass: "small-dialog",
+            data: {}
+		})
+	}
+
+
+
+    /**
+     * Displays the trend config form dialog.
+     */
+    private displayTrendConfigFormDialog(): void {
+		this.dialog.open(TrendConfigurationDialogComponent, {
 			hasBackdrop: this._app.layout.value != "mobile",
             disableClose: true,
 			panelClass: "small-dialog",

@@ -186,7 +186,7 @@ export class CandlesticksComponent implements OnInit, OnDestroy, ICandlesticksCo
     private getDefaultConfig(): ICandlesticksConfig {
         const currentTS: number = Date.now();
 		return {
-			start: moment(currentTS).subtract(128, "hours").valueOf(),
+			start: moment(currentTS).subtract(24, "hours").valueOf(),
 			end: currentTS,
 			intervalMinutes: 15
 		}

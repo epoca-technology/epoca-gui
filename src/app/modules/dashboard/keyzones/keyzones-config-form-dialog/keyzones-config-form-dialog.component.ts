@@ -82,7 +82,7 @@ export class KeyzonesConfigFormDialogComponent implements OnInit, IKeyZonesConfi
 
     /**
      * Prompts the confirmation dialog and if confirmed, it will update
-     * the current Strategy.
+     * the current KeyZones Configuration.
      */
 	public update(): void {
         if (this.form.valid) {
@@ -93,7 +93,7 @@ export class KeyzonesConfigFormDialogComponent implements OnInit, IKeyZonesConfi
 						Are you sure that you wish to <strong>update</strong> the current KeyZone's Configuration?
 					</p>
 					<p class="light-text ts-m margin-top align-center">
-						Keep in mind that the KeyZones will be re-built and changes changes will take effect immediately.
+						Keep in mind that the KeyZones will be re-built and changes will take effect immediately.
 					</p>
 				`,
 				otpConfirmation: true

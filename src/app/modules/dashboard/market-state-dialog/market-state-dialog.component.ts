@@ -339,7 +339,7 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 	 **********/
 
 
-	private async initVolume(): Promise<void> {
+	public async initVolume(): Promise<void> {
 		// Set the title
 		this.title = "Volume";
 		

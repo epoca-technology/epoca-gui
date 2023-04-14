@@ -20,16 +20,26 @@ export interface IMarketStateService {
     getFullVolumeState(): Promise<IVolumeState>,
     getLiquidityState(currentPrice: number): Promise<ILiquidityState>,
 
+    // Window Management
+    getWindowConfiguration(): Promise<IWindowStateConfiguration>,
+    updateWindowConfiguration(newConfiguration: IWindowStateConfiguration, otp: string): Promise<void>,
+
     // KeyZones Management
     calculateKeyZoneState(): Promise<IKeyZoneFullState>,
     getKeyZonesConfiguration(): Promise<IKeyZonesConfiguration>,
-    updateKeyZonesConfiguration(newConfiguration: IKeyZonesConfiguration, otp: string): Promise<ICoinsSummary>,
+    updateKeyZonesConfiguration(newConfiguration: IKeyZonesConfiguration, otp: string): Promise<void>,
+
+    // Trend Management
+    getTrendConfiguration(): Promise<ITrendStateConfiguration>,
+    updateTrendConfiguration(newConfiguration: ITrendStateConfiguration, otp: string): Promise<void>,
 
     // Coins Management
     getCoinsSummary(): Promise<ICoinsSummary>,
     installCoin(symbol: string, otp: string): Promise<ICoinsSummary>,
     uninstallCoin(symbol: string, otp: string): Promise<ICoinsSummary>,
     getCoinFullState(symbol: string): Promise<ICoinState>,
+    getCoinsConfiguration(): Promise<ICoinsConfiguration>,
+    updateCoinsConfiguration(newConfiguration: ICoinsConfiguration, otp: string): Promise<void>,
     getBaseAssetName(symbol: string): string
 }
 
@@ -163,6 +173,22 @@ export interface IMinifiedSplitStates {
   * The purpose of the window state is to enable programatic understanding   *
   * of the current price based on a given window.                            *
   ****************************************************************************/
+
+
+
+/**
+ * Configuration
+ * The Window' Module Configuration that can be managed from the GUI.
+ */
+export interface IWindowStateConfiguration {
+    // The % change required for the window splits to have a state (1 or -1)
+    requirement: number,
+
+    // The % change required for the window splits to have a strong state (2 or -2)
+    strongRequirement: number
+}
+
+
 
 // State Object
 export interface IWindowState {
@@ -617,6 +643,21 @@ export interface IKeyZoneFullState {
  ********************************************************************************/
 
 
+
+/**
+ * Configuration
+ * The Trend' Module Configuration that can be managed from the GUI.
+ */
+export interface ITrendStateConfiguration {
+    // The trend sum change required for the window splits to have a state (1 or -1)
+    requirement: number,
+
+    // The trend sum change required for the window splits to have a strong state (2 or -2)
+    strongRequirement: number
+}
+
+
+
 // State Object
 export interface ITrendState {
     // The state of the trend
@@ -640,12 +681,44 @@ export interface ITrendState {
 
 
 
+
+
+
+
+
 /********************************************************************************
  * COINS                                                                        *
  * The purpose of the coin state submodule is to have a deep understanding of   *
  * the price movement for each installed coin, as well as keeping the state     *
  * updated.                                                                     *
  ********************************************************************************/
+
+
+
+
+/**
+ * Configuration
+ * The Coins' Module Configuration that can be managed from the GUI.
+ */
+export interface ICoinsConfiguration {
+    // The duration of the interval that refreshes the supported coins
+    supportedCoinsIntervalHours: number,
+
+    // The number of items that comprise the window
+    priceWindowSize: number,
+
+    // The number of seconds that will comprise each interval
+    priceIntervalSeconds: number,
+
+    // The % change required for the window splits to have a state (1 or -1)
+    requirement: number,
+
+    // The % change required for the window splits to have a strong state (2 or -2)
+    strongRequirement: number
+}
+
+
+
 
 
 /* Coins */
