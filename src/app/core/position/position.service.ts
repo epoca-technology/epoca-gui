@@ -2,13 +2,12 @@ import { Injectable } from '@angular/core';
 import { ApiService } from "../api";
 import { UtilsService } from '../utils';
 import { 
-IPositionService, 
-IPositionStrategy, 
-IAccountBalance,
-IPositionRecord,
-IPositionHeadline,
-IPositionActionKind,
-IPositionActionRecord
+	IPositionService, 
+	IPositionStrategy, 
+	IPositionRecord,
+	IPositionHeadline,
+	IPositionActionKind,
+	IPositionActionRecord
 } from './interfaces';
 
 @Injectable({
@@ -155,48 +154,5 @@ export class PositionService implements IPositionService {
 	 */
 	public updateStrategy(newStrategy: IPositionStrategy, otp: string): Promise<void> { 
 		return this._api.request("post","position/updateStrategy", {newStrategy: newStrategy}, true, otp);
-	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	/***************************
-	 * Futures Account Balance *
-	 ***************************/
-
-
-
-
-
-	/**
-	 * Refreshes the futures account balance and retrieves an updated copy.
-	 * @param otp
-	 * @returns Promise<IAccountBalance>
-	 */
-	public refreshBalance(otp: string): Promise<IAccountBalance> { 
-		return this._api.request("post","position/refreshBalance", {}, true, otp);
-	}
-
-
-
-
-
-	/**
-	 * Retrieves the current account balance.
-	 * @returns Promise<IAccountBalance>
-	 */
-	public getBalance(): Promise<IAccountBalance> {
-		return this._api.request("get","position/getBalance", {}, true);
 	}
 }

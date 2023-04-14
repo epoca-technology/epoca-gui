@@ -41,6 +41,9 @@ import {
 	// Bulk Data
 	BulkDataService,
 
+	// Campaign
+	CampaignService,
+
 	// Candlestick
     CandlestickService,
 
@@ -196,6 +199,9 @@ import { AppComponent } from "./app.component";
 
 		// Bulk Data
 		BulkDataService,
+
+		// Campaign
+		CampaignService,
 
 		// Candlestick
 		CandlestickService,

@@ -41,6 +41,7 @@ export class StrategyFormDialogComponent implements OnInit, IStrategyFormDialogC
 				leverage: new FormControl(this.strategy.leverage, [ Validators.required, Validators.min(2), Validators.max(125) ]),
 				position_size: new FormControl(this.strategy.position_size, [ Validators.required, Validators.min(1), Validators.max(10000) ]),
 				positions_limit: new FormControl(this.strategy.positions_limit, [ Validators.required, Validators.min(1), Validators.max(6) ]),
+				reopen_if_better_duration_minutes: new FormControl(this.strategy.reopen_if_better_duration_minutes, [ Validators.required, Validators.min(1), Validators.max(720) ]),
 				take_profit_1_pcr: new FormControl(this.strategy.take_profit_1.price_change_requirement, [ Validators.required, Validators.min(0.05), Validators.max(10) ]),
 				take_profit_1_ao: new FormControl(this.strategy.take_profit_1.activation_offset, [ Validators.required, Validators.min(0.01), Validators.max(5) ]),
 				take_profit_1_gdd: new FormControl(this.strategy.take_profit_1.max_gain_drawdown, [ Validators.required, Validators.min(-100), Validators.max(-0.01) ]),
@@ -50,6 +51,9 @@ export class StrategyFormDialogComponent implements OnInit, IStrategyFormDialogC
 				take_profit_3_pcr: new FormControl(this.strategy.take_profit_3.price_change_requirement, [ Validators.required, Validators.min(0.05), Validators.max(10) ]),
 				take_profit_3_ao: new FormControl(this.strategy.take_profit_3.activation_offset, [ Validators.required, Validators.min(0.01), Validators.max(5) ]),
 				take_profit_3_gdd: new FormControl(this.strategy.take_profit_3.max_gain_drawdown, [ Validators.required, Validators.min(-100), Validators.max(-0.01) ]),
+				take_profit_4_pcr: new FormControl(this.strategy.take_profit_4.price_change_requirement, [ Validators.required, Validators.min(0.05), Validators.max(10) ]),
+				take_profit_4_ao: new FormControl(this.strategy.take_profit_4.activation_offset, [ Validators.required, Validators.min(0.01), Validators.max(5) ]),
+				take_profit_4_gdd: new FormControl(this.strategy.take_profit_4.max_gain_drawdown, [ Validators.required, Validators.min(-100), Validators.max(-0.01) ]),
 				stop_loss: new FormControl(this.strategy.stop_loss, [ Validators.required, Validators.min(0.1), Validators.max(20) ]),
 			});
 		} catch (e) {
@@ -68,6 +72,7 @@ export class StrategyFormDialogComponent implements OnInit, IStrategyFormDialogC
 	get leverage(): AbstractControl { return <AbstractControl>this.form.get("leverage") }
 	get position_size(): AbstractControl { return <AbstractControl>this.form.get("position_size") }
 	get positions_limit(): AbstractControl { return <AbstractControl>this.form.get("positions_limit") }
+	get reopen_if_better_duration_minutes(): AbstractControl { return <AbstractControl>this.form.get("reopen_if_better_duration_minutes") }
 	get take_profit_1_pcr(): AbstractControl { return <AbstractControl>this.form.get("take_profit_1_pcr") }
 	get take_profit_1_ao(): AbstractControl { return <AbstractControl>this.form.get("take_profit_1_ao") }
 	get take_profit_1_gdd(): AbstractControl { return <AbstractControl>this.form.get("take_profit_1_gdd") }
@@ -77,6 +82,9 @@ export class StrategyFormDialogComponent implements OnInit, IStrategyFormDialogC
 	get take_profit_3_pcr(): AbstractControl { return <AbstractControl>this.form.get("take_profit_3_pcr") }
 	get take_profit_3_ao(): AbstractControl { return <AbstractControl>this.form.get("take_profit_3_ao") }
 	get take_profit_3_gdd(): AbstractControl { return <AbstractControl>this.form.get("take_profit_3_gdd") }
+	get take_profit_4_pcr(): AbstractControl { return <AbstractControl>this.form.get("take_profit_4_pcr") }
+	get take_profit_4_ao(): AbstractControl { return <AbstractControl>this.form.get("take_profit_4_ao") }
+	get take_profit_4_gdd(): AbstractControl { return <AbstractControl>this.form.get("take_profit_4_gdd") }
 	get stop_loss(): AbstractControl { return <AbstractControl>this.form.get("stop_loss") }
 
 
@@ -103,6 +111,7 @@ export class StrategyFormDialogComponent implements OnInit, IStrategyFormDialogC
 						this.strategy.leverage = this.leverage.value;
 						this.strategy.position_size = this.position_size.value;
 						this.strategy.positions_limit = this.positions_limit.value;
+						this.strategy.reopen_if_better_duration_minutes = this.reopen_if_better_duration_minutes.value;
 						this.strategy.take_profit_1 = {
 							price_change_requirement: this.take_profit_1_pcr.value,
 							activation_offset: this.take_profit_1_ao.value,
@@ -117,6 +126,11 @@ export class StrategyFormDialogComponent implements OnInit, IStrategyFormDialogC
 							price_change_requirement: this.take_profit_3_pcr.value,
 							activation_offset: this.take_profit_3_ao.value,
 							max_gain_drawdown: this.take_profit_3_gdd.value,
+						};
+						this.strategy.take_profit_4 = {
+							price_change_requirement: this.take_profit_4_pcr.value,
+							activation_offset: this.take_profit_4_ao.value,
+							max_gain_drawdown: this.take_profit_4_gdd.value,
 						};
 						this.strategy.stop_loss = this.stop_loss.value;
 

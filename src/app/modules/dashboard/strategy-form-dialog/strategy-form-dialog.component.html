@@ -106,9 +106,24 @@
                         </div>
                         <span fxFlex="5"></span>
                         <div fxFlex>
-                            <mat-checkbox   formControlName="bitcoin_only"
-                                            [appDisableControl]="submitting" 
-                                            style="margin-top:15px;">Bitcoin Only</mat-checkbox>
+                            <mat-form-field>
+                                <mat-label>Reopen If Better Dur. Mins</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="reopen_if_better_duration_minutes"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 60">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="start start" class="section-container">
+                        <div fxFlex>
+                            <mat-checkbox formControlName="bitcoin_only" [appDisableControl]="submitting">Bitcoin Only</mat-checkbox>
+                        </div>
+                        <span fxFlex="5"></span>
+                        <div fxFlex>
+
                         </div>
                     </div>
                 </div>
@@ -139,7 +154,7 @@
                                             formControlName="take_profit_1_pcr"
                                             autocomplete="off"
                                             [appDisableControl]="submitting"
-                                            placeholder="e.g. 0.75">
+                                            placeholder="e.g. 0.35">
                                     </mat-form-field>
                                 </div>
                                 <span fxFlex="5"></span>
@@ -151,7 +166,7 @@
                                             formControlName="take_profit_1_ao"
                                             autocomplete="off"
                                             [appDisableControl]="submitting"
-                                            placeholder="e.g. 0.05">
+                                            placeholder="e.g. 0.1">
                                     </mat-form-field>
                                 </div>
                                 <span fxFlex="5"></span>
@@ -163,7 +178,7 @@
                                             formControlName="take_profit_1_gdd"
                                             autocomplete="off"
                                             [appDisableControl]="submitting"
-                                            placeholder="e.g. -80">
+                                            placeholder="e.g. -100">
                                     </mat-form-field>
                                 </div>
                             </div>
@@ -183,7 +198,7 @@
                                             formControlName="take_profit_2_pcr"
                                             autocomplete="off"
                                             [appDisableControl]="submitting"
-                                            placeholder="e.g. 1.5">
+                                            placeholder="e.g. 0.55">
                                     </mat-form-field>
                                 </div>
                                 <span fxFlex="5"></span>
@@ -195,7 +210,7 @@
                                             formControlName="take_profit_2_ao"
                                             autocomplete="off"
                                             [appDisableControl]="submitting"
-                                            placeholder="e.g. 0.05">
+                                            placeholder="e.g. 0.1">
                                     </mat-form-field>
                                 </div>
                                 <span fxFlex="5"></span>
@@ -207,7 +222,7 @@
                                             formControlName="take_profit_2_gdd"
                                             autocomplete="off"
                                             [appDisableControl]="submitting"
-                                            placeholder="e.g. -60">
+                                            placeholder="e.g. -35">
                                     </mat-form-field>
                                 </div>
                             </div>
@@ -227,7 +242,7 @@
                                             formControlName="take_profit_3_pcr"
                                             autocomplete="off"
                                             [appDisableControl]="submitting"
-                                            placeholder="e.g. 2.25">
+                                            placeholder="e.g. 0.9">
                                     </mat-form-field>
                                 </div>
                                 <span fxFlex="5"></span>
@@ -239,7 +254,7 @@
                                             formControlName="take_profit_3_ao"
                                             autocomplete="off"
                                             [appDisableControl]="submitting"
-                                            placeholder="e.g. 0.05">
+                                            placeholder="e.g. 0.1">
                                     </mat-form-field>
                                 </div>
                                 <span fxFlex="5"></span>
@@ -251,7 +266,51 @@
                                             formControlName="take_profit_3_gdd"
                                             autocomplete="off"
                                             [appDisableControl]="submitting"
-                                            placeholder="e.g. -40">
+                                            placeholder="e.g. -15">
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Take Profit 4 -->
+                        <div class="margin-top">
+                            <div fxLayout="row" fxLayoutAlign="center center">
+                                <div>
+                                    <p><strong>#4&nbsp;&nbsp;&nbsp;</strong></p>
+                                </div>
+                                <div fxFlex>
+                                    <mat-form-field>
+                                        <mat-label>Take Profit%</mat-label>
+                                        <input type="number"
+                                            matInput
+                                            formControlName="take_profit_4_pcr"
+                                            autocomplete="off"
+                                            [appDisableControl]="submitting"
+                                            placeholder="e.g. 1.5">
+                                    </mat-form-field>
+                                </div>
+                                <span fxFlex="5"></span>
+                                <div fxFlex>
+                                    <mat-form-field>
+                                        <mat-label>Activation Offset%</mat-label>
+                                        <input type="number"
+                                            matInput
+                                            formControlName="take_profit_4_ao"
+                                            autocomplete="off"
+                                            [appDisableControl]="submitting"
+                                            placeholder="e.g. 0.1">
+                                    </mat-form-field>
+                                </div>
+                                <span fxFlex="5"></span>
+                                <div fxFlex>
+                                    <mat-form-field>
+                                        <mat-label>Max Gain Drawdown%</mat-label>
+                                        <input type="number"
+                                            matInput
+                                            formControlName="take_profit_4_gdd"
+                                            autocomplete="off"
+                                            [appDisableControl]="submitting"
+                                            placeholder="e.g. -5">
                                     </mat-form-field>
                                 </div>
                             </div>

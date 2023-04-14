@@ -4,7 +4,6 @@ import {
 	IPositionRecord, 
 	IBinancePositionSide, 
 	UtilsService, 
-	IBinanceTradeExecutionPayload
 } from "../../../../../core";
 import { AppService, NavService } from '../../../../../services';
 import { IPositionInfoDialogComponent } from './interfaces';
@@ -20,6 +19,7 @@ export class PositionInfoDialogComponent implements OnInit, IPositionInfoDialogC
 	public takeProfit1Distance: number|undefined;
 	public takeProfit2Distance: number|undefined;
 	public takeProfit3Distance: number|undefined;
+	public takeProfit4Distance: number|undefined;
 	public stopLossDistance: number|undefined;
 
 
@@ -41,6 +41,7 @@ export class PositionInfoDialogComponent implements OnInit, IPositionInfoDialogC
 		this.takeProfit1Distance = this.calculateTakeProfitDistance(this.record.side, this.record.mark_price, this.record.take_profit_price_1);
 		this.takeProfit2Distance = this.calculateTakeProfitDistance(this.record.side, this.record.mark_price, this.record.take_profit_price_2);
 		this.takeProfit3Distance = this.calculateTakeProfitDistance(this.record.side, this.record.mark_price, this.record.take_profit_price_3);
+		this.takeProfit4Distance = this.calculateTakeProfitDistance(this.record.side, this.record.mark_price, this.record.take_profit_price_4);
 
 		// Calculate the stop loss distance
 		const stopLossDistance: number = <number>this._utils.calculatePercentageChange(this.record.mark_price, this.record.stop_loss_price);

@@ -146,7 +146,14 @@ export class PositionContextDialogComponent implements OnInit, IPositionContextD
         });
 		annotations.yaxis!.push({
             y: this.record.take_profit_price_3,
-            y2: this.record.take_profit_price_3 + (this.record.side == "LONG" ? 5000: -5000),
+            y2: this.record.take_profit_price_4,
+            borderColor: "#00796B",
+            fillColor: "#00796B",
+            strokeDashArray: 0
+        });
+		annotations.yaxis!.push({
+            y: this.record.take_profit_price_4,
+            y2: this.record.take_profit_price_4 + (this.record.side == "LONG" ? 2000: -2000),
             borderColor: "#004D40",
             fillColor: "#004D40",
             strokeDashArray: 0
