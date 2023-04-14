@@ -154,6 +154,12 @@
 
 
 
+    @for $i from 0 through 100 {
+        $width: $i * 1%;
+        .db-table-#{$i} {
+            background: linear-gradient(90deg, #ECEFF1 $width, #FFFFFF $width);
+        }
+    }
 }
 
 

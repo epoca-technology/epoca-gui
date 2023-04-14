@@ -111,7 +111,9 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
 
     // Tables
     public tables: IDatabaseSummaryTable[] = [];
+    public tableShares: {[tableName: string]: number} = {};
     public testTables: IDatabaseSummaryTable[] = [];
+    public testTableShares: {[tableName: string]: number} = {};
     public testTablesVisible: boolean = false;
 
     // Files
@@ -610,14 +612,36 @@ export class ServerComponent implements OnInit, OnDestroy, IServerComponent {
             try {
                 // Init the Summary
                 this.summary = await this._db.getDatabaseSummary();
+
+                // Reset the shares
+                this.tableShares = {};
+                this.testTableShares = {};
+
+                // Init the accum values
+                let sizeAccum: number = 0;
+                let testSizeAccum: number = 0;
     
                 // Separate real and test tables
                 for (let t of this.summary.tables) {
                     // Check if it is a test table
-                    if (t.name.includes("test")) { this.testTables.push(t) }
+                    if (t.name.includes("test")) { 
+                        this.testTables.push(t);
+                        testSizeAccum += t.size;
+                    }
     
                     // Otherwise, add it to the real table list
-                    else { this.tables.push(t) }
+                    else { 
+                        this.tables.push(t);
+                        sizeAccum += t.size;
+                    }
+                }
+
+                // Calculate the shares
+                for (let table of this.tables) {
+                    this.tableShares[table.name] = <number>this._utils.calculatePercentageOutOfTotal(table.size, sizeAccum, {dp: 0, ru: true});
+                }
+                for (let table of this.testTables) {
+                    this.testTableShares[table.name] = <number>this._utils.calculatePercentageOutOfTotal(table.size, testSizeAccum, {dp: 0, ru: true});
                 }
     
                 // Sort both lists

@@ -117,7 +117,8 @@ import { DateRangeFormDialogComponent } from './components/date-range-form-dialo
 import { 
 	PositionRecordDialogComponent, 
 	PositionInfoDialogComponent,
-	TradeExecutionPayloadDialogComponent
+	TradeExecutionPayloadDialogComponent,
+	PositionContextDialogComponent
 } from './components/positions';
 
 
@@ -189,6 +190,7 @@ import {
    		PositionRecordDialogComponent,
    		PositionInfoDialogComponent,
      	TradeExecutionPayloadDialogComponent,
+      	PositionContextDialogComponent,
 	],
 	imports: [
 		CommonModule,

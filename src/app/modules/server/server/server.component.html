@@ -405,7 +405,7 @@
                                                     <div class="tables-container">
                                                         <table class="highlight bordered">
                                                             <tbody>
-                                                                <tr *ngFor="let t of tables">
+                                                                <tr *ngFor="let t of tables" class="db-table-{{tableShares[t.name]}}">
                                                                     <td><p class="table-name">{{t.name}}</p></td>
                                                                     <td><p class="align-right light-text ts-s">{{t.size | filesize}}</p></td>
                                                                 </tr>
@@ -421,7 +421,7 @@
                                                     <div class="tables-container">
                                                         <table class="highlight bordered">
                                                             <tbody>
-                                                                <tr *ngFor="let t of testTables">
+                                                                <tr *ngFor="let t of testTables" class="db-table-{{testTableShares[t.name]}}">
                                                                     <td><p class="table-name">{{t.name}}</p></td>
                                                                     <td><p class="align-right light-text ts-s">{{t.size | filesize}}</p></td>
                                                                 </tr>

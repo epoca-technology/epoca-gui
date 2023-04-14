@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import {MatDialogRef, MAT_DIALOG_DATA, MatDialog} from "@angular/material/dialog";
-import { ApexAnnotations, YAxisAnnotations } from 'ng-apexcharts';
+import { ApexAnnotations } from 'ng-apexcharts';
 import { 
 	IPositionCandlestick, 
 	IPositionRecord, 
@@ -13,11 +13,11 @@ import {
 	AppService, 
 	ChartService, 
 	ICandlestickChartOptions, 
-	IChartRange, 
 	ILayout, 
 	NavService 
 } from '../../../../services';
 import { PositionInfoDialogComponent } from './position-info-dialog';
+import { PositionContextDialogComponent } from './position-context-dialog';
 import { IPositionRecordDialogComponent } from './interfaces';
 
 @Component({
@@ -407,7 +407,7 @@ export class PositionRecordDialogComponent implements OnInit, IPositionRecordDia
 
 
     /**
-     * Displays the signal records dialog.
+     * Displays the position info dialog.
      */
     public displayPositionInfoDialog(): void {
 		this.dialog.open(PositionInfoDialogComponent, {
@@ -420,8 +420,27 @@ export class PositionRecordDialogComponent implements OnInit, IPositionRecordDia
 
 
 
+    /**
+     * Displays the position context dialog.
+     */
+    public displayPositionContextDialog(): void {
+		if (!this.record || this.record.coin.symbol != "BTCUSDT") {
+			this._app.error("The context can only be visualized on BTCUSDT positions.");
+			return;
+		}
+		this.dialog.open(PositionContextDialogComponent, {
+			hasBackdrop: this._app.layout.value != "mobile",
+			panelClass: "large-dialog",
+			data: this.record
+		})
+    }
+
+
+
+
+
 	/**
-	 * Displays the Signal Module Tooltip.
+	 * Displays the Module Tooltip.
 	 */
 	public displayTooltip(): void {
         this._nav.displayTooltip("Position Record", [
