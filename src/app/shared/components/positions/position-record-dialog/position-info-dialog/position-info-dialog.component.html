@@ -164,6 +164,15 @@
                     <p class="ts-xs light-text">{{record.notional | currency}}</p>
                 </div>
             </div>
+
+            <!-- Estimated Fee -->
+            <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
+                <p class="light-text ts-m truncate">Est. Fee</p>
+                <span fxFlex></span>
+                <div matTooltip="The estimated trading fees for opening and closing the position" class="align-right" >
+                    <p>${{fee | number: '1.0-4'}}</p>
+                </div>
+            </div>
         </div>
     </div>
 </div>

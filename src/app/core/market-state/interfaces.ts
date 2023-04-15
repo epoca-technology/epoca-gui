@@ -231,8 +231,8 @@ export interface IVolumeState {
     m: number,
     mh: number,
 
-    // The list of grouped volumes
-    w: ISplitStateSeriesItem[]
+    // The volume within the current 1m interval
+    v: number
 }
 
  

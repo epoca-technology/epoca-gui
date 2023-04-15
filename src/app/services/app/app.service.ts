@@ -69,7 +69,7 @@ export class AppService implements IAppService{
 	public apiErrors: BehaviorSubject<number|undefined|null> = new BehaviorSubject<number|undefined|null>(null);
 
 	// App Bulk Local Properties
-	public keyzoneEventScoreRequirement: number = 6;
+	public keyzoneEventScoreRequirement: number = 5;
 
 
 
@@ -319,6 +319,9 @@ export class AppService implements IAppService{
 	 * @param bulk 
 	 */
 	private broadcastAppBulk(bulk: IAppBulk): void {
+		// Set the KeyZone's event score requirement
+		this.keyzoneEventScoreRequirement = bulk.keyzoneEventScoreRequirement;
+		
 		// Broadcast the market state
 		this.marketState.next(bulk.marketState);
 
@@ -339,9 +342,6 @@ export class AppService implements IAppService{
 
 		// Broadcast the api errors
 		this.apiErrors.next(bulk.apiErrors);
-
-		// Set the KeyZone's event score requirement
-		this.keyzoneEventScoreRequirement = bulk.keyzoneEventScoreRequirement;
 	}
 
 

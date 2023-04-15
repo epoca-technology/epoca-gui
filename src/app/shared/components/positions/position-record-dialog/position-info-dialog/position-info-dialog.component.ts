@@ -1,5 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
+import { BigNumber } from "bignumber.js";
 import { 
 	IPositionRecord, 
 	IBinancePositionSide, 
@@ -22,6 +23,10 @@ export class PositionInfoDialogComponent implements OnInit, IPositionInfoDialogC
 	public takeProfit4Distance: number|undefined;
 	public stopLossDistance: number|undefined;
 
+	// Fees
+	public fee: number;
+	public openFee: number;
+	public closeFee: number;
 
 	constructor(
 		public dialogRef: MatDialogRef<PositionInfoDialogComponent>,
@@ -50,6 +55,16 @@ export class PositionInfoDialogComponent implements OnInit, IPositionInfoDialogC
 		} else {
 			this.stopLossDistance = this.record.mark_price >= this.record.stop_loss_price ? undefined: stopLossDistance;
 		}
+
+		// Calculate the fees
+		const posAmount: number = Math.abs(this.record.position_amount);
+		const entryPrice: BigNumber = new BigNumber(this.record.entry_price);
+		const markPrice: BigNumber = new BigNumber(this.record.mark_price);
+		const entryAmountNotional: BigNumber = entryPrice.times(posAmount);
+		const closeAmountNotional: BigNumber = markPrice.times(posAmount);
+		this.openFee = <number>this._utils.outputNumber(entryAmountNotional.times(0.0004), {dp: 4, ru: true});
+		this.closeFee = <number>this._utils.outputNumber(closeAmountNotional.times(0.0004), {dp: 4, ru: true});
+		this.fee = <number>this._utils.outputNumber(this.openFee + this.closeFee, {dp: 4, ru: true});
 	}
 
 	ngOnInit(): void {}

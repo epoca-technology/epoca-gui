@@ -345,52 +345,50 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 		
 		// Retrieve the volume state
 		this.volumeState = await this._ms.getFullVolumeState();
+		let maxValue: number;
+		if (this.volumeState.v < this.volumeState.m) {
+			maxValue = <number>this._utils.alterNumberByPercentage(this.volumeState.m, 30);
+		} else {
+			maxValue = <number>this._utils.alterNumberByPercentage(this.volumeState.v, 50);
+		}
 
 		// Set the state average
 		this.stateAverage = this.volumeState.s;
 
         // Build the chart
-		let volumes: number[] = [];
-		let seriesData: ISplitStateSeriesItem[] = [];
-		for (let vol of this.volumeState.w) {
-			volumes.push(vol.y);
-			seriesData.push({ 
-				x: vol.x,
-				y: <number>this._utils.outputNumber(vol.y, {dp: 0})
-			});
-		}
-		const min: number = <number>this._utils.getMin(volumes);
-		const max: number = <number>this._utils.getMax(volumes);
 		this.volumeChart = this._chart.getBarChartOptions(
 			{ 
 				series: [ { 
 					name: "USDT", 
-					data: seriesData, 
+					data: [this.volumeState.v], 
 					color: this.getChartColor(this.volumeState.s)
 				}],
-				xaxis: {type: "datetime",tooltip: {enabled: true}, labels: {datetimeUTC: false}},
-				yaxis: { tooltip: { enabled: true}, axisBorder: { show: true}, axisTicks: {show: true}}
+				xaxis: {categories: ["USDT Vol."], labels: {show: false}},
+				yaxis: {labels: {show: true}},
+				plotOptions: { bar: { horizontal: false, distributed: true, borderRadius: 4, columnWidth: "15%"}},
 			},
-			undefined,
+			["USDT Vol."],
 			this.layout == "desktop" ? 400: 360,
-			undefined,
+			false,
 			true,
-			{min: min, max: max},
+			{min: 0, max: maxValue},
 			{
 				yaxis: [
 					{
 						y: this.volumeState.m,
-						borderColor: this._chart.upwardColor,
-						fillColor: this._chart.upwardColor,
-						strokeDashArray: 2,
-						borderWidth: 1
+						y2: this.volumeState.mh,
+						borderColor: "#26A69A",
+						fillColor: "#26A69A",
+						strokeDashArray: 0,
+						borderWidth: 0
 					},
 					{
 						y: this.volumeState.mh,
-						borderColor: this._chart.upwardColor,
-						fillColor: this._chart.upwardColor,
+						y2: this.volumeState.mh*3,
+						borderColor: "#004D40",
+						fillColor: "#004D40",
 						strokeDashArray: 0,
-						borderWidth: 1
+						borderWidth: 0
 					},
 				]
 			}
@@ -427,10 +425,7 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 
 		// Handle the volume
 		if (this.module == "volume") {
-			windowStart = this.volumeState!.w[0].x;
-			windowEnd = this.volumeState!.w[this.volumeState!.w.length - 1].x;
-			itemsInWindow = this.volumeState!.w.length;
-			currentValue = this.volumeState!.w[this.volumeState!.w.length - 1].y;
+			currentValue = this.volumeState!.v;
 		} 
 		
 		// Handle the rest
@@ -444,12 +439,16 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 		// Init the content
 		let content: string[] = [
 			`CURRENT VALUE`,
-			this._utils.formatNumber(currentValue),
-			`------`,
-			`RANGE (${itemsInWindow} items)`,
-			`${moment(windowStart).format("dddd, MMMM Do, h:mm:ss a")}`,
-			`${moment(windowEnd).format("dddd, MMMM Do, h:mm:ss a")}`,
+			this._utils.formatNumber(currentValue)
 		];
+
+		// Add the date range if available
+		if (windowStart && windowEnd) {
+			content.push(`------`);
+			content.push(`RANGE (${itemsInWindow} items)`);
+			content.push(`${moment(windowStart).format("dddd, MMMM Do, h:mm:ss a")}`);
+			content.push(`${moment(windowEnd).format("dddd, MMMM Do, h:mm:ss a")}`);
+		}
 
 		// If it is the volume, add the mean and mean high values
 		if (this.volumeState) {
