@@ -40,7 +40,7 @@ export class StrategyFormDialogComponent implements OnInit, IStrategyFormDialogC
 				bitcoin_only: new FormControl(this.strategy.bitcoin_only, [ Validators.required ]),
 				leverage: new FormControl(this.strategy.leverage, [ Validators.required, Validators.min(2), Validators.max(125) ]),
 				position_size: new FormControl(this.strategy.position_size, [ Validators.required, Validators.min(1), Validators.max(10000) ]),
-				positions_limit: new FormControl(this.strategy.positions_limit, [ Validators.required, Validators.min(1), Validators.max(6) ]),
+				positions_limit: new FormControl(this.strategy.positions_limit, [ Validators.required, Validators.min(1), Validators.max(9) ]),
 				reopen_if_better_duration_minutes: new FormControl(this.strategy.reopen_if_better_duration_minutes, [ Validators.required, Validators.min(1), Validators.max(720) ]),
 				take_profit_1_pcr: new FormControl(this.strategy.take_profit_1.price_change_requirement, [ Validators.required, Validators.min(0.05), Validators.max(10) ]),
 				take_profit_1_ao: new FormControl(this.strategy.take_profit_1.activation_offset, [ Validators.required, Validators.min(0.01), Validators.max(5) ]),

@@ -331,7 +331,7 @@
                                         <!-- Positions -->
                                         <div class="global-indicators-section">
                                             <h4 class="margin-bottom show-on-mobile">Active Positions</h4>
-                                            <mat-grid-list [cols]="3" [rowHeight]="'46px'" gutterSize="1px">
+                                            <mat-grid-list [cols]="3" [rowHeight]="layout == 'desktop' ? '45px': '70px'" gutterSize="1px">
                                                 <!-- Active Positions -->
                                                 <mat-grid-tile *ngFor="let pos of positions" class="clickable" role="button" matRipple
                                                     (click)="displayPositionRecordDialog(pos.id)"
@@ -354,7 +354,7 @@
                                         <!-- General Indicators -->
                                         <div class="global-indicators-section">
                                             <h4 class="show-on-mobile margin-bottom">General Indicators</h4>
-                                            <mat-grid-list [cols]="3" [rowHeight]="layout == 'desktop' ? '44px': '50px'" gutterSize="1px">
+                                            <mat-grid-list [cols]="3" [rowHeight]="layout == 'desktop' ? '45px': '70px'" gutterSize="1px">
                                                 <!-- KeyZones -->
                                                 <mat-grid-tile *ngIf="!state.keyzones.event" 
                                                                 class="clickable" role="button" matRipple
@@ -396,12 +396,9 @@
                                                                 }"><p>COINS D.</p></mat-grid-tile>
                                                 
                                                 <!-- Placeholders -->
-                                                <mat-grid-tile *ngIf="layout == 'desktop'" class="placeholder-action-container"></mat-grid-tile>
-                                                <mat-grid-tile *ngIf="layout == 'desktop'" class="placeholder-action-container"></mat-grid-tile>
-                                                <mat-grid-tile *ngIf="layout == 'desktop'" class="placeholder-action-container"></mat-grid-tile>
-                                                <mat-grid-tile *ngIf="layout == 'desktop'" class="placeholder-action-container"></mat-grid-tile>
-                                                <mat-grid-tile *ngIf="layout == 'desktop'" class="placeholder-action-container"></mat-grid-tile>
-                                                <mat-grid-tile *ngIf="layout == 'desktop'" class="placeholder-action-container"></mat-grid-tile>
+                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
+                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
+                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
                                             </mat-grid-list>
                                         </div>
                                     </div>
