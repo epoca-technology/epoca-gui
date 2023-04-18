@@ -1,0 +1,52 @@
+<mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <button mat-icon-button class="show-on-mobile" (click)="close()" [disabled]="!loaded"><mat-icon>arrow_back</mat-icon></button>
+        <span class="truncate">KeyZone Events</span>
+        <span fxFlex></span>
+        <button mat-icon-button (click)="displayTooltip()" [disabled]="!loaded" matTooltip="What is this?"><mat-icon>question_mark</mat-icon></button>
+        <button mat-icon-button [matMenuTriggerFor]="menu" [disabled]="!loaded" matTooltip="Set custom date range">
+            <mat-icon>date_range</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+            <button mat-menu-item 
+                    *ngFor="let item of histMenu" 
+                    [disabled]="item.id == activeHistMenuItem.id && item.id != 'custom'" 
+                    (click)="loadHist(item)">{{item.name}}</button>
+        </mat-menu>
+        <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
+    </div>
+</mat-toolbar>
+<div mat-dialog-content>
+    <div class="component">
+        <!-- Loader -->
+        <div *ngIf="!loaded">
+            <div class="section-loader show-on-mobile"><div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div></div>
+            <div class="loader show-on-desktop"><div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div></div>
+        </div>
+        <div *ngIf="loaded" class="padding">
+            <p *ngIf="!hist.length" class="no-records">No records were found</p>
+            <div *ngFor="let evt of hist; last as lastRecord" class="clickable" role="button" (click)="displayKeyZoneEventContext(evt)">
+                <div fxLayout="row" fxLayoutAlign="center start">
+                    <mat-icon style="font-size:26px;margin-top:6px;" 
+                        [ngClass]="{
+                            'success-color': evt.k == 'r',
+                            'error-color': evt.k == 's'
+                        }">{{evt.k == 's' ? 'vertical_align_bottom': 'vertical_align_top'}}</mat-icon>
+                    <div style="margin-left:7px;">
+                        <p [ngClass]="{
+                            'success-color': evt.k == 'r',
+                            'error-color': evt.k == 's'
+                        }">{{evt.k == 's' ? 'Support': 'Resistance'}}</p>
+                        <p *ngIf="evt.k == 's'" class="light-text ts-xs">At {{evt.kz.e | currency}}</p>
+                        <p *ngIf="evt.k == 'r'" class="light-text ts-xs">At {{evt.kz.s | currency}}</p>
+                    </div>
+
+                    <span fxFlex></span>
+
+                    <p class="light-text ts-s">{{evt.t | date: 'short'}}</p>
+                </div>
+                <div *ngIf="!lastRecord" class="divider"></div>
+            </div>
+        </div>
+    </div>
+</div>

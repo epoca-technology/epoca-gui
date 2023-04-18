@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from "../api";
 import { 
+	ICoinsCompressedState,
 	ICoinsConfiguration,
 	ICoinsSummary,
 	ICoinState,
 	IKeyZoneFullState, 
 	IKeyZonesConfiguration, 
+	IKeyZoneStateEvent, 
 	ILiquidityState, 
 	IMarketStateService, 
 	ISplitStateID, 
@@ -210,6 +212,19 @@ export class MarketStateService implements IMarketStateService {
 	}
 
 
+		
+
+
+	/**
+	 * Retrieves the list of keyzone state events that occured within
+	 * the given date range.
+	 * @param startAt
+	 * @param endAt
+	 * @returns Promise<IKeyZoneStateEvent[]>
+	 */
+	public listKeyZoneEvents(startAt: number, endAt: number): Promise<IKeyZoneStateEvent[]> { 
+		return this._api.request("get","marketState/listKeyZoneEvents", {startAt: startAt, endAt: endAt}, true) 
+	}
 
 
 
@@ -357,6 +372,17 @@ export class MarketStateService implements IMarketStateService {
 
 
 
+
+
+
+	/**
+	 * Retrieves the compressed state for all the coins.
+	 * @param symbol
+	 * @returns Promise<ICoinsCompressedState>
+	 */
+	public getCoinsCompressedState(): Promise<ICoinsCompressedState> { 
+		return this._api.request("get","marketState/getCoinsCompressedState", {}, true) 
+	}
 
 
 

@@ -50,8 +50,8 @@ export class PositionContextDialogComponent implements OnInit, IPositionContextD
 		try {
 			// Retrieve the candlesticks
 			const candlesticks: ICandlestick[] = await this._candlestick.getForPeriod(
-				moment(this.record.open).subtract(10, "hours").valueOf(),
-				moment(this.record.close).add(10, "hours").valueOf(),
+				moment(this.record.open).subtract(12, "hours").valueOf(),
+				moment(this.record.close).add(12, "hours").valueOf(),
 			);
 
 			// Build the chart

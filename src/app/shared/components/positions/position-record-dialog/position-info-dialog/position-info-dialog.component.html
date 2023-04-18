@@ -114,7 +114,8 @@
                     <span fxFlex></span>
                     <p [ngClass]="{
                             'error-color': record.gain_drawdown < 0, 
-                            'light-text': record.gain_drawdown == 0
+                            'light-text': record.gain_drawdown == 0 && record.gain < 0,
+                            'success-color': record.gain_drawdown == 0 && record.gain >= 0
                         }">{{record.gain_drawdown | number}}%</p>
                 </div>
             </div>

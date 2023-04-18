@@ -3,11 +3,41 @@
         <button mat-icon-button class="show-on-mobile" (click)="close()" [disabled]="!loaded || loadingState"><mat-icon>arrow_back</mat-icon></button>
         <span class="truncate">KeyZones</span>
         <span fxFlex></span>
-        <button mat-icon-button (click)="displayInfoTooltip()" [disabled]="!loaded || loadingState" matTooltip="More information"><mat-icon class="info-icon" svgIcon="info"></mat-icon></button>
-        <button mat-icon-button (click)="displayTooltip()" [disabled]="!loaded || loadingState" matTooltip="What is this?"><mat-icon>question_mark</mat-icon></button>
-        <button mat-icon-button (click)="displayPriceSnapshotsDialog()" [disabled]="!loaded || loadingState" matTooltip="Display Price Snapshots"><mat-icon>candlestick_chart</mat-icon></button>
-        <button mat-icon-button (click)="displayLiquidityDialog()" [disabled]="!loaded || loadingState" matTooltip="Display Liquidity"><mat-icon>water_drop</mat-icon></button>
-        <button mat-icon-button class="show-on-desktop" (click)="close()" [disabled]="!loaded || loadingState"><mat-icon>close</mat-icon></button>
+
+        <!-- Desktop Menu -->
+        <button *ngIf="layout == 'desktop'" mat-icon-button (click)="displayInfoTooltip()" [disabled]="!loaded || loadingState" matTooltip="More information"><mat-icon class="info-icon" svgIcon="info"></mat-icon></button>
+        <button *ngIf="layout == 'desktop'" mat-icon-button (click)="displayTooltip()" [disabled]="!loaded || loadingState" matTooltip="What is this?"><mat-icon>question_mark</mat-icon></button>
+        <button *ngIf="layout == 'desktop'" mat-icon-button (click)="displayPriceSnapshotsDialog()" [disabled]="!loaded || loadingState" matTooltip="Display Price Snapshots"><mat-icon>candlestick_chart</mat-icon></button>
+        <button *ngIf="layout == 'desktop'" mat-icon-button (click)="displayLiquidityDialog()" [disabled]="!loaded || loadingState" matTooltip="Display Liquidity"><mat-icon>water_drop</mat-icon></button>
+        <button *ngIf="layout == 'desktop'" mat-icon-button (click)="displayKeyZoneEventsHistory()" [disabled]="!loaded || loadingState" matTooltip="Display Events History"><mat-icon>history</mat-icon></button>
+        <button *ngIf="layout == 'desktop'" mat-icon-button (click)="close()" [disabled]="!loaded || loadingState"><mat-icon>close</mat-icon></button>
+
+        <!-- Mobile Menu -->
+        <button *ngIf="layout == 'mobile'" mat-icon-button [matMenuTriggerFor]="menu" [disabled]="!loaded || loadingState">
+            <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="displayKeyZoneEventsHistory()">
+                <mat-icon>history</mat-icon>
+                <span>Display Events History</span>
+            </button>
+            <button mat-menu-item (click)="displayLiquidityDialog()">
+                <mat-icon>water_drop</mat-icon>
+                <span>Display Liquidity</span>
+            </button>
+            <button mat-menu-item (click)="displayPriceSnapshotsDialog()">
+                <mat-icon>candlestick_chart</mat-icon>
+                <span>Display Price Snapshots</span>
+            </button>
+            <button mat-menu-item (click)="displayTooltip()">
+                <mat-icon>question_mark</mat-icon>
+                <span>What is this?</span>
+            </button>
+            <button mat-menu-item (click)="displayInfoTooltip()">
+                <mat-icon svgIcon="info"></mat-icon>
+                <span>More information</span>
+            </button>
+        </mat-menu>
     </div>
 </mat-toolbar>
 <div mat-dialog-content>
@@ -59,7 +89,7 @@
                         <mat-icon>vertical_align_top</mat-icon>
                         <p>{{marketState.keyzones.event.kz.s | currency}}</p>
                         <span fxFlex></span>
-                        <p class="distance">Until {{marketState.keyzones.event.pl | currency}}|{{marketState.keyzones.event.e | date: 'mediumTime'}}</p>
+                        <p class="distance">Until {{marketState.keyzones.event.pl | currency}} | {{marketState.keyzones.event.e | date: 'mediumTime'}}</p>
                     </div>
                 </div>
 

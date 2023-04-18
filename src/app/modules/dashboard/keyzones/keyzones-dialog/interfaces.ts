@@ -12,6 +12,7 @@ export interface IKeyZonesDialogComponent {
     displayKeyZone(zone: IKeyZone): void,
     displayPriceSnapshotsDialog(): Promise<void>,
     displayLiquidityDialog(): void,
+    displayKeyZoneEventsHistory(): void,
     displayInfoTooltip(): Promise<void>,
     displayTooltip(): void,
     close(): void

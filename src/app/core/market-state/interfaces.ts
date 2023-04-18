@@ -26,6 +26,7 @@ export interface IMarketStateService {
 
     // KeyZones Management
     calculateKeyZoneState(): Promise<IKeyZoneFullState>,
+    listKeyZoneEvents(startAt: number, endAt: number): Promise<IKeyZoneStateEvent[]>,
     getKeyZonesConfiguration(): Promise<IKeyZonesConfiguration>,
     updateKeyZonesConfiguration(newConfiguration: IKeyZonesConfiguration, otp: string): Promise<void>,
 
@@ -38,6 +39,7 @@ export interface IMarketStateService {
     installCoin(symbol: string, otp: string): Promise<ICoinsSummary>,
     uninstallCoin(symbol: string, otp: string): Promise<ICoinsSummary>,
     getCoinFullState(symbol: string): Promise<ICoinState>,
+    getCoinsCompressedState(): Promise<ICoinsCompressedState>,
     getCoinsConfiguration(): Promise<ICoinsConfiguration>,
     updateCoinsConfiguration(newConfiguration: ICoinsConfiguration, otp: string): Promise<void>,
     getBaseAssetName(symbol: string): string
@@ -844,17 +846,22 @@ export interface ICoinsState {
 
 
 // Compressed State
+export interface ICoinCompressedState {
+    // The state of the coin
+    s: IStateType,
+
+    // The split states payload
+    ss: ISplitStates,
+
+    // State Event
+    se: IStateType
+}
 export interface ICoinsCompressedState {
-    [symbol: string]: {
-        // The state of the coin
-        s: IStateType,
+    // Compressed states by symbol
+    csbs: {[symbol: string]: ICoinCompressedState},
 
-        // The split states payload
-        ss: ISplitStates,
-
-        // State Event
-        se: IStateType
-    }
+    // Coins Direction
+    cd: IStateType
 }
 
 
