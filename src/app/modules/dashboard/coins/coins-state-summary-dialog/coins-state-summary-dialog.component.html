@@ -6,7 +6,7 @@
         <span *ngIf="loaded" class="truncate">Coins State</span>
         <mat-icon class="show-on-mobile" *ngIf="loaded && state.cd != 0" [svgIcon]="_ms.icons[state.cd]" style="margin-left:5px;"></mat-icon>
         <span fxFlex></span>        
-        <app-refresh-button *ngIf="loaded" style="display: none;" (refresh)="initializeData()" [intervalSeconds]="10"></app-refresh-button>
+        <app-refresh-button *ngIf="loaded" style="display: none;" (refresh)="initializeData()" [intervalSeconds]="6"></app-refresh-button>
         <button mat-icon-button *ngIf="loaded"  (click)="displayTooltip()" matTooltip="What is this?"><mat-icon>question_mark</mat-icon></button>
         <button mat-icon-button class="show-on-desktop" (click)="close()" [disabled]="!loaded"><mat-icon>close</mat-icon></button>
     </div>

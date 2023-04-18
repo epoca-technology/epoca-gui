@@ -156,7 +156,7 @@ export class CoinsStateSummaryDialogComponent implements OnInit, ICoinsStateSumm
 		]
 	}
 	private calculateSplitValue(current: number, change: number): number {
-		return <number>this._utils.alterNumberByPercentage(current, -(change * 10), {ru: true, dp: 6});
+		return <number>this._utils.alterNumberByPercentage(current, -(change * 20), {ru: true, dp: 6});
 	}
 
 
