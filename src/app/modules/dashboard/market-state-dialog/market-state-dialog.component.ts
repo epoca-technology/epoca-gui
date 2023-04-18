@@ -478,7 +478,7 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 
 
 	/**
-	 * Displays the Keyzones Module Tooltip.
+	 * Displays the Market State Module Tooltip.
 	 */
 	public displayTooltip(): void {
         this._nav.displayTooltip("Market State", [

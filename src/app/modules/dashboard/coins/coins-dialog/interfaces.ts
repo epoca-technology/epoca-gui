@@ -1,4 +1,4 @@
-import { ICoin } from "../../../core";
+import { ICoin } from "../../../../core";
 
 
 export interface ICoinsDialogComponent {

@@ -380,6 +380,7 @@ export class ChartService implements IChartService {
 			yaxis: yaxis || {},
 			annotations: config.annotations ? config.annotations: {},
 			colors: colors ? colors: [],
+			title: {}
 		}
 	}
 

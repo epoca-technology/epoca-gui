@@ -158,6 +158,7 @@ export type ILineChartOptions = {
 	annotations: ApexAnnotations;
 	options?: ApexOptions;
 	colors: string[];
+	title: ApexTitleSubtitle;
 };
 
 

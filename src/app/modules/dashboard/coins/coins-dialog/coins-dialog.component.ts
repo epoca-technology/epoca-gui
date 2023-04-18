@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
-import { ICoin, ICoinsObject, ICoinsScores, ICoinsSummary, MarketStateService, UtilsService } from '../../../core';
-import { AppService, ILayout, NavService } from '../../../services';
+import { ICoin, ICoinsObject, ICoinsScores, ICoinsSummary, MarketStateService, UtilsService } from '../../../../core';
+import { AppService, ILayout, NavService } from '../../../../services';
 import { ICoinsDialogComponent } from './interfaces';
 import { CoinsConfigurationDialogComponent } from './coins-configuration-dialog';
 

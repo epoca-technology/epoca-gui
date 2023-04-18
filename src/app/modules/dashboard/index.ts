@@ -1,5 +1,5 @@
 export * from "./balance-dialog";
-export * from "./coins-dialog";
+export * from "./coins";
 export * from "./keyzones";
 export * from "./market-state-dialog";
 export * from "./positions";

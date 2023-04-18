@@ -35,7 +35,7 @@ import { WindowConfigurationDialogComponent } from "./window-configuration-dialo
 import { KeyzonesConfigFormDialogComponent, KeyzonesDialogComponent } from "./keyzones";
 import { IMarketStateDialogConfig, MarketStateDialogComponent } from "./market-state-dialog";
 import { IBottomSheetMenuItem } from "../../shared/components/bottom-sheet-menu";
-import { CoinsDialogComponent } from "./coins-dialog";
+import { CoinsDialogComponent, CoinsStateSummaryDialogComponent } from "./coins";
 import { SignalPoliciesDialogComponent } from "./signal-policies-dialog";
 import { PositionHeadlinesDialogComponent } from "./positions";
 import { IDashboardComponent, IWindowZoom, IWindowZoomID, IWindowZoomPrices } from "./interfaces";
@@ -1184,12 +1184,14 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
 
     /**
-     * Displays the coins indicators dialog.
+     * Displays the coins state summary dialog.
      */
-    public displayCoinsIndicatorDialog(): void {
-        this._nav.displayTooltip("Coins Direction", [
-            `@TODO`,
-        ]);
+    public displayCoinsStateSummaryDialog(): void {
+		this.dialog.open(CoinsStateSummaryDialogComponent, {
+			hasBackdrop: this._app.layout.value != "mobile",
+			panelClass: "large-dialog",
+			data: {}
+		})
     }
 
 

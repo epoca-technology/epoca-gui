@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {MatDialogRef} from "@angular/material/dialog";
 import {AbstractControl, FormControl, FormGroup, Validators} from "@angular/forms";
-import { ICoinsConfiguration, MarketStateService, UtilsService } from "../../../../core";
-import { AppService, NavService } from "../../../../services";
+import { ICoinsConfiguration, MarketStateService, UtilsService } from "../../../../../core";
+import { AppService, NavService } from "../../../../../services";
 import { ICoinsConfigurationDialogComponent } from './interfaces';
 
 @Component({
