@@ -218,7 +218,7 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
                             this.buildTrendSumAnnotation(4, 5, "#009688"),
                             this.buildTrendSumAnnotation(5, 6, "#00897B"),
                             this.buildTrendSumAnnotation(6, 7, "#00796B"),
-                            this.buildTrendSumAnnotation(7, 8, "#004D40"),
+                            this.buildTrendSumAnnotation(7, 20, "#004D40"),
     
                             // Downtrend Backgrounds
                             this.buildTrendSumAnnotation(0, -1, "#FFEBEE"),
@@ -228,7 +228,7 @@ export class PredictionsComponent implements OnInit, OnDestroy, IPredictionsComp
                             this.buildTrendSumAnnotation(-4, -5, "#F44336"),
                             this.buildTrendSumAnnotation(-5, -6, "#E53935"),
                             this.buildTrendSumAnnotation(-6, -7, "#D32F2F"),
-                            this.buildTrendSumAnnotation(-7, -8, "#B71C1C")
+                            this.buildTrendSumAnnotation(-7, -20, "#B71C1C")
                         ]
                     }
                 );

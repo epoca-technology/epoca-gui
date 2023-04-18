@@ -16,7 +16,12 @@ export interface IPositionService {
     // Position Strategy
     getStrategy(): Promise<IPositionStrategy>,
     updateStrategy(newStrategy: IPositionStrategy, otp: string): Promise<void>,
+
+    // Position Fee Calculator
+    calculateEstimatedFee(positionAmount: number, entryPrice: number, closePrice: number): IEstimatedPositionFees,
 }
+
+
 
 
 
@@ -129,6 +134,7 @@ export interface ITakeProfitLevel {
 
 
 
+
 /**
  * Strategy 
  * The configuration that handles the core position entry and exit flow.
@@ -172,20 +178,6 @@ export interface IPositionStrategy {
     positions_limit: number,
 
     /**
-     * Reopen If Better Duration Minutes
-     * When a position looses, the stop_loss_price is stored in RAM as well as the
-     * time + reopen_if_better_duration_minutes. During this period of time, only
-     * "better" positions can be opened. This functionality can be disabled by 
-     * setting the value to 0.
-     * "Better" stands for "Better Rate". For example, a long position is opened at 
-     * 1.000 and looses at 999, for the next reopen_if_better_duration_minutes, longs
-     * can only be opened if the price is < 999. On the other hand, if a short was
-     * opened at 1.000 and lost at 1.001, no shorts with price < 1.001 can be opened
-     * for reopen_if_better_duration_minutes.
-     */
-    reopen_if_better_duration_minutes: number,
-
-    /**
      * Profit Optimization Strategy
      * When a position is opened, a take profit grid is generated. Each level
      * activates when hit by the mark price. The position is maintained active
@@ -203,8 +195,35 @@ export interface IPositionStrategy {
      * also monitors the stop loss at a native level and closes it if for any
      * reason it hasn't been.
      */
-    stop_loss: number
+    stop_loss: number,
+
+    /**
+     * Reopen If Better Duration Minutes
+     * When a position looses, the stop_loss_price is stored in RAM as well as the
+     * time + reopen_if_better_duration_minutes. During this period of time, only
+     * "better" positions can be opened. This functionality can be disabled by 
+     * setting the value to 0.
+     * "Better" stands for "Better Rate". For example, a long position is opened at 
+     * 1.000 and looses at 999, for the next reopen_if_better_duration_minutes, longs
+     * can only be opened if the price is < 999. On the other hand, if a short was
+     * opened at 1.000 and lost at 1.001, no shorts with price < 1.001 can be opened
+     * for reopen_if_better_duration_minutes.
+     */
+    reopen_if_better_duration_minutes: number,
+
+    /**
+     * Reopen If Better Price Adjustment
+     * If the reopen functionality is active and triggered, the stop loss price will
+     * be altered by the reopen_if_better_price_adjustment% according to the side. For 
+     * instance: if this value is 0.25% and a long position looses, the stop loss price
+     * will be decreased by 0.25% in order to ensure the following longs are in a 
+     * better range than the one that recently lost for reopen_if_better_duration_minutes.
+     * On the other hand, when a short looses, the price is increased by 0.25%.
+     */
+    reopen_if_better_price_adjustment: number,
 }
+
+
 
 
 
@@ -561,5 +580,24 @@ export interface IPositionActionRecord {
 
 
 
+
+
+/**********************
+ * GUI Specific Types *
+ **********************/
+
+
+
+
+
+/**
+ * Estimated Position Fees
+ * Calculates the estimated open & close fees for a position.
+ */
+export interface IEstimatedPositionFees {
+    open: number,
+    close: number,
+    total: number
+}
 
 

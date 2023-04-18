@@ -58,9 +58,8 @@
                     <div fxLayout="row" fxLayoutAlign="start center">
                         <mat-icon>vertical_align_top</mat-icon>
                         <p>{{marketState.keyzones.event.kz.s | currency}}</p>
-                        <p class="distance">@{{marketState.keyzones.event.t | date: 'mediumTime'}}</p>
                         <span fxFlex></span>
-                        <p class="distance">Until {{marketState.keyzones.event.e | date: 'mediumTime'}}</p>
+                        <p class="distance">Until {{marketState.keyzones.event.pl | currency}}|{{marketState.keyzones.event.e | date: 'mediumTime'}}</p>
                     </div>
                 </div>
 
@@ -71,9 +70,8 @@
                     <div fxLayout="row" fxLayoutAlign="start center">
                         <mat-icon>vertical_align_bottom</mat-icon>
                         <p>{{marketState.keyzones.event.kz.e | currency}}</p>
-                        <p class="distance">@{{marketState.keyzones.event.t | date: 'mediumTime'}}</p>
                         <span fxFlex></span>
-                        <p class="distance">Until {{marketState.keyzones.event.e | date: 'mediumTime'}}</p>
+                        <p class="distance">Until {{marketState.keyzones.event.pl | currency}} | {{marketState.keyzones.event.e | date: 'mediumTime'}}</p>
                     </div>
                 </div>
 

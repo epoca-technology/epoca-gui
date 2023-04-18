@@ -24,7 +24,7 @@ export class PositionHeadlinesDialogComponent implements OnInit, IPositionHeadli
 		{id: "1m", name: "Last month"},
 		{id: "custom", name: "Custom Date Range"},
 	];
-	public activeHistMenuItem: IPosRecordHistoryRange = this.histMenu[0];
+	public activeHistMenuItem: IPosRecordHistoryRange = this.histMenu[2];
 	private activeRange!: IDateRangeConfig;
 
 	// Load State
@@ -39,7 +39,7 @@ export class PositionHeadlinesDialogComponent implements OnInit, IPositionHeadli
 	) { }
 
 	ngOnInit(): void {
-		this.loadHist(this.histMenu[0]);
+		this.loadHist(this.histMenu[2]);
 	}
 
 

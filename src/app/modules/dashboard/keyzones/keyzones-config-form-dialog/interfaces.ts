@@ -8,6 +8,7 @@ export interface IKeyZonesConfigFormDialogComponent {
     buildTooltip(): void,
     scoreWeightsTooltip(): void,
     stateTooltip(): void,
+    eventTooltip(): void,
 
     // Misc Helpers
     cancel(): void

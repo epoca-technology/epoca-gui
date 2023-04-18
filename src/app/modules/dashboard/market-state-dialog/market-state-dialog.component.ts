@@ -160,7 +160,7 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
                 this.buildTrendSumAnnotation(4, 5, "#009688"),
                 this.buildTrendSumAnnotation(5, 6, "#00897B"),
                 this.buildTrendSumAnnotation(6, 7, "#00796B"),
-                this.buildTrendSumAnnotation(7, 8, "#004D40"),
+                this.buildTrendSumAnnotation(7, 20, "#004D40"),
 
                 // Downtrend Backgrounds
                 this.buildTrendSumAnnotation(0, -1, "#FFEBEE"),
@@ -170,7 +170,7 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
                 this.buildTrendSumAnnotation(-4, -5, "#F44336"),
                 this.buildTrendSumAnnotation(-5, -6, "#E53935"),
                 this.buildTrendSumAnnotation(-6, -7, "#D32F2F"),
-                this.buildTrendSumAnnotation(-7, -8, "#B71C1C")
+                this.buildTrendSumAnnotation(-7, -20, "#B71C1C")
 		]}
 	}
     private buildTrendSumAnnotation(y: number, y2: number, color: string): YAxisAnnotations {
@@ -360,7 +360,7 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 			{ 
 				series: [ { 
 					name: "USDT", 
-					data: [this.volumeState.v], 
+					data: [<number>this._utils.outputNumber(this.volumeState.v, {dp: 0})], 
 					color: this.getChartColor(this.volumeState.s)
 				}],
 				xaxis: {categories: ["USDT Vol."], labels: {show: false}},
@@ -375,20 +375,20 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 			{
 				yaxis: [
 					{
-						y: this.volumeState.m,
-						y2: this.volumeState.mh,
+						y: <number>this._utils.outputNumber(this.volumeState.m, {dp: 0}),
+						y2: <number>this._utils.outputNumber(this.volumeState.mh, {dp: 0}),
 						borderColor: "#26A69A",
 						fillColor: "#26A69A",
 						strokeDashArray: 0,
 						borderWidth: 0
 					},
 					{
-						y: this.volumeState.mh,
-						y2: this.volumeState.mh*3,
+						y: <number>this._utils.outputNumber(this.volumeState.mh, {dp: 0}),
+						y2: <number>this._utils.outputNumber(this.volumeState.mh*3, {dp: 0}),
 						borderColor: "#004D40",
 						fillColor: "#004D40",
 						strokeDashArray: 0,
-						borderWidth: 0
+						borderWidth: 1
 					},
 				]
 			}

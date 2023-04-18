@@ -4,7 +4,8 @@ import { BigNumber } from "bignumber.js";
 import { 
 	IPositionRecord, 
 	IBinancePositionSide, 
-	UtilsService, 
+	UtilsService,
+	PositionService, 
 } from "../../../../../core";
 import { AppService, NavService } from '../../../../../services';
 import { IPositionInfoDialogComponent } from './interfaces';
@@ -23,18 +24,28 @@ export class PositionInfoDialogComponent implements OnInit, IPositionInfoDialogC
 	public takeProfit4Distance: number|undefined;
 	public stopLossDistance: number|undefined;
 
+	// ROE
+	public roe: number;
+
 	// Fees
 	public fee: number;
 	public openFee: number;
 	public closeFee: number;
+
+	// Net PNL
+	public netPNL: number;
 
 	constructor(
 		public dialogRef: MatDialogRef<PositionInfoDialogComponent>,
 		@Inject(MAT_DIALOG_DATA) public record: IPositionRecord,
 		private _utils: UtilsService,
 		private _nav: NavService,
-		private _app: AppService
+		private _app: AppService,
+		private _position: PositionService
 	) {
+		// Calculate the ROE
+		this.roe = <number>this._utils.outputNumber(this.record.gain * this.record.leverage);
+
 		// Calculate the liquidation distance
 		const liquidationDistance: number = <number>this._utils.calculatePercentageChange(
 			this.record.mark_price, 
@@ -57,14 +68,17 @@ export class PositionInfoDialogComponent implements OnInit, IPositionInfoDialogC
 		}
 
 		// Calculate the fees
-		const posAmount: number = Math.abs(this.record.position_amount);
-		const entryPrice: BigNumber = new BigNumber(this.record.entry_price);
-		const markPrice: BigNumber = new BigNumber(this.record.mark_price);
-		const entryAmountNotional: BigNumber = entryPrice.times(posAmount);
-		const closeAmountNotional: BigNumber = markPrice.times(posAmount);
-		this.openFee = <number>this._utils.outputNumber(entryAmountNotional.times(0.0004), {dp: 4, ru: true});
-		this.closeFee = <number>this._utils.outputNumber(closeAmountNotional.times(0.0004), {dp: 4, ru: true});
-		this.fee = <number>this._utils.outputNumber(this.openFee + this.closeFee, {dp: 4, ru: true});
+		const { open, close, total } = this._position.calculateEstimatedFee(
+			this.record.position_amount,
+			this.record.entry_price,
+			this.record.mark_price
+		);
+		this.openFee = open;
+		this.closeFee = close;
+		this.fee = total;
+
+		// Calculate the net PNL
+		this.netPNL = <number>this._utils.outputNumber(this.record.unrealized_pnl - this.fee);
 	}
 
 	ngOnInit(): void {}

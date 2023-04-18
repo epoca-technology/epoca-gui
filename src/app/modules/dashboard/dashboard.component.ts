@@ -136,19 +136,10 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         this.stateSub = this._app.marketState.subscribe((state: IMarketState|undefined|null) => {
             if (state) {
                 // Update the local state
-                const prevState: IMarketState|undefined = this.state;
                 this.state = state;
 
                 // Update charts
-                if (
-                    !prevState || 
-                    (
-                        prevState.window.w.length && 
-                        prevState.window.w[prevState.window.w.length - 1].c != this.state.window.w[this.state.window.w.length - 1].c
-                    )
-                ) {
-                    this.onStateUpdate();
-                }
+                this.onStateUpdate();
 
                 // Set loading state
                 if (!this.stateLoaded) {
@@ -296,7 +287,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                 this.buildTrendSumAnnotation(4, 5, "#009688"),
                 this.buildTrendSumAnnotation(5, 6, "#00897B"),
                 this.buildTrendSumAnnotation(6, 7, "#00796B"),
-                this.buildTrendSumAnnotation(7, 8, "#004D40"),
+                this.buildTrendSumAnnotation(7, 20, "#004D40"),
 
                 // Downtrend Backgrounds
                 this.buildTrendSumAnnotation(0, -1, "#FFEBEE"),
@@ -306,7 +297,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                 this.buildTrendSumAnnotation(-4, -5, "#F44336"),
                 this.buildTrendSumAnnotation(-5, -6, "#E53935"),
                 this.buildTrendSumAnnotation(-6, -7, "#D32F2F"),
-                this.buildTrendSumAnnotation(-7, -8, "#B71C1C")
+                this.buildTrendSumAnnotation(-7, -20, "#B71C1C")
             ]
         }
     }

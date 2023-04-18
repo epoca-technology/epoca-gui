@@ -433,10 +433,24 @@ export interface IKeyZonesConfiguration {
     /**
      * Event Duration
      * The number of seconds a KeyZone event will remain active after being
-     * issued based on its kind.
+     * issued based on its kind. A KeyZone Event can also be terminated by the
+     * price based on eventPriceDistanceLimit.
      */
     supportEventDurationSeconds: number,
     resistanceEventDurationSeconds: number,
+
+    /**
+     * Event Price Distance Limit
+     * When an event is issued, a price limit is set based on the kind of 
+     * KeyZone Contant. For example: If a support keyzone event is issued,
+     * the price limit will be the end of the zone (upperband) + eventPriceDistanceLimit%.
+     * If the price starts increasing and goes past this price, the KeyZone Event
+     * will be cleared.
+     * On the contrary, when a resistance event is issued, the price limit will
+     * be the start of the zone (lowerband) - eventPriceDistanceLimit%. If the price
+     * starts decreasing and goes past this price, the event will be cleared.
+     */
+    eventPriceDistanceLimit: number,
 
     /**
      * KeyZone Idle Duration
@@ -563,7 +577,10 @@ export interface IKeyZoneStateEvent {
     t: number,
 
     // The event's expiration timestamp
-    e: number
+    e: number,
+
+    // The event's price limit
+    pl: number
 }
 
 
@@ -819,6 +836,32 @@ export interface ICoinsState {
     // Coins Direction
     cd: IStateType
 }
+
+
+
+
+
+
+
+// Compressed State
+export interface ICoinsCompressedState {
+    [symbol: string]: {
+        // The state of the coin
+        s: IStateType,
+
+        // The split states payload
+        ss: ISplitStates,
+
+        // State Event
+        se: IStateType
+    }
+}
+
+
+
+
+
+
 
 
 

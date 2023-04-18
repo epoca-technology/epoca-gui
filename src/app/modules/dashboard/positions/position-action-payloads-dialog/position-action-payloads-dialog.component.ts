@@ -23,7 +23,7 @@ export class PositionActionPayloadsDialogComponent implements OnInit, IPositionA
 		{id: "1m", name: "Last month"},
 		{id: "custom", name: "Custom Date Range"},
 	];
-	public activeHistMenuItem: IPosPRecordHistoryRange = this.histMenu[0];
+	public activeHistMenuItem: IPosPRecordHistoryRange = this.histMenu[2];
 	private activeRange!: IDateRangeConfig;
 
 	// Tab
@@ -40,7 +40,7 @@ export class PositionActionPayloadsDialogComponent implements OnInit, IPositionA
 	) { }
 
 	ngOnInit(): void {
-		this.loadHist(this.histMenu[0]);
+		this.loadHist(this.histMenu[2]);
 	}
 
 
@@ -54,7 +54,7 @@ export class PositionActionPayloadsDialogComponent implements OnInit, IPositionA
 	 */
 	public tabChanged(newIndex: number): void {
 		this.activeTab = newIndex;
-		this.loadHist(this.histMenu[0]);
+		this.loadHist(this.histMenu[2]);
 	}
 
 

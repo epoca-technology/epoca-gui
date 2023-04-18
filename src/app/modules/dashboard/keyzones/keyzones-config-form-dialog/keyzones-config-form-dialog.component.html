@@ -78,6 +78,37 @@
                     </div>
                 </div>
 
+
+                <div class="divider"></div>
+
+
+                <!-- KeyZones State -->
+                <div>
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <h5>State</h5>
+                        <span fxFlex></span>
+                        <button mat-icon-button (click)="stateTooltip()" matTooltip="More information" type="button" tabindex="-1"><mat-icon>question_mark</mat-icon></button>
+                    </div> 
+                    <div fxLayout="row" fxLayoutAlign="start start" class="section-container">
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>State Limit</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="stateLimit"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 10">
+                            </mat-form-field>
+                        </div>
+                        <span fxFlex="5"></span>
+                        <div fxFlex>
+                        </div>
+                    </div>
+                </div>
+
+
+                
                 <div class="divider"></div>
 
 
@@ -115,35 +146,37 @@
                     </div>
                 </div>
 
+
                 <div class="divider"></div>
 
 
-                <!-- KeyZones State -->
+
+                <!-- KeyZones Event -->
                 <div>
                     <div fxLayout="row" fxLayoutAlign="start center">
-                        <h5>State</h5>
+                        <h5>Event</h5>
                         <span fxFlex></span>
-                        <button mat-icon-button (click)="stateTooltip()" matTooltip="More information" type="button" tabindex="-1"><mat-icon>question_mark</mat-icon></button>
+                        <button mat-icon-button (click)="eventTooltip()" matTooltip="More information" type="button" tabindex="-1"><mat-icon>question_mark</mat-icon></button>
                     </div> 
                     <div fxLayout="row" fxLayoutAlign="start start" class="section-container">
-                        <div fxFlex>
-                            <mat-form-field>
-                                <mat-label>State Limit</mat-label>
-                                <input type="number"
-                                       matInput
-                                       formControlName="stateLimit"
-                                       autocomplete="off"
-                                       [appDisableControl]="submitting"
-                                       placeholder="e.g. 10">
-                            </mat-form-field>
-                        </div>
-                        <span fxFlex="5"></span>
                         <div fxFlex>
                             <mat-form-field>
                                 <mat-label>Price Snapshots Limit</mat-label>
                                 <input type="number"
                                        matInput
                                        formControlName="priceSnapshotsLimit"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 5">
+                            </mat-form-field>
+                        </div>
+                        <span fxFlex="5"></span>
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Event Score Requirement</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="eventScoreRequirement"
                                        autocomplete="off"
                                        [appDisableControl]="submitting"
                                        placeholder="e.g. 5">
@@ -178,6 +211,18 @@
                     <div fxLayout="row" fxLayoutAlign="start start" class="section-container">
                         <div fxFlex>
                             <mat-form-field>
+                                <mat-label>Event Price Distance Limit%</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="eventPriceDistanceLimit"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 0.35">
+                            </mat-form-field>
+                        </div>
+                        <span fxFlex="5"></span>
+                        <div fxFlex>
+                            <mat-form-field>
                                 <mat-label>KeyZone Idle Minutes (On event)</mat-label>
                                 <input type="number"
                                        matInput
@@ -187,22 +232,8 @@
                                        placeholder="e.g. 60">
                             </mat-form-field>
                         </div>
-                        <span fxFlex="5"></span>
-                        <div fxFlex>
-                            <mat-form-field>
-                                <mat-label>Event Score Requirement</mat-label>
-                                <input type="number"
-                                       matInput
-                                       formControlName="eventScoreRequirement"
-                                       autocomplete="off"
-                                       [appDisableControl]="submitting"
-                                       placeholder="e.g. 5">
-                            </mat-form-field>
-                        </div>
                     </div>
                 </div>
-
-
 
 
             </form>

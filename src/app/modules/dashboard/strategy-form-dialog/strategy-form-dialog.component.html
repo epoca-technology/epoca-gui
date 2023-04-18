@@ -106,24 +106,7 @@
                         </div>
                         <span fxFlex="5"></span>
                         <div fxFlex>
-                            <mat-form-field>
-                                <mat-label>Reopen If Better Dur. Mins</mat-label>
-                                <input type="number"
-                                       matInput
-                                       formControlName="reopen_if_better_duration_minutes"
-                                       autocomplete="off"
-                                       [appDisableControl]="submitting"
-                                       placeholder="e.g. 60">
-                            </mat-form-field>
-                        </div>
-                    </div>
-                    <div fxLayout="row" fxLayoutAlign="start start" class="section-container">
-                        <div fxFlex>
-                            <mat-checkbox formControlName="bitcoin_only" [appDisableControl]="submitting">Bitcoin Only</mat-checkbox>
-                        </div>
-                        <span fxFlex="5"></span>
-                        <div fxFlex>
-
+                            <mat-checkbox class="margin-top" formControlName="bitcoin_only" [appDisableControl]="submitting">Bitcoin Only</mat-checkbox>
                         </div>
                     </div>
                 </div>
@@ -343,6 +326,46 @@
                         </div>
                         <span fxFlex="5"></span>
                         <div fxFlex>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+                <div class="divider"></div>
+
+                <!-- Side Reopening -->
+                <div>
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <h5>Side Reopening</h5>
+                        <span fxFlex></span>
+                        <button mat-icon-button (click)="sideReopeningTooltip()" matTooltip="More information" type="button" tabindex="-1"><mat-icon>question_mark</mat-icon></button>
+                    </div> 
+                    <div fxLayout="row" fxLayoutAlign="start start" class="section-container">
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Reopen If Better Dur. Mins</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="reopen_if_better_duration_minutes"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 60">
+                            </mat-form-field>
+                        </div>
+                        <span fxFlex="5"></span>
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Reopen If Better Price Adj.%</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="reopen_if_better_price_adjustment"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 0.25">
+                            </mat-form-field>
                         </div>
                     </div>
                 </div>

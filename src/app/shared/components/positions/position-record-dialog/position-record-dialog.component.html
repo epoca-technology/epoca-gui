@@ -11,7 +11,7 @@
         <app-refresh-button *ngIf="loaded && !record.close" style="display: none;" [disabled]="submitting" (refresh)="refreshPositionRecord()" [intervalSeconds]="5"></app-refresh-button>
         <button mat-icon-button  (click)="displayTooltip()"[disabled]="!loaded || submitting" matTooltip="What is this?"><mat-icon>question_mark</mat-icon></button>
         <button mat-icon-button *ngIf="record && record.close" (click)="displayPositionContextDialog()" [disabled]="!loaded || submitting" matTooltip="Position Context"><mat-icon>waterfall_chart</mat-icon></button>
-        <button mat-icon-button (click)="displayPositionInfoDialog()" [disabled]="!loaded || submitting" matTooltip="More Information"><mat-icon>receipt_long</mat-icon></button>
+        <button mat-icon-button (click)="displayPositionInfoDialog()" [disabled]="!loaded || submitting" matTooltip="More Information"><mat-icon>info</mat-icon></button>
         <button *ngIf="loaded && !record.close" mat-icon-button (click)="closePosition()" [disabled]="!loaded || submitting" matTooltip="Close Position"><mat-icon>mobiledata_off</mat-icon></button>
         <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
     </div>
