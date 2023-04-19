@@ -69,7 +69,7 @@ export class AppService implements IAppService{
 	public apiErrors: BehaviorSubject<number|undefined|null> = new BehaviorSubject<number|undefined|null>(null);
 
 	// App Bulk Local Properties
-	public keyzoneEventScoreRequirement: number = 5;
+	public keyzoneEventScoreRequirement: number = 5.5;
 
 
 

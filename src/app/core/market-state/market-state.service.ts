@@ -5,10 +5,11 @@ import {
 	ICoinsConfiguration,
 	ICoinsSummary,
 	ICoinState,
+	IFullLiquidityState,
 	IKeyZoneFullState, 
 	IKeyZonesConfiguration, 
 	IKeyZoneStateEvent, 
-	ILiquidityState, 
+	ILiquidityConfiguration, 
 	IMarketStateService, 
 	ISplitStateID, 
 	ITrendStateConfiguration, 
@@ -79,6 +80,39 @@ export class MarketStateService implements IMarketStateService {
     }
 
 
+	/**
+	 * Liquidity
+	 * The properties used to differentiate liquidity peak intensities.
+	 */
+	public readonly peakColors: {[liqSide: string]: {[liqIntensity: number]: string}} = {
+		asks: {
+			1: "#FFCDD2",
+			2: "#EF5350",
+			3: "#E53935",
+			4: "#B71C1C",
+		},
+		bids: {
+			1: "#B2DFDB",
+			2: "#26A69A",
+			3: "#00897B",
+			4: "#004D40",
+		},
+	};
+	public readonly peakWidth: {[layout: string]: {[liqIntensity: number]: number}} = {
+		"desktop": {
+			1: 75,
+			2: 150,
+			3: 250,
+			4: 350,
+		},
+		"mobile": {
+			1: 30,
+			2: 60,
+			3: 100,
+			4: 130,
+		}
+	}
+
 
 
 	/**
@@ -99,52 +133,6 @@ export class MarketStateService implements IMarketStateService {
 
 
   	constructor(private _api: ApiService) { }
-
-
-
-
-
-
-
-
-
-	/**********************
-	 * General Retrievers *
-	 **********************/
-
-
-	
-	/**
-	 * Retrieves the current volume state.
-	 * @returns Promise<IVolumeState>
-	 */
-	public getFullVolumeState(): Promise<IVolumeState> { 
-		return this._api.request("get","marketState/getFullVolumeState", {}, true) 
-	}
-
-
-
-
-
-
-
-
-	/**
-	 * Retrieves the liquidity state from the server.
-	 * @param currentPrice
-	 * @returns Promise<ILiquidityState>
-	 */
-	public getLiquidityState(currentPrice: number): Promise<ILiquidityState> { 
-		return this._api.request("get","marketState/getLiquidityState", {currentPrice: currentPrice}, true) 
-	}
-
-
-
-
-
-
-
-
 
 
 
@@ -182,6 +170,144 @@ export class MarketStateService implements IMarketStateService {
     public updateWindowConfiguration(newConfiguration: IWindowStateConfiguration, otp: string): Promise<void> { 
         return this._api.request("post", "marketState/updateWindowConfiguration", {newConfiguration: newConfiguration}, true, otp);
     }
+
+
+
+
+
+
+
+
+
+
+	/*********************
+	 * Volume Management *
+	 *********************/
+
+
+	
+
+	/**
+	 * Retrieves the current volume state.
+	 * @returns Promise<IVolumeState>
+	 */
+	public getFullVolumeState(): Promise<IVolumeState> { 
+		return this._api.request("get","marketState/getFullVolumeState", {}, true) 
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	/*********************
+	 * Trend Management *
+	 *********************/
+
+
+
+
+
+	/**
+	 * Retrieves the trend configuration from the server.
+	 * @returns Promise<ITrendStateConfiguration>
+	 */
+	public getTrendConfiguration(): Promise<ITrendStateConfiguration> { 
+		return this._api.request("get","marketState/getTrendConfiguration", {}, true) 
+	}
+
+
+
+
+
+
+    /**
+     * Updates the Trend's configuration.
+     * @param newConfiguration 
+     * @param otp 
+     * @returns Promise<void>
+     */
+    public updateTrendConfiguration(newConfiguration: ITrendStateConfiguration, otp: string): Promise<void> { 
+        return this._api.request("post", "marketState/updateTrendConfiguration", {newConfiguration: newConfiguration}, true, otp);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	/************************
+	 * Liquidity Management *
+	 ************************/
+
+
+
+
+
+	/**
+	 * Retrieves the full liquidity state handled by the server.
+	 * @returns Promise<IFullLiquidityState>
+	 */
+	public getFullLiquidityState(): Promise<IFullLiquidityState> { 
+		return this._api.request("get","marketState/getFullLiquidityState", {}, true) 
+	}
+
+
+
+
+
+	/**
+	 * Retrieves the liquidity configuration from the server.
+	 * @returns Promise<ILiquidityConfiguration>
+	 */
+	public getLiquidityConfiguration(): Promise<ILiquidityConfiguration> { 
+		return this._api.request("get","marketState/getLiquidityConfiguration", {}, true) 
+	}
+
+
+
+
+
+
+    /**
+     * Updates the Liquidity's configuration.
+     * @param newConfiguration 
+     * @param otp 
+     * @returns Promise<void>
+     */
+    public updateLiquidityConfiguration(newConfiguration: ILiquidityConfiguration, otp: string): Promise<void> { 
+        return this._api.request("post", "marketState/updateLiquidityConfiguration", {newConfiguration: newConfiguration}, true, otp);
+    }
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -260,38 +386,6 @@ export class MarketStateService implements IMarketStateService {
 
 
 
-
-
-	/*********************
-	 * Trend Management *
-	 *********************/
-
-
-
-
-
-	/**
-	 * Retrieves the trend configuration from the server.
-	 * @returns Promise<ITrendStateConfiguration>
-	 */
-	public getTrendConfiguration(): Promise<ITrendStateConfiguration> { 
-		return this._api.request("get","marketState/getTrendConfiguration", {}, true) 
-	}
-
-
-
-
-
-
-    /**
-     * Updates the Trend's configuration.
-     * @param newConfiguration 
-     * @param otp 
-     * @returns Promise<void>
-     */
-    public updateTrendConfiguration(newConfiguration: ITrendStateConfiguration, otp: string): Promise<void> { 
-        return this._api.request("post", "marketState/updateTrendConfiguration", {newConfiguration: newConfiguration}, true, otp);
-    }
 
 
 

@@ -1,0 +1,120 @@
+<mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <button mat-icon-button class="show-on-mobile" (click)="cancel()" [disabled]="!loaded || submitting"><mat-icon>arrow_back</mat-icon></button>
+        <span class="truncate">Liquidity Configuration</span>
+        <span fxFlex></span>
+        <button mat-icon-button [disabled]="!loaded || submitting" (click)="generalTooltip()" matTooltip="What is this?" type="button" tabindex="-1"><mat-icon>question_mark</mat-icon></button>
+        <button mat-icon-button (click)="update()" [disabled]="!loaded || submitting || (!form || form.invalid)" matTooltip="Update Config"><mat-icon>save</mat-icon></button>
+        <button mat-icon-button class="show-on-desktop" (click)="cancel()" [disabled]="!loaded || submitting"><mat-icon>close</mat-icon></button>
+    </div>
+</mat-toolbar>
+<div mat-dialog-content>
+    <!-- Loader -->
+    <div *ngIf="!loaded">
+        <div class="section-loader show-on-mobile"><div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div></div>
+        <div class="loader show-on-desktop"><div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div></div>
+    </div>
+    <div *ngIf="loaded && config" class="padding fadeIn">
+        <!-- Form -->
+        <div *ngIf="form">
+            <form [formGroup]="form" (ngSubmit)="update()">
+                <!-- State -->
+                <div>
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <h5>State</h5>
+                        <span fxFlex></span>
+                        <button mat-icon-button (click)="stateTooltip()" matTooltip="More information" type="button" tabindex="-1"><mat-icon>question_mark</mat-icon></button>
+                    </div> 
+                    <div fxLayout="row" fxLayoutAlign="start start" class="section-container">
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Max Peak Distance From Price%</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="max_peak_distance_from_price"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 0.5">
+                            </mat-form-field>
+                        </div>
+                        <span fxFlex="5"></span>
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>AppBulk Stream Min. Intensity</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="appbulk_stream_min_intensity"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 2">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="divider"></div>
+
+
+                <!-- Liq. Intensity Weights -->
+                <div>
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <h5>Intensity Weights</h5>
+                        <span fxFlex></span>
+                        <button mat-icon-button (click)="intensityWeightsTooltip()" matTooltip="More information" type="button" tabindex="-1"><mat-icon>question_mark</mat-icon></button>
+                    </div> 
+                    <div fxLayout="row" fxLayoutAlign="start start" class="section-container">
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Intensity 1</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="intensity_weights_1"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 1">
+                            </mat-form-field>
+                        </div>
+                        <span fxFlex="5"></span>
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Intensity 2</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="intensity_weights_2"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 3">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="start start" class="section-container">
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Intensity 3</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="intensity_weights_3"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 6">
+                            </mat-form-field>
+                        </div>
+                        <span fxFlex="5"></span>
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Intensity 4</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="intensity_weights_4"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 9">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

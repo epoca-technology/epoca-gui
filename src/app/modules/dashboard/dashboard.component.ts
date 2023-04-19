@@ -5,7 +5,7 @@ import { MatBottomSheetRef } from "@angular/material/bottom-sheet";
 import {Title} from "@angular/platform-browser";
 import { Subscription } from "rxjs";
 import * as moment from "moment";
-import { ApexAnnotations, YAxisAnnotations } from "ng-apexcharts";
+import { ApexAnnotations, PointAnnotations, YAxisAnnotations } from "ng-apexcharts";
 import { 
     IEpochRecord, 
     IMarketState, 
@@ -20,7 +20,9 @@ import {
     ISplitStateID,
     IMinifiedKeyZone,
     IPositionHeadline,
-    IKeyZoneStateEvent
+    ILiquidityPeaks,
+    ILiquiditySide,
+    ILiquidityIntensity,
 } from "../../core";
 import { 
     AppService, 
@@ -38,8 +40,9 @@ import { IBottomSheetMenuItem } from "../../shared/components/bottom-sheet-menu"
 import { CoinsDialogComponent, CoinsStateSummaryDialogComponent } from "./coins";
 import { SignalPoliciesDialogComponent } from "./signal-policies-dialog";
 import { PositionHeadlinesDialogComponent } from "./positions";
-import { IDashboardComponent, IWindowZoom, IWindowZoomID, IWindowZoomPrices } from "./interfaces";
 import { TrendConfigurationDialogComponent } from "./trend-configuration-dialog";
+import { LiquidityConfigurationDialogComponent, LiquidityDialogComponent } from "./liquidity";
+import { IDashboardComponent, IWindowZoom, IWindowZoomID, IWindowZoomPrices } from "./interfaces";
 
 @Component({
   selector: "app-dashboard",
@@ -492,6 +495,29 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         // Init the annotations
         let annotations: ApexAnnotations = { yaxis: [], points: [] };
 
+        /* Liquidity Annotations */
+        
+		// Init the annotations
+        const x: number = this.state.window.w[0].ot;
+
+        // Build the Asks (If any)
+		const askPeaks: ILiquidityPeaks = this.state.liquidity.ap || {};
+		for (let askPrice in askPeaks) {
+			if (askPeaks[askPrice] > 0) {
+				annotations.points!.push(this.buildLiquidityAnnotation("asks", x, Number(askPrice), askPeaks[askPrice]));
+			}
+		}
+
+        // Build the Bids (If any)
+		const bidPeaks: ILiquidityPeaks = this.state.liquidity.bp || {};
+		for (let bidPrice in bidPeaks) {
+			if (bidPeaks[bidPrice] > 0) {
+				annotations.points!.push(this.buildLiquidityAnnotation("bids", x, Number(bidPrice), bidPeaks[bidPrice]));
+			}
+		}
+
+
+
         /* KeyZone Annotations */
 
         // Add the keyzones above (if any)
@@ -549,6 +575,53 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         // Finally, return the annotations
         return annotations;
     }
+
+
+
+
+
+
+
+    /* Liquidity Annotations */
+
+
+    /**
+     * Builds a liquidity level annotation for a given side.
+     * @param side 
+     * @param x 
+     * @param level 
+     * @returns PointAnnotations
+     */
+    private buildLiquidityAnnotation(
+        side: ILiquiditySide,
+        x: number,
+        price: number,
+        intensity: ILiquidityIntensity
+    ): PointAnnotations {
+        return {
+            x: x,
+            y: price,
+            marker: {size: 0},
+            label: {
+                text: ".",
+                borderWidth: 0,
+                borderRadius: 0,
+                offsetY: 1,
+                style: {
+                    background: this._ms.peakColors[side][intensity],
+                    color: '#FFFFFF',
+                    fontSize: "1px",
+                    padding: {
+                        left: 0,
+                        right: this._ms.peakWidth[this.layout][intensity],
+                        top: 1,
+                        bottom: 1,
+                        }
+                }
+            }
+        }
+    }
+
 
 
 
@@ -839,29 +912,10 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     public displayAdjustmentsMenu(): void {
 		const bs: MatBottomSheetRef = this._nav.displayBottomSheetMenu([
             {
-                icon: 'money_bill_transfer',  
-                svg: true,
-                title: 'Trading Strategy', 
-                description: 'Configure the way positions are managed.', 
-                response: "TRADING_STRATEGY"
-            },
-            {
-                icon: 'podcasts',  
-                title: 'Signal Policies', 
-                description: 'Manage issuance and cancellation policies for both sides.', 
-                response: "SIGNAL_POLICIES"
-            },
-            {
                 icon: 'waterfall_chart',  
                 title: 'Window', 
                 description: 'Configure the requirements for the window splits to be stateful.', 
                 response: "WINDOW_CONFIG"
-            },
-            {
-                icon: 'vertical_distribute',  
-                title: 'KeyZones', 
-                description: 'Configure how the zones are built and events are issued.', 
-                response: "KEYZONES_CONFIG"
             },
             {
                 icon: 'wand_magic_sparkles',  
@@ -871,63 +925,48 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                 response: "TREND_CONFIG"
             },
             {
+                icon: 'vertical_distribute',  
+                title: 'KeyZones', 
+                description: 'Configure how the zones are built and events are issued.', 
+                response: "KEYZONES_CONFIG"
+            },
+            {
+                icon: 'water_drop',  
+                title: 'Liquidity', 
+                description: 'Configure how the liquidity is built and the state is calculated.', 
+                response: "LIQUIDITY_CONFIG"
+            },
+            {
                 icon: 'currency_bitcoin',  
                 title: 'Coins', 
                 description: 'Configure, install & uninstall coin based futures contracts.', 
                 response: "COINS"
             },
+            {
+                icon: 'podcasts',  
+                title: 'Signal Policies', 
+                description: 'Manage issuance and cancellation policies for both sides.', 
+                response: "SIGNAL_POLICIES"
+            },
+            {
+                icon: 'money_bill_transfer',  
+                svg: true,
+                title: 'Trading Strategy', 
+                description: 'Configure the way positions are managed.', 
+                response: "TRADING_STRATEGY"
+            },
         ]);
 		bs.afterDismissed().subscribe((response: string|undefined) => {
-            if      (response === "COINS") { this.displayCoinsDialog() }
-            else if (response === "SIGNAL_POLICIES") { this.displaySignalPoliciesDialog() }
-            else if (response === "WINDOW_CONFIG") { this.displayWindowConfigFormDialog() }
-            else if (response === "KEYZONES_CONFIG") { this.displayKeyZonesConfigFormDialog() }
+            if      (response === "WINDOW_CONFIG") { this.displayWindowConfigFormDialog() }
             else if (response === "TREND_CONFIG") { this.displayTrendConfigFormDialog() }
+            else if (response === "LIQUIDITY_CONFIG") { this.displayLiquidityConfigFormDialog() }
+            else if (response === "KEYZONES_CONFIG") { this.displayKeyZonesConfigFormDialog() }
+            else if (response === "COINS") { this.displayCoinsDialog() }
+            else if (response === "SIGNAL_POLICIES") { this.displaySignalPoliciesDialog() }
             else if (response === "TRADING_STRATEGY") { this.displayStrategyFormDialog() }
 		});
 	}
 
-
-
-	/**
-	 * Displays the Coins dialog.
-	 */
-    private displayCoinsDialog(): void {
-		this.dialog.open(CoinsDialogComponent, {
-			hasBackdrop: this._app.layout.value != "mobile",
-            disableClose: true,
-			panelClass: "large-dialog"
-		})
-	}
-
-
-
-    /**
-     * Displays the strategy form dialog.
-     */
-    private displayStrategyFormDialog(): void {
-		this.dialog.open(StrategyFormDialogComponent, {
-			hasBackdrop: this._app.layout.value != "mobile",
-            disableClose: true,
-			panelClass: "small-dialog",
-            data: {}
-		})
-	}
-
-
-
-
-    /**
-     * Displays the signal policies dialog.
-     */
-    private displaySignalPoliciesDialog(): void {
-		this.dialog.open(SignalPoliciesDialogComponent, {
-			hasBackdrop: this._app.layout.value != "mobile",
-            disableClose: true,
-			panelClass: "large-dialog",
-            data: {}
-		})
-	}
 
 
 
@@ -936,20 +975,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
      */
     private displayWindowConfigFormDialog(): void {
 		this.dialog.open(WindowConfigurationDialogComponent, {
-			hasBackdrop: this._app.layout.value != "mobile",
-            disableClose: true,
-			panelClass: "small-dialog",
-            data: {}
-		})
-	}
-
-
-
-    /**
-     * Displays the keyzones config form dialog.
-     */
-    private displayKeyZonesConfigFormDialog(): void {
-		this.dialog.open(KeyzonesConfigFormDialogComponent, {
 			hasBackdrop: this._app.layout.value != "mobile",
             disableClose: true,
 			panelClass: "small-dialog",
@@ -974,6 +999,81 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
 
 
+    /**
+     * Displays the liquidity config form dialog.
+     */
+    private displayLiquidityConfigFormDialog(): void {
+		this.dialog.open(LiquidityConfigurationDialogComponent, {
+			hasBackdrop: this._app.layout.value != "mobile",
+            disableClose: true,
+			panelClass: "small-dialog",
+            data: {}
+		})
+	}
+
+
+
+
+    /**
+     * Displays the keyzones config form dialog.
+     */
+    private displayKeyZonesConfigFormDialog(): void {
+		this.dialog.open(KeyzonesConfigFormDialogComponent, {
+			hasBackdrop: this._app.layout.value != "mobile",
+            disableClose: true,
+			panelClass: "small-dialog",
+            data: {}
+		})
+	}
+
+
+
+	/**
+	 * Displays the Coins dialog.
+	 */
+    private displayCoinsDialog(): void {
+		this.dialog.open(CoinsDialogComponent, {
+			hasBackdrop: this._app.layout.value != "mobile",
+            disableClose: true,
+			panelClass: "large-dialog"
+		})
+	}
+
+
+
+
+    /**
+     * Displays the signal policies dialog.
+     */
+    private displaySignalPoliciesDialog(): void {
+		this.dialog.open(SignalPoliciesDialogComponent, {
+			hasBackdrop: this._app.layout.value != "mobile",
+            disableClose: true,
+			panelClass: "large-dialog",
+            data: {}
+		})
+	}
+
+
+
+
+    /**
+     * Displays the strategy form dialog.
+     */
+    private displayStrategyFormDialog(): void {
+		this.dialog.open(StrategyFormDialogComponent, {
+			hasBackdrop: this._app.layout.value != "mobile",
+            disableClose: true,
+			panelClass: "small-dialog",
+            data: {}
+		})
+	}
+
+
+
+
+
+    
 
 
 
@@ -1197,6 +1297,16 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
 
 
+	/**
+	 * Displays the liquidity dialog.
+	 */
+	public displayLiquidityDialog(): void {
+		this.dialog.open(LiquidityDialogComponent, {
+			hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
+			panelClass: "large-dialog",
+			data: {}
+		})
+	}
 
 
 

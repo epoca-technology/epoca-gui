@@ -8,7 +8,6 @@
         <button *ngIf="layout == 'desktop'" mat-icon-button (click)="displayInfoTooltip()" [disabled]="!loaded || loadingState" matTooltip="More information"><mat-icon class="info-icon" svgIcon="info"></mat-icon></button>
         <button *ngIf="layout == 'desktop'" mat-icon-button (click)="displayTooltip()" [disabled]="!loaded || loadingState" matTooltip="What is this?"><mat-icon>question_mark</mat-icon></button>
         <button *ngIf="layout == 'desktop'" mat-icon-button (click)="displayPriceSnapshotsDialog()" [disabled]="!loaded || loadingState" matTooltip="Display Price Snapshots"><mat-icon>candlestick_chart</mat-icon></button>
-        <button *ngIf="layout == 'desktop'" mat-icon-button (click)="displayLiquidityDialog()" [disabled]="!loaded || loadingState" matTooltip="Display Liquidity"><mat-icon>water_drop</mat-icon></button>
         <button *ngIf="layout == 'desktop'" mat-icon-button (click)="displayKeyZoneEventsHistory()" [disabled]="!loaded || loadingState" matTooltip="Display Events History"><mat-icon>history</mat-icon></button>
         <button *ngIf="layout == 'desktop'" mat-icon-button (click)="close()" [disabled]="!loaded || loadingState"><mat-icon>close</mat-icon></button>
 
@@ -20,10 +19,6 @@
             <button mat-menu-item (click)="displayKeyZoneEventsHistory()">
                 <mat-icon>history</mat-icon>
                 <span>Display Events History</span>
-            </button>
-            <button mat-menu-item (click)="displayLiquidityDialog()">
-                <mat-icon>water_drop</mat-icon>
-                <span>Display Liquidity</span>
             </button>
             <button mat-menu-item (click)="displayPriceSnapshotsDialog()">
                 <mat-icon>candlestick_chart</mat-icon>

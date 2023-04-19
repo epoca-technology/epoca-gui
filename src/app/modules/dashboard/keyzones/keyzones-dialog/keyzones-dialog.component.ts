@@ -12,7 +12,6 @@ import {
 } from '../../../../core';
 import { AppService, ILayout, NavService } from '../../../../services';
 import { KeyzoneDetailsDialogComponent } from './keyzone-details-dialog';
-import { LiquidityDialogComponent } from './liquidity-dialog';
 import { KeyzonesPriceSnapshotsDialogComponent } from './keyzones-price-snapshots-dialog';
 import { KeyzonesEventsDialogComponent } from './keyzones-events-dialog';
 import { IKeyZoneDistance, IKeyZonesDialogComponent } from './interfaces';
@@ -280,16 +279,6 @@ export class KeyzonesDialogComponent implements OnInit, OnDestroy, IKeyZonesDial
 
 
 
-	/**
-	 * Displays the liquidity dialog.
-	 */
-	public displayLiquidityDialog(): void {
-		this.dialog.open(LiquidityDialogComponent, {
-			hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
-			panelClass: "large-dialog",
-			data: {}
-		})
-	}
 
 
 

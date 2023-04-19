@@ -1,6 +1,7 @@
 export * from "./balance-dialog";
 export * from "./coins";
 export * from "./keyzones";
+export * from "./liquidity";
 export * from "./market-state-dialog";
 export * from "./positions";
 export * from "./signal-policies-dialog";

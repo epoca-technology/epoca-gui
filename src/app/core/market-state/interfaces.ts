@@ -15,24 +15,30 @@ export interface IMarketStateService {
     kzAbove: {[volIntensity: number]: string},
     kzBelow: {[volIntensity: number]: string},
     kzVolIntensityIcons: {[volIntensity: number]: string},
-
-    // General Retrievers
-    getFullVolumeState(): Promise<IVolumeState>,
-    getLiquidityState(currentPrice: number): Promise<ILiquidityState>,
+    peakColors: {[liqSide: string]: {[liqIntensity: number]: string}},
+    peakWidth: {[layout: string]: {[liqIntensity: number]: number}},
 
     // Window Management
     getWindowConfiguration(): Promise<IWindowStateConfiguration>,
     updateWindowConfiguration(newConfiguration: IWindowStateConfiguration, otp: string): Promise<void>,
+
+    // Volume Management
+    getFullVolumeState(): Promise<IVolumeState>,
+
+    // Trend Management
+    getTrendConfiguration(): Promise<ITrendStateConfiguration>,
+    updateTrendConfiguration(newConfiguration: ITrendStateConfiguration, otp: string): Promise<void>,
+
+    // Liquidity Management
+    getFullLiquidityState(): Promise<IFullLiquidityState>,
+    getLiquidityConfiguration(): Promise<ILiquidityConfiguration>,
+    updateLiquidityConfiguration(newConfiguration: ILiquidityConfiguration, otp: string): Promise<void>,
 
     // KeyZones Management
     calculateKeyZoneState(): Promise<IKeyZoneFullState>,
     listKeyZoneEvents(startAt: number, endAt: number): Promise<IKeyZoneStateEvent[]>,
     getKeyZonesConfiguration(): Promise<IKeyZonesConfiguration>,
     updateKeyZonesConfiguration(newConfiguration: IKeyZonesConfiguration, otp: string): Promise<void>,
-
-    // Trend Management
-    getTrendConfiguration(): Promise<ITrendStateConfiguration>,
-    updateTrendConfiguration(newConfiguration: ITrendStateConfiguration, otp: string): Promise<void>,
 
     // Coins Management
     getCoinsSummary(): Promise<ICoinsSummary>,
@@ -251,6 +257,11 @@ export interface IVolumeState {
 
 
 
+
+
+
+
+
 /********************************************************************************
  * LIQUIDITY STATE                                                              *
  * The purpose of the liquidity state submodule is to have a deep understanding *
@@ -258,17 +269,84 @@ export interface IVolumeState {
  * able to determine the market's direction (sentiment?)                        *
  ********************************************************************************/
 
-// Service
-export interface ILiquidityStateService {
-    // Properties
+/**
+ * Liquidity Intensity
+ * The intensity of the liquidity within a price level.
+ */
+export type ILiquidityIntensity = 0|1|2|3|4;
 
-    // Initializer
-    initialize(): Promise<void>,
-    stop(): void,
 
-    // Retrievers
-    calculateState(currentPrice: number): ILiquidityState,
+
+/**
+ * Liquidity Intensity Weights
+ * The weights that will be used to determine the value of each intensity
+ * when calculating the state.
+ */
+export interface ILiquidityIntensityWeights {
+    1: number,
+    2: number,
+    3: number,
+    4: number,
 }
+
+
+
+/**
+ * Liquidity Configuration
+ * The Liquidity' Module Configuration that can be managed from the GUI.
+ */
+export interface ILiquidityConfiguration {
+    // The minimum intensity that will be included in the AppBulk Stream
+    appbulk_stream_min_intensity: ILiquidityIntensity,
+
+    /**
+     * The max distance% a peak can be from the price. Peaks beyond this 
+     * value are ignored.
+     */
+    max_peak_distance_from_price: number,
+
+    /**
+     * The weights by intensity that will be used to calculate the state
+     */
+    intensity_weights: ILiquidityIntensityWeights,
+}
+
+
+
+
+/**
+ * Liquidity Intensity Requirements
+ * For a price level to have intensity and be considered a "peak", it needs to be greater 
+ * than or equals than the requirements. Otherwise, the intensity will be 0.
+ */
+export interface ILiquidityIntensityRequirements {
+    low: number,        // 1
+    medium: number,     // 2
+    high: number,       // 3
+    veryHigh: number    // 4
+}
+
+
+
+
+
+/**
+ * Liquidity Peaks Price Range
+ * The price range used to select the peaks that will be used to calculate the bid 
+ * liquidity power as well as the price levels that will be included in the state.
+ */
+export interface ILiquidityPeaksPriceRange {
+    // The current market price
+    current: number,
+
+    // The upper band used to select the ask peaks (current + max_peak_distance_from_price%)
+    upper: number,
+
+    // The lower band used to select the bid peaks (current - max_peak_distance_from_price%)
+    lower: number
+}
+
+
 
 
 
@@ -282,6 +360,8 @@ export type ILiquiditySide = "asks"|"bids";
 
 
 
+
+
 /**
  * Liquidity Price Level
  * The record containing all relevant information regarding a price level.
@@ -291,8 +371,12 @@ export interface ILiquidityPriceLevel {
     p: number,
 
     // The BTC liquidity within the level
-    l: number
+    l: number,
+
+    // The liquidity intensity within the level
+    li: ILiquidityIntensity
 }
+
 
 
 
@@ -316,24 +400,121 @@ export interface ILiquiditySideBuild {
 
 
 
+
+/**
+ * Liquidity Processed Orders
+ * The exchange's raw order book is processed and converted into this object.
+ */
+export interface ILiquidityProcessedOrders {
+    // The requirements derived from the orders
+    requirements: ILiquidityIntensityRequirements,
+
+    // The processed sell orders
+    asks: ILiquidityPriceLevel[],
+
+    // The processed buy orders
+    bids: ILiquidityPriceLevel[]
+}
+
+
+
+
+
+/**
+ * Liquidity Peaks
+ * The peaks object containing the price as keys and the intensities as 
+ * values.
+ */
+export interface ILiquidityPeaks { [price: number]: ILiquidityIntensity };
+
+
+
+/**
+ * Liquidity Peaks' State
+ * Whenever the state is being calculated, the liquidity peaks nearby the
+ * price are selected and evaluated.
+ */
+export interface ILiquidityPeaksState {
+    // The point shares accumulated by the bids against the asks
+    bidLiquidityPower: number,
+
+    // The ask peaks nearby the price
+    askPeaks: ILiquidityPeaks,
+
+    // The bid peaks nearby the price 
+    bidPeaks: ILiquidityPeaks,
+}
+
+
+
+/**
+ * Minified Liquidity State
+ * The minified state object containing only the most essential data.
+ */
+export interface IMinifiedLiquidityState {
+    /**
+     * Bid Liquidity Power
+     * When the peaks have been identified, the total accumulated value per side will
+     * be compared and the BLP will be the bid% out of the total points accumulated
+     * by both sides (Based on the intensity weights). 
+     * If the BLP is greater than 50, means there peaks are stronger on the bids.
+     */
+    blp: number,
+
+    /**
+     * Liquidity Peaks
+     * All the peaks with intensity >= 1 and within the max_peak_distance_from_price% (if any)
+     * will be included in these lists.
+     */
+    ap: ILiquidityPeaks, // Ask Peaks
+    bp: ILiquidityPeaks, // Bid Peaks
+}
+
+
+
+
+
 /**
  * Liquidity State
  * The full state of the liquidity. This object can be queried through the endpoint or
  * used by any other module.
  */
-export interface ILiquidityState {
+export interface ILiquidityState extends IMinifiedLiquidityState {
     /**
-     * The liquidity builds by side based on the current market price,
-     * ordered accordingly:
+     * The liquidity builds by side based on the current price, ordered accordingly:
      * - Asks are ordered by price from low to high
      * - Bids are ordered by price from high to low
      */
     a: ILiquiditySideBuild, // Asks
     b: ILiquiditySideBuild, // Bids
+}
 
-    // The timestamp in ms in which the liquidity state was last updated
+
+
+
+/**
+ * Liquidity Full State
+ * The full liquidity state used to be able to visualize all the data from the GUI.
+ */
+export interface IFullLiquidityState extends ILiquidityState {
+    /**
+     * The peaks price range, used to select the peaks from the liquidity that will
+     * be used to calculate the state.
+     */
+    ppr: ILiquidityPeaksPriceRange,
+
+    /**
+     * The requirements calculated making use of the whole book by side, useful to
+     * determine the price levels with liquidity peaks.
+     */
+    r: ILiquidityIntensityRequirements,
+
+    // The timestamp in ms in which the liquidity was last built
     ts: number
 }
+
+
+
 
 
 
@@ -888,6 +1069,7 @@ export interface ICoinsCompressedState {
 export interface IMarketState {
     window: IWindowState,
     volume: IStateType,
+    liquidity: IMinifiedLiquidityState,
     keyzones: IKeyZoneState,
     trend: ITrendState,
     coins: ICoinsState

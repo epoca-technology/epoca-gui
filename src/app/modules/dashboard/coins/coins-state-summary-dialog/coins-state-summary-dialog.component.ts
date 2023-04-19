@@ -68,6 +68,7 @@ export class CoinsStateSummaryDialogComponent implements OnInit, ICoinsStateSumm
 
 			// Build the charts
 			this.symbols = Object.keys(this.state.csbs);
+			this.symbols.sort();
 			this.charts = {};
 			for (let symbol of this.symbols) {
 				this.charts[symbol] = this.buildChartForSymbol(symbol, this.state.csbs[symbol]);
@@ -110,7 +111,7 @@ export class CoinsStateSummaryDialogComponent implements OnInit, ICoinsStateSumm
 						color: chartColor
 					}
 				],
-				stroke: { curve: "straight", width: 3 },
+				stroke: { curve: "smooth", width: this.layout == "desktop" ? 3: 2 },
 				xaxis: {tooltip: {enabled: false}, labels: { show: false}, axisTicks: {show: false}, axisBorder: {show: false}},
 				yaxis: {tooltip: {enabled: false}, labels: { show: false}, axisTicks: {show: false}},
 				dataLabels: {enabled: false}
@@ -156,7 +157,7 @@ export class CoinsStateSummaryDialogComponent implements OnInit, ICoinsStateSumm
 		]
 	}
 	private calculateSplitValue(current: number, change: number): number {
-		return <number>this._utils.alterNumberByPercentage(current, -(change * 20), {ru: true, dp: 6});
+		return <number>this._utils.alterNumberByPercentage(current, -(change), {ru: true, dp: 8});
 	}
 
 
@@ -236,7 +237,7 @@ export class CoinsStateSummaryDialogComponent implements OnInit, ICoinsStateSumm
 	 * Displays the Coins State Tooltip.
 	 */
 	public displayTooltip(): void {
-        this._nav.displayTooltip("Coins State", [
+        this._nav.displayTooltip("Coins' States", [
 			`@TODO`,
         ]);
 	}
