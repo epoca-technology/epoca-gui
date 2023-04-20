@@ -355,6 +355,17 @@
                                         <div class="global-indicators-section">
                                             <h4 class="show-on-mobile margin-bottom">General Indicators</h4>
                                             <mat-grid-list [cols]="3" [rowHeight]="layout == 'desktop' ? '45px': '70px'" gutterSize="1px">
+
+                                                <!-- Volume -->
+                                                <mat-grid-tile class="clickable" role="button" matRipple
+                                                               (click)="displayVolumeDialog()"
+                                                                [ngClass]="{
+                                                                    'buy-action-container': state.volume > 0,
+                                                                    'sell-action-container': state.volume < 0,
+                                                                    'neutral-action-container': state.volume == 0,
+                                                                    'weak-state': state.volume != 2 && state.volume != -2
+                                                                }"><p>VOLUME</p></mat-grid-tile>
+                                                                
                                                 <!-- KeyZones -->
                                                 <mat-grid-tile *ngIf="!state.keyzones.event" 
                                                                 class="clickable" role="button" matRipple
@@ -375,16 +386,6 @@
                                                             <mat-icon>vertical_align_top</mat-icon> <p>RES.</p>
                                                 </mat-grid-tile>
 
-                                                <!-- Volume -->
-                                                <mat-grid-tile class="clickable" role="button" matRipple
-                                                               (click)="displayVolumeDialog()"
-                                                                [ngClass]="{
-                                                                    'buy-action-container': state.volume > 0,
-                                                                    'sell-action-container': state.volume < 0,
-                                                                    'neutral-action-container': state.volume == 0,
-                                                                    'weak-state': state.volume != 2 && state.volume != -2
-                                                                }"><p>VOLUME</p></mat-grid-tile>
-
                                                 <!-- Coins Direction -->
                                                 <mat-grid-tile class="clickable" role="button" matRipple
                                                                (click)="displayCoinsStateSummaryDialog()"
@@ -399,15 +400,18 @@
                                                 <mat-grid-tile class="clickable" role="button" matRipple
                                                                 (click)="displayLiquidityDialog()"
                                                                 [ngClass]="{
-                                                                    'buy-action-container': state.liquidity.blp > 50,
-                                                                    'sell-action-container': state.liquidity.blp < 50,
-                                                                    'neutral-action-container': state.liquidity.blp == 50,
-                                                                    'weak-state':   (state.liquidity.blp > 50 && state.liquidity.blp < 70) || 
-                                                                                    (state.liquidity.blp < 50 && state.liquidity.blp > 30) ||
-                                                                                    state.liquidity.blp == 50
+                                                                    'buy-action-container': state.liquidity.blp >= 55,
+                                                                    'sell-action-container': state.liquidity.blp <= 45,
+                                                                    'neutral-action-container': state.liquidity.blp > 45 && state.liquidity.blp < 55,
+                                                                    'weak-state':   (state.liquidity.blp >= 55 && state.liquidity.blp < 75) || 
+                                                                                    (state.liquidity.blp < 45 && state.liquidity.blp > 25) ||
+                                                                                    state.liquidity.blp > 45 && state.liquidity.blp < 55
                                                                 }"><p>LIQUIDITY</p></mat-grid-tile>
                                                 
                                                 <!-- Placeholders -->
+                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
+                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
+                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
                                                 <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
                                                 <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
                                             </mat-grid-list>

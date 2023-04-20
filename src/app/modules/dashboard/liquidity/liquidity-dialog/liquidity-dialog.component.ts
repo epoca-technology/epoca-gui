@@ -147,7 +147,7 @@ export class LiquidityDialogComponent implements OnInit, ILiquidityDialogCompone
 				legend: {show: false}
 			}, 
 			["Asks BTC", "Bids BTC"], 
-			this.layout == "desktop" ? 270: 270
+			this.layout == "desktop" ? 290: 270
 		)
 	}
 
@@ -180,7 +180,7 @@ export class LiquidityDialogComponent implements OnInit, ILiquidityDialogCompone
 				
 			}, 
 			["Bid Liq. Power", "Ask Liq. Power"], 
-			this.layout == "desktop" ? 105: 150,
+			this.layout == "desktop" ? 105: 105,
 			false
 		);
 		return chart;
@@ -286,13 +286,16 @@ export class LiquidityDialogComponent implements OnInit, ILiquidityDialogCompone
 				yaxis: { labels: { show: true},tooltip: {enabled: true}  }
 			},
 			this.layout == "desktop" ? 600: 400,
-			undefined,
-			undefined
+			true,
+			{ 
+				min: <number>this._utils.alterNumberByPercentage(this.window[this.window.length - 1].c, -0.6),
+				max: <number>this._utils.alterNumberByPercentage(this.window[this.window.length - 1].c, 0.6),
+			}
 		);
 
 		// Init the annotations
         const x: number = this.window[0].ot;
-		let annotations: ApexAnnotations = { points: [], xaxis: []};
+		let annotations: ApexAnnotations = { points: [], xaxis: [], yaxis: []};
 
         // Build the Asks (If any)
 		const askPeaks: ILiquidityPeaks = this.state.ap || {};
@@ -309,6 +312,15 @@ export class LiquidityDialogComponent implements OnInit, ILiquidityDialogCompone
 				annotations.points!.push(this.buildLiquidityAnnotation("bids", x, Number(bidPrice), bidPeaks[bidPrice]));
 			}
 		}
+
+		// Highlight the current price
+		annotations.yaxis!.push({
+            y: this.window[this.window.length - 1].c,
+            strokeDashArray: 0,
+            borderColor: "#000000",
+            fillColor: "#000000",
+            borderWidth: 0.5
+        });
 
 		// Insert the annotations into the chart
 		chart.annotations = annotations;

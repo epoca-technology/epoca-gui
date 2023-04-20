@@ -25,7 +25,7 @@ export class KeyzonesEventsDialogComponent implements OnInit, IKeyZonesEventsDia
 		{id: "1m", name: "Last month"},
 		{id: "custom", name: "Custom Date Range"},
 	];
-	public activeHistMenuItem: IKZEventHistoryRange = this.histMenu[2];
+	public activeHistMenuItem: IKZEventHistoryRange = this.histMenu[0];
 	private activeRange!: IDateRangeConfig;
 
 	// Tab
@@ -43,7 +43,7 @@ export class KeyzonesEventsDialogComponent implements OnInit, IKeyZonesEventsDia
 	) { }
 
 	ngOnInit(): void {
-		this.loadHist(this.histMenu[2]);
+		this.loadHist(this.histMenu[0]);
 	}
 
 

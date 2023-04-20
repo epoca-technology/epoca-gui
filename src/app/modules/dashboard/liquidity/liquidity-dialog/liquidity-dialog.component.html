@@ -28,7 +28,7 @@
 
         <!-- Summary -->
         <div *ngIf="activeTab == 0" class="padding" style="overflow: hidden">
-            <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" fxLayoutAlign="center start">
+            <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" fxLayoutAlign="center start" [ngClass]="{'margin-top-x2': layout == 'desktop'}">
                 <!-- Summary -->
                 <div fxFlex class="full-width">
 
@@ -54,15 +54,17 @@
                     <div class="divider show-on-mobile"></div>
 
                     <!-- Bid Liquidity Power -->
-                    <div [ngClass]="{'margin-top-x2': layout == 'desktop'}">
+                    <div [ngClass]="{'margin-top-x4': layout == 'desktop'}">
                         <div fxLayout="row" fxLayoutAlign="center center">
                             <h6>Bid Liq. Power</h6>
                             <span fxFlex></span>
                             <div [ngClass]="{
-                                'square-badge-success': state.blp > 50,
-                                'square-badge-error': state.blp < 50,
-                                'square-badge-neutral': state.blp == 50,
-                                'weak-state': (state.blp > 50 && state.blp < 70) || (state.blp < 50 && state.blp > 30)
+                                'square-badge-success': state.blp >= 55,
+                                'square-badge-error': state.blp <= 45,
+                                'square-badge-neutral': state.blp > 45 && state.blp < 55,
+                                'weak-state':   (state.blp >= 55 && state.blp < 75) || 
+                                                (state.blp < 45 && state.blp > 25) ||
+                                                state.blp > 45 && state.blp < 55
                             }">{{state.blp | number: '1.0-2'}}%</div>
                         </div>
                         <div fxLayout="row" fxLayoutAlign="center center" class="full-width">
@@ -81,7 +83,7 @@
                     </div>
                 </div>
 
-                <span *ngIf="layout=='desktop'" fxFlex="5"></span>
+                <span *ngIf="layout=='desktop'" fxFlex="10"></span>
 
                 <!-- Liquidity Levels -->
                 <div fxFlex class="full-width">
@@ -110,7 +112,7 @@
                     <div class="divider show-on-mobile"></div>
 
                     <!-- Bids -->
-                    <div>
+                    <div [ngClass]="{'margin-top-x4': layout == 'desktop'}">
                         <div fxLayout="row" fxLayoutAlign="center center">
                             <h6>Bids</h6>
                             <span fxFlex></span>
