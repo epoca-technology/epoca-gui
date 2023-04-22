@@ -1320,7 +1320,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 		this.dialog.open(CoinsStateSummaryDialogComponent, {
 			hasBackdrop: this._app.layout.value != "mobile",
 			panelClass: "large-dialog",
-			data: {}
+			data: undefined
 		})
     }
 
@@ -1368,8 +1368,8 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         if (this.state.reversal.id == 0) return;
 		this.dialog.open(ReversalStateDialogComponent, {
 			hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
-			panelClass: "small-dialog",
-			data: { id: this.state.reversal.id }
+			panelClass: "large-dialog",
+			data: this.state.reversal.id
 		})
     }
 

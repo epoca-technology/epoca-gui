@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
+import {MatDialogRef, MAT_DIALOG_DATA, MatDialog} from "@angular/material/dialog";
 import { ApexAnnotations } from 'ng-apexcharts';
 import * as moment from "moment";
 import { 
@@ -16,6 +16,7 @@ import {
 	ILayout, 
 	NavService 
 } from '../../../../../../services';
+import { ReversalStateDialogComponent } from '../../../../reversal';
 import { IKeyZoneEventContextDialogComponent } from './interfaces';
 
 @Component({
@@ -41,7 +42,8 @@ export class KeyzoneEventContextDialogComponent implements OnInit, IKeyZoneEvent
 		public _ms: MarketStateService,
 		private _candlestick: CandlestickService,
 		private _chart: ChartService,
-		private _utils: UtilsService
+		private _utils: UtilsService,
+		private dialog: MatDialog
 	) { }
 
 
@@ -114,6 +116,28 @@ export class KeyzoneEventContextDialogComponent implements OnInit, IKeyZoneEvent
 
 		// Finally, return the annotations
 		return annotations;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+	/**
+	 * Displays the reversal state dialog.
+	 */
+	public displayReversalEventDialog(): void {
+		this.dialog.open(ReversalStateDialogComponent, {
+			hasBackdrop: this._app.layout.value != "mobile",
+			panelClass: "large-dialog",
+			data: this.evt.t
+		})
 	}
 
 

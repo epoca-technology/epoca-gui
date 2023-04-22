@@ -11,6 +11,7 @@ import {
 	IKeyZoneStateEvent, 
 	ILiquidityConfiguration, 
 	IMarketStateService, 
+	IReversalCoinsStates, 
 	IReversalConfiguration, 
 	IReversalState, 
 	ISplitStateID, 
@@ -549,12 +550,25 @@ export class MarketStateService implements IMarketStateService {
 	
 	/**
 	 * Retrieves the reversal state from the server.
+	 * @param id
 	 * @returns Promise<IReversalConfiguration>
 	 */
-	public getReversalState(): Promise<IReversalState> { 
-		return this._api.request("get","marketState/getReversalState", {}, true) 
+	public getReversalState(id: number): Promise<IReversalState> { 
+		return this._api.request("get","marketState/getReversalState", {id: id}, true) 
 	}
 
+
+
+
+	
+	/**
+	 * Retrieves the reversal coins states from the server.
+	 * @param id
+	 * @returns Promise<IReversalCoinsStates>
+	 */
+	public getReversalCoinsStates(id: number): Promise<IReversalCoinsStates> { 
+		return this._api.request("get","marketState/getReversalCoinsStates", {id: id}, true) 
+	}
 
 
 

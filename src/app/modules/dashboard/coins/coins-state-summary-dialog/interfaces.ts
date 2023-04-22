@@ -1,8 +1,9 @@
+import { ICoinsCompressedState } from "../../../../core";
 
 
 
 export interface ICoinsStateSummaryDialogComponent {
-    initializeData(): Promise<void>,
+    initializeData(states?: ICoinsCompressedState): Promise<void>,
     displayCoinDialog(symbol: string): void,
     displayTooltip(): void,
     close(): void

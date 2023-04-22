@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import {MatDialogRef, MatDialog} from "@angular/material/dialog";
+import { Component, OnInit, Inject } from '@angular/core';
+import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material/dialog";
 import { 
 	ICoinCompressedState,
 	ICoinsCompressedState,
@@ -25,12 +25,14 @@ export class CoinsStateSummaryDialogComponent implements OnInit, ICoinsStateSumm
 	public state!: ICoinsCompressedState;
 	public symbols: string[] = [];
 	public charts?: {[symbol: string]: ILineChartOptions};
+	public syncEnabled: boolean = true;
 
 	// Component Init
 	public loaded: boolean = false;
 
 	constructor(
 		public dialogRef: MatDialogRef<CoinsStateSummaryDialogComponent>,
+		@Inject(MAT_DIALOG_DATA) private coinsStates: ICoinsCompressedState|undefined,
 		private _app: AppService,
 		private _chart: ChartService,
 		public _ms: MarketStateService,
@@ -43,7 +45,8 @@ export class CoinsStateSummaryDialogComponent implements OnInit, ICoinsStateSumm
 
 	async ngOnInit(): Promise<void> {
 		try {
-			await this.initializeData();
+			this.syncEnabled = this.coinsStates == undefined;
+			await this.initializeData(this.coinsStates);
 		} catch (e) {
 			this._app.error(e);
 			setTimeout(() => { this.close() }, 500);
@@ -61,10 +64,14 @@ export class CoinsStateSummaryDialogComponent implements OnInit, ICoinsStateSumm
 	 * Retrieves the compressed state and builds the charts.
 	 * @returns Promise<void> 
 	 */
-	public async initializeData(): Promise<void> {
+	public async initializeData(states?: ICoinsCompressedState): Promise<void> {
 		try {
-			// Retrieve the state
-			this.state = await this._ms.getCoinsCompressedState();
+			// Retrieve the state if the werent provided
+			if (states) {
+				this.state = states;
+			} else {
+				this.state = await this._ms.getCoinsCompressedState();
+			}
 
 			// Build the charts
 			this.symbols = Object.keys(this.state.csbs);
@@ -74,6 +81,7 @@ export class CoinsStateSummaryDialogComponent implements OnInit, ICoinsStateSumm
 				this.charts[symbol] = this.buildChartForSymbol(symbol, this.state.csbs[symbol]);
 			}
 		} catch (e) {
+			console.log(e);
 			this._app.error(e);
 			setTimeout(() => { this.close() }, 500);
 		}

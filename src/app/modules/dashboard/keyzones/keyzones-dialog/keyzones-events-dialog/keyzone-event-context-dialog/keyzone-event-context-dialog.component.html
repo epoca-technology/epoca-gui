@@ -5,6 +5,10 @@
         <span fxFlex></span>
         <button mat-icon-button (click)="displayTooltip()" [disabled]="!loaded" matTooltip="What is this?"><mat-icon>question_mark</mat-icon></button>
         <button mat-icon-button 
+                (click)="displayReversalEventDialog()" 
+                [disabled]="!loaded" 
+                matTooltip="Display Reversal State"><mat-icon style="max-width:20px;" svgIcon="{{evt.k == 's' ? 'rotate_left': 'rotate_right'}}"></mat-icon></button>
+        <button mat-icon-button 
                 (click)="displayEventInfoDialog()" 
                 [disabled]="!loaded" 
                 matTooltip="View {{evt.k == 's' ? 'Support': 'Resistance'}}">

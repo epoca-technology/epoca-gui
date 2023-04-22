@@ -535,7 +535,7 @@ export class LiquidityDialogComponent implements OnInit, ILiquidityDialogCompone
 
 
 	/**
-	 * Displays the Signal Module Tooltip.
+	 * Displays the Liquidity Module Tooltip.
 	 */
 	public displayTooltip(): void {
         this._nav.displayTooltip("Liquidity", [

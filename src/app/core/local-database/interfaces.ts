@@ -1,8 +1,6 @@
-import { ICandlestick } from "../candlestick";
-import { IEpochRecord } from "../epoch";
 import { IPredictionModelCertificate, IRegressionTrainingCertificate } from "../epoch-builder";
+import { IReversalCoinsStates, IReversalState } from "../market-state";
 import { IPositionRecord } from "../position";
-import { IPredictionCandlestick } from "../prediction";
 
 
 
@@ -28,6 +26,10 @@ export interface ILocalDatabaseService {
     // Certificates
     getPredictionModelCertificate(id: string): Promise<IPredictionModelCertificate>,
     getRegressionCertificate(id: string): Promise<IRegressionTrainingCertificate>,
+
+    // Reversal State Management
+    getReversalState(id: number): Promise<IReversalState>,
+    getReversalCoinsStates(id: number, endTS: number|null): Promise<IReversalCoinsStates>,
 
     // Position Record Management
     getPositionRecord(id: string): Promise<IPositionRecord>,

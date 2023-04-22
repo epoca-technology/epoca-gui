@@ -4,13 +4,14 @@ import * as moment from "moment";
 import { UtilsService } from "../utils";
 import { EpochService } from "../epoch";
 import { IPredictionModelCertificate, IRegressionTrainingCertificate } from "../epoch-builder";
+import { IPositionRecord, PositionService } from "../position";
+import { IReversalCoinsStates, IReversalState, MarketStateService } from "../market-state";
 import { 
 	ILocalDatabaseService,
 	ILocalData,
 	IUserPreferences,
 	ILocalTableInfo
 } from "./interfaces";
-import { IPositionRecord, PositionService } from "../position";
 
 
 
@@ -33,12 +34,15 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 	private userPreferences?: Dexie.Table;
 	private predictionModelCertificates?: Dexie.Table;
 	private regressionCertificates?: Dexie.Table;
+	private reversalStates?: Dexie.Table;
+	private reversalCoinsStates?: Dexie.Table;
 	private positionRecords?: Dexie.Table;
 
 
 
   	constructor(
 		private _epoch: EpochService,
+		private _ms: MarketStateService,
 		private _position: PositionService,
 		private _utils: UtilsService
 	) { }
@@ -70,6 +74,8 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 					userPreferences: "id",
 					predictionModelCertificates: "id",
 					regressionCertificates: "id",
+					reversalStates: "id",
+					reversalCoinsStates: "id",
 					positionRecords: "id",
 				});
 				
@@ -80,6 +86,8 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 				this.userPreferences = this.db.table("userPreferences");
 				this.predictionModelCertificates = this.db.table("predictionModelCertificates");
 				this.regressionCertificates = this.db.table("regressionCertificates");
+				this.reversalStates = this.db.table("reversalStates");
+				this.reversalCoinsStates = this.db.table("reversalCoinsStates");
 				this.positionRecords = this.db.table("positionRecords");
 
 				// Update the init state
@@ -138,6 +146,8 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 			{ name: "userPreferences", records: await this.userPreferences!.count()},
 			{ name: "predictionModelCertificates", records: await this.predictionModelCertificates!.count()},
 			{ name: "regressionCertificates", records: await this.regressionCertificates!.count()},
+			{ name: "reversalStates", records: await this.reversalStates!.count()},
+			{ name: "reversalCoinsStates", records: await this.reversalCoinsStates!.count()},
 			{ name: "positionRecords", records: await this.positionRecords!.count()},
 		];
 	}
@@ -346,7 +356,104 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 
 
 
+	/*****************************
+	 * Reversal State Management *
+	 *****************************/
 
+
+
+	/**
+	 * Retrieves, stores and returns a reversal state. Note that it 
+	 * is only stored if the reversal has been ended.
+	 * @param id 
+	 * @returns Promise<IReversalState>
+	 */
+	public async getReversalState(id: number): Promise<IReversalState> {
+		// Attempt to initialize the db in case it hadn't been
+		if (!this.initialized) await this.initialize();
+
+		// If it is not compatible, return the original call right away
+		if (!this.initialized) return this._ms.getReversalState(id);
+
+		/**
+		 * Check if the record is currently stored, in the case of an error when interacting
+		 * with the db, handle it and return the original call.
+		 */
+		try {
+			// Read the data and return it if found
+			const localData: ILocalData = await this.reversalStates!.where("id").equals(id).first();
+			if (localData && localData.data) { return localData.data } 
+
+			// If it isn't found, retrieve it, store it and return it
+			else { 
+				// Perform the request
+				const record: IReversalState = await this._ms.getReversalState(id);
+
+				// Attempt to save it if the reversal has ended
+				if (record.end) {
+					try {
+						await this.reversalStates!.put(<ILocalData> { id: id, data: record });
+					} catch (e) { console.error(e) }
+				}
+
+				// Finally, return it
+				return record; 
+			}
+		} catch (e) {
+			console.error(e);
+			return this._ms.getReversalState(id);
+		}
+	}
+
+
+
+
+
+
+
+	/**
+	 * Retrieves, stores and returns a reversal coins' states. Note that it 
+	 * is only stored if the reversal has been ended.
+	 * @param id 
+	 * @param endTS 
+	 * @returns Promise<IReversalCoinsStates>
+	 */
+	public async getReversalCoinsStates(id: number, endTS: number|null): Promise<IReversalCoinsStates> {
+		// Attempt to initialize the db in case it hadn't been
+		if (!this.initialized) await this.initialize();
+
+		// If it is not compatible, return the original call right away
+		if (!this.initialized) return this._ms.getReversalCoinsStates(id);
+
+		/**
+		 * Check if the record is currently stored, in the case of an error when interacting
+		 * with the db, handle it and return the original call.
+		 */
+		try {
+			// Read the data and return it if found
+			const localData: ILocalData = await this.reversalCoinsStates!.where("id").equals(id).first();
+			if (localData && localData.data) { return localData.data } 
+
+			// If it isn't found, retrieve it, store it and return it
+			else { 
+				// Perform the request
+				const record: IReversalCoinsStates = await this._ms.getReversalCoinsStates(id);
+
+				// Attempt to save it if the reversal has ended
+				if (endTS) {
+					try {
+						await this.reversalCoinsStates!.put(<ILocalData> { id: id, data: record });
+					} catch (e) { console.error(e) }
+				}
+
+				// Finally, return it
+				return record; 
+			}
+		} catch (e) {
+			console.error(e);
+			return this._ms.getReversalCoinsStates(id);
+		}
+	}
 
 
 
@@ -370,7 +477,7 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 	 * Retrieves, stores and returns a position record. Note that it 
 	 * is only stored if the position has been closed.
 	 * @param id 
-	 * @returns Promise<IPredictionModelCertificate>
+	 * @returns Promise<IPositionRecord>
 	 */
 	public async getPositionRecord(id: string): Promise<IPositionRecord> {
 		// Attempt to initialize the db in case it hadn't been

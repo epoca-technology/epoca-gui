@@ -51,7 +51,8 @@ export interface IMarketStateService {
     getBaseAssetName(symbol: string): string,
 
     // Reversal Management
-    getReversalState(): Promise<IReversalState>,
+    getReversalState(id: number): Promise<IReversalState>,
+    getReversalCoinsStates(id: number): Promise<IReversalCoinsStates>,
     getReversalConfiguration(): Promise<IReversalConfiguration>,
     updateReversalConfiguration(newConfiguration: IReversalConfiguration, otp: string): Promise<void>
 }
@@ -1073,28 +1074,6 @@ export interface ICoinsCompressedState {
  ****************************************************************************/
 
 
-// Service
-export interface IReversalService {
-    // Properties
-    config: IReversalConfiguration,
-
-    // Initialization
-    initialize(): Promise<void>,
-    stop(): void,
-
-    // State Calculation
-    calculateState(keyzones: IKeyZoneState, liquidity: ILiquidityState, coins: ICoinsCompressedState): IMinifiedReversalState,
-    getDefaultState(): IMinifiedReversalState,
-
-    // Reversal State Management
-    getReversalState(id: number): Promise<IReversalState>,
-
-    // Configuration Management
-    updateConfiguration(newConfiguration: IReversalConfiguration): Promise<void>,
-}
-
-
-
 /**
  * Reversal Kind
  * The kind of reversal that is taking place. The value is consistant with
@@ -1211,9 +1190,7 @@ export interface IReversalState {
      * The initial and final state of all the coins. These values are used
      * to determine which coins followed the reversal.
      */
-    ics: ICoinsCompressedState, // Initial Coins' States
-    ecs: ICoinsCompressedState|null, // Event Coins' States. Only populated when an event is issued
-    fcs: ICoinsCompressedState|null, // Final Coins' States. Only populated when ended
+
 
     // The score object containing the points' history by module. 
     scr: IReversalScoreHistory,
@@ -1226,6 +1203,24 @@ export interface IReversalState {
     e: IReversalEvent|null
 }
 
+
+
+
+/**
+ * Reversal Coins States
+ * Since the states of all the coins can be heavy, it is separated and stored
+ * in a different db table.
+ */
+export interface IReversalCoinsStates {
+    // Initial state of the coins when the keyzone was hit by the price
+    initial: ICoinsCompressedState,
+
+    // The state of the coins when the event was officially issues
+    event: ICoinsCompressedState|null,
+
+    // The state of the coins when the KeyZone Event ended.
+    final: ICoinsCompressedState|null
+}
 
 
 
