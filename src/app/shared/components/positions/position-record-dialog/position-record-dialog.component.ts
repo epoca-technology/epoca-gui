@@ -144,7 +144,7 @@ export class PositionRecordDialogComponent implements OnInit, IPositionRecordDia
 				false,
 				undefined,
 				this.layout == "desktop" ? 400: 330,
-				"Mark Price"
+				`${this._ms.getBaseAssetName(this.record.coin.symbol)} Price`
 			);
 			this.markPriceChart.chart!.toolbar = {show: true,tools: {selection: true,zoom: true,zoomin: true,zoomout: true,download: false}};
 			this.markPriceChart.chart!.zoom = {enabled: true, type: "xy"};

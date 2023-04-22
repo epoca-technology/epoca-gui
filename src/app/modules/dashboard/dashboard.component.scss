@@ -45,6 +45,34 @@
 
 
 
+
+
+.action-container {
+    text-align: center;
+    color:white;
+	background-color: #000000;
+    p{ 
+        margin:0;
+        font-weight:600;
+        font-size:11px!important;
+    }
+	
+	.state-icon { width: 17px;max-height:15px;margin-right:3px;}
+}
+@for $i from 0 through 100 {
+    $width: $i * 1%;
+    .support-reversal-#{$i} {
+        @extend .action-container;
+        background: linear-gradient(90deg, #004D40 $width, #4DB6AC $width);
+    }
+    .resistance-reversal-#{$i} {
+        @extend .action-container;
+        background: linear-gradient(90deg, #B71C1C  $width, #E57373 $width);
+    }
+}
+
+
+
 /* Responsiveness */
 
 

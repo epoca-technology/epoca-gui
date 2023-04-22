@@ -1,0 +1,102 @@
+<mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <button mat-icon-button class="show-on-mobile" (click)="cancel()" [disabled]="!loaded || submitting"><mat-icon>arrow_back</mat-icon></button>
+        <span class="truncate">Reversal Configuration</span>
+        <span fxFlex></span>
+        <button mat-icon-button [disabled]="!loaded || submitting" (click)="generalTooltip()" matTooltip="What is this?" type="button" tabindex="-1"><mat-icon>question_mark</mat-icon></button>
+        <button mat-icon-button (click)="update()" [disabled]="!loaded || submitting || (!form || form.invalid)" matTooltip="Update Config"><mat-icon>save</mat-icon></button>
+        <button mat-icon-button class="show-on-desktop" (click)="cancel()" [disabled]="!loaded || submitting"><mat-icon>close</mat-icon></button>
+    </div>
+</mat-toolbar>
+<div mat-dialog-content>
+    <!-- Loader -->
+    <div *ngIf="!loaded">
+        <div class="section-loader show-on-mobile"><div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div></div>
+        <div class="loader show-on-desktop"><div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div></div>
+    </div>
+    <div *ngIf="loaded && config" class="padding fadeIn">
+        <!-- Form -->
+        <div *ngIf="form">
+            <form [formGroup]="form" (ngSubmit)="update()">
+                <!-- Event -->
+                <div>
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <h5>Event</h5>
+                        <span fxFlex></span>
+                        <button mat-icon-button (click)="eventTooltip()" matTooltip="More information" type="button" tabindex="-1"><mat-icon>question_mark</mat-icon></button>
+                    </div> 
+                    <div fxLayout="row" fxLayoutAlign="start start" class="section-container">
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Min Event Score</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="min_event_score"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 75">
+                            </mat-form-field>
+                        </div>
+                        <span fxFlex="5"></span>
+                        <div fxFlex>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="divider"></div>
+
+
+                <!-- Score Weights -->
+                <div>
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <h5>Score Weights</h5>
+                        <span fxFlex></span>
+                        <button mat-icon-button (click)="scoreWeightsTooltip()" matTooltip="More information" type="button" tabindex="-1"><mat-icon>question_mark</mat-icon></button>
+                    </div> 
+                    <div fxLayout="row" fxLayoutAlign="start start" class="section-container">
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Volume</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="score_weights_volume"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 10">
+                            </mat-form-field>
+                        </div>
+                        <span fxFlex="5"></span>
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Liquidity</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="score_weights_liquidity"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 30">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="start start" class="section-container">
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Coins</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="score_weights_coins"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 60">
+                            </mat-form-field>
+                        </div>
+                        <span fxFlex="5"></span>
+                        <div fxFlex>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

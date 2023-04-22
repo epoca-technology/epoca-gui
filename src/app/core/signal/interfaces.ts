@@ -1,4 +1,8 @@
-import { ICoinsState, IKeyZoneStateEvent, IStateType } from "../market-state";
+import { 
+    IKeyZoneStateEvent, 
+    IMinifiedReversalState, 
+    IStateType 
+} from "../market-state";
 
 
 export interface ISignalService {
@@ -10,6 +14,8 @@ export interface ISignalService {
     // Signal Records 
     getSignalRecords(startAt: number, endAt: number): Promise<ISignalRecord[]>
 }
+
+
 
 
 
@@ -63,8 +69,7 @@ export interface ISignalSidePolicies {
     },
     cancellation: {
         window_state: IWindowStateCancellationPolicy,
-        trend: ITrendCancellationPolicy,
-        coins_direction: ICoinsDirectionCancellationPolicy
+        trend: ITrendCancellationPolicy
     }
 }
 
@@ -82,16 +87,12 @@ export interface ISignalPolicy {
 
 /**
  * KeyZone Reversal Issuance Policy
- * Issuance Policy based on KeyZone Reversals and Coin States. The purpose of this
+ * Issuance Policy based on KeyZone Contact and Reversal Events. The purpose of this
  * policy is to long when the price has dropped and is reversing or short when the
  * price has increased and is reversing.
  */
 export interface IKeyZoneReversalIssuancePolicy extends ISignalPolicy {
-    // The required coin state event. This value cannot be disabled.
-    coin_state_event: IStateType,
 
-    // The volume state required - If 0, the volume state will comply automatically
-    volume_state: IStateType,
 }
 
 
@@ -123,18 +124,6 @@ export interface ITrendCancellationPolicy extends ISignalPolicy {
 }
 
 
-
-
-
-/**
- * Coins Direction Cancellation Policy
- * Cancellation Policy based on the state of the installed coins. The purpose of this
- * policy is to avoid attempting to trade supports or resistances when there is too much
- * selling/buying power.
- */
-export interface ICoinsDirectionCancellationPolicy extends ISignalPolicy {
-    coins_direction: IStateType
-}
 
 
 
@@ -201,12 +190,9 @@ export interface ISignalDataset {
     // The current state of the window
     windowState: IStateType,
 
-    // The current state of the volume
-    volumeState: IStateType,
-
-    // The state of all installed coins
-    coinsState: ICoinsState,
-
     // The state event of the KeyZones (if any)
-    keyzoneStateEvent: IKeyZoneStateEvent|undefined
+    keyzoneStateEvent: IKeyZoneStateEvent|undefined,
+
+    // The state of the reversal module
+    reversalState: IMinifiedReversalState
 }

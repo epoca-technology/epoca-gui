@@ -24,6 +24,8 @@ export interface IDashboardComponent {
     displayCoinDialog(symbol: string): void,
     displayCoinsStateSummaryDialog(): void,
     displayLiquidityDialog(): void,
+    displayKeyZoneEventsHistory(): void,
+    displayReversalState(): void,
 
     // Coins Grid Management
     activateFirstCoinsPage(symbols?: string[]): void,

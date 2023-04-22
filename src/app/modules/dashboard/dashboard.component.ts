@@ -34,7 +34,7 @@ import {
 import { BalanceDialogComponent } from "./balance-dialog";
 import { StrategyFormDialogComponent } from "./strategy-form-dialog";
 import { WindowConfigurationDialogComponent } from "./window-configuration-dialog";
-import { KeyzonesConfigFormDialogComponent, KeyzonesDialogComponent } from "./keyzones";
+import { KeyzonesConfigFormDialogComponent, KeyzonesDialogComponent, KeyzonesEventsDialogComponent } from "./keyzones";
 import { IMarketStateDialogConfig, MarketStateDialogComponent } from "./market-state-dialog";
 import { IBottomSheetMenuItem } from "../../shared/components/bottom-sheet-menu";
 import { CoinsDialogComponent, CoinsStateSummaryDialogComponent } from "./coins";
@@ -42,6 +42,7 @@ import { SignalPoliciesDialogComponent } from "./signal-policies-dialog";
 import { PositionHeadlinesDialogComponent } from "./positions";
 import { TrendConfigurationDialogComponent } from "./trend-configuration-dialog";
 import { LiquidityConfigurationDialogComponent, LiquidityDialogComponent } from "./liquidity";
+import { ReversalConfigDialogComponent, ReversalStateDialogComponent } from "./reversal";
 import { IDashboardComponent, IWindowZoom, IWindowZoomID, IWindowZoomPrices } from "./interfaces";
 
 @Component({
@@ -109,6 +110,9 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     public activeSliceStart: number = 0;
     public activeSliceEnd: number = 0;
 
+    // Reversal
+    public reversalScore: number = 0;
+
     // Desktop Chart height helpers
     public readonly predictionChartDesktopHeight: number = 330;
 
@@ -143,6 +147,9 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
                 // Update charts
                 this.onStateUpdate();
+
+                // If there is a reversal, store a rounded version of the score
+                if (this.state.reversal.k != 0) this.reversalScore = Math.floor(this.state.reversal.s);
 
                 // Set loading state
                 if (!this.stateLoaded) {
@@ -943,6 +950,13 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                 response: "COINS"
             },
             {
+                icon: 'rotate_left',  
+                svg: true,
+                title: 'Reversal', 
+                description: 'Configure the requirements for reversal events to be issued.', 
+                response: "REVERSAL"
+            },
+            {
                 icon: 'podcasts',  
                 title: 'Signal Policies', 
                 description: 'Manage issuance and cancellation policies for both sides.', 
@@ -962,6 +976,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             else if (response === "LIQUIDITY_CONFIG") { this.displayLiquidityConfigFormDialog() }
             else if (response === "KEYZONES_CONFIG") { this.displayKeyZonesConfigFormDialog() }
             else if (response === "COINS") { this.displayCoinsDialog() }
+            else if (response === "REVERSAL") { this.displayReversalConfigDialog() }
             else if (response === "SIGNAL_POLICIES") { this.displaySignalPoliciesDialog() }
             else if (response === "TRADING_STRATEGY") { this.displayStrategyFormDialog() }
 		});
@@ -1036,6 +1051,20 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 			hasBackdrop: this._app.layout.value != "mobile",
             disableClose: true,
 			panelClass: "large-dialog"
+		})
+	}
+
+
+
+	/**
+	 * Displays the Reversal dialog.
+	 */
+    private displayReversalConfigDialog(): void {
+		this.dialog.open(ReversalConfigDialogComponent, {
+			hasBackdrop: this._app.layout.value != "mobile",
+            disableClose: true,
+			panelClass: "small-dialog",
+            data: {}
 		})
 	}
 
@@ -1185,7 +1214,8 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
 
 
-    
+
+
 
 
 
@@ -1314,6 +1344,34 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
 
 
+
+	/**
+	 * Displays the keyzones events dialog.
+	 */
+	public displayKeyZoneEventsHistory(): void {
+		this.dialog.open(KeyzonesEventsDialogComponent, {
+			hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
+			panelClass: "small-dialog",
+			data: {}
+		})
+	}
+
+
+    
+
+
+
+    /**
+     * Displays the reversal state dialog.
+     */
+    public displayReversalState(): void {
+        if (this.state.reversal.id == 0) return;
+		this.dialog.open(ReversalStateDialogComponent, {
+			hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
+			panelClass: "small-dialog",
+			data: { id: this.state.reversal.id }
+		})
+    }
 
 
 

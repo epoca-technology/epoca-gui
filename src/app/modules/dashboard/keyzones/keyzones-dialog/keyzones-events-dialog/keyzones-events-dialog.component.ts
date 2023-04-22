@@ -17,6 +17,7 @@ export class KeyzonesEventsDialogComponent implements OnInit, IKeyZonesEventsDia
 	// History
 	public hist: IKeyZoneStateEvent[] = [];
 	public histMenu: IKZEventHistoryRange[] = [
+		{id: "12h", name: "Last 12 hours"},
 		{id: "24h", name: "Last 24 hours"},
 		{id: "48h", name: "Last 48 hours"},
 		{id: "72h", name: "Last 72 hours"},
@@ -114,7 +115,8 @@ export class KeyzonesEventsDialogComponent implements OnInit, IKeyZonesEventsDia
 				let startAt: number;
 
 				// Calculate the starting point
-				if 		(id == "24h") { startAt = moment(endAt).subtract(24, "hours").valueOf() }
+				if 		(id == "12h") { startAt = moment(endAt).subtract(12, "hours").valueOf() }
+				else if (id == "24h") { startAt = moment(endAt).subtract(24, "hours").valueOf() }
 				else if (id == "48h") { startAt = moment(endAt).subtract(48, "hours").valueOf() }
 				else if (id == "72h") { startAt = moment(endAt).subtract(72, "hours").valueOf() }
 				else if (id == "1w") { startAt = moment(endAt).subtract(1, "week").valueOf() }

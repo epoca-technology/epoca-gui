@@ -407,9 +407,23 @@
                                                                                     (state.liquidity.blp < 45 && state.liquidity.blp > 25) ||
                                                                                     state.liquidity.blp > 45 && state.liquidity.blp < 55
                                                                 }"><p>LIQUIDITY</p></mat-grid-tile>
+
+                                                <!-- Reversal -->
+                                                <mat-grid-tile *ngIf="state.reversal.k == 0" 
+                                                                class="clickable neutral-action-container weak-state" role="button" matRipple
+                                                                (click)="displayKeyZoneEventsHistory()"><p>REVERSAL</p></mat-grid-tile>
+                                                <mat-grid-tile *ngIf="state.reversal.k == 1" 
+                                                                class="clickable support-reversal-{{reversalScore}}" role="button" matRipple
+                                                                (click)="displayReversalState()">
+                                                                <p>{{state.reversal.e ? 'REVERSED': 'REVERSAL'}}</p>
+                                                </mat-grid-tile>
+                                                <mat-grid-tile *ngIf="state.reversal.k == -1" 
+                                                                class="clickable resistance-reversal-{{reversalScore}}" role="button" matRipple
+                                                                (click)="displayReversalState()">
+                                                                <p>{{state.reversal.e ? 'REVERSED': 'REVERSAL'}}</p>
+                                                </mat-grid-tile>
                                                 
                                                 <!-- Placeholders -->
-                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
                                                 <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
                                                 <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
                                                 <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>

@@ -133,7 +133,9 @@ import {
 	PositionHeadlinesDialogComponent,
 	PositionActionPayloadsDialogComponent,
 	TrendConfigurationDialogComponent,
-	WindowConfigurationDialogComponent
+	WindowConfigurationDialogComponent,
+	ReversalConfigDialogComponent,
+	ReversalStateDialogComponent
 } from "./modules/dashboard";
 
 
@@ -173,6 +175,8 @@ import { AppComponent } from "./app.component";
 		PositionActionPayloadsDialogComponent,
 		WindowConfigurationDialogComponent,
 		TrendConfigurationDialogComponent,
+		ReversalConfigDialogComponent,
+		ReversalStateDialogComponent,
 	],
 	imports: [
 		// Core

@@ -14,7 +14,7 @@ export interface IKeyZonesEventsDialogComponent {
 
 
 
-export type IKZEventHistoryRangeID = "24h"|"48h"|"72h"|"1w"|"2w"|"1m"|"custom";
+export type IKZEventHistoryRangeID = "12h"|"24h"|"48h"|"72h"|"1w"|"2w"|"1m"|"custom";
 export interface IKZEventHistoryRange {
     id: IKZEventHistoryRangeID,
     name: string

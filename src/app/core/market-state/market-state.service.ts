@@ -11,6 +11,8 @@ import {
 	IKeyZoneStateEvent, 
 	ILiquidityConfiguration, 
 	IMarketStateService, 
+	IReversalConfiguration, 
+	IReversalState, 
 	ISplitStateID, 
 	ITrendStateConfiguration, 
 	IVolumeState, 
@@ -521,5 +523,65 @@ export class MarketStateService implements IMarketStateService {
 			return symbol.replace("USDT", "");
 		} else { return symbol }
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	/***********************
+	 * Reversal Management *
+	 ***********************/
+
+
+
+
+	
+	/**
+	 * Retrieves the reversal state from the server.
+	 * @returns Promise<IReversalConfiguration>
+	 */
+	public getReversalState(): Promise<IReversalState> { 
+		return this._api.request("get","marketState/getReversalState", {}, true) 
+	}
+
+
+
+
+	
+
+	/**
+	 * Retrieves the reversal configuration from the server.
+	 * @returns Promise<IReversalConfiguration>
+	 */
+	public getReversalConfiguration(): Promise<IReversalConfiguration> { 
+		return this._api.request("get","marketState/getReversalConfiguration", {}, true) 
+	}
+
+
+
+
+
+
+    /**
+     * Updates the Reversal's configuration.
+     * @param newConfiguration 
+     * @param otp 
+     * @returns Promise<void>
+     */
+    public updateReversalConfiguration(newConfiguration: IReversalConfiguration, otp: string): Promise<void> { 
+        return this._api.request("post", "marketState/updateReversalConfiguration", {newConfiguration: newConfiguration}, true, otp);
+    }
+
 
 }

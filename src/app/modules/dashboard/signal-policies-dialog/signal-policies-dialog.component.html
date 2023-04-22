@@ -41,52 +41,10 @@
                         <mat-icon>vertical_align_bottom</mat-icon> {{layout == "desktop" ? "Support Contact": "Supp. Contact"}}
                     </div>
 
-                    <!-- Coin Support Reversal -->
-                    <div class="policy-item clickable state-badge square-badge-error" role="button" matRipple [matMenuTriggerFor]="longCoinPriceMenu"
-                        [ngClass]="{'weak-state': policies.long.issuance.keyzone_reversal.coin_state_event == -1}">
-                        <mat-icon [svgIcon]="_ms.coinStateIcons[policies.long.issuance.keyzone_reversal.coin_state_event]"></mat-icon> Coin Reversal
+                    <!-- Reversal Event -->
+                    <div class="policy-item clickable square-badge-success state-badge" role="button" matRipple matTooltip="Inmutable">
+                        <mat-icon svgIcon="rotate_left"></mat-icon> {{layout == "desktop" ? "Reversal Event": "Rev. Event"}}
                     </div>
-                    <mat-menu #longCoinPriceMenu="matMenu">
-                        <button mat-menu-item 
-                                (click)="policies.long.issuance.keyzone_reversal.coin_state_event = -1" 
-                                [disabled]="policies.long.issuance.keyzone_reversal.coin_state_event == -1">
-                                Coin Reversal
-                        </button>
-                        <button mat-menu-item 
-                                (click)="policies.long.issuance.keyzone_reversal.coin_state_event = -2" 
-                                [disabled]="policies.long.issuance.keyzone_reversal.coin_state_event == -2">
-                                Strong Coin Reversal
-                        </button>
-                    </mat-menu>
-
-                    <!-- Volume State -->
-                    <div class="policy-item clickable state-badge" role="button" matRipple [matMenuTriggerFor]="longVolStateMenu"
-                        [ngClass]="{
-                            'square-badge-success': policies.long.issuance.keyzone_reversal.volume_state > 0,
-                            'square-badge-neutral': policies.long.issuance.keyzone_reversal.volume_state == 0,
-                            'weak-state': policies.long.issuance.keyzone_reversal.volume_state == 1
-                        }">
-                        <mat-icon *ngIf="policies.long.issuance.keyzone_reversal.volume_state != 0" 
-                                    [svgIcon]="_ms.icons[policies.long.issuance.keyzone_reversal.volume_state]"></mat-icon> 
-                                    {{policies.long.issuance.keyzone_reversal.volume_state == 0 ? 'Any Volume State': 'Volume State'}}
-                    </div>
-                    <mat-menu #longVolStateMenu="matMenu">
-                        <button mat-menu-item 
-                                (click)="policies.long.issuance.keyzone_reversal.volume_state = 0" 
-                                [disabled]="policies.long.issuance.keyzone_reversal.volume_state == 0">
-                                Any Volume State
-                        </button>
-                        <button mat-menu-item 
-                                (click)="policies.long.issuance.keyzone_reversal.volume_state = 1" 
-                                [disabled]="policies.long.issuance.keyzone_reversal.volume_state == 1">
-                                Increasing
-                        </button>
-                        <button mat-menu-item 
-                                (click)="policies.long.issuance.keyzone_reversal.volume_state = 2" 
-                                [disabled]="policies.long.issuance.keyzone_reversal.volume_state == 2">
-                                Increasing Strongly
-                        </button>
-                    </mat-menu>
                 </div>
             </div>
 
@@ -182,36 +140,6 @@
                         </mat-menu>
                     </div>
                 </div>
-
-
-                <!-- Coins Direction Cancellation -->
-                <div class="margin-top-x3" [ngClass]="{'inactive': !policies.long.cancellation.coins_direction.enabled}">
-                    <div fxLayout="row" fxLayoutAlign="start center">
-                        <h5 class="truncate">Coins Direction</h5>
-                        <span fxFlex></span>
-                        <mat-slide-toggle [(ngModel)]="policies.long.cancellation.coins_direction.enabled"></mat-slide-toggle>
-                    </div>
-                    <div class="policy-items">
-                        <div class="policy-item clickable state-badge square-badge-error" role="button" matRipple [matMenuTriggerFor]="longCoinsDirectionMenu"
-                            [ngClass]="{
-                                'weak-state': policies.long.cancellation.coins_direction.coins_direction == -1
-                            }">
-                            <mat-icon [svgIcon]="_ms.icons[policies.long.cancellation.coins_direction.coins_direction]"></mat-icon> Coins Direction
-                        </div>
-                        <mat-menu #longCoinsDirectionMenu="matMenu">
-                            <button mat-menu-item 
-                                    (click)="policies.long.cancellation.coins_direction.coins_direction = -1" 
-                                    [disabled]="policies.long.cancellation.coins_direction.coins_direction == -1">
-                                    Decreasing
-                            </button>
-                            <button mat-menu-item 
-                                    (click)="policies.long.cancellation.coins_direction.coins_direction = -2" 
-                                    [disabled]="policies.long.cancellation.coins_direction.coins_direction == -2">
-                                    Decreasing Strongly
-                            </button>
-                        </mat-menu>
-                    </div>
-                </div>
             </div>
         </div>
 
@@ -235,52 +163,10 @@
                         <mat-icon>vertical_align_top</mat-icon> {{layout == "desktop" ? "Resistance Contact": "Res. Contact"}}
                     </div>
 
-                    <!-- Coin Resistance Reversal -->
-                    <div class="policy-item clickable state-badge square-badge-success" role="button" matRipple [matMenuTriggerFor]="shortCoinPriceMenu"
-                        [ngClass]="{'weak-state': policies.short.issuance.keyzone_reversal.coin_state_event == 1}">
-                        <mat-icon [svgIcon]="_ms.coinStateIcons[policies.short.issuance.keyzone_reversal.coin_state_event]"></mat-icon> Coin Reversal
+                    <!-- Reversal Event -->
+                    <div class="policy-item clickable square-badge-error state-badge" role="button" matRipple matTooltip="Inmutable">
+                        <mat-icon svgIcon="rotate_right"></mat-icon> {{layout == "desktop" ? "Reversal Event": "Rev. Event"}}
                     </div>
-                    <mat-menu #shortCoinPriceMenu="matMenu">
-                        <button mat-menu-item 
-                                (click)="policies.short.issuance.keyzone_reversal.coin_state_event = 1" 
-                                [disabled]="policies.short.issuance.keyzone_reversal.coin_state_event == 1">
-                                Coin Reversal
-                        </button>
-                        <button mat-menu-item 
-                                (click)="policies.short.issuance.keyzone_reversal.coin_state_event = 2" 
-                                [disabled]="policies.short.issuance.keyzone_reversal.coin_state_event == 2">
-                                Strong Coin Reversal
-                        </button>
-                    </mat-menu>
-
-                    <!-- Volume State -->
-                    <div class="policy-item clickable state-badge" role="button" matRipple [matMenuTriggerFor]="shortVolStateMenu"
-                        [ngClass]="{
-                            'square-badge-success': policies.short.issuance.keyzone_reversal.volume_state > 0,
-                            'square-badge-neutral': policies.short.issuance.keyzone_reversal.volume_state == 0,
-                            'weak-state': policies.short.issuance.keyzone_reversal.volume_state == 1
-                        }">
-                        <mat-icon *ngIf="policies.short.issuance.keyzone_reversal.volume_state != 0" 
-                                    [svgIcon]="_ms.icons[policies.short.issuance.keyzone_reversal.volume_state]"></mat-icon> 
-                                    {{policies.short.issuance.keyzone_reversal.volume_state == 0 ? 'Any Volume State': 'Volume State'}}
-                    </div>
-                    <mat-menu #shortVolStateMenu="matMenu">
-                        <button mat-menu-item 
-                                (click)="policies.short.issuance.keyzone_reversal.volume_state = 0" 
-                                [disabled]="policies.short.issuance.keyzone_reversal.volume_state == 0">
-                                Any Volume State
-                        </button>
-                        <button mat-menu-item 
-                                (click)="policies.short.issuance.keyzone_reversal.volume_state = 1" 
-                                [disabled]="policies.short.issuance.keyzone_reversal.volume_state == 1">
-                                Increasing
-                        </button>
-                        <button mat-menu-item 
-                                (click)="policies.short.issuance.keyzone_reversal.volume_state = 2" 
-                                [disabled]="policies.short.issuance.keyzone_reversal.volume_state == 2">
-                                Increasing Strongly
-                        </button>
-                    </mat-menu>
                 </div>
             </div>
 
@@ -372,36 +258,6 @@
                             <button mat-menu-item 
                                     (click)="policies.short.cancellation.trend.trend_state = 2" 
                                     [disabled]="policies.short.cancellation.trend.trend_state == 2">
-                                    Increasing Strongly
-                            </button>
-                        </mat-menu>
-                    </div>
-                </div>
-
-
-                <!-- Coins Direction Cancellation -->
-                <div class="margin-top-x3" [ngClass]="{'inactive': !policies.short.cancellation.coins_direction.enabled}">
-                    <div fxLayout="row" fxLayoutAlign="start center">
-                        <h5 class="truncate">Coins Direction</h5>
-                        <span fxFlex></span>
-                        <mat-slide-toggle [(ngModel)]="policies.short.cancellation.coins_direction.enabled"></mat-slide-toggle>
-                    </div>
-                    <div class="policy-items">
-                        <div class="policy-item clickable state-badge square-badge-success" role="button" matRipple [matMenuTriggerFor]="shortCoinsDirectionMenu"
-                            [ngClass]="{
-                                'weak-state': policies.short.cancellation.coins_direction.coins_direction == 1
-                            }">
-                            <mat-icon [svgIcon]="_ms.icons[policies.short.cancellation.coins_direction.coins_direction]"></mat-icon> Coins Direction
-                        </div>
-                        <mat-menu #shortCoinsDirectionMenu="matMenu">
-                            <button mat-menu-item 
-                                    (click)="policies.short.cancellation.coins_direction.coins_direction = 1" 
-                                    [disabled]="policies.short.cancellation.coins_direction.coins_direction == 1">
-                                    Increasing
-                            </button>
-                            <button mat-menu-item 
-                                    (click)="policies.short.cancellation.coins_direction.coins_direction = 2" 
-                                    [disabled]="policies.short.cancellation.coins_direction.coins_direction == 2">
                                     Increasing Strongly
                             </button>
                         </mat-menu>

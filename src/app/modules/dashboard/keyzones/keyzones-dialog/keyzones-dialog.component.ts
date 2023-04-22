@@ -286,7 +286,7 @@ export class KeyzonesDialogComponent implements OnInit, OnDestroy, IKeyZonesDial
 
 
 	/**
-	 * Displays the liquidity dialog.
+	 * Displays the keyzones events dialog.
 	 */
 	public displayKeyZoneEventsHistory(): void {
 		this.dialog.open(KeyzonesEventsDialogComponent, {
