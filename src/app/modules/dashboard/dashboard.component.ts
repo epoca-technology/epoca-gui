@@ -163,7 +163,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         this.positionsSub = this._app.positions.subscribe((pos) => {
             if (pos !== null) {
                 this.positions = pos || [];
-                this.positionsPlaceholders = Array(6 - this.positions.length).fill(0);
+                this.positionsPlaceholders = Array(9 - this.positions.length).fill(0);
                 if (!this.positionsLoaded) {
                     this.positionsLoaded = true;
                     this.checkLoadState();
@@ -620,7 +620,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                     fontSize: "1px",
                     padding: {
                         left: 0,
-                        right: this._ms.peakWidth[this.layout][intensity],
+                        right: Math.floor(this._ms.peakWidth[this.layout][intensity] / 4),
                         top: 1,
                         bottom: 1,
                         }
