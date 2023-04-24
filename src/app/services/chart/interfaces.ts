@@ -140,6 +140,7 @@ export type IBarChartOptions = {
 	yaxis: ApexYAxis;
 	annotations: ApexAnnotations;
 	legend: ApexLegend;
+	title: ApexTitleSubtitle;
 };
 
 

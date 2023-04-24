@@ -9,6 +9,7 @@ import {
 	ISplitStateSeriesItem, 
 	IStateType, 
 	IVolumeState, 
+	IVolumeStateIntensity, 
 	MarketStateService, 
 	UtilsService 
 } from '../../../core';
@@ -353,7 +354,7 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 		}
 
 		// Set the state average
-		this.stateAverage = this.volumeState.s;
+		this.stateAverage = this.volumeState.s > 0 ? 1: 0;
 
         // Build the chart
 		this.volumeChart = this._chart.getBarChartOptions(
@@ -361,7 +362,7 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 				series: [ { 
 					name: "USDT", 
 					data: [<number>this._utils.outputNumber(this.volumeState.v, {dp: 0})], 
-					color: this.getChartColor(this.volumeState.s)
+					color: this.getVolumeChartColor(this.volumeState.s)
 				}],
 				xaxis: {categories: ["USDT Vol."], labels: {show: false}},
 				yaxis: {labels: {show: true}},
@@ -383,12 +384,20 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 						borderWidth: 0
 					},
 					{
+						y: <number>this._utils.outputNumber(this.volumeState.mm, {dp: 0}),
+						y2: <number>this._utils.outputNumber(this.volumeState.mh, {dp: 0}),
+						borderColor: "#00796B",
+						fillColor: "#00796B",
+						strokeDashArray: 0,
+						borderWidth: 0
+					},
+					{
 						y: <number>this._utils.outputNumber(this.volumeState.mh, {dp: 0}),
-						y2: <number>this._utils.outputNumber(this.volumeState.mh*3, {dp: 0}),
+						y2: <number>this._utils.outputNumber(this.volumeState.mh*100, {dp: 0}),
 						borderColor: "#004D40",
 						fillColor: "#004D40",
 						strokeDashArray: 0,
-						borderWidth: 1
+						borderWidth: 0
 					},
 				]
 			}
@@ -398,6 +407,25 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 
 
 
+
+
+	/**
+	 * Retrieves the color to be used on the line chart.
+	 * @param state 
+	 * @returns string
+	 */
+	private getVolumeChartColor(state: IVolumeStateIntensity): string { 
+		switch (state) {
+			case 3:
+				return "#004D40";
+			case 2:
+				return this._chart.upwardColor;
+			case 1:
+				return "#26A69A";
+			default:
+				return this._chart.neutralColor
+		}
+	}
 
 
 
@@ -455,6 +483,7 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 			content.push("-----");
 			content.push("VOLUME REQUIREMENTS");
 			content.push(`Mean: $${this._utils.formatNumber(this.volumeState.m)}`);
+			content.push(`Mean Medium: $${this._utils.formatNumber(this.volumeState.mm)}`);
 			content.push(`Mean High: $${this._utils.formatNumber(this.volumeState.mh)}`);
 		};
 

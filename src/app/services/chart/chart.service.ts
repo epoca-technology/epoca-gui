@@ -314,7 +314,8 @@ export class ChartService implements IChartService {
 			xaxis: xaxis,
 			yaxis: yaxis,
 			annotations: annotations ? annotations: {},
-			legend: config.legend ? config.legend: {}
+			legend: config.legend ? config.legend: {},
+			title: config.title ? config.title: {}
 		}
 	}
 
@@ -380,7 +381,7 @@ export class ChartService implements IChartService {
 			yaxis: yaxis || {},
 			annotations: config.annotations ? config.annotations: {},
 			colors: colors ? colors: [],
-			title: {}
+			title: config.title ? config.title: {}
 		}
 	}
 

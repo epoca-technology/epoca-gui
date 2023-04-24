@@ -2,7 +2,7 @@
     <div fxLayout="row" fxLayoutAlign="center center">
         <button mat-icon-button class="show-on-mobile" (click)="close()" [disabled]="!loaded"><mat-icon>arrow_back</mat-icon></button>
         <span *ngIf="!loaded" class="truncate">Loading...</span>
-        <span *ngIf="loaded" class="truncate">{{state.k == 1 ? 'Support': 'Resistance'}} Reversal</span>
+        <span *ngIf="loaded" class="truncate">{{state.k == 1 ? 'Sup.': 'Res.'}} Reversal</span>
         <span fxFlex></span>        
         <app-refresh-button *ngIf="loaded && state && !state.end" style="display: none;" (refresh)="syncReversalState()" [intervalSeconds]="6"></app-refresh-button>
         
@@ -56,7 +56,7 @@
                     *ngIf="state && state.e"
                     (click)="displayReversalEventInfoDialog()">
                     <mat-icon svgIcon="{{state.k == 1 ? 'rotate_left': 'rotate_right'}}" style="max-width: 20px;"></mat-icon>
-                <span>Display {{state.k == 1 ? 'Support': 'Resistance'}} Reversal Event</span>
+                <span>Display {{state.k == 1 ? 'Sup.': 'Res.'}} Rev. Event</span>
             </button>
             <button mat-menu-item 
                     *ngIf="state && state.kze"
@@ -96,14 +96,59 @@
         <div class="section-loader"><div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div></div>
     </div>
     <div *ngIf="loaded && state" class="padding" style="overflow: hidden">
-        <apx-chart
-            [series]="chart.series"
-            [chart]="chart.chart"
-            [dataLabels]="chart.dataLabels"
-            [xaxis]="chart.xaxis"
-            [yaxis]="chart.yaxis"
-            [stroke]="chart.stroke"
-            [annotations]="chart.annotations"
-        ></apx-chart>
+        <!-- General -->
+        <div>
+            <apx-chart
+                [series]="chart.series"
+                [chart]="chart.chart"
+                [dataLabels]="chart.dataLabels"
+                [xaxis]="chart.xaxis"
+                [yaxis]="chart.yaxis"
+                [stroke]="chart.stroke"
+                [annotations]="chart.annotations"
+                [title]="chart.title"
+            ></apx-chart>
+        </div>
+
+        <!-- Coins -->
+        <div class="margin-top">
+            <apx-chart
+                [series]="coinsChart.series"
+                [chart]="coinsChart.chart"
+                [dataLabels]="coinsChart.dataLabels"
+                [xaxis]="coinsChart.xaxis"
+                [yaxis]="coinsChart.yaxis"
+                [stroke]="coinsChart.stroke"
+                [annotations]="coinsChart.annotations"
+                [title]="coinsChart.title"
+            ></apx-chart>
+        </div>
+
+        <!-- Liquidity -->
+        <div class="margin-top">
+            <apx-chart
+                [series]="liquidityChart.series"
+                [chart]="liquidityChart.chart"
+                [dataLabels]="liquidityChart.dataLabels"
+                [xaxis]="liquidityChart.xaxis"
+                [yaxis]="liquidityChart.yaxis"
+                [stroke]="liquidityChart.stroke"
+                [annotations]="liquidityChart.annotations"
+                [title]="liquidityChart.title"
+            ></apx-chart>
+        </div>
+
+        <!-- Volume -->
+        <div class="margin-top">
+            <apx-chart
+                [series]="volumeChart.series"
+                [chart]="volumeChart.chart"
+                [dataLabels]="volumeChart.dataLabels"
+                [xaxis]="volumeChart.xaxis"
+                [yaxis]="volumeChart.yaxis"
+                [annotations]="volumeChart.annotations"
+                [title]="volumeChart.title"
+            ></apx-chart>
+        </div>
     </div>
 </div>

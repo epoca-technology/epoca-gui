@@ -236,14 +236,22 @@ export interface IWindowState {
   * of the volume based on the current value.                                *
   ****************************************************************************/
 
+/**
+ * Volume State Intensity
+ * The intensity of the volume's state based on the requirements.
+ */
+export type IVolumeStateIntensity = 0|1|2|3;
+
+
 // Full State
 export interface IVolumeState {
     // The state of the volume
-    s: IStateType,
+    s: IVolumeStateIntensity,
 
-    // The mean and mean high used to determine the state of the volume
-    m: number,
-    mh: number,
+    // The requirements for the volume to have a state
+    m: number,  // Mean
+    mm: number, // Mean Medium
+    mh: number, // Mean High
 
     // The volume within the current 1m interval
     v: number
@@ -1182,10 +1190,6 @@ export interface IReversalState {
     // The KeyZone State Event that is being evaluated
     kze: IKeyZoneStateEvent|null,
 
-    // The accumulated volume as well as the volume goal
-    av: number,
-    vg: number,
-
     /**
      * The initial and final state of all the coins. These values are used
      * to determine which coins followed the reversal.
@@ -1274,7 +1278,7 @@ export interface IMinifiedReversalState {
   *********************************************************************************/
 export interface IMarketState {
     window: IWindowState,
-    volume: IStateType,
+    volume: IVolumeStateIntensity,
     liquidity: IMinifiedLiquidityState,
     keyzones: IKeyZoneState,
     trend: ITrendState,

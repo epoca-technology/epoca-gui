@@ -14,6 +14,7 @@ import {
 import { 
 	AppService, 
 	ChartService, 
+	IBarChartOptions, 
 	ILayout, 
 	ILineChartOptions, 
 	NavService,
@@ -33,7 +34,11 @@ export class ReversalStateDialogComponent implements OnInit, IReversalStateDialo
 	// State
 	public state!: IReversalState;
 	private coinsStates: IReversalCoinsStates|undefined;
+	private color!: string;
 	public chart!: ILineChartOptions;
+	public coinsChart!: ILineChartOptions;
+	public liquidityChart!: ILineChartOptions;
+	public volumeChart!: IBarChartOptions;
 
 	// Load State
 	public loaded: boolean = false;
@@ -55,6 +60,7 @@ export class ReversalStateDialogComponent implements OnInit, IReversalStateDialo
 	async ngOnInit(): Promise<void> {
 		await this.syncReversalState();
 		this.loaded = true;
+		setTimeout(() => {this.updateCharts();});
 	}
 
 
@@ -77,28 +83,99 @@ export class ReversalStateDialogComponent implements OnInit, IReversalStateDialo
 			// Retrieve the state
 			this.state = await this._localDB.getReversalState(this.id);
 
-			// Unpack the score history
-			const { general, volume, liquidity, coins } = this.unpackScore();
+			// Set the color
+			this.color = this.state.k == 1 ? this._chart.upwardColor: this._chart.downwardColor;
 
-			// Build the chart
+			// Update the charts
+			this.updateCharts();
+		} catch (e) { this._app.error(e) }
+	}
+
+
+
+
+
+
+
+	/**
+	 * Unpacks the history data from the state and builds all
+	 * the charts.
+	 */
+	private updateCharts(): void {
+		// Unpack the score history
+		const { general, volume, liquidity, coins } = this.unpackScore();
+
+		// If the charts have already been built, update the data
+		if (this.chart) {
+			this.chart.series = [ {data: general}];
+			this.coinsChart.series = [ {data: coins}];
+			this.liquidityChart.series = [ {data: liquidity}];
+			this.volumeChart.series = [ {data: volume}];
+		}
+
+		// Otherwise, build them from scratch
+		else {
+			// Build the general chart
 			this.chart = this._chart.getLineChartOptions(
 				{ 
 					series: [
-						{ name: "General", data: general, color: "#000000" },
-						{ name: "Volume", data: volume, color: "#42A5F5" },
-						{ name: "Liquidity", data: liquidity, color: "#512DA8" },
-						{ name: "Coins", data: coins, color: "#E65100" }
+						{ name: "General", data: general, color: this.color },
 					], 
 					stroke: {width: 3, curve: "straight"},
-					xaxis: {type: "datetime",tooltip: {enabled: true}, labels: {datetimeUTC: false}}
+					xaxis: {type: "datetime",tooltip: {enabled: false}, labels: {datetimeUTC: false}},
+					yaxis: {labels: {show: true}, tooltip: {enabled: true}},
+					title: { text: "General"},
 				}, 
-				this.layout == "desktop" ? 600: 400, 
+				this.layout == "desktop" ? 450: 350
+			);
+
+			// Build the coins chart
+			this.coinsChart = this._chart.getLineChartOptions(
+				{ 
+					series: [
+						{ name: "Coins", data: coins, color: this.color }
+					], 
+					stroke: {width: 3, curve: "straight"},
+					xaxis: {type: "datetime",tooltip: {enabled: false}, labels: {datetimeUTC: false}},
+					yaxis: {labels: {show: true}, tooltip: {enabled: true}},
+					title: { text: "Coins"}
+				}, 
+				this.layout == "desktop" ? 450: 350, 
+			);
+
+			// Build the liquidity chart
+			this.liquidityChart = this._chart.getLineChartOptions(
+				{ 
+					series: [
+						{ name: "Liquidity", data: liquidity, color: this.color },
+					], 
+					stroke: {width: 3, curve: "straight"},
+					xaxis: {type: "datetime",tooltip: {enabled: false}, labels: {datetimeUTC: false}},
+					yaxis: {labels: {show: true}, tooltip: {enabled: true}},
+					title: { text: "Liquidity"}
+				}, 
+				this.layout == "desktop" ? 450: 350, 
+			);
+
+			// Build the volume chart
+			this.volumeChart = this._chart.getBarChartOptions(
+				{ 
+					series: [
+						{ name: "Volume", data: volume, color: this.color },
+					], 
+					xaxis: {type: "datetime",tooltip: {enabled: false}, labels: {datetimeUTC: false}},
+					yaxis: {labels: {show: true}, tooltip: {enabled: false}},
+					title: { text: "Volume"}
+				}, 
 				undefined,
-				undefined,//{ min: 0, max: 100 },
-				[ "#000000", "#42A5F5", "#512DA8", "#E65100" ]
-			)
-		} catch (e) { this._app.error(e) }
+				this.layout == "desktop" ? 250: 250, 
+			);
+		}
 	}
+
+
+
+
 
 
 
@@ -268,10 +345,6 @@ export class ReversalStateDialogComponent implements OnInit, IReversalStateDialo
 			`-----`,
 			`SCORE`,
 			`${this.state.scr.g[this.state.scr.g.length - 1]} / 100`,
-			`-----`,
-			`VOLUME`,
-			`Accum: $${this._utils.formatNumber(this.state.av)}`,
-			`Goal: $${this._utils.formatNumber(this.state.vg)}`
 		]);
 	}
 

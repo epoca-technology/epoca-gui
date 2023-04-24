@@ -7,7 +7,7 @@ export interface ISignalRecordsDialogComponent {
 }
 
 
-export type IIRecordHistoryRangeID = "24h"|"48h"|"72h"|"1w"|"2w"|"1m"|"custom";
+export type IIRecordHistoryRangeID = "12h"|"24h"|"48h"|"72h"|"1w"|"2w"|"1m"|"custom";
 export interface IRecordHistoryRange {
     id: IIRecordHistoryRangeID,
     name: string

@@ -363,7 +363,8 @@
                                                                     'buy-action-container': state.volume > 0,
                                                                     'sell-action-container': state.volume < 0,
                                                                     'neutral-action-container': state.volume == 0,
-                                                                    'weak-state': state.volume != 2 && state.volume != -2
+                                                                    'weak-state': state.volume != 3,
+                                                                    'very-strong-state': state.volume == 3
                                                                 }"><p>VOLUME</p></mat-grid-tile>
                                                                 
                                                 <!-- KeyZones -->

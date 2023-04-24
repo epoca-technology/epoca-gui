@@ -109,7 +109,7 @@ export class CoinsStateSummaryDialogComponent implements OnInit, ICoinsStateSumm
 		// Init the chart
 		const chartColor: string = this.getChartColor(state.s);
 		let title: string = this._ms.getBaseAssetName(symbol);
-		if (state.se != 0) { title += this.layout == "desktop" ? " REVERSING": " REV." }
+		if (state.se != 0) { title += " REV." }
 		let lineChart: ILineChartOptions = this._chart.getLineChartOptions(
 			{ 
 				series: [
@@ -119,7 +119,7 @@ export class CoinsStateSummaryDialogComponent implements OnInit, ICoinsStateSumm
 						color: chartColor
 					}
 				],
-				stroke: { curve: "smooth", width: this.layout == "desktop" ? 3: 2 },
+				stroke: { curve: "straight", width: this.layout == "desktop" ? 3: 2 },
 				xaxis: {tooltip: {enabled: false}, labels: { show: false}, axisTicks: {show: false}, axisBorder: {show: false}},
 				yaxis: {tooltip: {enabled: false}, labels: { show: false}, axisTicks: {show: false}},
 				dataLabels: {enabled: false}
