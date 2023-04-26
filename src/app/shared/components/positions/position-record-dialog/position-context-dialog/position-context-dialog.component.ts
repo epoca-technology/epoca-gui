@@ -50,8 +50,8 @@ export class PositionContextDialogComponent implements OnInit, IPositionContextD
 		try {
 			// Retrieve the candlesticks
 			const candlesticks: ICandlestick[] = await this._candlestick.getForPeriod(
-				moment(this.record.open).subtract(12, "hours").valueOf(),
-				moment(this.record.close).add(12, "hours").valueOf(),
+				moment(this.record.open).subtract(16, "hours").valueOf(),
+				moment(this.record.close).add(16, "hours").valueOf(),
 			);
 
 			// Build the chart
@@ -85,95 +85,102 @@ export class PositionContextDialogComponent implements OnInit, IPositionContextD
 		// Init the annotations
 		let annotations: ApexAnnotations = { yaxis: [], xaxis: [], points: [] };
 
-		// Add the entry and the exit points
-		//const pointsColor: string = this.record.gain >= 0 ? "#004D40": "#B71C1C";
-		const pointsColor: string = "#263238";
-		annotations.points!.push({
-			x: this.record.open,
-			y: this.record.entry_price,
-			marker: {
-				size: 3,
-				strokeColor: pointsColor,
-				fillColor: pointsColor,
-				strokeWidth: 3,
-				shape: "square", // circle|square
-			}
-		});
-		annotations.points!.push({
-			x: this.record.close,
-			y: this.record.mark_price,
-			marker: {
-				size: 3,
-				strokeColor: pointsColor,
-				fillColor: pointsColor,
-				strokeWidth: 3,
-				shape: "square", // circle|square
-			}
-		});
-
-
 		// Add the open and close range
 		annotations.xaxis!.push({
             x: this.record.open,
             x2: this.record.close,
-            borderColor: "#ECEFF1",
-            fillColor: "#ECEFF1",
+            borderColor: "#90A4AE",
+            fillColor: "#90A4AE",
             strokeDashArray: 0
         });
 
+		// If it is a BTC position, add the extra annotations
+		if (this.record.coin.symbol == "BTCUSDT") {
+			// Add the entry and the exit points if it is BTC
+			const pointsColor: string = "#263238";
+			annotations.points!.push({
+				x: this.record.open,
+				y: this.record.entry_price,
+				marker: {
+					size: 3,
+					strokeColor: pointsColor,
+					fillColor: pointsColor,
+					strokeWidth: 3,
+					shape: "square", // circle|square
+				}
+			});
+			annotations.points!.push({
+				x: this.record.close,
+				y: this.record.mark_price,
+				marker: {
+					size: 3,
+					strokeColor: pointsColor,
+					fillColor: pointsColor,
+					strokeWidth: 3,
+					shape: "square", // circle|square
+				}
+			});
 
-		// Add the take profit levels
-		annotations.yaxis!.push({
-            y: this.record.entry_price,
-            y2: this.record.take_profit_price_1,
-            borderColor: "#B2DFDB",
-            fillColor: "#B2DFDB",
-            strokeDashArray: 0
-        });
-		annotations.yaxis!.push({
-            y: this.record.take_profit_price_1,
-            y2: this.record.take_profit_price_2,
-            borderColor: "#4DB6AC",
-            fillColor: "#4DB6AC",
-            strokeDashArray: 0
-        });
-		annotations.yaxis!.push({
-            y: this.record.take_profit_price_2,
-            y2: this.record.take_profit_price_3,
-            borderColor: "#009688",
-            fillColor: "#009688",
-            strokeDashArray: 0
-        });
-		annotations.yaxis!.push({
-            y: this.record.take_profit_price_3,
-            y2: this.record.take_profit_price_4,
-            borderColor: "#00796B",
-            fillColor: "#00796B",
-            strokeDashArray: 0
-        });
-		annotations.yaxis!.push({
-            y: this.record.take_profit_price_4,
-            y2: this.record.take_profit_price_4 + (this.record.side == "LONG" ? 2000: -2000),
-            borderColor: "#004D40",
-            fillColor: "#004D40",
-            strokeDashArray: 0
-        });
+			// Add the take profit levels
+			annotations.yaxis!.push({
+				y: this.record.entry_price,
+				y2: this.record.take_profit_price_1,
+				borderColor: "#B2DFDB",
+				fillColor: "#B2DFDB",
+				strokeDashArray: 0
+			});
+			annotations.yaxis!.push({
+				y: this.record.take_profit_price_1,
+				y2: this.record.take_profit_price_2,
+				borderColor: "#4DB6AC",
+				fillColor: "#4DB6AC",
+				strokeDashArray: 0
+			});
+			annotations.yaxis!.push({
+				y: this.record.take_profit_price_2,
+				y2: this.record.take_profit_price_3,
+				borderColor: "#009688",
+				fillColor: "#009688",
+				strokeDashArray: 0
+			});
+			annotations.yaxis!.push({
+				y: this.record.take_profit_price_3,
+				y2: this.record.take_profit_price_4,
+				borderColor: "#00796B",
+				fillColor: "#00796B",
+				strokeDashArray: 0
+			});
+			annotations.yaxis!.push({
+				y: this.record.take_profit_price_4,
+				y2: this.record.take_profit_price_5,
+				borderColor: "#004D40",
+				fillColor: "#004D40",
+				strokeDashArray: 0
+			});
+			annotations.yaxis!.push({
+				y: this.record.take_profit_price_5,
+				y2: this.record.take_profit_price_5 + (this.record.side == "LONG" ? 100000: -100000),
+				borderColor: "#004D40",
+				fillColor: "#004D40",
+				strokeDashArray: 0
+			});
 
-		// Add the stop loss
-		annotations.yaxis!.push({
-            y: this.record.entry_price,
-            y2: this.record.stop_loss_price,
-            borderColor: "#FFCDD2",
-            fillColor: "#FFCDD2",
-            strokeDashArray: 0
-        });
-		annotations.yaxis!.push({
-            y: this.record.stop_loss_price,
-            borderColor: "#B71C1C",
-            fillColor: "#B71C1C",
-            strokeDashArray: 0,
-			borderWidth: 1
-        });
+			// Add the stop loss
+			annotations.yaxis!.push({
+				y: this.record.entry_price,
+				y2: this.record.stop_loss_price,
+				borderColor: "#FFCDD2",
+				fillColor: "#FFCDD2",
+				strokeDashArray: 0
+			});
+			annotations.yaxis!.push({
+				y: this.record.stop_loss_price,
+				borderColor: "#B71C1C",
+				fillColor: "#B71C1C",
+				strokeDashArray: 0,
+				borderWidth: 1
+			});
+		}
 
 		// Finally, return the annotations
 		return annotations;

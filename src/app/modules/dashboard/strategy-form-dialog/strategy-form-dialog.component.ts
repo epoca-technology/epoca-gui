@@ -53,9 +53,13 @@ export class StrategyFormDialogComponent implements OnInit, IStrategyFormDialogC
 				take_profit_4_pcr: new FormControl(this.strategy.take_profit_4.price_change_requirement, [ Validators.required, Validators.min(0.05), Validators.max(10) ]),
 				take_profit_4_ao: new FormControl(this.strategy.take_profit_4.activation_offset, [ Validators.required, Validators.min(0.01), Validators.max(5) ]),
 				take_profit_4_gdd: new FormControl(this.strategy.take_profit_4.max_gain_drawdown, [ Validators.required, Validators.min(-100), Validators.max(-0.01) ]),
+				take_profit_5_pcr: new FormControl(this.strategy.take_profit_5.price_change_requirement, [ Validators.required, Validators.min(0.05), Validators.max(10) ]),
+				take_profit_5_ao: new FormControl(this.strategy.take_profit_5.activation_offset, [ Validators.required, Validators.min(0.01), Validators.max(5) ]),
+				take_profit_5_gdd: new FormControl(this.strategy.take_profit_5.max_gain_drawdown, [ Validators.required, Validators.min(-100), Validators.max(-0.01) ]),
 				stop_loss: new FormControl(this.strategy.stop_loss, [ Validators.required, Validators.min(0.1), Validators.max(20) ]),
 				reopen_if_better_duration_minutes: new FormControl(this.strategy.reopen_if_better_duration_minutes, [ Validators.required, Validators.min(0), Validators.max(720) ]),
 				reopen_if_better_price_adjustment: new FormControl(this.strategy.reopen_if_better_price_adjustment, [ Validators.required, Validators.min(0.01), Validators.max(10) ]),
+				low_volatility_coins: new FormControl(this.strategy.low_volatility_coins.join(","), [ Validators.required ]),
 			});
 		} catch (e) {
 			this._app.error(e);
@@ -85,9 +89,13 @@ export class StrategyFormDialogComponent implements OnInit, IStrategyFormDialogC
 	get take_profit_4_pcr(): AbstractControl { return <AbstractControl>this.form.get("take_profit_4_pcr") }
 	get take_profit_4_ao(): AbstractControl { return <AbstractControl>this.form.get("take_profit_4_ao") }
 	get take_profit_4_gdd(): AbstractControl { return <AbstractControl>this.form.get("take_profit_4_gdd") }
+	get take_profit_5_pcr(): AbstractControl { return <AbstractControl>this.form.get("take_profit_5_pcr") }
+	get take_profit_5_ao(): AbstractControl { return <AbstractControl>this.form.get("take_profit_5_ao") }
+	get take_profit_5_gdd(): AbstractControl { return <AbstractControl>this.form.get("take_profit_5_gdd") }
 	get stop_loss(): AbstractControl { return <AbstractControl>this.form.get("stop_loss") }
 	get reopen_if_better_duration_minutes(): AbstractControl { return <AbstractControl>this.form.get("reopen_if_better_duration_minutes") }
 	get reopen_if_better_price_adjustment(): AbstractControl { return <AbstractControl>this.form.get("reopen_if_better_price_adjustment") }
+	get low_volatility_coins(): AbstractControl { return <AbstractControl>this.form.get("low_volatility_coins") }
 
 
 
@@ -133,9 +141,15 @@ export class StrategyFormDialogComponent implements OnInit, IStrategyFormDialogC
 							activation_offset: this.take_profit_4_ao.value,
 							max_gain_drawdown: this.take_profit_4_gdd.value,
 						};
+						this.strategy.take_profit_5 = {
+							price_change_requirement: this.take_profit_5_pcr.value,
+							activation_offset: this.take_profit_5_ao.value,
+							max_gain_drawdown: this.take_profit_5_gdd.value,
+						};
 						this.strategy.stop_loss = this.stop_loss.value;
 						this.strategy.reopen_if_better_duration_minutes = this.reopen_if_better_duration_minutes.value;
 						this.strategy.reopen_if_better_price_adjustment = this.reopen_if_better_price_adjustment.value;
+						this.strategy.low_volatility_coins = this.low_volatility_coins.value.split(",");
 
 						// Set Submission State
 						this.submitting = true;
@@ -218,6 +232,15 @@ export class StrategyFormDialogComponent implements OnInit, IStrategyFormDialogC
 		]);
 	}
 
+
+
+
+	/* Low Volatility Coins */
+	public lowVolatilityCoinsTooltip(): void {
+		this._nav.displayTooltip("Low Volatility Coins", [
+			`@TODO`,
+		]);
+	}
 
 
 

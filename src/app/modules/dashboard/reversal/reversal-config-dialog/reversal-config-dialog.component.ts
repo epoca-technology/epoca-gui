@@ -36,6 +36,7 @@ export class ReversalConfigDialogComponent implements OnInit, IReversalConfigDia
 			this.config = await this._ms.getReversalConfiguration();
 			this.form = new FormGroup ({
 				min_event_score: new FormControl(this.config.min_event_score, [ Validators.required, Validators.min(10), Validators.max(100) ]),
+				event_sort_func: new FormControl(this.config.event_sort_func, [ Validators.required ]),
 				score_weights_volume: new FormControl(this.config.score_weights.volume, [ Validators.required, Validators.min(1), Validators.max(100) ]),
 				score_weights_liquidity: new FormControl(this.config.score_weights.liquidity, [ Validators.required, Validators.min(1), Validators.max(100) ]),
 				score_weights_coins: new FormControl(this.config.score_weights.coins, [ Validators.required, Validators.min(1), Validators.max(100) ]),
@@ -51,6 +52,7 @@ export class ReversalConfigDialogComponent implements OnInit, IReversalConfigDia
 
     /* Form Getters */
 	get min_event_score(): AbstractControl { return <AbstractControl>this.form.get("min_event_score") }
+	get event_sort_func(): AbstractControl { return <AbstractControl>this.form.get("event_sort_func") }
 	get score_weights_volume(): AbstractControl { return <AbstractControl>this.form.get("score_weights_volume") }
 	get score_weights_liquidity(): AbstractControl { return <AbstractControl>this.form.get("score_weights_liquidity") }
 	get score_weights_coins(): AbstractControl { return <AbstractControl>this.form.get("score_weights_coins") }
@@ -86,6 +88,7 @@ export class ReversalConfigDialogComponent implements OnInit, IReversalConfigDia
 					if (otp) {
 						// Build the new config
 						this.config.min_event_score = this.min_event_score.value;
+						this.config.event_sort_func = this.event_sort_func.value;
 						this.config.score_weights = {
 							volume: this.score_weights_volume.value,
 							liquidity: this.score_weights_liquidity.value,

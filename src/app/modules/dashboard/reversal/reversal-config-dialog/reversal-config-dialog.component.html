@@ -39,6 +39,13 @@
                         </div>
                         <span fxFlex="5"></span>
                         <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Sort Function</mat-label>
+                                <mat-select formControlName="event_sort_func" [appDisableControl]="submitting">
+                                    <mat-option value="CHANGE_SUM">CHANGE_SUM</mat-option>
+                                    <mat-option value="SHUFFLE">SHUFFLE</mat-option>
+                                </mat-select>
+                            </mat-form-field>
                         </div>
                     </div>
                 </div>

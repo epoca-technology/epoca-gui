@@ -338,8 +338,9 @@
                                                     [ngClass]="{
                                                         'buy-action-container': pos.sd == 'LONG',
                                                         'sell-action-container': pos.sd == 'SHORT',
-                                                        'weak-state': pos.g > 0 && pos.g < 0.35,
-                                                        'very-weak-state': pos.g <= 0
+                                                        'weak-state': pos.g > 0 && pos.g < 0.4,
+                                                        'very-weak-state': pos.g <= 0,
+                                                        'very-strong-state': pos.g >= 1
                                                     }">
                                                     <p>{{pos.s | baseAssetName}} {{pos.g > 0 ? '+': ''}}{{pos.g | number:'1.0-1'}}%</p>
                                                 </mat-grid-tile>
@@ -361,9 +362,8 @@
                                                                (click)="displayVolumeDialog()"
                                                                 [ngClass]="{
                                                                     'buy-action-container': state.volume > 0,
-                                                                    'sell-action-container': state.volume < 0,
                                                                     'neutral-action-container': state.volume == 0,
-                                                                    'weak-state': state.volume != 3,
+                                                                    'weak-state': state.volume < 2,
                                                                     'very-strong-state': state.volume == 3
                                                                 }"><p>VOLUME</p></mat-grid-tile>
                                                                 
@@ -406,7 +406,8 @@
                                                                     'neutral-action-container': state.liquidity.blp > 45 && state.liquidity.blp < 55,
                                                                     'weak-state':   (state.liquidity.blp >= 55 && state.liquidity.blp < 75) || 
                                                                                     (state.liquidity.blp < 45 && state.liquidity.blp > 25) ||
-                                                                                    state.liquidity.blp > 45 && state.liquidity.blp < 55
+                                                                                    state.liquidity.blp > 45 && state.liquidity.blp < 55,
+                                                                    'very-strong-state': state.liquidity.blp <= 10 || state.liquidity.blp >= 90
                                                                 }"><p>LIQUIDITY</p></mat-grid-tile>
 
                                                 <!-- Reversal -->

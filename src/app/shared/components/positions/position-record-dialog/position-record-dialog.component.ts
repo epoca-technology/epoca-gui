@@ -232,7 +232,14 @@ export class PositionRecordDialogComponent implements OnInit, IPositionRecordDia
         });
 		annotations.yaxis!.push({
             y: this.record.take_profit_price_4,
-            y2: this.record.take_profit_price_4 + (this.record.side == "LONG" ? 2000: -2000),
+            y2: this.record.take_profit_price_5,
+            borderColor: "#004D40",
+            fillColor: "#004D40",
+            strokeDashArray: 0
+        });
+		annotations.yaxis!.push({
+            y: this.record.take_profit_price_5,
+            y2: this.record.take_profit_price_5 + (this.record.side == "LONG" ? 100000: -100000),
             borderColor: "#004D40",
             fillColor: "#004D40",
             strokeDashArray: 0
@@ -431,10 +438,6 @@ export class PositionRecordDialogComponent implements OnInit, IPositionRecordDia
      * Displays the position context dialog.
      */
     public displayPositionContextDialog(): void {
-		if (!this.record || this.record.coin.symbol != "BTCUSDT") {
-			this._app.error("The context can only be visualized on BTCUSDT positions.");
-			return;
-		}
 		this.dialog.open(PositionContextDialogComponent, {
 			hasBackdrop: this._app.layout.value != "mobile",
 			panelClass: "large-dialog",
