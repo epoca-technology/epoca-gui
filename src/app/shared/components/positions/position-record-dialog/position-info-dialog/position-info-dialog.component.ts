@@ -22,6 +22,7 @@ export class PositionInfoDialogComponent implements OnInit, IPositionInfoDialogC
 	public takeProfit2Distance: number|undefined;
 	public takeProfit3Distance: number|undefined;
 	public takeProfit4Distance: number|undefined;
+	public takeProfit5Distance: number|undefined;
 	public stopLossDistance: number|undefined;
 
 	// ROE
@@ -58,6 +59,7 @@ export class PositionInfoDialogComponent implements OnInit, IPositionInfoDialogC
 		this.takeProfit2Distance = this.calculateTakeProfitDistance(this.record.side, this.record.mark_price, this.record.take_profit_price_2);
 		this.takeProfit3Distance = this.calculateTakeProfitDistance(this.record.side, this.record.mark_price, this.record.take_profit_price_3);
 		this.takeProfit4Distance = this.calculateTakeProfitDistance(this.record.side, this.record.mark_price, this.record.take_profit_price_4);
+		this.takeProfit5Distance = this.calculateTakeProfitDistance(this.record.side, this.record.mark_price, this.record.take_profit_price_5);
 
 		// Calculate the stop loss distance
 		const stopLossDistance: number = <number>this._utils.calculatePercentageChange(this.record.mark_price, this.record.stop_loss_price);

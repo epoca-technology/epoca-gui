@@ -19,7 +19,6 @@ export class SignalPoliciesDialogComponent implements OnInit, ISignalPoliciesDia
 
 	// Helpers
 	public longTrendSumMenuItems = [
-		{name: "Any Trend Sum", value: 0},
 		{name: "Trend Sum >= 0.05", value: 0.05},
 		{name: "Trend Sum >= 0.1", value: 0.1},
 		{name: "Trend Sum >= 0.25", value: 0.25},
@@ -29,7 +28,7 @@ export class SignalPoliciesDialogComponent implements OnInit, ISignalPoliciesDia
 		{name: "Trend Sum >= 1.5", value: 1.5},
 	]
 	public longCancellationTrendSumMenuItems = [
-		{name: "Any Trend Sum", value: 0},
+		{name: "Trend Sum <= -0.15", value: -0.15},
 		{name: "Trend Sum <= -0.25", value: -0.25},
 		{name: "Trend Sum <= -0.5", value: -0.5},
 		{name: "Trend Sum <= -0.75", value: -0.75},
@@ -40,7 +39,6 @@ export class SignalPoliciesDialogComponent implements OnInit, ISignalPoliciesDia
 		{name: "Trend Sum <= -3", value: -3},
 	]
 	public shortTrendSumMenuItems = [
-		{name: "Any Trend Sum", value: 0},
 		{name: "Trend Sum <= -0.05", value: -0.05},
 		{name: "Trend Sum <= -0.1", value: -0.1},
 		{name: "Trend Sum <= -0.25", value: -0.25},
@@ -50,7 +48,7 @@ export class SignalPoliciesDialogComponent implements OnInit, ISignalPoliciesDia
 		{name: "Trend Sum <= -1.5", value: -1.5},
 	]
 	public shortCancellationTrendSumMenuItems = [
-		{name: "Any Trend Sum", value: 0},
+		{name: "Trend Sum >= 0.15", value: 0.15},
 		{name: "Trend Sum >= 0.25", value: 0.25},
 		{name: "Trend Sum >= 0.5", value: 0.5},
 		{name: "Trend Sum >= 0.75", value: 0.75},
