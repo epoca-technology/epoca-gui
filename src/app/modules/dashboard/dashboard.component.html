@@ -416,9 +416,9 @@
                                                 </mat-grid-tile>
 
                                                 <!-- Coins Direction -->
-                                                <mat-grid-tile class="clickable" role="button" matRipple
+                                                <mat-grid-tile class="clickable {{generalCoinClass}}" role="button" matRipple
                                                                 (click)="displayCoinDialog()"
-                                                                [ngClass]="generalCoinClass"><p>COINS</p></mat-grid-tile>
+                                                                [ngClass]="{'weak-state': generalCoinClass == 'neutral-neutral'}"><p>COINS</p></mat-grid-tile>
 
                                                 <!-- Liquidity -->
                                                 <mat-grid-tile class="clickable" role="button" matRipple
@@ -467,8 +467,9 @@
     
                                                     <!-- Coins -->
                                                     <mat-grid-tile *ngFor="let symbol of visibleSymbols" 
-                                                                    class="clickable" role="button" matRipple fxLayout="row" fxLayoutAlign="center center"
-                                                                    [ngClass]="coinsTileClasses[symbol]" 
+                                                                    class="clickable {{coinsTileClasses[symbol]}}" role="button" matRipple 
+                                                                    fxLayout="row" fxLayoutAlign="center center"
+                                                                    [ngClass]="{'weak-state': coinsTileClasses[symbol] == 'neutral-neutral'}" 
                                                                     (click)="displayCoinDialog(symbol)">
                                                         <p style="max-width:37px" class="truncate">{{symbol | baseAssetName}}</p>
                                                     </mat-grid-tile>
@@ -494,13 +495,8 @@
                                                 <h4 class="margin-bottom">Coins</h4>
                                                 <mat-grid-list [rowHeight]="'70px'" [cols]="3" gutterSize="1px">
                                                     <mat-grid-tile *ngFor="let symbol of symbols" 
-                                                                    class="clickable" role="button" matRipple fxLayout="row" fxLayoutAlign="center center"
-                                                                    [ngClass]="{
-                                                                        'buy-action-container': state.coins.sbs[symbol].s > 0,
-                                                                        'sell-action-container': state.coins.sbs[symbol].s < 0,
-                                                                        'neutral-action-container': state.coins.sbs[symbol].s == 0,
-                                                                        'weak-state': state.coins.sbs[symbol].s != 2 && state.coins.sbs[symbol].s != -2
-                                                                    }" 
+                                                                    class="clickable {{coinsTileClasses[symbol]}}" role="button" matRipple fxLayout="row" fxLayoutAlign="center center"
+                                                                    [ngClass]="{'weak-state': coinsTileClasses[symbol] == 'neutral-neutral'}" 
                                                                     (click)="displayCoinDialog(symbol)">
                                                         <p style="max-width:37px" class="truncate">{{symbol | baseAssetName}}</p>
                                                     </mat-grid-tile>
