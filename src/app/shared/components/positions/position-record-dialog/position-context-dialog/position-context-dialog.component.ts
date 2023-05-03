@@ -168,13 +168,13 @@ export class PositionContextDialogComponent implements OnInit, IPositionContextD
 			// Add the stop loss
 			annotations.yaxis!.push({
 				y: this.record.entry_price,
-				y2: this.record.stop_loss_price,
+				y2: this.record.liquidation_price,
 				borderColor: "#FFCDD2",
 				fillColor: "#FFCDD2",
 				strokeDashArray: 0
 			});
 			annotations.yaxis!.push({
-				y: this.record.stop_loss_price,
+				y: this.record.liquidation_price,
 				borderColor: "#B71C1C",
 				fillColor: "#B71C1C",
 				strokeDashArray: 0,

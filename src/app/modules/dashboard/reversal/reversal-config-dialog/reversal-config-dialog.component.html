@@ -95,11 +95,20 @@
                                        formControlName="score_weights_coins"
                                        autocomplete="off"
                                        [appDisableControl]="submitting"
-                                       placeholder="e.g. 60">
+                                       placeholder="e.g. 35">
                             </mat-form-field>
                         </div>
                         <span fxFlex="5"></span>
                         <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Coins BTC</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="score_weights_coins_btc"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 25">
+                            </mat-form-field>
                         </div>
                     </div>
                 </div>

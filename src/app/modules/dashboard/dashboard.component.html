@@ -331,41 +331,53 @@
                                         <!-- Positions -->
                                         <div class="global-indicators-section">
                                             <h4 class="margin-bottom show-on-mobile">Active Positions</h4>
-                                            <mat-grid-list [cols]="3" [rowHeight]="layout == 'desktop' ? '45px': '70px'" gutterSize="1px">
-                                                <!-- Active Positions -->
-                                                <mat-grid-tile *ngFor="let pos of positions" class="clickable" role="button" matRipple
-                                                    (click)="displayPositionRecordDialog(pos.id)"
-                                                    [ngClass]="{
-                                                        'buy-action-container': pos.sd == 'LONG',
-                                                        'sell-action-container': pos.sd == 'SHORT',
-                                                        'weak-state': pos.g > 0 && pos.g < 0.4,
-                                                        'very-weak-state': pos.g <= 0,
-                                                        'very-strong-state': pos.g >= 1
-                                                    }">
-                                                    <p>{{pos.s | baseAssetName}} {{pos.g > 0 ? '+': ''}}{{pos.g | number:'1.0-1'}}%</p>
+                                            <mat-grid-list [cols]="2" [rowHeight]="layout == 'desktop' ? '44px': '70px'" gutterSize="1px">
+                                                <!-- Long Position -->
+                                                <mat-grid-tile *ngIf="!activePositions || !activePositions.LONG" 
+                                                                (click)="displayBusinessMenu()"
+                                                                class="buy-action-container very-weak-state clickable" role="button" matRipple>
+                                                    <p>LONG: none</p>
+                                                </mat-grid-tile>
+                                                <mat-grid-tile *ngIf="activePositions && activePositions.LONG" 
+                                                                class="buy-action-container clickable" role="button" matRipple
+                                                                (click)="displayPositionRecordDialog(activePositions.LONG.id)"
+                                                                [ngClass]="{
+                                                                    'weak-state': activePositions.LONG.g > 0 && activePositions.LONG.g < 0.45,
+                                                                    'very-weak-state': activePositions.LONG.g <= 0,
+                                                                    'very-strong-state': activePositions.LONG.g >= 1
+                                                                }">
+                                                    <p>{{activePositions.LONG.s | baseAssetName}}: {{activePositions.LONG.g > 0 ? '+': ''}}{{activePositions.LONG.g | number:'1.0-2'}}%</p>
                                                 </mat-grid-tile>
 
-                                                <!-- Placeholders -->
-                                                <mat-grid-tile *ngFor="let placeholder of positionsPlaceholders" class="placeholder-action-container"></mat-grid-tile>
+
+                                                <!-- Short Position -->
+                                                <mat-grid-tile *ngIf="!activePositions || !activePositions.SHORT" 
+                                                                (click)="displayBusinessMenu()"
+                                                                class="sell-action-container very-weak-state clickable" role="button" matRipple>
+                                                    <p>SHORT: none</p>
+                                                </mat-grid-tile>
+                                                <mat-grid-tile *ngIf="activePositions && activePositions.SHORT" 
+                                                                class="sell-action-container clickable" role="button" matRipple
+                                                                (click)="displayPositionRecordDialog(activePositions.SHORT.id)"
+                                                                [ngClass]="{
+                                                                    'weak-state': activePositions.SHORT.g > 0 && activePositions.SHORT.g < 0.45,
+                                                                    'very-weak-state': activePositions.SHORT.g <= 0,
+                                                                    'very-strong-state': activePositions.SHORT.g >= 1
+                                                                }">
+                                                    <p>{{activePositions.SHORT.s | baseAssetName}}: {{activePositions.SHORT.g > 0 ? '+': ''}}{{activePositions.SHORT.g | number:'1.0-2'}}%</p>
+                                                </mat-grid-tile>
                                             </mat-grid-list>
                                         </div>
 
                                         <div class="divider show-on-mobile"></div>
 
+
                                         <!-- General Indicators -->
                                         <div class="global-indicators-section">
                                             <h4 class="show-on-mobile margin-bottom">General Indicators</h4>
-                                            <mat-grid-list [cols]="3" [rowHeight]="layout == 'desktop' ? '45px': '70px'" gutterSize="1px">
+                                            <mat-grid-list [cols]="2" [rowHeight]="layout == 'desktop' ? '45px': '70px'" gutterSize="1px">
 
-                                                <!-- Volume -->
-                                                <mat-grid-tile class="clickable" role="button" matRipple
-                                                               (click)="displayVolumeDialog()"
-                                                                [ngClass]="{
-                                                                    'buy-action-container': state.volume > 0,
-                                                                    'neutral-action-container': state.volume == 0,
-                                                                    'weak-state': state.volume < 2,
-                                                                    'very-strong-state': state.volume == 3
-                                                                }"><p>VOLUME</p></mat-grid-tile>
+
                                                                 
                                                 <!-- KeyZones -->
                                                 <mat-grid-tile *ngIf="!state.keyzones.event" 
@@ -387,28 +399,6 @@
                                                             <mat-icon>vertical_align_top</mat-icon> <p>RES.</p>
                                                 </mat-grid-tile>
 
-                                                <!-- Coins Direction -->
-                                                <mat-grid-tile class="clickable" role="button" matRipple
-                                                               (click)="displayCoinsStateSummaryDialog()"
-                                                                [ngClass]="{
-                                                                    'buy-action-container': state.coins.cd > 0,
-                                                                    'sell-action-container': state.coins.cd < 0,
-                                                                    'neutral-action-container': state.coins.cd == 0,
-                                                                    'weak-state': state.coins.cd != 2 && state.coins.cd != -2
-                                                                }"><p>COINS</p></mat-grid-tile>
-
-                                                <!-- Liquidity -->
-                                                <mat-grid-tile class="clickable" role="button" matRipple
-                                                                (click)="displayLiquidityDialog()"
-                                                                [ngClass]="{
-                                                                    'buy-action-container': state.liquidity.blp >= 55,
-                                                                    'sell-action-container': state.liquidity.blp <= 45,
-                                                                    'neutral-action-container': state.liquidity.blp > 45 && state.liquidity.blp < 55,
-                                                                    'weak-state':   (state.liquidity.blp >= 55 && state.liquidity.blp < 75) || 
-                                                                                    (state.liquidity.blp < 45 && state.liquidity.blp > 25) ||
-                                                                                    state.liquidity.blp > 45 && state.liquidity.blp < 55,
-                                                                    'very-strong-state': state.liquidity.blp <= 10 || state.liquidity.blp >= 90
-                                                                }"><p>LIQUIDITY</p></mat-grid-tile>
 
                                                 <!-- Reversal -->
                                                 <mat-grid-tile *ngIf="state.reversal.k == 0" 
@@ -424,8 +414,39 @@
                                                                 (click)="displayReversalState()">
                                                                 <p>{{state.reversal.e ? 'REVERSED': 'REVERSAL'}}</p>
                                                 </mat-grid-tile>
+
+                                                <!-- Coins Direction -->
+                                                <mat-grid-tile class="clickable" role="button" matRipple
+                                                                (click)="displayCoinDialog()"
+                                                                [ngClass]="generalCoinClass"><p>COINS</p></mat-grid-tile>
+
+                                                <!-- Liquidity -->
+                                                <mat-grid-tile class="clickable" role="button" matRipple
+                                                                (click)="displayLiquidityDialog()"
+                                                                [ngClass]="{
+                                                                    'buy-action-container': state.liquidity.blp >= 55,
+                                                                    'sell-action-container': state.liquidity.blp <= 45,
+                                                                    'neutral-action-container': state.liquidity.blp > 45 && state.liquidity.blp < 55,
+                                                                    'weak-state':   (state.liquidity.blp >= 55 && state.liquidity.blp < 75) || 
+                                                                                    (state.liquidity.blp < 45 && state.liquidity.blp > 25) ||
+                                                                                    state.liquidity.blp > 45 && state.liquidity.blp < 55,
+                                                                    'very-strong-state': state.liquidity.blp <= 10 || state.liquidity.blp >= 90
+                                                                }"><p>LIQUIDITY</p></mat-grid-tile>
+
+
+                                                <!-- Volume -->
+                                                <mat-grid-tile class="clickable" role="button" matRipple
+                                                               (click)="displayVolumeDialog()"
+                                                                [ngClass]="{
+                                                                    'buy-action-container': state.volume > 0,
+                                                                    'neutral-action-container': state.volume == 0,
+                                                                    'weak-state': state.volume < 2,
+                                                                    'very-strong-state': state.volume == 3
+                                                                }"><p>VOLUME</p></mat-grid-tile>
                                                 
                                                 <!-- Placeholders -->
+                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
+                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
                                                 <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
                                             </mat-grid-list>
                                         </div>
@@ -447,16 +468,9 @@
                                                     <!-- Coins -->
                                                     <mat-grid-tile *ngFor="let symbol of visibleSymbols" 
                                                                     class="clickable" role="button" matRipple fxLayout="row" fxLayoutAlign="center center"
-                                                                    [ngClass]="{
-                                                                        'buy-action-container': state.coins.sbs[symbol].s > 0,
-                                                                        'sell-action-container': state.coins.sbs[symbol].s < 0,
-                                                                        'neutral-action-container': state.coins.sbs[symbol].s == 0,
-                                                                        'weak-state': state.coins.sbs[symbol].s != 2 && state.coins.sbs[symbol].s != -2,
-                                                                        'very-strong-state': state.coins.sbs[symbol].se == 2 || state.coins.sbs[symbol].se == -2
-                                                                    }" 
+                                                                    [ngClass]="coinsTileClasses[symbol]" 
                                                                     (click)="displayCoinDialog(symbol)">
-                                                        <mat-icon *ngIf="state.coins.sbs[symbol].se != 0" class="state-icon" [svgIcon]="_ms.coinStateIcons[state.coins.sbs[symbol].se]"></mat-icon>
-                                                        <p style="max-width:35px" class="truncate">{{symbol | baseAssetName}}</p>
+                                                        <p style="max-width:37px" class="truncate">{{symbol | baseAssetName}}</p>
                                                     </mat-grid-tile>
     
     
@@ -485,12 +499,10 @@
                                                                         'buy-action-container': state.coins.sbs[symbol].s > 0,
                                                                         'sell-action-container': state.coins.sbs[symbol].s < 0,
                                                                         'neutral-action-container': state.coins.sbs[symbol].s == 0,
-                                                                        'weak-state': state.coins.sbs[symbol].s != 2 && state.coins.sbs[symbol].s != -2,
-                                                                        'very-strong-state': state.coins.sbs[symbol].se == 2 || state.coins.sbs[symbol].se == -2
+                                                                        'weak-state': state.coins.sbs[symbol].s != 2 && state.coins.sbs[symbol].s != -2
                                                                     }" 
                                                                     (click)="displayCoinDialog(symbol)">
-                                                        <mat-icon *ngIf="state.coins.sbs[symbol].se != 0" class="state-icon" [svgIcon]="_ms.coinStateIcons[state.coins.sbs[symbol].se]"></mat-icon>
-                                                        <p style="max-width:35px" class="truncate">{{symbol | baseAssetName}}</p>
+                                                        <p style="max-width:37px" class="truncate">{{symbol | baseAssetName}}</p>
                                                     </mat-grid-tile>
                                                 </mat-grid-list>
                                             </div>

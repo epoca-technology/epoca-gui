@@ -20,4 +20,5 @@ export interface IReversalStateUnpackedScore {
     volume: ISplitStateSeriesItem[],
     liquidity: ISplitStateSeriesItem[],
     coins: ISplitStateSeriesItem[],
+    coins_btc: ISplitStateSeriesItem[],
 }

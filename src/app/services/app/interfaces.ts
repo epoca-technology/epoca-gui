@@ -4,7 +4,7 @@ import {
     IEpochRecord, 
     IMarketState, 
     IPrediction,
-    IPositionHeadline,
+    IActivePositionHeadlines,
 } from "../../core";
 
 
@@ -21,7 +21,7 @@ export interface IAppService {
     guiVersion: BehaviorSubject<string|undefined|null>,
     epoch: BehaviorSubject<IEpochRecord|undefined|null>,
     prediction: BehaviorSubject<IPrediction|undefined|null>,
-    positions: BehaviorSubject<IPositionHeadline[]|undefined|null>,
+    positions: BehaviorSubject<IActivePositionHeadlines|undefined|null>,
     marketState: BehaviorSubject<IMarketState|undefined|null>,
     apiErrors: BehaviorSubject<number|undefined|null>,
     refreshAppBulk(): Promise<void>,

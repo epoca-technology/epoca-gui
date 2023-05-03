@@ -73,6 +73,63 @@
 
 
 
+
+
+/* Coins' States */
+
+// Strong Sell Variations
+.strong-sell-strong-sell { @extend .action-container; background: linear-gradient(90deg, #B71C1C 50%, #B71C1C 50%);}
+.strong-sell-sell { @extend .action-container; background: linear-gradient(90deg, #B71C1C 50%, #E53935 50%);}
+.strong-sell-neutral { @extend .action-container; background: linear-gradient(90deg, #B71C1C 50%, #78909C 50%);}
+.strong-sell-buy { @extend .action-container; background: linear-gradient(90deg, #B71C1C 50%, #00897B 50%);}
+.strong-sell-strong-buy { @extend .action-container; background: linear-gradient(90deg, #B71C1C 50%, #00695C 50%);}
+
+// Sell Variations
+.sell-strong-sell { @extend .action-container; background: linear-gradient(90deg, #E53935 50%, #B71C1C 50%);}
+.sell-sell { @extend .action-container; background: linear-gradient(90deg, #E53935 50%, #E53935 50%);}
+.sell-neutral { @extend .action-container; background: linear-gradient(90deg, #E53935 50%, #78909C 50%);}
+.sell-buy { @extend .action-container; background: linear-gradient(90deg, #E53935 50%, #00897B 50%);}
+.sell-strong-buy { @extend .action-container; background: linear-gradient(90deg, #E53935 50%, #00695C 50%);}
+
+// Neutral Variations
+.neutral-strong-sell { @extend .action-container; background: linear-gradient(90deg, #78909C 50%, #B71C1C 50%);}
+.neutral-sell { @extend .action-container; background: linear-gradient(90deg, #78909C 50%, #E53935 50%);}
+.neutral-neutral { @extend .action-container; background: linear-gradient(90deg, #78909C 50%, #78909C 50%);}
+.neutral-buy { @extend .action-container; background: linear-gradient(90deg, #78909C 50%, #00897B 50%);}
+.neutral-strong-buy { @extend .action-container; background: linear-gradient(90deg, #78909C 50%, #00695C 50%);}
+
+// Buy Variations
+.buy-strong-sell { @extend .action-container; background: linear-gradient(90deg, #00897B 50%, #B71C1C 50%);}
+.buy-sell { @extend .action-container; background: linear-gradient(90deg, #00897B 50%, #E53935 50%);}
+.buy-neutral { @extend .action-container; background: linear-gradient(90deg, #00897B 50%, #78909C 50%);}
+.buy-buy { @extend .action-container; background: linear-gradient(90deg, #00897B 50%, #00897B 50%);}
+.buy-strong-buy { @extend .action-container; background: linear-gradient(90deg, #00897B 50%, #00695C 50%);}
+
+// Strong Buy Variations
+.strong-buy-strong-sell { @extend .action-container; background: linear-gradient(90deg, #00695C 50%, #B71C1C 50%);}
+.strong-buy-sell { @extend .action-container; background: linear-gradient(90deg, #00695C 50%, #E53935 50%);}
+.strong-buy-neutral { @extend .action-container; background: linear-gradient(90deg, #00695C 50%, #78909C 50%);}
+.strong-buy-buy { @extend .action-container; background: linear-gradient(90deg, #00695C 50%, #00897B 50%);}
+.strong-buy-strong-buy { @extend .action-container; background: linear-gradient(90deg, #00695C 50%, #00695C 50%);}
+
+
+
+.left-sell {
+    @extend .action-container;
+    background-color: var(--error-color);
+    background-position: left center;
+    background-size: 100% 50%;
+    background: linear-gradient(90deg, var(--error-color) 50%, var(--neutral-color) 50%);
+}
+
+.right-neutral {
+    @extend .action-container;
+    background: linear-gradient(90deg, var(--neutral-color) 50%, var(--neutral-color) 50%);
+    opacity: 0.8;
+}
+
+
+
 /* Responsiveness */
 
 

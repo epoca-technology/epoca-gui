@@ -158,9 +158,9 @@
                     <span fxFlex></span>
                     <div matTooltip="Liquidation Price (Distance)" class="align-right" 
                         [ngClass]="{
-                            'success-color': liquidationDistance >= 1,
-                            'light-text': liquidationDistance >= 0.7 && liquidationDistance < 1,
-                            'error-color': liquidationDistance < 0.7
+                            'success-color': liquidationDistance >= 0.5,
+                            'light-text': liquidationDistance >= 0.25 && liquidationDistance < 0.5,
+                            'error-color': liquidationDistance < 0.25
                         }">
                         <p>{{record.liquidation_price | currency: 'USD' : 'symbol' : '1.0-' + record.coin.pricePrecision}}</p>
                         <p class="ts-xs">{{liquidationDistance}}% away</p>
@@ -179,6 +179,7 @@
                 <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
                     <p class="light-text ts-m truncate">Take Profit 1</p>
                     <span fxFlex></span>
+                    <mat-icon *ngIf="record.reductions.take_profit_1" class="reduction-icon" matTooltip="Reduction Executed">crop</mat-icon>
                     <div matTooltip="Take Profit Level 1"
                         class="align-right" 
                         [ngClass]="{'success-color': !takeProfit1Distance, 'light-text': takeProfit1Distance}">
@@ -191,6 +192,7 @@
                 <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
                     <p class="light-text ts-m truncate">Take Profit 2</p>
                     <span fxFlex></span>
+                    <mat-icon *ngIf="record.reductions.take_profit_2" class="reduction-icon" matTooltip="Reduction Executed">crop</mat-icon>
                     <div matTooltip="Take Profit Level 2"
                         class="align-right" 
                         [ngClass]="{'success-color': !takeProfit2Distance, 'light-text': takeProfit2Distance}">
@@ -203,6 +205,7 @@
                 <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
                     <p class="light-text ts-m truncate">Take Profit 3</p>
                     <span fxFlex></span>
+                    <mat-icon *ngIf="record.reductions.take_profit_3" class="reduction-icon" matTooltip="Reduction Executed">crop</mat-icon>
                     <div matTooltip="Take Profit Level 3"
                         class="align-right" 
                         [ngClass]="{'success-color': !takeProfit3Distance, 'light-text': takeProfit3Distance}">
@@ -215,6 +218,7 @@
                 <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
                     <p class="light-text ts-m truncate">Take Profit 4</p>
                     <span fxFlex></span>
+                    <mat-icon *ngIf="record.reductions.take_profit_4" class="reduction-icon" matTooltip="Reduction Executed">crop</mat-icon>
                     <div matTooltip="Take Profit Level 4"
                         class="align-right" 
                         [ngClass]="{'success-color': !takeProfit4Distance, 'light-text': takeProfit4Distance}">
@@ -227,6 +231,7 @@
                 <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
                     <p class="light-text ts-m truncate">Take Profit 5</p>
                     <span fxFlex></span>
+                    <mat-icon *ngIf="record.reductions.take_profit_5" class="reduction-icon" matTooltip="Reduction Executed">crop</mat-icon>
                     <div matTooltip="Take Profit Level 5"
                         class="align-right" 
                         [ngClass]="{'success-color': !takeProfit5Distance, 'light-text': takeProfit5Distance}">

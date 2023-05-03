@@ -24,7 +24,7 @@ export interface IMarketStateDialogComponent {
 
 
 
-export type IMarketStateModule = "window"|"trend"|"volume"|"coin";
+export type IMarketStateModule = "window"|"trend"|"volume"|"coin"|"coinBTC";
 
 
 export interface IMarketStateDialogConfig {

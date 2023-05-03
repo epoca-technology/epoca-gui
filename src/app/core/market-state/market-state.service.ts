@@ -460,10 +460,11 @@ export class MarketStateService implements IMarketStateService {
 	/**
 	 * Retrieves the full state of a coin by symbol.
 	 * @param symbol
+	 * @param btcPrice
 	 * @returns Promise<ICoinState>
 	 */
-	public getCoinFullState(symbol: string): Promise<ICoinState> { 
-		return this._api.request("get","marketState/getCoinFullState", {symbol: symbol}, true) 
+	public getCoinFullState(symbol: string, btcPrice: boolean): Promise<ICoinState> { 
+		return this._api.request("get","marketState/getCoinFullState", {symbol: symbol, btcPrice: btcPrice}, true) 
 	}
 
 
@@ -474,12 +475,24 @@ export class MarketStateService implements IMarketStateService {
 
 	/**
 	 * Retrieves the compressed state for all the coins.
-	 * @param symbol
 	 * @returns Promise<ICoinsCompressedState>
 	 */
 	public getCoinsCompressedState(): Promise<ICoinsCompressedState> { 
 		return this._api.request("get","marketState/getCoinsCompressedState", {}, true) 
 	}
+
+
+
+
+
+	/**
+	 * Retrieves the compressed state for all the coins in BTC.
+	 * @returns Promise<ICoinsCompressedState>
+	 */
+	public getCoinsBTCCompressedState(): Promise<ICoinsCompressedState> { 
+		return this._api.request("get","marketState/getCoinsBTCCompressedState", {}, true) 
+	}
+
 
 
 

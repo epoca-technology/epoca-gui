@@ -19,7 +19,7 @@ import {
 	ILineChartOptions, 
 	NavService,
 } from '../../../../services';
-import { CoinsStateSummaryDialogComponent } from '../../coins';
+import { CoinsStateSummaryDialogComponent, ICoinsStateSummaryConfig } from '../../coins';
 import { IReversalStateDialogComponent, IReversalStateUnpackedScore } from './interfaces';
 
 @Component({
@@ -37,6 +37,7 @@ export class ReversalStateDialogComponent implements OnInit, IReversalStateDialo
 	private color!: string;
 	public chart!: ILineChartOptions;
 	public coinsChart!: ILineChartOptions;
+	public coinsBTCChart!: ILineChartOptions;
 	public liquidityChart!: ILineChartOptions;
 	public volumeChart!: IBarChartOptions;
 
@@ -103,12 +104,13 @@ export class ReversalStateDialogComponent implements OnInit, IReversalStateDialo
 	 */
 	private updateCharts(): void {
 		// Unpack the score history
-		const { general, volume, liquidity, coins } = this.unpackScore();
+		const { general, volume, liquidity, coins, coins_btc } = this.unpackScore();
 
 		// If the charts have already been built, update the data
 		if (this.chart) {
 			this.chart.series = [ {data: general}];
 			this.coinsChart.series = [ {data: coins}];
+			this.coinsBTCChart.series = [ {data: coins_btc}];
 			this.liquidityChart.series = [ {data: liquidity}];
 			this.volumeChart.series = [ {data: volume}];
 		}
@@ -143,6 +145,20 @@ export class ReversalStateDialogComponent implements OnInit, IReversalStateDialo
 				this.layout == "desktop" ? 450: 350, 
 			);
 
+			// Build the coins btc chart
+			this.coinsBTCChart = this._chart.getLineChartOptions(
+				{ 
+					series: [
+						{ name: "CoinsBTC", data: coins_btc, color: this.color }
+					], 
+					stroke: {width: 3, curve: "straight"},
+					xaxis: {type: "datetime",tooltip: {enabled: false}, labels: {datetimeUTC: false}},
+					yaxis: {labels: {show: true}, tooltip: {enabled: true}},
+					title: { text: "CoinsBTC"}
+				}, 
+				this.layout == "desktop" ? 450: 350, 
+			);
+
 			// Build the liquidity chart
 			this.liquidityChart = this._chart.getLineChartOptions(
 				{ 
@@ -170,6 +186,7 @@ export class ReversalStateDialogComponent implements OnInit, IReversalStateDialo
 				undefined,
 				this.layout == "desktop" ? 250: 250, 
 			);
+			this.volumeChart.chart.zoom = {enabled: false};
 		}
 	}
 
@@ -193,6 +210,7 @@ export class ReversalStateDialogComponent implements OnInit, IReversalStateDialo
 		let volume: ISplitStateSeriesItem[] = [];
 		let liquidity: ISplitStateSeriesItem[] = [];
 		let coins: ISplitStateSeriesItem[] = [];
+		let coinsBTC: ISplitStateSeriesItem[] = [];
 
 		// Iterate over each history item
 		let lastTS: number = this.state.id;
@@ -205,6 +223,7 @@ export class ReversalStateDialogComponent implements OnInit, IReversalStateDialo
 			volume.push({ x: lastTS, y:  this.state.scr.v[i] });
 			liquidity.push({ x: lastTS, y:  this.state.scr.l[i] });
 			coins.push({ x: lastTS, y:  this.state.scr.c[i] });
+			coinsBTC.push({ x: lastTS, y:  this.state.scr.cb[i] });
 		}
 
 		// Pack and return the values
@@ -212,7 +231,8 @@ export class ReversalStateDialogComponent implements OnInit, IReversalStateDialo
 			general: general,
 			volume: volume,
 			liquidity: liquidity,
-			coins: coins
+			coins: coins,
+			coins_btc: coinsBTC
 		 }
 	}
 
@@ -281,7 +301,9 @@ export class ReversalStateDialogComponent implements OnInit, IReversalStateDialo
 		this.dialog.open(CoinsStateSummaryDialogComponent, {
 			hasBackdrop: this._app.layout.value != "mobile",
 			panelClass: "large-dialog",
-			data: state
+			data: <ICoinsStateSummaryConfig>{
+				compressedStates: state
+			}
 		})
     }
 
@@ -344,7 +366,10 @@ export class ReversalStateDialogComponent implements OnInit, IReversalStateDialo
 			`${this.state.end ? moment(this.state.end).format("dddd, MMMM Do, h:mm:ss a"): "Running..."}`,
 			`-----`,
 			`SCORE`,
-			`${this.state.scr.g[this.state.scr.g.length - 1]} / 100`,
+			`Open: ${this.state.scr.g[0]}`,
+			`High: ${this._utils.getMax(this.state.scr.g)}`,
+			`Low: ${this._utils.getMin(this.state.scr.g)}`,
+			`Close: ${this.state.scr.g[this.state.scr.g.length - 1]}`,
 		]);
 	}
 

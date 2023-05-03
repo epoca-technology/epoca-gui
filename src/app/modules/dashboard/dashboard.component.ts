@@ -19,10 +19,11 @@ import {
     IPredictionCandlestick,
     ISplitStateID,
     IMinifiedKeyZone,
-    IPositionHeadline,
     ILiquidityPeaks,
     ILiquiditySide,
     ILiquidityIntensity,
+    IActivePositionHeadlines,
+    IStateType,
 } from "../../core";
 import { 
     AppService, 
@@ -37,7 +38,7 @@ import { WindowConfigurationDialogComponent } from "./window-configuration-dialo
 import { KeyzonesConfigFormDialogComponent, KeyzonesDialogComponent, KeyzonesEventsDialogComponent } from "./keyzones";
 import { IMarketStateDialogConfig, MarketStateDialogComponent } from "./market-state-dialog";
 import { IBottomSheetMenuItem } from "../../shared/components/bottom-sheet-menu";
-import { CoinsDialogComponent, CoinsStateSummaryDialogComponent } from "./coins";
+import { CoinsDialogComponent, CoinsStateSummaryDialogComponent, ICoinsStateSummaryConfig } from "./coins";
 import { SignalPoliciesDialogComponent } from "./signal-policies-dialog";
 import { PositionHeadlinesDialogComponent } from "./positions";
 import { TrendConfigurationDialogComponent } from "./trend-configuration-dialog";
@@ -70,8 +71,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     private guiVersionSub?: Subscription;
 
     // Position
-    public positions: IPositionHeadline[] = [];
-    public positionsPlaceholders: number[] = [];
+    public activePositions: IActivePositionHeadlines = { LONG: null, SHORT: null };
     private positionsSub?: Subscription;
     private positionsLoaded: boolean = false;
 
@@ -109,6 +109,8 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     public coinPlaceholders: number[] = [];
     public activeSliceStart: number = 0;
     public activeSliceEnd: number = 0;
+    public generalCoinClass: string = "neutral-neutral";
+    public coinsTileClasses: {[symbol: string]: string} = {};
 
     // Reversal
     public reversalScore: number = 0;
@@ -161,9 +163,8 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
         // Subscribe to be position summary
         this.positionsSub = this._app.positions.subscribe((pos) => {
-            if (pos !== null) {
-                this.positions = pos || [];
-                this.positionsPlaceholders = Array(9 - this.positions.length).fill(0);
+            if (pos != null) {
+                this.activePositions = pos || { LONG: null, SHORT: null };
                 if (!this.positionsLoaded) {
                     this.positionsLoaded = true;
                     this.checkLoadState();
@@ -819,6 +820,33 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
         // Set the symbols
         this.symbols = symbols;
+
+        // Build the tile classes
+        this.generalCoinClass = `${this.getCoinTileClassName(this.state.coins.cd)}-${this.getCoinTileClassName(this.state.coinsBTC.cd)}`;
+        for (let sym of this.symbols) { this.coinsTileClasses[sym] = this.buildCSSClassForSymbol(sym) }
+    }
+
+
+
+    /**
+     * Builds the css class that will be placed on the coins' tiles.
+     * @param symbol 
+     * @returns string
+     */
+    private buildCSSClassForSymbol(symbol: string): string {
+        // Init the states
+        const usdState: IStateType = this.state.coins.sbs[symbol].s;
+        const btcState: IStateType = this.state.coinsBTC.sbs[symbol] ? this.state.coinsBTC.sbs[symbol].s: 0;
+
+        // Return the class build
+        return `${this.getCoinTileClassName(usdState)}-${this.getCoinTileClassName(btcState)}`
+    }
+    private getCoinTileClassName(state: IStateType): string {
+        if      (state == -2) { return "strong-sell" }
+        else if (state == -1) { return "sell" }
+        else if (state == 0)  { return "neutral" }
+        else if (state == 1)  { return "buy" }
+        else                  { return "strong-buy" }
     }
 
 
@@ -1297,32 +1325,76 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
     /**
 	 * Displays the coin dialog.
-     * @param symbol
+     * @param symbol?
 	 */
-    public displayCoinDialog(symbol: string): void {
-		this.dialog.open(MarketStateDialogComponent, {
-			hasBackdrop: this._app.layout.value != "mobile",
-			panelClass: "medium-dialog",
-			data: <IMarketStateDialogConfig>{
-                module: "coin",
-                symbol: symbol
-            }
-		})
+    public displayCoinDialog(symbol?: string): void {
+        // Display an individual coin through the market state dialog
+        if (typeof symbol == "string") {
+            const bs: MatBottomSheetRef = this._nav.displayBottomSheetMenu([
+                {
+                    icon: 'attach_money', 
+                    title: 'USDT Price', 
+                    description: `View ${symbol}'s price history in USDT.`, 
+                    response: "USDT"
+                },
+                {
+                    icon: 'currency_bitcoin',  
+                    title: 'Bitcoin Price', 
+                    description: `View ${symbol}'s price history in BTC.`, 
+                    response: "BTC"
+                },
+            ]);
+            bs.afterDismissed().subscribe((response: string|undefined) => {
+                if (typeof response == "string") {
+                    if (symbol == "BTCUSDT" && response == "BTC") {
+                        this._app.error("Bitcoin can only be displayed based on the USDT Price.");
+                        return;
+                    }
+                    this.dialog.open(MarketStateDialogComponent, {
+                        hasBackdrop: this._app.layout.value != "mobile",
+                        panelClass: "medium-dialog",
+                        data: <IMarketStateDialogConfig>{
+                            module: response == "USDT" ? "coin": "coinBTC",
+                            symbol: symbol
+                        }
+                    })
+                }
+            });
+        }
+
+        // Display the general dialog
+        else {
+            const bs: MatBottomSheetRef = this._nav.displayBottomSheetMenu([
+                {
+                    icon: 'attach_money', 
+                    title: 'USDT Price', 
+                    description: `View coins' summaries in USDT.`, 
+                    response: "USDT"
+                },
+                {
+                    icon: 'currency_bitcoin',  
+                    title: 'Bitcoin Price', 
+                    description: `View coins' summaries in BTC.`, 
+                    response: "BTC"
+                },
+            ]);
+            bs.afterDismissed().subscribe((response: string|undefined) => {
+                if (typeof response == "string") {
+                    this.dialog.open(CoinsStateSummaryDialogComponent, {
+                        hasBackdrop: this._app.layout.value != "mobile",
+                        panelClass: "large-dialog",
+                        data: <ICoinsStateSummaryConfig>{
+                            compressedStates: undefined,
+                            btcPrice: response == "BTC"
+                        }
+                    })
+                }
+            });
+        }
 	}
 
 
 
-
-    /**
-     * Displays the coins state summary dialog.
-     */
-    public displayCoinsStateSummaryDialog(): void {
-		this.dialog.open(CoinsStateSummaryDialogComponent, {
-			hasBackdrop: this._app.layout.value != "mobile",
-			panelClass: "large-dialog",
-			data: undefined
-		})
-    }
 
 
 

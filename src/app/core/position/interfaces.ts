@@ -128,7 +128,13 @@ export interface ITakeProfitLevel {
      * The maximum Gain Drawdown% allowed in the level. If this requirement is not met, 
      * the position is closed.
      */
-    max_gain_drawdown: number
+    max_gain_drawdown: number,
+
+    /**
+     * The size of the chunk that will be closed once the take profit level is hit. 
+     * This functionality can be disabled on a level by setting 0.
+     */
+    reduction_size_on_contact: number
 }
 
 
@@ -169,13 +175,6 @@ export interface IPositionStrategy {
      * the position cannot be opened.
      */
     position_size: number,
-
-    /**
-     * Positions Limit
-     * The system can handle up to 9 simultaneous positions. However, this limit can
-     * be changed by the user at any time.
-     */
-    positions_limit: number,
 
     /**
      * Profit Optimization Strategy
@@ -279,21 +278,40 @@ export interface IPositionGainState {
 
 
 /**
- * Stop Lossed Positions
- * When a position looses, it stores the essential data in order to ensure
- * that if a position for the side was to be re-opened, the price must be 
+ * Position Interactions
+ * When a position is opened, it stores the essential data in order to ensure
+ * that if another position for the side was to be opened, the price must be 
  * better.
  */
-export interface IStopLossedPositions {
-    LONG: {[symbol: string]: IStopLossedPositionBySide},
-    SHORT: {[symbol: string]: IStopLossedPositionBySide},
+export interface IPositionInteractions {
+    LONG: ISidePositionInteraction,
+    SHORT: ISidePositionInteraction,
 }
-export interface IStopLossedPositionBySide {
-    // The price at which the position stop lossed
+export interface ISidePositionInteraction {
+    // The price that needs to be improved by another position to be opened
     price: number,
 
-    // The time at which the stop lossed position fades away
+    // The time at which the interaction fades away
     until: number
+}
+
+
+
+
+
+
+/**
+ * Active Positions
+ * The system can manage 1 position per side at a time and is stored in memory
+ * until the positions is closed and then stored in the db.
+ */
+export interface IActivePositions {
+    LONG: IPositionRecord|null,
+    SHORT: IPositionRecord|null,
+}
+export interface IActivePositionHeadlines {
+    LONG: IPositionHeadline|null,
+    SHORT: IPositionHeadline|null,
 }
 
 
@@ -393,6 +411,15 @@ export interface IPositionRecord {
     take_profit_price_3: number,
     take_profit_price_4: number,
     take_profit_price_5: number,
+
+    // The reductions that have been applied to the position
+    reductions: {
+        take_profit_1: boolean,
+        take_profit_2: boolean,
+        take_profit_3: boolean,
+        take_profit_4: boolean,
+        take_profit_5: boolean,
+    }
 
     // The price in which the position is labeled as "unsuccessful" and is ready to be closed.
     stop_loss_price: number,

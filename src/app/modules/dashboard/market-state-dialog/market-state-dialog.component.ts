@@ -32,8 +32,6 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 	public activeSplitID: ISplitStateID = "s100";
 	public stateAverage!: IStateType;
 	public states!: ISplitStates;
-	public stateEvent?: IStateType;
-	public stateEventTime: number|null = null; // <- Only used by the coin module
 	private series!: ISplitStateSeriesItem[];
 	private seriesName!: string;
 	public lineChart?: ILineChartOptions;
@@ -73,6 +71,7 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 			else if (this.module == "trend") { this.initTrend() }
 			else if (this.module == "volume") { await this.initVolume() }
 			else if (this.module == "coin") { await this.initCoin() }
+			else if (this.module == "coinBTC") { await this.initCoinBTC() }
 		} catch (e) {
 			this._app.error(e);
 			setTimeout(() => { this.close() }, 500);
@@ -210,17 +209,13 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 		this.title = this.config.symbol!;
 
 		// Retrieve the coin's state
-		const state: ICoinState = await this._ms.getCoinFullState(this.config.symbol!);
+		const state: ICoinState = await this._ms.getCoinFullState(this.config.symbol!, false);
 		
 		// Set the state average
 		this.stateAverage = state.s;
 
 		// Set the splits
 		this.states = state.ss;
-
-		// Set the state event
-		this.stateEvent = state.se;
-		this.stateEventTime = state.set;
 
 		// Build the series
 		this.seriesName = "USDT";
@@ -230,6 +225,32 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 		this.applySplit(this.activeSplitID);
 	}
 
+
+
+
+
+
+
+	public async initCoinBTC(): Promise<void> {
+		// Set the title
+		this.title = this.config.symbol!;
+
+		// Retrieve the coin's state
+		const state: ICoinState = await this._ms.getCoinFullState(this.config.symbol!, true);
+		
+		// Set the state average
+		this.stateAverage = state.s;
+
+		// Set the splits
+		this.states = state.ss;
+
+		// Build the series
+		this.seriesName = "BTC";
+		this.series = state.w;
+
+		// Finally, apply the split
+		this.applySplit(this.activeSplitID);
+	}
 
 
 
@@ -467,7 +488,7 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 		// Init the content
 		let content: string[] = [
 			`CURRENT VALUE`,
-			this._utils.formatNumber(currentValue)
+			this._utils.formatNumber(currentValue, 8)
 		];
 
 		// Add the date range if available
@@ -485,19 +506,6 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 			content.push(`Mean: $${this._utils.formatNumber(this.volumeState.m)}`);
 			content.push(`Mean Medium: $${this._utils.formatNumber(this.volumeState.mm)}`);
 			content.push(`Mean High: $${this._utils.formatNumber(this.volumeState.mh)}`);
-		};
-
-		// If it is a coin, add the state event
-		if (this.module == "coin") {
-			content.push("-----");
-			content.push("COIN STATE EVENT");
-			let kind: string = "None";
-			if 		(this.stateEvent == 2) { kind = "Strong Resistance Reversal"}
-			else if (this.stateEvent == 1) { kind = "Resistance Reversal"}
-			else if (this.stateEvent == -1) { kind = "Support Reversal"}
-			else if (this.stateEvent == -2) { kind = "Strong Support Reversal"}
-			content.push(`Kind: ${kind}`);
-			content.push(`Issued: ${this.stateEventTime ? moment(this.stateEventTime).format("dddd, MMMM Do, h:mm:ss a"): 'None'}`);
 		};
 
 		// Finally, display the tooltip

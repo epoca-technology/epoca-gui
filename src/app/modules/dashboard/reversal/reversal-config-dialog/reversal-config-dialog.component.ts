@@ -40,6 +40,7 @@ export class ReversalConfigDialogComponent implements OnInit, IReversalConfigDia
 				score_weights_volume: new FormControl(this.config.score_weights.volume, [ Validators.required, Validators.min(1), Validators.max(100) ]),
 				score_weights_liquidity: new FormControl(this.config.score_weights.liquidity, [ Validators.required, Validators.min(1), Validators.max(100) ]),
 				score_weights_coins: new FormControl(this.config.score_weights.coins, [ Validators.required, Validators.min(1), Validators.max(100) ]),
+				score_weights_coins_btc: new FormControl(this.config.score_weights.coins_btc, [ Validators.required, Validators.min(1), Validators.max(100) ]),
 			});
 		} catch (e) {
 			this._app.error(e);
@@ -56,6 +57,7 @@ export class ReversalConfigDialogComponent implements OnInit, IReversalConfigDia
 	get score_weights_volume(): AbstractControl { return <AbstractControl>this.form.get("score_weights_volume") }
 	get score_weights_liquidity(): AbstractControl { return <AbstractControl>this.form.get("score_weights_liquidity") }
 	get score_weights_coins(): AbstractControl { return <AbstractControl>this.form.get("score_weights_coins") }
+	get score_weights_coins_btc(): AbstractControl { return <AbstractControl>this.form.get("score_weights_coins_btc") }
 
 
 
@@ -93,6 +95,7 @@ export class ReversalConfigDialogComponent implements OnInit, IReversalConfigDia
 							volume: this.score_weights_volume.value,
 							liquidity: this.score_weights_liquidity.value,
 							coins: this.score_weights_coins.value,
+							coins_btc: this.score_weights_coins_btc.value,
 						};
 
 						// Set Submission State

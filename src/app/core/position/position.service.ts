@@ -9,7 +9,8 @@ import {
 	IPositionHeadline,
 	IPositionActionKind,
 	IPositionActionRecord,
-	IEstimatedPositionFees
+	IEstimatedPositionFees,
+	IBinancePositionSide
 } from './interfaces';
 
 @Injectable({
@@ -103,13 +104,13 @@ export class PositionService implements IPositionService {
 
 
 	/**
-	 * Closes an active position for the given symbol.
-	 * @param symbol
+	 * Closes an active position for the given side.
+	 * @param side
 	 * @param otp
 	 * @returns Promise<void>
 	 */
-	public closePosition(symbol: string, otp: string): Promise<void> { 
-		return this._api.request("post","position/closePosition", {symbol: symbol}, true, otp);
+	public closePosition(side: IBinancePositionSide, otp: string): Promise<void> { 
+		return this._api.request("post","position/closePosition", {side: side}, true, otp);
 	}
 
 

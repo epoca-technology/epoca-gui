@@ -8,3 +8,11 @@ export interface ICoinsStateSummaryDialogComponent {
     displayTooltip(): void,
     close(): void
 }
+
+
+
+
+export interface ICoinsStateSummaryConfig {
+    compressedStates?: ICoinsCompressedState,
+    btcPrice?: boolean
+}

@@ -9,7 +9,7 @@ import {
 	UtilsService 
 } from '../../../../core';
 import { AppService, ChartService, ILayout, ILineChartOptions, NavService } from '../../../../services';
-import { ICoinsStateSummaryDialogComponent } from './interfaces';
+import { ICoinsStateSummaryConfig, ICoinsStateSummaryDialogComponent } from './interfaces';
 import { IMarketStateDialogConfig, MarketStateDialogComponent } from '../../market-state-dialog';
 
 @Component({
@@ -26,13 +26,14 @@ export class CoinsStateSummaryDialogComponent implements OnInit, ICoinsStateSumm
 	public symbols: string[] = [];
 	public charts?: {[symbol: string]: ILineChartOptions};
 	public syncEnabled: boolean = true;
+	public btcPrice: boolean = false;
 
 	// Component Init
 	public loaded: boolean = false;
 
 	constructor(
 		public dialogRef: MatDialogRef<CoinsStateSummaryDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) private coinsStates: ICoinsCompressedState|undefined,
+		@Inject(MAT_DIALOG_DATA) private config: ICoinsStateSummaryConfig,
 		private _app: AppService,
 		private _chart: ChartService,
 		public _ms: MarketStateService,
@@ -45,8 +46,9 @@ export class CoinsStateSummaryDialogComponent implements OnInit, ICoinsStateSumm
 
 	async ngOnInit(): Promise<void> {
 		try {
-			this.syncEnabled = this.coinsStates == undefined;
-			await this.initializeData(this.coinsStates);
+			this.syncEnabled = this.config.compressedStates == undefined;
+			this.btcPrice = this.config.btcPrice == true;
+			await this.initializeData(this.config.compressedStates);
 		} catch (e) {
 			this._app.error(e);
 			setTimeout(() => { this.close() }, 500);
@@ -70,7 +72,7 @@ export class CoinsStateSummaryDialogComponent implements OnInit, ICoinsStateSumm
 			if (states) {
 				this.state = states;
 			} else {
-				this.state = await this._ms.getCoinsCompressedState();
+				this.state = this.btcPrice ? await this._ms.getCoinsBTCCompressedState(): await this._ms.getCoinsCompressedState();
 			}
 
 			// Build the charts
@@ -109,7 +111,6 @@ export class CoinsStateSummaryDialogComponent implements OnInit, ICoinsStateSumm
 		// Init the chart
 		const chartColor: string = this.getChartColor(state.s);
 		let title: string = this._ms.getBaseAssetName(symbol);
-		if (state.se != 0) { title += " REV." }
 		let lineChart: ILineChartOptions = this._chart.getLineChartOptions(
 			{ 
 				series: [
@@ -229,7 +230,7 @@ export class CoinsStateSummaryDialogComponent implements OnInit, ICoinsStateSumm
 			hasBackdrop: this._app.layout.value != "mobile",
 			panelClass: "medium-dialog",
 			data: <IMarketStateDialogConfig>{
-                module: "coin",
+                module: this.btcPrice ? "coinBTC": "coin",
                 symbol: symbol
             }
 		})

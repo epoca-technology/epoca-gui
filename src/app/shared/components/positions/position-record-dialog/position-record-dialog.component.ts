@@ -391,7 +391,7 @@ export class PositionRecordDialogComponent implements OnInit, IPositionRecordDia
                     this.submitting = true;
                     try {
                         // Perform Action
-                        await this._position.closePosition(this.record.coin.symbol, otp);
+                        await this._position.closePosition(this.record.side, otp);
 
                         // Notify
                         this._app.success(`The ${this.record.coin.symbol} ${this.record.side} position was closed successfully.`);

@@ -9,12 +9,12 @@ import {
 	AuthService, 
 	BulkDataService, 
 	DatabaseService, 
+	IActivePositionHeadlines, 
 	IAppBulk, 
 	IAppBulkStream, 
 	ICandlestick, 
 	IEpochRecord, 
 	IMarketState, 
-	IPositionHeadline, 
 	IPrediction, 
 	IPredictionCandlestick, 
 	PredictionService, 
@@ -64,7 +64,7 @@ export class AppService implements IAppService{
 	public guiVersion: BehaviorSubject<string|undefined|null> = new BehaviorSubject<string|undefined|null>(null);
 	public epoch: BehaviorSubject<IEpochRecord|undefined|null> = new BehaviorSubject<IEpochRecord|undefined|null>(null);
 	public prediction: BehaviorSubject<IPrediction|undefined|null> = new BehaviorSubject<IPrediction|undefined|null>(null);
-	public positions: BehaviorSubject<IPositionHeadline[]|undefined|null> = new BehaviorSubject<IPositionHeadline[]|undefined|null>(null);
+	public positions: BehaviorSubject<IActivePositionHeadlines|undefined|null> = new BehaviorSubject<IActivePositionHeadlines|undefined|null>(null);
 	public marketState: BehaviorSubject<IMarketState|undefined|null> = new BehaviorSubject<IMarketState|undefined|null>(null);
 	public apiErrors: BehaviorSubject<number|undefined|null> = new BehaviorSubject<number|undefined|null>(null);
 
@@ -223,6 +223,7 @@ export class AppService implements IAppService{
 							snapVal.epoch = this.epoch.value!;
 							snapVal.marketState.window.w = this.buildUpdatedWindowCandlesticks(snapVal.marketState.window.w);
 							snapVal.marketState.trend.w = this.buildUpdatedTrendWindowCandlesticks(snapVal.marketState.trend.w);
+							snapVal.positions = snapVal.positions || { LONG: null, SHORT: null };
 							snapVal.keyzoneEventScoreRequirement = this.keyzoneEventScoreRequirement;
 							this.broadcastAppBulk(snapVal);
 						}
