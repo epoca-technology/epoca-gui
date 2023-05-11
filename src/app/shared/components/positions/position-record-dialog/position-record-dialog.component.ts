@@ -269,28 +269,28 @@ export class PositionRecordDialogComponent implements OnInit, IPositionRecordDia
 			annotations.points!.push({
 				x: tp2.t,
 				y: tp2.g,
-				marker: {size: 3,strokeColor: "#00796B",fillColor: "#00796B",strokeWidth: 3,shape: "square"}
+				marker: {size: 2,strokeColor: "#00796B",fillColor: "#00796B",strokeWidth: 2,shape: "square"}
 			});
 		}
 		for (let tp3 of this.record.reductions.take_profit_3) {
 			annotations.points!.push({
 				x: tp3.t,
 				y: tp3.g,
-				marker: {size: 4,strokeColor: "#00796B",fillColor: "#00796B",strokeWidth: 4,shape: "square"}
+				marker: {size: 2,strokeColor: "#00796B",fillColor: "#00796B",strokeWidth: 2,shape: "square"}
 			});
 		}
 		for (let tp4 of this.record.reductions.take_profit_4) {
 			annotations.points!.push({
 				x: tp4.t,
 				y: tp4.g,
-				marker: {size: 5,strokeColor: "#00796B",fillColor: "#00796B",strokeWidth: 5,shape: "square"}
+				marker: {size: 2,strokeColor: "#00796B",fillColor: "#00796B",strokeWidth: 2,shape: "square"}
 			});
 		}
 		for (let tp5 of this.record.reductions.take_profit_5) {
 			annotations.points!.push({
 				x: tp5.t,
 				y: tp5.g,
-				marker: {size: 6,strokeColor: "#00796B",fillColor: "#00796B",strokeWidth: 6,shape: "square"}
+				marker: {size: 2,strokeColor: "#00796B",fillColor: "#00796B",strokeWidth: 2,shape: "square"}
 			});
 		}
 
