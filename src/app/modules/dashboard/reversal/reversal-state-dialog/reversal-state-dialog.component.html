@@ -2,7 +2,7 @@
     <div fxLayout="row" fxLayoutAlign="center center">
         <button mat-icon-button class="show-on-mobile" (click)="close()" [disabled]="!loaded"><mat-icon>arrow_back</mat-icon></button>
         <span *ngIf="!loaded" class="truncate">Loading...</span>
-        <span *ngIf="loaded" class="truncate">{{state.k == 1 ? 'Sup.': 'Res.'}} Reversal</span>
+        <span *ngIf="loaded" class="truncate">{{state.k == 1 ? 'Sup.': 'Res.'}} Reversal: {{points}}</span>
         <span fxFlex></span>        
         <app-refresh-button *ngIf="loaded && state && !state.end" style="display: none;" (refresh)="syncReversalState()" [intervalSeconds]="6"></app-refresh-button>
         

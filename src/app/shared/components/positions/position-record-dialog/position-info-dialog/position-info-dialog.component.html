@@ -107,17 +107,6 @@
                             'light-text': record.highest_gain == 0
                         }">{{record.highest_gain | number}}%</p>
                 </div>
-
-                <!-- Gain Drawdown -->
-                <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
-                    <p class="light-text ts-m truncate">Gain Drawdown</p>
-                    <span fxFlex></span>
-                    <p [ngClass]="{
-                            'error-color': record.gain_drawdown < 0, 
-                            'light-text': record.gain_drawdown == 0 && record.gain < 0,
-                            'success-color': record.gain_drawdown == 0 && record.gain >= 0
-                        }">{{record.gain_drawdown | number}}%</p>
-                </div>
             </div>
 
             <div class="divider"></div>
@@ -179,9 +168,10 @@
                 <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
                     <p class="light-text ts-m truncate">Take Profit 1</p>
                     <span fxFlex></span>
-                    <mat-icon *ngIf="record.reductions.take_profit_1" class="reduction-icon" matTooltip="Reduction Executed">crop</mat-icon>
                     <div matTooltip="Take Profit Level 1"
-                        class="align-right" 
+                        class="align-right clickable" 
+                        [matBadge]="record.reductions.take_profit_1.length" matBadgePosition="before" matBadgeOverlap="false"
+                        (click)="displayTakeProfitReductions('take_profit_1', record.reductions.take_profit_1)"
                         [ngClass]="{'success-color': !takeProfit1Distance, 'light-text': takeProfit1Distance}">
                         <p>{{record.take_profit_price_1 | currency: 'USD' : 'symbol' : '1.0-' + record.coin.pricePrecision}}</p>
                         <p *ngIf="takeProfit1Distance" class="ts-xs">{{takeProfit1Distance}}% away</p>
@@ -192,9 +182,10 @@
                 <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
                     <p class="light-text ts-m truncate">Take Profit 2</p>
                     <span fxFlex></span>
-                    <mat-icon *ngIf="record.reductions.take_profit_2" class="reduction-icon" matTooltip="Reduction Executed">crop</mat-icon>
                     <div matTooltip="Take Profit Level 2"
-                        class="align-right" 
+                        class="align-right clickable" 
+                        [matBadge]="record.reductions.take_profit_2.length" matBadgePosition="before" matBadgeOverlap="false"
+                        (click)="displayTakeProfitReductions('take_profit_2', record.reductions.take_profit_2)"
                         [ngClass]="{'success-color': !takeProfit2Distance, 'light-text': takeProfit2Distance}">
                         <p>{{record.take_profit_price_2 | currency: 'USD' : 'symbol' : '1.0-' + record.coin.pricePrecision}}</p>
                         <p *ngIf="takeProfit2Distance" class="ts-xs">{{takeProfit2Distance}}% away</p>
@@ -205,9 +196,10 @@
                 <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
                     <p class="light-text ts-m truncate">Take Profit 3</p>
                     <span fxFlex></span>
-                    <mat-icon *ngIf="record.reductions.take_profit_3" class="reduction-icon" matTooltip="Reduction Executed">crop</mat-icon>
                     <div matTooltip="Take Profit Level 3"
-                        class="align-right" 
+                        class="align-right clickable" 
+                        [matBadge]="record.reductions.take_profit_3.length" matBadgePosition="before" matBadgeOverlap="false"
+                        (click)="displayTakeProfitReductions('take_profit_3', record.reductions.take_profit_3)"
                         [ngClass]="{'success-color': !takeProfit3Distance, 'light-text': takeProfit3Distance}">
                         <p>{{record.take_profit_price_3 | currency: 'USD' : 'symbol' : '1.0-' + record.coin.pricePrecision}}</p>
                         <p *ngIf="takeProfit3Distance" class="ts-xs">{{takeProfit3Distance}}% away</p>
@@ -218,9 +210,10 @@
                 <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
                     <p class="light-text ts-m truncate">Take Profit 4</p>
                     <span fxFlex></span>
-                    <mat-icon *ngIf="record.reductions.take_profit_4" class="reduction-icon" matTooltip="Reduction Executed">crop</mat-icon>
                     <div matTooltip="Take Profit Level 4"
-                        class="align-right" 
+                        class="align-right clickable" 
+                        [matBadge]="record.reductions.take_profit_4.length" matBadgePosition="before" matBadgeOverlap="false"
+                        (click)="displayTakeProfitReductions('take_profit_4', record.reductions.take_profit_4)"
                         [ngClass]="{'success-color': !takeProfit4Distance, 'light-text': takeProfit4Distance}">
                         <p>{{record.take_profit_price_4 | currency: 'USD' : 'symbol' : '1.0-' + record.coin.pricePrecision}}</p>
                         <p *ngIf="takeProfit4Distance" class="ts-xs">{{takeProfit4Distance}}% away</p>
@@ -231,9 +224,10 @@
                 <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
                     <p class="light-text ts-m truncate">Take Profit 5</p>
                     <span fxFlex></span>
-                    <mat-icon *ngIf="record.reductions.take_profit_5" class="reduction-icon" matTooltip="Reduction Executed">crop</mat-icon>
                     <div matTooltip="Take Profit Level 5"
-                        class="align-right" 
+                        class="align-right clickable" 
+                        [matBadge]="record.reductions.take_profit_5.length" matBadgePosition="before" matBadgeOverlap="false"
+                        (click)="displayTakeProfitReductions('take_profit_5', record.reductions.take_profit_5)"
                         [ngClass]="{'success-color': !takeProfit5Distance, 'light-text': takeProfit5Distance}">
                         <p>{{record.take_profit_price_5 | currency: 'USD' : 'symbol' : '1.0-' + record.coin.pricePrecision}}</p>
                         <p *ngIf="takeProfit5Distance" class="ts-xs">{{takeProfit5Distance}}% away</p>

@@ -11,7 +11,6 @@ export interface IStrategyFormDialogComponent {
     profitOptimizationTooltip(): void,
     lossOptimizationTooltip(): void,
     sideReopeningTooltip(): void,
-    lowVolatilityCoinsTooltip(): void,
 
     // Misc Helpers
     cancel(): void,

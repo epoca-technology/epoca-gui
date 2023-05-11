@@ -41,25 +41,25 @@ export class StrategyFormDialogComponent implements OnInit, IStrategyFormDialogC
 				leverage: new FormControl(this.strategy.leverage, [ Validators.required, Validators.min(2), Validators.max(125) ]),
 				position_size: new FormControl(this.strategy.position_size, [ Validators.required, Validators.min(0.25), Validators.max(10000) ]),
 				take_profit_1_pcr: new FormControl(this.strategy.take_profit_1.price_change_requirement, [ Validators.required, Validators.min(0.05), Validators.max(10) ]),
-				take_profit_1_ao: new FormControl(this.strategy.take_profit_1.activation_offset, [ Validators.required, Validators.min(0.01), Validators.max(5) ]),
-				take_profit_1_gdd: new FormControl(this.strategy.take_profit_1.max_gain_drawdown, [ Validators.required, Validators.min(-100), Validators.max(-0.01) ]),
-				take_profit_1_rsoc: new FormControl(this.strategy.take_profit_1.reduction_size_on_contact, [ Validators.required, Validators.min(0), Validators.max(1) ]),
+				take_profit_1_rs: new FormControl(this.strategy.take_profit_1.reduction_size, [ Validators.required, Validators.min(0.01), Validators.max(1) ]),
+				take_profit_1_rim: new FormControl(this.strategy.take_profit_1.reduction_interval_minutes, [ Validators.required, Validators.min(0.1), Validators.max(1000) ]),
+				
 				take_profit_2_pcr: new FormControl(this.strategy.take_profit_2.price_change_requirement, [ Validators.required, Validators.min(0.05), Validators.max(10) ]),
-				take_profit_2_ao: new FormControl(this.strategy.take_profit_2.activation_offset, [ Validators.required, Validators.min(0.01), Validators.max(5) ]),
-				take_profit_2_gdd: new FormControl(this.strategy.take_profit_2.max_gain_drawdown, [ Validators.required, Validators.min(-100), Validators.max(-0.01) ]),
-				take_profit_2_rsoc: new FormControl(this.strategy.take_profit_2.reduction_size_on_contact, [ Validators.required, Validators.min(0), Validators.max(1) ]),
+				take_profit_2_rs: new FormControl(this.strategy.take_profit_2.reduction_size, [ Validators.required, Validators.min(0.01), Validators.max(1) ]),
+				take_profit_2_rim: new FormControl(this.strategy.take_profit_2.reduction_interval_minutes, [ Validators.required, Validators.min(0.1), Validators.max(1000) ]),
+				
 				take_profit_3_pcr: new FormControl(this.strategy.take_profit_3.price_change_requirement, [ Validators.required, Validators.min(0.05), Validators.max(10) ]),
-				take_profit_3_ao: new FormControl(this.strategy.take_profit_3.activation_offset, [ Validators.required, Validators.min(0.01), Validators.max(5) ]),
-				take_profit_3_gdd: new FormControl(this.strategy.take_profit_3.max_gain_drawdown, [ Validators.required, Validators.min(-100), Validators.max(-0.01) ]),
-				take_profit_3_rsoc: new FormControl(this.strategy.take_profit_3.reduction_size_on_contact, [ Validators.required, Validators.min(0), Validators.max(1) ]),
+				take_profit_3_rs: new FormControl(this.strategy.take_profit_3.reduction_size, [ Validators.required, Validators.min(0.01), Validators.max(1) ]),
+				take_profit_3_rim: new FormControl(this.strategy.take_profit_3.reduction_interval_minutes, [ Validators.required, Validators.min(0.1), Validators.max(1000) ]),
+				
 				take_profit_4_pcr: new FormControl(this.strategy.take_profit_4.price_change_requirement, [ Validators.required, Validators.min(0.05), Validators.max(10) ]),
-				take_profit_4_ao: new FormControl(this.strategy.take_profit_4.activation_offset, [ Validators.required, Validators.min(0.01), Validators.max(5) ]),
-				take_profit_4_gdd: new FormControl(this.strategy.take_profit_4.max_gain_drawdown, [ Validators.required, Validators.min(-100), Validators.max(-0.01) ]),
-				take_profit_4_rsoc: new FormControl(this.strategy.take_profit_4.reduction_size_on_contact, [ Validators.required, Validators.min(0), Validators.max(1) ]),
+				take_profit_4_rs: new FormControl(this.strategy.take_profit_4.reduction_size, [ Validators.required, Validators.min(0.01), Validators.max(1) ]),
+				take_profit_4_rim: new FormControl(this.strategy.take_profit_4.reduction_interval_minutes, [ Validators.required, Validators.min(0.1), Validators.max(1000) ]),
+				
 				take_profit_5_pcr: new FormControl(this.strategy.take_profit_5.price_change_requirement, [ Validators.required, Validators.min(0.05), Validators.max(10) ]),
-				take_profit_5_ao: new FormControl(this.strategy.take_profit_5.activation_offset, [ Validators.required, Validators.min(0.01), Validators.max(5) ]),
-				take_profit_5_gdd: new FormControl(this.strategy.take_profit_5.max_gain_drawdown, [ Validators.required, Validators.min(-100), Validators.max(-0.01) ]),
-				take_profit_5_rsoc: new FormControl(this.strategy.take_profit_5.reduction_size_on_contact, [ Validators.required, Validators.min(0), Validators.max(1) ]),
+				take_profit_5_rs: new FormControl(this.strategy.take_profit_5.reduction_size, [ Validators.required, Validators.min(0.01), Validators.max(1) ]),
+				take_profit_5_rim: new FormControl(this.strategy.take_profit_5.reduction_interval_minutes, [ Validators.required, Validators.min(0.1), Validators.max(1000) ]),
+				
 				stop_loss: new FormControl(this.strategy.stop_loss, [ Validators.required, Validators.min(0.1), Validators.max(20) ]),
 				reopen_if_better_duration_minutes: new FormControl(this.strategy.reopen_if_better_duration_minutes, [ Validators.required, Validators.min(0), Validators.max(720) ]),
 				reopen_if_better_price_adjustment: new FormControl(this.strategy.reopen_if_better_price_adjustment, [ Validators.required, Validators.min(0.01), Validators.max(10) ]),
@@ -82,25 +82,20 @@ export class StrategyFormDialogComponent implements OnInit, IStrategyFormDialogC
 	get position_size(): AbstractControl { return <AbstractControl>this.form.get("position_size") }
 	get positions_limit(): AbstractControl { return <AbstractControl>this.form.get("positions_limit") }
 	get take_profit_1_pcr(): AbstractControl { return <AbstractControl>this.form.get("take_profit_1_pcr") }
-	get take_profit_1_ao(): AbstractControl { return <AbstractControl>this.form.get("take_profit_1_ao") }
-	get take_profit_1_gdd(): AbstractControl { return <AbstractControl>this.form.get("take_profit_1_gdd") }
-	get take_profit_1_rsoc(): AbstractControl { return <AbstractControl>this.form.get("take_profit_1_rsoc") }
+	get take_profit_1_rs(): AbstractControl { return <AbstractControl>this.form.get("take_profit_1_rs") }
+	get take_profit_1_rim(): AbstractControl { return <AbstractControl>this.form.get("take_profit_1_rim") }
 	get take_profit_2_pcr(): AbstractControl { return <AbstractControl>this.form.get("take_profit_2_pcr") }
-	get take_profit_2_ao(): AbstractControl { return <AbstractControl>this.form.get("take_profit_2_ao") }
-	get take_profit_2_gdd(): AbstractControl { return <AbstractControl>this.form.get("take_profit_2_gdd") }
-	get take_profit_2_rsoc(): AbstractControl { return <AbstractControl>this.form.get("take_profit_2_rsoc") }
+	get take_profit_2_rs(): AbstractControl { return <AbstractControl>this.form.get("take_profit_2_rs") }
+	get take_profit_2_rim(): AbstractControl { return <AbstractControl>this.form.get("take_profit_2_rim") }
 	get take_profit_3_pcr(): AbstractControl { return <AbstractControl>this.form.get("take_profit_3_pcr") }
-	get take_profit_3_ao(): AbstractControl { return <AbstractControl>this.form.get("take_profit_3_ao") }
-	get take_profit_3_gdd(): AbstractControl { return <AbstractControl>this.form.get("take_profit_3_gdd") }
-	get take_profit_3_rsoc(): AbstractControl { return <AbstractControl>this.form.get("take_profit_3_rsoc") }
+	get take_profit_3_rs(): AbstractControl { return <AbstractControl>this.form.get("take_profit_3_rs") }
+	get take_profit_3_rim(): AbstractControl { return <AbstractControl>this.form.get("take_profit_3_rim") }
 	get take_profit_4_pcr(): AbstractControl { return <AbstractControl>this.form.get("take_profit_4_pcr") }
-	get take_profit_4_ao(): AbstractControl { return <AbstractControl>this.form.get("take_profit_4_ao") }
-	get take_profit_4_gdd(): AbstractControl { return <AbstractControl>this.form.get("take_profit_4_gdd") }
-	get take_profit_4_rsoc(): AbstractControl { return <AbstractControl>this.form.get("take_profit_4_rsoc") }
+	get take_profit_4_rs(): AbstractControl { return <AbstractControl>this.form.get("take_profit_4_rs") }
+	get take_profit_4_rim(): AbstractControl { return <AbstractControl>this.form.get("take_profit_4_rim") }
 	get take_profit_5_pcr(): AbstractControl { return <AbstractControl>this.form.get("take_profit_5_pcr") }
-	get take_profit_5_ao(): AbstractControl { return <AbstractControl>this.form.get("take_profit_5_ao") }
-	get take_profit_5_gdd(): AbstractControl { return <AbstractControl>this.form.get("take_profit_5_gdd") }
-	get take_profit_5_rsoc(): AbstractControl { return <AbstractControl>this.form.get("take_profit_5_rsoc") }
+	get take_profit_5_rs(): AbstractControl { return <AbstractControl>this.form.get("take_profit_5_rs") }
+	get take_profit_5_rim(): AbstractControl { return <AbstractControl>this.form.get("take_profit_5_rim") }
 	get stop_loss(): AbstractControl { return <AbstractControl>this.form.get("stop_loss") }
 	get reopen_if_better_duration_minutes(): AbstractControl { return <AbstractControl>this.form.get("reopen_if_better_duration_minutes") }
 	get reopen_if_better_price_adjustment(): AbstractControl { return <AbstractControl>this.form.get("reopen_if_better_price_adjustment") }
@@ -131,33 +126,28 @@ export class StrategyFormDialogComponent implements OnInit, IStrategyFormDialogC
 						this.strategy.position_size = this.position_size.value;
 						this.strategy.take_profit_1 = {
 							price_change_requirement: this.take_profit_1_pcr.value,
-							activation_offset: this.take_profit_1_ao.value,
-							max_gain_drawdown: this.take_profit_1_gdd.value,
-							reduction_size_on_contact: this.take_profit_1_rsoc.value,
+							reduction_size: this.take_profit_1_rs.value,
+							reduction_interval_minutes: this.take_profit_1_rim.value,
 						};
 						this.strategy.take_profit_2 = {
 							price_change_requirement: this.take_profit_2_pcr.value,
-							activation_offset: this.take_profit_2_ao.value,
-							max_gain_drawdown: this.take_profit_2_gdd.value,
-							reduction_size_on_contact: this.take_profit_2_rsoc.value,
+							reduction_size: this.take_profit_2_rs.value,
+							reduction_interval_minutes: this.take_profit_2_rim.value,
 						};
 						this.strategy.take_profit_3 = {
 							price_change_requirement: this.take_profit_3_pcr.value,
-							activation_offset: this.take_profit_3_ao.value,
-							max_gain_drawdown: this.take_profit_3_gdd.value,
-							reduction_size_on_contact: this.take_profit_3_rsoc.value,
+							reduction_size: this.take_profit_3_rs.value,
+							reduction_interval_minutes: this.take_profit_3_rim.value,
 						};
 						this.strategy.take_profit_4 = {
 							price_change_requirement: this.take_profit_4_pcr.value,
-							activation_offset: this.take_profit_4_ao.value,
-							max_gain_drawdown: this.take_profit_4_gdd.value,
-							reduction_size_on_contact: this.take_profit_4_rsoc.value,
+							reduction_size: this.take_profit_4_rs.value,
+							reduction_interval_minutes: this.take_profit_4_rim.value,
 						};
 						this.strategy.take_profit_5 = {
 							price_change_requirement: this.take_profit_5_pcr.value,
-							activation_offset: this.take_profit_5_ao.value,
-							max_gain_drawdown: this.take_profit_5_gdd.value,
-							reduction_size_on_contact: this.take_profit_5_rsoc.value,
+							reduction_size: this.take_profit_5_rs.value,
+							reduction_interval_minutes: this.take_profit_5_rim.value,
 						};
 						this.strategy.stop_loss = this.stop_loss.value;
 						this.strategy.reopen_if_better_duration_minutes = this.reopen_if_better_duration_minutes.value;
@@ -241,16 +231,6 @@ export class StrategyFormDialogComponent implements OnInit, IStrategyFormDialogC
 	/* Side Reopening */
 	public sideReopeningTooltip(): void {
 		this._nav.displayTooltip("Side Reopening", [
-			`@TODO`,
-		]);
-	}
-
-
-
-
-	/* Low Volatility Coins */
-	public lowVolatilityCoinsTooltip(): void {
-		this._nav.displayTooltip("Low Volatility Coins", [
 			`@TODO`,
 		]);
 	}

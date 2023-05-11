@@ -33,7 +33,6 @@ export class PositionRecordDialogComponent implements OnInit, IPositionRecordDia
 	public record!: IPositionRecord;
 	public markPriceChart!: ICandlestickChartOptions;
 	public gainChart!: ICandlestickChartOptions;
-	public gainDrawdownChart!: ICandlestickChartOptions;
 
 
 	// Submission
@@ -101,10 +100,10 @@ export class PositionRecordDialogComponent implements OnInit, IPositionRecordDia
 	 */
 	private processCandlesticks(): void {
 		// Unpack the candlesticks
-		const { markPrice, gain, gainDrawdown } = this.unpackCandlesticks();
+		const { markPrice, gain } = this.unpackCandlesticks();
 
 		// Check if the charts already exist
-		if (this.markPriceChart && this.gainChart && this.gainDrawdownChart) {
+		if (this.markPriceChart && this.gainChart) {
 			/*this.markPriceChart.series = [
 				{
 					name: "candle",
@@ -122,15 +121,6 @@ export class PositionRecordDialogComponent implements OnInit, IPositionRecordDia
 			//this.gainChart.series[0].data = this._chart.getApexCandlesticks(gain);
 			//this.gainChart.annotations = { yaxis: [this.getCurrentValueAnnotation(gain[gain.length - 1])]};
 			this.gainChart.series = [ {data: this._chart.getApexCandlesticks(gain)}]
-			/*this.gainDrawdownChart.series = [
-				{
-					name: "candle",
-					data: this._chart.getApexCandlesticks(gainDrawdown)
-				}
-			];*/
-			//this.gainDrawdownChart.series[0].data = this._chart.getApexCandlesticks(gainDrawdown);
-			//this.gainDrawdownChart.annotations = { yaxis: [this.getCurrentValueAnnotation(gainDrawdown[gainDrawdown.length - 1])]};
-			this.gainDrawdownChart.series = [ {data: this._chart.getApexCandlesticks(gainDrawdown)}];
 
 		}
 
@@ -169,22 +159,10 @@ export class PositionRecordDialogComponent implements OnInit, IPositionRecordDia
 			this.gainChart.chart!.toolbar = {show: true,tools: {selection: true,zoom: true,zoomin: true,zoomout: true,download: false}};
 			this.gainChart.chart!.zoom = {enabled: true, type: "xy"};
 			//this.gainChart.chart!.zoom = {enabled: false};
-
-			// Gain Drawdown Chart
-			this.gainDrawdownChart = this._chart.getCandlestickChartOptions(
-				gainDrawdown, 
-				undefined, 
-				false, 
-				false,
-				undefined,
-				this.layout == "desktop" ? 400: 330,
-				"Gain Drawdown%"
-			);
-			this.gainDrawdownChart.chart!.toolbar = {show: true,tools: {selection: true,zoom: true,zoomin: true,zoomout: true,download: false}};
-			this.gainDrawdownChart.chart!.zoom = {enabled: true, type: "xy"};
-			//this.gainDrawdownChart.annotations = { yaxis: [this.getCurrentValueAnnotation(gainDrawdown[gainDrawdown.length - 1])]}
-			//this.gainDrawdownChart.chart!.zoom = {enabled: false};
 		}
+
+		// Add the reduction annotations
+		this.gainChart.annotations = this.buildReductionsAnnotations();
 	}
 
 
@@ -272,6 +250,56 @@ export class PositionRecordDialogComponent implements OnInit, IPositionRecordDia
 
 
 
+	/**
+	 * Builds the reduction annotations for a given position
+	 */
+	private buildReductionsAnnotations(): ApexAnnotations {
+		// Init the annotations
+		let annotations: ApexAnnotations = { points: []};
+
+		// Build the points by level
+		for (let tp1 of this.record.reductions.take_profit_1) {
+			annotations.points!.push({
+				x: tp1.t,
+				y: tp1.g,
+				marker: {size: 2,strokeColor: "#00796B",fillColor: "#00796B",strokeWidth: 2,shape: "square"}
+			});
+		}
+		for (let tp2 of this.record.reductions.take_profit_2) {
+			annotations.points!.push({
+				x: tp2.t,
+				y: tp2.g,
+				marker: {size: 3,strokeColor: "#00796B",fillColor: "#00796B",strokeWidth: 3,shape: "square"}
+			});
+		}
+		for (let tp3 of this.record.reductions.take_profit_3) {
+			annotations.points!.push({
+				x: tp3.t,
+				y: tp3.g,
+				marker: {size: 4,strokeColor: "#00796B",fillColor: "#00796B",strokeWidth: 4,shape: "square"}
+			});
+		}
+		for (let tp4 of this.record.reductions.take_profit_4) {
+			annotations.points!.push({
+				x: tp4.t,
+				y: tp4.g,
+				marker: {size: 5,strokeColor: "#00796B",fillColor: "#00796B",strokeWidth: 5,shape: "square"}
+			});
+		}
+		for (let tp5 of this.record.reductions.take_profit_5) {
+			annotations.points!.push({
+				x: tp5.t,
+				y: tp5.g,
+				marker: {size: 6,strokeColor: "#00796B",fillColor: "#00796B",strokeWidth: 6,shape: "square"}
+			});
+		}
+
+		// Finally, return the annotations
+		return annotations;
+	}
+
+
+
 
 
 
@@ -284,17 +312,15 @@ export class PositionRecordDialogComponent implements OnInit, IPositionRecordDia
 
 	/**
 	 * Unpacks the candlesticks retrieved from the record.
-	 * @returns {markPrice: IPositionCandlestick[], gain: IPositionCandlestick[], gainDrawdown: IPositionCandlestick[]}
+	 * @returns {markPrice: IPositionCandlestick[], gain: IPositionCandlestick[]}
 	 */
 	private unpackCandlesticks(): {
 		markPrice: IPositionCandlestick[], 
-		gain: IPositionCandlestick[], 
-		gainDrawdown: IPositionCandlestick[]
+		gain: IPositionCandlestick[]
 	} {
 		// Init the unpacked lists
 		let markPrice: IPositionCandlestick[] = [];
 		let gain: IPositionCandlestick[] = [];
-		let gainDrawdown: IPositionCandlestick[] = [];
 
 		// Iterate over each packed record
 		for (let candlestick of this.record.history) {
@@ -312,17 +338,10 @@ export class PositionRecordDialogComponent implements OnInit, IPositionRecordDia
 				l: candlestick.d.l[1],
 				c: candlestick.d.c[1],
 			});
-			gainDrawdown.push({
-				ot: candlestick.ot,
-				o: candlestick.d.o[2],
-				h: candlestick.d.h[2],
-				l: candlestick.d.l[2],
-				c: candlestick.d.c[2],
-			});
 		}
 
 		// Finally, return the unpacked candlesticks
-		return { markPrice: markPrice, gain: gain, gainDrawdown: gainDrawdown }
+		return { markPrice: markPrice, gain: gain }
 	}
 
 

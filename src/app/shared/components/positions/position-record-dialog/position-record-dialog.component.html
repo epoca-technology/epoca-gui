@@ -3,7 +3,7 @@
         <button mat-icon-button class="show-on-mobile" (click)="close()" [disabled]="!loaded || submitting"><mat-icon>arrow_back</mat-icon></button>
         <span *ngIf="!loaded" class="truncate">Loading...</span>
         <span *ngIf="loaded" class="truncate">
-            {{record.side}}: {{record.gain > 0 ? '+': ''}}{{record.gain}}% | {{record.gain_drawdown}}%
+            {{record.side}}: {{record.gain > 0 ? '+': ''}}{{record.gain}}%
         </span>
         <span fxFlex></span>
         <app-refresh-button *ngIf="loaded && !record.close" style="display: none;" [disabled]="submitting" (refresh)="refreshPositionRecord()" [intervalSeconds]="5"></app-refresh-button>
@@ -43,19 +43,6 @@
                 [yaxis]="gainChart.yaxis!"
                 [annotations]="gainChart!.annotations!"
                 [title]="gainChart.title!"
-            ></apx-chart>
-        </div>
-
-        <!-- Gain Drawdown% Chart -->
-        <div *ngIf="gainDrawdownChart" class="margin-top">
-            <apx-chart
-                [series]="gainDrawdownChart.series!"
-                [chart]="gainDrawdownChart.chart!"
-                [plotOptions]="gainDrawdownChart.plotOptions!"
-                [xaxis]="gainDrawdownChart.xaxis!"
-                [yaxis]="gainDrawdownChart.yaxis!"
-                [annotations]="gainDrawdownChart!.annotations!"
-                [title]="gainDrawdownChart.title!"
             ></apx-chart>
         </div>
     </div>

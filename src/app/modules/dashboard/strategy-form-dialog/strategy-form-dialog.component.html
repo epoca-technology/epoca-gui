@@ -96,6 +96,15 @@
                             <mat-checkbox style="margin-top:25px;" formControlName="bitcoin_only" [appDisableControl]="submitting">Bitcoin Only</mat-checkbox>
                         </div>
                     </div>
+                    <div *ngIf="!bitcoin_only.value">
+                        <mat-form-field>
+                            <mat-label>Low Volatility Symbols</mat-label>
+                            <textarea   matInput 
+                                        formControlName="low_volatility_coins" 
+                                        autocomplete="off" 
+                                        [appDisableControl]="submitting"></textarea>
+                        </mat-form-field>
+                    </div>
                 </div>
 
                 <div class="divider"></div>
@@ -127,40 +136,28 @@
                                             placeholder="e.g. 0.35">
                                     </mat-form-field>
                                 </div>
-                                <span fxFlex="3"></span>
+                                <span fxFlex="5"></span>
                                 <div fxFlex>
                                     <mat-form-field>
-                                        <mat-label>Activation Offset%</mat-label>
+                                        <mat-label>Reduction Size</mat-label>
                                         <input type="number"
                                             matInput
-                                            formControlName="take_profit_1_ao"
+                                            formControlName="take_profit_1_rs"
                                             autocomplete="off"
                                             [appDisableControl]="submitting"
                                             placeholder="e.g. 0.1">
                                     </mat-form-field>
                                 </div>
-                                <span fxFlex="3"></span>
+                                <span fxFlex="5"></span>
                                 <div fxFlex>
                                     <mat-form-field>
-                                        <mat-label>Max Gain Drawdown%</mat-label>
+                                        <mat-label>Reduction Interval Minutes</mat-label>
                                         <input type="number"
                                             matInput
-                                            formControlName="take_profit_1_gdd"
+                                            formControlName="take_profit_1_rim"
                                             autocomplete="off"
                                             [appDisableControl]="submitting"
-                                            placeholder="e.g. -100">
-                                    </mat-form-field>
-                                </div>
-                                <span fxFlex="3"></span>
-                                <div fxFlex>
-                                    <mat-form-field>
-                                        <mat-label>Reduction Size On Contact</mat-label>
-                                        <input type="number"
-                                            matInput
-                                            formControlName="take_profit_1_rsoc"
-                                            autocomplete="off"
-                                            [appDisableControl]="submitting"
-                                            placeholder="e.g. 0.25">
+                                            placeholder="e.g. 15">
                                     </mat-form-field>
                                 </div>
                             </div>
@@ -183,40 +180,28 @@
                                             placeholder="e.g. 0.55">
                                     </mat-form-field>
                                 </div>
-                                <span fxFlex="3"></span>
+                                <span fxFlex="5"></span>
                                 <div fxFlex>
                                     <mat-form-field>
-                                        <mat-label>Activation Offset%</mat-label>
+                                        <mat-label>Reduction Size</mat-label>
                                         <input type="number"
                                             matInput
-                                            formControlName="take_profit_2_ao"
+                                            formControlName="take_profit_2_rs"
                                             autocomplete="off"
                                             [appDisableControl]="submitting"
                                             placeholder="e.g. 0.1">
                                     </mat-form-field>
                                 </div>
-                                <span fxFlex="3"></span>
+                                <span fxFlex="5"></span>
                                 <div fxFlex>
                                     <mat-form-field>
-                                        <mat-label>Max Gain Drawdown%</mat-label>
+                                        <mat-label>Reduction Interval Minutes</mat-label>
                                         <input type="number"
                                             matInput
-                                            formControlName="take_profit_2_gdd"
+                                            formControlName="take_profit_2_rim"
                                             autocomplete="off"
                                             [appDisableControl]="submitting"
-                                            placeholder="e.g. -35">
-                                    </mat-form-field>
-                                </div>
-                                <span fxFlex="3"></span>
-                                <div fxFlex>
-                                    <mat-form-field>
-                                        <mat-label>Reduction Size On Contact</mat-label>
-                                        <input type="number"
-                                            matInput
-                                            formControlName="take_profit_2_rsoc"
-                                            autocomplete="off"
-                                            [appDisableControl]="submitting"
-                                            placeholder="e.g. 0.25">
+                                            placeholder="e.g. 15">
                                     </mat-form-field>
                                 </div>
                             </div>
@@ -239,40 +224,28 @@
                                             placeholder="e.g. 0.75">
                                     </mat-form-field>
                                 </div>
-                                <span fxFlex="3"></span>
+                                <span fxFlex="5"></span>
                                 <div fxFlex>
                                     <mat-form-field>
-                                        <mat-label>Activation Offset%</mat-label>
+                                        <mat-label>Reduction Size</mat-label>
                                         <input type="number"
                                             matInput
-                                            formControlName="take_profit_3_ao"
+                                            formControlName="take_profit_3_rs"
                                             autocomplete="off"
                                             [appDisableControl]="submitting"
                                             placeholder="e.g. 0.1">
                                     </mat-form-field>
                                 </div>
-                                <span fxFlex="3"></span>
+                                <span fxFlex="5"></span>
                                 <div fxFlex>
                                     <mat-form-field>
-                                        <mat-label>Max Gain Drawdown%</mat-label>
+                                        <mat-label>Reduction Interval Minutes</mat-label>
                                         <input type="number"
                                             matInput
-                                            formControlName="take_profit_3_gdd"
+                                            formControlName="take_profit_3_rim"
                                             autocomplete="off"
                                             [appDisableControl]="submitting"
-                                            placeholder="e.g. -15">
-                                    </mat-form-field>
-                                </div>
-                                <span fxFlex="3"></span>
-                                <div fxFlex>
-                                    <mat-form-field>
-                                        <mat-label>Reduction Size On Contact</mat-label>
-                                        <input type="number"
-                                            matInput
-                                            formControlName="take_profit_3_rsoc"
-                                            autocomplete="off"
-                                            [appDisableControl]="submitting"
-                                            placeholder="e.g. 0.25">
+                                            placeholder="e.g. 15">
                                     </mat-form-field>
                                 </div>
                             </div>
@@ -295,40 +268,28 @@
                                             placeholder="e.g. 1">
                                     </mat-form-field>
                                 </div>
-                                <span fxFlex="3"></span>
+                                <span fxFlex="5"></span>
                                 <div fxFlex>
                                     <mat-form-field>
-                                        <mat-label>Activation Offset%</mat-label>
+                                        <mat-label>Reduction Size</mat-label>
                                         <input type="number"
                                             matInput
-                                            formControlName="take_profit_4_ao"
+                                            formControlName="take_profit_4_rs"
                                             autocomplete="off"
                                             [appDisableControl]="submitting"
-                                            placeholder="e.g. 0.05">
+                                            placeholder="e.g. 0.1">
                                     </mat-form-field>
                                 </div>
-                                <span fxFlex="3"></span>
+                                <span fxFlex="5"></span>
                                 <div fxFlex>
                                     <mat-form-field>
-                                        <mat-label>Max Gain Drawdown%</mat-label>
+                                        <mat-label>Reduction Interval Minutes</mat-label>
                                         <input type="number"
                                             matInput
-                                            formControlName="take_profit_4_gdd"
+                                            formControlName="take_profit_4_rim"
                                             autocomplete="off"
                                             [appDisableControl]="submitting"
-                                            placeholder="e.g. -5">
-                                    </mat-form-field>
-                                </div>
-                                <span fxFlex="3"></span>
-                                <div fxFlex>
-                                    <mat-form-field>
-                                        <mat-label>Reduction Size On Contact</mat-label>
-                                        <input type="number"
-                                            matInput
-                                            formControlName="take_profit_4_rsoc"
-                                            autocomplete="off"
-                                            [appDisableControl]="submitting"
-                                            placeholder="e.g. 0.25">
+                                            placeholder="e.g. 15">
                                     </mat-form-field>
                                 </div>
                             </div>
@@ -351,40 +312,28 @@
                                             placeholder="e.g. 1.5">
                                     </mat-form-field>
                                 </div>
-                                <span fxFlex="3"></span>
+                                <span fxFlex="5"></span>
                                 <div fxFlex>
                                     <mat-form-field>
-                                        <mat-label>Activation Offset%</mat-label>
+                                        <mat-label>Reduction Size</mat-label>
                                         <input type="number"
                                             matInput
-                                            formControlName="take_profit_5_ao"
+                                            formControlName="take_profit_5_rs"
                                             autocomplete="off"
                                             [appDisableControl]="submitting"
-                                            placeholder="e.g. 0.025">
+                                            placeholder="e.g. 0.1">
                                     </mat-form-field>
                                 </div>
-                                <span fxFlex="3"></span>
+                                <span fxFlex="5"></span>
                                 <div fxFlex>
                                     <mat-form-field>
-                                        <mat-label>Max Gain Drawdown%</mat-label>
+                                        <mat-label>Reduction Interval Minutes</mat-label>
                                         <input type="number"
                                             matInput
-                                            formControlName="take_profit_5_gdd"
+                                            formControlName="take_profit_5_rim"
                                             autocomplete="off"
                                             [appDisableControl]="submitting"
-                                            placeholder="e.g. -5">
-                                    </mat-form-field>
-                                </div>
-                                <span fxFlex="3"></span>
-                                <div fxFlex>
-                                    <mat-form-field>
-                                        <mat-label>Reduction Size On Contact</mat-label>
-                                        <input type="number"
-                                            matInput
-                                            formControlName="take_profit_5_rsoc"
-                                            autocomplete="off"
-                                            [appDisableControl]="submitting"
-                                            placeholder="e.g. 0.25">
+                                            placeholder="e.g. 15">
                                     </mat-form-field>
                                 </div>
                             </div>
@@ -456,28 +405,6 @@
                                        placeholder="e.g. 0.25">
                             </mat-form-field>
                         </div>
-                    </div>
-                </div>
-
-
-
-                <div class="divider"></div>
-
-                <!-- Low Volatility Coins -->
-                <div>
-                    <div fxLayout="row" fxLayoutAlign="start center">
-                        <h5>Low Volatility Coins</h5>
-                        <span fxFlex></span>
-                        <button mat-icon-button (click)="lowVolatilityCoinsTooltip()" matTooltip="More information" type="button" tabindex="-1"><mat-icon>question_mark</mat-icon></button>
-                    </div> 
-                    <div class="section-container">
-                        <mat-form-field>
-                            <mat-label>Enter the symbols separated by commas</mat-label>
-                            <textarea   matInput 
-                                        formControlName="low_volatility_coins" 
-                                        autocomplete="off" 
-                                        [appDisableControl]="submitting"></textarea>
-                        </mat-form-field>
                     </div>
                 </div>
             </form>

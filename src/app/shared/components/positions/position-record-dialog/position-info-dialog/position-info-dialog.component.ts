@@ -1,11 +1,14 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
 import { BigNumber } from "bignumber.js";
+import * as moment from "moment";
 import { 
 	IPositionRecord, 
 	IBinancePositionSide, 
 	UtilsService,
-	PositionService, 
+	PositionService,
+	ITakeProfitLevelID,
+	IPositionReduction, 
 } from "../../../../../core";
 import { AppService, NavService } from '../../../../../services';
 import { IPositionInfoDialogComponent } from './interfaces';
@@ -130,6 +133,41 @@ export class PositionInfoDialogComponent implements OnInit, IPositionInfoDialogC
 		this._nav.displayTradeExecutionPayloadDialog(this.record.stop_loss_order);
 	}
 
+
+
+
+
+
+
+
+
+	/**
+	 * Displays the list of take profit reduction records.
+	 * @param id 
+	 * @param reductions 
+	 */
+	public displayTakeProfitReductions(id: ITakeProfitLevelID, reductions: IPositionReduction[]): void {
+		if (reductions.length) {
+			// Init the content
+			let content: string[] = [];
+
+			// Iterate over idle zones
+			for (let i = 0; i < reductions.length; i++) {
+				content.push("REDUCTION TIME");
+				content.push(moment(reductions[i].t).format("dddd, MMMM Do, h:mm:ss a"));
+				content.push("NEXT REDUCTION");
+				content.push(moment(reductions[i].nr).format("dddd, MMMM Do, h:mm:ss a"));
+				content.push(`CHUNK SIZE: ${reductions[i].rcz}`);
+				content.push(`GAIN: ${reductions[i].g}%`);
+				if (i < reductions.length - 1) content.push(`------`);
+			}
+
+			// Finally, display the info
+			this._nav.displayTooltip(id.toUpperCase(), content);
+		} else { 
+			this._app.info(`There have been no reductions in: ${id}`);
+		}
+	}
 
 
 

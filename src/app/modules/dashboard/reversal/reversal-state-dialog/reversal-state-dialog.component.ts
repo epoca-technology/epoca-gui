@@ -34,6 +34,7 @@ export class ReversalStateDialogComponent implements OnInit, IReversalStateDialo
 	// State
 	public state!: IReversalState;
 	private coinsStates: IReversalCoinsStates|undefined;
+	public points: number = 0;
 	private color!: string;
 	public chart!: ILineChartOptions;
 	public coinsChart!: ILineChartOptions;
@@ -83,6 +84,7 @@ export class ReversalStateDialogComponent implements OnInit, IReversalStateDialo
 		try {
 			// Retrieve the state
 			this.state = await this._localDB.getReversalState(this.id);
+			this.points = this.state.scr.g[this.state.scr.g.length - 1];
 
 			// Set the color
 			this.color = this.state.k == 1 ? this._chart.upwardColor: this._chart.downwardColor;
