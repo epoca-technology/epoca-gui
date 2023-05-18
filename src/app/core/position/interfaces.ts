@@ -16,9 +16,6 @@ export interface IPositionService {
     // Position Strategy
     getStrategy(): Promise<IPositionStrategy>,
     updateStrategy(newStrategy: IPositionStrategy, otp: string): Promise<void>,
-
-    // Position Fee Calculator
-    calculateEstimatedFee(positionAmount: number, entryPrice: number, closePrice: number): IEstimatedPositionFees,
 }
 
 
@@ -99,7 +96,6 @@ export interface IBinanceTradeExecutionPayload {
 
 
 
-
 /*********************
  * Position Strategy *
  *********************/
@@ -143,12 +139,6 @@ export interface IPositionStrategy {
     short_status: boolean,
 
     /**
-     * Bitcoin Only
-     * If enabled, the system will only pick and trade BTCUSDT signals.
-     */
-    bitcoin_only: boolean,
-
-    /**
      * Leverage
      * The leverage that will be used to calculate the position amount whenever a
      * position is opened. The leverage has to be set manually per installed coin,
@@ -165,57 +155,41 @@ export interface IPositionStrategy {
     position_size: number,
 
     /**
+     * Increase Side On Price Improvement%
+     * When a side is opened, the entry price is adjusted and stored based on 
+     * increase_side_on_price_improvement%. This will allow the increasing of 
+     * sides only when the price has improved. Keep in mind that this value
+     * will be updated whenever a position increase takes place.
+     */
+    increase_side_on_price_improvement: number
+
+    /**
+     * Side Increase Limit
+     * The maximum number of times that a side can be increased. This limit is obtained
+     * as follows: (position_size * leverage) * side_increase_limit.
+     * Once the side's notional reaches this value, the system will stop increasing it.
+     */
+    side_increase_limit: number,
+
+    /**
+     * Side Minimum Percentage
+     * The minimum % a position can have based on the original position size. If a reduction
+     * was to take place and the remaining% of the position is less than equals to this value,
+     * the position will be fully closed instead.
+     */
+    side_min_percentage: number,
+
+    /**
      * Profit Optimization Strategy
      * When a position is opened, a take profit grid is generated. Each level
-     * activates when hit by the mark price. The position is maintained active
-     * until the gain experiences a drawdown that goes past the level's tolerance.
+     * activates when hit by the mark price. Position reductions are executed
+     * accordingly when the position is profitable.
      */
     take_profit_1: ITakeProfitLevel,
     take_profit_2: ITakeProfitLevel,
     take_profit_3: ITakeProfitLevel,
     take_profit_4: ITakeProfitLevel,
-    take_profit_5: ITakeProfitLevel,
-
-    /**
-     * Loss Optimization Strategy
-     * When a position is opened, a stop-loss-market order is created which will be
-     * triggered the moment it is hit by the Mark Price. Additionally, the system 
-     * also monitors the stop loss at a native level and closes it if for any
-     * reason it hasn't been.
-     */
-    stop_loss: number,
-
-    /**
-     * Reopen If Better Duration Minutes
-     * When a position looses, the stop_loss_price is stored in RAM as well as the
-     * time + reopen_if_better_duration_minutes. During this period of time, only
-     * "better" positions can be opened. This functionality can be disabled by 
-     * setting the value to 0.
-     * "Better" stands for "Better Rate". For example, a long position is opened at 
-     * 1.000 and looses at 999, for the next reopen_if_better_duration_minutes, longs
-     * can only be opened if the price is < 999. On the other hand, if a short was
-     * opened at 1.000 and lost at 1.001, no shorts with price < 1.001 can be opened
-     * for reopen_if_better_duration_minutes.
-     */
-    reopen_if_better_duration_minutes: number,
-
-    /**
-     * Reopen If Better Price Adjustment
-     * If the reopen functionality is active and triggered, the stop loss price will
-     * be altered by the reopen_if_better_price_adjustment% according to the side. For 
-     * instance: if this value is 0.25% and a long position looses, the stop loss price
-     * will be decreased by 0.25% in order to ensure the following longs are in a 
-     * better range than the one that recently lost for reopen_if_better_duration_minutes.
-     * On the other hand, when a short looses, the price is increased by 0.25%.
-     */
-    reopen_if_better_price_adjustment: number,
-
-    /**
-     * Low Volatility Coins
-     * If the strategy.bitcoin_only property is false, the system will trade any altcoin
-     * that is not in the low_volatility_coins (symbols) list.
-     */
-    low_volatility_coins: string[]
+    take_profit_5: ITakeProfitLevel
 }
 
 
@@ -225,15 +199,11 @@ export interface IPositionStrategy {
  * The exit prices calculated when a new position is detected.
  */
 export interface IPositionExitStrategy {
-    // Take Profits by Level
     take_profit_price_1: number,
     take_profit_price_2: number,
     take_profit_price_3: number,
     take_profit_price_4: number,
     take_profit_price_5: number,
-
-    // Stop Loss
-    stop_loss_price: number
 }
 
 
@@ -257,24 +227,6 @@ export interface IPositionGainState {
 
 
 
-
-/**
- * Position Interactions
- * When a position is opened, it stores the essential data in order to ensure
- * that if another position for the side was to be opened, the price must be 
- * better.
- */
-export interface IPositionInteractions {
-    LONG: ISidePositionInteraction,
-    SHORT: ISidePositionInteraction,
-}
-export interface ISidePositionInteraction {
-    // The price that needs to be improved by another position to be opened
-    price: number,
-
-    // The time at which the interaction fades away
-    until: number
-}
 
 
 
@@ -393,16 +345,7 @@ export interface IPositionRecord {
         take_profit_3: IPositionReduction[],
         take_profit_4: IPositionReduction[],
         take_profit_5: IPositionReduction[],
-    }
-
-    // The price in which the position is labeled as "unsuccessful" and is ready to be closed.
-    stop_loss_price: number,
-
-    /**
-     * The stop-loss order currently shielding the position. If it hasn't been created, this value will 
-     * be undefined and the system will take over the stop-loss flow.
-     */
-    stop_loss_order: IBinanceTradeExecutionPayload|undefined,
+    },
 
     /**
      * The % the price has moved in favor or against. If losing, the value will be a negative number.
@@ -470,10 +413,7 @@ export interface IPositionHeadline {
     sd: IBinancePositionSide,
 
     // The gain% the price has moved in favor or against. If losing, the value will be a negative number
-    g: number,
-
-    // Stop Loss Order - If the position has one, this value will be true
-    slo: boolean
+    g: number
 }
 
 
@@ -596,37 +536,3 @@ export interface IPositionActionRecord {
     // The exeution payload returned by the exchange
     p: IBinanceTradeExecutionPayload
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/**********************
- * GUI Specific Types *
- **********************/
-
-
-
-
-
-/**
- * Estimated Position Fees
- * Calculates the estimated open & close fees for a position.
- */
-export interface IEstimatedPositionFees {
-    open: number,
-    close: number,
-    total: number
-}
-
-

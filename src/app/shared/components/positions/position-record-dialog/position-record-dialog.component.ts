@@ -226,7 +226,7 @@ export class PositionRecordDialogComponent implements OnInit, IPositionRecordDia
 		// Add the stop loss
 		annotations.yaxis!.push({
             y: this.record.entry_price,
-            y2: this.record.stop_loss_price,
+            y2: this.record.liquidation_price,
             borderColor: "#FFCDD2",
             fillColor: "#FFCDD2",
             strokeDashArray: 0

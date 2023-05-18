@@ -51,16 +51,16 @@
                     </p>
                 </div>
 
-                <!-- Net PNL -->
+                <!-- Unrealized PNL -->
                 <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
-                    <p class="light-text ts-m truncate">Net PnL</p>
+                    <p class="light-text ts-m truncate">Unrealized PnL</p>
                     <span fxFlex></span>
                     <p matTooltip="Unrealized PnL - Fees"
                         [ngClass]="{
-                            'success-color': netPNL > 0, 
-                            'error-color': netPNL < 0, 
-                            'light-text': netPNL == 0
-                        }">{{netPNL | currency}}</p>
+                            'success-color': record.unrealized_pnl > 0, 
+                            'error-color': record.unrealized_pnl < 0, 
+                            'light-text': record.unrealized_pnl == 0
+                        }">{{record.unrealized_pnl | currency}}</p>
                 </div>
 
                 <!-- Performance -->
@@ -115,41 +115,15 @@
             <div>
                 <h5>Risk Information</h5>
 
-                <!-- Stop Loss Price -->
-                <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
-                    <p class="light-text ts-m truncate">Stop Loss</p>
-                    <mat-icon *ngIf="record.stop_loss_order"
-                                matTooltip="STOP_MARKET Enabled"
-                                class="success-color" 
-                                style="font-size:16px;margin: 1px 0 0 3px;">shield</mat-icon>
-                    <span fxFlex></span>
-                    <div matTooltip="The price in which the position is labeled as 'unsuccessful' and is ready to be closed."
-                        (click)="displayStopLossOrder()"
-                        class="align-right clickable" role="button" 
-                        [ngClass]="{
-                            'error-color': !stopLossDistance || (stopLossDistance && stopLossDistance >= -0.075 && stopLossDistance <= 0.075),
-                            'light-text': stopLossDistance && (
-                                (stopLossDistance > -0.15 && stopLossDistance <= -0.075) || 
-                                (stopLossDistance >= 0.075 && stopLossDistance < 0.15)
-                            ), 
-                            'success-color': stopLossDistance && (stopLossDistance <= -0.15 || stopLossDistance >= 0.15)}">
-                        <p>{{record.stop_loss_price | currency: 'USD' : 'symbol' : '1.0-' + record.coin.pricePrecision}}</p>
-                        <p *ngIf="stopLossDistance" class="ts-xs">{{stopLossDistance}}% away</p>
-                        <p *ngIf="!stopLossDistance" class="ts-xs">Stop Loss Hit</p>
-                    </div>
-                </div>
-
-
-
                 <!-- Liquidation-->
                 <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
                     <p class="light-text ts-m truncate">Liquidation</p>
                     <span fxFlex></span>
                     <div matTooltip="Liquidation Price (Distance)" class="align-right" 
                         [ngClass]="{
-                            'success-color': liquidationDistance >= 0.5,
-                            'light-text': liquidationDistance >= 0.25 && liquidationDistance < 0.5,
-                            'error-color': liquidationDistance < 0.25
+                            'success-color': liquidationDistance >= 5,
+                            'light-text': liquidationDistance >= 2 && liquidationDistance < 5,
+                            'error-color': liquidationDistance < 2
                         }">
                         <p>{{record.liquidation_price | currency: 'USD' : 'symbol' : '1.0-' + record.coin.pricePrecision}}</p>
                         <p class="ts-xs">{{liquidationDistance}}% away</p>
@@ -265,43 +239,6 @@
                     <div matTooltip="Position Amount (BTC) and Notional (USDT)" class="align-right" >
                         <p>{{record.position_amount | number: '1.0-' + record.coin.quantityPrecision}} {{record.coin.symbol | baseAssetName}}</p>
                         <p class="ts-xs light-text">{{record.notional | currency}}</p>
-                    </div>
-                </div>
-            </div>
-
-
-            <div class="divider"></div>
-
-
-
-            <!-- Est. Fees -->
-            <div>
-                <h5>Estimated Fee</h5>
-
-                <!-- Open -->
-                <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
-                    <p class="light-text ts-m truncate">Open</p>
-                    <span fxFlex></span>
-                    <div matTooltip="The estimated trading fees for opening the position" class="align-right" >
-                        <p>${{openFee | number: '1.0-4'}}</p>
-                    </div>
-                </div>
-
-                <!-- Close -->
-                <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
-                    <p class="light-text ts-m truncate">Close</p>
-                    <span fxFlex></span>
-                    <div matTooltip="The estimated trading fees for closing the position" class="align-right" >
-                        <p>${{closeFee | number: '1.0-4'}}</p>
-                    </div>
-                </div>
-
-                <!-- Total -->
-                <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
-                    <p class="light-text ts-m truncate">Total</p>
-                    <span fxFlex></span>
-                    <div matTooltip="The estimated trading fees for opening and closing the position" class="align-right" >
-                        <p>${{fee | number: '1.0-4'}}</p>
                     </div>
                 </div>
             </div>

@@ -26,18 +26,9 @@ export class PositionInfoDialogComponent implements OnInit, IPositionInfoDialogC
 	public takeProfit3Distance: number|undefined;
 	public takeProfit4Distance: number|undefined;
 	public takeProfit5Distance: number|undefined;
-	public stopLossDistance: number|undefined;
 
 	// ROE
 	public roe: number;
-
-	// Fees
-	public fee: number;
-	public openFee: number;
-	public closeFee: number;
-
-	// Net PNL
-	public netPNL: number;
 
 	constructor(
 		public dialogRef: MatDialogRef<PositionInfoDialogComponent>,
@@ -63,27 +54,6 @@ export class PositionInfoDialogComponent implements OnInit, IPositionInfoDialogC
 		this.takeProfit3Distance = this.calculateTakeProfitDistance(this.record.side, this.record.mark_price, this.record.take_profit_price_3);
 		this.takeProfit4Distance = this.calculateTakeProfitDistance(this.record.side, this.record.mark_price, this.record.take_profit_price_4);
 		this.takeProfit5Distance = this.calculateTakeProfitDistance(this.record.side, this.record.mark_price, this.record.take_profit_price_5);
-
-		// Calculate the stop loss distance
-		const stopLossDistance: number = <number>this._utils.calculatePercentageChange(this.record.mark_price, this.record.stop_loss_price);
-		if (this.record.side == "LONG") {
-			this.stopLossDistance = this.record.mark_price <= this.record.stop_loss_price ? undefined: stopLossDistance;
-		} else {
-			this.stopLossDistance = this.record.mark_price >= this.record.stop_loss_price ? undefined: stopLossDistance;
-		}
-
-		// Calculate the fees
-		const { open, close, total } = this._position.calculateEstimatedFee(
-			this.record.position_amount,
-			this.record.entry_price,
-			this.record.mark_price
-		);
-		this.openFee = open;
-		this.closeFee = close;
-		this.fee = total;
-
-		// Calculate the net PNL
-		this.netPNL = <number>this._utils.outputNumber(this.record.unrealized_pnl - this.fee);
 	}
 
 	ngOnInit(): void {}
@@ -114,24 +84,6 @@ export class PositionInfoDialogComponent implements OnInit, IPositionInfoDialogC
 	}
 
 
-
-
-
-
-
-
-	/**
-	 * Displays the stop loss order (if any)
-	 */
-	public displayStopLossOrder(): void {
-		if (!this.record.stop_loss_order) {
-			this._app.info("The position does not have a stop loss order.");
-			return;
-		}
-
-		// Display it
-		this._nav.displayTradeExecutionPayloadDialog(this.record.stop_loss_order);
-	}
 
 
 

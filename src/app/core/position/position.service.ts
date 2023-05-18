@@ -9,7 +9,6 @@ import {
 	IPositionHeadline,
 	IPositionActionKind,
 	IPositionActionRecord,
-	IEstimatedPositionFees,
 	IBinancePositionSide
 } from './interfaces';
 
@@ -171,30 +170,4 @@ export class PositionService implements IPositionService {
 
 
 
-
-	/***************************
-	 * Position Fee Calculator *
-	 ***************************/
-
-
-
-
-	/**
-	 * Calculates the estimated open and close fees.
-	 * @param positionAmount 
-	 * @param entryPrice 
-	 * @param closePrice 
-	 * @returns IEstimatedPositionFees
-	 */
-	public calculateEstimatedFee(positionAmount: number, entryPrice: number, closePrice: number): IEstimatedPositionFees {
-		const posAmount: number = Math.abs(positionAmount);
-		const entry: BigNumber = new BigNumber(entryPrice);
-		const close: BigNumber = new BigNumber(closePrice);
-		const entryAmountNotional: BigNumber = entry.times(posAmount);
-		const closeAmountNotional: BigNumber = close.times(posAmount);
-		const openFee: number = <number>this._utils.outputNumber(entryAmountNotional.times(0.0004), {dp: 4, ru: true});
-		const closeFee: number = <number>this._utils.outputNumber(closeAmountNotional.times(0.0004), {dp: 4, ru: true});
-		const totalFee: number = <number>this._utils.outputNumber(openFee + closeFee, {dp: 4, ru: true});
-		return { open: openFee, close: closeFee, total: totalFee}
-	}
 }

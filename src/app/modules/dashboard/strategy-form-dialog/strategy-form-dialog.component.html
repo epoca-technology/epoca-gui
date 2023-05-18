@@ -91,19 +91,49 @@
                                        placeholder="e.g. 1500">
                             </mat-form-field>
                         </div>
+                    </div>
+
+                    <div fxLayout="row" fxLayoutAlign="start start" class="section-container">
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Side Increase Limit</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="side_increase_limit"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 5">
+                            </mat-form-field>
+                        </div>
                         <span fxFlex="5"></span>
                         <div fxFlex>
-                            <mat-checkbox style="margin-top:25px;" formControlName="bitcoin_only" [appDisableControl]="submitting">Bitcoin Only</mat-checkbox>
+                            <mat-form-field>
+                                <mat-label>Increase Side On Price Improvement%</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="increase_side_on_price_improvement"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 1.5">
+                            </mat-form-field>
                         </div>
                     </div>
-                    <div *ngIf="!bitcoin_only.value">
-                        <mat-form-field>
-                            <mat-label>Low Volatility Symbols</mat-label>
-                            <textarea   matInput 
-                                        formControlName="low_volatility_coins" 
-                                        autocomplete="off" 
-                                        [appDisableControl]="submitting"></textarea>
-                        </mat-form-field>
+
+                    <div fxLayout="row" fxLayoutAlign="start start" class="section-container">
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Side Min Percentage</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="side_min_percentage"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 30">
+                            </mat-form-field>
+                        </div>
+                        <span fxFlex="5"></span>
+                        <div fxFlex>
+                        </div>
                     </div>
                 </div>
 
@@ -337,73 +367,6 @@
                                     </mat-form-field>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="divider"></div>
-
-
-                <!-- Stop Loss -->
-                <div class="margin-top">
-                    <div fxLayout="row" fxLayoutAlign="start center">
-                        <h5>Loss Optimization Strategy</h5>
-                        <span fxFlex></span>
-                        <button mat-icon-button (click)="lossOptimizationTooltip()" matTooltip="More information" type="button" tabindex="-1"><mat-icon>question_mark</mat-icon></button>
-                    </div>
-                    <div fxLayout="row" fxLayoutAlign="start start" class="section-container">
-                        <div fxFlex>
-                            <mat-form-field>
-                                <mat-label>Stop Loss%</mat-label>
-                                <input type="number"
-                                       matInput
-                                       formControlName="stop_loss"
-                                       autocomplete="off"
-                                       [appDisableControl]="submitting"
-                                       placeholder="e.g. 3">
-                            </mat-form-field>
-                        </div>
-                        <span fxFlex="5"></span>
-                        <div fxFlex>
-                        </div>
-                    </div>
-                </div>
-
-
-
-                <div class="divider"></div>
-
-                <!-- Side Reopening -->
-                <div>
-                    <div fxLayout="row" fxLayoutAlign="start center">
-                        <h5>Side Reopening</h5>
-                        <span fxFlex></span>
-                        <button mat-icon-button (click)="sideReopeningTooltip()" matTooltip="More information" type="button" tabindex="-1"><mat-icon>question_mark</mat-icon></button>
-                    </div> 
-                    <div fxLayout="row" fxLayoutAlign="start start" class="section-container">
-                        <div fxFlex>
-                            <mat-form-field>
-                                <mat-label>Reopen If Better Dur. Mins</mat-label>
-                                <input type="number"
-                                       matInput
-                                       formControlName="reopen_if_better_duration_minutes"
-                                       autocomplete="off"
-                                       [appDisableControl]="submitting"
-                                       placeholder="e.g. 60">
-                            </mat-form-field>
-                        </div>
-                        <span fxFlex="5"></span>
-                        <div fxFlex>
-                            <mat-form-field>
-                                <mat-label>Reopen If Better Price Adj.%</mat-label>
-                                <input type="number"
-                                       matInput
-                                       formControlName="reopen_if_better_price_adjustment"
-                                       autocomplete="off"
-                                       [appDisableControl]="submitting"
-                                       placeholder="e.g. 0.25">
-                            </mat-form-field>
                         </div>
                     </div>
                 </div>
