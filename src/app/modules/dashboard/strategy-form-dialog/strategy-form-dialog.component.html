@@ -108,20 +108,6 @@
                         <span fxFlex="5"></span>
                         <div fxFlex>
                             <mat-form-field>
-                                <mat-label>Increase Side On Price Improvement%</mat-label>
-                                <input type="number"
-                                       matInput
-                                       formControlName="increase_side_on_price_improvement"
-                                       autocomplete="off"
-                                       [appDisableControl]="submitting"
-                                       placeholder="e.g. 1.5">
-                            </mat-form-field>
-                        </div>
-                    </div>
-
-                    <div fxLayout="row" fxLayoutAlign="start start" class="section-container">
-                        <div fxFlex>
-                            <mat-form-field>
                                 <mat-label>Side Min Percentage</mat-label>
                                 <input type="number"
                                        matInput
@@ -131,8 +117,31 @@
                                        placeholder="e.g. 30">
                             </mat-form-field>
                         </div>
+                    </div>
+
+                    <div fxLayout="row" fxLayoutAlign="start start" class="section-container">
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Increase Side On Price Improvement%</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="increase_side_on_price_improvement"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 1.5">
+                            </mat-form-field>
+                        </div>
                         <span fxFlex="5"></span>
                         <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Side Increase Idle Hours</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="side_increase_idle_hours"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 72">
+                            </mat-form-field>
                         </div>
                     </div>
                 </div>

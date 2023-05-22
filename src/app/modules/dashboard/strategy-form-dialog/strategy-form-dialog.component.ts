@@ -39,9 +39,12 @@ export class StrategyFormDialogComponent implements OnInit, IStrategyFormDialogC
 				short_status: new FormControl(this.strategy.short_status, [ Validators.required ]),
 				leverage: new FormControl(this.strategy.leverage, [ Validators.required, Validators.min(2), Validators.max(125) ]),
 				position_size: new FormControl(this.strategy.position_size, [ Validators.required, Validators.min(0.25), Validators.max(10000) ]),
-				increase_side_on_price_improvement: new FormControl(this.strategy.increase_side_on_price_improvement, [ Validators.required, Validators.min(0.1), Validators.max(100) ]),
 				side_increase_limit: new FormControl(this.strategy.side_increase_limit, [ Validators.required, Validators.min(1), Validators.max(1000) ]),
 				side_min_percentage: new FormControl(this.strategy.side_min_percentage, [ Validators.required, Validators.min(1), Validators.max(100) ]),
+
+				increase_side_on_price_improvement: new FormControl(this.strategy.increase_side_on_price_improvement, [ Validators.required, Validators.min(0.1), Validators.max(100) ]),
+				side_increase_idle_hours: new FormControl(this.strategy.side_increase_idle_hours, [ Validators.required, Validators.min(1), Validators.max(1000) ]),
+
 				take_profit_1_pcr: new FormControl(this.strategy.take_profit_1.price_change_requirement, [ Validators.required, Validators.min(0.05), Validators.max(10) ]),
 				take_profit_1_rs: new FormControl(this.strategy.take_profit_1.reduction_size, [ Validators.required, Validators.min(0.01), Validators.max(1) ]),
 				take_profit_1_rim: new FormControl(this.strategy.take_profit_1.reduction_interval_minutes, [ Validators.required, Validators.min(0.1), Validators.max(1000) ]),
@@ -78,6 +81,7 @@ export class StrategyFormDialogComponent implements OnInit, IStrategyFormDialogC
 	get leverage(): AbstractControl { return <AbstractControl>this.form.get("leverage") }
 	get position_size(): AbstractControl { return <AbstractControl>this.form.get("position_size") }
 	get increase_side_on_price_improvement(): AbstractControl { return <AbstractControl>this.form.get("increase_side_on_price_improvement") }
+	get side_increase_idle_hours(): AbstractControl { return <AbstractControl>this.form.get("side_increase_idle_hours") }
 	get side_increase_limit(): AbstractControl { return <AbstractControl>this.form.get("side_increase_limit") }
 	get side_min_percentage(): AbstractControl { return <AbstractControl>this.form.get("side_min_percentage") }
 	get take_profit_1_pcr(): AbstractControl { return <AbstractControl>this.form.get("take_profit_1_pcr") }
@@ -119,6 +123,7 @@ export class StrategyFormDialogComponent implements OnInit, IStrategyFormDialogC
 						this.strategy.leverage = this.leverage.value;
 						this.strategy.position_size = this.position_size.value;
 						this.strategy.increase_side_on_price_improvement = this.increase_side_on_price_improvement.value;
+						this.strategy.side_increase_idle_hours = this.side_increase_idle_hours.value;
 						this.strategy.side_increase_limit = this.side_increase_limit.value;
 						this.strategy.side_min_percentage = this.side_min_percentage.value;
 						this.strategy.take_profit_1 = {

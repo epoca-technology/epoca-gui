@@ -33,6 +33,15 @@
                     <p *ngIf="!record.close" class="success-color ts-m">Running...</p>
                 </div>
     
+                <!-- Next Increase -->
+                <div *ngIf="!record.close" fxLayout="row" fxLayoutAlign="start start" class="margin-top">
+                    <p class="light-text ts-m truncate">Next Increase</p>
+                    <span fxFlex></span>
+                    <p matTooltip="The time at which the Position Side can be increased.">
+                        {{record.next_increase | date: 'medium'}}
+                    </p>
+                </div>
+    
                 <!-- Mark Price -->
                 <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
                     <p class="light-text ts-m truncate">Mark Price</p>
