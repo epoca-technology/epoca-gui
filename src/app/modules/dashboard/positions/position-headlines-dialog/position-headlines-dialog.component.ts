@@ -16,12 +16,14 @@ export class PositionHeadlinesDialogComponent implements OnInit, IPositionHeadli
 	// History
 	public hist: IPositionHeadline[] = [];
 	public histMenu: IPosRecordHistoryRange[] = [
-		{id: "24h", name: "Last 24 hours"},
-		{id: "48h", name: "Last 48 hours"},
-		{id: "72h", name: "Last 72 hours"},
 		{id: "1w", name: "Last week"},
 		{id: "2w", name: "Last 2 weeks"},
 		{id: "1m", name: "Last month"},
+		{id: "2m", name: "Last 2 months"},
+		{id: "3m", name: "Last 3 months"},
+		{id: "6m", name: "Last 6 months"},
+		{id: "9m", name: "Last 9 months"},
+		{id: "1y", name: "Last 12 months"},
 		{id: "custom", name: "Custom Date Range"},
 	];
 	public activeHistMenuItem: IPosRecordHistoryRange = this.histMenu[2];
@@ -106,12 +108,14 @@ export class PositionHeadlinesDialogComponent implements OnInit, IPositionHeadli
 				let startAt: number;
 
 				// Calculate the starting point
-				if 		(id == "24h") { startAt = moment(endAt).subtract(24, "hours").valueOf() }
-				else if (id == "48h") { startAt = moment(endAt).subtract(48, "hours").valueOf() }
-				else if (id == "72h") { startAt = moment(endAt).subtract(72, "hours").valueOf() }
-				else if (id == "1w") { startAt = moment(endAt).subtract(1, "week").valueOf() }
+				if 		(id == "1w") { startAt = moment(endAt).subtract(1, "week").valueOf() }
 				else if (id == "2w") { startAt = moment(endAt).subtract(2, "weeks").valueOf() }
 				else if (id == "1m") { startAt = moment(endAt).subtract(1, "month").valueOf() }
+				else if (id == "2m") { startAt = moment(endAt).subtract(2, "months").valueOf() }
+				else if (id == "3m") { startAt = moment(endAt).subtract(3, "months").valueOf() }
+				else if (id == "6m") { startAt = moment(endAt).subtract(6, "months").valueOf() }
+				else if (id == "9m") { startAt = moment(endAt).subtract(9, "months").valueOf() }
+				else if (id == "1y") { startAt = moment(endAt).subtract(1, "year").valueOf() }
 				else { throw new Error("Invalid History Range ID.") }
 
 

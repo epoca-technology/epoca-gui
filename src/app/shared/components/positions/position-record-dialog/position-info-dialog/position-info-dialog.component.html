@@ -1,7 +1,7 @@
 <mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
     <div fxLayout="row" fxLayoutAlign="center center">
         <button mat-icon-button class="show-on-mobile" (click)="close()"><mat-icon>arrow_back</mat-icon></button>
-        <span class="truncate">{{record.coin.symbol | baseAssetName}} {{record.side}}</span>
+        <span class="truncate">{{record.coin.symbol | baseAssetName}} {{record.side}} x{{record.leverage}}</span>
         <span fxFlex></span>
         <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
     </div>
@@ -24,13 +24,12 @@
                 </div>
     
                 <!-- Close -->
-                <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
+                <div *ngIf="record.close" fxLayout="row" fxLayoutAlign="start start" class="margin-top">
                     <p class="light-text ts-m truncate">Close</p>
                     <span fxFlex></span>
-                    <p *ngIf="record.close" matTooltip="The time at which the Position was closed.">
+                    <p matTooltip="The time at which the Position was closed.">
                         {{record.close | date: 'medium'}}
                     </p>
-                    <p *ngIf="!record.close" class="success-color ts-m">Running...</p>
                 </div>
     
                 <!-- Next Increase -->
@@ -40,6 +39,32 @@
                     <p matTooltip="The time at which the Position Side can be increased.">
                         {{record.next_increase | date: 'medium'}}
                     </p>
+                </div>
+
+                <!-- Margin -->
+                <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
+                    <p *ngIf="record.margin_type == 'isolated'" class="light-text ts-m truncate">Isolated Margin</p>
+                    <p *ngIf="record.margin_type == 'cross'" class="error-color ts-m truncate">Cross Margin</p>
+                    <span fxFlex></span>
+                    <div class="align-right" >
+                        <p matTooltip="The total margin (USDT) put into the position.">
+                            {{record.isolated_wallet | currency}}
+                        </p>
+                        <p class="ts-xs light-text" 
+                            matTooltip="The current value of the isolated_wallet + unrealized_pnl.">
+                            ~{{record.isolated_margin | currency}}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Position Amount -->
+                <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
+                    <p class="light-text ts-m truncate">Position Amount</p>
+                    <span fxFlex></span>
+                    <div matTooltip="Position Amount (BTC) and Notional (USDT)" class="align-right" >
+                        <p>{{record.position_amount | number: '1.0-' + record.coin.quantityPrecision}} {{record.coin.symbol | baseAssetName}}</p>
+                        <p class="ts-xs light-text">{{record.notional | currency}}</p>
+                    </div>
                 </div>
     
                 <!-- Mark Price -->
@@ -60,16 +85,19 @@
                     </p>
                 </div>
 
-                <!-- Unrealized PNL -->
+                <!-- Liquidation-->
                 <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
-                    <p class="light-text ts-m truncate">Unrealized PnL</p>
+                    <p class="light-text ts-m truncate">Liquidation</p>
                     <span fxFlex></span>
-                    <p matTooltip="Unrealized PnL - Fees"
+                    <div matTooltip="Liquidation Price (Distance)" class="align-right" 
                         [ngClass]="{
-                            'success-color': record.unrealized_pnl > 0, 
-                            'error-color': record.unrealized_pnl < 0, 
-                            'light-text': record.unrealized_pnl == 0
-                        }">{{record.unrealized_pnl | currency}}</p>
+                            'success-color': liquidationDistance >= 5,
+                            'light-text': liquidationDistance >= 2 && liquidationDistance < 5,
+                            'error-color': liquidationDistance < 2
+                        }">
+                        <p>{{record.liquidation_price | currency: 'USD' : 'symbol' : '1.0-' + record.coin.pricePrecision}}</p>
+                        <p class="ts-xs">{{liquidationDistance}}% away</p>
+                    </div>
                 </div>
 
                 <!-- Performance -->
@@ -85,57 +113,6 @@
                         }">
                         <p>{{record.unrealized_pnl | currency}}</p>
                         <p class="ts-xs">{{roe | number}}%</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="divider"></div>
-
-            <!-- Progress -->
-            <div>
-                <h5>Progress</h5>
-
-                <!-- Gain -->
-                <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
-                    <p class="light-text ts-m truncate">Gain</p>
-                    <span fxFlex></span>
-                    <p [ngClass]="{
-                            'success-color': record.gain > 0, 
-                            'error-color': record.gain < 0, 
-                            'light-text': record.gain == 0
-                        }">{{record.gain | number}}%</p>
-                </div>
-
-                <!-- Highest Gain -->
-                <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
-                    <p class="light-text ts-m truncate">Highest Gain</p>
-                    <span fxFlex></span>
-                    <p [ngClass]="{
-                            'success-color': record.highest_gain > 0, 
-                            'error-color': record.highest_gain < 0, 
-                            'light-text': record.highest_gain == 0
-                        }">{{record.highest_gain | number}}%</p>
-                </div>
-            </div>
-
-            <div class="divider"></div>
-
-            <!-- Risk Information -->
-            <div>
-                <h5>Risk Information</h5>
-
-                <!-- Liquidation-->
-                <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
-                    <p class="light-text ts-m truncate">Liquidation</p>
-                    <span fxFlex></span>
-                    <div matTooltip="Liquidation Price (Distance)" class="align-right" 
-                        [ngClass]="{
-                            'success-color': liquidationDistance >= 5,
-                            'light-text': liquidationDistance >= 2 && liquidationDistance < 5,
-                            'error-color': liquidationDistance < 2
-                        }">
-                        <p>{{record.liquidation_price | currency: 'USD' : 'symbol' : '1.0-' + record.coin.pricePrecision}}</p>
-                        <p class="ts-xs">{{liquidationDistance}}% away</p>
                     </div>
                 </div>
             </div>
@@ -218,37 +195,32 @@
                 </div>
             </div>
 
-
             <div class="divider"></div>
 
-            <!-- Position Size -->
+            <!-- Gain Details -->
             <div>
-                <h5>Position Size</h5>
+                <h5>Gain</h5>
 
-                <!-- Margin -->
+                <!-- Gain -->
                 <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
-                    <p *ngIf="record.margin_type == 'isolated'" class="light-text ts-m truncate">Isolated Margin x{{record.leverage}}</p>
-                    <p *ngIf="record.margin_type == 'cross'" class="error-color ts-m truncate">Cross Margin x{{record.leverage}}</p>
+                    <p class="light-text ts-m truncate">Current</p>
                     <span fxFlex></span>
-                    <div class="align-right" >
-                        <p matTooltip="The total margin (USDT) put into the position.">
-                            {{record.isolated_wallet | currency}}
-                        </p>
-                        <p class="ts-xs light-text" 
-                            matTooltip="The current value of the isolated_wallet + unrealized_pnl.">
-                            ~{{record.isolated_margin | currency}}
-                        </p>
-                    </div>
+                    <p [ngClass]="{
+                            'success-color': record.gain > 0, 
+                            'error-color': record.gain < 0, 
+                            'light-text': record.gain == 0
+                        }">{{record.gain | number}}%</p>
                 </div>
 
-                <!-- Position Amount -->
+                <!-- Highest Gain -->
                 <div fxLayout="row" fxLayoutAlign="start start" class="margin-top">
-                    <p class="light-text ts-m truncate">Position Amount</p>
+                    <p class="light-text ts-m truncate">Highest</p>
                     <span fxFlex></span>
-                    <div matTooltip="Position Amount (BTC) and Notional (USDT)" class="align-right" >
-                        <p>{{record.position_amount | number: '1.0-' + record.coin.quantityPrecision}} {{record.coin.symbol | baseAssetName}}</p>
-                        <p class="ts-xs light-text">{{record.notional | currency}}</p>
-                    </div>
+                    <p [ngClass]="{
+                            'success-color': record.highest_gain > 0, 
+                            'error-color': record.highest_gain < 0, 
+                            'light-text': record.highest_gain == 0
+                        }">{{record.highest_gain | number}}%</p>
                 </div>
             </div>
         </div>

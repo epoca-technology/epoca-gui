@@ -3,7 +3,7 @@
         <button mat-icon-button class="show-on-mobile" (click)="close()" [disabled]="!loaded || submitting"><mat-icon>arrow_back</mat-icon></button>
         <span *ngIf="!loaded" class="truncate">Loading...</span>
         <span *ngIf="loaded" class="truncate">
-            {{record.side}}: {{record.gain > 0 ? '+': ''}}{{record.gain}}%
+            {{record.side}}: {{record.isolated_wallet | currency}} {{record.gain > 0 ? '+': ''}}{{record.gain}}%
         </span>
         <span fxFlex></span>
         <app-refresh-button *ngIf="loaded && !record.close" style="display: none;" [disabled]="submitting" (refresh)="refreshPositionRecord()" [intervalSeconds]="5"></app-refresh-button>

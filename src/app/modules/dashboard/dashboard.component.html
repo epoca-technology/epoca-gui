@@ -336,17 +336,17 @@
                                                 <mat-grid-tile *ngIf="!activePositions || !activePositions.LONG" 
                                                                 (click)="displayBusinessMenu()"
                                                                 class="buy-action-container very-weak-state clickable" role="button" matRipple>
-                                                    <p>LONG: none</p>
+                                                    <p>$0.00 +0.00%</p>
                                                 </mat-grid-tile>
                                                 <mat-grid-tile *ngIf="activePositions && activePositions.LONG" 
                                                                 class="buy-action-container clickable" role="button" matRipple
                                                                 (click)="displayPositionRecordDialog(activePositions.LONG.id)"
                                                                 [ngClass]="{
-                                                                    'weak-state': activePositions.LONG.g > 0 && activePositions.LONG.g < 0.45,
+                                                                    'weak-state': activePositions.LONG.g > 0 && activePositions.LONG.g < 0.5,
                                                                     'very-weak-state': activePositions.LONG.g <= 0,
                                                                     'very-strong-state': activePositions.LONG.g >= 1
                                                                 }">
-                                                    <p>{{activePositions.LONG.s | baseAssetName}}: {{activePositions.LONG.g > 0 ? '+': ''}}{{activePositions.LONG.g | number:'1.0-2'}}%</p>
+                                                    <p>{{activePositions.LONG.iw | currency}} {{activePositions.LONG.g > 0 ? '+': ''}}{{activePositions.LONG.g | number:'1.0-2'}}%</p>
                                                 </mat-grid-tile>
 
 
@@ -354,17 +354,17 @@
                                                 <mat-grid-tile *ngIf="!activePositions || !activePositions.SHORT" 
                                                                 (click)="displayBusinessMenu()"
                                                                 class="sell-action-container very-weak-state clickable" role="button" matRipple>
-                                                    <p>SHORT: none</p>
+                                                    <p>$0.00 +0.00%</p>
                                                 </mat-grid-tile>
                                                 <mat-grid-tile *ngIf="activePositions && activePositions.SHORT" 
                                                                 class="sell-action-container clickable" role="button" matRipple
                                                                 (click)="displayPositionRecordDialog(activePositions.SHORT.id)"
                                                                 [ngClass]="{
-                                                                    'weak-state': activePositions.SHORT.g > 0 && activePositions.SHORT.g < 0.45,
+                                                                    'weak-state': activePositions.SHORT.g > 0 && activePositions.SHORT.g < 0.5,
                                                                     'very-weak-state': activePositions.SHORT.g <= 0,
                                                                     'very-strong-state': activePositions.SHORT.g >= 1
                                                                 }">
-                                                    <p>{{activePositions.SHORT.s | baseAssetName}}: {{activePositions.SHORT.g > 0 ? '+': ''}}{{activePositions.SHORT.g | number:'1.0-2'}}%</p>
+                                                    <p>{{activePositions.SHORT.iw | currency}} {{activePositions.SHORT.g > 0 ? '+': ''}}{{activePositions.SHORT.g | number:'1.0-2'}}%</p>
                                                 </mat-grid-tile>
                                             </mat-grid-list>
                                         </div>

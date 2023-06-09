@@ -10,7 +10,7 @@ export interface IPositionHeadlinesDialogComponent {
 
 
 
-export type IIPosRecordHistoryRangeID = "24h"|"48h"|"72h"|"1w"|"2w"|"1m"|"custom";
+export type IIPosRecordHistoryRangeID = "1w"|"2w"|"1m"|"2m"|"3m"|"6m"|"9m"|"1y"|"custom";
 export interface IPosRecordHistoryRange {
     id: IIPosRecordHistoryRangeID,
     name: string

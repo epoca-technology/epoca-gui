@@ -260,7 +260,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         // Finally, update the chart
         if (this.predictionCandlesticksChart) {
             this.predictionCandlesticksChart.series = [{data: this._chart.getApexCandlesticks(candlesticks)}]
-            this.predictionCandlesticksChart.annotations = this.getPredictionCandlestickAnnotations();
         } else {
             this.predictionCandlesticksChart = this._chart.getCandlestickChartOptions(
                 candlesticks, 
@@ -291,24 +290,24 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                 this.buildCurrentTrendSumAnnotation(),
 
                 // Uptrend backgrounds
-                this.buildTrendSumAnnotation(0, 1, "#E0F2F1"),
-                this.buildTrendSumAnnotation(1, 2, "#80CBC4"),
-                this.buildTrendSumAnnotation(2, 3, "#4DB6AC"),
+                //this.buildTrendSumAnnotation(0, 1, "#E0F2F1"),
+                this.buildTrendSumAnnotation(0, 20, "#80CBC4"),
+                /*this.buildTrendSumAnnotation(2, 3, "#4DB6AC"),
                 this.buildTrendSumAnnotation(3, 4, "#26A69A"),
                 this.buildTrendSumAnnotation(4, 5, "#009688"),
                 this.buildTrendSumAnnotation(5, 6, "#00897B"),
                 this.buildTrendSumAnnotation(6, 7, "#00796B"),
-                this.buildTrendSumAnnotation(7, 20, "#004D40"),
+                this.buildTrendSumAnnotation(7, 20, "#004D40"),*/
 
                 // Downtrend Backgrounds
-                this.buildTrendSumAnnotation(0, -1, "#FFEBEE"),
-                this.buildTrendSumAnnotation(-1, -2, "#EF9A9A"),
-                this.buildTrendSumAnnotation(-2, -3, "#E57373"),
+                //this.buildTrendSumAnnotation(0, -1, "#FFEBEE"),
+                this.buildTrendSumAnnotation(-20, 0, "#EF9A9A"),
+                /*this.buildTrendSumAnnotation(-2, -3, "#E57373"),
                 this.buildTrendSumAnnotation(-3, -4, "#EF5350"),
                 this.buildTrendSumAnnotation(-4, -5, "#F44336"),
                 this.buildTrendSumAnnotation(-5, -6, "#E53935"),
                 this.buildTrendSumAnnotation(-6, -7, "#D32F2F"),
-                this.buildTrendSumAnnotation(-7, -20, "#B71C1C")
+                this.buildTrendSumAnnotation(-7, -20, "#B71C1C")*/
             ]
         }
     }

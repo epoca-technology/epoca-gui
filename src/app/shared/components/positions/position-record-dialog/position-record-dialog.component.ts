@@ -4,6 +4,7 @@ import { ApexAnnotations } from 'ng-apexcharts';
 import { 
 	IPositionCandlestick, 
 	IPositionRecord, 
+	IPositionReduction, 
 	LocalDatabaseService, 
 	MarketStateService, 
 	PositionService, 
@@ -133,7 +134,7 @@ export class PositionRecordDialogComponent implements OnInit, IPositionRecordDia
 				false, 
 				false,
 				undefined,
-				this.layout == "desktop" ? 400: 330,
+				this.layout == "desktop" ? 320: 330,
 				`${this._ms.getBaseAssetName(this.record.coin.symbol)} Price`
 			);
 			this.markPriceChart.chart!.toolbar = {show: true,tools: {selection: true,zoom: true,zoomin: true,zoomout: true,download: false}};
@@ -152,7 +153,7 @@ export class PositionRecordDialogComponent implements OnInit, IPositionRecordDia
 				false, 
 				false,
 				undefined,
-				this.layout == "desktop" ? 400: 330,
+				this.layout == "desktop" ? 320: 330,
 				"Gain%"
 			);
 			//this.gainChart.annotations = {yaxis: [this.getCurrentValueAnnotation(gain[gain.length - 1])]}
@@ -258,39 +259,17 @@ export class PositionRecordDialogComponent implements OnInit, IPositionRecordDia
 		let annotations: ApexAnnotations = { points: []};
 
 		// Build the points by level
-		for (let tp1 of this.record.reductions.take_profit_1) {
+		const reductions: IPositionReduction[] = 
+							this.record.reductions.take_profit_1
+							.concat(this.record.reductions.take_profit_2)
+							.concat(this.record.reductions.take_profit_3)
+							.concat(this.record.reductions.take_profit_4)
+							.concat(this.record.reductions.take_profit_5)
+		for (let tp1 of reductions) {
 			annotations.points!.push({
 				x: tp1.t,
 				y: tp1.g,
-				marker: {size: 2,strokeColor: "#00796B",fillColor: "#00796B",strokeWidth: 2,shape: "square"}
-			});
-		}
-		for (let tp2 of this.record.reductions.take_profit_2) {
-			annotations.points!.push({
-				x: tp2.t,
-				y: tp2.g,
-				marker: {size: 2,strokeColor: "#00796B",fillColor: "#00796B",strokeWidth: 2,shape: "square"}
-			});
-		}
-		for (let tp3 of this.record.reductions.take_profit_3) {
-			annotations.points!.push({
-				x: tp3.t,
-				y: tp3.g,
-				marker: {size: 2,strokeColor: "#00796B",fillColor: "#00796B",strokeWidth: 2,shape: "square"}
-			});
-		}
-		for (let tp4 of this.record.reductions.take_profit_4) {
-			annotations.points!.push({
-				x: tp4.t,
-				y: tp4.g,
-				marker: {size: 2,strokeColor: "#00796B",fillColor: "#00796B",strokeWidth: 2,shape: "square"}
-			});
-		}
-		for (let tp5 of this.record.reductions.take_profit_5) {
-			annotations.points!.push({
-				x: tp5.t,
-				y: tp5.g,
-				marker: {size: 2,strokeColor: "#00796B",fillColor: "#00796B",strokeWidth: 2,shape: "square"}
+				marker: {size: 2,strokeColor: "#000000",fillColor: "#000000",strokeWidth: 2,shape: "square"}
 			});
 		}
 
