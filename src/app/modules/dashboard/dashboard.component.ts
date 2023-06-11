@@ -260,6 +260,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         // Finally, update the chart
         if (this.predictionCandlesticksChart) {
             this.predictionCandlesticksChart.series = [{data: this._chart.getApexCandlesticks(candlesticks)}]
+            this.predictionCandlesticksChart.annotations = this.getPredictionCandlestickAnnotations();
         } else {
             this.predictionCandlesticksChart = this._chart.getCandlestickChartOptions(
                 candlesticks, 

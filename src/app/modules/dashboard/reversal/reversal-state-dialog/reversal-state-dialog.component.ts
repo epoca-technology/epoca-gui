@@ -40,7 +40,7 @@ export class ReversalStateDialogComponent implements OnInit, IReversalStateDialo
 	public coinsChart!: ILineChartOptions;
 	public coinsBTCChart!: ILineChartOptions;
 	public liquidityChart!: ILineChartOptions;
-	public volumeChart!: IBarChartOptions;
+	public volumeChart!: ILineChartOptions;
 
 	// Load State
 	public loaded: boolean = false;
@@ -125,7 +125,7 @@ export class ReversalStateDialogComponent implements OnInit, IReversalStateDialo
 					series: [
 						{ name: "General", data: general, color: this.color },
 					], 
-					stroke: {width: 3, curve: "straight"},
+					stroke: {width: 2, curve: "straight"},
 					xaxis: {type: "datetime",tooltip: {enabled: false}, labels: {datetimeUTC: false}},
 					yaxis: {labels: {show: true}, tooltip: {enabled: true}},
 					title: { text: "General"},
@@ -139,7 +139,7 @@ export class ReversalStateDialogComponent implements OnInit, IReversalStateDialo
 					series: [
 						{ name: "Coins", data: coins, color: this.color }
 					], 
-					stroke: {width: 3, curve: "straight"},
+					stroke: {width: 2, curve: "straight"},
 					xaxis: {type: "datetime",tooltip: {enabled: false}, labels: {datetimeUTC: false}},
 					yaxis: {labels: {show: true}, tooltip: {enabled: true}},
 					title: { text: "Coins"}
@@ -153,7 +153,7 @@ export class ReversalStateDialogComponent implements OnInit, IReversalStateDialo
 					series: [
 						{ name: "CoinsBTC", data: coins_btc, color: this.color }
 					], 
-					stroke: {width: 3, curve: "straight"},
+					stroke: {width: 2, curve: "straight"},
 					xaxis: {type: "datetime",tooltip: {enabled: false}, labels: {datetimeUTC: false}},
 					yaxis: {labels: {show: true}, tooltip: {enabled: true}},
 					title: { text: "CoinsBTC"}
@@ -167,7 +167,7 @@ export class ReversalStateDialogComponent implements OnInit, IReversalStateDialo
 					series: [
 						{ name: "Liquidity", data: liquidity, color: this.color },
 					], 
-					stroke: {width: 3, curve: "straight"},
+					stroke: {width: 2, curve: "straight"},
 					xaxis: {type: "datetime",tooltip: {enabled: false}, labels: {datetimeUTC: false}},
 					yaxis: {labels: {show: true}, tooltip: {enabled: true}},
 					title: { text: "Liquidity"}
@@ -176,19 +176,18 @@ export class ReversalStateDialogComponent implements OnInit, IReversalStateDialo
 			);
 
 			// Build the volume chart
-			this.volumeChart = this._chart.getBarChartOptions(
+			this.volumeChart = this._chart.getLineChartOptions(
 				{ 
 					series: [
-						{ name: "Volume", data: volume, color: this.color },
+						{ name: "Volume", data: liquidity, color: this.color },
 					], 
+					stroke: {width: 2, curve: "straight"},
 					xaxis: {type: "datetime",tooltip: {enabled: false}, labels: {datetimeUTC: false}},
-					yaxis: {labels: {show: true}, tooltip: {enabled: false}},
+					yaxis: {labels: {show: true}, tooltip: {enabled: true}},
 					title: { text: "Volume"}
 				}, 
-				undefined,
-				this.layout == "desktop" ? 250: 250, 
+				this.layout == "desktop" ? 450: 350, 
 			);
-			this.volumeChart.chart.zoom = {enabled: false};
 		}
 	}
 
