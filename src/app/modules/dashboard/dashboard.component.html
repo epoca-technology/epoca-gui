@@ -197,7 +197,7 @@
                                 <!-- Positions -->
                                 <div class="divider show-on-mobile"></div>
                                 <div class="global-indicators-section">
-                                    <h4 class="margin-bottom">Active Positions</h4>
+                                    <h4 class="margin-bottom">Positions</h4>
                                     <mat-grid-list [cols]="2" [rowHeight]="layout == 'desktop' ? '45px': '70px'" gutterSize="1px">
                                         <!-- Long Position -->
                                         <mat-grid-tile *ngIf="!activePositions || !activePositions.LONG" 
@@ -244,7 +244,7 @@
                                 <div class="global-indicators-section">
                                     <h4 class="margin-bottom" 
                                         [ngClass]="{'margin-top': layout == 'mobile', 'margin-top-x2': layout == 'desktop'}">
-                                        General Indicators
+                                        Indicators
                                     </h4>
                                     <mat-grid-list [cols]="2" [rowHeight]="layout == 'desktop' ? '45px': '70px'" gutterSize="1px">
                                         <!-- KeyZones -->
