@@ -1,6 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
-import { ApexAnnotations, YAxisAnnotations } from 'ng-apexcharts';
 import * as moment from "moment";
 import { 
 	ICoinState,
@@ -68,7 +67,6 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 			
 			// Initialize the component based on the module
 			if (this.module == "window") { this.initWindow() }
-			else if (this.module == "trend") { this.initTrend() }
 			else if (this.module == "volume") { await this.initVolume() }
 			else if (this.module == "coin") { await this.initCoin() }
 			else if (this.module == "coinBTC") { await this.initCoinBTC() }
@@ -111,77 +109,6 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 	}
 
 
-
-
-
-
-
-
-	/*********
-	 * Trend *
-	 *********/
-
-
-
-
-
-	private initTrend(): void {
-		// Set the title
-		this.title = "Trend";
-
-		// Set the state average
-		this.stateAverage = this.config.trendState!.s;
-
-		// Set the splits
-		this.states = this.config.trendState!.ss;
-
-		// Build the series
-		this.seriesName = "Trend Sum";
-		this.series = this.config.trendState!.w.map((c) => { return { x: c.ot, y: c.c }});
-
-		// Finally, apply the split
-		this.applySplit(this.activeSplitID);
-	}
-
-
-
-
-	/**
-	 * Builds the annotations for the trend chart.
-	 * @returns ApexAnnotations
-	 */
-	private buildTrendAnnotations(): ApexAnnotations {
-		return { yaxis: [
-                // Uptrend backgrounds
-                //this.buildTrendSumAnnotation(0, 1, "#E0F2F1"),
-                this.buildTrendSumAnnotation(0, 20, "#80CBC4"),
-                /*this.buildTrendSumAnnotation(2, 3, "#4DB6AC"),
-                this.buildTrendSumAnnotation(3, 4, "#26A69A"),
-                this.buildTrendSumAnnotation(4, 5, "#009688"),
-                this.buildTrendSumAnnotation(5, 6, "#00897B"),
-                this.buildTrendSumAnnotation(6, 7, "#00796B"),
-                this.buildTrendSumAnnotation(7, 20, "#004D40"),*/
-
-                // Downtrend Backgrounds
-                //this.buildTrendSumAnnotation(0, -1, "#FFEBEE"),
-                this.buildTrendSumAnnotation(-20, 0, "#EF9A9A"),
-                /*this.buildTrendSumAnnotation(-2, -3, "#E57373"),
-                this.buildTrendSumAnnotation(-3, -4, "#EF5350"),
-                this.buildTrendSumAnnotation(-4, -5, "#F44336"),
-                this.buildTrendSumAnnotation(-5, -6, "#E53935"),
-                this.buildTrendSumAnnotation(-6, -7, "#D32F2F"),
-                this.buildTrendSumAnnotation(-7, -20, "#B71C1C")*/
-		]}
-	}
-    private buildTrendSumAnnotation(y: number, y2: number, color: string): YAxisAnnotations {
-        return {
-            y: y,
-            y2: y2,
-            borderColor: color,
-            fillColor: color,
-            strokeDashArray: 0
-        };
-    }
 
 
 
@@ -290,7 +217,6 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 			undefined
 		);
 		this.activeSplitID = id;
-		if (this.module == "trend") this.lineChart!.annotations = this.buildTrendAnnotations();
 	}
 
 

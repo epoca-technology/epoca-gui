@@ -7,16 +7,12 @@ import { Subscription } from "rxjs";
 import * as moment from "moment";
 import { ApexAnnotations, PointAnnotations, YAxisAnnotations } from "ng-apexcharts";
 import { 
-    IEpochRecord, 
     IMarketState, 
-    IPrediction, 
     LocalDatabaseService, 
-    PredictionService, 
     UtilsService,
     AuthService,
     IUserPreferences,
     MarketStateService,
-    IPredictionCandlestick,
     ISplitStateID,
     IMinifiedKeyZone,
     ILiquidityPeaks,
@@ -39,9 +35,7 @@ import { KeyzonesConfigFormDialogComponent, KeyzonesDialogComponent, KeyzonesEve
 import { IMarketStateDialogConfig, MarketStateDialogComponent } from "./market-state-dialog";
 import { IBottomSheetMenuItem } from "../../shared/components/bottom-sheet-menu";
 import { CoinsDialogComponent, CoinsStateSummaryDialogComponent, ICoinsStateSummaryConfig } from "./coins";
-import { SignalPoliciesDialogComponent } from "./signal-policies-dialog";
 import { PositionHeadlinesDialogComponent } from "./positions";
-import { TrendConfigurationDialogComponent } from "./trend-configuration-dialog";
 import { LiquidityConfigurationDialogComponent, LiquidityDialogComponent } from "./liquidity";
 import { ReversalConfigDialogComponent, ReversalStateDialogComponent } from "./reversal";
 import { IDashboardComponent, IWindowZoom, IWindowZoomID, IWindowZoomPrices } from "./interfaces";
@@ -63,9 +57,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     // User Preferences
     public userPreferences: IUserPreferences = this._localDB.getDefaultUserPreferences();
 
-    // Submenus
-    public builderExpanded: boolean = false;
-
     // New Version Available
     public newVersionAvailable: string|undefined;
     private guiVersionSub?: Subscription;
@@ -74,15 +65,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     public activePositions: IActivePositionHeadlines = { LONG: null, SHORT: null };
     private positionsSub?: Subscription;
     private positionsLoaded: boolean = false;
-
-    // Prediction Lists
-    public epoch?: IEpochRecord;
-    public activePrediction?: IPrediction;
-    private predictionSub!: Subscription;
-    private predictionsLoaded: boolean = false;
-
-    // Prediction Charts
-    public predictionCandlesticksChart?: ICandlestickChartOptions;
 
     // State
     public state!: IMarketState;
@@ -128,7 +110,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         private dialog: MatDialog,
         private _chart: ChartService,
         private titleService: Title,
-        public _prediction: PredictionService,
         private _utils: UtilsService,
         private _auth: AuthService,
         public _ms: MarketStateService
@@ -172,13 +153,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             } 
         });
 
-        // Subscribe to the active prediction
-        this.predictionSub = this._app.prediction.subscribe(
-            async (pred: IPrediction|null|undefined) => {
-                if (pred !== null) this.onNewPrediction(pred);
-            }
-        );
-
         // Subscribe to the current version
         this.guiVersionSub = this._app.guiVersion.subscribe((newVersion: string|undefined|null) => {
             if (typeof newVersion == "string" && this._app.version != newVersion) {
@@ -192,220 +166,11 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     ngOnDestroy(): void {
         if (this.layoutSub) this.layoutSub.unsubscribe();
         if (this.positionsSub) this.positionsSub.unsubscribe();
-        if (this.predictionSub) this.predictionSub.unsubscribe();
         if (this.stateSub) this.stateSub.unsubscribe();
         if (this.guiVersionSub) this.guiVersionSub.unsubscribe();
         this.titleService.setTitle("Epoca");
     }
 
-
-
-
-
-
-
-
-
-
-    /********************************
-     * New Prediction Event Handler *
-     ********************************/
-
-
-
-
-
-
-    /**
-     * Triggers whenever there is a change in the data and builds
-     * all the required data.
-     */
-     private async onNewPrediction(pred: IPrediction|null|undefined): Promise<void> {
-        // Ensure a valid prediction was provided
-        if (pred) {
-            // Populate the epoch's record in case it hasn't been
-            if (!this.epoch) this.epoch = this._app.epoch.value!;
-
-            // Add the new prediction
-            this.activePrediction = pred;
-        }
-
-        // Update the prediction chart
-        await this.updatePredictionCandlesticks();
-
-        // Set the component as loaded in case it hasn't been
-        if (!this.predictionsLoaded) {
-            this.predictionsLoaded = true;
-            this.checkLoadState();
-        }
-    }
-
-
-
-
-
-
-    /**
-     * Triggers whenever a new prediction is received through the app bulk.
-     * If the candlesticks have been initialized, it will build the current
-     * candlestick locally. If the current candlestick's close time is 
-     * older than 10 minutes or if they haven't been initialized, they will be 
-     * built from the API.
-     * @returns Promise<void>
-     */
-    private async updatePredictionCandlesticks(): Promise<void> {
-        // Init the candlesticks
-        const candlesticks: IPredictionCandlestick[] = this.state.trend.w.length ? this.state.trend.w: this.getDefaultWindowPredictionCandlesticks();
-
-        // Finally, update the chart
-        if (this.predictionCandlesticksChart) {
-            this.predictionCandlesticksChart.series = [{data: this._chart.getApexCandlesticks(candlesticks)}]
-            this.predictionCandlesticksChart.annotations = this.getPredictionCandlestickAnnotations();
-        } else {
-            this.predictionCandlesticksChart = this._chart.getCandlestickChartOptions(
-                candlesticks, 
-                this.getPredictionCandlestickAnnotations(), 
-                false
-            );
-            this.predictionCandlesticksChart.chart!.height = this.layout == "desktop" ? this.predictionChartDesktopHeight: 330;
-            this.predictionCandlesticksChart.chart!.zoom = {enabled: false};
-            this.predictionCandlesticksChart.title = {text: ""};
-            this.predictionCandlesticksChart.yaxis.opposite = true;
-            this.predictionCandlesticksChart.yaxis.labels = {show: true, align: "right"};
-            this.predictionCandlesticksChart.xaxis.tooltip = {enabled: false}
-        }
-    }
-
-
-
-
-    /**
-     * Builds the annotations to be used on the predictio ncandlestick's chart.
-     * @returns ApexAnnotations
-     */
-    private getPredictionCandlestickAnnotations(): ApexAnnotations {
-
-        return {
-            yaxis: [
-                // Current sum annotation
-                this.buildCurrentTrendSumAnnotation(),
-
-                // Uptrend backgrounds
-                //this.buildTrendSumAnnotation(0, 1, "#E0F2F1"),
-                this.buildTrendSumAnnotation(0, 20, "#80CBC4"),
-                /*this.buildTrendSumAnnotation(2, 3, "#4DB6AC"),
-                this.buildTrendSumAnnotation(3, 4, "#26A69A"),
-                this.buildTrendSumAnnotation(4, 5, "#009688"),
-                this.buildTrendSumAnnotation(5, 6, "#00897B"),
-                this.buildTrendSumAnnotation(6, 7, "#00796B"),
-                this.buildTrendSumAnnotation(7, 20, "#004D40"),*/
-
-                // Downtrend Backgrounds
-                //this.buildTrendSumAnnotation(0, -1, "#FFEBEE"),
-                this.buildTrendSumAnnotation(-20, 0, "#EF9A9A"),
-                /*this.buildTrendSumAnnotation(-2, -3, "#E57373"),
-                this.buildTrendSumAnnotation(-3, -4, "#EF5350"),
-                this.buildTrendSumAnnotation(-4, -5, "#F44336"),
-                this.buildTrendSumAnnotation(-5, -6, "#E53935"),
-                this.buildTrendSumAnnotation(-6, -7, "#D32F2F"),
-                this.buildTrendSumAnnotation(-7, -20, "#B71C1C")*/
-            ]
-        }
-    }
-
-
-
-
-    /**
-     * Builds a yaxis annotation for the trend sum chart signaling the 
-     * predicted trend.
-     * @param y 
-     * @param y2 
-     * @param color 
-     * @param strokeDashArray 
-     * @returns YAxisAnnotations
-     */
-    private buildTrendSumAnnotation(y: number, y2: number, color: string): YAxisAnnotations {
-        return {
-            y: y,
-            y2: y2,
-            borderColor: color,
-            fillColor: color,
-            strokeDashArray: 0
-        };
-    }
-
-
-
-
-    /**
-     * Builds the current trend sum annotation.
-     * @returns YAxisAnnotations
-     */
-    private buildCurrentTrendSumAnnotation(): YAxisAnnotations {
-        // Set the color of the annotation
-        let open: number = 0;
-        let close: number = 0;
-        if (this.state.trend.w.length) {
-            open = this.state.trend.w[this.state.trend.w.length - 1].o;
-            close = this.state.trend.w[this.state.trend.w.length - 1].c;
-        }
-        let stateColor: string = this._chart.neutralColor;
-        if (close > open) { stateColor = this._chart.upwardColor } 
-        else if (open > close) { stateColor = this._chart.downwardColor }
-
-        // Build the annotations
-        let sumStr: string = <string>this._utils.outputNumber(close, {dp: 3, of: "s"});
-        let annOffset: {x: number, y: number} = {x: 0, y: 0};
-        if (sumStr.length == 1 ) { annOffset.x = 20 }
-        else if (sumStr.length == 2 ) { annOffset.x = 22 }
-        else if (sumStr.length == 3 ) { annOffset.x = 24 }
-        else if (sumStr.length == 4 ) { annOffset.x = 29 }
-        else if (sumStr.length == 5 ) { annOffset.x = 36 }
-        else if (sumStr.length == 6 ) { annOffset.x = 41 }
-        else if (sumStr.length == 7 ) { annOffset.x = 46 }
-        return {
-            y: close,
-            strokeDashArray: 0,
-            borderColor: stateColor,
-            fillColor: stateColor,
-            label: {
-                borderColor: stateColor,
-                style: { color: "#fff", background: stateColor, fontSize: "11px", padding: {top: 4, right: 4, left: 4, bottom: 4}},
-                text: sumStr,
-                position: "right",
-                offsetY: annOffset.y,
-                offsetX: annOffset.x
-            }
-        }
-    } 
-
-
-
-
-    /**
-     * Builds the default list of prediction candlesticks.
-     * @returns IPredictionCandlestick[]
-     */
-    private getDefaultWindowPredictionCandlesticks(): IPredictionCandlestick[] {
-        // Init the list
-        let candlesticks: IPredictionCandlestick[] = [];
-
-        // Iterate over each element in the window and build the placeholder
-        for (let wCandlestick of this.state.window.w) {
-            candlesticks.push({
-                ot: wCandlestick.ot,
-                ct: wCandlestick.ct,
-                o: 0,
-                h: 0,
-                l: 0,
-                c: 0
-            })
-        }
-
-        // Finally, return the list
-        return candlesticks;
-    }
 
 
 
@@ -444,13 +209,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             this.state.window.w[this.state.window.w.length - 1].c, 
             {dp: 0, of: "s"}
         );
-        let newTitle: string = `$${price}`;
-        if (this.activePrediction) {
-            newTitle += `: ${this._utils.outputNumber(this.activePrediction.s, {dp: 2})}`;
-            this.titleService.setTitle(newTitle);
-        } else {
-            this.titleService.setTitle(newTitle);
-        }
+        this.titleService.setTitle(`$${price}`);
     }
 
 
@@ -953,13 +712,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                 response: "WINDOW_CONFIG"
             },
             {
-                icon: 'wand_magic_sparkles',  
-                svg: true,
-                title: 'Trend', 
-                description: 'Configure the requirements for the trend splits to be stateful.', 
-                response: "TREND_CONFIG"
-            },
-            {
                 icon: 'vertical_distribute',  
                 title: 'KeyZones', 
                 description: 'Configure how the zones are built and events are issued.', 
@@ -985,12 +737,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                 response: "REVERSAL"
             },
             {
-                icon: 'podcasts',  
-                title: 'Signal Policies', 
-                description: 'Manage issuance and cancellation policies for both sides.', 
-                response: "SIGNAL_POLICIES"
-            },
-            {
                 icon: 'money_bill_transfer',  
                 svg: true,
                 title: 'Trading Strategy', 
@@ -1000,12 +746,10 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         ]);
 		bs.afterDismissed().subscribe((response: string|undefined) => {
             if      (response === "WINDOW_CONFIG") { this.displayWindowConfigFormDialog() }
-            else if (response === "TREND_CONFIG") { this.displayTrendConfigFormDialog() }
             else if (response === "LIQUIDITY_CONFIG") { this.displayLiquidityConfigFormDialog() }
             else if (response === "KEYZONES_CONFIG") { this.displayKeyZonesConfigFormDialog() }
             else if (response === "COINS") { this.displayCoinsDialog() }
             else if (response === "REVERSAL") { this.displayReversalConfigDialog() }
-            else if (response === "SIGNAL_POLICIES") { this.displaySignalPoliciesDialog() }
             else if (response === "TRADING_STRATEGY") { this.displayStrategyFormDialog() }
 		});
 	}
@@ -1025,19 +769,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 		})
 	}
 
-
-
-    /**
-     * Displays the trend config form dialog.
-     */
-    private displayTrendConfigFormDialog(): void {
-		this.dialog.open(TrendConfigurationDialogComponent, {
-			hasBackdrop: this._app.layout.value != "mobile",
-            disableClose: true,
-			panelClass: "small-dialog",
-            data: {}
-		})
-	}
 
 
 
@@ -1092,21 +823,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 			hasBackdrop: this._app.layout.value != "mobile",
             disableClose: true,
 			panelClass: "small-dialog",
-            data: {}
-		})
-	}
-
-
-
-
-    /**
-     * Displays the signal policies dialog.
-     */
-    private displaySignalPoliciesDialog(): void {
-		this.dialog.open(SignalPoliciesDialogComponent, {
-			hasBackdrop: this._app.layout.value != "mobile",
-            disableClose: true,
-			panelClass: "large-dialog",
             data: {}
 		})
 	}
@@ -1217,17 +933,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
 
 
-    
-	/**
-	 * Displays the features dedicated dialog to gather more information
-	 * about the prediction.
-	 */
-    public displayActivePredictionDialog(): void {
-        if (!this.epoch!.model || !this.activePrediction) return;
-        this._nav.displayPredictionDialog(this.epoch!.model, this.activePrediction!);
-	}
-
-
 
 
     
@@ -1272,23 +977,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 		})
 	}
 
-
-
-	/**
-	 * Displays the trend dialog.
-     * @param taInterval
-	 */
-    public displayTrendDialog(id: ISplitStateID): void {
-		this.dialog.open(MarketStateDialogComponent, {
-			hasBackdrop: this._app.layout.value != "mobile",
-			panelClass: "medium-dialog",
-			data: <IMarketStateDialogConfig>{
-                module: "trend",
-                split: id,
-                trendState: this.state.trend
-            }
-		})
-	}
 
 
 
@@ -1566,7 +1254,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
      * Checks if all the required data has been loaded.
      */
     private checkLoadState(): void {
-        this.loaded = this.positionsLoaded && this.predictionsLoaded && this.stateLoaded;
+        this.loaded = this.positionsLoaded && this.stateLoaded;
     }
 }
 

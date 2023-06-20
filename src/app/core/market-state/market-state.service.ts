@@ -15,7 +15,6 @@ import {
 	IReversalConfiguration, 
 	IReversalState, 
 	ISplitStateID, 
-	ITrendStateConfiguration, 
 	IVolumeState, 
 	IWindowStateConfiguration
 } from './interfaces';
@@ -208,41 +207,6 @@ export class MarketStateService implements IMarketStateService {
 
 
 
-
-
-
-
-
-	/*********************
-	 * Trend Management *
-	 *********************/
-
-
-
-
-
-	/**
-	 * Retrieves the trend configuration from the server.
-	 * @returns Promise<ITrendStateConfiguration>
-	 */
-	public getTrendConfiguration(): Promise<ITrendStateConfiguration> { 
-		return this._api.request("get","marketState/getTrendConfiguration", {}, true) 
-	}
-
-
-
-
-
-
-    /**
-     * Updates the Trend's configuration.
-     * @param newConfiguration 
-     * @param otp 
-     * @returns Promise<void>
-     */
-    public updateTrendConfiguration(newConfiguration: ITrendStateConfiguration, otp: string): Promise<void> { 
-        return this._api.request("post", "marketState/updateTrendConfiguration", {newConfiguration: newConfiguration}, true, otp);
-    }
 
 
 

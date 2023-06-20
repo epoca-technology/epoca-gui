@@ -1,13 +1,7 @@
 import {BehaviorSubject} from "rxjs";
 import {MatDialogRef} from "@angular/material/dialog";
 import {MatBottomSheetRef} from "@angular/material/bottom-sheet";
-import { 
-	IRegressionConfig, 
-	IPrediction,
-	IPredictionModelConfig,
-	IEpochRecord,
-	IBinanceTradeExecutionPayload,
-} from "../../core";
+import { IBinanceTradeExecutionPayload,} from "../../core";
 import {IConfirmationDialogData} from "../../shared/components/confirmation-dialog";
 import {IBottomSheetMenuItem} from "../../shared/components/bottom-sheet-menu";
 import { IDialogMenuItem } from "../../shared/components/dialog-menu";
@@ -24,16 +18,12 @@ export interface INavService {
     signIn(): Promise<boolean>,
 	updatePassword(): Promise<boolean>,
 	dashboard(): Promise<boolean>,
-	epochs(epochID?: string): Promise<boolean> ,
 	positions(epochID?: string): Promise<boolean>,
-	predictions(epochID?: string): Promise<boolean>,
 	candlesticks(): Promise<boolean>,
 	server(): Promise<boolean>,
 	users(): Promise<boolean>,
 	guiVersion(): Promise<boolean>,
 	ipBlacklist(): Promise<boolean>,
-	regressions(certID?: string): Promise<boolean>,
-	predictionModels(certID?: string): Promise<boolean>,
 	localDatabase(): Promise<boolean>,
 	
 	// Dialogs
@@ -42,10 +32,6 @@ export interface INavService {
 	displayDataDialog(name: string, value: any): MatDialogRef<any>,
 	displayDialogMenu(title: string, items: IDialogMenuItem[]): MatDialogRef<any>,
 	displayTooltip(title: string, content: string|string[]): MatDialogRef<any>,
-	displayKerasModelDialog(modelConfig: IRegressionConfig): MatDialogRef<any>,
-	displayModelSelectionDialog(): MatDialogRef<any>,
-	displayPredictionModelConfigDialog(modelConfig: IPredictionModelConfig): MatDialogRef<any>
-	displayPredictionDialog(model: IPredictionModelConfig, pred: IPrediction): MatDialogRef<any>,
 	displayPositionRecordDialog(id: string): MatDialogRef<any>,
 	displayTradeExecutionPayloadDialog(payload: IBinanceTradeExecutionPayload): MatDialogRef<any>,
 	

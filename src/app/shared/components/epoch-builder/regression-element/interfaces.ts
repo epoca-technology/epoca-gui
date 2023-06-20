@@ -1,9 +1,0 @@
-
-
-
-
-
-
-export interface IRegressionElementComponent {
-    
-}

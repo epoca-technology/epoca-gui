@@ -1,7 +1,5 @@
-import { IApiError } from "../api-error"
-import { IEpochRecord } from "../epoch"
-import { IServerData, IServerResources } from "../server"
-import { IPrediction } from "../epoch-builder"
+import { IApiError } from "../api-error";
+import { IServerData, IServerResources } from "../server";
 import { 
     ICoinsState,
     IKeyZoneState,
@@ -13,8 +11,7 @@ import {
     IVolumeStateIntensity, 
 } from "../market-state"
 import { IActivePositionHeadlines } from "../position";
-import { ICandlestick } from "../candlestick"
-import { IPredictionCandlestick } from "../prediction"
+import { ICandlestick } from "../candlestick";
 
 
 
@@ -22,7 +19,7 @@ import { IPredictionCandlestick } from "../prediction"
 // Service
 export interface IBulkDataService {
     // App Bulk Retrievers
-    getAppBulk(epochID: string|undefined): Promise<IAppBulk>,
+    getAppBulk(): Promise<IAppBulk>,
 
     // Server Bulk Retrievers
     getServerDataBulk(): Promise<IServerDataBulk>,
@@ -48,17 +45,6 @@ export interface IAppBulk {
     // The current version of the GUI
     guiVersion: string,
 
-    /**
-     * The record of the active epoch which can come in several states. 
-     * IEpochRecord: There is an active epoch that has not been yet retrieved by the client.
-     * undefined: No epoch is currently active
-     * "keep": The client's epoch is up to date and can be kept
-     */
-    epoch: IEpochRecord|"keep"|undefined,
-
-    // The active prediction. If there isn't one, or an epoch isn't active, it will be undefined
-    prediction: IPrediction|undefined,
-
     // The list of active position headlines
     positions: IActivePositionHeadlines,
 
@@ -82,9 +68,6 @@ export interface IAppBulk {
  * frequency.
  */
 export interface IAppBulkStream {
-    // The active prediction. If there isn't one, or an epoch isn't active, it will be undefined
-    prediction: IPrediction|undefined,
-
     // The list of active position headlines
     positions: IActivePositionHeadlines,
 
@@ -108,7 +91,6 @@ export interface ICompressedMarketState {
     volume: IVolumeStateIntensity,
     liquidity: IMinifiedLiquidityState,
     keyzones: IKeyZoneState,
-    trend: ICompressedTrendState,
     coins: ICoinsState,
     coinsBTC: ICoinsState,
     reversal: IMinifiedReversalState
@@ -123,17 +105,6 @@ export interface ICompressedWindowState {
     
     // The current prediction candlestick
     w: ICandlestick
-}
-
-export interface ICompressedTrendState {
-    // The state of the trend
-    s: IStateType,
-
-    // The split states payload
-    ss: ISplitStates,
-
-    // The current epoch prediction candlestick
-    w: IPredictionCandlestick
 }
 
 

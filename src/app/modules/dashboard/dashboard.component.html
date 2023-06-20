@@ -17,13 +17,6 @@
 
         <!-- Menu Content -->
         <mat-list>
-            <!-- Epochs -->
-            <mat-list-item>
-                <button mat-button class="left-icon-button" (click)="_nav.epochs()">
-                    <mat-icon svgIcon="brain"></mat-icon><span>Epochs</span>
-                </button>
-            </mat-list-item>
-
             <!-- Users -->
             <mat-list-item>
                 <button mat-button class="left-icon-button" (click)="_nav.users()">
@@ -45,45 +38,6 @@
                     <mat-icon>vpn_lock</mat-icon><span>IP Blacklist</span>
                 </button>
             </mat-list-item>
-
-
-
-            <!-- Epoch Builder Menu -->
-            <mat-list-item [ngClass]="{'active-sub-menu': builderExpanded}">
-                <button mat-button class="left-icon-button" (click)="builderExpanded = !builderExpanded">
-                    <div fxLayout="row" fxLayoutAlign="start center">
-                        <mat-icon svgIcon="compass_drafting" class="compass-drafting"></mat-icon>&nbsp;
-                        <span>Epoch Builder</span>
-                        <span fxFlex></span>
-                        <mat-icon>{{builderExpanded ? 'arrow_drop_up': 'arrow_drop_down'}}</mat-icon>
-                    </div>
-                </button>
-            </mat-list-item>
-
-            <!-- Regression Training Certificates -->
-            <mat-list-item *ngIf="builderExpanded" class="active-sub-menu">
-                <button mat-button (click)="_nav.regressions()">
-                    <div fxLayout="row" fxLayoutAlign="start center">
-                        <span>Regressions</span>
-                        <span fxFlex></span>
-                        <img src="assets/img/model_logos/Regression.png" alt="Model Logo" class="small-model-logo">
-                    </div>
-                </button>
-            </mat-list-item>
-
-            <!-- Prediction Model Certificates -->
-            <mat-list-item *ngIf="builderExpanded" class="active-sub-menu">
-                <button mat-button (click)="_nav.predictionModels()">
-                    <div fxLayout="row" fxLayoutAlign="start center">
-                        <span>Prediction Models</span>
-                        <span fxFlex></span>
-                        <img src="assets/img/model_logos/PredictionModel.png" alt="Model Logo" class="small-model-logo">
-                    </div>
-                </button>
-            </mat-list-item>
-            <!-- Epoch Builder Menu -->
-
-
 
             <!-- PGAdmin -->
             <mat-list-item>
@@ -121,16 +75,8 @@
             <mat-toolbar class="secondary-header">
                 <div fxLayout="row" fxLayoutAlign="center center">
                     <!-- Logo -->
-                    <img *ngIf="!epoch && layout == 'mobile'" src="assets/img/logo.png" alt="Logo">
-                    <img *ngIf="epoch && layout == 'mobile'" src="assets/img/logo.png" alt="Logo" 
-                        matRipple
-                        (click)="_nav.displayPredictionModelConfigDialog(epoch.model)">
-                    <span *ngIf="!epoch && layout == 'desktop'">Dashboard</span>
-                    <span *ngIf="epoch && layout == 'desktop'" 
-                            class="clickable" 
-                            (click)="_nav.displayPredictionModelConfigDialog(epoch.model)">
-                            {{epoch.id}}
-                    </span>
+                    <img *ngIf="layout == 'mobile'" src="assets/img/logo.png" alt="Logo">
+                    <span *ngIf="layout == 'desktop'">Bitcoin</span>
                     
                     <span fxFlex></span>
 
@@ -184,7 +130,7 @@
                     <!-- Dashboard Content-->
                     <div fxLayout="row" fxLayoutAlign="center start" fxLayout.xs="column" fxLayout.sm="column" class="full-width">
                         <!-- Window State -->
-                        <div fxFlex="64" fxFlex.xs="100" fxFlex.sm="100" class="chart-card full-width">
+                        <div fxFlex="77" fxFlex.xs="100" fxFlex.sm="100" class="chart-card full-width">
                             <!-- Heading -->
                             <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" 
                                 fxLayoutAlign="start start" fxLayoutAlign.xs="center center" fxLayoutAlign.sm="center center"
@@ -246,263 +192,182 @@
                         <span fxFlex></span>
 
                         <!-- Rest of the Indicators -->
-                        <div fxFlex="35" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
-                            <!-- Trend -->
-                            <div class="divider show-on-mobile"></div>
-                            <div>
-                                <div class="chart-card">
-                                    <!-- Heading -->
-                                    <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" 
-                                        fxLayoutAlign="start start" fxLayoutAlign.xs="center center" fxLayoutAlign.sm="center center"
-                                        class="chart-card-heading badged-header full-width">
-                                        <div class="clickable" role="button" (click)="displayActivePredictionDialog()"
-                                            [ngClass]="{'margin-bottom': layout == 'mobile', 'full-width': layout == 'mobile'}">
-                                            <div fxLayout="row" fxLayoutAlign="start center">
-                                                <h4>Trend</h4>
-                                                <mat-icon style="margin-left:5px;width:16px;height:16px"
-                                                    [ngClass]="{
-                                                        'success-color': state.trend.s > 0,
-                                                        'error-color': state.trend.s < 0,
-                                                        'light-text': state.trend.s == 0
-                                                    }" 
-                                                    [svgIcon]="_ms.icons[state.trend.s]"></mat-icon>
+                        <div fxFlex="22" fxFlex.xs="100" fxFlex.sm="100" class="full-width" >
+                            <div [ngClass]="{'padding': layout == 'desktop'}">
+                                <!-- Positions -->
+                                <div class="divider show-on-mobile"></div>
+                                <div class="global-indicators-section">
+                                    <h4 class="margin-bottom">Active Positions</h4>
+                                    <mat-grid-list [cols]="2" [rowHeight]="layout == 'desktop' ? '45px': '70px'" gutterSize="1px">
+                                        <!-- Long Position -->
+                                        <mat-grid-tile *ngIf="!activePositions || !activePositions.LONG" 
+                                                        (click)="displayBusinessMenu()"
+                                                        class="buy-action-container very-weak-state clickable" role="button" matRipple>
+                                            <p>$0.00 0.00%</p>
+                                        </mat-grid-tile>
+                                        <mat-grid-tile *ngIf="activePositions && activePositions.LONG" 
+                                                        class="buy-action-container clickable" role="button" matRipple
+                                                        (click)="displayPositionRecordDialog(activePositions.LONG.id)"
+                                                        [ngClass]="{
+                                                            'weak-state': activePositions.LONG.g > 0 && activePositions.LONG.g < 0.5,
+                                                            'very-weak-state': activePositions.LONG.g <= 0,
+                                                            'very-strong-state': activePositions.LONG.g >= 1
+                                                        }">
+                                            <p>{{activePositions.LONG.iw | currency}} {{activePositions.LONG.g > 0 ? '+': ''}}{{activePositions.LONG.g | number:'1.0-2'}}%</p>
+                                        </mat-grid-tile>
 
-                                                <span fxFlex class="show-on-mobile"></span>
-                                                <p *ngIf="activePrediction" class="light-text ts-xs show-on-mobile">
-                                                    {{activePrediction.t | date: 'mediumTime'}}
-                                                </p>
-                                                <p *ngIf="!activePrediction" class="light-text ts-xs show-on-mobile">
-                                                    Unknown
-                                                </p>
-                                            </div>
-                                            <p *ngIf="activePrediction" class="light-text ts-xs show-on-desktop">
-                                                {{activePrediction.t | date: 'medium'}}
-                                            </p>
-                                            <p *ngIf="!activePrediction" class="light-text ts-xs show-on-desktop">Unknown</p>
-                                        </div>
-                                        <span fxFlex class="show-on-desktop"></span>
 
-                                        <!-- Trend -->
-                                        <div fxFlex class="full-width">
-                                            <mat-grid-list [cols]="4" [rowHeight]="layout == 'desktop' ? '30px': '35px'" gutterSize="1px" class="trend-grid">
-                                                <mat-grid-tile *ngFor="let id of _ms.splits" 
-                                                                class="clickable" role="button" matRipple
-                                                                (click)="displayTrendDialog(id)"
-                                                                [ngClass]="{
-                                                                    'buy-action-container': state.trend.ss[id].s > 0,
-                                                                    'sell-action-container': state.trend.ss[id].s < 0,
-                                                                    'neutral-action-container': state.trend.ss[id].s == 0,
-                                                                    'weak-state': state.trend.ss[id].s != 2 && state.trend.ss[id].s != -2
-                                                                }">
-                                                        <p>
-                                                            {{state.trend.ss[id].s > 0 ? '+': ''}}{{state.trend.ss[id].s < 0 ? '-': ''}}{{state.trend.ss[id].c | number: '1.0-2'}}
-                                                        </p>
-                                                </mat-grid-tile>
-                                            </mat-grid-list>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Candlesticks Chart -->
-                                    <div class="prediction-candlesticks-container">
-                                        <apx-chart
-                                                [series]="predictionCandlesticksChart!.series!"
-                                                [chart]="predictionCandlesticksChart!.chart!"
-                                                [plotOptions]="predictionCandlesticksChart!.plotOptions!"
-                                                [xaxis]="predictionCandlesticksChart!.xaxis!"
-                                                [yaxis]="predictionCandlesticksChart!.yaxis!"
-                                                [annotations]="predictionCandlesticksChart!.annotations!"
-                                                [title]="predictionCandlesticksChart!.title!"
-                                        ></apx-chart>
+                                        <!-- Short Position -->
+                                        <mat-grid-tile *ngIf="!activePositions || !activePositions.SHORT" 
+                                                        (click)="displayBusinessMenu()"
+                                                        class="sell-action-container very-weak-state clickable" role="button" matRipple>
+                                            <p>$0.00 0.00%</p>
+                                        </mat-grid-tile>
+                                        <mat-grid-tile *ngIf="activePositions && activePositions.SHORT" 
+                                                        class="sell-action-container clickable" role="button" matRipple
+                                                        (click)="displayPositionRecordDialog(activePositions.SHORT.id)"
+                                                        [ngClass]="{
+                                                            'weak-state': activePositions.SHORT.g > 0 && activePositions.SHORT.g < 0.5,
+                                                            'very-weak-state': activePositions.SHORT.g <= 0,
+                                                            'very-strong-state': activePositions.SHORT.g >= 1
+                                                        }">
+                                            <p>{{activePositions.SHORT.iw | currency}} {{activePositions.SHORT.g > 0 ? '+': ''}}{{activePositions.SHORT.g | number:'1.0-2'}}%</p>
+                                        </mat-grid-tile>
+                                    </mat-grid-list>
+                                </div>
+
+                                
+
+
+                                <!-- General Indicators -->
+                                <div class="divider show-on-mobile"></div>
+                                <div class="global-indicators-section">
+                                    <h4 class="margin-bottom" 
+                                        [ngClass]="{'margin-top': layout == 'mobile', 'margin-top-x2': layout == 'desktop'}">
+                                        General Indicators
+                                    </h4>
+                                    <mat-grid-list [cols]="2" [rowHeight]="layout == 'desktop' ? '45px': '70px'" gutterSize="1px">
+                                        <!-- KeyZones -->
+                                        <mat-grid-tile *ngIf="!state.keyzones.event" 
+                                                        class="clickable" role="button" matRipple
+                                                        (click)="displayKeyZonesDialog()"
+                                                        [ngClass]="{
+                                                            'action-container': state.keyzones.active,
+                                                            'neutral-action-container': !state.keyzones.active,
+                                                            'weak-state': !state.keyzones.active
+                                                        }"><p>KEYZONES</p></mat-grid-tile>
+                                        <mat-grid-tile *ngIf="state.keyzones.event && state.keyzones.event.k == 's'" 
+                                                class="clickable sell-action-container" role="button" matRipple
+                                                (click)="displayKeyZonesDialog()">
+                                                    <mat-icon>vertical_align_bottom</mat-icon> <p>SUP.</p>
+                                            </mat-grid-tile>
+                                        <mat-grid-tile *ngIf="state.keyzones.event && state.keyzones.event.k == 'r'" 
+                                                class="clickable buy-action-container" role="button" matRipple
+                                                (click)="displayKeyZonesDialog()">
+                                                    <mat-icon>vertical_align_top</mat-icon> <p>RES.</p>
+                                        </mat-grid-tile>
+
+
+                                        <!-- Reversal -->
+                                        <mat-grid-tile *ngIf="state.reversal.k == 0" 
+                                                        class="clickable neutral-action-container weak-state" role="button" matRipple
+                                                        (click)="displayKeyZoneEventsHistory()"><p>REVERSAL</p></mat-grid-tile>
+                                        <mat-grid-tile *ngIf="state.reversal.k == 1" 
+                                                        class="clickable support-reversal-{{reversalScore}}" role="button" matRipple
+                                                        (click)="displayReversalState()">
+                                                        <p>{{state.reversal.e ? 'REVERSED': 'REVERSAL'}}</p>
+                                        </mat-grid-tile>
+                                        <mat-grid-tile *ngIf="state.reversal.k == -1" 
+                                                        class="clickable resistance-reversal-{{reversalScore}}" role="button" matRipple
+                                                        (click)="displayReversalState()">
+                                                        <p>{{state.reversal.e ? 'REVERSED': 'REVERSAL'}}</p>
+                                        </mat-grid-tile>
+
+                                        <!-- Coins Direction -->
+                                        <mat-grid-tile class="clickable {{generalCoinClass}}" role="button" matRipple
+                                                        (click)="displayCoinDialog()"
+                                                        [ngClass]="{'weak-state': generalCoinClass == 'neutral-neutral'}"><p>COINS</p></mat-grid-tile>
+
+                                        <!-- Liquidity -->
+                                        <mat-grid-tile class="clickable" role="button" matRipple
+                                                        (click)="displayLiquidityDialog()"
+                                                        [ngClass]="{
+                                                            'buy-action-container': state.liquidity.blp >= 55,
+                                                            'sell-action-container': state.liquidity.blp <= 45,
+                                                            'neutral-action-container': state.liquidity.blp > 45 && state.liquidity.blp < 55,
+                                                            'weak-state':   (state.liquidity.blp >= 55 && state.liquidity.blp < 75) || 
+                                                                            (state.liquidity.blp < 45 && state.liquidity.blp > 25) ||
+                                                                            state.liquidity.blp > 45 && state.liquidity.blp < 55,
+                                                            'very-strong-state': state.liquidity.blp <= 10 || state.liquidity.blp >= 90
+                                                        }"><p>LIQUIDITY</p></mat-grid-tile>
+
+
+                                        <!-- Volume -->
+                                        <mat-grid-tile class="clickable" role="button" matRipple
+                                                        (click)="displayVolumeDialog()"
+                                                        [ngClass]="{
+                                                            'buy-action-container': state.volume > 0,
+                                                            'neutral-action-container': state.volume == 0,
+                                                            'weak-state': state.volume < 2,
+                                                            'very-strong-state': state.volume == 3
+                                                        }"><p>VOLUME</p></mat-grid-tile>
+                                        
+                                        <!-- Placeholders -->
+                                        <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
+                                        <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
+                                        <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
+                                    </mat-grid-list>
+                                </div>
+
+
+                                <!-- Coins -->
+                                <div class="divider show-on-mobile"></div>
+                                <!-- Desktop View -->
+                                <div *ngIf="layout == 'desktop'">
+                                    <div class="global-indicators-section">
+                                        <h4 class="margin-bottom margin-top-x2">Coins</h4>
+                                        <mat-grid-list [cols]="4" [rowHeight]="'45px'" gutterSize="1px">
+                                            <!-- Previous Navigation -->
+                                            <mat-grid-tile *ngIf="activeCoinPage > 1" class="clickable action-container" role="button" matRipple 
+                                                (click)="activateFirstCoinsPage()">
+                                                <mat-icon>navigate_before</mat-icon>
+                                            </mat-grid-tile>
+
+                                            <!-- Coins -->
+                                            <mat-grid-tile *ngFor="let symbol of visibleSymbols" 
+                                                            class="clickable {{coinsTileClasses[symbol]}}" role="button" matRipple 
+                                                            fxLayout="row" fxLayoutAlign="center center"
+                                                            [ngClass]="{'weak-state': coinsTileClasses[symbol] == 'neutral-neutral'}" 
+                                                            (click)="displayCoinDialog(symbol)">
+                                                <p style="max-width:37px" class="truncate">{{symbol | baseAssetName}}</p>
+                                            </mat-grid-tile>
+
+
+                                            <!-- Placeholders -->
+                                            <mat-grid-tile *ngFor="let placeholder of coinPlaceholders" class="placeholder-action-container"></mat-grid-tile>
+                                            
+                                            <!-- Next Navigation -->
+                                            <mat-grid-tile *ngIf="activeCoinPage < totalCoinPages" class="clickable action-container" role="button" matRipple 
+                                                (click)="activateNextCoinsPage()">
+                                                <mat-icon>navigate_next</mat-icon>
+                                            </mat-grid-tile>
+                                        </mat-grid-list>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="divider show-on-mobile"></div>
-
-                            <!-- Global Indicators -->
-                            <div class="global-indicators">
-
-                                <!-- Container -->
-                                <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" class="full-width">
-
-                                    <!-- Positions & General Indicators -->
-                                    <div fxFlex="50" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
-
-                                        <!-- Positions -->
-                                        <div class="global-indicators-section">
-                                            <h4 class="margin-bottom show-on-mobile">Active Positions</h4>
-                                            <mat-grid-list [cols]="2" [rowHeight]="layout == 'desktop' ? '44px': '70px'" gutterSize="1px">
-                                                <!-- Long Position -->
-                                                <mat-grid-tile *ngIf="!activePositions || !activePositions.LONG" 
-                                                                (click)="displayBusinessMenu()"
-                                                                class="buy-action-container very-weak-state clickable" role="button" matRipple>
-                                                    <p>$0.00 +0.00%</p>
-                                                </mat-grid-tile>
-                                                <mat-grid-tile *ngIf="activePositions && activePositions.LONG" 
-                                                                class="buy-action-container clickable" role="button" matRipple
-                                                                (click)="displayPositionRecordDialog(activePositions.LONG.id)"
-                                                                [ngClass]="{
-                                                                    'weak-state': activePositions.LONG.g > 0 && activePositions.LONG.g < 0.5,
-                                                                    'very-weak-state': activePositions.LONG.g <= 0,
-                                                                    'very-strong-state': activePositions.LONG.g >= 1
-                                                                }">
-                                                    <p>{{activePositions.LONG.iw | currency}} {{activePositions.LONG.g > 0 ? '+': ''}}{{activePositions.LONG.g | number:'1.0-2'}}%</p>
-                                                </mat-grid-tile>
 
 
-                                                <!-- Short Position -->
-                                                <mat-grid-tile *ngIf="!activePositions || !activePositions.SHORT" 
-                                                                (click)="displayBusinessMenu()"
-                                                                class="sell-action-container very-weak-state clickable" role="button" matRipple>
-                                                    <p>$0.00 +0.00%</p>
-                                                </mat-grid-tile>
-                                                <mat-grid-tile *ngIf="activePositions && activePositions.SHORT" 
-                                                                class="sell-action-container clickable" role="button" matRipple
-                                                                (click)="displayPositionRecordDialog(activePositions.SHORT.id)"
-                                                                [ngClass]="{
-                                                                    'weak-state': activePositions.SHORT.g > 0 && activePositions.SHORT.g < 0.5,
-                                                                    'very-weak-state': activePositions.SHORT.g <= 0,
-                                                                    'very-strong-state': activePositions.SHORT.g >= 1
-                                                                }">
-                                                    <p>{{activePositions.SHORT.iw | currency}} {{activePositions.SHORT.g > 0 ? '+': ''}}{{activePositions.SHORT.g | number:'1.0-2'}}%</p>
-                                                </mat-grid-tile>
-                                            </mat-grid-list>
-                                        </div>
-
-                                        <div class="divider show-on-mobile"></div>
-
-
-                                        <!-- General Indicators -->
-                                        <div class="global-indicators-section">
-                                            <h4 class="show-on-mobile margin-bottom">General Indicators</h4>
-                                            <mat-grid-list [cols]="2" [rowHeight]="layout == 'desktop' ? '45px': '70px'" gutterSize="1px">
-
-
-                                                                
-                                                <!-- KeyZones -->
-                                                <mat-grid-tile *ngIf="!state.keyzones.event" 
-                                                                class="clickable" role="button" matRipple
-                                                               (click)="displayKeyZonesDialog()"
-                                                                [ngClass]="{
-                                                                    'action-container': state.keyzones.active,
-                                                                    'neutral-action-container': !state.keyzones.active,
-                                                                    'weak-state': !state.keyzones.active
-                                                                }"><p>KEYZONES</p></mat-grid-tile>
-                                                <mat-grid-tile *ngIf="state.keyzones.event && state.keyzones.event.k == 's'" 
-                                                        class="clickable sell-action-container" role="button" matRipple
-                                                        (click)="displayKeyZonesDialog()">
-                                                            <mat-icon>vertical_align_bottom</mat-icon> <p>SUP.</p>
-                                                    </mat-grid-tile>
-                                                <mat-grid-tile *ngIf="state.keyzones.event && state.keyzones.event.k == 'r'" 
-                                                        class="clickable buy-action-container" role="button" matRipple
-                                                        (click)="displayKeyZonesDialog()">
-                                                            <mat-icon>vertical_align_top</mat-icon> <p>RES.</p>
-                                                </mat-grid-tile>
-
-
-                                                <!-- Reversal -->
-                                                <mat-grid-tile *ngIf="state.reversal.k == 0" 
-                                                                class="clickable neutral-action-container weak-state" role="button" matRipple
-                                                                (click)="displayKeyZoneEventsHistory()"><p>REVERSAL</p></mat-grid-tile>
-                                                <mat-grid-tile *ngIf="state.reversal.k == 1" 
-                                                                class="clickable support-reversal-{{reversalScore}}" role="button" matRipple
-                                                                (click)="displayReversalState()">
-                                                                <p>{{state.reversal.e ? 'REVERSED': 'REVERSAL'}}</p>
-                                                </mat-grid-tile>
-                                                <mat-grid-tile *ngIf="state.reversal.k == -1" 
-                                                                class="clickable resistance-reversal-{{reversalScore}}" role="button" matRipple
-                                                                (click)="displayReversalState()">
-                                                                <p>{{state.reversal.e ? 'REVERSED': 'REVERSAL'}}</p>
-                                                </mat-grid-tile>
-
-                                                <!-- Coins Direction -->
-                                                <mat-grid-tile class="clickable {{generalCoinClass}}" role="button" matRipple
-                                                                (click)="displayCoinDialog()"
-                                                                [ngClass]="{'weak-state': generalCoinClass == 'neutral-neutral'}"><p>COINS</p></mat-grid-tile>
-
-                                                <!-- Liquidity -->
-                                                <mat-grid-tile class="clickable" role="button" matRipple
-                                                                (click)="displayLiquidityDialog()"
-                                                                [ngClass]="{
-                                                                    'buy-action-container': state.liquidity.blp >= 55,
-                                                                    'sell-action-container': state.liquidity.blp <= 45,
-                                                                    'neutral-action-container': state.liquidity.blp > 45 && state.liquidity.blp < 55,
-                                                                    'weak-state':   (state.liquidity.blp >= 55 && state.liquidity.blp < 75) || 
-                                                                                    (state.liquidity.blp < 45 && state.liquidity.blp > 25) ||
-                                                                                    state.liquidity.blp > 45 && state.liquidity.blp < 55,
-                                                                    'very-strong-state': state.liquidity.blp <= 10 || state.liquidity.blp >= 90
-                                                                }"><p>LIQUIDITY</p></mat-grid-tile>
-
-
-                                                <!-- Volume -->
-                                                <mat-grid-tile class="clickable" role="button" matRipple
-                                                               (click)="displayVolumeDialog()"
-                                                                [ngClass]="{
-                                                                    'buy-action-container': state.volume > 0,
-                                                                    'neutral-action-container': state.volume == 0,
-                                                                    'weak-state': state.volume < 2,
-                                                                    'very-strong-state': state.volume == 3
-                                                                }"><p>VOLUME</p></mat-grid-tile>
-                                                
-                                                <!-- Placeholders -->
-                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
-                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
-                                                <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>
-                                            </mat-grid-list>
-                                        </div>
-                                    </div>
-
-
-                                    <!-- Coins -->
-                                    <div fxFlex="50" fxFlex.xs="100" fxFlex.sm="100" class="full-width">
-                                        <!-- Desktop View -->
-                                        <div *ngIf="layout == 'desktop'">
-                                            <div class="global-indicators-section">
-                                                <mat-grid-list [cols]="4" [rowHeight]="'42px'" gutterSize="1px">
-                                                    <!-- Previous Navigation -->
-                                                    <mat-grid-tile *ngIf="activeCoinPage > 1" class="clickable action-container" role="button" matRipple 
-                                                        (click)="activateFirstCoinsPage()">
-                                                        <mat-icon>navigate_before</mat-icon>
-                                                    </mat-grid-tile>
-    
-                                                    <!-- Coins -->
-                                                    <mat-grid-tile *ngFor="let symbol of visibleSymbols" 
-                                                                    class="clickable {{coinsTileClasses[symbol]}}" role="button" matRipple 
-                                                                    fxLayout="row" fxLayoutAlign="center center"
-                                                                    [ngClass]="{'weak-state': coinsTileClasses[symbol] == 'neutral-neutral'}" 
-                                                                    (click)="displayCoinDialog(symbol)">
-                                                        <p style="max-width:37px" class="truncate">{{symbol | baseAssetName}}</p>
-                                                    </mat-grid-tile>
-    
-    
-                                                    <!-- Placeholders -->
-                                                    <mat-grid-tile *ngFor="let placeholder of coinPlaceholders" class="placeholder-action-container"></mat-grid-tile>
-                                                    
-                                                    <!-- Next Navigation -->
-                                                    <mat-grid-tile *ngIf="activeCoinPage < totalCoinPages" class="clickable action-container" role="button" matRipple 
-                                                        (click)="activateNextCoinsPage()">
-                                                        <mat-icon>navigate_next</mat-icon>
-                                                    </mat-grid-tile>
-                                                </mat-grid-list>
-                                            </div>
-                                        </div>
-
-
-                                        <!-- Mobile View -->
-                                        <div *ngIf="layout == 'mobile'">
-                                            <div class="divider"></div>
-                                            <div class="global-indicators-section">
-                                                <h4 class="margin-bottom">Coins</h4>
-                                                <mat-grid-list [rowHeight]="'70px'" [cols]="3" gutterSize="1px">
-                                                    <mat-grid-tile *ngFor="let symbol of symbols" 
-                                                                    class="clickable {{coinsTileClasses[symbol]}}" role="button" matRipple fxLayout="row" fxLayoutAlign="center center"
-                                                                    [ngClass]="{'weak-state': coinsTileClasses[symbol] == 'neutral-neutral'}" 
-                                                                    (click)="displayCoinDialog(symbol)">
-                                                        <p style="max-width:37px" class="truncate">{{symbol | baseAssetName}}</p>
-                                                    </mat-grid-tile>
-                                                </mat-grid-list>
-                                            </div>
-                                        </div>
+                                <!-- Mobile View -->
+                                <div *ngIf="layout == 'mobile'">
+                                    <div class="global-indicators-section">
+                                        <h4 class="margin-bottom margin-top">Coins</h4>
+                                        <mat-grid-list [rowHeight]="'70px'" [cols]="3" gutterSize="1px">
+                                            <mat-grid-tile *ngFor="let symbol of symbols" 
+                                                            class="clickable {{coinsTileClasses[symbol]}}" role="button" matRipple fxLayout="row" fxLayoutAlign="center center"
+                                                            [ngClass]="{'weak-state': coinsTileClasses[symbol] == 'neutral-neutral'}" 
+                                                            (click)="displayCoinDialog(symbol)">
+                                                <p style="max-width:37px" class="truncate">{{symbol | baseAssetName}}</p>
+                                            </mat-grid-tile>
+                                        </mat-grid-list>
                                     </div>
                                 </div>
                             </div>

@@ -13,11 +13,7 @@ import {
 	IAppBulk, 
 	IAppBulkStream, 
 	ICandlestick, 
-	IEpochRecord, 
 	IMarketState, 
-	IPrediction, 
-	IPredictionCandlestick, 
-	PredictionService, 
 	UtilsService 
 } from "../../core";
 import {IAppService, ILayout, ILayoutAlias} from "./interfaces";
@@ -62,8 +58,6 @@ export class AppService implements IAppService{
 	private readonly appBulkIntervalMS: number = 120 * 1000; // Every 120 seconds
 	public serverTime: BehaviorSubject<number|undefined|null> = new BehaviorSubject<number|undefined|null>(null);
 	public guiVersion: BehaviorSubject<string|undefined|null> = new BehaviorSubject<string|undefined|null>(null);
-	public epoch: BehaviorSubject<IEpochRecord|undefined|null> = new BehaviorSubject<IEpochRecord|undefined|null>(null);
-	public prediction: BehaviorSubject<IPrediction|undefined|null> = new BehaviorSubject<IPrediction|undefined|null>(null);
 	public positions: BehaviorSubject<IActivePositionHeadlines|undefined|null> = new BehaviorSubject<IActivePositionHeadlines|undefined|null>(null);
 	public marketState: BehaviorSubject<IMarketState|undefined|null> = new BehaviorSubject<IMarketState|undefined|null>(null);
 	public apiErrors: BehaviorSubject<number|undefined|null> = new BehaviorSubject<number|undefined|null>(null);
@@ -81,7 +75,6 @@ export class AppService implements IAppService{
         private _utils: UtilsService,
 		private _auth: AuthService,
 		private _bulk: BulkDataService,
-		private _prediction: PredictionService,
 		private _db: DatabaseService,
 		private ngZone: NgZone
 	) {
@@ -157,8 +150,6 @@ export class AppService implements IAppService{
 		this.appBulkInterval = undefined;
 		this.serverTime.next(undefined);
 		this.guiVersion.next(undefined);
-		this.epoch.next(undefined);
-		this.prediction.next(undefined);
 		this.positions.next(undefined);
 		this.marketState.next(undefined);
 		if (typeof this.appBulkStream == "function") this.appBulkStream();
@@ -197,8 +188,7 @@ export class AppService implements IAppService{
 	}
 	private async _refreshAppBulk(): Promise<void> {
 		// Retrieve the bulk from the API
-		const epochID: string|undefined = this.epoch.value ? this.epoch.value.id: undefined;
-		const bulk: IAppBulk = await this._bulk.getAppBulk(epochID);
+		const bulk: IAppBulk = await this._bulk.getAppBulk();
 
 		// Finally, broadcast the app bulk
 		this.broadcastAppBulk(bulk);
@@ -220,9 +210,7 @@ export class AppService implements IAppService{
 						if (snapVal) {
 							snapVal.serverTime = this.serverTime.value!;
 							snapVal.guiVersion = this.guiVersion.value!;
-							snapVal.epoch = this.epoch.value!;
 							snapVal.marketState.window.w = this.buildUpdatedWindowCandlesticks(snapVal.marketState.window.w);
-							snapVal.marketState.trend.w = this.buildUpdatedTrendWindowCandlesticks(snapVal.marketState.trend.w);
 							snapVal.positions = snapVal.positions || { LONG: null, SHORT: null };
 							snapVal.keyzoneEventScoreRequirement = this.keyzoneEventScoreRequirement;
 							this.broadcastAppBulk(snapVal);
@@ -273,40 +261,6 @@ export class AppService implements IAppService{
 
 
 
-	/**
-	 * Builds the updated trend window candlesticks based on the active one.
-	 * @param active 
-	 * @returns IPredictionCandlestick[]
-	 */
-	private buildUpdatedTrendWindowCandlesticks(active: IPredictionCandlestick): IPredictionCandlestick[] {
-		// Create a copy of the current window
-		let window: IPredictionCandlestick[] = this.marketState.value!.trend.w.slice();
-
-		// Check if the last candlestick ended
-		if (active.ot != window[window.length - 1].ot) {
-			window.push(active);
-			window = window.slice(-128);
-		}
-
-		// Otherwise, update the values
-		else {
-			window[window.length - 1] = {
-				ot: active.ot,
-				ct: active.ct,
-				o: active.o,
-				h: active.h > window[window.length - 1].h ? active.h: window[window.length - 1].h,
-				l: active.l < window[window.length - 1].l ? active.l: window[window.length - 1].l,
-				c: active.c
-			}
-		}
-
-		// Finally, return the updated window
-		return window;
-	}
-
-
-
-
 
 
 
@@ -331,12 +285,6 @@ export class AppService implements IAppService{
 
 		// Broadcast the gui version
 		this.guiVersion.next(bulk.guiVersion);
-
-		// Broadcast the active epoch record if applies
-		if (bulk.epoch != "keep") this.epoch.next(bulk.epoch);
-
-		// Broadcast the active prediction
-		this.prediction.next(bulk.prediction);
 
 		// Broadcast the position headlines
 		this.positions.next(bulk.positions);

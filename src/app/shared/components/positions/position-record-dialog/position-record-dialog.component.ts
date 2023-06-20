@@ -18,7 +18,6 @@ import {
 	NavService 
 } from '../../../../services';
 import { PositionInfoDialogComponent } from './position-info-dialog';
-import { PositionContextDialogComponent } from './position-context-dialog';
 import { IPositionRecordDialogComponent } from './interfaces';
 
 @Component({
@@ -425,20 +424,6 @@ export class PositionRecordDialogComponent implements OnInit, IPositionRecordDia
 		this.dialog.open(PositionInfoDialogComponent, {
 			hasBackdrop: this._app.layout.value != "mobile",
 			panelClass: "small-dialog",
-			data: this.record
-		})
-    }
-
-
-
-
-    /**
-     * Displays the position context dialog.
-     */
-    public displayPositionContextDialog(): void {
-		this.dialog.open(PositionContextDialogComponent, {
-			hasBackdrop: this._app.layout.value != "mobile",
-			panelClass: "large-dialog",
 			data: this.record
 		})
     }

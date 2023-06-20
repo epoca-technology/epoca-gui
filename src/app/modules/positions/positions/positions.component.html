@@ -8,7 +8,7 @@
             <div fxLayout="row" fxLayoutAlign="start center">
                 <button mat-icon-button (click)="positionSidenav?.toggle()"><mat-icon>arrow_back</mat-icon></button>
                 <span class="truncate clickable">
-                    {{epoch ? epoch.id + ' Positions': 'Positions'}}
+                    Positions
                 </span>
                 <span fxFlex></span>
             </div>
@@ -35,14 +35,13 @@
             <mat-toolbar class="secondary-header">
                 <div fxLayout="row" fxLayoutAlign="center center">
                     <button mat-icon-button (click)="positionSidenav?.toggle()" class="show-on-mobile"><mat-icon>menu</mat-icon></button>
-                    <span class="truncate">{{epoch ? activeSection.name: 'Positions'}}</span>
+                    <span class="truncate">Positions</span>
                     <span fxFlex></span>
 
                     <!-- Close Epoch-->
                     <button mat-icon-button 
-                            *ngIf="epoch && loaded && sectionLoaded"
-                            matTooltip="Close {{epoch.id}}"
-                            (click)="initializeEpochData()"><mat-icon>close</mat-icon></button>
+                            *ngIf="loaded && sectionLoaded"
+                            matTooltip="Close"><mat-icon>close</mat-icon></button>
                 </div>
             </mat-toolbar>
 
@@ -55,15 +54,8 @@
                     <div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div>
                 </div>
 
-                <!-- Epoch Menu -->
-                <div *ngIf="initialized && !epoch" fxLayout="row" fxLayoutAlign="center center" class="padding">
-                    <div fxFlex="30" fxFlex.xs="100" fxFlex.sm="100">
-                        <app-epochs-menu (epochID)="initializeEpochData($event)"></app-epochs-menu>
-                    </div>
-                </div>
-
                 <!-- Prediction Container -->
-                <div *ngIf="initialized && epoch">
+                <div *ngIf="initialized">
                     <!-- Loader -->
                     <div *ngIf="!loaded" class="section-loader">
                         <div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div>

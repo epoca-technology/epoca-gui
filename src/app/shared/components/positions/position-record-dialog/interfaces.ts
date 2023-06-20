@@ -10,7 +10,6 @@ export interface IPositionRecordDialogComponent {
     
     // Misc Helpers
     displayPositionInfoDialog(): void,
-    displayPositionContextDialog(): void,
     displayTooltip(): void,
     close(): void
 }

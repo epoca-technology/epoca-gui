@@ -13,12 +13,10 @@ export interface IDashboardComponent {
     displayBusinessMenu(): void,
 
     // Misc Dialogs
-    displayActivePredictionDialog(): void,
     displayPositionRecordDialog(id: string): void,
 
     // Market State Dialogs
     displayWindowDialog(id: ISplitStateID): void,
-    displayTrendDialog(id: ISplitStateID): void,
     displayVolumeDialog(): void,
     displayKeyZonesDialog(): void,
     displayCoinDialog(symbol?: string): void,

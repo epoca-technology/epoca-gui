@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import * as moment from "moment";
 import { ApexAnnotations, ApexChart, ApexPlotOptions, ApexYAxis, ApexAxisChartSeries, ApexXAxis } from "ng-apexcharts";
-import { IBacktestPosition, ICandlestick, IPositionCandlestick, IPredictionCandlestick, UtilsService } from "../../core";
+import { ICandlestick, IPositionCandlestick, UtilsService } from "../../core";
 import { AppService, ILayout } from "../app";
 import { 
 	IApexCandlestick, 
@@ -67,7 +67,7 @@ export class ChartService implements IChartService {
      * @returns ICandlestickChartOptions
      */
 	public getCandlestickChartOptions(
-		 candlesticks: Array<ICandlestick|IPredictionCandlestick|IPositionCandlestick|any>, 
+		 candlesticks: Array<ICandlestick|IPositionCandlestick|any>, 
 		 annotations?: ApexAnnotations, 
 		 highlightCurrentPrice?: boolean,
 		 disableNiceScale?: boolean,
@@ -124,7 +124,7 @@ export class ChartService implements IChartService {
 	 * Given a list of raw candlesticks, it will convert them into Apex format.
 	 * @returns IApexCandlestick[]
 	 */
-    public getApexCandlesticks(candlesticks: Array<ICandlestick|IPredictionCandlestick|IPositionCandlestick>): IApexCandlestick[] {
+    public getApexCandlesticks(candlesticks: Array<ICandlestick|IPositionCandlestick>): IApexCandlestick[] {
 		return candlesticks.map((c) => {
 			return {
 				x: c.ot,
@@ -143,7 +143,7 @@ export class ChartService implements IChartService {
 	 * Retrieves the title to be placed in the chart.
 	 * @returns string
 	 */
-     private getCandlesticksTitle(candlesticks: Array<ICandlestick|IPredictionCandlestick>): string {
+     private getCandlesticksTitle(candlesticks: Array<ICandlestick>): string {
 		// Init values
         const l: ILayout = this._app.layout.value;
 		let title: string = "";
@@ -170,7 +170,7 @@ export class ChartService implements IChartService {
 	 * @param candlesticks 
 	 * @returns IChartRange
 	 */
-	private getCandlesticksChartRange(candlesticks: Array<ICandlestick|IPredictionCandlestick>): IChartRange {
+	private getCandlesticksChartRange(candlesticks: Array<ICandlestick>): IChartRange {
 		// Init lists
 		let high: number[] = [];
 		let low: number[] = [];
@@ -533,32 +533,6 @@ export class ChartService implements IChartService {
 
     /* Misc Helpers */
 
-
-
-
-
-
-
-
-	/**
-	 * Builds the balance hist bar chart"s data based on a series of
-	 * backtest positions.
-	 * @param positions
-	 * @returns {colors: string[], values: {x: number, y: number}[]}
-	 */
-	public getModelBalanceHistoryData(positions: IBacktestPosition[]): {colors: string[], values: {x: number, y: number}[]} {
-		let colors: string[] = [];
-		let values: {x: number, y: number}[] = [];
-		for (let i = 0; i < positions.length; i++) {
-			if (positions[i].t == 1) { 
-				colors.push(this.upwardColor);
-			} else { 
-				colors.push(this.downwardColor);
-			}
-			values.push({x: i, y: <number>this._utils.outputNumber(positions[i].b)})
-		}
-		return {colors: colors, values: values};
-	}
 
 
 

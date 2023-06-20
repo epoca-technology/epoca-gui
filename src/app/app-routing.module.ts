@@ -21,22 +21,10 @@ const routes: Routes = [
 		loadChildren: () => import("./modules/auth/auth.module").then(m => m.AuthModule),
 	},
 
-	// Epochs
-	{
-		path: "epochs",
-		loadChildren: () => import("./modules/epochs/epochs.module").then(m => m.EpochsModule),
-	},
-
 	// Positions
 	{
 		path: "positions",
 		loadChildren: () => import("./modules/positions/positions.module").then(m => m.PositionsModule),
-	},
-
-	// Predictions
-	{
-		path: "predictions",
-		loadChildren: () => import("./modules/predictions/predictions.module").then(m => m.PredictionsModule),
 	},
 
 	// Candlesticks
@@ -67,12 +55,6 @@ const routes: Routes = [
 	{
 		path: "ipBlacklist",
 		loadChildren: () => import("./modules/ip-blacklist/ip-blacklist.module").then(m => m.IpBlacklistModule),
-	},
-
-	// Epoch Builder
-	{
-		path: "epochBuilder",
-		loadChildren: () => import("./modules/epoch-builder/epoch-builder.module").then(m => m.EpochBuilderModule),
 	},
 
 	// Local Database

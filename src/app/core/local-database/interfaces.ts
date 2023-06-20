@@ -1,4 +1,3 @@
-import { IPredictionModelCertificate, IRegressionTrainingCertificate } from "../epoch-builder";
 import { IReversalCoinsStates, IReversalState } from "../market-state";
 import { IPositionRecord } from "../position";
 
@@ -22,10 +21,6 @@ export interface ILocalDatabaseService {
     getDefaultUserPreferences(): IUserPreferences,
 
     /* Data Caching */
-
-    // Certificates
-    getPredictionModelCertificate(id: string): Promise<IPredictionModelCertificate>,
-    getRegressionCertificate(id: string): Promise<IRegressionTrainingCertificate>,
 
     // Reversal State Management
     getReversalState(id: number): Promise<IReversalState>,

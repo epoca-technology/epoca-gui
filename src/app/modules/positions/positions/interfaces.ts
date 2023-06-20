@@ -3,8 +3,6 @@
 
 // Service
 export interface IPositionsComponent {
-    // Initializer
-    initializeEpochData(epochID?: string): Promise<void>,
 
 
 }

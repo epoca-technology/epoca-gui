@@ -23,31 +23,8 @@
     <div *ngIf="loaded" class="padding">
         <!-- Line Chart Based -->
         <div *ngIf="lineChart" style="overflow: hidden">
-            <!-- Trend Heading Grid-->
-            <div *ngIf="module == 'trend'">
-                <mat-grid-list [cols]="4" rowHeight="45px" gutterSize="2px">
-                    <mat-grid-tile *ngFor="let id of _ms.splits" 
-                                    class="clickable" role="button" matRipple
-                                    (click)="applySplit(id)"
-                                    [ngClass]="{
-                                        'buy-action-container': states[id].s > 0,
-                                        'sell-action-container': states[id].s < 0,
-                                        'neutral-action-container': states[id].s == 0,
-                                        'weak-state': states[id].s != 2 && states[id].s != -2,
-                                        'active-split': id == activeSplitID
-                                    }">
-                            <div fxLayout="column">
-                                <p style="margin:0;padding:0;font-size:12px!important;">
-                                    {{states[id].s > 0 ? '+': ''}}{{states[id].s < 0 ? '-': ''}}{{states[id].c | number: '1.0-2'}}
-                                </p>
-                                <span style="font-size:10px;margin-top:-5px">{{_ms.splitNames[id]}}</span>
-                            </div>
-                    </mat-grid-tile>
-                </mat-grid-list>
-            </div>
-
             <!-- Window Heading Grid-->
-            <div *ngIf="module != 'trend'">
+            <div>
                 <mat-grid-list [cols]="4" rowHeight="45px" gutterSize="2px">
                     <mat-grid-tile *ngFor="let id of _ms.splits" 
                                     class="clickable" role="button" matRipple

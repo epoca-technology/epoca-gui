@@ -22,8 +22,8 @@ export class BulkDataService implements IBulkDataService {
 	 * Retrieves an up-to-date app bulk from the server.
 	 * @returns Promise<IAppBulk>
 	 */
-	public getAppBulk(epochID: string|undefined): Promise<IAppBulk> { 
-		return this._api.request("get","bulkData/getAppBulk", {epochID: String(epochID)}, true) 
+	public getAppBulk(): Promise<IAppBulk> { 
+		return this._api.request("get","bulkData/getAppBulk", {}, true) 
 	}
 
 

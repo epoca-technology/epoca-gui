@@ -1,9 +1,7 @@
 import {MatSnackBarRef, TextOnlySnackBar} from "@angular/material/snack-bar";
 import {BehaviorSubject} from "rxjs";
 import { 
-    IEpochRecord, 
     IMarketState, 
-    IPrediction,
     IActivePositionHeadlines,
 } from "../../core";
 
@@ -19,8 +17,6 @@ export interface IAppService {
     // App Bulk
     serverTime: BehaviorSubject<number|undefined|null>,
     guiVersion: BehaviorSubject<string|undefined|null>,
-    epoch: BehaviorSubject<IEpochRecord|undefined|null>,
-    prediction: BehaviorSubject<IPrediction|undefined|null>,
     positions: BehaviorSubject<IActivePositionHeadlines|undefined|null>,
     marketState: BehaviorSubject<IMarketState|undefined|null>,
     apiErrors: BehaviorSubject<number|undefined|null>,

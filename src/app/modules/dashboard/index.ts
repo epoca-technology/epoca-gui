@@ -5,8 +5,6 @@ export * from "./liquidity";
 export * from "./market-state-dialog";
 export * from "./positions";
 export * from "./reversal";
-export * from "./signal-policies-dialog";
 export * from "./strategy-form-dialog";
-export * from "./trend-configuration-dialog";
 export * from "./window-configuration-dialog";
 export * from "./dashboard.component";

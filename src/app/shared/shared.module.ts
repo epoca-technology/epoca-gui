@@ -87,17 +87,6 @@ import { DataDialogComponent } from "./components/data-dialog/data-dialog.compon
 // Dialog Menu
 import { DialogMenuComponent } from "./components/dialog-menu/dialog-menu.component";
 
-// Epoch Builder
-import {
-	KerasModelDialogComponent,
-	RegressionElementComponent,
-	ModelSelectionDialogComponent,
-	PredictionModelConfigDialogComponent,
-	PredictionModelElementComponent,
-	PredictionModelContentComponent,
-	PredictionDialogComponent
-} from "./components/epoch-builder"
-
 // Mobile Tabs
 import { MobileTabsComponent } from "./components/mobile-tabs/mobile-tabs.component";
 
@@ -107,9 +96,6 @@ import { RefreshButtonComponent } from "./components/refresh-button/refresh-butt
 // Tooltip Dialog
 import { TooltipDialogComponent } from "./components/tooltip-dialog/tooltip-dialog.component";
 
-// Epochs Menu
-import { EpochsMenuComponent } from './components/epochs-menu/epochs-menu.component';
-
 // Date Range Form
 import { DateRangeFormDialogComponent } from './components/date-range-form-dialog/date-range-form-dialog.component';
 
@@ -117,8 +103,7 @@ import { DateRangeFormDialogComponent } from './components/date-range-form-dialo
 import { 
 	PositionRecordDialogComponent, 
 	PositionInfoDialogComponent,
-	TradeExecutionPayloadDialogComponent,
-	PositionContextDialogComponent
+	TradeExecutionPayloadDialogComponent
 } from './components/positions';
 
 
@@ -162,15 +147,6 @@ import {
 		// Dialog Menu
         DialogMenuComponent,
 
-		// Epoch Builder
-		KerasModelDialogComponent,
-		RegressionElementComponent,
-		ModelSelectionDialogComponent,
-		PredictionModelContentComponent,
-		PredictionModelConfigDialogComponent,
-		PredictionModelElementComponent,
-		PredictionDialogComponent,
-
 		// Mobile Tabs
 		MobileTabsComponent,
 
@@ -180,9 +156,6 @@ import {
 		// Tooltip Dialog
 		TooltipDialogComponent,
 
-		// Epochs Menu
-   		EpochsMenuComponent,
-
 		// Date Range
    		DateRangeFormDialogComponent,
 
@@ -190,7 +163,6 @@ import {
    		PositionRecordDialogComponent,
    		PositionInfoDialogComponent,
      	TradeExecutionPayloadDialogComponent,
-      	PositionContextDialogComponent,
 	],
 	imports: [
 		CommonModule,
@@ -330,19 +302,11 @@ import {
 		// Candlestick
         CandlestickBodyComponent,
 
-		// Epoch Builder
-		RegressionElementComponent,
-		PredictionModelElementComponent,
-		PredictionModelContentComponent,
-
 		// Mobile Tabs
         MobileTabsComponent,
 
 		// Regresh Button
         RefreshButtonComponent,
-
-		// Epochs Menu
-		EpochsMenuComponent,
 	]
 })
 export class SharedModule { }

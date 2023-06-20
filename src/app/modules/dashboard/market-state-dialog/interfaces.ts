@@ -1,6 +1,5 @@
 import { 
     ISplitStateID, 
-    ITrendState, 
     IWindowState 
 } from "../../../core";
 
@@ -24,13 +23,12 @@ export interface IMarketStateDialogComponent {
 
 
 
-export type IMarketStateModule = "window"|"trend"|"volume"|"coin"|"coinBTC";
+export type IMarketStateModule = "window"|"volume"|"coin"|"coinBTC";
 
 
 export interface IMarketStateDialogConfig {
     module: IMarketStateModule,
     split?: ISplitStateID,
     windowState?: IWindowState,
-    trendState?: ITrendState,
     symbol?: string
 }

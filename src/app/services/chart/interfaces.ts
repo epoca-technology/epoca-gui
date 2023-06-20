@@ -1,4 +1,4 @@
-import { IBacktestPosition, ICandlestick, IPositionCandlestick, IPredictionCandlestick } from "../../core";
+import { ICandlestick, IPositionCandlestick } from "../../core";
 import {
 	ApexAxisChartSeries,
 	ApexChart,
@@ -31,14 +31,14 @@ export interface IChartService {
 	
     // Candlesticks
     getCandlestickChartOptions(
-		candlesticks: Array<ICandlestick|IPredictionCandlestick|IPositionCandlestick|any>, 
+		candlesticks: Array<ICandlestick|IPositionCandlestick|any>, 
 		annotations?: ApexAnnotations, 
 		highlightCurrentPrice?: boolean,
 		disableNiceScale?: boolean,
 		range?: IChartRange,
 		height?: number
 	): ICandlestickChartOptions,
-	getApexCandlesticks(candlesticks: Array<ICandlestick|IPredictionCandlestick>): IApexCandlestick[],
+	getApexCandlesticks(candlesticks: Array<ICandlestick>): IApexCandlestick[],
 
 	// Bar Charts
 	getBarChartOptions(
@@ -74,7 +74,6 @@ export interface IChartService {
 	): IPieChartOptions,
 
 	// Misc Helpers
-	getModelBalanceHistoryData(positions: IBacktestPosition[]): {colors: string[], values: {x: number, y: number}[]},
 	calculateChartHeight(
 		baseHeight: number,
 		increment: number,

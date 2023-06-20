@@ -51,14 +51,6 @@ import {
     DatabaseService,
     DatabaseManagementService,
 
-	// Epoch
-	EpochService,
-
-	// Epoch Builder
-	EpochBuilderEvaluationService,
-	PredictionModelService,
-	RegressionService,
-
 	// External Request
     ExternalRequestService,
 
@@ -83,14 +75,8 @@ import {
 	// Position
 	PositionService,
 
-	// Prediction
-	PredictionService,
-
 	// Server
 	ServerService,
-
-	// Signal
-	SignalService,
 
 	// Utils
 	UtilsService
@@ -123,8 +109,6 @@ import {
 	KeyzonesEventsDialogComponent,
 	KeyzoneEventContextDialogComponent,
 	MarketStateDialogComponent,
-	SignalRecordsDialogComponent,
-	SignalPoliciesDialogComponent,
 	LiquidityDialogComponent,
 	LiquidityConfigurationDialogComponent,
 	CoinsDialogComponent,
@@ -132,7 +116,6 @@ import {
 	CoinsStateSummaryDialogComponent,
 	PositionHeadlinesDialogComponent,
 	PositionActionPayloadsDialogComponent,
-	TrendConfigurationDialogComponent,
 	WindowConfigurationDialogComponent,
 	ReversalConfigDialogComponent,
 	ReversalStateDialogComponent
@@ -164,8 +147,6 @@ import { AppComponent } from "./app.component";
 		KeyzonesEventsDialogComponent,
 		KeyzoneEventContextDialogComponent,
   		MarketStateDialogComponent,
-		SignalRecordsDialogComponent,
-		SignalPoliciesDialogComponent,
     	LiquidityDialogComponent,
 		LiquidityConfigurationDialogComponent,
      	CoinsDialogComponent,
@@ -174,7 +155,6 @@ import { AppComponent } from "./app.component";
 		PositionHeadlinesDialogComponent,
 		PositionActionPayloadsDialogComponent,
 		WindowConfigurationDialogComponent,
-		TrendConfigurationDialogComponent,
 		ReversalConfigDialogComponent,
 		ReversalStateDialogComponent,
 	],
@@ -222,14 +202,6 @@ import { AppComponent } from "./app.component";
 		DatabaseService,
 		DatabaseManagementService,
 
-		// Epoch
-		EpochService,
-
-		// Epoch Builder
-		EpochBuilderEvaluationService,
-		PredictionModelService,
-		RegressionService,
-
 		// External Request
 		ExternalRequestService,
 
@@ -254,14 +226,8 @@ import { AppComponent } from "./app.component";
 		// Position
 		PositionService,
 
-		// Prediction
-		PredictionService,
-
 		// Server
 		ServerService,
-
-		// Signal
-		SignalService,
 		
 		// Utils
 		UtilsService,

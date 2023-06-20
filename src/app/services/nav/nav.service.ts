@@ -6,13 +6,7 @@ import {MatBottomSheet, MatBottomSheetRef} from "@angular/material/bottom-sheet"
 import {BehaviorSubject, Observable} from "rxjs";
 import {filter} from "rxjs/operators";
 import { environment } from "../../../environments/environment";
-import { 
-	IPredictionModelConfig, 
-	IPrediction,
-	IRegressionConfig,
-	IEpochRecord,
-	IBinanceTradeExecutionPayload, 
-} from "../../core";
+import { IBinanceTradeExecutionPayload, } from "../../core";
 import {AppService} from "../app";
 import {BottomSheetMenuComponent, IBottomSheetMenuItem} from "../../shared/components/bottom-sheet-menu";
 import {ConfirmationDialogComponent, IConfirmationDialogData} from "../../shared/components/confirmation-dialog";
@@ -21,13 +15,6 @@ import {DialogMenuComponent, IDialogMenuData, IDialogMenuItem} from "../../share
 import { ITooltipData, TooltipDialogComponent } from "../../shared/components/tooltip-dialog";
 import { IDateRangeConfig, DateRangeFormDialogComponent } from "../../shared/components/date-range-form-dialog";
 import { PositionRecordDialogComponent, TradeExecutionPayloadDialogComponent } from "../../shared/components/positions";
-import {
-	ModelSelectionDialogComponent,
-	KerasModelDialogComponent,
-	PredictionModelConfigDialogComponent,
-	PredictionDialogComponent,
-	IPredictionDialogData
-} from "../../shared/components/epoch-builder";
 import {INavService, IRouteState, IRouteStateData} from "./interfaces";
 
 
@@ -85,30 +72,12 @@ export class NavService implements INavService {
 	// Dashboard
 	public dashboard(): Promise<boolean> { return this.navigate("dashboard") }
 
-	// Epochs
-	public epochs(epochID?: string): Promise<boolean> { 
-		if (typeof epochID == "string") {
-			return this.navigate(`epochs/${epochID}`);
-		} else {
-			return this.navigate("epochs");
-		}
-	}
-
 	// Positions
 	public positions(epochID?: string): Promise<boolean> { 
 		if (typeof epochID == "string") {
 			return this.navigate(`positions/${epochID}`);
 		} else {
 			return this.navigate("positions");
-		}
-	}
-
-	// Predictions
-	public predictions(epochID?: string): Promise<boolean> { 
-		if (typeof epochID == "string") {
-			return this.navigate(`predictions/${epochID}`);
-		} else {
-			return this.navigate("predictions");
 		}
 	}
 
@@ -126,23 +95,7 @@ export class NavService implements INavService {
 
 	// IP Blacklist
 	public ipBlacklist(): Promise<boolean> { return this.navigate("ipBlacklist") }
-
-	// Epoch Builder
-	public regressions(certID?: string): Promise<boolean> { 
-        if (typeof certID == "string") {
-            return this.navigate(`epochBuilder/regressions/${certID}`);
-        } else {
-            return this.navigate("epochBuilder/regressions");
-        }
-	}
-	public predictionModels(certID?: string): Promise<boolean> { 
-		if (typeof certID == "string") {
-            return this.navigate(`epochBuilder/predictionModels/${certID}`);
-        } else {
-            return this.navigate("epochBuilder/predictionModels");
-        }
-	}
-
+	
 	// Local Database
 	public localDatabase(): Promise<boolean> { return this.navigate("localDatabase") }
 
@@ -279,94 +232,6 @@ export class NavService implements INavService {
 			data: <ITooltipData> {
 				title: title,
 				content: content
-			}
-		});
-	}
-
-
-
-	
-	
-
-
-
-
-
-	/*
-	* Opens the dialog that contains all information about a keras model.
-	* @param modelConfig
-	* @returns MatDialogRef<any>
-	* */
-	public displayKerasModelDialog(modelConfig: IRegressionConfig): MatDialogRef<any> {
-		return this.dialog.open(KerasModelDialogComponent, {
-			hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
-			panelClass: "medium-dialog",
-			data: modelConfig
-		});
-	}
-
-
-
-	
-
-
-
-	
-	
-	/*
-	* Opens the dialog that contains the selected models
-	* @returns MatDialogRef<any>
-	* */
-	public displayModelSelectionDialog(): MatDialogRef<any> {
-		return this.dialog.open(ModelSelectionDialogComponent, {
-			hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
-			panelClass: "medium-dialog",
-			data: {}
-		});
-	}
-
-
-	
-	
-
-
-
-
-
-	/*
-	* Opens the dialog that contains all information about a prediction model.
-	* @param modelConfig
-	* @returns MatDialogRef<any>
-	* */
-	public displayPredictionModelConfigDialog(modelConfig: IPredictionModelConfig): MatDialogRef<any> {
-		return this.dialog.open(PredictionModelConfigDialogComponent, {
-			hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
-			panelClass: "medium-dialog",
-			data: modelConfig
-		});
-	}
-
-
-
-
-
-
-
-	/*
-	* Opens the dialog that contains all information about a prediction.
-	* @param model
-	* @param pred
-	* @param outcome?
-	* @param epoch?
-	* @returns MatDialogRef<any>
-	* */
-	public displayPredictionDialog(model: IPredictionModelConfig, pred: IPrediction): MatDialogRef<any> {
-		return this.dialog.open(PredictionDialogComponent, {
-			hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
-			panelClass: "small-dialog",
-			data: <IPredictionDialogData> {
-				model: model,
-				prediction: pred
 			}
 		});
 	}

@@ -1,9 +1,6 @@
 import { Injectable } from "@angular/core";
 import Dexie from "dexie";
-import * as moment from "moment";
 import { UtilsService } from "../utils";
-import { EpochService } from "../epoch";
-import { IPredictionModelCertificate, IRegressionTrainingCertificate } from "../epoch-builder";
 import { IPositionRecord, PositionService } from "../position";
 import { IReversalCoinsStates, IReversalState, MarketStateService } from "../market-state";
 import { 
@@ -32,8 +29,6 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 
 	// Tables
 	private userPreferences?: Dexie.Table;
-	private predictionModelCertificates?: Dexie.Table;
-	private regressionCertificates?: Dexie.Table;
 	private reversalStates?: Dexie.Table;
 	private reversalCoinsStates?: Dexie.Table;
 	private positionRecords?: Dexie.Table;
@@ -41,7 +36,6 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 
 
   	constructor(
-		private _epoch: EpochService,
 		private _ms: MarketStateService,
 		private _position: PositionService,
 		private _utils: UtilsService
@@ -72,8 +66,6 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 				this.db = new Dexie(this.dbName);
 				this.db.version(1).stores({
 					userPreferences: "id",
-					predictionModelCertificates: "id",
-					regressionCertificates: "id",
 					reversalStates: "id",
 					reversalCoinsStates: "id",
 					positionRecords: "id",
@@ -84,8 +76,6 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 				
 				// Initialize Tables
 				this.userPreferences = this.db.table("userPreferences");
-				this.predictionModelCertificates = this.db.table("predictionModelCertificates");
-				this.regressionCertificates = this.db.table("regressionCertificates");
 				this.reversalStates = this.db.table("reversalStates");
 				this.reversalCoinsStates = this.db.table("reversalCoinsStates");
 				this.positionRecords = this.db.table("positionRecords");
@@ -144,8 +134,6 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 
 		return [
 			{ name: "userPreferences", records: await this.userPreferences!.count()},
-			{ name: "predictionModelCertificates", records: await this.predictionModelCertificates!.count()},
-			{ name: "regressionCertificates", records: await this.regressionCertificates!.count()},
 			{ name: "reversalStates", records: await this.reversalStates!.count()},
 			{ name: "reversalCoinsStates", records: await this.reversalCoinsStates!.count()},
 			{ name: "positionRecords", records: await this.positionRecords!.count()},
@@ -239,113 +227,6 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 
 	/* Data Caching */
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	/***************************
-	 * Certificates Management *
-	 ***************************/
-
-
-
-
-
-	/**
-	 * Retrieves, stores and returns a prediction model certificate if the browser 
-	 * is compatible.
-	 * @param id 
-	 * @returns Promise<IPredictionModelCertificate>
-	 */
-	 public async getPredictionModelCertificate(id: string): Promise<IPredictionModelCertificate> {
-		// Attempt to initialize the db in case it hadn't been
-		if (!this.initialized) await this.initialize();
-
-		// If it is not compatible, return the original call right away
-		if (!this.initialized) return this._epoch.getPredictionModelCertificate(id);
-
-		/**
-		 * Check if the record is currently stored, in the case of an error when interacting
-		 * with the db, handle it and return the original call.
-		 */
-		try {
-			// Read the data and return it if found
-			const localData: ILocalData = await this.predictionModelCertificates!.where("id").equals(id).first();
-			if (localData && localData.data) { return localData.data } 
-
-			// If it isn't found, retrieve it, store it and return it
-			else { 
-				// Perform the request
-				const cert: IPredictionModelCertificate = await this._epoch.getPredictionModelCertificate(id);
-
-				// Attempt to save it
-				try {
-					await this.predictionModelCertificates!.put(<ILocalData> { id: id, data: cert });
-				} catch (e) { console.error(e) }
-
-				// Finally, return it
-				return cert; 
-			}
-		} catch (e) {
-			console.error(e);
-			return this._epoch.getPredictionModelCertificate(id);
-		}
-	}
-
-
-
-
-
-	/**
-	 * Retrieves, stores and returns a regression training certificate if the browser 
-	 * is compatible.
-	 * @param id 
-	 * @returns Promise<IRegressionTrainingCertificate>
-	 */
-	 public async getRegressionCertificate(id: string): Promise<IRegressionTrainingCertificate> {
-		// Attempt to initialize the db in case it hadn't been
-		if (!this.initialized) await this.initialize();
-
-		// If it is not compatible, return the original call right away
-		if (!this.initialized) return this._epoch.getRegressionCertificate(id);
-
-		/**
-		 * Check if the record is currently stored, in the case of an error when interacting
-		 * with the db, handle it and return the original call.
-		 */
-		try {
-			// Read the data and return it if found
-			const localData: ILocalData = await this.regressionCertificates!.where("id").equals(id).first();
-			if (localData && localData.data) { return localData.data } 
-
-			// If it isn't found, retrieve it, store it and return it
-			else { 
-				// Perform the request
-				const cert: IRegressionTrainingCertificate = await this._epoch.getRegressionCertificate(id);
-
-				// Attempt to save it
-				try {
-					await this.regressionCertificates!.put(<ILocalData> { id: id, data: cert });
-				} catch (e) { console.error(e) }
-
-				// Finally, return it
-				return cert; 
-			}
-		} catch (e) {
-			console.error(e);
-			return this._epoch.getRegressionCertificate(id);
-		}
-	}
 
 
 
