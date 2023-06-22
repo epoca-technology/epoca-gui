@@ -1,7 +1,9 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
 import {MatDialogRef, MAT_DIALOG_DATA, MatDialog} from "@angular/material/dialog";
 import { ApexAnnotations } from 'ng-apexcharts';
+import { Subscription } from 'rxjs';
 import { 
+	IBinancePositionSide,
 	IPositionCandlestick, 
 	IPositionRecord, 
 	IPositionReduction, 
@@ -25,9 +27,10 @@ import { IPositionRecordDialogComponent } from './interfaces';
   templateUrl: './position-record-dialog.component.html',
   styleUrls: ['./position-record-dialog.component.scss']
 })
-export class PositionRecordDialogComponent implements OnInit, IPositionRecordDialogComponent {
+export class PositionRecordDialogComponent implements OnInit, OnDestroy, IPositionRecordDialogComponent {
 	// Layout
-	private layout: ILayout = this._app.layout.value;
+	public layout: ILayout = this._app.layout.value;
+	private layoutSub?: Subscription;
 
 	// Position Record
 	public record!: IPositionRecord;
@@ -55,13 +58,19 @@ export class PositionRecordDialogComponent implements OnInit, IPositionRecordDia
 	) { }
 
 	async ngOnInit(): Promise<void> {
+        // Initialize layout
+        this.layoutSub = this._app.layout.subscribe((nl: ILayout) => this.layout = nl);
+
+		// Load the position record
 		await this.refreshPositionRecord();
 		this.loaded = true;
 		setTimeout(() => {this.processCandlesticks();});
 	}
 
 
-
+	ngOnDestroy(): void {
+        if (this.layoutSub) this.layoutSub.unsubscribe();
+	}
 
 
 
@@ -332,6 +341,46 @@ export class PositionRecordDialogComponent implements OnInit, IPositionRecordDia
 
 
 	/* Position Actions */
+
+
+
+
+
+
+
+    /**
+     * Displays the confirmation dialog in order to increase
+     * an existing position.
+     */
+    public increasePosition(): void {
+        this._nav.displayConfirmationDialog({
+            title: `Increase ${this.record.side}`,
+            content: `
+                <p class='align-center'>
+                    If you confirm the action, the ${this.record.side} Position will be increased based on the Trading Strategy.
+                </p>
+            `,
+            otpConfirmation: true
+        }).afterClosed().subscribe(
+            async (otp: string|undefined) => {
+                if (otp) {
+                    try {
+                        // Perform Action
+                        await this._position.onReversalStateEvent(this.record.side, otp);
+
+                        // Notify
+                        this._app.success(`The ${this.record.side} position was increased successfully.`);
+                    } catch(e) { this._app.error(e) }
+                }
+            }
+        );
+    }
+
+
+
+
+
+
 
 
 

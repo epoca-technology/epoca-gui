@@ -1,3 +1,4 @@
+import { IBinancePositionSide } from "../../../../core";
 
 
 export interface IPositionRecordDialogComponent {
@@ -6,6 +7,7 @@ export interface IPositionRecordDialogComponent {
     refreshPositionRecord(): Promise<void>,
 
     // Position Actions
+    increasePosition(side: IBinancePositionSide): void,
     closePosition(): Promise<void>,
     
     // Misc Helpers

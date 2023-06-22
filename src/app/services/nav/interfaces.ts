@@ -18,6 +18,7 @@ export interface INavService {
     signIn(): Promise<boolean>,
 	updatePassword(): Promise<boolean>,
 	dashboard(): Promise<boolean>,
+	adjustments(): Promise<boolean>,
 	positions(epochID?: string): Promise<boolean>,
 	candlesticks(): Promise<boolean>,
 	server(): Promise<boolean>,

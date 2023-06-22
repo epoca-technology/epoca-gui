@@ -49,10 +49,10 @@ export class MobileTabsComponent implements OnInit, OnDestroy, IMobileTabsCompon
 				this._nav.positions();
 				break;
 			case 2:
-				this._nav.candlesticks();
+				this._nav.server();
 				break;
 			case 3:
-				this._nav.server();
+				this._nav.adjustments();
 				break;
 		}
 	}
@@ -84,10 +84,10 @@ export class MobileTabsComponent implements OnInit, OnDestroy, IMobileTabsCompon
 			case "positions":
 				this.activeTab = 1;
 				break;
-			case "candlesticks":
+			case "server":
 				this.activeTab = 2;
 				break;
-			case "server":
+			case "adjustments":
 				this.activeTab = 3;
 				break;
 			default:

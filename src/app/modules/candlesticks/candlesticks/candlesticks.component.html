@@ -1,6 +1,7 @@
 <!-- Header -->
 <mat-toolbar class="secondary-header">
     <div fxLayout="row" fxLayoutAlign="center center">
+        <button mat-icon-button class="show-on-mobile" (click)="_nav.dashboard()"><mat-icon>arrow_back</mat-icon></button>
         <span class="truncate">Candlesticks ({{config.intervalMinutes}}m)</span>
         <span fxFlex></span>
         <app-refresh-button class="show-on-desktop" [disabled]="!loaded" (refresh)="refresh()"></app-refresh-button>
@@ -32,7 +33,7 @@
 
 
 <!-- Section Content -->
-<div class="fadeIn padding" [ngClass]="{'section-content': layout == 'mobile'}" *ngIf="loaded">
+<div class="fadeIn padding" *ngIf="loaded">
     <div fxLayout="row" fxLayoutAlign="center center">
         <div fxFlex>
             <!-- Candlesticks -->
@@ -50,6 +51,3 @@
         </div>
     </div>
 </div>
-
-<!-- Mobile Tabs -->
-<app-mobile-tabs *ngIf="layout == 'mobile'"></app-mobile-tabs>

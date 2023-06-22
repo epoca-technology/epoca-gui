@@ -15,6 +15,13 @@
 
         <!-- Menu Content -->
         <mat-list>
+            <!-- Candlesticks -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.candlesticks()" [disabled]="state.module == 'candlesticks'">
+                    <mat-icon>waterfall_chart</mat-icon><span>Candlesticks</span>
+                </button>
+            </mat-list-item>
+
             <!-- Users -->
             <mat-list-item>
                 <button mat-button class="left-icon-button" (click)="_nav.users()" [disabled]="state.module == 'users'">
@@ -22,7 +29,6 @@
                 </button>
             </mat-list-item>
 
-            
             <!-- GUI Version -->
             <mat-list-item>
                 <button mat-button class="left-icon-button" (click)="_nav.guiVersion()" [disabled]="state.module == 'guiVersion'">
@@ -91,22 +97,13 @@
                     <mat-icon svgIcon="home" style="max-width:20px;"></mat-icon><span>Dashboard</span>
                 </button>
 
-                <!-- Positions -->
+                <!-- Campaigns -->
                 <button mat-button 
                         class="left-icon-button" 
                         (click)="_nav.positions()" 
                         [disabled]="state.module == 'positions'" 
                         *ngIf="uid">
-                    <mat-icon svgIcon="money_bill_transfer" style="max-width:23px;"></mat-icon><span>Positions</span>
-                </button>
-
-                <!-- Candlesticks -->
-                <button mat-button 
-                        class="left-icon-button" 
-                        (click)="_nav.candlesticks()" 
-                        [disabled]="state.module == 'candlesticks'" 
-                        *ngIf="uid">
-                    <mat-icon style="font-size:25px;margin-top:-2px">waterfall_chart</mat-icon><span>Candlesticks</span>
+                    <mat-icon svgIcon="money_bill_transfer" style="max-width:23px;"></mat-icon><span>Campaigns</span>
                 </button>
 
                 <!-- Server -->
@@ -118,6 +115,15 @@
                         [disabled]="state.module == 'server'" 
                         *ngIf="uid">
                     <mat-icon svgIcon="server" style="max-width:20px;"></mat-icon><span>Server</span>
+                </button>
+
+                <!-- Adjustments -->
+                <button mat-button 
+                        class="left-icon-button" 
+                        (click)="_nav.adjustments()" 
+                        [disabled]="state.module == 'adjustments'" 
+                        *ngIf="uid">
+                    <mat-icon>tune</mat-icon><span>Adjustments</span>
                 </button>
 
                 <!-- Menu -->

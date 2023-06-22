@@ -20,6 +20,8 @@ import {
     ILiquidityIntensity,
     IActivePositionHeadlines,
     IStateType,
+    IBinancePositionSide,
+    PositionService,
 } from "../../core";
 import { 
     AppService, 
@@ -29,15 +31,13 @@ import {
     NavService,
 } from "../../services";
 import { BalanceDialogComponent } from "./balance-dialog";
-import { StrategyFormDialogComponent } from "./strategy-form-dialog";
-import { WindowConfigurationDialogComponent } from "./window-configuration-dialog";
-import { KeyzonesConfigFormDialogComponent, KeyzonesDialogComponent, KeyzonesEventsDialogComponent } from "./keyzones";
+import { KeyzonesDialogComponent, KeyzonesEventsDialogComponent } from "./keyzones-dialog";
 import { IMarketStateDialogConfig, MarketStateDialogComponent } from "./market-state-dialog";
 import { IBottomSheetMenuItem } from "../../shared/components/bottom-sheet-menu";
-import { CoinsDialogComponent, CoinsStateSummaryDialogComponent, ICoinsStateSummaryConfig } from "./coins";
+import { CoinsStateSummaryDialogComponent, ICoinsStateSummaryConfig } from "./coins-state-summary-dialog";
 import { PositionHeadlinesDialogComponent } from "./positions";
-import { LiquidityConfigurationDialogComponent, LiquidityDialogComponent } from "./liquidity";
-import { ReversalConfigDialogComponent, ReversalStateDialogComponent } from "./reversal";
+import { LiquidityDialogComponent } from "./liquidity-dialog";
+import { ReversalStateDialogComponent } from "./reversal-state-dialog";
 import { IDashboardComponent, IWindowZoom, IWindowZoomID, IWindowZoomPrices } from "./interfaces";
 
 @Component({
@@ -112,7 +112,8 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         private titleService: Title,
         private _utils: UtilsService,
         private _auth: AuthService,
-        public _ms: MarketStateService
+        public _ms: MarketStateService,
+        private _position: PositionService
     ) { }
 
     async ngOnInit(): Promise<void> {
@@ -687,160 +688,44 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
 
 
+    /********************
+     * Position Actions *
+     ********************/
+
 
     
 
-
-    /**************************
-     * Adjustments Management *
-     **************************/
-
-
-
-
-
-
     /**
-     * Displays the adjustments menu.
+     * Displays the confirmation dialog in order to open
+     * a new position.
+     * @param side 
      */
-    public displayAdjustmentsMenu(): void {
-		const bs: MatBottomSheetRef = this._nav.displayBottomSheetMenu([
-            {
-                icon: 'waterfall_chart',  
-                title: 'Window', 
-                description: 'Configure the requirements for the window splits to be stateful.', 
-                response: "WINDOW_CONFIG"
-            },
-            {
-                icon: 'vertical_distribute',  
-                title: 'KeyZones', 
-                description: 'Configure how the zones are built and events are issued.', 
-                response: "KEYZONES_CONFIG"
-            },
-            {
-                icon: 'water_drop',  
-                title: 'Liquidity', 
-                description: 'Configure how the liquidity is built and the state is calculated.', 
-                response: "LIQUIDITY_CONFIG"
-            },
-            {
-                icon: 'currency_bitcoin',  
-                title: 'Coins', 
-                description: 'Configure, install & uninstall coin based futures contracts.', 
-                response: "COINS"
-            },
-            {
-                icon: 'rotate_left',  
-                svg: true,
-                title: 'Reversal', 
-                description: 'Configure the requirements for reversal events to be issued.', 
-                response: "REVERSAL"
-            },
-            {
-                icon: 'money_bill_transfer',  
-                svg: true,
-                title: 'Trading Strategy', 
-                description: 'Configure the way positions are managed.', 
-                response: "TRADING_STRATEGY"
-            },
-        ]);
-		bs.afterDismissed().subscribe((response: string|undefined) => {
-            if      (response === "WINDOW_CONFIG") { this.displayWindowConfigFormDialog() }
-            else if (response === "LIQUIDITY_CONFIG") { this.displayLiquidityConfigFormDialog() }
-            else if (response === "KEYZONES_CONFIG") { this.displayKeyZonesConfigFormDialog() }
-            else if (response === "COINS") { this.displayCoinsDialog() }
-            else if (response === "REVERSAL") { this.displayReversalConfigDialog() }
-            else if (response === "TRADING_STRATEGY") { this.displayStrategyFormDialog() }
-		});
-	}
+    public openPosition(side: IBinancePositionSide): void {
+        this._nav.displayConfirmationDialog({
+            title: `Open ${side}`,
+            content: `
+                <p class='align-center'>
+                    If you confirm the action, a ${side} Position will be opened based on the Trading Strategy.
+                </p>
+            `,
+            otpConfirmation: true
+        }).afterClosed().subscribe(
+            async (otp: string|undefined) => {
+                if (otp) {
+                    try {
+                        // Perform Action
+                        await this._position.onReversalStateEvent(side, otp);
+
+                        // Notify
+                        this._app.success(`The ${side} position was opened successfully.`);
+                    } catch(e) { this._app.error(e) }
+                }
+            }
+        );
+    }
 
 
 
-
-    /**
-     * Displays the window config form dialog.
-     */
-    private displayWindowConfigFormDialog(): void {
-		this.dialog.open(WindowConfigurationDialogComponent, {
-			hasBackdrop: this._app.layout.value != "mobile",
-            disableClose: true,
-			panelClass: "small-dialog",
-            data: {}
-		})
-	}
-
-
-
-
-
-    /**
-     * Displays the liquidity config form dialog.
-     */
-    private displayLiquidityConfigFormDialog(): void {
-		this.dialog.open(LiquidityConfigurationDialogComponent, {
-			hasBackdrop: this._app.layout.value != "mobile",
-            disableClose: true,
-			panelClass: "small-dialog",
-            data: {}
-		})
-	}
-
-
-
-
-    /**
-     * Displays the keyzones config form dialog.
-     */
-    private displayKeyZonesConfigFormDialog(): void {
-		this.dialog.open(KeyzonesConfigFormDialogComponent, {
-			hasBackdrop: this._app.layout.value != "mobile",
-            disableClose: true,
-			panelClass: "small-dialog",
-            data: {}
-		})
-	}
-
-
-
-	/**
-	 * Displays the Coins dialog.
-	 */
-    private displayCoinsDialog(): void {
-		this.dialog.open(CoinsDialogComponent, {
-			hasBackdrop: this._app.layout.value != "mobile",
-            disableClose: true,
-			panelClass: "large-dialog"
-		})
-	}
-
-
-
-	/**
-	 * Displays the Reversal dialog.
-	 */
-    private displayReversalConfigDialog(): void {
-		this.dialog.open(ReversalConfigDialogComponent, {
-			hasBackdrop: this._app.layout.value != "mobile",
-            disableClose: true,
-			panelClass: "small-dialog",
-            data: {}
-		})
-	}
-
-
-
-
-    /**
-     * Displays the strategy form dialog.
-     */
-    private displayStrategyFormDialog(): void {
-		this.dialog.open(StrategyFormDialogComponent, {
-			hasBackdrop: this._app.layout.value != "mobile",
-            disableClose: true,
-			panelClass: "small-dialog",
-            data: {}
-		})
-	}
 
 
 
@@ -902,11 +787,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
 
 
-
-
-
-
-
 	/**
 	 * Displays the balance dialog.
 	 */
@@ -917,6 +797,15 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 			data: {}
 		})
 	}
+
+
+
+
+
+
+
+
+
 
 
 
@@ -944,6 +833,8 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     public displayPositionRecordDialog(id: string): void {
         this._nav.displayPositionRecordDialog(id);
 	}
+
+
 
 
 

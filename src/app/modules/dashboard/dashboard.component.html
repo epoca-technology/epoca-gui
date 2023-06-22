@@ -17,13 +17,19 @@
 
         <!-- Menu Content -->
         <mat-list>
+            <!-- Candlesticks -->
+            <mat-list-item>
+                <button mat-button class="left-icon-button" (click)="_nav.candlesticks()">
+                    <mat-icon>waterfall_chart</mat-icon><span>Candlesticks</span>
+                </button>
+            </mat-list-item>
+
             <!-- Users -->
             <mat-list-item>
                 <button mat-button class="left-icon-button" (click)="_nav.users()">
                     <mat-icon>people_alt</mat-icon><span>Users</span>
                 </button>
             </mat-list-item>
-
             
             <!-- GUI Version -->
             <mat-list-item>
@@ -90,18 +96,6 @@
                             *ngIf="loaded && layout == 'mobile'"
                             (click)="displayBusinessMenu()">
                             <mat-icon>storefront</mat-icon>
-                    </button>
-
-                    <!-- Adjustments -->
-                    <button mat-button 
-                            *ngIf="loaded && layout == 'desktop'"
-                            (click)="displayAdjustmentsMenu()">
-                            <mat-icon style="font-size:23px;">tune</mat-icon>&nbsp;Adjustments
-                    </button>
-                    <button mat-icon-button 
-                            *ngIf="loaded && layout == 'mobile'"
-                            (click)="displayAdjustmentsMenu()">
-                            <mat-icon style="font-size:22px;">tune</mat-icon>
                     </button>
 
                     <!-- Menu -->
@@ -201,7 +195,7 @@
                                     <mat-grid-list [cols]="2" [rowHeight]="layout == 'desktop' ? '45px': '70px'" gutterSize="1px">
                                         <!-- Long Position -->
                                         <mat-grid-tile *ngIf="!activePositions || !activePositions.LONG" 
-                                                        (click)="displayBusinessMenu()"
+                                                        (click)="openPosition('LONG')"
                                                         class="buy-action-container very-weak-state clickable" role="button" matRipple>
                                             <p>$0.00 0.00%</p>
                                         </mat-grid-tile>
@@ -219,7 +213,7 @@
 
                                         <!-- Short Position -->
                                         <mat-grid-tile *ngIf="!activePositions || !activePositions.SHORT" 
-                                                        (click)="displayBusinessMenu()"
+                                                        (click)="openPosition('SHORT')"
                                                         class="sell-action-container very-weak-state clickable" role="button" matRipple>
                                             <p>$0.00 0.00%</p>
                                         </mat-grid-tile>

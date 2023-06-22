@@ -1,0 +1,36 @@
+
+
+.adjustments-container {
+    h5 { margin:0}
+    p { margin:0}
+    .desktop-card {
+        padding:0!important;
+        .item { 
+            width: 100%;
+            padding: 20px 10px 20px 10px;
+
+            div { 
+                //margin-left: 10px;
+                p { color: var(--light-text-color); font-size:14px;}
+            }
+        }
+    }
+    .divider { margin: 0;}
+}
+
+
+
+/* Responsiveness */
+
+
+/* mobile: sm & xs */
+@media only screen and (max-width: 959px) {
+
+}
+
+
+
+/* desktop: md */
+@media only screen and (min-width: 960px) {
+
+}

@@ -72,6 +72,9 @@ export class NavService implements INavService {
 	// Dashboard
 	public dashboard(): Promise<boolean> { return this.navigate("dashboard") }
 
+	// Adjustments
+	public adjustments(): Promise<boolean> { return this.navigate("adjustments") }
+
 	// Positions
 	public positions(epochID?: string): Promise<boolean> { 
 		if (typeof epochID == "string") {

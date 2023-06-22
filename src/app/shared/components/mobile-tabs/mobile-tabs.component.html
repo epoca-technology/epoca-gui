@@ -15,23 +15,24 @@
             <mat-icon svgIcon="money_bill_transfer" style="max-width:23px;"></mat-icon>
         </div>
 
-        <!-- Candlesticks -->
-        <div fxFlex fxLayout="row" fxLayoutAlign="center center"
-             class="tab" role="button" matRipple
-             [ngClass]="{'active': activeTab == 2}" (click)="navigate(2)">
-            <mat-icon style="font-size:25px;margin-top:-2px">waterfall_chart</mat-icon>
-        </div>
-
         <!-- Server -->
         <div fxFlex fxLayout="row" fxLayoutAlign="center center"
              class="tab" role="button" matRipple
-             [ngClass]="{'active': activeTab == 3}" (click)="navigate(3)">
+             [ngClass]="{'active': activeTab == 2}" (click)="navigate(2)">
             <mat-icon svgIcon="server"
                     [matBadge]="_app.apiErrors.value" 
                     [matBadgeHidden]="!_app.apiErrors.value" 
                     matBadgePosition="after"
                     matBadgeSize="small"
                     matBadgeOverlap="false" style="max-width:20px;"></mat-icon>
+        </div>
+
+
+        <!-- Adjustments -->
+        <div fxFlex fxLayout="row" fxLayoutAlign="center center"
+             class="tab" role="button" matRipple
+             [ngClass]="{'active': activeTab == 3}" (click)="navigate(3)">
+            <mat-icon style="font-size:25px;margin-top:-2px">tune</mat-icon>
         </div>
     </div>
 </div>

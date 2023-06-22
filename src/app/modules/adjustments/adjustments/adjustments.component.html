@@ -1,0 +1,102 @@
+<!-- Header -->
+<mat-toolbar class="secondary-header">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <span class="truncate">Adjustments</span>
+        <span fxFlex></span>
+    </div>
+</mat-toolbar>
+
+
+<!-- Section Content -->
+<div class="fadeIn padding" [ngClass]="{'section-content': layout == 'mobile'}">
+    <div fxLayout="row" fxLayoutAlign="center center" class="adjustments-container">
+        <div fxFlex="35" fxFlex.xs="100" fxFlex.sm="100"
+             class="desktop-card">
+
+             <!-- Window-->
+             <div   class="item fake-button" role="button" matRipple 
+                    fxLayout="row" fxLayoutAlign="center center" 
+                    (click)="displayWindowConfigFormDialog()">
+                <div fxFlex="7" fxFlex.sm="15" fxFlex.xs="15"><mat-icon>waterfall_chart</mat-icon></div>
+                <div>
+                    <h5>Window</h5>
+                    <p>Configure the requirements for the window splits to be stateful.</p>
+                </div>
+                <span fxFlex></span>
+             </div>
+
+             <div class="divider"></div>
+
+             <!-- KeyZones-->
+             <div   class="item fake-button" role="button" matRipple 
+                    fxLayout="row" fxLayoutAlign="center center" 
+                    (click)="displayKeyZonesConfigFormDialog()">
+                <div fxFlex="7" fxFlex.sm="15" fxFlex.xs="15"><mat-icon>vertical_distribute</mat-icon></div>
+                <div>
+                    <h5>KeyZones</h5>
+                    <p>Configure how the zones are built and events are issued.</p>
+                </div>
+                <span fxFlex></span>
+             </div>
+
+             <div class="divider"></div>
+
+             <!-- Liquidity -->
+             <div   class="item fake-button" role="button" matRipple 
+                    fxLayout="row" fxLayoutAlign="center center" 
+                    (click)="displayLiquidityConfigFormDialog()">
+                <div fxFlex="7" fxFlex.sm="15" fxFlex.xs="15"><mat-icon>water_drop</mat-icon></div>
+                <div>
+                    <h5>Liquidity</h5>
+                    <p>Configure how the liquidity is built and the state is calculated.</p>
+                </div>
+                <span fxFlex></span>
+             </div>
+
+             <div class="divider"></div>
+
+             <!-- Coins -->
+             <div   class="item fake-button" role="button" matRipple 
+                    fxLayout="row" fxLayoutAlign="center center" 
+                    (click)="displayCoinsDialog()">
+                <div fxFlex="7" fxFlex.sm="15" fxFlex.xs="15"><mat-icon>currency_bitcoin</mat-icon></div>
+                <div>
+                    <h5>Coins</h5>
+                    <p>Configure, install & uninstall coin based futures contracts.</p>
+                </div>
+                <span fxFlex></span>
+             </div>
+
+             <div class="divider"></div>
+
+             <!-- Reversal -->
+             <div   class="item fake-button" role="button" matRipple 
+                    fxLayout="row" fxLayoutAlign="center center" 
+                    (click)="displayReversalConfigDialog()">
+                <div fxFlex="7" fxFlex.sm="15" fxFlex.xs="15"><mat-icon svgIcon="rotate_left" style="max-width: 20px;margin-left:3px;"></mat-icon></div>
+                <div>
+                    <h5>Reversal</h5>
+                    <p>Configure the requirements for reversal events to be issued.</p>
+                </div>
+                <span fxFlex></span>
+             </div>
+
+             <div class="divider"></div>
+
+             <!-- Trading Strategy -->
+             <div   class="item fake-button" role="button" matRipple 
+                    fxLayout="row" fxLayoutAlign="center center" 
+                    (click)="displayStrategyFormDialog()">
+                <div fxFlex="7" fxFlex.sm="15" fxFlex.xs="15"><mat-icon svgIcon="money_bill_transfer" style="max-width: 20px;margin-left:2px;"></mat-icon></div>
+                <div>
+                    <h5>Trading Strategy</h5>
+                    <p>Configure the way positions are opened, increased and closed.</p>
+                </div>
+                <span fxFlex></span>
+             </div>
+        </div>
+    </div>
+</div>
+
+<!-- Mobile Tabs -->
+<app-mobile-tabs *ngIf="layout == 'mobile'"></app-mobile-tabs>

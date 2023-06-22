@@ -9,16 +9,13 @@ import {
 	IPositionHeadline,
 	IPositionActionKind,
 	IPositionActionRecord,
-	IBinancePositionSide
+	IBinancePositionSide,
 } from './interfaces';
 
 @Injectable({
 providedIn: 'root'
 })
 export class PositionService implements IPositionService {
-
-
-
 
 
 
@@ -103,6 +100,20 @@ export class PositionService implements IPositionService {
 
 
 	/**
+	 * Simulates a reversal state event and opens/increases
+	 * the position for a given side if possible.
+	 * @param side
+	 * @param otp
+	 * @returns Promise<void>
+	 */
+	public onReversalStateEvent(side: IBinancePositionSide, otp: string): Promise<void> { 
+		return this._api.request("post","position/onReversalStateEvent", {side: side}, true, otp);
+	}
+
+
+
+
+	/**
 	 * Closes an active position for the given side.
 	 * @param side
 	 * @param otp
@@ -157,17 +168,4 @@ export class PositionService implements IPositionService {
 	public updateStrategy(newStrategy: IPositionStrategy, otp: string): Promise<void> { 
 		return this._api.request("post","position/updateStrategy", {newStrategy: newStrategy}, true, otp);
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

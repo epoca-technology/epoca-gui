@@ -1,4 +1,5 @@
 import { 
+    IBinancePositionSide,
     ISplitStateID, 
 } from "../../core";
 
@@ -6,8 +7,8 @@ export interface IDashboardComponent {
     // Window Management
     displayZoomMenu(): void,
 
-    // Adjustments Management
-    displayAdjustmentsMenu(): void,
+    // Position Actions
+    openPosition(side: IBinancePositionSide): void,
 
     // Business Menu
     displayBusinessMenu(): void,

@@ -100,9 +100,7 @@ import {SharedModule} from "./shared";
 // Pre-Loaded Components
 import { 
 	BalanceDialogComponent, 
-	StrategyFormDialogComponent,
 	DashboardComponent, 
-	KeyzonesConfigFormDialogComponent,
 	KeyzonesDialogComponent,
 	KeyzoneDetailsDialogComponent,
 	KeyzonesPriceSnapshotsDialogComponent,
@@ -110,14 +108,9 @@ import {
 	KeyzoneEventContextDialogComponent,
 	MarketStateDialogComponent,
 	LiquidityDialogComponent,
-	LiquidityConfigurationDialogComponent,
-	CoinsDialogComponent,
-	CoinsConfigurationDialogComponent,
 	CoinsStateSummaryDialogComponent,
 	PositionHeadlinesDialogComponent,
 	PositionActionPayloadsDialogComponent,
-	WindowConfigurationDialogComponent,
-	ReversalConfigDialogComponent,
 	ReversalStateDialogComponent
 } from "./modules/dashboard";
 
@@ -139,8 +132,6 @@ import { AppComponent } from "./app.component";
 		// Pre-Loaded Components
 		DashboardComponent,
 		BalanceDialogComponent,
-		StrategyFormDialogComponent,
-		KeyzonesConfigFormDialogComponent,
 		KeyzonesDialogComponent,
     	KeyzoneDetailsDialogComponent,
 		KeyzonesPriceSnapshotsDialogComponent,
@@ -148,14 +139,9 @@ import { AppComponent } from "./app.component";
 		KeyzoneEventContextDialogComponent,
   		MarketStateDialogComponent,
     	LiquidityDialogComponent,
-		LiquidityConfigurationDialogComponent,
-     	CoinsDialogComponent,
-		CoinsConfigurationDialogComponent,
 		CoinsStateSummaryDialogComponent,
 		PositionHeadlinesDialogComponent,
 		PositionActionPayloadsDialogComponent,
-		WindowConfigurationDialogComponent,
-		ReversalConfigDialogComponent,
 		ReversalStateDialogComponent,
 	],
 	imports: [

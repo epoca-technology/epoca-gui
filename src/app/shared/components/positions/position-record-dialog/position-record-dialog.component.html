@@ -6,11 +6,40 @@
             {{record.side}}: {{record.isolated_wallet | currency}} {{record.gain > 0 ? '+': ''}}{{record.gain}}%
         </span>
         <span fxFlex></span>
+        
+        <!-- Refresher -->
         <app-refresh-button *ngIf="loaded && !record.close" style="display: none;" [disabled]="submitting" (refresh)="refreshPositionRecord()" [intervalSeconds]="5"></app-refresh-button>
-        <button mat-icon-button  (click)="displayTooltip()"[disabled]="!loaded || submitting" matTooltip="What is this?"><mat-icon>question_mark</mat-icon></button>
-        <button mat-icon-button (click)="displayPositionInfoDialog()" [disabled]="!loaded || submitting" matTooltip="More Information"><mat-icon>info</mat-icon></button>
-        <button *ngIf="loaded && !record.close" mat-icon-button (click)="closePosition()" [disabled]="!loaded || submitting" matTooltip="Close Position"><mat-icon>mobiledata_off</mat-icon></button>
+
+        <!-- Desktop Menu -->
+        <button mat-icon-button class="show-on-desktop"  (click)="displayTooltip()"[disabled]="!loaded || submitting" matTooltip="What is this?"><mat-icon>question_mark</mat-icon></button>
+        <button mat-icon-button class="show-on-desktop" (click)="displayPositionInfoDialog()" [disabled]="!loaded || submitting" matTooltip="More Information"><mat-icon>info</mat-icon></button>
+        <button *ngIf="loaded && !record.close" class="show-on-desktop" mat-icon-button (click)="increasePosition()" [disabled]="submitting" matTooltip="Increase Position"><mat-icon>aspect_ratio</mat-icon></button>
+        <button *ngIf="loaded && !record.close" class="show-on-desktop" mat-icon-button (click)="closePosition()" [disabled]="submitting" matTooltip="Close Position"><mat-icon>mobiledata_off</mat-icon></button>
         <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
+
+
+        <!-- Mobile Menu -->
+        <button *ngIf="layout == 'mobile'" mat-icon-button [matMenuTriggerFor]="menu" [disabled]="!loaded">
+            <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+            <button mat-menu-item *ngIf="loaded && !record.close" (click)="increasePosition()" [disabled]="submitting">
+                <mat-icon>aspect_ratio</mat-icon>
+                <span>Increase Position</span>
+            </button>
+            <button mat-menu-item *ngIf="loaded && !record.close" (click)="closePosition()" [disabled]="submitting">
+                <mat-icon>mobiledata_off</mat-icon>
+                <span>Close Position</span>
+            </button>
+            <button mat-menu-item (click)="displayPositionInfoDialog()">
+                <mat-icon svgIcon="info"></mat-icon>
+                <span>More information</span>
+            </button>
+            <button mat-menu-item (click)="displayTooltip()">
+                <mat-icon>question_mark</mat-icon>
+                <span>What is this?</span>
+            </button>
+        </mat-menu>        
     </div>
 </mat-toolbar>
 <div mat-dialog-content>

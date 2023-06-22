@@ -21,6 +21,12 @@ const routes: Routes = [
 		loadChildren: () => import("./modules/auth/auth.module").then(m => m.AuthModule),
 	},
 
+	// Adjustments
+	{
+		path: "adjustments",
+		loadChildren: () => import("./modules/adjustments/adjustments.module").then(m => m.AdjustmentsModule),
+	},
+
 	// Positions
 	{
 		path: "positions",
