@@ -86,16 +86,28 @@
                     
                     <span fxFlex></span>
 
-                    <!-- Business -->
+                    <!-- Position Headlines -->
                     <button mat-button 
                             *ngIf="loaded && layout == 'desktop'"
-                            (click)="displayBusinessMenu()">
-                            <mat-icon>storefront</mat-icon>&nbsp;Business
+                            (click)="displayPositionHeadlinesDialog()">
+                            <mat-icon>format_list_numbered</mat-icon>&nbsp;Positions
                     </button>
                     <button mat-icon-button 
                             *ngIf="loaded && layout == 'mobile'"
-                            (click)="displayBusinessMenu()">
-                            <mat-icon>storefront</mat-icon>
+                            (click)="displayPositionHeadlinesDialog()">
+                            <mat-icon>format_list_numbered</mat-icon>
+                    </button>
+
+                    <!-- Balance -->
+                    <button mat-button 
+                            *ngIf="loaded && layout == 'desktop'"
+                            (click)="displayBalanceDialog()">
+                            <mat-icon>account_balance_wallet</mat-icon>&nbsp;Balance
+                    </button>
+                    <button mat-icon-button 
+                            *ngIf="loaded && layout == 'mobile'"
+                            (click)="displayBalanceDialog()">
+                            <mat-icon>account_balance_wallet</mat-icon>
                     </button>
 
                     <!-- Menu -->

@@ -109,8 +109,6 @@ import {
 	MarketStateDialogComponent,
 	LiquidityDialogComponent,
 	CoinsStateSummaryDialogComponent,
-	PositionHeadlinesDialogComponent,
-	PositionActionPayloadsDialogComponent,
 	ReversalStateDialogComponent
 } from "./modules/dashboard";
 
@@ -140,8 +138,6 @@ import { AppComponent } from "./app.component";
   		MarketStateDialogComponent,
     	LiquidityDialogComponent,
 		CoinsStateSummaryDialogComponent,
-		PositionHeadlinesDialogComponent,
-		PositionActionPayloadsDialogComponent,
 		ReversalStateDialogComponent,
 	],
 	imports: [

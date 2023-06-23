@@ -35,7 +35,6 @@ import { KeyzonesDialogComponent, KeyzonesEventsDialogComponent } from "./keyzon
 import { IMarketStateDialogConfig, MarketStateDialogComponent } from "./market-state-dialog";
 import { IBottomSheetMenuItem } from "../../shared/components/bottom-sheet-menu";
 import { CoinsStateSummaryDialogComponent, ICoinsStateSummaryConfig } from "./coins-state-summary-dialog";
-import { PositionHeadlinesDialogComponent } from "./positions";
 import { LiquidityDialogComponent } from "./liquidity-dialog";
 import { ReversalStateDialogComponent } from "./reversal-state-dialog";
 import { IDashboardComponent, IWindowZoom, IWindowZoomID, IWindowZoomPrices } from "./interfaces";
@@ -96,9 +95,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
     // Reversal
     public reversalScore: number = 0;
-
-    // Desktop Chart height helpers
-    public readonly predictionChartDesktopHeight: number = 330;
 
     // Loading State
     public loaded: boolean = false;
@@ -731,72 +727,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
 
 
-    
-
-
-
-
-    /*****************
-     * Business Menu *
-     *****************/
-
-
-
-    /**
-     * Displays the business menu.
-     */
-    public displayBusinessMenu(): void {
-		const bs: MatBottomSheetRef = this._nav.displayBottomSheetMenu([
-            {
-                icon: 'money_bill_transfer',  
-                svg: true,
-                title: 'Position Headlines', 
-                description: 'View the list of active and closed positions.', 
-                response: "POSITION_HEADLINES"
-            },
-            {
-                icon: 'account_balance_wallet',  
-                title: 'Balance', 
-                description: 'View the USDT Balance held in the Futures Wallet.', 
-                response: "ACCOUNT_BALANCE"
-            },
-        ]);
-		bs.afterDismissed().subscribe((response: string|undefined) => {
-            if      (response === "POSITION_HEADLINES") { this.displayPositionHeadlinesDialog() }
-            else if (response === "ACCOUNT_BALANCE") { this.displayBalanceDialog() }
-		});
-	}
-
-
-
-
-	/**
-	 * Displays the position headlines dialog.
-     * @param taInterval
-	 */
-    private displayPositionHeadlinesDialog(): void {
-		this.dialog.open(PositionHeadlinesDialogComponent, {
-			hasBackdrop: this._app.layout.value != "mobile",
-			panelClass: "medium-dialog",
-			data: {}
-		})
-	}
-    
-
-
-
-
-
-	/**
-	 * Displays the balance dialog.
-	 */
-    private displayBalanceDialog(): void {
-		this.dialog.open(BalanceDialogComponent, {
-			hasBackdrop: true,
-			panelClass: "light-dialog",
-			data: {}
-		})
-	}
 
 
 
@@ -821,7 +751,27 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
 
 
+	/**
+	 * Displays the position headlines dialog.
+     * @param taInterval
+	 */
+    public displayPositionHeadlinesDialog(): void {
+		this._nav.displayPositionHeadlinesDialog();
+	}
+    
 
+
+
+	/**
+	 * Displays the balance dialog.
+	 */
+    public displayBalanceDialog(): void {
+		this.dialog.open(BalanceDialogComponent, {
+			hasBackdrop: true,
+			panelClass: "light-dialog",
+			data: {}
+		})
+	}
 
 
     

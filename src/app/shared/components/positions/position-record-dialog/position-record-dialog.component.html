@@ -23,6 +23,10 @@
             <mat-icon>more_vert</mat-icon>
         </button>
         <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="displayPositionInfoDialog()">
+                <mat-icon>info</mat-icon>
+                <span>Position Details</span>
+            </button>
             <button mat-menu-item *ngIf="loaded && !record.close" (click)="increasePosition()" [disabled]="submitting">
                 <mat-icon>aspect_ratio</mat-icon>
                 <span>Increase Position</span>
@@ -30,10 +34,6 @@
             <button mat-menu-item *ngIf="loaded && !record.close" (click)="closePosition()" [disabled]="submitting">
                 <mat-icon>mobiledata_off</mat-icon>
                 <span>Close Position</span>
-            </button>
-            <button mat-menu-item (click)="displayPositionInfoDialog()">
-                <mat-icon svgIcon="info"></mat-icon>
-                <span>More information</span>
             </button>
             <button mat-menu-item (click)="displayTooltip()">
                 <mat-icon>question_mark</mat-icon>

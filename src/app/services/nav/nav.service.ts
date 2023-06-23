@@ -14,7 +14,12 @@ import {DataDialogComponent, IDataDialogData} from "../../shared/components/data
 import {DialogMenuComponent, IDialogMenuData, IDialogMenuItem} from "../../shared/components/dialog-menu";
 import { ITooltipData, TooltipDialogComponent } from "../../shared/components/tooltip-dialog";
 import { IDateRangeConfig, DateRangeFormDialogComponent } from "../../shared/components/date-range-form-dialog";
-import { PositionRecordDialogComponent, TradeExecutionPayloadDialogComponent } from "../../shared/components/positions";
+import { 
+	PositionActionPayloadsDialogComponent, 
+	PositionHeadlinesDialogComponent, 
+	PositionRecordDialogComponent, 
+	TradeExecutionPayloadDialogComponent 
+} from "../../shared/components/positions";
 import {INavService, IRouteState, IRouteStateData} from "./interfaces";
 
 
@@ -156,22 +161,6 @@ export class NavService implements INavService {
 	
 
 
-	
-	/*
-	* Opens the date range dialog.
-	* @param data?
-	* @returns MatDialogRef<any>
-	* */
-	public displayDateRangeDialog(data?: IDateRangeConfig): MatDialogRef<any> {
-		return this.dialog.open(DateRangeFormDialogComponent, {
-			disableClose: true,
-			hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
-			panelClass: "small-dialog",
-			data: data
-		});
-	}
-
-
 
 		
 	
@@ -248,6 +237,25 @@ export class NavService implements INavService {
 
 
 	/*
+	* Opens the position headlines dialog.
+	* @param data?
+	* @returns MatDialogRef<any>
+	* */
+	public displayPositionHeadlinesDialog(range?: IDateRangeConfig): MatDialogRef<any> {
+		return this.dialog.open(PositionHeadlinesDialogComponent, {
+			hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
+			panelClass: "medium-dialog",
+			data: range
+		});
+	}
+
+
+
+
+
+
+
+	/*
 	* Opens the dialog that contains the full position record
 	* @param id
 	* @returns MatDialogRef<any>
@@ -260,6 +268,24 @@ export class NavService implements INavService {
 		});
 	}
 
+
+
+
+
+
+
+	/*
+	* Opens the trade execution payload list dialog.
+	* @param data?
+	* @returns MatDialogRef<any>
+	* */
+	public displayTradeExecutionPayloadListDialog(range?: IDateRangeConfig): MatDialogRef<any> {
+		return this.dialog.open(PositionActionPayloadsDialogComponent, {
+			hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
+			panelClass: "small-dialog",
+			data: range
+		});
+	}
 
 
 
@@ -283,6 +309,54 @@ export class NavService implements INavService {
 
 
 
+
+
+
+
+
+	/* Date Range Helper */
+
+	
+
+
+	/*
+	* Opens the date range dialog.
+	* @param data?
+	* @returns MatDialogRef<any>
+	* */
+	public displayDateRangeDialog(data?: IDateRangeConfig): MatDialogRef<any> {
+		return this.dialog.open(DateRangeFormDialogComponent, {
+			disableClose: true,
+			hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
+			panelClass: "small-dialog",
+			data: data
+		});
+	}
+
+
+
+
+
+
+	/**
+	 * Calculates the date range of the history based
+	 * on the range id.
+	 * @param data
+	 * @returns {startAt: number, endAt: number}
+	 */
+	public calculateDateRange(data?: IDateRangeConfig): Promise<IDateRangeConfig|undefined> { 
+		return new Promise((resolve, reject) => {
+			this.displayDateRangeDialog(data).afterClosed().subscribe(
+				(response) => {
+					if (response) {
+						resolve(response);
+					} else {
+						resolve(undefined)
+					}
+				}
+			);
+		});
+	}
 
 
 

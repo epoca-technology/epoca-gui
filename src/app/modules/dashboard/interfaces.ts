@@ -10,10 +10,9 @@ export interface IDashboardComponent {
     // Position Actions
     openPosition(side: IBinancePositionSide): void,
 
-    // Business Menu
-    displayBusinessMenu(): void,
-
     // Misc Dialogs
+    displayPositionHeadlinesDialog(): void,
+    displayBalanceDialog(): void,
     displayPositionRecordDialog(id: string): void,
 
     // Market State Dialogs
