@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {MatDialogRef} from "@angular/material/dialog";
-import { CampaignService, IAccountBalance } from "../../../core";
+import { IAccountBalance, TransactionService } from "../../../core";
 import { AppService, NavService } from '../../../services';
 import { IBalanceDialogComponent } from "./interfaces";
 
@@ -17,12 +17,12 @@ export class BalanceDialogComponent implements OnInit, IBalanceDialogComponent {
 		public dialogRef: MatDialogRef<BalanceDialogComponent>,
 		private _app: AppService,
 		private _nav: NavService,
-		private _campaign: CampaignService
+		private _tx: TransactionService
 	) { }
 
 	async ngOnInit(): Promise<void> {
 		try {
-			this.balance = await this._campaign.getBalance();
+			this.balance = await this._tx.getBalance();
 		} catch (e) { this._app.error(e) }
 		this.loaded = true;
 	}
@@ -44,7 +44,7 @@ export class BalanceDialogComponent implements OnInit, IBalanceDialogComponent {
 					// Set Submission State
 					this.loaded = false;
 					try {
-						this.balance = await this._campaign.syncBalance(otp);
+						this.balance = await this._tx.syncBalance(otp);
 						this._app.success(`The balance has been synced successfully.`);
 					} catch(e) { this._app.error(e) }
 
