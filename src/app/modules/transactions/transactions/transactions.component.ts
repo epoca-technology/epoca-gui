@@ -166,24 +166,30 @@ export class TransactionsComponent implements OnInit, TransactionsComponent {
         // Set the interval and the minutes that will be used to calculate each candlestick
         this.chartInterval = interval;
 
+        // Calculate the minutes per candlestick
+        const intervalMins: number = this.fromIntervalIDToMinutes(this.chartInterval);
+
+        // Calculate the end of the candlesticks
+        const histEnd: number = this.calculateHistEnd();
+
         // Build the candlesticks
         this.incomeChart = this._chart.getCandlestickChartOptions(
-            this.buildCandlesticks(this.incomeRecords), 
+            this.buildCandlesticks(intervalMins, histEnd, this.incomeRecords), 
             undefined, false, true, undefined, 400
         );
         this.incomeChart.chart.zoom = {enabled: false};
         this.realizedPNLChart = this._chart.getCandlestickChartOptions(
-            this.buildCandlesticks(this.realizedPNLRecords), 
+            this.buildCandlesticks(intervalMins, histEnd, this.realizedPNLRecords), 
             undefined, false, true, undefined, 400
         );
         this.realizedPNLChart.chart.zoom = {enabled: false};
         this.commissionChart = this._chart.getCandlestickChartOptions(
-            this.buildCandlesticks(this.commissionRecords), 
+            this.buildCandlesticks(intervalMins, histEnd, this.commissionRecords), 
             undefined, false, true, undefined, 400
         );
         this.commissionChart.chart.zoom = {enabled: false};
         this.fundingFeeChart = this._chart.getCandlestickChartOptions(
-            this.buildCandlesticks(this.fundingFeeRecords), 
+            this.buildCandlesticks(intervalMins, histEnd, this.fundingFeeRecords), 
             undefined, false, true, undefined, 400
         );
         this.fundingFeeChart.chart.zoom = {enabled: false};
@@ -196,14 +202,14 @@ export class TransactionsComponent implements OnInit, TransactionsComponent {
 
     /**
      * Builds the candlesticks history based on a given income type.
+     * @param intervalMins 
+     * @param histEnd 
      * @param records 
      * @returns ICandlestick[]
      */
-    private buildCandlesticks(records: IAccountIncomeRecord[]): ICandlestick[] {
+    private buildCandlesticks(intervalMins: number, histEnd: number, records: IAccountIncomeRecord[]): ICandlestick[] {
         // Only proceed if there are records
         if (this.incomeRecords.length && records.length) {
-            // Init the minutes per candlestick
-            const intervalMins: number = this.fromIntervalIDToMinutes(this.chartInterval);
 
             // Init the list
             let candlesticks: ICandlestick[] = [];
@@ -216,14 +222,13 @@ export class TransactionsComponent implements OnInit, TransactionsComponent {
             let ct: number = moment(ot).add(intervalMins, "minutes").valueOf();
 
             // Build the candlesticks one by one
-            const histEnd: number = this.calculateHistEnd();
             while (ot <= histEnd) {
                 // Build the candlestick
                 const newCandlestick: ICandlestick = this.buildCandlestickForInterval(
                     accum,
                     ot,
                     ct,
-                    records.filter((r) => r.t >= ot && r.t <= ct)
+                    records.filter((r) => r.t >= ot && r.t < ct)
                 );
 
                 // Append the candlestick to the list and update the accumulator
