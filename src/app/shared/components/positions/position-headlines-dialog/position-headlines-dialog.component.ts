@@ -49,7 +49,7 @@ export class PositionHeadlinesDialogComponent implements OnInit, IPositionHeadli
 
 	/**
 	 * Loads the position headlines for a given date range
-	 * @param range 
+	 * @param alterRange? 
 	 * @returns Promise<void>
 	 */
 	public async loadHist(alterRange?: boolean): Promise<void> {

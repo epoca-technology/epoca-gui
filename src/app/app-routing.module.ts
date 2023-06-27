@@ -21,16 +21,16 @@ const routes: Routes = [
 		loadChildren: () => import("./modules/auth/auth.module").then(m => m.AuthModule),
 	},
 
+	// Transactions
+	{
+		path: "transactions",
+		loadChildren: () => import("./modules/transactions/transactions.module").then(m => m.TransactionsModule),
+	},
+
 	// Adjustments
 	{
 		path: "adjustments",
 		loadChildren: () => import("./modules/adjustments/adjustments.module").then(m => m.AdjustmentsModule),
-	},
-
-	// Positions
-	{
-		path: "positions",
-		loadChildren: () => import("./modules/positions/positions.module").then(m => m.PositionsModule),
 	},
 
 	// Candlesticks

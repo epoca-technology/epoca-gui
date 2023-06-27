@@ -80,14 +80,8 @@ export class NavService implements INavService {
 	// Adjustments
 	public adjustments(): Promise<boolean> { return this.navigate("adjustments") }
 
-	// Positions
-	public positions(epochID?: string): Promise<boolean> { 
-		if (typeof epochID == "string") {
-			return this.navigate(`positions/${epochID}`);
-		} else {
-			return this.navigate("positions");
-		}
-	}
+	// Transactions
+	public transactions(): Promise<boolean> { return this.navigate("transactions") }
 
 	// Candlesticks
 	public candlesticks(): Promise<boolean> { return this.navigate("candlesticks") }

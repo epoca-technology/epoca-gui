@@ -97,13 +97,13 @@
                     <mat-icon svgIcon="home" style="max-width:20px;"></mat-icon><span>Dashboard</span>
                 </button>
 
-                <!-- Campaigns -->
+                <!-- Transactions -->
                 <button mat-button 
                         class="left-icon-button" 
-                        (click)="_nav.positions()" 
-                        [disabled]="state.module == 'positions'" 
+                        (click)="_nav.transactions()" 
+                        [disabled]="state.module == 'transactions'" 
                         *ngIf="uid">
-                    <mat-icon svgIcon="money_bill_transfer" style="max-width:23px;"></mat-icon><span>Campaigns</span>
+                    <mat-icon svgIcon="money_bill_transfer" style="max-width:23px;"></mat-icon><span>Transactions</span>
                 </button>
 
                 <!-- Server -->

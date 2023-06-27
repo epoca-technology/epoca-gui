@@ -1,0 +1,192 @@
+<!-- Header -->
+<mat-toolbar class="secondary-header">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <span class="truncate">Transactions</span>
+        <span fxFlex></span>
+
+        <!-- Desktop Menu-->
+        <button class="show-on-desktop" mat-button [disabled]="!loaded" (click)="setCustomDateRange()"><mat-icon>date_range</mat-icon> Date Range</button>
+        <button class="show-on-desktop" mat-button [matMenuTriggerFor]="intervalMenu" [disabled]="!loaded"><mat-icon>candlestick_chart</mat-icon> Interval: {{chartInterval}}</button>
+        <button class="show-on-desktop" mat-button [disabled]="!loaded" (click)="displayPositionHeadlines()"><mat-icon>format_list_numbered</mat-icon> Positions</button>
+        <button class="show-on-desktop" mat-button [disabled]="!loaded" (click)="syncIncome()"><mat-icon>sync</mat-icon> Sync Income</button>
+
+        <!-- Mobile Menu -->
+        <button class="show-on-mobile" mat-icon-button [matMenuTriggerFor]="menu" [disabled]="!loaded"><mat-icon>more_vert</mat-icon></button>
+        <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="setCustomDateRange()">
+                <mat-icon>date_range</mat-icon>
+                <span>Date Range</span>
+            </button>
+            <button mat-menu-item [matMenuTriggerFor]="intervalMenu">
+                <mat-icon>candlestick_chart</mat-icon>
+                <span>Interval: {{chartInterval}}</span>
+            </button>
+            <button mat-menu-item (click)="displayPositionHeadlines()">
+                <mat-icon>format_list_numbered</mat-icon>
+                <span>Positions</span>
+            </button>
+            <button mat-menu-item (click)="syncIncome()">
+                <mat-icon>format_list_numbered</mat-icon>
+                <span>Sync Income</span>
+            </button>
+        </mat-menu>
+
+        <!-- Interval Menu -->
+        <mat-menu #intervalMenu="matMenu">
+            <button mat-menu-item (click)="buildIncomeCharts(candlestickInterval)" *ngFor="let candlestickInterval of chartIntervals" [disabled]="chartInterval == candlestickInterval">
+                <span>{{candlestickInterval}}</span>
+            </button>
+        </mat-menu>
+
+    </div>
+</mat-toolbar>
+
+<!-- Loader -->
+<div *ngIf="!loaded" class="section-loader">
+    <div fxLayout="row" fxLayoutAlign="center center"><mat-spinner diameter="50"></mat-spinner></div>
+</div>
+
+
+<!-- Section Content -->
+<div class="fadeIn padding" [ngClass]="{'section-content': layout == 'mobile'}" *ngIf="loaded">
+
+    <!-- Income & Realized PNL-->
+    <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" fxLayoutAlign="center start" class="full-width">
+        <!-- Income -->
+        <div fxFlex class="desktop-card">
+            <!-- Heading -->
+            <div fxLayout="row" fxLayoutAlign="start center">
+                <div [ngClass]="{
+                    'success-color': incomeTotal > 0,
+                    'error-color': incomeTotal < 0,
+                    'light-text': incomeTotal == 0
+                }">
+                    <h5>{{incomeTotal > 0 ? '+': ''}}{{incomeTotal | currency}}</h5>
+                    <p class="show-on-desktop ts-s">{{activeRange.startAt | date: 'medium'}} - {{activeRange.endAt | date: 'medium'}}</p>
+                    <p class="show-on-mobile ts-s">{{activeRange.startAt | date: 'shortDate'}} - {{activeRange.endAt | date: 'shortDate'}}</p>
+                </div>
+                <span fxFlex></span>
+                <button mat-icon-button (click)="displayIncomeRecords()" [disabled]="!incomeRecords.length"><mat-icon>format_list_bulleted</mat-icon></button>
+            </div>
+
+            <!-- Chart -->
+            <div>
+                <apx-chart
+                    [series]="incomeChart.series!"
+                    [chart]="incomeChart.chart!"
+                    [plotOptions]="incomeChart.plotOptions!"
+                    [xaxis]="incomeChart.xaxis!"
+                    [yaxis]="incomeChart.yaxis!"
+                    [annotations]="incomeChart!.annotations!"
+                ></apx-chart>
+            </div>
+        </div>
+
+
+        <span fxFlex="2"></span>
+        <div class="divider show-on-mobile"></div>
+
+        <!-- Realized PNL -->
+        <div fxFlex class="desktop-card">
+            <!-- Heading -->
+            <div fxLayout="row" fxLayoutAlign="start center">
+                <div [ngClass]="{
+                    'success-color': realizedPNLTotal > 0,
+                    'error-color': realizedPNLTotal < 0,
+                    'light-text': realizedPNLTotal == 0
+                }">
+                    <h5>{{realizedPNLTotal > 0 ? '+': ''}}{{realizedPNLTotal | currency}}</h5>
+                    <p class="ts-s">Realized PNL</p>
+                </div>
+                <span fxFlex></span>
+                <button mat-icon-button (click)="displayIncomeRecords('REALIZED_PNL')" [disabled]="!realizedPNLRecords.length"><mat-icon>format_list_bulleted</mat-icon></button>
+            </div>
+
+            <!-- Chart -->
+            <div>
+                <apx-chart
+                    [series]="realizedPNLChart.series!"
+                    [chart]="realizedPNLChart.chart!"
+                    [plotOptions]="realizedPNLChart.plotOptions!"
+                    [xaxis]="realizedPNLChart.xaxis!"
+                    [yaxis]="realizedPNLChart.yaxis!"
+                    [annotations]="realizedPNLChart!.annotations!"
+                ></apx-chart>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="divider show-on-mobile"></div>
+
+
+    <!-- Commission & Funding Fee-->
+    <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" fxLayoutAlign="center start" class="full-width">
+
+        <!-- Commission -->
+        <div fxFlex class="desktop-card">
+            <!-- Heading -->
+            <div fxLayout="row" fxLayoutAlign="start center">
+                <div [ngClass]="{
+                    'success-color': commissionTotal > 0,
+                    'error-color': commissionTotal < 0,
+                    'light-text': commissionTotal == 0
+                }">
+                    <h5>{{commissionTotal > 0 ? '+': ''}}{{commissionTotal | currency}}</h5>
+                    <p class="ts-s">Commission</p>
+                </div>
+                <span fxFlex></span>
+                <button mat-icon-button (click)="displayIncomeRecords('COMMISSION')" [disabled]="!commissionRecords.length"><mat-icon>format_list_bulleted</mat-icon></button>
+            </div>
+
+            <!-- Chart -->
+            <div>
+                <apx-chart
+                    [series]="commissionChart.series!"
+                    [chart]="commissionChart.chart!"
+                    [plotOptions]="commissionChart.plotOptions!"
+                    [xaxis]="commissionChart.xaxis!"
+                    [yaxis]="commissionChart.yaxis!"
+                    [annotations]="commissionChart!.annotations!"
+                ></apx-chart>
+            </div>
+        </div>
+
+
+        <span fxFlex="2"></span>
+        <div class="divider show-on-mobile"></div>
+
+        
+        <!-- Funding Fee -->
+        <div fxFlex class="desktop-card">
+            <!-- Heading -->
+            <div fxLayout="row" fxLayoutAlign="start center">
+                <div [ngClass]="{
+                    'success-color': fundingFeeTotal > 0,
+                    'error-color': fundingFeeTotal < 0,
+                    'light-text': fundingFeeTotal == 0
+                }">
+                    <h5>{{fundingFeeTotal > 0 ? '+': ''}}{{fundingFeeTotal | currency}}</h5>
+                    <p class="ts-s">Funding Fee</p>
+                </div>
+                <span fxFlex></span>
+                <button mat-icon-button (click)="displayIncomeRecords('FUNDING_FEE')" [disabled]="!fundingFeeRecords.length"><mat-icon>format_list_bulleted</mat-icon></button>
+            </div>
+
+            <!-- Chart -->
+            <div>
+                <apx-chart
+                    [series]="fundingFeeChart.series!"
+                    [chart]="fundingFeeChart.chart!"
+                    [plotOptions]="fundingFeeChart.plotOptions!"
+                    [xaxis]="fundingFeeChart.xaxis!"
+                    [yaxis]="fundingFeeChart.yaxis!"
+                    [annotations]="fundingFeeChart!.annotations!"
+                ></apx-chart>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Mobile Tabs -->
+<app-mobile-tabs *ngIf="layout == 'mobile'"></app-mobile-tabs>

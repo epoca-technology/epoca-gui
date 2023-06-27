@@ -1,0 +1,40 @@
+<mat-toolbar mat-dialog-title color="primary" fxLayout="row" fxLayoutAlign="start center">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <button mat-icon-button class="show-on-mobile" (click)="close()"><mat-icon>arrow_back</mat-icon></button>
+        <span class="truncate">{{title}}</span>
+        <span fxFlex></span>
+        <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
+    </div>
+</mat-toolbar>
+<div mat-dialog-content>
+    <!-- Container -->
+    <div class="fadeIn">
+
+        <table class="table bordered highlight">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th class="show-on-desktop">Type</th>
+                    <th>Amount</th>
+                    <th>Accum.</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let rec of records" class="clickable" (click)="displayRecord(rec)">
+                    <td><p class="ts-s">{{rec.t | date: layout == 'desktop' ? 'short': 'shortDate'}}</p></td>
+                    <td class="show-on-desktop"><p class="ts-s">{{rec.it}}</p></td>
+                    <td><p class="ts-s" [ngClass]="{
+                        'success-color': rec.v > 0,
+                        'error-color': rec.v < 0,
+                        'light-text': rec.v == 0
+                    }">{{rec.v > 0 ? '+': ''}}{{rec.v | currency}}</p></td>
+                    <td><p class="ts-s" [ngClass]="{
+                        'success-color': rec.accum > 0,
+                        'error-color': rec.accum < 0,
+                        'light-text': rec.accum == 0
+                    }">{{rec.accum | currency}}</p></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

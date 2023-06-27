@@ -76,9 +76,9 @@ export class ChartService implements IChartService {
 		 title?: string
 	): ICandlestickChartOptions {
         // Make sure at least 5 candlesticks have been provided
-        if (!candlesticks || candlesticks.length < 1) {
+        /*if (!candlesticks || candlesticks.length < 1) {
             throw new Error("A minimum of 1 candlesticks must be provided in order to render the chart.");
-        }
+        }*/
 
 		// Check if nice scale should be disabled
 		let yaxis: ApexYAxis = { tooltip: { enabled: true }, forceNiceScale: true}

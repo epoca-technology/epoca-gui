@@ -4,15 +4,9 @@
         <span class="truncate">KeyZone Events</span>
         <span fxFlex></span>
         <button mat-icon-button (click)="displayTooltip()" [disabled]="!loaded" matTooltip="What is this?"><mat-icon>question_mark</mat-icon></button>
-        <button mat-icon-button [matMenuTriggerFor]="menu" [disabled]="!loaded" matTooltip="Set custom date range">
+        <button mat-icon-button (click)="loadHist(true)" [disabled]="!loaded" matTooltip="Set custom date range">
             <mat-icon>date_range</mat-icon>
         </button>
-        <mat-menu #menu="matMenu">
-            <button mat-menu-item 
-                    *ngFor="let item of histMenu" 
-                    [disabled]="item.id == activeHistMenuItem.id && item.id != 'custom'" 
-                    (click)="loadHist(item)">{{item.name}}</button>
-        </mat-menu>
         <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
     </div>
 </mat-toolbar>
