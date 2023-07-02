@@ -35,7 +35,7 @@ export class TransactionsComponent implements OnInit, TransactionsComponent {
 
     // Income Charts
     public chartIntervals: IIncomeChartIntervalID[] = ["1h", "2h", "4h", "8h", "12h", "24h"];
-    public chartInterval: IIncomeChartIntervalID = "1h";
+    public chartInterval: IIncomeChartIntervalID = "4h";
     public incomeChart!: ICandlestickChartOptions;
     public realizedPNLChart!: ICandlestickChartOptions;
     public commissionChart!: ICandlestickChartOptions;
