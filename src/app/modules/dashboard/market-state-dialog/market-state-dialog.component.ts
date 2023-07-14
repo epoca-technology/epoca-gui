@@ -210,7 +210,8 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 					}
 				],
 				stroke: { curve: "straight", width: 3 },
-				xaxis: {type: "datetime",tooltip: {enabled: true}, labels: {datetimeUTC: false}}
+				xaxis: {type: "datetime",tooltip: {enabled: true}, labels: {datetimeUTC: false}},
+				yaxis: {labels: {show: true}, tooltip: {enabled: true}},
 			},
 			this.layout == "desktop" ? 400: 360, 
 			undefined,
