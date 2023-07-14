@@ -35,7 +35,7 @@ export class TransactionsComponent implements OnInit, TransactionsComponent {
 
     // Income Charts
     public chartIntervals: IIncomeChartIntervalID[] = ["1h", "2h", "4h", "8h", "12h", "24h"];
-    public chartInterval: IIncomeChartIntervalID = "4h";
+    public chartInterval: IIncomeChartIntervalID = "24h";
     public incomeChart!: ICandlestickChartOptions;
     public realizedPNLChart!: ICandlestickChartOptions;
     public commissionChart!: ICandlestickChartOptions;
@@ -60,7 +60,7 @@ export class TransactionsComponent implements OnInit, TransactionsComponent {
         // Initialize the active range
         const ts: number = this._app.serverTime.value || Date.now();
         this.setCustomDateRange({
-            startAt: moment(ts).subtract(15, "days").valueOf(),
+            startAt: moment(ts).subtract(30, "days").valueOf(),
             endAt: ts
         });
     }

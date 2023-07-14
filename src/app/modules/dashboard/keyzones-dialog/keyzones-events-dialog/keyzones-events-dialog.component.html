@@ -19,7 +19,10 @@
         </div>
         <div *ngIf="loaded" class="padding">
             <p *ngIf="!hist.length" class="no-records">No records were found</p>
-            <div *ngFor="let evt of hist; last as lastRecord" class="clickable" role="button" (click)="displayKeyZoneEventContext(evt)">
+            <div    *ngFor="let evt of hist; last as lastRecord" 
+                    class="clickable" role="button" 
+                    [ngClass]="{'viewed': viewed[evt.t]}"
+                    (click)="displayReversalDialog(evt)">
                 <div fxLayout="row" fxLayoutAlign="center start">
                     <mat-icon style="font-size:26px;margin-top:6px;" 
                         [ngClass]="{

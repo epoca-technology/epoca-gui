@@ -136,7 +136,7 @@
                     <!-- Dashboard Content-->
                     <div fxLayout="row" fxLayoutAlign="center start" fxLayout.xs="column" fxLayout.sm="column" class="full-width">
                         <!-- Window State -->
-                        <div fxFlex="77" fxFlex.xs="100" fxFlex.sm="100" class="chart-card full-width">
+                        <div fxFlex="79" fxFlex.xs="100" fxFlex.sm="100" class="chart-card full-width">
                             <!-- Heading -->
                             <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" 
                                 fxLayoutAlign="start start" fxLayoutAlign.xs="center center" fxLayoutAlign.sm="center center"
@@ -198,12 +198,12 @@
                         <span fxFlex></span>
 
                         <!-- Rest of the Indicators -->
-                        <div fxFlex="22" fxFlex.xs="100" fxFlex.sm="100" class="full-width" >
+                        <div fxFlex="20" fxFlex.xs="100" fxFlex.sm="100" class="full-width" >
                             <div [ngClass]="{'padding': layout == 'desktop'}">
                                 <!-- Positions -->
                                 <div class="divider show-on-mobile"></div>
                                 <div class="global-indicators-section">
-                                    <h4 class="margin-bottom">Positions</h4>
+                                    <h4 class="margin-bottom">Active</h4>
                                     <mat-grid-list [cols]="2" [rowHeight]="layout == 'desktop' ? '45px': '70px'" gutterSize="1px">
                                         <!-- Long Position -->
                                         <mat-grid-tile *ngIf="!activePositions || !activePositions.LONG" 

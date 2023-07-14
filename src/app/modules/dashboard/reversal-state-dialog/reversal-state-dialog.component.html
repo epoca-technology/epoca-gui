@@ -2,11 +2,9 @@
     <div fxLayout="row" fxLayoutAlign="center center">
         <button mat-icon-button class="show-on-mobile" (click)="close()" [disabled]="!loaded"><mat-icon>arrow_back</mat-icon></button>
         <span *ngIf="!loaded" class="truncate">Loading...</span>
-        <span *ngIf="loaded" class="truncate">{{state.k == 1 ? 'Sup.': 'Res.'}} Reversal: {{points}}</span>
+        <span *ngIf="loaded" class="truncate">{{state.k == 1 ? 'Support': 'Resistance'}}: {{points}}</span>
         <span fxFlex></span>        
         <app-refresh-button *ngIf="loaded && state && !state.end" style="display: none;" (refresh)="syncReversalState()" [intervalSeconds]="6"></app-refresh-button>
-        
-        <!-- Desktop Menu -->
 
         <!-- General Info -->
         <button *ngIf="layout == 'desktop'" mat-icon-button (click)="displayInfoTooltip()" [disabled]="!loaded" matTooltip="More information"><mat-icon class="info-icon" svgIcon="info"></mat-icon></button>
@@ -40,7 +38,7 @@
         <!-- KeyZone Event-->
         <button mat-icon-button 
             *ngIf="state && state.kze && layout == 'desktop'"
-            (click)="displayKeyZoneEventInfoDialog()" 
+            (click)="displayKeyZoneEventContextDialog()" 
             [disabled]="!loaded" 
             matTooltip="Display {{state.kze.k == 's' ? 'Support': 'Resistance'}}">
             <mat-icon>{{state.kze.k == 's' ? 'vertical_align_bottom': 'vertical_align_top'}}</mat-icon>
@@ -55,12 +53,12 @@
             <button mat-menu-item 
                     *ngIf="state && state.e"
                     (click)="displayReversalEventInfoDialog()">
-                    <mat-icon svgIcon="{{state.k == 1 ? 'rotate_left': 'rotate_right'}}" style="max-width: 20px;"></mat-icon>
-                <span>Display {{state.k == 1 ? 'Sup.': 'Res.'}} Rev. Event</span>
+                    <mat-icon svgIcon="{{state.k == 1 ? 'rotate_left': 'rotate_right'}}" style="max-width: 20px;margin-left:4px;"></mat-icon>
+                <span>Display Reversal Event</span>
             </button>
             <button mat-menu-item 
                     *ngIf="state && state.kze"
-                    (click)="displayKeyZoneEventInfoDialog()">
+                    (click)="displayKeyZoneEventContextDialog()">
                 <mat-icon>{{state.kze.k == 's' ? 'vertical_align_bottom': 'vertical_align_top'}}</mat-icon>
                 <span>Display {{state.kze.k == 's' ? 'Support': 'Resistance'}}</span>
             </button>

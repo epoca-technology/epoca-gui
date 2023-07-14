@@ -16,7 +16,6 @@ import {
 	ILayout, 
 	NavService 
 } from '../../../../../services';
-import { ReversalStateDialogComponent } from '../../../reversal-state-dialog';
 import { IKeyZoneEventContextDialogComponent } from './interfaces';
 
 @Component({
@@ -52,8 +51,8 @@ export class KeyzoneEventContextDialogComponent implements OnInit, IKeyZoneEvent
 		try {
 			// Retrieve the candlesticks
 			const candlesticks: ICandlestick[] = await this._candlestick.getForPeriod(
-				moment(this.evt.t).subtract(6, "hours").valueOf(),
-				moment(this.evt.t).add(6, "hours").valueOf(),
+				moment(this.evt.t).subtract(16, "hours").valueOf(),
+				moment(this.evt.t).add(16, "hours").valueOf(),
 			);
 
 			// Build the chart
@@ -129,19 +128,6 @@ export class KeyzoneEventContextDialogComponent implements OnInit, IKeyZoneEvent
 
 
 
-	/**
-	 * Displays the reversal state dialog.
-	 */
-	public displayReversalEventDialog(): void {
-		this.dialog.open(ReversalStateDialogComponent, {
-			hasBackdrop: this._app.layout.value != "mobile",
-			panelClass: "large-dialog",
-			data: this.evt.t
-		})
-	}
-
-
-
 
 
 
@@ -154,7 +140,6 @@ export class KeyzoneEventContextDialogComponent implements OnInit, IKeyZoneEvent
 		let title: string = this.evt.k == "s" ? "Support": "Resistance";
 		this._nav.displayTooltip(`${title}: ${this.evt.kz.scr}/10`, [
 			`ID: ${this.evt.kz.id}`,
-			`${moment(this.evt.kz.id).format("dddd, MMMM Do, h:mm:ss a")}`,
 			`-----`,
 			`RANGE ${zoneSize}%`,
 			`$${this._utils.formatNumber(this.evt.kz.s)} - $${this._utils.formatNumber(this.evt.kz.e)}`,

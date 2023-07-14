@@ -3,8 +3,8 @@
         <button mat-icon-button class="show-on-mobile" (click)="close()" [disabled]="!loaded"><mat-icon>arrow_back</mat-icon></button>
         <span *ngIf="!loaded" class="truncate">Loading...</span>
         <mat-icon class="show-on-desktop" *ngIf="loaded" [svgIcon]="_ms.icons[stateAverage]" style="margin-right:7px;"></mat-icon>
-        <span *ngIf="loaded && module != 'coin'" class="truncate">{{title}}</span>
-        <span *ngIf="loaded && module == 'coin'" class="truncate">{{title | baseAssetName}}</span>
+        <span *ngIf="loaded && (module != 'coin' && module != 'coinBTC')" class="truncate">{{title}}</span>
+        <span *ngIf="loaded && (module == 'coin' || module == 'coinBTC')" class="truncate">{{title | baseAssetName}}</span>
         <mat-icon class="show-on-mobile" *ngIf="loaded && stateAverage != 0" [svgIcon]="_ms.icons[stateAverage]" style="margin-left:5px;"></mat-icon>
         <span fxFlex></span>        
         <app-refresh-button *ngIf="loaded && module == 'coin'" style="display: none;" (refresh)="initCoin()" [intervalSeconds]="6"></app-refresh-button>

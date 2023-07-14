@@ -133,7 +133,7 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 
 	public async initCoin(): Promise<void> {
 		// Set the title
-		this.title = this.config.symbol!;
+		this.title = this._ms.getBaseAssetName(this.config.symbol!);
 
 		// Retrieve the coin's state
 		const state: ICoinState = await this._ms.getCoinFullState(this.config.symbol!, false);
@@ -160,7 +160,7 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 
 	public async initCoinBTC(): Promise<void> {
 		// Set the title
-		this.title = this.config.symbol!;
+		this.title = this._ms.getBaseAssetName(this.config.symbol!);
 
 		// Retrieve the coin's state
 		const state: ICoinState = await this._ms.getCoinFullState(this.config.symbol!, true);

@@ -130,7 +130,6 @@ export class PositionRecordDialogComponent implements OnInit, OnDestroy, IPositi
 			//this.gainChart.series[0].data = this._chart.getApexCandlesticks(gain);
 			//this.gainChart.annotations = { yaxis: [this.getCurrentValueAnnotation(gain[gain.length - 1])]};
 			this.gainChart.series = [ {data: this._chart.getApexCandlesticks(gain)}]
-
 		}
 
 		// Otherwise, create them from scratch
@@ -147,6 +146,8 @@ export class PositionRecordDialogComponent implements OnInit, OnDestroy, IPositi
 			);
 			this.markPriceChart.chart!.toolbar = {show: true,tools: {selection: true,zoom: true,zoomin: true,zoomout: true,download: false}};
 			this.markPriceChart.chart!.zoom = {enabled: true, type: "xy"};
+			this.markPriceChart.chart.id = "markprice";
+			this.markPriceChart.chart.group = "position";
 			//this.markPriceChart.chart!.zoom = {enabled: false};
 
 			// Gain Chart
@@ -167,6 +168,8 @@ export class PositionRecordDialogComponent implements OnInit, OnDestroy, IPositi
 			//this.gainChart.annotations = {yaxis: [this.getCurrentValueAnnotation(gain[gain.length - 1])]}
 			this.gainChart.chart!.toolbar = {show: true,tools: {selection: true,zoom: true,zoomin: true,zoomout: true,download: false}};
 			this.gainChart.chart!.zoom = {enabled: true, type: "xy"};
+			this.gainChart.chart.id = "gain";
+			this.gainChart.chart.group = "position";
 			//this.gainChart.chart!.zoom = {enabled: false};
 		}
 

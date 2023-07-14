@@ -3,7 +3,6 @@ import {MatDialogRef, MAT_DIALOG_DATA, MatDialog} from "@angular/material/dialog
 import * as moment from "moment";
 import { 
 	ICoinsCompressedState,
-	IKeyZoneStateEvent,
 	IReversalCoinsStates,
 	IReversalState, 
 	ISplitStateSeriesItem, 
@@ -14,12 +13,12 @@ import {
 import { 
 	AppService, 
 	ChartService, 
-	IBarChartOptions, 
 	ILayout, 
 	ILineChartOptions, 
 	NavService,
 } from '../../../services';
 import { CoinsStateSummaryDialogComponent, ICoinsStateSummaryConfig } from '../coins-state-summary-dialog';
+import { KeyzoneEventContextDialogComponent } from '../keyzones-dialog';
 import { IReversalStateDialogComponent, IReversalStateUnpackedScore } from './interfaces';
 
 @Component({
@@ -87,7 +86,11 @@ export class ReversalStateDialogComponent implements OnInit, IReversalStateDialo
 			this.points = this.state.scr.g[this.state.scr.g.length - 1];
 
 			// Set the color
-			this.color = this.state.k == 1 ? this._chart.upwardColor: this._chart.downwardColor;
+			if (this.state.k == 1) {
+				this.color = this.state.e ? "#004D40": "#4DB6AC";
+			} else {
+				this.color = this.state.e ? "#B71C1C": "#E57373";
+			}
 
 			// Update the charts
 			this.updateCharts();
@@ -254,28 +257,12 @@ export class ReversalStateDialogComponent implements OnInit, IReversalStateDialo
 	/**
      * Displays the keyzone event info dialog.
      */
-    public displayKeyZoneEventInfoDialog(): void {
-		const evt: IKeyZoneStateEvent = this.state.kze!;
-		const zoneSize: number = <number>this._utils.calculatePercentageChange(evt.kz.s, evt.kz.e);
-		let title: string = evt.k == "s" ? "Support": "Resistance";
-		this._nav.displayTooltip(`${title}: ${evt.kz.scr}/10`, [
-			`ID: ${evt.kz.id}`,
-			`${moment(evt.kz.id).format("dddd, MMMM Do, h:mm:ss a")}`,
-			`-----`,
-			`RANGE ${zoneSize}%`,
-			`$${this._utils.formatNumber(evt.kz.s)} - $${this._utils.formatNumber(evt.kz.e)}`,
-			`-----`,
-			`EVENT ISSUANCE`,
-			`${moment(evt.t).format("dddd, MMMM Do, h:mm:ss a")}`,
-			`-----`,
-			`EXPIRATION`,
-			`${moment(evt.e).format("dddd, MMMM Do, h:mm:ss a")}`,
-			`Price ${evt.k == 's' ? '>': '<'} $${this._utils.formatNumber(evt.pl)}`,
-			`-----`,
-			`VOL. INTENSITY: ${evt.kz.vi}/4`,
-			`-----`,
-			`LIQ. SHARE: ${evt.kz.ls}%`,
-		]);
+    public displayKeyZoneEventContextDialog(): void {
+		this.dialog.open(KeyzoneEventContextDialogComponent, {
+			hasBackdrop: this._app.layout.value != "mobile",
+			panelClass: "large-dialog",
+			data: this.state.kze
+		})
     }
 
 

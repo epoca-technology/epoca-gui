@@ -6,6 +6,7 @@ import { AppService, NavService } from '../../../../services';
 import { IDateRangeConfig } from '../../../../shared/components/date-range-form-dialog';
 import { KeyzoneEventContextDialogComponent } from './keyzone-event-context-dialog/keyzone-event-context-dialog.component';
 import { IKeyZonesEventsDialogComponent } from './interfaces';
+import { ReversalStateDialogComponent } from '../../reversal-state-dialog';
 
 @Component({
   selector: 'app-keyzones-events-dialog',
@@ -16,6 +17,7 @@ export class KeyzonesEventsDialogComponent implements OnInit, IKeyZonesEventsDia
 	// History
 	public hist: IKeyZoneStateEvent[] = [];
 	private activeRange!: IDateRangeConfig;
+	public viewed: {[eventID: number]: boolean} = {};
 
 	// Tab
 	public activeTab: number = 0;
@@ -89,12 +91,13 @@ export class KeyzonesEventsDialogComponent implements OnInit, IKeyZonesEventsDia
 	/**
 	 * Displays a dialog describing how the keyzone evt took place.
 	 */
-	public displayKeyZoneEventContext(evt: IKeyZoneStateEvent): void {
-		this.dialog.open(KeyzoneEventContextDialogComponent, {
+	public displayReversalDialog(evt: IKeyZoneStateEvent): void {
+		this.dialog.open(ReversalStateDialogComponent, {
 			hasBackdrop: this._app.layout.value != "mobile",
 			panelClass: "large-dialog",
-			data: evt
-		})
+			data: evt.t
+		});
+		this.viewed[evt.t] = true;
 	}
 
 
