@@ -360,17 +360,17 @@ ul li ul, ol li ul { padding: 0 0 0 15px;}
 /* Dialogs */
 
 // Dialogs Outer Panel
-.small-dialog { width: 450px;max-width: 100%; }
-.medium-dialog { width: 600px;max-width: 100%; }
-.large-dialog { width: 800px;max-width: 100%;height:90%!important;}
-.profile-dialog { width: 450px;max-width: 100%; }
+.small-dialog { width: 450px;max-width: 100%;overscroll-behavior-y: contain; }
+.medium-dialog { width: 600px;max-width: 100%;overscroll-behavior-y: contain; }
+.large-dialog { width: 800px;max-width: 100%;height:90%!important;overscroll-behavior-y: contain; }
+.profile-dialog { width: 450px;max-width: 100%;overscroll-behavior-y: contain; }
 
 
 // Dialog Container
 .small-dialog .mat-dialog-container,
 .medium-dialog .mat-dialog-container,
 .large-dialog .mat-dialog-container,
-.profile-dialog .mat-dialog-container{padding:0;margin:0;}
+.profile-dialog .mat-dialog-container{padding:0;margin:0;overscroll-behavior-y: contain;}
 
 
 
