@@ -454,6 +454,22 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 
 
 
+    // Volume
+    public volumeTooltip(): void {
+        this._nav.displayTooltip("Volume", [
+            `Volume, or trading volume, is the number of units traded in a market during a given time. It is a 
+            measurement of the number of individual units of an asset that changed hands during that period.`,
+            `Each transaction involves a buyer and a seller. When they reach an agreement at a specific price, 
+            the transaction is recorded by the facilitating exchange. This data is then used to calculate the trading volume.`,
+            `The volume and the volume direction indicator are synced every ~3 seconds through Binance Spot's API.`
+        ]);
+    }
+
+
+
+
+
+
 	// Close Dialog
 	public close(): void { this.dialogRef.close() }
 }

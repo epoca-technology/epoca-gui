@@ -30,7 +30,6 @@ export interface IDashboardComponent {
 
     // Tooltips
     windowTooltip(): void,
-    volumeTooltip(): void,
     
     // Nav Actions
     createNewInstance(): void,

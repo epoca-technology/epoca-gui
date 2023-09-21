@@ -7,8 +7,8 @@
         <app-refresh-button *ngIf="loaded && state && !state.end" style="display: none;" (refresh)="syncReversalState()" [intervalSeconds]="6"></app-refresh-button>
 
         <!-- General Info -->
-        <button *ngIf="layout == 'desktop'" mat-icon-button (click)="displayInfoTooltip()" [disabled]="!loaded" matTooltip="More information"><mat-icon class="info-icon" svgIcon="info"></mat-icon></button>
         <button *ngIf="layout == 'desktop'" mat-icon-button (click)="displayTooltip()" [disabled]="!loaded" matTooltip="What is this?"><mat-icon>question_mark</mat-icon></button>
+        <button *ngIf="layout == 'desktop'" mat-icon-button (click)="displayInfoTooltip()" [disabled]="!loaded" matTooltip="More information"><mat-icon class="info-icon" svgIcon="info"></mat-icon></button>
         
         <!-- Reversal Event -->
         <button mat-icon-button 
@@ -37,7 +37,7 @@
 
         <!-- KeyZone Event-->
         <button mat-icon-button 
-            *ngIf="state && state.kze && layout == 'desktop'"
+            *ngIf="state && state.kze"
             (click)="displayKeyZoneEventContextDialog()" 
             [disabled]="!loaded" 
             matTooltip="Display {{state.kze.k == 's' ? 'Support': 'Resistance'}}">
@@ -56,12 +56,6 @@
                     <mat-icon svgIcon="{{state.k == 1 ? 'rotate_left': 'rotate_right'}}" style="max-width: 20px;margin-left:4px;"></mat-icon>
                 <span>Display Reversal Event</span>
             </button>
-            <button mat-menu-item 
-                    *ngIf="state && state.kze"
-                    (click)="displayKeyZoneEventContextDialog()">
-                <mat-icon>{{state.kze.k == 's' ? 'vertical_align_bottom': 'vertical_align_top'}}</mat-icon>
-                <span>Display {{state.kze.k == 's' ? 'Support': 'Resistance'}}</span>
-            </button>
             <button mat-menu-item  [matMenuTriggerFor]="coinsStatesMobileMenu">
                 <mat-icon>currency_bitcoin</mat-icon>
                 <span>Coins' States</span>
@@ -77,13 +71,13 @@
                     <span>Final State</span>
                 </button>
             </mat-menu>
-            <button mat-menu-item (click)="displayTooltip()">
-                <mat-icon>question_mark</mat-icon>
-                <span>What is this?</span>
-            </button>
             <button mat-menu-item (click)="displayInfoTooltip()">
                 <mat-icon svgIcon="info"></mat-icon>
                 <span>More information</span>
+            </button>
+            <button mat-menu-item (click)="displayTooltip()">
+                <mat-icon>question_mark</mat-icon>
+                <span>What is this?</span>
             </button>
         </mat-menu>
     </div>

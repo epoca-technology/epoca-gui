@@ -4,7 +4,6 @@ import { MatDialog } from "@angular/material/dialog";
 import { MatBottomSheetRef } from "@angular/material/bottom-sheet";
 import {Title} from "@angular/platform-browser";
 import { Subscription } from "rxjs";
-import * as moment from "moment";
 import { ApexAnnotations, PointAnnotations, YAxisAnnotations } from "ng-apexcharts";
 import { 
     IMarketState, 
@@ -859,17 +858,18 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     public displayCoinDialog(symbol?: string): void {
         // Display an individual coin through the market state dialog
         if (typeof symbol == "string") {
+            const baseAssetName: string = this._ms.getBaseAssetName(symbol);
             const bs: MatBottomSheetRef = this._nav.displayBottomSheetMenu([
                 {
                     icon: 'attach_money', 
                     title: 'USDT Price', 
-                    description: `View ${symbol}'s price history in USDT.`, 
+                    description: `View ${baseAssetName}'s price history in USDT.`, 
                     response: "USDT"
                 },
                 {
                     icon: 'currency_bitcoin',  
                     title: 'Bitcoin Price', 
-                    description: `View ${symbol}'s price history in BTC.`, 
+                    description: `View ${baseAssetName}'s price history in BTC.`, 
                     response: "BTC"
                 },
             ]);
@@ -897,13 +897,13 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
                 {
                     icon: 'attach_money', 
                     title: 'USDT Price', 
-                    description: `View coins' summaries in USDT.`, 
+                    description: `View the coins' states summary in USDT.`, 
                     response: "USDT"
                 },
                 {
                     icon: 'currency_bitcoin',  
                     title: 'Bitcoin Price', 
-                    description: `View coins' summaries in BTC.`, 
+                    description: `View the coins' states summary in BTC.`, 
                     response: "BTC"
                 },
             ]);
@@ -993,36 +993,30 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
     // Window
     public windowTooltip(): void {
-        this._nav.displayTooltip("Market State Window", [
-            `The market state operates in a moving window of 128 15-minute-interval candlesticks (~32 hours) that is synced 
-            every ~3 seconds through Binance Spot's API.`,
-            `Additionally, the following market state submodules also make use of this exact window of time:`,
-            `1) Volume`,
-            `2) Trend`,
+        this._nav.displayTooltip("Window", [
+            `The window module operates in a moving window of 128 15-minute-interval candlesticks (~32 hours) that is synced every ~3 seconds through Binance Spot's API.`,
+            `To calculate the state of the window, a total of 8 splits are applied to the sequence of candlesticks and the state for each is derived based on the configuration.`,
+            `The splits applied to the window are:`,
+            `* 100%: 128 items (last ~32 hours)`,
+            `* 75%: 96 items (last ~24 hours)`,
+            `* 50%: 64 items (last ~16 hours)`,
+            `* 25%: 32 items (last ~8 hours)`,
+            `* 15%: 20 items (last ~5 hours)`,
+            `* 10%: 13 items (last ~3.25 hours)`,
+            `* 5%: 7 items (last ~1.75 hours)`,
+            `* 2%: 3 items (last ~45 minutes)`,
+            `The supported states are:`,
+            `* 2: Increasing Strongly`,
+            `* 1: Increasing`,
+            `* 0: Sideways`,
+            `* -1: Decreasing`,
+            `* -2: Decreasing Strongly`,
+            `The out-of-the-box configuration has been tested for a significant period of time. However, all the parameters can be tuned in the "Adjustments" section.`,
         ]);
     }
 
 
 
-
-
-
-    // Volume
-    public volumeTooltip(): void {
-        this._nav.displayTooltip("Volume", [
-            `Volume, or trading volume, is the number of units traded in a market during a given time. It is a 
-            measurement of the number of individual units of an asset that changed hands during that period.`,
-            `Each transaction involves a buyer and a seller. When they reach an agreement at a specific price, 
-            the transaction is recorded by the facilitating exchange. This data is then used to calculate the trading volume.`,
-            `The volume and the volume direction indicator are synced every ~3 seconds through Binance Spot's API.`
-        ]);
-    }
-
-
-
-
-
-    
 
 
 

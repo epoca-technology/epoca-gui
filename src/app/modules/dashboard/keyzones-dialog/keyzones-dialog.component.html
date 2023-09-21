@@ -5,8 +5,8 @@
         <span fxFlex></span>
 
         <!-- Desktop Menu -->
-        <button *ngIf="layout == 'desktop'" mat-icon-button (click)="displayInfoTooltip()" [disabled]="!loaded || loadingState" matTooltip="More information"><mat-icon class="info-icon" svgIcon="info"></mat-icon></button>
         <button *ngIf="layout == 'desktop'" mat-icon-button (click)="displayTooltip()" [disabled]="!loaded || loadingState" matTooltip="What is this?"><mat-icon>question_mark</mat-icon></button>
+        <button *ngIf="layout == 'desktop'" mat-icon-button (click)="displayInfoTooltip()" [disabled]="!loaded || loadingState" matTooltip="More information"><mat-icon class="info-icon" svgIcon="info"></mat-icon></button>
         <button *ngIf="layout == 'desktop'" mat-icon-button (click)="displayPriceSnapshotsDialog()" [disabled]="!loaded || loadingState" matTooltip="Display Price Snapshots"><mat-icon>candlestick_chart</mat-icon></button>
         <button mat-icon-button (click)="displayKeyZoneEventsHistory()" [disabled]="!loaded || loadingState" matTooltip="Display Events History"><mat-icon>history</mat-icon></button>
         <button *ngIf="layout == 'desktop'" mat-icon-button (click)="close()" [disabled]="!loaded || loadingState"><mat-icon>close</mat-icon></button>
@@ -20,13 +20,13 @@
                 <mat-icon>candlestick_chart</mat-icon>
                 <span>Display Price Snapshots</span>
             </button>
-            <button mat-menu-item (click)="displayTooltip()">
-                <mat-icon>question_mark</mat-icon>
-                <span>What is this?</span>
-            </button>
             <button mat-menu-item (click)="displayInfoTooltip()">
                 <mat-icon svgIcon="info"></mat-icon>
                 <span>More information</span>
+            </button>
+            <button mat-menu-item (click)="displayTooltip()">
+                <mat-icon>question_mark</mat-icon>
+                <span>What is this?</span>
             </button>
         </mat-menu>
     </div>

@@ -1,6 +1,7 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
 import {MatDialogRef, MAT_DIALOG_DATA, MatDialog} from "@angular/material/dialog";
 import * as moment from "moment";
+import { Subscription } from 'rxjs';
 import { 
 	ICoinsCompressedState,
 	IReversalCoinsStates,
@@ -26,9 +27,10 @@ import { IReversalStateDialogComponent, IReversalStateUnpackedScore } from './in
   templateUrl: './reversal-state-dialog.component.html',
   styleUrls: ['./reversal-state-dialog.component.scss']
 })
-export class ReversalStateDialogComponent implements OnInit, IReversalStateDialogComponent {
+export class ReversalStateDialogComponent implements OnInit, OnDestroy, IReversalStateDialogComponent {
 	// Layout
 	public layout: ILayout = this._app.layout.value;
+    private layoutSub?: Subscription;
 
 	// State
 	public state!: IReversalState;
@@ -59,11 +61,16 @@ export class ReversalStateDialogComponent implements OnInit, IReversalStateDialo
 	) { }
 
 	async ngOnInit(): Promise<void> {
+        this.layoutSub = this._app.layout.subscribe((nl: ILayout) => this.layout = nl);
 		await this.syncReversalState();
 		this.loaded = true;
 		setTimeout(() => {this.updateCharts();});
 	}
 
+
+    ngOnDestroy(): void {
+        if (this.layoutSub) this.layoutSub.unsubscribe();
+    }
 
 
 
@@ -336,7 +343,9 @@ export class ReversalStateDialogComponent implements OnInit, IReversalStateDialo
 	 */
 	public displayTooltip(): void {
         this._nav.displayTooltip("Reversal", [
-			`@TODO`,
+			`Whenever a KeyZone Event (support or resistance) comes into existence, the Reversal Module is activated and starts tracking the behavior of the market.`,
+			`If a Resistance Event is enabled, the Reversal Module analyzes the market in order to determine if there is enough selling power for the price to reverse. On the other hand, when a Support Event becomes active, it attempts to determine if there is enough buying power to trigger a price reversal.`,
+            `Even though the out-of-the-box configuration has been tested for a significant period of time, all the parameters can be tuned in the Adjustments Section.`
         ]);
 	}
 

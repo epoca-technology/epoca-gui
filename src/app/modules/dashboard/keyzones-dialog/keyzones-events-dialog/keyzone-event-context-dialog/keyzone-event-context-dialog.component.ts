@@ -51,8 +51,8 @@ export class KeyzoneEventContextDialogComponent implements OnInit, IKeyZoneEvent
 		try {
 			// Retrieve the candlesticks
 			const candlesticks: ICandlestick[] = await this._candlestick.getForPeriod(
-				moment(this.evt.t).subtract(16, "hours").valueOf(),
-				moment(this.evt.t).add(16, "hours").valueOf(),
+				moment(this.evt.t).subtract(24, "hours").valueOf(),
+				moment(this.evt.t).add(24, "hours").valueOf(),
 			);
 
 			// Build the chart
@@ -64,8 +64,8 @@ export class KeyzoneEventContextDialogComponent implements OnInit, IKeyZoneEvent
 				undefined,
 				this.layout == "desktop" ? 600: 400
 			);
-			this.chart.chart!.toolbar = {show: true,tools: {selection: true,zoom: true,zoomin: true,zoomout: true,download: false}};
-			this.chart.chart!.zoom = {enabled: true, type: "xy"};
+            this.chart.chart!.zoom = {enabled: false};
+            this.chart.chart!.toolbar!.show = false;
 		} catch (e) {
 			this._app.error(e);
 			setTimeout(() => { this.close() }, 500);
@@ -168,7 +168,8 @@ export class KeyzoneEventContextDialogComponent implements OnInit, IKeyZoneEvent
 	 */
 	public displayTooltip(): void {
         this._nav.displayTooltip(this.evt.k == "s" ? "Support Contact": "Resistance Contact", [
-            `@TODO`
+            `A support/resistance contact occurs when the price increases or decreases significantly and hits a KeyZone.`,
+            `Once the event comes into existence, it remains active for the number of minutes set in the KeyZones' configuration.`
         ]);
 	}
 

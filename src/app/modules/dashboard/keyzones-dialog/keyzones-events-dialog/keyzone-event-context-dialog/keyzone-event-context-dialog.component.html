@@ -3,8 +3,8 @@
         <button mat-icon-button class="show-on-mobile" (click)="close()" [disabled]="!loaded"><mat-icon>arrow_back</mat-icon></button>
         <span class="truncate">{{evt.k == 's' ? 'Support': 'Resistance'}} Contact</span>
         <span fxFlex></span>
-        <button mat-icon-button (click)="displayEventInfoDialog()" [disabled]="!loaded" matTooltip="More information"><mat-icon class="info-icon" svgIcon="info"></mat-icon></button>
         <button mat-icon-button (click)="displayTooltip()" [disabled]="!loaded" matTooltip="What is this?"><mat-icon>question_mark</mat-icon></button>
+        <button mat-icon-button (click)="displayEventInfoDialog()" [disabled]="!loaded" matTooltip="More information"><mat-icon class="info-icon" svgIcon="info"></mat-icon></button>
         <button mat-icon-button class="show-on-desktop" (click)="close()"><mat-icon>close</mat-icon></button>
     </div>
 </mat-toolbar>
@@ -21,7 +21,6 @@
             [xaxis]="chart.xaxis!"
             [yaxis]="chart.yaxis!"
             [annotations]="chart.annotations!"
-            [title]="chart.title!"
         ></apx-chart>
     </div>
 </div>

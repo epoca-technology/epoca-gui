@@ -24,6 +24,7 @@ import { IKeyZoneDistance, IKeyZonesDialogComponent } from './interfaces';
 export class KeyzonesDialogComponent implements OnInit, OnDestroy, IKeyZonesDialogComponent {
 	// Layout
 	public layout: ILayout = this._app.layout.value;
+    private layoutSub?: Subscription;
 
 	// Market State
 	public marketState!: IMarketState;
@@ -69,6 +70,7 @@ export class KeyzonesDialogComponent implements OnInit, OnDestroy, IKeyZonesDial
 	) { }
 
 	async ngOnInit(): Promise<void> {
+        this.layoutSub = this._app.layout.subscribe((nl: ILayout) => this.layout = nl);
         this.marketStateSub = this._app.marketState.subscribe((state: IMarketState|undefined|null) => {
             if (state) {
                 this.marketState = state;
@@ -97,6 +99,7 @@ export class KeyzonesDialogComponent implements OnInit, OnDestroy, IKeyZonesDial
 
 
 	ngOnDestroy(): void {
+        if (this.layoutSub) this.layoutSub.unsubscribe();
 		if (this.marketStateSub) this.marketStateSub.unsubscribe();
 	}
 
@@ -317,10 +320,11 @@ export class KeyzonesDialogComponent implements OnInit, OnDestroy, IKeyZonesDial
 			`IDLE KEYZONES`
         ];
 
-		// Iterate over idle zones
+		// Iterate over idle zones (if any)
 		for (let zoneID in this.state!.idle) {
 			content.push(`${zoneID}: ${moment(this.state!.idle[zoneID]).format("dddd, MMMM Do, h:mm:ss a")}`)
 		}
+        if (!Object.keys(this.state!.idle).length) content.push("None");
 
 		// Finally, display the info
         this._nav.displayTooltip("KeyZones", content);
@@ -333,7 +337,9 @@ export class KeyzonesDialogComponent implements OnInit, OnDestroy, IKeyZonesDial
 	 */
 	public displayTooltip(): void {
         this._nav.displayTooltip("KeyZones", [
-			`@TODO`,
+            `This module aims to identify support and resistance levels, as well as determine their potential strength. `,
+            `When the price increases or decreases significantly and hits one of these levels, a KeyZone event is created and remains active for a period of time. `,
+            `The out-of-the-box configuration has been tested for a significant period of time. However, all the parameters can be tuned in the "Adjustments" section.`
         ]);
 	}
 
