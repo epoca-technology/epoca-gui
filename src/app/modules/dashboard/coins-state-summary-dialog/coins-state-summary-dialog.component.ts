@@ -1,5 +1,6 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
 import {MatDialogRef, MatDialog, MAT_DIALOG_DATA} from "@angular/material/dialog";
+import { Subscription } from 'rxjs';
 import { 
 	ICoinCompressedState,
 	ICoinsCompressedState,
@@ -17,13 +18,16 @@ import { IMarketStateDialogConfig, MarketStateDialogComponent } from '../market-
   templateUrl: './coins-state-summary-dialog.component.html',
   styleUrls: ['./coins-state-summary-dialog.component.scss']
 })
-export class CoinsStateSummaryDialogComponent implements OnInit, ICoinsStateSummaryDialogComponent {
+export class CoinsStateSummaryDialogComponent implements OnInit, OnDestroy, ICoinsStateSummaryDialogComponent {
 	// Layout
 	public layout: ILayout = this._app.layout.value;
+    private layoutSub?: Subscription;
 
 	// Compressed Coins State
 	public state!: ICoinsCompressedState;
-	public symbols: string[] = [];
+	private symbols: string[] = [];
+    public visibleSymbols: string[] = [];
+    public hasMoreSymbols: boolean = true;
 	public charts?: {[symbol: string]: ILineChartOptions};
 	public syncEnabled: boolean = true;
 	public btcPrice: boolean = false;
@@ -45,6 +49,10 @@ export class CoinsStateSummaryDialogComponent implements OnInit, ICoinsStateSumm
 
 
 	async ngOnInit(): Promise<void> {
+        // Initialize layout
+        this.layoutSub = this._app.layout.subscribe((nl: ILayout) => this.layout = nl);
+
+        // Download the data
 		try {
 			this.syncEnabled = this.config.compressedStates == undefined;
 			this.btcPrice = this.config.btcPrice == true;
@@ -57,6 +65,10 @@ export class CoinsStateSummaryDialogComponent implements OnInit, ICoinsStateSumm
 	}
 
 
+
+    ngOnDestroy(): void {
+        if (this.layoutSub) this.layoutSub.unsubscribe();
+    }
 
 
 
@@ -82,6 +94,13 @@ export class CoinsStateSummaryDialogComponent implements OnInit, ICoinsStateSumm
 			for (let symbol of this.symbols) {
 				this.charts[symbol] = this.buildChartForSymbol(symbol, this.state.csbs[symbol]);
 			}
+
+            // Set the visible symbols if they haven't been
+            if (!this.loaded) {
+                const initialLotSize: number = this.layout == "desktop" ? 8: 4;
+                this.visibleSymbols = this.symbols.slice(0, initialLotSize);
+                this.hasMoreSymbols = this.symbols.length > this.visibleSymbols.length;
+            }
 		} catch (e) {
 			console.log(e);
 			this._app.error(e);
@@ -120,7 +139,7 @@ export class CoinsStateSummaryDialogComponent implements OnInit, ICoinsStateSumm
 						color: chartColor
 					}
 				],
-				stroke: { curve: "straight", width: this.layout == "desktop" ? 3: 2 },
+				stroke: { curve: "straight", width: 2 },
 				xaxis: {tooltip: {enabled: false}, labels: { show: false}, axisTicks: {show: false}, axisBorder: {show: false}},
 				yaxis: {tooltip: {enabled: false}, labels: { show: false}, axisTicks: {show: false}},
 				dataLabels: {enabled: false}
@@ -222,6 +241,19 @@ export class CoinsStateSummaryDialogComponent implements OnInit, ICoinsStateSumm
 
 
     /**
+     * Shows the rest of the symbols.
+     */
+    public showAllSymbols(): void {
+        this.visibleSymbols = this.symbols.slice();
+        this.hasMoreSymbols = this.symbols.length > this.visibleSymbols.length;
+    }
+
+
+
+
+
+
+    /**
 	 * Displays the coin dialog.
      * @param symbol
 	 */
@@ -247,7 +279,11 @@ export class CoinsStateSummaryDialogComponent implements OnInit, ICoinsStateSumm
 	 */
 	public displayTooltip(): void {
         this._nav.displayTooltip("Coins' States", [
-			`@TODO`,
+			`This module aims to have a deep understanding of the short-term price direction for the top cryptocurrencies. `,
+			`The out-of-the-box configuration has been tested for a significant period of time. However, all the parameters can be tuned in the "Adjustments" section.`,
+			`The state is calculated the same way as it is for the Window Module. For more information, go to Dashboard/Window/Information.`,
+			`The out-of-the-box configuration has been tested for a significant period of time. However, all the parameters can be tuned in the "Adjustments" section.`,
+            `Note that the charts in this section were actually built based on the state splits and not on the actual prices. This is true for both, USDT & BTC Prices.`
         ]);
 	}
 

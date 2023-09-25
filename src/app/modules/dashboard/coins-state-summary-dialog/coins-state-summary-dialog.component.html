@@ -20,7 +20,7 @@
         <!-- Chart List -->
         <div *ngIf="charts" style="overflow: hidden">
             <mat-grid-list [cols]="layout == 'desktop' ? 4: 2" [rowHeight]="layout == 'desktop' ? '180px': '180px'" gutterSize="5px">
-                <mat-grid-tile *ngFor="let symbol of symbols" 
+                <mat-grid-tile *ngFor="let symbol of visibleSymbols" 
                                 [ngClass]="{'fake-button': layout == 'desktop'}" role="button" matRipple
                                 (click)="displayCoinDialog(symbol)">
                         <apx-chart
@@ -37,6 +37,11 @@
                         ></apx-chart>
                 </mat-grid-tile>
             </mat-grid-list>
+        </div>
+
+
+        <div class="align-center margin-top" *ngIf="hasMoreSymbols">
+            <button mat-button (click)="showAllSymbols()">Load More</button>
         </div>
     </div>
 </div>
