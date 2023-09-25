@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {MatDialogRef} from "@angular/material/dialog";
 import * as moment from "moment";
 import { ApexAnnotations, PointAnnotations } from 'ng-apexcharts';
+import { Subscription } from 'rxjs';
 import { 
 	ICandlestick,
 	IFullLiquidityState,
@@ -32,9 +33,10 @@ import {
   templateUrl: './liquidity-dialog.component.html',
   styleUrls: ['./liquidity-dialog.component.scss']
 })
-export class LiquidityDialogComponent implements OnInit, ILiquidityDialogComponent {
+export class LiquidityDialogComponent implements OnInit, OnDestroy, ILiquidityDialogComponent {
 	// Layout
 	public layout: ILayout = this._app.layout.value;
+    private layoutSub?: Subscription;
 
 	// The current window in candlesticks format
 	private window!: ICandlestick[];
@@ -71,6 +73,10 @@ export class LiquidityDialogComponent implements OnInit, ILiquidityDialogCompone
 	) { }
 
 	async ngOnInit(): Promise<void> {
+        // Initialize layout
+        this.layoutSub = this._app.layout.subscribe((nl: ILayout) => this.layout = nl);
+
+        // Load the data
 		try {
 			await this.loadLiquidityData();
 		} catch (e) { this._app.error(e) }
@@ -78,6 +84,9 @@ export class LiquidityDialogComponent implements OnInit, ILiquidityDialogCompone
 	}
 
 
+    ngOnDestroy(): void {
+        if (this.layoutSub) this.layoutSub.unsubscribe();
+    }
 
 
 
@@ -539,7 +548,10 @@ export class LiquidityDialogComponent implements OnInit, ILiquidityDialogCompone
 	 */
 	public displayTooltip(): void {
         this._nav.displayTooltip("Liquidity", [
-			`@TODO`,
+			`This module aims to have a deep understanding of the Order Book State for the Bitcoin Spot Market.`,
+			`The server establishes a WebSocket Connection to the "Order Book" and processes the raw data on a real time basis. During this process, the system identifies "Liquidity Peaks" and groups them based on their intensity. `,
+			`Having identified all the peaks within the price range, the "Bid Liquidity Power" is calculated, whose only purpose is to indicate when there is an abnormal amount of buy or sell liquidity in the Order Book.`,
+			`The out-of-the-box configuration has been tested for a significant period of time. However, all the parameters can be tuned in the "Adjustments" section.`,
         ]);
 	}
 

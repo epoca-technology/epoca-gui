@@ -97,7 +97,7 @@ export class CoinsStateSummaryDialogComponent implements OnInit, OnDestroy, ICoi
 
             // Set the visible symbols if they haven't been
             if (!this.loaded) {
-                const initialLotSize: number = this.layout == "desktop" ? 8: 4;
+                const initialLotSize: number = this.layout == "desktop" ? 12: 4;
                 this.visibleSymbols = this.symbols.slice(0, initialLotSize);
                 this.hasMoreSymbols = this.symbols.length > this.visibleSymbols.length;
             }
@@ -280,7 +280,7 @@ export class CoinsStateSummaryDialogComponent implements OnInit, OnDestroy, ICoi
 	public displayTooltip(): void {
         this._nav.displayTooltip("Coins' States", [
 			`This module aims to have a deep understanding of the short-term price direction for the top cryptocurrencies. `,
-			`The out-of-the-box configuration has been tested for a significant period of time. However, all the parameters can be tuned in the "Adjustments" section.`,
+			`The server establishes a WebSocket Connection to the "Mark Price" for all the installed cryptocurrencies and calculates their state on a real time basis. `,
 			`The state is calculated the same way as it is for the Window Module. For more information, go to Dashboard/Window/Information.`,
 			`The out-of-the-box configuration has been tested for a significant period of time. However, all the parameters can be tuned in the "Adjustments" section.`,
             `Note that the charts in this section were actually built based on the state splits and not on the actual prices. This is true for both, USDT & BTC Prices.`
