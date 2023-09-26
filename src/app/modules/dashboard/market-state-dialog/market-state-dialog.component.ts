@@ -1,6 +1,8 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, OnDestroy, ViewChild } from '@angular/core';
 import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
 import * as moment from "moment";
+import { Subscription } from 'rxjs';
+import { ChartComponent } from 'ng-apexcharts';
 import { 
 	ICoinState,
 	ISplitStateID, 
@@ -20,9 +22,14 @@ import { IMarketStateDialogComponent, IMarketStateDialogConfig, IMarketStateModu
   templateUrl: './market-state-dialog.component.html',
   styleUrls: ['./market-state-dialog.component.scss']
 })
-export class MarketStateDialogComponent implements OnInit, IMarketStateDialogComponent {
+export class MarketStateDialogComponent implements OnInit, OnDestroy, IMarketStateDialogComponent {
+    // Chart Elements
+    @ViewChild("lineChartEl") lineChartEl?: ChartComponent;
+    @ViewChild("volumeChartEl") volumeChartEl?: ChartComponent;
+
 	// Layout
 	private layout: ILayout = this._app.layout.value;
+    private layoutSub?: Subscription;
 
 	// Module
 	public module!: IMarketStateModule;
@@ -58,6 +65,9 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 
 
 	async ngOnInit(): Promise<void> {
+        // Initialize layout
+        this.layoutSub = this._app.layout.subscribe((nl: ILayout) => this.layout = nl);
+
 		try {
 			// Set the module
 			this.module = this.config.module;
@@ -75,7 +85,21 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 			setTimeout(() => { this.close() }, 500);
 		}
 		this.loaded = true;
+
+        setTimeout(() => {
+            this.volumeChartEl?.resetSeries();
+            this.lineChartEl?.resetSeries();
+        }, 150);
 	}
+
+
+
+
+
+
+    ngOnDestroy(): void {
+        if (this.layoutSub) this.layoutSub.unsubscribe();
+    }
 
 
 
@@ -320,32 +344,26 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 			this.layout == "desktop" ? 400: 360,
 			false,
 			true,
-			{min: 0, max: maxValue},
+			{min: 0, max: maxValue > this.volumeState.mh ? maxValue: this.volumeState.mh},
 			{
 				yaxis: [
 					{
 						y: <number>this._utils.outputNumber(this.volumeState.m, {dp: 0}),
-						y2: <number>this._utils.outputNumber(this.volumeState.mh, {dp: 0}),
-						borderColor: "#26A69A",
-						fillColor: "#26A69A",
-						strokeDashArray: 0,
-						borderWidth: 0
+						borderColor: "#4DB6AC",
+						strokeDashArray: 5,
+						borderWidth: 2
 					},
 					{
 						y: <number>this._utils.outputNumber(this.volumeState.mm, {dp: 0}),
-						y2: <number>this._utils.outputNumber(this.volumeState.mh, {dp: 0}),
-						borderColor: "#00796B",
-						fillColor: "#00796B",
-						strokeDashArray: 0,
-						borderWidth: 0
+						borderColor: "#009688",
+						strokeDashArray: 5,
+						borderWidth: 2
 					},
 					{
 						y: <number>this._utils.outputNumber(this.volumeState.mh, {dp: 0}),
-						y2: <number>this._utils.outputNumber(this.volumeState.mh*100, {dp: 0}),
 						borderColor: "#004D40",
-						fillColor: "#004D40",
-						strokeDashArray: 0,
-						borderWidth: 0
+						strokeDashArray: 5,
+						borderWidth: 2
 					},
 				]
 			}
@@ -445,25 +463,35 @@ export class MarketStateDialogComponent implements OnInit, IMarketStateDialogCom
 	 * Displays the Market State Module Tooltip.
 	 */
 	public displayTooltip(): void {
-        this._nav.displayTooltip("Market State", [
-			`@TODO`,
-        ]);
+        // Initialize the values
+        let title: string = "";
+        let content: string[] = [];
+
+        // Populate the content according to the module
+        switch (this.module) {
+            case "window":
+                break;
+            case "volume":
+                title = "Volume";
+                content = [
+                    `Volume, or trading volume, is the number of units traded in a market during a given time. It is a 
+                    measurement of the number of individual units of an asset that changed hands during that period.`,
+                    `Each transaction involves a buyer and a seller. When they reach an agreement at a specific price, 
+                    the transaction is recorded by the facilitating exchange. This data is then used to calculate the trading volume.`,
+                    `The volume and the volume direction indicator are synced every ~3 seconds through Binance Spot's API.`
+                ];
+                break;
+            case "coin":
+                break;
+            case "coinBTC":
+                break;
+        }
+
+        // Finally, display the tooltip
+        this._nav.displayTooltip(title, content);
 	}
 
 
-
-
-
-    // Volume
-    public volumeTooltip(): void {
-        this._nav.displayTooltip("Volume", [
-            `Volume, or trading volume, is the number of units traded in a market during a given time. It is a 
-            measurement of the number of individual units of an asset that changed hands during that period.`,
-            `Each transaction involves a buyer and a seller. When they reach an agreement at a specific price, 
-            the transaction is recorded by the facilitating exchange. This data is then used to calculate the trading volume.`,
-            `The volume and the volume direction indicator are synced every ~3 seconds through Binance Spot's API.`
-        ]);
-    }
 
 
 

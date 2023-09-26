@@ -9,8 +9,8 @@
         <app-refresh-button *ngIf="loaded && module == 'coin'" style="display: none;" (refresh)="initCoin()" [intervalSeconds]="6"></app-refresh-button>
         <app-refresh-button *ngIf="loaded && module == 'coinBTC'" style="display: none;" (refresh)="initCoinBTC()" [intervalSeconds]="6"></app-refresh-button>
         <app-refresh-button *ngIf="loaded && module == 'volume'" style="display: none;" (refresh)="initVolume()" [intervalSeconds]="6"></app-refresh-button>
-        <button mat-icon-button *ngIf="loaded" (click)="displayInfoTooltip()" matTooltip="More information"><mat-icon class="info-icon" svgIcon="info"></mat-icon></button>
         <button mat-icon-button *ngIf="loaded"  (click)="displayTooltip()" matTooltip="What is this?"><mat-icon>question_mark</mat-icon></button>
+        <button mat-icon-button *ngIf="loaded" (click)="displayInfoTooltip()" matTooltip="More information"><mat-icon class="info-icon" svgIcon="info"></mat-icon></button>
         <button mat-icon-button class="show-on-desktop" (click)="close()" [disabled]="!loaded"><mat-icon>close</mat-icon></button>
     </div>
 </mat-toolbar>
@@ -44,7 +44,7 @@
                 </mat-grid-list>
             </div>
 
-            <apx-chart
+            <apx-chart #lineChartEl
                 [series]="lineChart.series"
                 [chart]="lineChart.chart"
                 [dataLabels]="lineChart.dataLabels"
@@ -57,7 +57,7 @@
 
         <!-- Volume -->
         <div *ngIf="volumeChart" style="overflow: hidden">
-            <apx-chart
+            <apx-chart #volumeChartEl
                 [series]="volumeChart.series"
                 [chart]="volumeChart.chart"
                 [dataLabels]="volumeChart.dataLabels"
