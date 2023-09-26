@@ -157,7 +157,7 @@ export class MarketStateDialogComponent implements OnInit, OnDestroy, IMarketSta
 
 	public async initCoin(): Promise<void> {
 		// Set the title
-		this.title = this._ms.getBaseAssetName(this.config.symbol!);
+		this.title = `${this._ms.getBaseAssetName(this.config.symbol!)} / USDT`;
 
 		// Retrieve the coin's state
 		const state: ICoinState = await this._ms.getCoinFullState(this.config.symbol!, false);
@@ -184,7 +184,7 @@ export class MarketStateDialogComponent implements OnInit, OnDestroy, IMarketSta
 
 	public async initCoinBTC(): Promise<void> {
 		// Set the title
-		this.title = this._ms.getBaseAssetName(this.config.symbol!);
+		this.title = `${this._ms.getBaseAssetName(this.config.symbol!)} / BTC`;
 
 		// Retrieve the coin's state
 		const state: ICoinState = await this._ms.getCoinFullState(this.config.symbol!, true);
@@ -337,7 +337,7 @@ export class MarketStateDialogComponent implements OnInit, OnDestroy, IMarketSta
 					color: this.getVolumeChartColor(this.volumeState.s)
 				}],
 				xaxis: {categories: ["USDT Vol."], labels: {show: false}},
-				yaxis: {labels: {show: true}},
+				yaxis: {labels: {show: true}, tooltip: {enabled: true}},
 				plotOptions: { bar: { horizontal: false, distributed: true, borderRadius: 4, columnWidth: "15%"}},
 			},
 			["USDT Vol."],
@@ -470,20 +470,50 @@ export class MarketStateDialogComponent implements OnInit, OnDestroy, IMarketSta
         // Populate the content according to the module
         switch (this.module) {
             case "window":
+                title = "Window";
+                content = [
+                    `The window module operates in a moving window of 128 15-minute-interval candlesticks (~32 hours) that is synced every ~3 seconds through Binance Spot's API.`,
+                    `To calculate the state of the window, a total of 8 splits are applied to the sequence of candlesticks and the state for each is derived based on the configuration.`,
+                    `The splits applied to the window are:`,
+                    `* 100%: 128 items (last ~32 hours)`,
+                    `* 75%: 96 items (last ~24 hours)`,
+                    `* 50%: 64 items (last ~16 hours)`,
+                    `* 25%: 32 items (last ~8 hours)`,
+                    `* 15%: 20 items (last ~5 hours)`,
+                    `* 10%: 13 items (last ~3.25 hours)`,
+                    `* 5%: 7 items (last ~1.75 hours)`,
+                    `* 2%: 3 items (last ~45 minutes)`,
+                    `The supported states are:`,
+                    `* 2: Increasing Strongly`,
+                    `* 1: Increasing`,
+                    `* 0: Sideways`,
+                    `* -1: Decreasing`,
+                    `* -2: Decreasing Strongly`,
+                    `The out-of-the-box configuration has been tested for a significant period of time. However, all the parameters can be tuned in the "Adjustments" section.`,
+                ]
                 break;
             case "volume":
                 title = "Volume";
                 content = [
-                    `Volume, or trading volume, is the number of units traded in a market during a given time. It is a 
-                    measurement of the number of individual units of an asset that changed hands during that period.`,
-                    `Each transaction involves a buyer and a seller. When they reach an agreement at a specific price, 
-                    the transaction is recorded by the facilitating exchange. This data is then used to calculate the trading volume.`,
-                    `The volume and the volume direction indicator are synced every ~3 seconds through Binance Spot's API.`
+                    `This module aims to have a deep understanding of the Bitcoin Spot Market's trading volume to identify times at which there is significant participation. `,
+                    `To achieve this, the system establishes a real time connection with ~32 hours (same lookback as the window) worth of 1m candlesticks and calculates the volume state requirements (The amount of traded USDT required for it to mean that the volume is high).`,
+                    `The system evaluates the current volume against the requirements on a real time basis and broadcasts the state. The volume can have the following states:`,
+                    `* 0: Low`,
+                    `* 1: Medium`,
+                    `* 2: High`,
+                    `* 3: Ultra High`,
+                    `Note that when a state greater than 0 is identified, it remains active for ~3 minutes. If the "high" volume is not sustained, it goes back to 0 after this period.`
                 ];
                 break;
             case "coin":
-                break;
             case "coinBTC":
+                title = "Coins";
+                content = [
+                    `This module aims to have a deep understanding of the short-term price direction for the top cryptocurrencies. `,
+                    `The server establishes a WebSocket Connection to the "Mark Price" for all the installed cryptocurrencies and calculates their state on a real time basis for both rates, BTC and USDT. `,
+                    `The state is calculated the same way as it is for the Window Module. For more information, go to Dashboard/Window/Information.`,
+                    `The out-of-the-box configuration has been tested for a significant period of time. However, all the parameters can be tuned in the "Adjustments" section.`,
+                ]
                 break;
         }
 

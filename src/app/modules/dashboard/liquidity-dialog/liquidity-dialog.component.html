@@ -28,7 +28,7 @@
 
         <!-- Summary -->
         <div *ngIf="activeTab == 0" class="padding" style="overflow: hidden">
-            <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" fxLayoutAlign="center start" [ngClass]="{'margin-top-x2': layout == 'desktop'}">
+            <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" fxLayoutAlign="center start" [ngClass]="{'margin-top-x3': layout == 'desktop'}">
                 <!-- Summary -->
                 <div fxFlex class="full-width">
 
@@ -54,7 +54,7 @@
                     <div class="divider show-on-mobile"></div>
 
                     <!-- Bid Liquidity Power -->
-                    <div [ngClass]="{'margin-top-x4': layout == 'desktop'}">
+                    <div [ngClass]="{'margin-top-x6': layout == 'desktop'}">
                         <div fxLayout="row" fxLayoutAlign="center center">
                             <h6>Bid Liq. Power</h6>
                             <span fxFlex></span>
@@ -157,6 +157,7 @@
                 [xaxis]="asks.xaxis"
                 [yaxis]="asks.yaxis"
                 [annotations]="asks.annotations"
+                [tooltip]="{enabled: true, intersect: false}"
             ></apx-chart>
         </div>
 
@@ -169,6 +170,7 @@
                 [xaxis]="bids.xaxis"
                 [yaxis]="bids.yaxis"
                 [annotations]="bids.annotations"
+                [tooltip]="{enabled: true, intersect: false}"
             ></apx-chart>
         </div>
     </div>

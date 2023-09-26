@@ -3,7 +3,7 @@
         <button mat-icon-button class="show-on-mobile" (click)="close()" [disabled]="!loaded"><mat-icon>arrow_back</mat-icon></button>
         <span *ngIf="!loaded" class="truncate">Loading...</span>
         <mat-icon class="show-on-desktop" *ngIf="loaded" [svgIcon]="_ms.icons[state.cd]" style="margin-right:7px;"></mat-icon>
-        <span *ngIf="loaded" class="truncate">{{btcPrice ? "Coins' BTC States": "Coins' States"}}</span>
+        <span *ngIf="loaded" class="truncate">{{btcPrice ? "Coins / BTC": "Coins / USDT"}}</span>
         <mat-icon class="show-on-mobile" *ngIf="loaded && state.cd != 0" [svgIcon]="_ms.icons[state.cd]" style="margin-left:5px;"></mat-icon>
         <span fxFlex></span>        
         <app-refresh-button *ngIf="loaded && syncEnabled" style="display: none;" (refresh)="initializeData()" [intervalSeconds]="6"></app-refresh-button>
@@ -21,7 +21,7 @@
         <div *ngIf="charts" style="overflow: hidden">
             <mat-grid-list [cols]="layout == 'desktop' ? 4: 2" [rowHeight]="layout == 'desktop' ? '180px': '180px'" gutterSize="5px">
                 <mat-grid-tile *ngFor="let symbol of visibleSymbols" 
-                                [ngClass]="{'fake-button': layout == 'desktop'}" role="button" matRipple
+                                [ngClass]="{'fake-button': layout == 'desktop'}" role="button"
                                 (click)="displayCoinDialog(symbol)">
                         <apx-chart
                             [series]="charts[symbol].series"
