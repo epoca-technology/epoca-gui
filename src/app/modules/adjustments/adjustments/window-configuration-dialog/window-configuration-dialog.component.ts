@@ -35,6 +35,8 @@ export class WindowConfigurationDialogComponent implements OnInit, IWindowConfig
 		try {
 			this.config = await this._ms.getWindowConfiguration();
 			this.form = new FormGroup ({
+				candlestickIntervalMinutes: new FormControl({ value: 15, disabled: true }, [Validators.required]),
+				lookbackWidth: new FormControl({ value: 128, disabled: true }, [Validators.required]),
 				requirement: new FormControl(this.config.requirement, [ Validators.required, Validators.min(0.01), Validators.max(100) ]),
 				strongRequirement: new FormControl(this.config.strongRequirement, [ Validators.required, Validators.min(0.01), Validators.max(100) ]),
 			});
@@ -126,12 +128,52 @@ export class WindowConfigurationDialogComponent implements OnInit, IWindowConfig
 
 	/* General Tooltip */
 	public displayTooltip(): void {
-		this._nav.displayTooltip("Window Configuration", [
-			`@TODO`,
+		this._nav.displayTooltip("Window", [
+            `The window module operates in a moving window of 128 15-minute-interval candlesticks (~32 hours) that is synced every ~3 seconds through Binance Spot's API.`,
+            `To calculate the state of the window, a total of 8 splits are applied to the sequence of candlesticks and the state for each is derived based on the configuration.`,
+            `-----`,
+            `The splits applied to the window are:`,
+            `* 100%: 128 items (last ~32 hours)`,
+            `* 75%: 96 items (last ~24 hours)`,
+            `* 50%: 64 items (last ~16 hours)`,
+            `* 25%: 32 items (last ~8 hours)`,
+            `* 15%: 20 items (last ~5 hours)`,
+            `* 10%: 13 items (last ~3.25 hours)`,
+            `* 5%: 7 items (last ~1.75 hours)`,
+            `* 2%: 3 items (last ~45 minutes)`,
+            `-----`,
+            `The supported states are:`,
+            `* 2: Increasing Strongly`,
+            `* 1: Increasing`,
+            `* 0: Sideways`,
+            `* -1: Decreasing`,
+            `* -2: Decreasing Strongly`,
+        ]);
+	}
+
+
+	/* Build Tooltip */
+	public displayBuildTooltip(): void {
+		this._nav.displayTooltip("Window Build", [
+			`Candlestick Interval Minutes`,
+			`The number of minutes within each candlestick item. For instance, the last 5 candlesticks in the window represent the last 75 minutes worth of prices. This value is hard-coded in Epoca's core and therefore cannot be modified through this form.`,
+			`-----`,
+			`Lookback Width`,
+			`The number of candlesticks that comprise the window. For example, if the lookback width is equals to 128 it means the window contains ~32 hours worth of data. This value is hard-coded in Epoca's core and therefore cannot be modified through this form.`,
 		]);
 	}
 
 
+	/* State Tooltip */
+	public displayStateTooltip(): void {
+		this._nav.displayTooltip("Window State", [
+			`Requirement %`,
+			`The % change required for the window/coin splits to have a state (1 or -1)`,
+			`-----`,
+			`Strong Requirement %`,
+			`The % change required for the window/coin splits to have a strong state (2 or -2)`,
+		]);
+	}
 
 
 

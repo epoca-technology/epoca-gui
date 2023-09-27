@@ -18,7 +18,45 @@
         <!-- Form -->
         <div *ngIf="form">
             <form [formGroup]="form" (ngSubmit)="update()">
+                <!-- Build -->
                 <div>
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <h5>Build</h5>
+                        <span fxFlex></span>
+                        <button mat-icon-button (click)="displayBuildTooltip()" matTooltip="More information" type="button" tabindex="-1"><mat-icon>question_mark</mat-icon></button>
+                    </div> 
+                    <div fxLayout="row" fxLayoutAlign="start start" class="section-container">
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Candlestick Interval Minutes</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="candlestickIntervalMinutes"
+                                       placeholder="e.g. 15">
+                            </mat-form-field>
+                        </div>
+                        <span fxFlex="5"></span>
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Lookback Width</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="lookbackWidth"
+                                       placeholder="e.g. 128">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- State -->
+                <div>
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <h5>State</h5>
+                        <span fxFlex></span>
+                        <button mat-icon-button (click)="displayStateTooltip()" matTooltip="More information" type="button" tabindex="-1"><mat-icon>question_mark</mat-icon></button>
+                    </div> 
                     <div fxLayout="row" fxLayoutAlign="start start">
                         <div fxFlex>
                             <mat-form-field>

@@ -351,11 +351,11 @@ export class MarketStateDialogComponent implements OnInit, OnDestroy, IMarketSta
 						y: <number>this._utils.outputNumber(this.volumeState.m, {dp: 0}),
 						borderColor: "#4DB6AC",
 						strokeDashArray: 5,
-						borderWidth: 2
+						borderWidth: 1
 					},
 					{
 						y: <number>this._utils.outputNumber(this.volumeState.mm, {dp: 0}),
-						borderColor: "#009688",
+						borderColor: "#00695C",
 						strokeDashArray: 5,
 						borderWidth: 2
 					},
@@ -363,7 +363,7 @@ export class MarketStateDialogComponent implements OnInit, OnDestroy, IMarketSta
 						y: <number>this._utils.outputNumber(this.volumeState.mh, {dp: 0}),
 						borderColor: "#004D40",
 						strokeDashArray: 5,
-						borderWidth: 2
+						borderWidth: 3
 					},
 				]
 			}

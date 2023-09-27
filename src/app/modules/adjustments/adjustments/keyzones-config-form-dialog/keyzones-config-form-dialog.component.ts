@@ -172,7 +172,17 @@ export class KeyzonesConfigFormDialogComponent implements OnInit, IKeyZonesConfi
 	/* Build Tooltip */
 	public buildTooltip(): void {
 		this._nav.displayTooltip("KeyZones Build", [
-			`@TODO`,
+			`Build Frequency Hours`,
+			`Once the KeyZones Module is initialized, a build is made and an interval that will re-build the KeyZones every buildFrequencyHours is started.`,
+			`-----`,
+			`Build Lookback Size`,
+			`The number of 15-minute-interval candlesticks that will be used to build the KeyZones.`,
+			`-----`,
+			`Zone Size%`,
+			`The zone's size percentage. The start and end prices are based on this value.`,
+			`-----`,
+			`Zone Merge Distance%`,
+			`Once all zones have been set and ordered by price, it will merge the ones that are close to one another.`,
 		]);
 	}
 
@@ -183,7 +193,11 @@ export class KeyzonesConfigFormDialogComponent implements OnInit, IKeyZonesConfi
 	/* Score Weights Tooltip */
 	public scoreWeightsTooltip(): void {
 		this._nav.displayTooltip("KeyZones Score Weights", [
-			`@TODO`,
+			`Volume Intensity`,
+			`The worth of the KeyZone's Volume Intensity`,
+			`-----`,
+			`Liquidity Share`,
+			`The worth of the KeyZone's Liquidity Share`,
 		]);
 	}
 
@@ -191,7 +205,8 @@ export class KeyzonesConfigFormDialogComponent implements OnInit, IKeyZonesConfi
 	/* State Tooltip */
 	public stateTooltip(): void {
 		this._nav.displayTooltip("KeyZones State", [
-			`@TODO`,
+			`State Limit`,
+            `Limits the number of zones returned from the current price. For example, if 2 is provided, it retrieves 4 zones in total (2 above and 2 below)`
 		]);
 	}
 
@@ -199,7 +214,21 @@ export class KeyzonesConfigFormDialogComponent implements OnInit, IKeyZonesConfi
 	/* Event Tooltip */
 	public eventTooltip(): void {
 		this._nav.displayTooltip("KeyZones Event", [
-			`@TODO`,
+			`Price Snapshots Limit`,
+			`The limit of the 1-minute-candlestick snapshots that are taken whenever there is an update (every ~3 seconds).`,
+			`-----`,
+			`Event Score Requirement`,
+			`The minimum score needed by a KeyZone in order to be capable of issuing an event.`,
+			`-----`,
+			`Sup.|Res. Event Duration Minutes`,
+			`The number of minutes a KeyZone event will remain active after being issued based on its kind. A KeyZone Event can also be terminated by the price based on eventPriceDistanceLimit.`,
+			`-----`,
+			`Event Price Distance Limit%`,
+			`When an event is issued, a price limit is set based on the kind of KeyZone Contant. For example: If a support keyzone event is issued, the price limit will be the end of the zone (upperband) + eventPriceDistanceLimit%. If the price starts increasing and goes past this price, the KeyZone Event will be cleared.`,
+			`On the contrary, when a resistance event is issued, the price limit will be the start of the zone (lowerband) - eventPriceDistanceLimit%. If the price starts decreasing and goes past this price, the event will be cleared.`,
+			`-----`,
+			`KeyZone Idle Minutes (On event)`,
+			`The number of minutes a KeyZone will remain idle after issuing an event.`,
 		]);
 	}
 

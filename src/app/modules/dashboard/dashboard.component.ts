@@ -996,6 +996,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         this._nav.displayTooltip("Window", [
             `The window module operates in a moving window of 128 15-minute-interval candlesticks (~32 hours) that is synced every ~3 seconds through Binance Spot's API.`,
             `To calculate the state of the window, a total of 8 splits are applied to the sequence of candlesticks and the state for each is derived based on the configuration.`,
+            `-----`,
             `The splits applied to the window are:`,
             `* 100%: 128 items (last ~32 hours)`,
             `* 75%: 96 items (last ~24 hours)`,
@@ -1005,6 +1006,7 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             `* 10%: 13 items (last ~3.25 hours)`,
             `* 5%: 7 items (last ~1.75 hours)`,
             `* 2%: 3 items (last ~45 minutes)`,
+            `-----`,
             `The supported states are:`,
             `* 2: Increasing Strongly`,
             `* 1: Increasing`,

@@ -152,7 +152,11 @@ export class LiquidityConfigurationDialogComponent implements OnInit, ILiquidity
 	/* State Tooltip */
 	public stateTooltip(): void {
 		this._nav.displayTooltip("Liquidity State", [
-			`@TODO`,
+			`Max Peak Distance From Price%`,
+			`The max distance% a peak can be from the price. Peaks beyond this value are ignored.`,
+			`-----`,
+			`App Bulk Stream Min. Intensity`,
+			`The minimum intensity that will be included in the AppBulk Stream`,
 		]);
 	}
 
@@ -163,7 +167,17 @@ export class LiquidityConfigurationDialogComponent implements OnInit, ILiquidity
 	/* Intensity Weights Tooltip */
 	public intensityWeightsTooltip(): void {
 		this._nav.displayTooltip("Liq. Intensity Weights", [
-			`@TODO`,
+			`Intensity 1`,
+			`The weight of a low liquidity intensity peak.`,
+			`-----`,
+			`Intensity 2`,
+			`The weight of a medium liquidity intensity peak.`,
+			`-----`,
+			`Intensity 3`,
+			`The weight of a high liquidity intensity peak.`,
+			`-----`,
+			`Intensity 4`,
+			`The weight of a very high liquidity intensity peak.`,
 		]);
 	}
 
