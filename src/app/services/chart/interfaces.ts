@@ -24,7 +24,6 @@ import {
 
 export interface IChartService {
 	// General Properties
-	colors: string[],
 	upwardColor: string,
 	downwardColor: string,
 	neutralColor: string,

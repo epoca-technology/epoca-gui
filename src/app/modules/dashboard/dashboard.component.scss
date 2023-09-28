@@ -70,13 +70,35 @@
     $width: $i * 1%;
     .support-reversal-#{$i} {
         @extend .action-container;
-        background: linear-gradient(90deg, #004D40 $width, #4DB6AC $width);
+        background: linear-gradient(90deg, #004D40 $width, #00897B $width);
     }
     .resistance-reversal-#{$i} {
         @extend .action-container;
-        background: linear-gradient(90deg, #B71C1C  $width, #E57373 $width);
+        background: linear-gradient(90deg, #B71C1C  $width, #E53935 $width);
     }
 }
+
+
+
+
+.volume-state-0 {
+    @extend .action-container;
+    background-color: #78909C;
+}
+.volume-state-1 {
+    @extend .action-container;
+    background: linear-gradient(90deg, #004D40 33%, #00897B 33%);
+}
+.volume-state-2 {
+    @extend .action-container;
+    background: linear-gradient(90deg, #004D40 66%, #00897B 66%);
+}
+.volume-state-3 {
+    @extend .action-container;
+    background: linear-gradient(90deg, #004D40 100%, #00897B 100%);
+}
+
+
 
 
 

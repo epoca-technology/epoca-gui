@@ -1,6 +1,7 @@
-import {Component, Inject, OnInit, ViewChild, ElementRef} from '@angular/core';
+import {Component, Inject, OnInit, ViewChild, ElementRef, OnDestroy} from '@angular/core';
 import {AbstractControl, FormControl, FormGroup} from '@angular/forms';
 import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
+import { Subscription } from 'rxjs';
 import { UtilsService } from '../../../core';
 import {AppService, ValidationsService } from "../../../services";
 import {IConfirmationDialogComponent, IConfirmationDialogData} from "./interfaces";
@@ -10,7 +11,7 @@ import {IConfirmationDialogComponent, IConfirmationDialogData} from "./interface
 	templateUrl: './confirmation-dialog.component.html',
 	styleUrls: ['./confirmation-dialog.component.scss']
 })
-export class ConfirmationDialogComponent implements OnInit, IConfirmationDialogComponent {
+export class ConfirmationDialogComponent implements OnInit, OnDestroy, IConfirmationDialogComponent {
     // Input
     @ViewChild("otpControl") otpControl? : ElementRef;
 
@@ -23,6 +24,7 @@ export class ConfirmationDialogComponent implements OnInit, IConfirmationDialogC
 	
 	// OTP Form
 	public otpForm = new FormGroup ({otp: new FormControl('',[ this._validations.otpValid ])});
+    private otpFormSub?: Subscription;
 	
 	
 	constructor(
@@ -50,9 +52,18 @@ export class ConfirmationDialogComponent implements OnInit, IConfirmationDialogC
                 setTimeout(() => { if (this.otpControl) this.otpControl.nativeElement.focus() });
             }
 		}
+
+        // If it is an OTP Confirmation, subscribe to the form
+        this.otpFormSub = this.otpForm.valueChanges.subscribe((controlValues: {otp: string}) => {
+            if (this.otp.valid) this.confirm(controlValues.otp);
+        });
 	}
 	
 	
+
+    ngOnDestroy(): void {
+        if (this.otpFormSub) this.otpFormSub.unsubscribe();
+    }
 
 	
 	
@@ -95,9 +106,6 @@ export class ConfirmationDialogComponent implements OnInit, IConfirmationDialogC
 			// Paste into the access code input
 			this.otp.setValue(data);
 			this.otp.markAsTouched();
-			
-			// If the input is valid, submit the form automatically
-			if (this.otp.valid) this.confirm(this.otp.value);
 		} catch (e) {
 			console.log(e);
 			this._app.error(this._utils.getErrorMessage(e));

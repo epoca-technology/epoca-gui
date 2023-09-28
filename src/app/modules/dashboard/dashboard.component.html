@@ -311,14 +311,11 @@
 
 
                                         <!-- Volume -->
-                                        <mat-grid-tile class="clickable" role="button" matRipple
-                                                        (click)="displayVolumeDialog()"
-                                                        [ngClass]="{
-                                                            'buy-action-container': state.volume > 0,
-                                                            'neutral-action-container': state.volume == 0,
-                                                            'weak-state': state.volume < 2,
-                                                            'very-strong-state': state.volume == 3
-                                                        }"><p>VOLUME</p></mat-grid-tile>
+                                        <mat-grid-tile class="clickable volume-state-{{state.volume}}" 
+                                                        role="button" matRipple
+                                                        (click)="displayVolumeDialog()">
+                                                        <p>VOLUME</p>
+                                        </mat-grid-tile>
                                         
                                         <!-- Placeholders -->
                                         <mat-grid-tile class="placeholder-action-container"></mat-grid-tile>

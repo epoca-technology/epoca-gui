@@ -18,9 +18,4 @@ export interface IValidationsService {
     // IP
     ipValid(control: AbstractControl): {invalidIP: boolean}|null,
     ipNotesValid(control: AbstractControl): {invalidIPNote: boolean}|null,
-
-    // Epoch
-    epochIDValid(id: string): boolean,
-    controlEpochIDValid(control: AbstractControl): {invalidID: boolean}|null,
-    modelIDValid(id: string): boolean,
 }

@@ -8,12 +8,25 @@ import {filter} from "rxjs/operators";
 import { environment } from "../../../environments/environment";
 import { IBinanceTradeExecutionPayload, } from "../../core";
 import {AppService} from "../app";
-import {BottomSheetMenuComponent, IBottomSheetMenuItem} from "../../shared/components/bottom-sheet-menu";
-import {ConfirmationDialogComponent, IConfirmationDialogData} from "../../shared/components/confirmation-dialog";
+import {
+    BottomSheetMenuComponent, 
+    IBottomSheetMenuItem
+} from "../../shared/components/bottom-sheet-menu";
+import {
+    ConfirmationDialogComponent, 
+    IConfirmationDialogData
+} from "../../shared/components/confirmation-dialog";
 import {DataDialogComponent, IDataDialogData} from "../../shared/components/data-dialog";
-import {DialogMenuComponent, IDialogMenuData, IDialogMenuItem} from "../../shared/components/dialog-menu";
+import {
+    DialogMenuComponent, 
+    IDialogMenuData, 
+    IDialogMenuItem
+} from "../../shared/components/dialog-menu";
 import { ITooltipData, TooltipDialogComponent } from "../../shared/components/tooltip-dialog";
-import { IDateRangeConfig, DateRangeFormDialogComponent } from "../../shared/components/date-range-form-dialog";
+import { 
+    IDateRangeConfig, 
+    DateRangeFormDialogComponent 
+} from "../../shared/components/date-range-form-dialog";
 import { 
 	PositionActionPayloadsDialogComponent, 
 	PositionHeadlinesDialogComponent, 
@@ -291,7 +304,9 @@ export class NavService implements INavService {
 	* @param payload
 	* @returns MatDialogRef<any>
 	* */
-	public displayTradeExecutionPayloadDialog(payload: IBinanceTradeExecutionPayload): MatDialogRef<any> {
+	public displayTradeExecutionPayloadDialog(
+        payload: IBinanceTradeExecutionPayload
+    ): MatDialogRef<any> {
 		return this.dialog.open(TradeExecutionPayloadDialogComponent, {
 			hasBackdrop: this._app.layout.value != "mobile", // Mobile optimization
 			panelClass: "small-dialog",
@@ -595,7 +610,8 @@ export class NavService implements INavService {
 	public scrollTop(container?: string): void {
 		try {
 			// Retrieve the element
-			const el: HTMLElement|null = this.document.querySelector(container || ".mat-drawer-content");
+			const el: HTMLElement|null = 
+                this.document.querySelector(container || ".mat-drawer-content");
 			
 			// If the element was found - scroll
 			if (el) {

@@ -87,7 +87,6 @@ import {
 import {
 	AppService,
 	ChartService,
-	ModelSelectionService,
 	NavService,
 	ValidationsService,
 } from "./services";
@@ -218,7 +217,6 @@ import { AppComponent } from "./app.component";
 		/* Services */ 
 		AppService,
         ChartService,
-		ModelSelectionService,
 		NavService,
 		ValidationsService,
 	],

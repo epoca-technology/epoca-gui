@@ -29,7 +29,7 @@ export class ValidationsService implements IValidationsService{
 	* */
 	public emailValid(control: AbstractControl): {invalidEmail: boolean}|null {
 		if(control && typeof control.value == "string" && control.value.length) {
-			const regx: any = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+			const regx: RegExp = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 			if (!regx.test(control.value)) {
 				return {invalidEmail: true}
 			} else {
@@ -135,7 +135,7 @@ export class ValidationsService implements IValidationsService{
 	* */
 	public otpValid(control: AbstractControl): {invalidOTP: boolean}|null {
 		if(control && typeof control.value == "string" && control.value.length) {
-			const regx: any = /^([\d]){6}$/g;
+			const regx: RegExp = /^([\d]){6}$/g;
 			if (!regx.test(control.value)) {
 				return {invalidOTP: true}
 			} else {
@@ -239,54 +239,4 @@ export class ValidationsService implements IValidationsService{
             return {invalidIPNote: true};
         }
 	}
-
-
-
-
-
-
-	/* Epoch */
-
-
-
-
-    /**
-     * Verifies if a provided Epoch ID is valid.
-     * @param id 
-     * @returns boolean
-     */
-	 public epochIDValid(id: string): boolean {
-        return typeof id == "string" && id.length >= 4 && id.length <= 100 && id[0] == "_";
-    }
-
-
-
-	/*
-	* Verifies if an Epoch ID in a control is valid.
-	* @param control
-	* @returns {invalidID: boolean}|null
-	* */
-	public controlEpochIDValid(control: AbstractControl): {invalidID: boolean}|null {
-        if (control && typeof control.value == "string") {
-			const id: string = control.value;
-            if (typeof id == "string" && id.length >= 4 && id.length <= 100 && id[0] == "_") {
-                return null;
-            } else {  return {invalidID: true} }
-        } else {
-            return {invalidID: true};
-        }
-	}
-
-
-	
-
-
-    /**
-     * Verifies if a provided Regression or Prediction Model ID is valid.
-     * @param id 
-     * @returns boolean
-     */
-     public modelIDValid(id: string): boolean {
-        return typeof id == "string" && id.length >= 30 && id.length <= 200;
-    }
 }
