@@ -489,7 +489,8 @@ export class MarketStateDialogComponent implements OnInit, OnDestroy, IMarketSta
                     `* 0: Sideways`,
                     `* -1: Decreasing`,
                     `* -2: Decreasing Strongly`,
-                    `The out-of-the-box configuration has been tested for a significant period of time. However, all the parameters can be tuned in the "Adjustments" section.`,
+                    `-----`,
+                    `The configuration for this module can be fully tuned in Adjustments/Window.`
                 ]
                 break;
             case "volume":
@@ -510,9 +511,9 @@ export class MarketStateDialogComponent implements OnInit, OnDestroy, IMarketSta
                 title = "Coins";
                 content = [
                     `This module aims to have a deep understanding of the short-term price direction for the top cryptocurrencies. `,
-                    `The server establishes a WebSocket Connection to the "Mark Price" for all the installed cryptocurrencies and calculates their state on a real time basis for both rates, BTC and USDT. `,
+                    `Epoca establishes a WebSocket Connection to the "Mark Price" for all the installed cryptocurrencies and calculates their state on a real time basis for both rates, BTC and USDT. `,
                     `The state is calculated the same way as it is for the Window Module. For more information, go to Dashboard/Window/Information.`,
-                    `The out-of-the-box configuration has been tested for a significant period of time. However, all the parameters can be tuned in the "Adjustments" section.`,
+                    `The configuration for this module can be fully tuned in Adjustments/Coins.`
                 ]
                 break;
         }

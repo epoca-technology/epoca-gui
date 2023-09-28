@@ -114,7 +114,8 @@ export class KeyzonesEventsDialogComponent implements OnInit, IKeyZonesEventsDia
 	 */
 	public displayTooltip(): void {
         this._nav.displayTooltip("KeyZone Events", [
-			`A KeyZone Event is created whenever the price increases or decreases significantly and comes in contact with a KeyZone. The support or resistance event remains active until the duration established in the configuration runs out. `,
+			`A KeyZone Event is created whenever the price increases or decreases significantly and comes in contact with a KeyZone. `,
+			`The support or resistance event remains active until the duration established in the configuration runs out. `,
         ]);
 	}
 

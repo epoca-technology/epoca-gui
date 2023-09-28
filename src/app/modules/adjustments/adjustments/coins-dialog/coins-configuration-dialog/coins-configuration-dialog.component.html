@@ -28,18 +28,6 @@
                     <div fxLayout="row" fxLayoutAlign="start start" class="section-container">
                         <div fxFlex>
                             <mat-form-field>
-                                <mat-label>Price Window Size</mat-label>
-                                <input type="number"
-                                       matInput
-                                       formControlName="priceWindowSize"
-                                       autocomplete="off"
-                                       [appDisableControl]="submitting"
-                                       placeholder="e.g. 128">
-                            </mat-form-field>
-                        </div>
-                        <span fxFlex="5"></span>
-                        <div fxFlex>
-                            <mat-form-field>
                                 <mat-label>Price Interval Seconds</mat-label>
                                 <input type="number"
                                        matInput
@@ -47,6 +35,18 @@
                                        autocomplete="off"
                                        [appDisableControl]="submitting"
                                        placeholder="e.g. 30">
+                            </mat-form-field>
+                        </div>
+                        <span fxFlex="5"></span>
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Price Window Size</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="priceWindowSize"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 128">
                             </mat-form-field>
                         </div>
                     </div>

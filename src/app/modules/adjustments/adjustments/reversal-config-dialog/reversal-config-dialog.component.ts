@@ -140,8 +140,12 @@ export class ReversalConfigDialogComponent implements OnInit, IReversalConfigDia
 
 	/* General Tooltip */
 	public generalTooltip(): void {
-		this._nav.displayTooltip("Reversal Configuration", [
-			`@TODO`,
+		this._nav.displayTooltip("Reversal", [
+            `This module aims to identify when a KeyZone Contact Event (Support or Resistance) has the potential to cause a price reversal.`,
+			`Whenever a KeyZone Event (support or resistance) comes into existence, the Reversal Module is activated and starts tracking the behavior of the market.`,
+			`RESISTANCE CONTACT: the Reversal Module analyzes Epoca's indicators to determine if there is enough selling power for the price to reverse (decrease).`,
+			`SUPPORT CONTACT: the Reversal Module analyzes Epoca's indicators to determine if there is enough buying power for the price to reverse (increase).`,
+            `Each indicator has a weight and when the required points are reached, a reversal event is issued.`,
 		]);
 	}
 
@@ -151,7 +155,11 @@ export class ReversalConfigDialogComponent implements OnInit, IReversalConfigDia
 	/* Event Tooltip */
 	public eventTooltip(): void {
 		this._nav.displayTooltip("Reversal Event", [
-			`@TODO`,
+			`Min. Event Score`,
+			`The minimum score required for a resistance event to be issued`,
+			`-----`,
+			`Sort Function`,
+			`The sorting mechanism that will be used to order the symbols that are compliant with the kind of reversal.`,
 		]);
 	}
 
@@ -162,7 +170,7 @@ export class ReversalConfigDialogComponent implements OnInit, IReversalConfigDia
 	/* Score Weights Tooltip */
 	public scoreWeightsTooltip(): void {
 		this._nav.displayTooltip("Reversal Score Weights", [
-			`@TODO`,
+			`The weights by module that will be used to calculate the score. Keep in mind, there are 100 points in the score system.`,
 		]);
 	}
 

@@ -1,6 +1,14 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
-import { ICoin, ICoinsObject, ICoinsScores, ICoinsSummary, MarketStateService, UtilsService } from '../../../../core';
+import { Subscription } from 'rxjs';
+import { 
+    ICoin, 
+    ICoinsObject, 
+    ICoinsScores, 
+    ICoinsSummary, 
+    MarketStateService, 
+    UtilsService 
+} from '../../../../core';
 import { AppService, ILayout, NavService } from '../../../../services';
 import { ICoinsDialogComponent } from './interfaces';
 import { CoinsConfigurationDialogComponent } from './coins-configuration-dialog';
@@ -10,13 +18,14 @@ import { CoinsConfigurationDialogComponent } from './coins-configuration-dialog'
   templateUrl: './coins-dialog.component.html',
   styleUrls: ['./coins-dialog.component.scss']
 })
-export class CoinsDialogComponent implements OnInit, ICoinsDialogComponent {
+export class CoinsDialogComponent implements OnInit, OnDestroy, ICoinsDialogComponent {
     // Input
     @ViewChild("installedSearchControl") installedSearchControl? : ElementRef;
     @ViewChild("availableSearchControl") availableSearchControl? : ElementRef;
 
 	// Layout
 	public layout: ILayout = this._app.layout.value;
+    private layoutSub?: Subscription;
 
 	// Coins
 	public installed: ICoinsObject = {};
@@ -50,6 +59,7 @@ export class CoinsDialogComponent implements OnInit, ICoinsDialogComponent {
 	) { }
 
 	async ngOnInit(): Promise<void> {
+        this.layoutSub = this._app.layout.subscribe((nl: ILayout) => this.layout = nl);
 		try {
 			const summary: ICoinsSummary = await this._ms.getCoinsSummary();
 			this.updateCoins(summary);
@@ -57,6 +67,11 @@ export class CoinsDialogComponent implements OnInit, ICoinsDialogComponent {
 		this.loaded = true;
 	}
 
+
+
+    ngOnDestroy(): void {
+        if (this.layoutSub) this.layoutSub.unsubscribe();
+    }
 
 
 
@@ -288,7 +303,11 @@ export class CoinsDialogComponent implements OnInit, ICoinsDialogComponent {
 	 */
 	public displayTooltip(): void {
         this._nav.displayTooltip("Coins", [
-			`@TODO`,
+			`This module aims to have a deep understanding of the short-term price direction for the top cryptocurrencies. `,
+			`Epoca establishes a WebSocket Connection to the "Mark Price" for all the installed cryptocurrencies and calculates their state on a real time basis for both rates, BTC and USDT. `,
+			`The state is calculated the same way as it is for the Window Module. For more information, go to Dashboard/Window/Information.`,
+            `Cryptocurrencies can be installed and uninstalled at any time. Additionally, there isn't a minimum or a maximum number of coins that can be managed by Epoca. However, it is recommended to only install coins that are dark green since those have the highest volume.`,
+            `The configuration for this module can be fully tuned by clicking in the Configuration Button.`
         ]);
 	}
 

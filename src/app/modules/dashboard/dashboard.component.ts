@@ -1013,7 +1013,8 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
             `* 0: Sideways`,
             `* -1: Decreasing`,
             `* -2: Decreasing Strongly`,
-            `The out-of-the-box configuration has been tested for a significant period of time. However, all the parameters can be tuned in the "Adjustments" section.`,
+            `-----`,
+            `The configuration for this module can be fully tuned in Adjustments/Window.`
         ]);
     }
 

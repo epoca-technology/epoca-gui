@@ -337,10 +337,11 @@ export class KeyzonesDialogComponent implements OnInit, OnDestroy, IKeyZonesDial
 	 */
 	public displayTooltip(): void {
         this._nav.displayTooltip("KeyZones", [
-            `This module aims to identify support and resistance levels, as well as determine their potential strength. `,
-            `To achieve this, the system performs a KeyZones Build every certain period of time, and it calculates their strength based on the Liquidity and the Trading Volume within the KeyZone on a real time basis.`,
+            `This module aims to identify support and resistance levels and manage the life cycle of the price contact events.`,
+            `To achieve this, the Epoca performs a KeyZones Build every certain period of time and works hand in hand with the Window Module in order to generate events.`,
+            `The "strength" of a KeyZone is measured by a score system that makes use of the liquidity within the KeyZone's range in real-time and the trading volume that took place when the KeyZone was first discovered.`,
             `When the price increases or decreases significantly and hits one of these levels, a KeyZone Event is created and remains active for a period of time. `,
-            `The out-of-the-box configuration has been tested for a significant period of time. However, all the parameters can be tuned in the "Adjustments" section.`
+            `The configuration for this module can be fully tuned in Adjustments/KeyZones.`
         ]);
 	}
 

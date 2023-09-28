@@ -265,12 +265,12 @@
                                         <mat-grid-tile *ngIf="state.keyzones.event && state.keyzones.event.k == 's'" 
                                                 class="clickable sell-action-container" role="button" matRipple
                                                 (click)="displayKeyZonesDialog()">
-                                                    <mat-icon>vertical_align_bottom</mat-icon> <p>SUP.</p>
+                                                    <mat-icon>vertical_align_bottom</mat-icon> <p>SUPPORT</p>
                                             </mat-grid-tile>
                                         <mat-grid-tile *ngIf="state.keyzones.event && state.keyzones.event.k == 'r'" 
                                                 class="clickable buy-action-container" role="button" matRipple
                                                 (click)="displayKeyZonesDialog()">
-                                                    <mat-icon>vertical_align_top</mat-icon> <p>RES.</p>
+                                                    <mat-icon>vertical_align_top</mat-icon> <p>RESISTANCE</p>
                                         </mat-grid-tile>
 
 
@@ -281,11 +281,13 @@
                                         <mat-grid-tile *ngIf="state.reversal.k == 1" 
                                                         class="clickable support-reversal-{{reversalScore}}" role="button" matRipple
                                                         (click)="displayReversalState()">
+                                                        <mat-icon svgIcon="rotate_left" class="reversal-icon"></mat-icon> 
                                                         <p>{{state.reversal.e ? 'REVERSED': 'REVERSAL'}}</p>
                                         </mat-grid-tile>
                                         <mat-grid-tile *ngIf="state.reversal.k == -1" 
                                                         class="clickable resistance-reversal-{{reversalScore}}" role="button" matRipple
                                                         (click)="displayReversalState()">
+                                                        <mat-icon svgIcon="rotate_right" class="reversal-icon"></mat-icon> 
                                                         <p>{{state.reversal.e ? 'REVERSED': 'REVERSAL'}}</p>
                                         </mat-grid-tile>
 

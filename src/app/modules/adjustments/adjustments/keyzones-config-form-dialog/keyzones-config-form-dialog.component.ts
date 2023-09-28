@@ -161,9 +161,12 @@ export class KeyzonesConfigFormDialogComponent implements OnInit, IKeyZonesConfi
 
 	/* General Tooltip */
 	public generalTooltip(): void {
-		this._nav.displayTooltip("KeyZones Configuration", [
-			`@TODO`,
-		]);
+		this._nav.displayTooltip("KeyZones", [
+            `This module aims to identify support and resistance levels and manage the life cycle of the price contact events.`,
+            `To achieve this, the Epoca performs a KeyZones Build every certain period of time and works hand in hand with the Window Module in order to generate events.`,
+            `The "strength" of a KeyZone is measured by a score system that makes use of the liquidity within the KeyZone's range in real-time and the trading volume that took place when the KeyZone was first discovered.`,
+            `When the price increases or decreases significantly and hits one of these levels, a KeyZone Event is created and remains active for a period of time. `,
+        ]);
 	}
 
 
@@ -193,6 +196,8 @@ export class KeyzonesConfigFormDialogComponent implements OnInit, IKeyZonesConfi
 	/* Score Weights Tooltip */
 	public scoreWeightsTooltip(): void {
 		this._nav.displayTooltip("KeyZones Score Weights", [
+            `The KeyZones' score can be a number ranging 1 - 10. The higher the score, the higher the probability of a reversal taking place when the price comes in contact with it.`,
+            `-----`,
 			`Volume Intensity`,
 			`The worth of the KeyZone's Volume Intensity`,
 			`-----`,

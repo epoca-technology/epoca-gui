@@ -343,9 +343,12 @@ export class ReversalStateDialogComponent implements OnInit, OnDestroy, IReversa
 	 */
 	public displayTooltip(): void {
         this._nav.displayTooltip("Reversal", [
+            `This module aims to identify when a KeyZone Contact Event (Support or Resistance) has the potential to cause a price reversal.`,
 			`Whenever a KeyZone Event (support or resistance) comes into existence, the Reversal Module is activated and starts tracking the behavior of the market.`,
-			`If a Resistance Event is enabled, the Reversal Module analyzes the market in order to determine if there is enough selling power for the price to reverse. On the other hand, when a Support Event becomes active, it attempts to determine if there is enough buying power to trigger a price reversal.`,
-            `Even though the out-of-the-box configuration has been tested for a significant period of time, all the parameters can be tuned in the Adjustments Section.`
+			`RESISTANCE CONTACT: the Reversal Module analyzes Epoca's indicators to determine if there is enough selling power for the price to reverse (decrease).`,
+			`SUPPORT CONTACT: the Reversal Module analyzes Epoca's indicators to determine if there is enough buying power for the price to reverse (increase).`,
+            `Each indicator has a weight and when the required points are reached, a reversal event is issued.`,
+            `The configuration for this module can be fully tuned in Adjustments/Reversal.`
         ]);
 	}
 

@@ -141,8 +141,10 @@ export class LiquidityConfigurationDialogComponent implements OnInit, ILiquidity
 
 	/* General Tooltip */
 	public generalTooltip(): void {
-		this._nav.displayTooltip("Liquidity Configuration", [
-			`@TODO`,
+		this._nav.displayTooltip("Liquidity", [
+			`This module aims to identify when an abnormal amount of buying/selling liquidity has been placed in Bitcoin's Order Book.`,
+			`To achieve this, Epoca establishes a WebSocket Connection to the "Order Book" and processes the raw data on a real time basis. During this process, the system identifies "Liquidity Peaks" and groups them based on their intensity. `,
+			`Having identified all the peaks within the price range, the "Bid Liquidity Power" is calculated, whose only purpose is to indicate when there is an abnormal amount of buy or sell liquidity in the Order Book.`,
 		]);
 	}
 

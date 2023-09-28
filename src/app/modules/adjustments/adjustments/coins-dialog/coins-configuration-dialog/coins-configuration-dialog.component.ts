@@ -135,8 +135,10 @@ export class CoinsConfigurationDialogComponent implements OnInit, ICoinsConfigur
 
 	/* General Tooltip */
 	public generalTooltip(): void {
-		this._nav.displayTooltip("Coins Configuration", [
-			`@TODO`,
+		this._nav.displayTooltip("Coins", [
+			`This module aims to have a deep understanding of the short-term price direction for the top cryptocurrencies. `,
+			`Epoca establishes a WebSocket Connection to the "Mark Price" for all the installed cryptocurrencies and calculates their state on a real time basis for both rates, BTC and USDT. `,
+			`The state is calculated the same way as it is for the Window Module. For more information, go to Dashboard/Window/Information.`,
 		]);
 	}
 
@@ -146,7 +148,14 @@ export class CoinsConfigurationDialogComponent implements OnInit, ICoinsConfigur
 	/* Build Tooltip */
 	public buildTooltip(): void {
 		this._nav.displayTooltip("Coins Build", [
-			`@TODO`,
+			`Price Interval Seconds`,
+			`The number of seconds that will comprise each interval. The main window's interval is 15 minutes.`,
+			`-----`,
+			`Price Window Size`,
+			`The number of items that comprise the coins' windows. The main window's size is 128 items.`,
+			`-----`,
+			`Supported Coins Interval Hours`,
+			`The duration of the interval that refreshes and evaluates the supported coins.`,
 		]);
 	}
 
@@ -157,7 +166,11 @@ export class CoinsConfigurationDialogComponent implements OnInit, ICoinsConfigur
 	/* State Tooltip */
 	public stateTooltip(): void {
 		this._nav.displayTooltip("Coins State", [
-			`@TODO`,
+			`Requirement%`,
+			`The % change required for the window splits to have a state (1 or -1)`,
+			`-----`,
+			`Strong Requirement%`,
+			`The % change required for the window splits to have a strong state (2 or -2)`
 		]);
 	}
 
