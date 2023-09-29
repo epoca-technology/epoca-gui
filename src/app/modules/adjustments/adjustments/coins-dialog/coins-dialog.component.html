@@ -54,10 +54,11 @@
                     class="clickable" role="button" matRipple fxLayout="row" fxLayoutAlign="center center"
                     (click)="uninstallCoin(item.value)"
                     [ngClass]="{
-                        'buy-action-container': scores[item.key] >= 4,
-                        'neutral-action-container': scores[item.key] == 3,
-                        'sell-action-container': installedUnsupported[item.key] || scores[item.key] <= 2,
-                        'weak-state': scores[item.key] != 1 && scores[item.key] != 5 && !installedUnsupported[item.key]
+                        'increase-2-action-container': scores[item.key] == 5,
+                        'increase-1-action-container': scores[item.key] == 4,
+                        'sideways-action-container': scores[item.key] == 3,
+                        'decrease-1-action-container': scores[item.key] == 2,
+                        'decrease-2-action-container': scores[item.key] == 1 || installedUnsupported[item.key]
                     }">
                     <p style="max-width:40px" class="truncate">{{item.key | baseAssetName}}</p>
                 </mat-grid-tile>
@@ -89,10 +90,11 @@
                 <mat-grid-tile *ngFor="let item of available | keyvalue | filter: availableSearch"
                     class="clickable" role="button" matRipple fxLayout="row" fxLayoutAlign="center center"
                     [ngClass]="{
-                        'buy-action-container': scores[item.key] >= 4,
-                        'neutral-action-container': scores[item.key] == 3,
-                        'sell-action-container': scores[item.key] <= 2,
-                        'weak-state': scores[item.key] != 1 && scores[item.key] != 5
+                        'increase-2-action-container': scores[item.key] == 5,
+                        'increase-1-action-container': scores[item.key] == 4,
+                        'sideways-action-container': scores[item.key] == 3,
+                        'decrease-1-action-container': scores[item.key] == 2,
+                        'decrease-2-action-container': scores[item.key] == 1
                     }"
                     (click)="installCoin(item.value)">
                     <p style="max-width:40px" class="truncate">{{item.key | baseAssetName}}</p>
