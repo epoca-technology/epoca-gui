@@ -59,12 +59,13 @@
                             <h6>Bid Liq. Power</h6>
                             <span fxFlex></span>
                             <div [ngClass]="{
-                                'square-badge-success': state.blp >= 55,
-                                'square-badge-error': state.blp <= 45,
-                                'square-badge-neutral': state.blp > 45 && state.blp < 55,
-                                'weak-state':   (state.blp >= 55 && state.blp < 75) || 
-                                                (state.blp < 45 && state.blp > 25) ||
-                                                state.blp > 45 && state.blp < 55
+                                'square-badge-sideways': state.blp == 50,
+                                'square-badge-increase-0': state.blp > 50,
+                                'square-badge-increase-1': state.blp > 55,
+                                'square-badge-increase-2': state.blp > 70,
+                                'square-badge-decrease-0': state.blp < 50,
+                                'square-badge-decrease-1': state.blp < 45,
+                                'square-badge-decrease-2': state.blp < 30
                             }">{{state.blp | number: '1.0-2'}}%</div>
                         </div>
                         <div fxLayout="row" fxLayoutAlign="center center" class="full-width">

@@ -62,13 +62,12 @@
 }
 @for $i from 0 through 100 {
     $width: $i * 1%;
-    .support-reversal-#{$i} {
+    .increase-action-container-#{$i} {
         @extend .action-container;
         background: linear-gradient(90deg, var(--increase-2-color) $width, var(--increase-0-color) $width);
     }
-    .resistance-reversal-#{$i} {
+    .decrease-action-container-#{$i} {
         @extend .action-container;
-        //background: linear-gradient(90deg, var(--decrease-2-color)  $width, #E53935 $width);
         background: linear-gradient(90deg, var(--decrease-2-color)  $width, var(--decrease-0-color) $width);
     }
 }

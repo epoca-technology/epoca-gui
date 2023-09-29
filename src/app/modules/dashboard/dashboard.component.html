@@ -272,13 +272,13 @@
                                                         class="clickable sideways-action-container" role="button" matRipple
                                                         (click)="displayKeyZoneEventsHistory()"><p>REVERSAL</p></mat-grid-tile>
                                         <mat-grid-tile *ngIf="state.reversal.k == 1" 
-                                                        class="clickable support-reversal-{{reversalScore}}" role="button" matRipple
+                                                        class="clickable increase-action-container-{{reversalScore}}" role="button" matRipple
                                                         (click)="displayReversalState()">
                                                         <mat-icon svgIcon="rotate_left" class="reversal-icon"></mat-icon> 
                                                         <p>{{state.reversal.e ? 'REVERSED': 'REVERSAL'}}</p>
                                         </mat-grid-tile>
                                         <mat-grid-tile *ngIf="state.reversal.k == -1" 
-                                                        class="clickable resistance-reversal-{{reversalScore}}" role="button" matRipple
+                                                        class="clickable decrease-action-container-{{reversalScore}}" role="button" matRipple
                                                         (click)="displayReversalState()">
                                                         <mat-icon svgIcon="rotate_right" class="reversal-icon"></mat-icon> 
                                                         <p>{{state.reversal.e ? 'REVERSED': 'REVERSAL'}}</p>
@@ -289,17 +289,10 @@
                                                         (click)="displayCoinDialog()"><p>COINS</p></mat-grid-tile>
 
                                         <!-- Liquidity -->
-                                        <mat-grid-tile class="clickable" role="button" matRipple
+                                        <mat-grid-tile  class="clickable" 
+                                                        role="button" matRipple
                                                         (click)="displayLiquidityDialog()"
-                                                        [ngClass]="{
-                                                            'sideways-action-container': state.liquidity.blp == 50,
-                                                            'increase-0-action-container': state.liquidity.blp > 50,
-                                                            'increase-1-action-container': state.liquidity.blp > 55,
-                                                            'increase-2-action-container': state.liquidity.blp > 70,
-                                                            'decrease-0-action-container': state.liquidity.blp < 50,
-                                                            'decrease-1-action-container': state.liquidity.blp < 45,
-                                                            'decrease-2-action-container': state.liquidity.blp < 30
-                                                        }"><p>LIQUIDITY</p></mat-grid-tile>
+                                                        [ngClass]="liquidityIndicatorClass"><p>LIQUIDITY</p></mat-grid-tile>
 
 
                                         <!-- Volume -->

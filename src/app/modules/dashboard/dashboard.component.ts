@@ -92,6 +92,9 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
     public generalCoinClass: string = "neutral-neutral";
     public coinsTileClasses: {[symbol: string]: string} = {};
 
+    // Liquidity
+    public liquidityIndicatorClass: string = "sideways-action-container";
+
     // Reversal
     public reversalScore: number = 0;
 
@@ -126,9 +129,6 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
 
                 // Update charts
                 this.onStateUpdate();
-
-                // If there is a reversal, store a rounded version of the score
-                if (this.state.reversal.k != 0) this.reversalScore = Math.floor(this.state.reversal.s);
 
                 // Set loading state
                 if (!this.stateLoaded) {
@@ -200,6 +200,12 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         // Update the coins state
         this.updateCoinsState();
 
+        // Process the liquidity power values
+        this.liquidityIndicatorClass = this.getLiquidityIndicatorClass();
+
+        // If there is a reversal, store a rounded version of the score
+        if (this.state.reversal.k != 0) this.reversalScore = Math.floor(this.state.reversal.s);
+
         // Update the title
         const price: string = <string>this._utils.outputNumber(
             this.state.window.w[this.state.window.w.length - 1].c, 
@@ -208,6 +214,29 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         this.titleService.setTitle(`$${price}`);
     }
 
+
+
+
+
+    /**
+     * Based on the current liquidity power, it calculates the class that should be applied
+     * to the liquidity indicator grid cell.
+     * @returns string
+     */
+    private getLiquidityIndicatorClass(): string {
+        // Init the BLP values
+        const bidLiquidityPower = Math.floor(this.state.liquidity.blp);
+        const askLiquidityPower = Math.floor(100 - this.state.liquidity.blp);
+
+        // Return the class accordingly
+        if (bidLiquidityPower > askLiquidityPower) {
+            return `increase-action-container-${bidLiquidityPower}`;
+        } else if (askLiquidityPower > bidLiquidityPower) {
+            return `decrease-action-container-${askLiquidityPower}`;
+        } else {
+            return "sideways-action-container";
+        }
+    }
 
 
 
