@@ -18,32 +18,10 @@ export class ServerService implements IServerService {
 
     /* Retrievers */
 
-	/**
-	 * Retrieves the server data object that contains both, info &
-     * resources
-	 * @returns Promise<IServerData>
-	 */
-    /*public getServerData(): Promise<IServerData> {
-		return this._api.request("get","server/getServerData", {}, true);
-	}*/
 
 
 
-
-
-
-
-
-	/**
-	 * Retrieves the updated server resources
-	 * @returns Promise<IServerResources>
-	 */
-    /*public getServerResources(): Promise<IServerResources> {
-		return this._api.request("get","server/getServerResources", {}, true);
-	}*/
-
-
-
+    
 
 
 

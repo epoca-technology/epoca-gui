@@ -32,7 +32,11 @@ export class CandlestickService implements ICandlestickService {
 	 * @param intervalMinutes?
 	 * @returns Promise<ICandlestick[]>
 	 */
-	public getForPeriod(start: number, end: number, intervalMinutes?: number): Promise<ICandlestick[]> {
+	public getForPeriod(
+        start: number, 
+        end: number, 
+        intervalMinutes?: number
+    ): Promise<ICandlestick[]> {
 		// If the interval was not provided, set the prediction interval
 		if (typeof intervalMinutes != "number") intervalMinutes = this.predictionCandlestickInterval;
 
@@ -73,7 +77,9 @@ export class CandlestickService implements ICandlestickService {
      * @returns Promise<IBackgroundTaskInfo>
      */
     public generatePredictionCandlesticksFile(otp: string): Promise<IBackgroundTaskInfo> { 
-        return this._api.request("post","candlestick/generatePredictionCandlesticksFile", {}, true, otp);
+        return this._api.request("post","candlestick/generatePredictionCandlesticksFile", {
+            
+        }, true, otp);
     }
 
 

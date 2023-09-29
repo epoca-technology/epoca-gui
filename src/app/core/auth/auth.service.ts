@@ -41,7 +41,13 @@ export class AuthService implements IAuthService {
         private ngZone: NgZone
     ) { 
         // Initialize the Auth
-        this.auth = initializeAuth(this._db.firebaseDB.app, {persistence: [indexedDBLocalPersistence], popupRedirectResolver: undefined});
+        this.auth = initializeAuth(
+            this._db.firebaseDB.app, 
+            {
+                persistence: [indexedDBLocalPersistence], 
+                popupRedirectResolver: undefined
+            }
+        );
 
         // Initialize the uid observable
         this.uid =  new BehaviorSubject<string|null|undefined>(undefined);
@@ -70,7 +76,9 @@ export class AuthService implements IAuthService {
         );
 
         // Listen to ID Token changes and populate the local property
-        onIdTokenChanged(this.auth, async (user: User|null) => { if (user) this.idToken = await user.getIdToken() }, e => console.error(e) );
+        onIdTokenChanged(this.auth, async (user: User|null) => { 
+            if (user) this.idToken = await user.getIdToken() 
+        }, e => console.error(e) );
     }
 
 
@@ -220,7 +228,8 @@ export class AuthService implements IAuthService {
      * @returns void
      */
     private initializeAPISecret(): void {
-        this.apiSecretConnection = onValue( this._db.getApiSecretRef(this.user!.uid), (snapshot: DataSnapshot) => {
+        this.apiSecretConnection = onValue( 
+            this._db.getApiSecretRef(this.user!.uid), (snapshot: DataSnapshot) => {
                 this.ngZone.run(() => {
                     const snapVal: string|null = snapshot.val();
                     if (snapVal) { 
@@ -246,7 +255,9 @@ export class AuthService implements IAuthService {
      * @returns void
      */
     private deactivateAPISecret(): void {
-        if (this.apiSecretInitialized && typeof this.apiSecretConnection == "function") this.apiSecretConnection();
+        if (this.apiSecretInitialized && typeof this.apiSecretConnection == "function") {
+            this.apiSecretConnection();
+        }
         this.apiSecret = undefined;
         this.apiSecretInitialized = false; 
     }
@@ -304,7 +315,9 @@ export class AuthService implements IAuthService {
         }
 
         // Retrieve the secret from the db
-        const snap: DataSnapshot = await get(child(this._db.firebaseDBRef, this._db.getApiSecretPath(this.user.uid)));
+        const snap: DataSnapshot = await get(
+            child(this._db.firebaseDBRef, this._db.getApiSecretPath(this.user.uid))
+        );
         const snapVal: string|null = snap.val();
 
         // Make sure the value is valid

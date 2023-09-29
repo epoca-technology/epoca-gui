@@ -312,9 +312,9 @@ export class DashboardComponent implements OnInit, OnDestroy, IDashboardComponen
         const currentPrice: number = this.state.window.w[this.state.window.w.length - 1].c;
 
         // Window State Color
-        let windowStateColor: string = this._chart.neutralColor;
-        if (currentPrice > openPrice) { windowStateColor = this._chart.upwardColor }
-        else if (openPrice > currentPrice) { windowStateColor = this._chart.downwardColor }
+        let windowStateColor: string = this._ms.colors.sideways;
+        if (currentPrice > openPrice) { windowStateColor = this._ms.colors.increase_2 }
+        else if (openPrice > currentPrice) { windowStateColor = this._ms.colors.decrease_2 }
 
         // Annotation Offset
         let annOffset: {x: number, y: number} = {x: 55, y: 0};

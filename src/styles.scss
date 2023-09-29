@@ -12,26 +12,26 @@
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$plutus-primary: mat.define-palette(mat.$gray-palette, 900);
-$plutus-accent: mat.define-palette(mat.$gray-palette, 900);
+$epoca-primary: mat.define-palette(mat.$gray-palette, 900);
+$epoca-accent: mat.define-palette(mat.$gray-palette, 900);
 
 // The warn palette is optional (defaults to red).
-$plutus-warn: mat.define-palette(mat.$red-palette, 900);
+$epoca-warn: mat.define-palette(mat.$red-palette, 900);
 
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as "color" or "typography".
-$plutus-theme: mat.define-light-theme((
+$epoca-theme: mat.define-light-theme((
 		color: (
-				primary: $plutus-primary,
-				accent: $plutus-accent,
-				warn: $plutus-warn,
+				primary: $epoca-primary,
+				accent: $epoca-accent,
+				warn: $epoca-warn,
 		)
 ));
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
-@include mat.all-component-themes($plutus-theme);
+@include mat.all-component-themes($epoca-theme);
 
 /* You can add global styles to this file, and also import other style files */
 
@@ -47,14 +47,22 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;overscroll-b
 
 /* Global Variables */
 :root {
-	// Colors
+	// Theme Colors
 	--primary-color: #000000;
 	--success-color: #00695C;
 	--error-color: #B71C1C;
 	--info-color: #01579B;
 	--light-text-color: #757575;
 	--light-background-color: #F5F5F5;
-	--neutral-color: #78909C;
+
+    // Market State Colors
+	--sideways-color: #78909C;
+    --increase-0-color: #4DB6AC;
+    --increase-1-color: #00897B;
+    --increase-2-color: #004D40;
+    --decrease-0-color: #E57373;
+    --decrease-1-color: #E53935;
+    --decrease-2-color: #B71C1C;
 
 	// Text
 	--normal-text-size: 15px;
@@ -139,9 +147,19 @@ div {min-width: 0;}
 .success-color { color: var(--success-color) };
 .error-color { color: var(--error-color) };
 .light-text { color: var(--light-text-color) };
-.neutral { color: var(--neutral-color) };
+.neutral { color: var(--sideways-color) };
 
 
+
+
+/* Market State Colors */
+.sideways-color { color: #78909C };
+.increase-0-color { color: #4DB6AC};
+.increase-1-color { color: #00897B};
+.increase-2-color { color: #004D40 };
+.decrease-0-color { color: #E57373 };
+.decrease-1-color { color: #E53935 };
+.decrease-2-color { color: #B71C1C };
 
 
 
@@ -194,7 +212,9 @@ strong { font-weight: 500 }
 
 
 // Truncate Text
-.truncate {text-overflow: ellipsis!important;overflow: hidden!important;white-space: nowrap!important;}
+.truncate {
+    text-overflow: ellipsis!important;overflow: hidden!important;white-space: nowrap!important;
+}
 
 
 
@@ -298,7 +318,7 @@ ul li ul, ol li ul { padding: 0 0 0 15px;}
 }
 .square-badge-neutral { 
 	@extend .square-badge;
-	background-color: var(--neutral-color)!important;  
+	background-color: var(--sideways-color)!important;  
 }
 
 
@@ -337,17 +357,23 @@ ul li ul, ol li ul { padding: 0 0 0 15px;}
 
 // Success
 .success-snackbar {background: var(--success-color);color:#FFFFFF;}
-.success-snackbar .mat-simple-snackbar span{overflow-wrap: break-word!important;max-width: 100%!important;}
+.success-snackbar .mat-simple-snackbar span{
+    overflow-wrap: break-word!important;max-width: 100%!important;
+}
 .success-snackbar button { color:#FFFFFF}
 
 // Info
 .info-snackbar {background: var(--info-color);color:#FFFFFF;}
-.info-snackbar .mat-simple-snackbar span{overflow-wrap: break-word!important;max-width: 100%!important;}
+.info-snackbar .mat-simple-snackbar span{
+    overflow-wrap: break-word!important;max-width: 100%!important;
+}
 .info-snackbar button { color:#FFFFFF}
 
 // Warn
 .warn-snackbar {background: var(--error-color);color:#FFFFFF;}
-.warn-snackbar .mat-simple-snackbar span{overflow-wrap: break-word!important;max-width: 100%!important;}
+.warn-snackbar .mat-simple-snackbar span{
+    overflow-wrap: break-word!important;max-width: 100%!important;
+}
 .warn-snackbar button { color:#FFFFFF}
 
 
@@ -398,9 +424,16 @@ ul li ul, ol li ul { padding: 0 0 0 15px;}
 
 /* Full Screen Desktop Dialog */
 // @IMPORTANT: Set hasBackdrop to false when displaying this dialog
-.full-screen-dialog  { width:100%!important; height:100%!important; max-width: 100%!important; max-height: 100%!important;}
+.full-screen-dialog  { 
+    width:100%!important; 
+    height:100%!important;
+    max-width: 100%!important; 
+    max-height: 100%!important;
+}
 .full-screen-dialog .mat-dialog-container {padding:0;margin:0;}
-.full-screen-dialog .mat-dialog-container .mat-dialog-title {width: 100%; padding: 0 0 0 10px;margin:0;}
+.full-screen-dialog .mat-dialog-container .mat-dialog-title {
+    width: 100%; padding: 0 0 0 10px;margin:0;
+}
 .full-screen-dialog .mat-dialog-container .mat-dialog-content {
 	padding:0;
 	margin:0;
@@ -426,7 +459,9 @@ ul li ul, ol li ul { padding: 0 0 0 15px;}
 .light-dialog .mat-dialog-container{padding:0;margin:0;}
 
 // Title
-.light-dialog .mat-dialog-container .mat-dialog-title {width: 100%; padding: 5px 0 5px 10px;margin:0;}
+.light-dialog .mat-dialog-container .mat-dialog-title {
+    width: 100%; padding: 5px 0 5px 10px;margin:0;
+}
 .light-dialog .mat-dialog-container .mat-dialog-title h1 {font-size: 18px!important;margin:0;}
 
 // Content
@@ -435,7 +470,9 @@ ul li ul, ol li ul { padding: 0 0 0 15px;}
 .light-dialog .mat-dialog-container .mat-dialog-content p {font-size: 14px}
 
 // Button Actions
-.light-dialog .mat-dialog-container .mat-dialog-actions {padding:0;margin:0!important;width: 100%;height:20px;}
+.light-dialog .mat-dialog-container .mat-dialog-actions {
+    padding:0;margin:0!important;width: 100%;height:20px;
+}
 .light-dialog .mat-dialog-container .mat-dialog-actions .mat-button {height:100%;}
 
 
@@ -778,7 +815,9 @@ form .mat-checkbox-inner-container{
 
 /* Formula Text */
 .formula, .formula p{letter-spacing: .12em; font-size:14px;margin:0!important}
-.compact-formula, .compact-formula p{letter-spacing: 0.02em!important; font-size:14px;margin:0!important}
+.compact-formula, .compact-formula p{
+    letter-spacing: 0.02em!important; font-size:14px;margin:0!important
+}
 
 
 
@@ -879,7 +918,9 @@ form .mat-checkbox-inner-container{
 			font-weight: 500;
 		}
 		.level-size { font-size:13px;margin-top:5px!important; }
-		.level-acum-margin { font-size: 11px; color: var(--light-text-color); margin-top:-5px!important; }
+		.level-acum-margin { 
+            font-size: 11px; color: var(--light-text-color); margin-top:-5px!important; 
+        }
 	}
 	.inactive { opacity: 0.5;}
 }
@@ -891,8 +932,8 @@ form .mat-checkbox-inner-container{
 
 
 /* Market States */
-.weak-state { opacity: 0.8; }
-.very-weak-state { opacity: 0.6; }
+/* .weak-state { opacity: 0.8; }
+.very-weak-state { opacity: 0.6; } */
 .state-badge { .mat-icon {max-height:17px;}}
 .state-badge-caret { max-height:15px!important;max-width:18px; }
 
@@ -910,7 +951,46 @@ form .mat-checkbox-inner-container{
 	
 	.state-icon { width: 17px;max-height:15px;margin-right:3px;}
 }
-.buy-action-container {
+
+.sideways-action-container {
+    @extend .action-container;
+    background-color: var(--sideways-color)!important; 
+}
+
+.increase-0-action-container {
+    @extend .action-container;
+    background-color: var(--increase-0-color)!important; 
+}
+.increase-1-action-container {
+    @extend .action-container;
+    background-color: var(--increase-1-color)!important; 
+}
+.increase-2-action-container {
+    @extend .action-container;
+    background-color: var(--increase-2-color)!important; 
+}
+
+.decrease-0-action-container {
+    @extend .action-container;
+    background-color: var(--decrease-0-color)!important; 
+}
+.decrease-1-action-container {
+    @extend .action-container;
+    background-color: var(--decrease-1-color)!important; 
+}
+.decrease-2-action-container {
+    @extend .action-container;
+    background-color: var(--decrease-2-color)!important; 
+}
+
+
+.placeholder-action-container {
+    @extend .action-container;
+    background-color: #CFD8DC!important; 
+}
+
+
+/* .buy-action-container {
     @extend .action-container;
     background-color: var(--success-color)!important; 
 }
@@ -920,18 +1000,10 @@ form .mat-checkbox-inner-container{
 }
 .neutral-action-container {
     @extend .action-container;
-    background-color: var(--neutral-color)!important; 
-}
+    background-color: var(--sideways-color)!important; 
+} */
 
-.placeholder-action-container {
-    @extend .action-container;
-    background-color: #CFD8DC!important; 
-}
 
-/*.pagination-action-container {
-    @extend .action-container;
-    background-color: #607D8B!important; 
-}*/
 
 
 
@@ -940,6 +1012,14 @@ form .mat-checkbox-inner-container{
 
 
 .info-icon { max-height: 20px!important;}
+
+
+
+
+
+
+
+
 
 
 
@@ -1056,7 +1136,9 @@ form .mat-checkbox-inner-container{
 	.large-file-button:focus {outline:none;background: var(--light-background-color)}
 
 	// Fake button
-	.fake-button:hover { cursor: pointer!important; background: var(--light-background-color)!important; }
+	.fake-button:hover { 
+        cursor: pointer!important; background: var(--light-background-color)!important; 
+    }
 
 
 }

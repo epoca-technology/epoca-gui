@@ -2,8 +2,6 @@
 
 export interface IServerService {
     // Retrievers
-    //getServerData(): Promise<IServerData>,
-    //getServerResources(): Promise<IServerResources>,
 
     // Alarms
     setAlarmsConfiguration(alarms: IAlarmsConfig, otp: string): Promise<void>

@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { HttpHeaders } from "@angular/common/http";
 import { lastValueFrom } from "rxjs";
-import { environment } from "src/environments/environment";
+import { environment } from "../../../environments/environment";
 import { IApiService, IAPIResponse } from "./interfaces";
 import { ExternalRequestService, IHeadersConfig, IHTTPMethod } from "../external-request";
 import { AuthService } from "../auth";
@@ -12,7 +12,8 @@ import { UtilsService } from "../utils";
 })
 export class ApiService implements IApiService {
     // API URL
-    public readonly url: string = environment.localServer ? environment.apiURL.local: environment.apiURL.external;
+    public readonly url: string = 
+        environment.localServer ? environment.apiURL.local: environment.apiURL.external;
 
 
 
@@ -86,7 +87,9 @@ export class ApiService implements IApiService {
 		};
 
         // Send the request
-        const apiResponse: IAPIResponse = await lastValueFrom(this._request.request(method, url, finalBody, httpOptions));
+        const apiResponse: IAPIResponse = await lastValueFrom(
+            this._request.request(method, url, finalBody, httpOptions)
+        );
 
         // Check if the request was successful
         if (apiResponse && apiResponse.success) {
@@ -97,7 +100,10 @@ export class ApiService implements IApiService {
         // If the request was unsuccessful, check if the error can be fixed and try again if so
         else {
             // Init error values
-            const errorMessage: string = apiResponse && apiResponse.error ? apiResponse.error: "The request received an incomplete API Response object.";
+            const errorMessage: string = 
+                apiResponse && apiResponse.error ? 
+                    apiResponse.error: 
+                    "The request received an incomplete API Response object.";
 
             // If it hasn"t retried, check if the error can be fixed
             if (requiresAuth && !retried) {

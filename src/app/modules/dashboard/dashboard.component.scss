@@ -21,12 +21,6 @@
     .state-badge { .mat-icon {max-height:17px;}}
 
 
-    .very-strong-state {
-        filter: brightness(75%);
-    }
-
-
-
 
     .reversal-icon {
         width: 17px;margin-right:3px;
@@ -70,11 +64,12 @@
     $width: $i * 1%;
     .support-reversal-#{$i} {
         @extend .action-container;
-        background: linear-gradient(90deg, #004D40 $width, #00897B $width);
+        background: linear-gradient(90deg, var(--increase-2-color) $width, var(--increase-0-color) $width);
     }
     .resistance-reversal-#{$i} {
         @extend .action-container;
-        background: linear-gradient(90deg, #B71C1C  $width, #E53935 $width);
+        //background: linear-gradient(90deg, var(--decrease-2-color)  $width, #E53935 $width);
+        background: linear-gradient(90deg, var(--decrease-2-color)  $width, var(--decrease-0-color) $width);
     }
 }
 
@@ -83,19 +78,19 @@
 
 .volume-state-0 {
     @extend .action-container;
-    background-color: #78909C;
+    background-color: var(--sideways-color);
 }
 .volume-state-1 {
     @extend .action-container;
-    background: linear-gradient(90deg, #004D40 33%, #00897B 33%);
+    background: linear-gradient(90deg, var(--increase-2-color) 33%, var(--increase-0-color) 33%);
 }
 .volume-state-2 {
     @extend .action-container;
-    background: linear-gradient(90deg, #004D40 66%, #00897B 66%);
+    background: linear-gradient(90deg, var(--increase-2-color) 66%, var(--increase-0-color) 66%);
 }
 .volume-state-3 {
     @extend .action-container;
-    background: linear-gradient(90deg, #004D40 100%, #00897B 100%);
+    background: linear-gradient(90deg, var(--increase-2-color) 100%, var(--increase-0-color) 100%);
 }
 
 
@@ -107,39 +102,39 @@
 /* Coins' States */
 
 // Strong Sell Variations
-.strong-sell-strong-sell { @extend .action-container; background: linear-gradient(90deg, #B71C1C 50%, #B71C1C 50%);}
-.strong-sell-sell { @extend .action-container; background: linear-gradient(90deg, #B71C1C 50%, #D32F2F 50%);}
-.strong-sell-neutral { @extend .action-container; background: linear-gradient(90deg, #B71C1C 50%, #78909C 50%);}
-.strong-sell-buy { @extend .action-container; background: linear-gradient(90deg, #B71C1C 50%, #00796B 50%);}
-.strong-sell-strong-buy { @extend .action-container; background: linear-gradient(90deg, #B71C1C 50%, #004D40 50%);}
+.strong-sell-strong-sell { @extend .action-container; background: linear-gradient(90deg, var(--decrease-2-color) 50%, var(--decrease-2-color) 50%);}
+.strong-sell-sell { @extend .action-container; background: linear-gradient(90deg, var(--decrease-2-color) 50%, var(--decrease-1-color) 50%);}
+.strong-sell-neutral { @extend .action-container; background: linear-gradient(90deg, var(--decrease-2-color) 50%, var(--sideways-color) 50%);}
+.strong-sell-buy { @extend .action-container; background: linear-gradient(90deg, var(--decrease-2-color) 50%, var(--increase-1-color) 50%);}
+.strong-sell-strong-buy { @extend .action-container; background: linear-gradient(90deg, var(--decrease-2-color) 50%, var(--increase-2-color) 50%);}
 
 // Sell Variations
-.sell-strong-sell { @extend .action-container; background: linear-gradient(90deg, #D32F2F 50%, #B71C1C 50%);}
-.sell-sell { @extend .action-container; background: linear-gradient(90deg, #D32F2F 50%, #D32F2F 50%);}
-.sell-neutral { @extend .action-container; background: linear-gradient(90deg, #D32F2F 50%, #78909C 50%);}
-.sell-buy { @extend .action-container; background: linear-gradient(90deg, #D32F2F 50%, #00796B 50%);}
-.sell-strong-buy { @extend .action-container; background: linear-gradient(90deg, #D32F2F 50%, #004D40 50%);}
+.sell-strong-sell { @extend .action-container; background: linear-gradient(90deg, var(--decrease-1-color) 50%, var(--decrease-2-color) 50%);}
+.sell-sell { @extend .action-container; background: linear-gradient(90deg, var(--decrease-1-color) 50%, var(--decrease-1-color) 50%);}
+.sell-neutral { @extend .action-container; background: linear-gradient(90deg, var(--decrease-1-color) 50%, var(--sideways-color) 50%);}
+.sell-buy { @extend .action-container; background: linear-gradient(90deg, var(--decrease-1-color) 50%, var(--increase-1-color) 50%);}
+.sell-strong-buy { @extend .action-container; background: linear-gradient(90deg, var(--decrease-1-color) 50%, var(--increase-2-color) 50%);}
 
 // Neutral Variations
-.neutral-strong-sell { @extend .action-container; background: linear-gradient(90deg, #78909C 50%, #B71C1C 50%);}
-.neutral-sell { @extend .action-container; background: linear-gradient(90deg, #78909C 50%, #D32F2F 50%);}
-.neutral-neutral { @extend .action-container; background: linear-gradient(90deg, #78909C 50%, #78909C 50%);}
-.neutral-buy { @extend .action-container; background: linear-gradient(90deg, #78909C 50%, #00796B 50%);}
-.neutral-strong-buy { @extend .action-container; background: linear-gradient(90deg, #78909C 50%, #004D40 50%);}
+.neutral-strong-sell { @extend .action-container; background: linear-gradient(90deg, var(--sideways-color) 50%, var(--decrease-2-color) 50%);}
+.neutral-sell { @extend .action-container; background: linear-gradient(90deg, var(--sideways-color) 50%, var(--decrease-1-color) 50%);}
+.neutral-neutral { @extend .action-container; background: linear-gradient(90deg, var(--sideways-color) 50%, var(--sideways-color) 50%);}
+.neutral-buy { @extend .action-container; background: linear-gradient(90deg, var(--sideways-color) 50%, var(--increase-1-color) 50%);}
+.neutral-strong-buy { @extend .action-container; background: linear-gradient(90deg, var(--sideways-color) 50%, var(--increase-2-color) 50%);}
 
 // Buy Variations
-.buy-strong-sell { @extend .action-container; background: linear-gradient(90deg, #00796B 50%, #B71C1C 50%);}
-.buy-sell { @extend .action-container; background: linear-gradient(90deg, #00796B 50%, #D32F2F 50%);}
-.buy-neutral { @extend .action-container; background: linear-gradient(90deg, #00796B 50%, #78909C 50%);}
-.buy-buy { @extend .action-container; background: linear-gradient(90deg, #00796B 50%, #00796B 50%);}
-.buy-strong-buy { @extend .action-container; background: linear-gradient(90deg, #00796B 50%, #004D40 50%);}
+.buy-strong-sell { @extend .action-container; background: linear-gradient(90deg, var(--increase-1-color) 50%, var(--decrease-2-color) 50%);}
+.buy-sell { @extend .action-container; background: linear-gradient(90deg, var(--increase-1-color) 50%, var(--decrease-1-color) 50%);}
+.buy-neutral { @extend .action-container; background: linear-gradient(90deg, var(--increase-1-color) 50%, var(--sideways-color) 50%);}
+.buy-buy { @extend .action-container; background: linear-gradient(90deg, var(--increase-1-color) 50%, var(--increase-1-color) 50%);}
+.buy-strong-buy { @extend .action-container; background: linear-gradient(90deg, var(--increase-1-color) 50%, var(--increase-2-color) 50%);}
 
 // Strong Buy Variations
-.strong-buy-strong-sell { @extend .action-container; background: linear-gradient(90deg, #004D40 50%, #B71C1C 50%);}
-.strong-buy-sell { @extend .action-container; background: linear-gradient(90deg, #004D40 50%, #D32F2F 50%);}
-.strong-buy-neutral { @extend .action-container; background: linear-gradient(90deg, #004D40 50%, #78909C 50%);}
-.strong-buy-buy { @extend .action-container; background: linear-gradient(90deg, #004D40 50%, #00796B 50%);}
-.strong-buy-strong-buy { @extend .action-container; background: linear-gradient(90deg, #004D40 50%, #004D40 50%);}
+.strong-buy-strong-sell { @extend .action-container; background: linear-gradient(90deg, var(--increase-2-color) 50%, var(--decrease-2-color) 50%);}
+.strong-buy-sell { @extend .action-container; background: linear-gradient(90deg, var(--increase-2-color) 50%, var(--decrease-1-color) 50%);}
+.strong-buy-neutral { @extend .action-container; background: linear-gradient(90deg, var(--increase-2-color) 50%, var(--sideways-color) 50%);}
+.strong-buy-buy { @extend .action-container; background: linear-gradient(90deg, var(--increase-2-color) 50%, var(--increase-1-color) 50%);}
+.strong-buy-strong-buy { @extend .action-container; background: linear-gradient(90deg, var(--increase-2-color) 50%, var(--increase-2-color) 50%);}
 
 
 
@@ -148,12 +143,12 @@
     background-color: var(--error-color);
     background-position: left center;
     background-size: 100% 50%;
-    background: linear-gradient(90deg, var(--error-color) 50%, var(--neutral-color) 50%);
+    background: linear-gradient(90deg, var(--error-color) 50%, var(--sideways-color) 50%);
 }
 
 .right-neutral {
     @extend .action-container;
-    background: linear-gradient(90deg, var(--neutral-color) 50%, var(--neutral-color) 50%);
+    background: linear-gradient(90deg, var(--sideways-color) 50%, var(--sideways-color) 50%);
     opacity: 0.8;
 }
 

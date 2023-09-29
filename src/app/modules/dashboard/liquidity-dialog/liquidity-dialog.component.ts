@@ -152,7 +152,10 @@ export class LiquidityDialogComponent implements OnInit, OnDestroy, ILiquidityDi
 		return this._chart.getPieChartOptions(
 			{
 				series: [ <number>this._utils.outputNumber(askLiquidity), <number>this._utils.outputNumber(bidLiquidity)],
-				colors: [this._chart.downwardColor, this._chart.upwardColor],
+				colors: [
+                    this._ms.colors.decrease_2, 
+                    this._ms.colors.increase_2, 
+                ],
 				legend: {show: false}
 			}, 
 			["Asks BTC", "Bids BTC"], 
@@ -182,7 +185,7 @@ export class LiquidityDialogComponent implements OnInit, OnDestroy, ILiquidityDi
 						data: [<number>this._utils.outputNumber(100 - bidLiquidityPower)]
 					},
 				],
-				colors: [this._chart.upwardColor, this._chart.downwardColor],
+				colors: [this._ms.colors.increase_2, this._ms.colors.decrease_2],
 				legend: {show: false},
 				xaxis: {categories: ["Bid Liq. Power", "Ask Liq. Power"], labels: {show: false}, axisTicks: {show: false}, axisBorder: {show: false}},
 				yaxis: {labels: {show: false}, axisBorder: {show: false}},
@@ -411,7 +414,7 @@ export class LiquidityDialogComponent implements OnInit, OnDestroy, ILiquidityDi
 		requirements: ILiquidityIntensityRequirements
 	): IBarChartOptions {
 		// Init the color
-		const color: string = side == "asks" ? this._chart.downwardColor: this._chart.upwardColor;
+		const color: string = side == "asks" ? this._ms.colors.decrease_2: this._ms.colors.increase_2;
 
 		// Build the chart
 		const liquidities: number[] = levels.map((pl) => pl.l);

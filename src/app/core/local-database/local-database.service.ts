@@ -299,7 +299,10 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 	 * @param endTS 
 	 * @returns Promise<IReversalCoinsStates>
 	 */
-	public async getReversalCoinsStates(id: number, endTS: number|null): Promise<IReversalCoinsStates> {
+	public async getReversalCoinsStates(
+        id: number, 
+        endTS: number|null
+    ): Promise<IReversalCoinsStates> {
 		// Attempt to initialize the db in case it hadn't been
 		if (!this.initialized) await this.initialize();
 
@@ -312,7 +315,8 @@ export class LocalDatabaseService implements ILocalDatabaseService {
 		 */
 		try {
 			// Read the data and return it if found
-			const localData: ILocalData = await this.reversalCoinsStates!.where("id").equals(id).first();
+			const localData: ILocalData = 
+                await this.reversalCoinsStates!.where("id").equals(id).first();
 			if (localData && localData.data) { return localData.data } 
 
 			// If it isn't found, retrieve it, store it and return it

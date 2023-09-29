@@ -37,13 +37,14 @@ export class AppComponent implements IAppComponent {
 
 	// Custom Icons
 	public readonly customIcons: string[] = ["home", "wallet", "format_list_numbered",
-    "person","notifications","logo_google","paste","ubuntu","code_branch","hdd","microchip","server","database",
-    "hardware_chip", "ssid_chart", "brain", "auto_graph", "bug_report", "file_csv", "file_waveform",
-    "wand_magic_sparkles", "flask_vial", "book", "microscope", "file_invoice", "coins", "bitcoin", "gauge",
-    "file_signature", "file_circle_check", "compass_drafting", "terminal", "file_zipper", "money_bill_transfer",
-    "arrow_right", "arrow_trend_down", "arrow_trend_up", "arrow_turn_down", "arrow_turn_up", "angle_up", "angle_down",
-    "battery_empty", "battery_full", "battery_half", "battery_quarter", "battery_three_quarters",
-    "rotate_left", "rotate_right", "info"];
+    "person","notifications","logo_google","paste","ubuntu","code_branch","hdd","microchip","server",
+    "database","hardware_chip", "ssid_chart", "brain", "auto_graph", "bug_report", "file_csv", 
+    "file_waveform","wand_magic_sparkles", "flask_vial", "book", "microscope", "file_invoice", 
+    "coins", "bitcoin", "gauge","file_signature", "file_circle_check", "compass_drafting", "terminal", 
+    "file_zipper", "money_bill_transfer","arrow_right", "arrow_trend_down", "arrow_trend_up", 
+    "arrow_turn_down", "arrow_turn_up", "angle_up", "angle_down","battery_empty", "battery_full", 
+    "battery_half", "battery_quarter", "battery_three_quarters","rotate_left", "rotate_right", 
+    "info"];
 	
 	// Route State
 	public state: IRouteState = this._nav.routeState.value;
@@ -109,9 +110,19 @@ export class AppComponent implements IAppComponent {
 
 
 
+
+
     
 
-    /* Nav Actions */
+
+
+
+
+
+    
+    /***************
+     * Nav Actions *
+     ***************/
 
 
 
@@ -167,14 +178,15 @@ export class AppComponent implements IAppComponent {
 
 
 
-    /* FCM */
+    /*******
+     * FCM *
+     *******/
 
 
 
 
     /**
      * Displays the FCM enabler if the platform is compatible.
-     * @returns void
      */
      private initializeFCM(): void {
         if (this._notification.fcmSupported) {
@@ -204,7 +216,6 @@ export class AppComponent implements IAppComponent {
 	/*
 	* Hides the FCM card if dragged.
 	* @param event
-	* @returns void
 	* */
 	public fcmDragged(event: any): void {
 		if (
@@ -212,7 +223,14 @@ export class AppComponent implements IAppComponent {
 			event.distance &&
 			typeof event.distance.x == "number" &&
 			typeof event.distance.y == "number" &&
-			((event.distance.x > 25 || event.distance.x < -25) || (event.distance.y > 25 || event.distance.y < -25))
+			(
+                (
+                    event.distance.x > 25 || 
+                    event.distance.x < -25) || 
+                    (
+                        event.distance.y > 25 || event.distance.y < -25
+                    )
+            )
 		) {
 			this.fcmVisible = false;
 		}
@@ -230,15 +248,20 @@ export class AppComponent implements IAppComponent {
 
 
 
-	/* Custom Icons Registration */
+
+
+
+
+
+    /*****************************
+     * Custom Icons Registration *
+     *****************************/
 	
 	
 	
 	
 	/*
-	* It will register all icons declared
-	* in this component with Angular Material.
-	* @returns void
+	* It will register all icons declared in this component with Angular Material.
 	* */
 	private registerCustomIcons(): void {
 		for (let icon of this.customIcons) {

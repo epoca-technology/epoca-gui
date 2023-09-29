@@ -58,7 +58,8 @@ export class NotificationService implements INotificationService {
 		// Make sure the platform is compatible
 		if (this.fcm && this.fcmSupported) {
 			// Retrieve the service worker registration
-			const swRegistration: ServiceWorkerRegistration|undefined = await window.navigator.serviceWorker.getRegistration();
+			const swRegistration: ServiceWorkerRegistration|undefined = 
+                await window.navigator.serviceWorker.getRegistration();
 			
 			// Make sure the registration was found
 			if (swRegistration) {

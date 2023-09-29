@@ -18,8 +18,7 @@ export class ExternalRequestService implements IExternalRequestService {
 
 
 	/*
-	* Sends a post|get|put|delete request
-	* and handles the error accordingly
+	* Sends a post|get|put|delete request and handles the error accordingly
 	* @param method
 	* @param url
 	* @param body?
@@ -33,14 +32,22 @@ export class ExternalRequestService implements IExternalRequestService {
 		options?: IRequestOptions): Observable<HttpResponse<any>|any> {
 		switch (method) {
 			case 'post':
-				return this.http.post(url, body, options).pipe(catchError(ExternalRequestService.handleError));
+				return this.http.post(url, body, options).pipe(
+                    catchError(ExternalRequestService.handleError)
+                );
 			case 'get':
                 if (options && body) options.params = body;
-				return this.http.get(url, options).pipe(catchError(ExternalRequestService.handleError));
+				return this.http.get(url, options).pipe(
+                    catchError(ExternalRequestService.handleError)
+                );
 			case 'put':
-				return this.http.put(url, body, options).pipe(catchError(ExternalRequestService.handleError));
+				return this.http.put(url, body, options).pipe(
+                    catchError(ExternalRequestService.handleError)
+                );
 			case 'delete':
-				return this.http.delete(url, options).pipe(catchError(ExternalRequestService.handleError));
+				return this.http.delete(url, options).pipe(
+                    catchError(ExternalRequestService.handleError)
+                );
             default:
                 throw new Error(`[ExternalRequest]: An invalid HTTP method (${method}) has been provided.`)
 		}
@@ -54,12 +61,10 @@ export class ExternalRequestService implements IExternalRequestService {
 
 	
 	/*
-	* Handles an error that could've been caused
-	* by the server returning a 404 or 500 or
-	* something could've gone wrong on the
-	* client side
+	* Handles an error that could've been caused by the server returning a 404 or 500 or something 
+    * could've gone wrong on the client side
 	* @param error
-	*
+	* @returns any
 	* */
 	private static handleError(error: HttpErrorResponse) {
 		return throwError(() => { throw error });

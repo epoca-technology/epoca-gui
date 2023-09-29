@@ -6,6 +6,7 @@ import { ICandlestick } from "../candlestick";
 // Service
 export interface IMarketStateService {
     // Properties
+    colors: IMarketStateColors,
     marketStates: {[result: string|number]: string},
     icons: {[result: string|number]: string},
     coinStateIcons: {[result: string|number]: string},
@@ -58,7 +59,24 @@ export interface IMarketStateService {
 
 
 
+/**
+ * Market State Colors
+ * These are the colors that should be used to display state for any of the indicators.
+ */
+export interface IMarketStateColors {
+    // Sideways 
+    sideways: string,
 
+    // Increase
+    increase_0: string,
+    increase_1: string,
+    increase_2: string,
+
+    // Decrease
+    decrease_0: string,
+    decrease_1: string,
+    decrease_2: string,
+}
 
 
 

@@ -256,15 +256,15 @@ export class MarketStateDialogComponent implements OnInit, OnDestroy, IMarketSta
 	private getChartColor(state: IStateType): string { 
 		switch (state) {
 			case 2:
-				return this._chart.upwardColor;
+				return this._ms.colors.increase_2;
 			case 1:
-				return "#26A69A";
+				return this._ms.colors.increase_1;
 			case -1:
-				return "#EF5350";
+				return this._ms.colors.decrease_1;
 			case -2:
-				return this._chart.downwardColor
+				return this._ms.colors.decrease_2;
 			default:
-				return this._chart.neutralColor
+				return this._ms.colors.sideways;
 		}
 	}
 
@@ -383,13 +383,13 @@ export class MarketStateDialogComponent implements OnInit, OnDestroy, IMarketSta
 	private getVolumeChartColor(state: IVolumeStateIntensity): string { 
 		switch (state) {
 			case 3:
-				return "#004D40";
+				return this._ms.colors.increase_2;
 			case 2:
-				return this._chart.upwardColor;
+				return this._ms.colors.increase_1;
 			case 1:
-				return "#26A69A";
+				return this._ms.colors.increase_0;
 			default:
-				return this._chart.neutralColor
+				return this._ms.colors.sideways
 		}
 	}
 

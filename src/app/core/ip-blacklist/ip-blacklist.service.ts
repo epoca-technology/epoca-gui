@@ -10,8 +10,10 @@ export class IpBlacklistService implements IIPBlacklistService{
     constructor(private _api: ApiService) { }
 
 
-    /* Retrievers */
 
+    /**************
+     * Retrievers *
+     **************/
 
 
 
@@ -20,7 +22,9 @@ export class IpBlacklistService implements IIPBlacklistService{
      * Retrieves a list of all the existing blacklisted ips in the db.
      * @returns Promise<IIPBlacklistRecord[]>
      */
-     public getAll(): Promise<IIPBlacklistRecord[]> { return this._api.request('get','ipBlacklist/getAll', {}, true) }
+     public getAll(): Promise<IIPBlacklistRecord[]> { 
+        return this._api.request('get','ipBlacklist/getAll', {}, true);
+    }
 
 
 
@@ -30,10 +34,9 @@ export class IpBlacklistService implements IIPBlacklistService{
 
 
 
-
-    /* IP Management */
-
-
+    /*****************
+     * IP Management *
+     *****************/
 
 
 
@@ -46,7 +49,10 @@ export class IpBlacklistService implements IIPBlacklistService{
      * @param otp 
      * @returns Promise<IIPBlacklistRecord[]>
      */
-    public registerIP(ip: string, notes: string|undefined, otp: string): Promise<IIPBlacklistRecord[]> { 
+    public registerIP(
+        ip: string, notes: string|undefined, 
+        otp: string
+    ): Promise<IIPBlacklistRecord[]> { 
         return this._api.request('post','ipBlacklist/registerIP', {ip: ip, notes: notes}, true, otp);
     }
 
@@ -63,8 +69,10 @@ export class IpBlacklistService implements IIPBlacklistService{
      * @param otp 
      * @returns Promise<IIPBlacklistRecord[]>
      */
-     public updateNotes(ip: string, newNotes: string, otp: string): Promise<IIPBlacklistRecord[]> { 
-        return this._api.request('post','ipBlacklist/updateNotes', {ip: ip, newNotes: newNotes}, true, otp);
+    public updateNotes(ip: string, newNotes: string, otp: string): Promise<IIPBlacklistRecord[]> { 
+        return this._api.request('post','ipBlacklist/updateNotes', {
+            ip: ip, newNotes: newNotes
+        }, true, otp);
     }
 
 
@@ -80,7 +88,7 @@ export class IpBlacklistService implements IIPBlacklistService{
      * @param otp 
      * @returns Promise<IIPBlacklistRecord[]>
      */
-     public unregisterIP(ip: string, otp: string): Promise<IIPBlacklistRecord[]> { 
+    public unregisterIP(ip: string, otp: string): Promise<IIPBlacklistRecord[]> { 
         return this._api.request('post','ipBlacklist/unregisterIP', {ip: ip}, true, otp);
     }
 }

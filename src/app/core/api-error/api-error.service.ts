@@ -18,13 +18,7 @@ export class ApiErrorService {
 
 
 
-    /**
-     * Retrieves a list of all the existing api errors in the db.
-     * @returns Promise<IApiError[]>
-     */
-    //public getAll(): Promise<IApiError[]> { return this._api.request("get","apiError/getAll", {}, true) }
-
-
+    
 
 
 

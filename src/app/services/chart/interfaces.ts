@@ -6,14 +6,11 @@ import {
 	ApexXAxis,
 	ApexTitleSubtitle,
     ApexAnnotations,
-    YAxisAnnotations,
-    XAxisAnnotations,
 	ApexDataLabels,
 	ApexGrid,
 	ApexPlotOptions,
 	ApexStroke,
 	ApexFill,
-	ApexMarkers,
 	ApexResponsive,
 	ApexNonAxisChartSeries,
 	ApexLegend,
@@ -23,11 +20,6 @@ import {
 
 
 export interface IChartService {
-	// General Properties
-	upwardColor: string,
-	downwardColor: string,
-	neutralColor: string,
-	
     // Candlesticks
     getCandlestickChartOptions(
 		candlesticks: Array<ICandlestick|IPositionCandlestick|any>, 

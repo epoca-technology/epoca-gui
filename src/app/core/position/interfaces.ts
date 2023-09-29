@@ -8,7 +8,11 @@ export interface IPositionService {
     // Position Retrievers
     getPositionRecord(id: string): Promise<IPositionRecord>,
     listPositionHeadlines(startAt: number, endAt: number): Promise<IPositionHeadline[]>,
-    listPositionActionPayloads(kind: IPositionActionKind, startAt: number, endAt: number): Promise<IPositionActionRecord[]>,
+    listPositionActionPayloads(
+        kind: IPositionActionKind, 
+        startAt: number, 
+        endAt: number
+    ): Promise<IPositionActionRecord[]>,
 
     // Position Actions
     onReversalStateEvent(side: IBinancePositionSide, otp: string): Promise<void>,

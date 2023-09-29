@@ -11,20 +11,6 @@ export class GuiVersionService implements IGuiVersionService {
 
 
 
-
-    /**
-     * Retrieves the current GUI Version.
-     * @returns Promise<string>
-	 * @DEPRECATED This route has been moved to BulkDataRoute.getAppBulk 
-     */
-	/*public get(): Promise<string> {
-		return this._api.request('get','guiVersion/get', {}, true);
-	}*/
-
-
-
-
-
     /**
      * Updates the current GUI Version.
      * @returns Promise<void>

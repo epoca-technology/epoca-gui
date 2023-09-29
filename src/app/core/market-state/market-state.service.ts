@@ -10,6 +10,7 @@ import {
 	IKeyZonesConfiguration, 
 	IKeyZoneStateEvent, 
 	ILiquidityConfiguration, 
+	IMarketStateColors, 
 	IMarketStateService, 
 	IReversalCoinsStates, 
 	IReversalConfiguration, 
@@ -25,6 +26,27 @@ import {
   providedIn: 'root'
 })
 export class MarketStateService implements IMarketStateService {
+    /**
+     * Market State Colors
+     * The official Market State Colors that match the variables declared in styles.scss.
+     */
+    public colors: IMarketStateColors = {
+        // Sideways 
+        sideways: "#78909C",
+
+        // Increase
+        increase_0: "#4DB6AC",
+        increase_1: "#00897B",
+        increase_2: "#004D40",
+
+        // Decrease
+        decrease_0: "#E57373",
+        decrease_1: "#E53935",
+        decrease_2: "#B71C1C",
+    }
+
+
+
 	/**
 	 * Market States
 	 * The names of the states each submodule can have when compared to
@@ -122,8 +144,12 @@ export class MarketStateService implements IMarketStateService {
 	 * The colors are based on the position from the price and the intensity
 	 * of the volume.
 	 */
-	public readonly kzAbove: {[volIntensity: number]: string} = { 0: "#E0F2F1", 1: "#80CBC4", 2: "#26A69A", 3: "#00897B", 4: "#004D40" }
-	public readonly kzBelow: {[volIntensity: number]: string} = { 0: "#FFEBEE", 1: "#EF9A9A", 2: "#EF5350", 3: "#E53935", 4: "#B71C1C" }
+	public readonly kzAbove: {[volIntensity: number]: string} = { 
+        0: "#E0F2F1", 1: "#80CBC4", 2: "#26A69A", 3: "#00897B", 4: "#004D40" 
+    }
+	public readonly kzBelow: {[volIntensity: number]: string} = { 
+        0: "#FFEBEE", 1: "#EF9A9A", 2: "#EF5350", 3: "#E53935", 4: "#B71C1C" 
+    }
 	public readonly kzVolIntensityIcons: {[volIntensity: number]: string} = {
 		0: "battery_empty",
 		1: "battery_quarter",
@@ -135,6 +161,10 @@ export class MarketStateService implements IMarketStateService {
 
 
   	constructor(private _api: ApiService) { }
+
+
+
+
 
 
 
@@ -169,9 +199,22 @@ export class MarketStateService implements IMarketStateService {
      * @param otp 
      * @returns Promise<void>
      */
-    public updateWindowConfiguration(newConfiguration: IWindowStateConfiguration, otp: string): Promise<void> { 
-        return this._api.request("post", "marketState/updateWindowConfiguration", {newConfiguration: newConfiguration}, true, otp);
+    public updateWindowConfiguration(
+        newConfiguration: IWindowStateConfiguration, 
+        otp: string
+        ): Promise<void> { 
+        return this._api.request("post", "marketState/updateWindowConfiguration", {
+            newConfiguration: newConfiguration
+        }, true, otp);
     }
+
+
+
+
+
+
+
+
 
 
 
@@ -196,6 +239,7 @@ export class MarketStateService implements IMarketStateService {
 	public getFullVolumeState(): Promise<IVolumeState> { 
 		return this._api.request("get","marketState/getFullVolumeState", {}, true) 
 	}
+
 
 
 
@@ -262,8 +306,13 @@ export class MarketStateService implements IMarketStateService {
      * @param otp 
      * @returns Promise<void>
      */
-    public updateLiquidityConfiguration(newConfiguration: ILiquidityConfiguration, otp: string): Promise<void> { 
-        return this._api.request("post", "marketState/updateLiquidityConfiguration", {newConfiguration: newConfiguration}, true, otp);
+    public updateLiquidityConfiguration(
+        newConfiguration: ILiquidityConfiguration, 
+        otp: string
+        ): Promise<void> { 
+        return this._api.request("post", "marketState/updateLiquidityConfiguration", {
+            newConfiguration: newConfiguration
+        }, true, otp);
     }
 
 
@@ -316,7 +365,10 @@ export class MarketStateService implements IMarketStateService {
 	 * @returns Promise<IKeyZoneStateEvent[]>
 	 */
 	public listKeyZoneEvents(startAt: number, endAt: number): Promise<IKeyZoneStateEvent[]> { 
-		return this._api.request("get","marketState/listKeyZoneEvents", {startAt: startAt, endAt: endAt}, true) 
+		return this._api.request("get","marketState/listKeyZoneEvents", {
+            startAt: startAt, 
+            endAt: endAt
+        }, true) 
 	}
 
 
@@ -341,8 +393,13 @@ export class MarketStateService implements IMarketStateService {
      * @param otp 
      * @returns Promise<void>
      */
-    public updateKeyZonesConfiguration(newConfiguration: IKeyZonesConfiguration, otp: string): Promise<void> { 
-        return this._api.request("post", "marketState/updateKeyZonesConfiguration", {newConfiguration: newConfiguration}, true, otp);
+    public updateKeyZonesConfiguration(
+        newConfiguration: IKeyZonesConfiguration, 
+        otp: string
+    ): Promise<void> { 
+        return this._api.request("post", "marketState/updateKeyZonesConfiguration", {
+            newConfiguration: newConfiguration
+        }, true, otp);
     }
 
 
@@ -428,7 +485,9 @@ export class MarketStateService implements IMarketStateService {
 	 * @returns Promise<ICoinState>
 	 */
 	public getCoinFullState(symbol: string, btcPrice: boolean): Promise<ICoinState> { 
-		return this._api.request("get","marketState/getCoinFullState", {symbol: symbol, btcPrice: btcPrice}, true) 
+		return this._api.request("get","marketState/getCoinFullState", {
+            symbol: symbol, btcPrice: btcPrice
+        }, true) 
 	}
 
 
@@ -481,8 +540,13 @@ export class MarketStateService implements IMarketStateService {
      * @param otp 
      * @returns Promise<void>
      */
-    public updateCoinsConfiguration(newConfiguration: ICoinsConfiguration, otp: string): Promise<void> { 
-        return this._api.request("post", "marketState/updateCoinsConfiguration", {newConfiguration: newConfiguration}, true, otp);
+    public updateCoinsConfiguration(
+        newConfiguration: ICoinsConfiguration, 
+        otp: string
+    ): Promise<void> { 
+        return this._api.request("post", "marketState/updateCoinsConfiguration", {
+            newConfiguration: newConfiguration
+        }, true, otp);
     }
 
 
@@ -570,9 +634,12 @@ export class MarketStateService implements IMarketStateService {
      * @param otp 
      * @returns Promise<void>
      */
-    public updateReversalConfiguration(newConfiguration: IReversalConfiguration, otp: string): Promise<void> { 
-        return this._api.request("post", "marketState/updateReversalConfiguration", {newConfiguration: newConfiguration}, true, otp);
+    public updateReversalConfiguration(
+        newConfiguration: IReversalConfiguration, 
+        otp: string
+    ): Promise<void> { 
+        return this._api.request("post", "marketState/updateReversalConfiguration", {
+            newConfiguration: newConfiguration
+        }, true, otp);
     }
-
-
 }

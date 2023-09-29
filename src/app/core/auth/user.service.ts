@@ -47,7 +47,10 @@ export class UserService implements IUserService {
      * @returns Promise<IUser[]>
      */
     public createUser(email: string, authority: IAuthority, otp: string): Promise<IUser[]> { 
-        return this._api.request('post','auth/createUser', {email: email, authority: authority}, true, otp);
+        return this._api.request('post','auth/createUser', {
+            email: email, 
+            authority: authority
+        }, true, otp);
     }
 
 
@@ -63,7 +66,9 @@ export class UserService implements IUserService {
      * @returns Promise<IUser[] 
      */
     public updateEmail(uid: string, newEmail: string, otp: string): Promise<IUser[]> { 
-        return this._api.request('post','auth/updateEmail', {uid: uid, newEmail: newEmail}, true, otp);
+        return this._api.request('post','auth/updateEmail', {
+            uid: uid, newEmail: newEmail
+        }, true, otp);
     }
 
 
@@ -78,8 +83,18 @@ export class UserService implements IUserService {
      * @param recaptcha 
      * @returns Promise<void>
      */
-    public updatePassword(email: string, newPassword: string, otp: string, recaptcha: string): Promise<void> { 
-        return this._api.request('post','auth/updatePassword', {email: email, newPassword: newPassword, otp: otp, recaptcha: recaptcha});
+    public updatePassword(
+        email: string, 
+        newPassword: string, 
+        otp: string, 
+        recaptcha: string
+    ): Promise<void> { 
+        return this._api.request('post','auth/updatePassword', {
+            email: email, 
+            newPassword: newPassword, 
+            otp: otp, 
+            recaptcha: recaptcha
+        });
     }
 
 
@@ -110,7 +125,10 @@ export class UserService implements IUserService {
      * @returns Promise<IUser[]>
      */
     public updateAuthority(uid: string, newAuthority: IAuthority, otp: string): Promise<IUser[]> { 
-        return this._api.request('post','auth/updateAuthority', {uid: uid, newAuthority: newAuthority}, true, otp);
+        return this._api.request('post','auth/updateAuthority', {
+            uid: uid, 
+            newAuthority: newAuthority
+        }, true, otp);
     }
 
 
@@ -166,7 +184,17 @@ export class UserService implements IUserService {
      * @param recaptcha 
      * @returns Promise<string>
      */
-    public getSignInToken(email: string, password: string, otp: string, recaptcha: string): Promise<string> { 
-        return this._api.request('post','auth/getSignInToken', {email: email, password: password, otp: otp, recaptcha: recaptcha});
+    public getSignInToken(
+        email: string, 
+        password: string, 
+        otp: string, 
+        recaptcha: string
+        ): Promise<string> { 
+        return this._api.request('post','auth/getSignInToken', {
+            email: email, 
+            password: password, 
+            otp: otp, 
+            recaptcha: recaptcha
+        });
     }
 }

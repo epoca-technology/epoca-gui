@@ -8,7 +8,7 @@ import {
     ApexAxisChartSeries, 
     ApexXAxis 
 } from "ng-apexcharts";
-import { ICandlestick, IPositionCandlestick, UtilsService } from "../../core";
+import { ICandlestick, IPositionCandlestick, MarketStateService, UtilsService } from "../../core";
 import { AppService, ILayout } from "../app";
 import { 
 	IApexCandlestick, 
@@ -31,18 +31,10 @@ export class ChartService implements IChartService {
 	// Random Colors
 	private readonly randomColors: string[] = this.getRandomColors();
 
-	// Event Colors
-	//public readonly upwardColor: string = "#00695C";
-	//public readonly upwardColor: string = "#00897B";
-	public readonly upwardColor: string = "#004D40";
-	//public readonly downwardColor: string = "#B71C1C";
-	//public readonly downwardColor: string = "#E53935";
-	public readonly downwardColor: string = "#B71C1C";
-	public readonly neutralColor: string = "#78909C";
-
 
   	constructor(
 		private _app: AppService,
+        private _ms: MarketStateService,
 		private _utils: UtilsService,
 	  ) { }
 
@@ -114,7 +106,10 @@ export class ChartService implements IChartService {
 				height: height || 600
             },
 			plotOptions: {
-                candlestick: {colors: {upward: this.upwardColor,downward: this.downwardColor}}
+                candlestick: {colors: {
+                    upward: this._ms.colors.increase_2,
+                    downward: this._ms.colors.decrease_2
+                }}
             },
             annotations: this.getCandlesticksAnnotations(
 				annotations, 

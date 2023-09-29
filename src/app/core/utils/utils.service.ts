@@ -27,7 +27,11 @@ export class UtilsService implements IUtilService {
      * @param config? 
      * @returns INumber
      */
-    public alterNumberByPercentage(value: INumber, percent: INumber, config?: INumberConfig): INumber {
+    public alterNumberByPercentage(
+        value: INumber, 
+        percent: INumber, 
+        config?: INumberConfig
+    ): INumber {
         // Init the new number
         let newNumber: BigNumber;
         let percentBN: BigNumber = this.getBigNumber(percent);
@@ -66,7 +70,11 @@ export class UtilsService implements IUtilService {
      * @param config?
      * @returns INumber
      */
-    public calculatePercentageChange(oldNumber: INumber, newNumber: INumber, config?: INumberConfig): INumber {
+    public calculatePercentageChange(
+        oldNumber: INumber, 
+        newNumber: INumber, 
+        config?: INumberConfig
+    ): INumber {
         // Init values
         const oldBN: BigNumber = this.getBigNumber(oldNumber);
         const newBN: BigNumber = this.getBigNumber(newNumber);
@@ -108,7 +116,11 @@ export class UtilsService implements IUtilService {
      * @param config?
      * @returns INumber
      */
-     public calculatePercentageOutOfTotal(value: INumber, total: INumber, config?: INumberConfig): INumber {
+     public calculatePercentageOutOfTotal(
+        value: INumber, 
+        total: INumber, 
+        config?: INumberConfig
+    ): INumber {
         // Initialize the BigNumber Instance out of the value
         const bn: BigNumber = this.getBigNumber(value);
 
@@ -252,7 +264,9 @@ export class UtilsService implements IUtilService {
      * @returns INumber
      */
     public getMean(values: INumber[], config?: INumberConfig): INumber { 
-        return this.outputNumber(new BigNumber(this.getSum(values)).dividedBy(values.length), config);
+        return this.outputNumber(
+            new BigNumber(this.getSum(values)).dividedBy(values.length), config
+        );
     }
 
 
@@ -325,7 +339,8 @@ export class UtilsService implements IUtilService {
      */
      public getErrorMessage(e: any): string {
         // Unknown error
-        const unknownError: string = 'The error message could not be retrieved, find more information in the logs.';
+        const unknownError: string = 
+            'The error message could not be retrieved, find more information in the logs.';
 
         // Handle String
         if (typeof e == "string") {

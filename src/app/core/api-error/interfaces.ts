@@ -2,7 +2,7 @@
 // Service
 export interface IApiErrorService {
     // Retrievers
-    //getAll(): Promise<IApiError[]>,
+    
 
     // Cleaner
     deleteAll(otp: string): Promise<IApiError[]>,

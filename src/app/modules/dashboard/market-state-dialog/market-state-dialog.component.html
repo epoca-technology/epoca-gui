@@ -30,10 +30,11 @@
                                     class="clickable" role="button" matRipple
                                     (click)="applySplit(id)"
                                     [ngClass]="{
-                                        'buy-action-container': states[id].s > 0,
-                                        'sell-action-container': states[id].s < 0,
-                                        'neutral-action-container': states[id].s == 0,
-                                        'weak-state': states[id].s != 2 && states[id].s != -2,
+                                        'sideways-action-container': states[id].s == 0,
+                                        'increase-1-action-container': states[id].s == 1,
+                                        'increase-2-action-container': states[id].s == 2,
+                                        'decrease-1-action-container': states[id].s == -1,
+                                        'decrease-2-action-container': states[id].s == -2,
                                         'active-split': id == activeSplitID
                                     }">
                             <div fxLayout="column">
