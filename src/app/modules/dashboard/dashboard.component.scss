@@ -81,13 +81,17 @@
 }
 .volume-state-1 {
     @extend .action-container;
-    background: linear-gradient(90deg, var(--increase-2-color) 33%, var(--increase-0-color) 33%);
+    background: linear-gradient(90deg, var(--increase-2-color) 25%, var(--increase-0-color) 25%);
 }
 .volume-state-2 {
     @extend .action-container;
-    background: linear-gradient(90deg, var(--increase-2-color) 66%, var(--increase-0-color) 66%);
+    background: linear-gradient(90deg, var(--increase-2-color) 50%, var(--increase-0-color) 50%);
 }
 .volume-state-3 {
+    @extend .action-container;
+    background: linear-gradient(90deg, var(--increase-2-color) 75%, var(--increase-0-color) 75%);
+}
+.volume-state-4 {
     @extend .action-container;
     background: linear-gradient(90deg, var(--increase-2-color) 100%, var(--increase-0-color) 100%);
 }

@@ -254,7 +254,7 @@ export interface IWindowState {
  * Volume State Intensity
  * The intensity of the volume's state based on the requirements.
  */
-export type IVolumeStateIntensity = 0|1|2|3;
+export type IVolumeStateIntensity = 0|1|2|3|4;
 
 
 // Full State
@@ -263,9 +263,10 @@ export interface IVolumeState {
     s: IVolumeStateIntensity,
 
     // The requirements for the volume to have a state
-    m: number,  // Mean
-    mm: number, // Mean Medium
-    mh: number, // Mean High
+    m: number,      // Mean
+    mm: number,     // Mean Medium
+    mh: number,     // Mean High
+    muh: number,    // Mean Ultra High
 
     // The volume within the current 1m interval
     v: number

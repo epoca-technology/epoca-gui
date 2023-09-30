@@ -51,6 +51,7 @@ export class MarketStateDialogComponent implements OnInit, OnDestroy, IMarketSta
 
 	// Component Init
 	public loaded: boolean = false;
+	public fullyLoaded: boolean = false;
 
 	constructor(
 		public dialogRef: MatDialogRef<MarketStateDialogComponent>,
@@ -89,6 +90,7 @@ export class MarketStateDialogComponent implements OnInit, OnDestroy, IMarketSta
         setTimeout(() => {
             this.volumeChartEl?.resetSeries();
             this.lineChartEl?.resetSeries();
+            this.fullyLoaded = true;
         }, 150);
 	}
 
@@ -344,26 +346,32 @@ export class MarketStateDialogComponent implements OnInit, OnDestroy, IMarketSta
 			this.layout == "desktop" ? 400: 360,
 			false,
 			true,
-			{min: 0, max: maxValue > this.volumeState.mh ? maxValue: this.volumeState.mh},
+			{min: 0, max: maxValue > this.volumeState.muh ? maxValue: this.volumeState.muh},
 			{
 				yaxis: [
 					{
 						y: <number>this._utils.outputNumber(this.volumeState.m, {dp: 0}),
-						borderColor: "#4DB6AC",
+						borderColor: "#80CBC4",
 						strokeDashArray: 5,
 						borderWidth: 1
 					},
 					{
 						y: <number>this._utils.outputNumber(this.volumeState.mm, {dp: 0}),
-						borderColor: "#00695C",
+						borderColor: this._ms.colors.increase_0,
 						strokeDashArray: 5,
 						borderWidth: 2
 					},
 					{
 						y: <number>this._utils.outputNumber(this.volumeState.mh, {dp: 0}),
-						borderColor: "#004D40",
+						borderColor: this._ms.colors.increase_1,
 						strokeDashArray: 5,
 						borderWidth: 3
+					},
+					{
+						y: <number>this._utils.outputNumber(this.volumeState.muh, {dp: 0}),
+						borderColor: this._ms.colors.increase_2,
+						strokeDashArray: 5,
+						borderWidth: 4
 					},
 				]
 			}
@@ -382,14 +390,16 @@ export class MarketStateDialogComponent implements OnInit, OnDestroy, IMarketSta
 	 */
 	private getVolumeChartColor(state: IVolumeStateIntensity): string { 
 		switch (state) {
-			case 3:
+			case 4:
 				return this._ms.colors.increase_2;
-			case 2:
+			case 3:
 				return this._ms.colors.increase_1;
-			case 1:
+			case 2:
 				return this._ms.colors.increase_0;
+			case 1:
+				return "#80CBC4";
 			default:
-				return this._ms.colors.sideways
+				return this._ms.colors.sideways;
 		}
 	}
 
@@ -451,6 +461,7 @@ export class MarketStateDialogComponent implements OnInit, OnDestroy, IMarketSta
 			content.push(`Mean: $${this._utils.formatNumber(this.volumeState.m)}`);
 			content.push(`Mean Medium: $${this._utils.formatNumber(this.volumeState.mm)}`);
 			content.push(`Mean High: $${this._utils.formatNumber(this.volumeState.mh)}`);
+			content.push(`Mean Ultra High: $${this._utils.formatNumber(this.volumeState.muh)}`);
 		};
 
 		// Finally, display the tooltip
@@ -499,10 +510,11 @@ export class MarketStateDialogComponent implements OnInit, OnDestroy, IMarketSta
                     `This module aims to have a deep understanding of the Bitcoin Spot Market's trading volume to identify times at which there is significant participation. `,
                     `To achieve this, the system establishes a real time connection with ~32 hours (same lookback as the window) worth of 1m candlesticks and calculates the volume state requirements (The amount of traded USDT required for it to mean that the volume is high).`,
                     `The system evaluates the current volume against the requirements on a real time basis and broadcasts the state. The volume can have the following states:`,
-                    `* 0: Low`,
-                    `* 1: Medium`,
-                    `* 2: High`,
-                    `* 3: Ultra High`,
+                    `* 0: Ultra Low`,
+                    `* 1: Low`,
+                    `* 2: Medium`,
+                    `* 3: High`,
+                    `* 4: Ultra High`,
                     `Note that when a state greater than 0 is identified, it remains active for ~3 minutes. If the "high" volume is not sustained, it goes back to 0 after this period.`
                 ];
                 break;

@@ -22,7 +22,7 @@
     </div>
     <div *ngIf="loaded" class="padding">
         <!-- Line Chart Based -->
-        <div *ngIf="lineChart" style="overflow: hidden">
+        <div *ngIf="lineChart" style="overflow: hidden" [ngClass]="{'load-delay': !fullyLoaded}">
             <!-- Window Heading Grid-->
             <div>
                 <mat-grid-list [cols]="4" rowHeight="45px" gutterSize="2px">
@@ -57,7 +57,7 @@
         </div>
 
         <!-- Volume -->
-        <div *ngIf="volumeChart" style="overflow: hidden">
+        <div *ngIf="volumeChart" style="overflow: hidden" [ngClass]="{'load-delay': !fullyLoaded}">
             <apx-chart #volumeChartEl
                 [series]="volumeChart.series"
                 [chart]="volumeChart.chart"
