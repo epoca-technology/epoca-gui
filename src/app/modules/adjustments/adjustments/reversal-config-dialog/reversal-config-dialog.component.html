@@ -28,16 +28,29 @@
                     <div fxLayout="row" fxLayoutAlign="start start" class="section-container">
                         <div fxFlex>
                             <mat-form-field>
-                                <mat-label>Min. Event Score</mat-label>
+                                <mat-label>Supp. Reversal Score Requirement</mat-label>
                                 <input type="number"
                                        matInput
-                                       formControlName="min_event_score"
+                                       formControlName="support_reversal_score_requirement"
                                        autocomplete="off"
                                        [appDisableControl]="submitting"
-                                       placeholder="e.g. 75">
+                                       placeholder="e.g. 78">
                             </mat-form-field>
                         </div>
                         <span fxFlex="5"></span>
+                        <div fxFlex>
+                            <mat-form-field>
+                                <mat-label>Res. Reversal Score Requirement</mat-label>
+                                <input type="number"
+                                       matInput
+                                       formControlName="resistance_reversal_score_requirement"
+                                       autocomplete="off"
+                                       [appDisableControl]="submitting"
+                                       placeholder="e.g. 70">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="start start" class="section-container">
                         <div fxFlex>
                             <mat-form-field>
                                 <mat-label>Sort Function</mat-label>
@@ -47,6 +60,7 @@
                                 </mat-select>
                             </mat-form-field>
                         </div>
+                        <span fxFlex></span>
                     </div>
                 </div>
 

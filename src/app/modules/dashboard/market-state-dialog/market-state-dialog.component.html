@@ -27,7 +27,7 @@
             <div>
                 <mat-grid-list [cols]="4" rowHeight="45px" gutterSize="2px">
                     <mat-grid-tile *ngFor="let id of _ms.splits" 
-                                    class="clickable" role="button" matRipple
+                                    class="clickable split-grid-tile" role="button" matRipple
                                     (click)="applySplit(id)"
                                     [ngClass]="{
                                         'sideways-action-container': states[id].s == 0,

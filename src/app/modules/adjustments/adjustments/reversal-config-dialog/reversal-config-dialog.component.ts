@@ -35,7 +35,8 @@ export class ReversalConfigDialogComponent implements OnInit, IReversalConfigDia
 		try {
 			this.config = await this._ms.getReversalConfiguration();
 			this.form = new FormGroup ({
-				min_event_score: new FormControl(this.config.min_event_score, [ Validators.required, Validators.min(10), Validators.max(100) ]),
+				support_reversal_score_requirement: new FormControl(this.config.support_reversal_score_requirement, [ Validators.required, Validators.min(10), Validators.max(100) ]),
+				resistance_reversal_score_requirement: new FormControl(this.config.resistance_reversal_score_requirement, [ Validators.required, Validators.min(10), Validators.max(100) ]),
 				event_sort_func: new FormControl(this.config.event_sort_func, [ Validators.required ]),
 				score_weights_volume: new FormControl(this.config.score_weights.volume, [ Validators.required, Validators.min(1), Validators.max(100) ]),
 				score_weights_liquidity: new FormControl(this.config.score_weights.liquidity, [ Validators.required, Validators.min(1), Validators.max(100) ]),
@@ -52,7 +53,8 @@ export class ReversalConfigDialogComponent implements OnInit, IReversalConfigDia
 
 
     /* Form Getters */
-	get min_event_score(): AbstractControl { return <AbstractControl>this.form.get("min_event_score") }
+	get support_reversal_score_requirement(): AbstractControl { return <AbstractControl>this.form.get("support_reversal_score_requirement") }
+	get resistance_reversal_score_requirement(): AbstractControl { return <AbstractControl>this.form.get("resistance_reversal_score_requirement") }
 	get event_sort_func(): AbstractControl { return <AbstractControl>this.form.get("event_sort_func") }
 	get score_weights_volume(): AbstractControl { return <AbstractControl>this.form.get("score_weights_volume") }
 	get score_weights_liquidity(): AbstractControl { return <AbstractControl>this.form.get("score_weights_liquidity") }
@@ -89,7 +91,8 @@ export class ReversalConfigDialogComponent implements OnInit, IReversalConfigDia
 				async (otp: string|undefined) => {
 					if (otp) {
 						// Build the new config
-						this.config.min_event_score = this.min_event_score.value;
+						this.config.support_reversal_score_requirement = this.support_reversal_score_requirement.value;
+						this.config.resistance_reversal_score_requirement = this.resistance_reversal_score_requirement.value;
 						this.config.event_sort_func = this.event_sort_func.value;
 						this.config.score_weights = {
 							volume: this.score_weights_volume.value,
@@ -155,8 +158,11 @@ export class ReversalConfigDialogComponent implements OnInit, IReversalConfigDia
 	/* Event Tooltip */
 	public eventTooltip(): void {
 		this._nav.displayTooltip("Reversal Event", [
-			`Min. Event Score`,
-			`The minimum score required for a resistance event to be issued`,
+			`Support Reversal Score Requirement`,
+			`The minimum score required for a support reversal event to be issued.`,
+			`-----`,
+			`Resistance Reversal Score Requirement`,
+			`The minimum score required for a resistance reversal event to be issued.`,
 			`-----`,
 			`Sort Function`,
 			`The sorting mechanism that will be used to order the symbols that are compliant with the kind of reversal.`,

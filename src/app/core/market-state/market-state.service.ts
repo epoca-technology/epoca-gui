@@ -10,15 +10,14 @@ import {
 	IKeyZonesConfiguration, 
 	IKeyZoneStateEvent, 
 	ILiquidityConfiguration, 
-	IMarketStateColors, 
-	IMarketStateService, 
 	IReversalCoinsStates, 
 	IReversalConfiguration, 
 	IReversalState, 
 	ISplitStateID, 
 	IVolumeState, 
 	IWindowStateConfiguration
-} from './interfaces';
+} from "./submodules";
+import { IMarketStateColors, IMarketStateService } from './interfaces';
 
 
 

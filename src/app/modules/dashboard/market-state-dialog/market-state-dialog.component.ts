@@ -346,32 +346,26 @@ export class MarketStateDialogComponent implements OnInit, OnDestroy, IMarketSta
 			this.layout == "desktop" ? 400: 360,
 			false,
 			true,
-			{min: 0, max: maxValue > this.volumeState.muh ? maxValue: this.volumeState.muh},
+			{min: 0, max: maxValue > this.volumeState.mh ? maxValue: this.volumeState.mh},
 			{
 				yaxis: [
 					{
 						y: <number>this._utils.outputNumber(this.volumeState.m, {dp: 0}),
-						borderColor: "#80CBC4",
+						borderColor: this._ms.colors.increase_0,
 						strokeDashArray: 5,
 						borderWidth: 1
 					},
 					{
 						y: <number>this._utils.outputNumber(this.volumeState.mm, {dp: 0}),
-						borderColor: this._ms.colors.increase_0,
+						borderColor: this._ms.colors.increase_1,
 						strokeDashArray: 5,
 						borderWidth: 2
 					},
 					{
 						y: <number>this._utils.outputNumber(this.volumeState.mh, {dp: 0}),
-						borderColor: this._ms.colors.increase_1,
-						strokeDashArray: 5,
-						borderWidth: 3
-					},
-					{
-						y: <number>this._utils.outputNumber(this.volumeState.muh, {dp: 0}),
 						borderColor: this._ms.colors.increase_2,
 						strokeDashArray: 5,
-						borderWidth: 4
+						borderWidth: 3
 					},
 				]
 			}
@@ -390,14 +384,12 @@ export class MarketStateDialogComponent implements OnInit, OnDestroy, IMarketSta
 	 */
 	private getVolumeChartColor(state: IVolumeStateIntensity): string { 
 		switch (state) {
-			case 4:
-				return this._ms.colors.increase_2;
 			case 3:
-				return this._ms.colors.increase_1;
+				return this._ms.colors.increase_2;
 			case 2:
-				return this._ms.colors.increase_0;
+				return this._ms.colors.increase_1;
 			case 1:
-				return "#80CBC4";
+				return this._ms.colors.increase_0;
 			default:
 				return this._ms.colors.sideways;
 		}
@@ -461,7 +453,6 @@ export class MarketStateDialogComponent implements OnInit, OnDestroy, IMarketSta
 			content.push(`Mean: $${this._utils.formatNumber(this.volumeState.m)}`);
 			content.push(`Mean Medium: $${this._utils.formatNumber(this.volumeState.mm)}`);
 			content.push(`Mean High: $${this._utils.formatNumber(this.volumeState.mh)}`);
-			content.push(`Mean Ultra High: $${this._utils.formatNumber(this.volumeState.muh)}`);
 		};
 
 		// Finally, display the tooltip
@@ -514,7 +505,6 @@ export class MarketStateDialogComponent implements OnInit, OnDestroy, IMarketSta
                     `* 1: Low`,
                     `* 2: Medium`,
                     `* 3: High`,
-                    `* 4: Ultra High`,
                     `Note that when a state greater than 0 is identified, it remains active for ~3 minutes. If the "high" volume is not sustained, it goes back to 0 after this period.`
                 ];
                 break;
