@@ -1,6 +1,6 @@
 # EPOCA GUI
 
-Epoca GUI is an application designed to interact with the Core API through HTTP Requests.
+Epoca GUI is a Progressive Web Application designed to interact with the Core API through HTTP Requests.
 
 
 ## Requirements

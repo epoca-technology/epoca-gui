@@ -1,7 +1,7 @@
 {
-    "name": "gui-development",
+    "name": "epoca-gui",
     "version": "2.0.0",
-    "description": "Epoca is a complete technological infrastructure that runs a proprietary implementation of the Value Averaging Strategy and operates in the Bitcoin Spot Market.",
+    "description": "Epoca GUI is a Progressive Web Application designed to interact with the Core API through HTTP Requests.",
     "scripts": {
         "ng": "ng",
         "start": "ng serve",
@@ -16,11 +16,11 @@
     "private": true,
     "repository": {
       "type": "git",
-      "url": "git+ssh://git@bitbucket.org/projectplutus/gui-development.git"
+      "url": "git@github.com:epoca-technology/epoca-gui.git"
     },
     "author": "Jesus Graterol",
     "license": "ISC",
-    "homepage": "https://bitbucket.org/projectplutus/gui-development#readme",
+    "homepage": "https://github.com/epoca-technology/epoca-gui",
     "dependencies": {
         "@angular-material-components/datetime-picker": "7.0.1",
         "@angular/animations": "13.1.0",
