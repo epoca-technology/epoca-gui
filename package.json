@@ -13,7 +13,7 @@
         "build-development": "node ./node_modules/gulp/bin/gulp.js preBuildDev && node ./node_modules/@angular/cli/bin/ng build --configuration development && node ./node_modules/gulp/bin/gulp.js postBuildDev",
         "build-production": "node ./node_modules/gulp/bin/gulp.js preBuildProd && node --max_old_space_size=4096 ./node_modules/@angular/cli/bin/ng build --configuration production && node ./node_modules/gulp/bin/gulp.js postBuildProd"
     },
-    "private": true,
+    "private": false,
     "repository": {
       "type": "git",
       "url": "git@github.com:epoca-technology/epoca-gui.git"
